@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import Section from '../global/Section';
+import Section from '../HomePage/Section';
 import { ModeToggle } from '../theme/theme-toggle';
 import { Button } from '../ui/button';
 import logo from '@/assets/images/logo.svg';

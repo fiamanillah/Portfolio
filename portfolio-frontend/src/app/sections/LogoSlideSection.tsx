@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import Image from 'next/image';
-import Section from '@/components/global/Section';
+import Section from '@/components/HomePage/Section';
 
 // Import logos
 import html from '@/assets/icons/skill/skill-icons--html.svg';

@@ -1,6 +1,6 @@
 import React from 'react';
-import Section from '@/components/global/Section';
-import Skills from '@/components/About/Skills';
+import Section from '@/components/HomePage/Section';
+import Skills from '@/components/HomePage/Skills';
 
 const SkillSection: React.FC = () => {
     return (

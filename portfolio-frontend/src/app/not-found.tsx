@@ -1,7 +1,7 @@
 import React from 'react';
 import NotFound404 from '@/assets/images/404.svg';
 import Image from 'next/image';
-import Section from '@/components/global/Section';
+import Section from '@/components/HomePage/Section';
 import Link from 'next/link';
 const NotFound: React.FC = () => {
     return (

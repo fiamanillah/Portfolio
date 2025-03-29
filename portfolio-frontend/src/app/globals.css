@@ -164,7 +164,8 @@ html {
 
 @theme inline {
     --font-oxanium: 'Oxanium', sans-serif;
-    --font-roboto: 'Roboto', sans-serif;
+    --font-geist-sans: 'Geist Sans', sans-serif;
+    --font-geist-mono: 'Geist Mono', monospace;
 
     /* Custom Breakpoints */
     --breakpoint-desktop-3xl: 1920px;

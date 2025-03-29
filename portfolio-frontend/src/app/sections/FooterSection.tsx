@@ -1,5 +1,5 @@
 import React from 'react';
-import Section from '@/components/global/Section';
+import Section from '@/components/HomePage/Section';
 
 const FooterSection: React.FC = () => {
     // Get the current year

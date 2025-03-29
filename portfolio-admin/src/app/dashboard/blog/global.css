@@ -1,0 +1,125 @@
+.mdx-prose {
+    /* Base Colors */
+    --baseBase: var(--background);
+    --baseBgSubtle: var(--muted);
+    --baseBg: var(--card);
+    --baseBgHover: var(--muted);
+    --baseBgActive: var(--muted);
+    --baseLine: var(--border);
+    --baseBorder: var(--border);
+    --baseBorderHover: var(--border-strong);
+    --baseSolid: var(--primary);
+    --baseSolidHover: var(--primary);
+    --baseText: var(--foreground);
+    --baseTextContrast: var(--primary-foreground);
+
+    /* Accent Colors */
+    --accentBase: var(--accent);
+    --accentBgSubtle: var(--accent);
+    --accentBg: var(--accent);
+    --accentBgHover: var(--accent);
+    --accentBgActive: var(--accent);
+    --accentLine: var(--border);
+    --accentBorder: var(--border);
+    --accentBorderHover: var(--border-strong);
+    --accentSolid: var(--primary);
+    --accentSolidHover: var(--primary);
+    --accentText: var(--foreground);
+    --accentTextContrast: var(--primary-foreground);
+
+    /* Admonition Colors */
+    --admonitionTipBg: var(--success);
+    --admonitionTipBorder: var(--success);
+    --admonitionInfoBg: var(--info);
+    --admonitionInfoBorder: var(--info);
+    --admonitionCautionBg: var(--warning);
+    --admonitionCautionBorder: var(--warning);
+    --admonitionDangerBg: var(--destructive);
+    --admonitionDangerBorder: var(--destructive);
+    --admonitionNoteBg: var(--muted);
+    --admonitionNoteBorder: var(--border);
+
+    /* Background and Text */
+}
+
+.hello * {
+    background-color: var(--background) !important;
+    color: var(--foreground) !important;
+}
+
+.mdx-prose ul,
+.mdx-prose ol {
+    padding-left: 20px; /* Adds padding to create space for bullets */
+}
+.mdx-prose ol {
+    list-style-type: decimal; /* Decimal style for ordered lists */
+}
+.mdx-prose ul {
+    list-style-type: disc; /* Disc style for unordered lists */
+}
+.mdx-prose li {
+    margin-bottom: 4px; /* Adds margin between list items */
+}
+
+.hljs-comment,
+.hljs-quote {
+    color: #616161;
+}
+
+.hljs-variable,
+.hljs-template-variable,
+.hljs-attribute,
+.hljs-tag,
+.hljs-name,
+.hljs-regexp,
+.hljs-link,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class {
+    color: #f98181;
+}
+
+.hljs-number,
+.hljs-meta,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params {
+    color: #faa45e;
+}
+
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet {
+    color: #88d54e;
+}
+
+.hljs-title,
+.hljs-section {
+    color: #b7b034;
+}
+
+.hljs-keyword,
+.hljs-selector-tag {
+    color: #38a6d5;
+}
+
+.hljs-emphasis {
+    font-style: italic;
+}
+
+.hljs-strong {
+    font-weight: 700;
+}
+/* 
+code {
+    background: #0d0d0d;
+    color: #fff;
+    font-family: 'JetBrainsMono', monospace;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+} */
+/* .word-editor * {
+    white-space: normal;
+} */

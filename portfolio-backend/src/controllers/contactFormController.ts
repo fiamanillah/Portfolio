@@ -1,4 +1,4 @@
-import e, { Request, Response } from 'express';
+import { Request, Response } from 'express';
 import sendMail from '../services/mailService';
 import path from 'path';
 import ejs from 'ejs';

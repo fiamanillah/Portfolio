@@ -1,9 +1,9 @@
 import React from 'react';
-import Section from '@/components/global/Section';
+import Section from '@/components/HomePage/Section';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import * as motion from 'motion/react-client'; // Keep the motion import as it is
-import TypingEffect from '@/components/client/TypingEffect';
+import TypingEffect from '@/components/HomePage/TypingEffect';
 
 // Import assets
 import heroImage from '@/assets/images/hero.png';
@@ -13,8 +13,8 @@ import headShine from '@/assets/elements/headShine.svg';
 import dottedArrow from '@/assets/elements/dottedArrow.svg';
 import dots2 from '@/assets/elements/dots2.svg';
 import dots3 from '@/assets/elements/dots3.svg';
-import TextReveal from '@/components/global/TextReveal';
-import SocialIcons from '@/components/hero/SocialIcons';
+import TextReveal from '@/components/HomePage/TextReveal';
+import SocialIcons from '@/components/HomePage/SocialIcons';
 import Link from 'next/link';
 
 const HeroSection: React.FC = () => {
@@ -144,6 +144,8 @@ const HeroSection: React.FC = () => {
                                     alt="Fi Amanillah"
                                     priority
                                     className="w-[90%] drop-shadow-[2px_-2px_2px_rgba(0,0,0,1)]"
+                                    width={500}
+                                    height={500}
                                 />
 
                                 {/* Head Shine Animation */}
