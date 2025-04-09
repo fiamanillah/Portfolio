@@ -8,12 +8,16 @@ dotenv.config();
 interface Env {
     PORT: number;
     NODE_ENV: string;
+    FRONTEND_URL: string;
+
     MONGO_URI: string;
 
+    // SMTP configuration
     SMTP_HOST: string;
     SMTP_PORT: number;
     SMTP_USER: string;
     SMTP_PASS: string;
+    EMAIL_NO_REPLAY: string;
 
     // JWT configuration
     JWT_SECRET: string;
@@ -29,11 +33,15 @@ interface Env {
 const env: Env = {
     PORT: parseInt(process.env.PORT || '3000', 10),
     NODE_ENV: process.env.NODE_ENV || 'development',
+    FRONTEND_URL: process.env.FRONTEND_URL || '',
     MONGO_URI: process.env.MONGO_URI || '',
+
+    // SMTP configuration
     SMTP_HOST: process.env.SMTP_HOST || '',
     SMTP_PORT: parseInt(process.env.SMTP_PORT || '', 10),
     SMTP_USER: process.env.SMTP_USER || '',
     SMTP_PASS: process.env.SMTP_PASS || '',
+    EMAIL_NO_REPLAY: process.env.EMAIL_NO_REPLAY || '',
 
     // JWT configuration
     JWT_SECRET: process.env.JWT_SECRET || '',
