@@ -33,7 +33,7 @@ const Header: React.FC = () => {
                         href="https://drive.google.com/file/d/1nIK9SN-77GZAqTJoYORz8YPgsqxuUl7G/view?usp=drive_link"
                         target="_blank"
                     >
-                        <Button className="font-bold">Resume</Button>
+                        <Button className="font-bold ">Resume</Button>
                     </Link>
                     <ModeToggle />
                     <div className="hidden max-tablet-lg:block">

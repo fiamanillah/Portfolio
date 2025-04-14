@@ -5,30 +5,17 @@ import * as motion from 'motion/react-client';
 import { useTransform, useScroll, MotionValue } from 'motion/react';
 import { useRef } from 'react';
 import { Button } from '../ui/button';
-import { SquareArrowOutUpRight, Code } from 'lucide-react';
+import { SquareArrowOutUpRight, Code, NotepadText } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
-import { StaticImageData } from 'next/image'; // Correct type for static images
+import { Project } from '@/app/sections/ProjectSection';
 
-// Define the type for a project
-interface Project {
-    id: number;
-    title: string;
-    description: string;
-    image: StaticImageData; // Use StaticImageData for imported images
-    color: string;
-    logo: StaticImageData; // Use StaticImageData for imported logos
-    techUsed: string[];
-    demoLink: string;
-    codeLink: string;
-}
-
-// Define the props for the ParallaxStack component
-interface ParallaxStackProps {
+// Define the props for the ProjectParallaxStack component
+interface ProjectParallaxStackProps {
     projects: Project[]; // Array of projects
 }
 
-export default function ParallaxStack({ projects }: ParallaxStackProps) {
+export default function ProjectParallaxStack({ projects }: ProjectParallaxStackProps) {
     const containerRef = useRef<HTMLDivElement>(null); // Typed as HTMLDivElement
 
     const { scrollYProgress } = useScroll({
@@ -81,8 +68,8 @@ const Card: React.FC<CardProps> = ({ project, progress, range, targetScale, inde
             >
                 <div className="flex max-mobile-lg:flex-col justify-between w-full relative z-20">
                     {/* Image Section */}
-                    <div className="basis-4/6 rounded-3xl p-4 max-mobile-sm:p-2 overflow-hidden">
-                        <div className="w-full h-full overflow-hidden rounded-xl border border-border">
+                    <div className="basis-4/6    overflow-hidden">
+                        <div className="w-full h-full overflow-hidden">
                             <Image
                                 src={project.image}
                                 width={1400}
@@ -94,7 +81,43 @@ const Card: React.FC<CardProps> = ({ project, progress, range, targetScale, inde
                     </div>
 
                     {/* Content Section */}
-                    <div className="basis-2/6 flex flex-col gap-3 justify-between p-4 max-mobile-sm:p-2 max-mobile-sm:pt-0 relative">
+                    <div className="basis-2/6 border-t  md:border-l md:border-t-0 flex flex-col gap-3 justify-start p-4 max-mobile-sm:p-2 max-mobile-sm:pt-0 relative">
+                        {/* Buttons Section */}
+                        <div className="flex w-full justify-end">
+                            <div className="flex gap-2">
+                                <Link
+                                    href={project.codeLink}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-foreground no-underline"
+                                >
+                                    <Button variant="outline">
+                                        Code
+                                        <Code className="translate-y-[-2.5px]" />
+                                    </Button>
+                                </Link>
+
+                                <Link
+                                    href={project.demoLink}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-foreground no-underline"
+                                >
+                                    <Button
+                                        variant="outline"
+                                        className="flex items-center font-bold"
+                                    >
+                                        Demo
+                                        <SquareArrowOutUpRight className="translate-y-[-2.5px]" />
+                                    </Button>
+                                </Link>
+                                {/* <Button variant="outline">
+                                    Details
+                                    <NotepadText className="translate-y-[-2.5px]" />
+                                </Button> */}
+                            </div>
+                        </div>
+
                         <div>
                             <h2 className="max-mobile-sm:text-2xl">{project.title}</h2>
                             <p className="max-mobile-sm:text-md max-mobile-sm:max-h-[20vh] max-mobile-sm:overflow-y-auto max-mobile-sm:text-ellipsis">
@@ -110,35 +133,6 @@ const Card: React.FC<CardProps> = ({ project, progress, range, targetScale, inde
                                     </Badge>
                                 ))}
                             </div>
-                        </div>
-
-                        {/* Buttons Section */}
-                        <div className="flex gap-2 items-end justify-between">
-                            <div className="flex gap-2">
-                                <Button>
-                                    Code
-                                    <Code className="translate-y-[-2.5px]" />
-                                </Button>
-                                <Link
-                                    href={project.demoLink}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-foreground no-underline"
-                                >
-                                    <Button
-                                        variant="outline"
-                                        className="flex items-center font-bold"
-                                    >
-                                        Demo
-                                        <SquareArrowOutUpRight className="translate-y-[-2.5px]" />
-                                    </Button>
-                                </Link>
-                            </div>
-                            <Image
-                                src={project.logo}
-                                alt="project logo"
-                                className="absolute right-2 bottom-2 w-20"
-                            />
                         </div>
                     </div>
                 </div>

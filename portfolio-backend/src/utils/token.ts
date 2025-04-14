@@ -4,16 +4,16 @@ import env from '../config/env';
 
 const { JWT_SECRET, REFRESH_TOKEN_SECRET } = env;
 
-export const signToken = (id: string) => {
-    const token = jwt.sign({ id }, JWT_SECRET!, {
+export const signToken = (_id: string) => {
+    const token = jwt.sign({ _id }, JWT_SECRET!, {
         expiresIn: '30d',
     });
 
     return token;
 };
 
-export const createRefreshToken = (id: string) => {
-    return jwt.sign({ id }, REFRESH_TOKEN_SECRET!, {
+export const createRefreshToken = (_id: string) => {
+    return jwt.sign({ _id }, REFRESH_TOKEN_SECRET!, {
         expiresIn: '90d',
     });
 };

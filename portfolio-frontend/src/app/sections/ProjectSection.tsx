@@ -1,22 +1,20 @@
 import React from 'react';
 import Section from '@/components/HomePage/Section';
-import ParallaxStack from '@/components/HomePage/ParallaxStack';
-import linux from '@/assets/icons/skill/skill-icons--linux-light.svg';
 import projectImage from '@/assets/images/projects/1.png';
 import projectImage2 from '@/assets/images/projects/2.png';
 import projectImage3 from '@/assets/images/projects/3.png';
 import projectImage4 from '@/assets/images/projects/4.png';
 import projectImage5 from '@/assets/images/projects/5.png';
 import { StaticImageData } from 'next/image'; // Correct type for static images
+import ProjectParallaxStack from '@/components/HomePage/ProjectParallaxStack';
 
 // Define the type for a project
-interface Project {
+export interface Project {
     id: number;
     title: string;
     description: string;
     image: StaticImageData; // Use StaticImageData for imported images
     color: string;
-    logo: StaticImageData; // Use StaticImageData for imported logos
     techUsed: string[];
     demoLink: string;
     codeLink: string;
@@ -31,10 +29,10 @@ const projects: Project[] = [
             'ParcelPop is a secure and efficient parcel delivery platform that integrates advanced authentication and role-based access control. It allows users to send, track, and receive packages seamlessly, with a dedicated dashboard for managing orders.',
         image: projectImage,
         color: 'bg-card',
-        logo: linux,
+
         techUsed: ['React js', 'Node js', 'Mongodb', 'Mongoose', 'Express js'],
         demoLink: 'https://parcelpop-project.web.app/',
-        codeLink: '',
+        codeLink: 'https://github.com/fiamanillah/ParcelPop',
     },
     {
         id: 2,
@@ -43,10 +41,10 @@ const projects: Project[] = [
             'Weatherium is a real-time weather forecasting application that provides users with up-to-date weather conditions, temperature, humidity, wind speed, and more. It features a sleek UI, location-based weather updates, and supports multiple cities worldwide.',
         image: projectImage2,
         color: 'bg-card',
-        logo: linux,
+
         techUsed: ['React js', 'Open Weather Api'],
-        demoLink: 'https://weatherium.amanillah.com/',
-        codeLink: '',
+        demoLink: 'https://weatherium.netlify.app/',
+        codeLink: 'https://github.com/fiamanillah/Weatherium',
     },
     {
         id: 3,
@@ -55,10 +53,10 @@ const projects: Project[] = [
             'TalkMates is an online tutor booking platform that connects learners with expert tutors worldwide. It offers personalized learning experiences, flexible scheduling, secure payments, and global networking to help users enhance their skills in various subjects and languages. 🚀',
         image: projectImage3,
         color: 'bg-card',
-        logo: linux,
+
         techUsed: ['React js', 'Node Js', 'Mongodb', 'Express js'],
         demoLink: 'https://ph-a11.web.app/',
-        codeLink: '',
+        codeLink: 'https://github.com/fiamanillah/TalkMates',
     },
     {
         id: 4,
@@ -67,10 +65,10 @@ const projects: Project[] = [
             'EquiSports – A sleek and responsive e-commerce platform for sports enthusiasts to browse, purchase, and manage sports equipment. Features secure authentication, dynamic product management, and an interactive UI with smooth animations. Built with React, Tailwind CSS, Firebase, Node.js, Express.js, and MongoDB. 🚀',
         image: projectImage4,
         color: 'bg-card',
-        logo: linux,
+
         techUsed: ['React js', 'Node Js', 'Mongodb', 'Express js'],
         demoLink: 'https://ph-assignment-10-79f51.web.app/',
-        codeLink: '',
+        codeLink: 'https://github.com/fiamanillah/EquiSports',
     },
     {
         id: 5,
@@ -79,10 +77,10 @@ const projects: Project[] = [
             'Career Craft is a comprehensive career counseling platform that provides students and professionals with expert career advice, skill assessments, and personalized career roadmaps. It integrates an AI-driven recommendation system for better decision-making.',
         image: projectImage5,
         color: 'bg-card',
-        logo: linux,
+
         techUsed: ['React js', 'Node Js', 'Mongodb', 'Express js'],
         demoLink: 'https://ph-assignment9-fiamanillah.netlify.app/',
-        codeLink: '',
+        codeLink: 'https://github.com/fiamanillah/PH-Assignment-9',
     },
 ];
 
@@ -103,7 +101,7 @@ const ProjectSection: React.FC = () => {
 
                 {/* Parallax Stack */}
                 <div>
-                    <ParallaxStack projects={projects as Project[]} />
+                    <ProjectParallaxStack projects={projects as Project[]} />
                 </div>
 
                 {/* Gradient Blur Effect */}

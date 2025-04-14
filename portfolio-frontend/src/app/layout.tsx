@@ -2,7 +2,6 @@ import { ReactNode } from 'react';
 import { ThemeProvider } from 'next-themes';
 import '@/app/globals.css';
 import { Geist, Geist_Mono, Oxanium } from 'next/font/google';
-import LenisProvider from '@/components/utils/LenisProvider';
 import { Toaster } from '@/components/ui/sonner';
 import Header from '@/components/header/Header';
 
@@ -37,7 +36,6 @@ export default function RootLayout({ children }: RootLayoutProps) {
             <body
                 className={` ${oxanium.variable} ${geistSans.variable} ${geistMono.variable} font-oxanium  bg-background  antialiased`}
             >
-                <LenisProvider />
                 <ThemeProvider
                     attribute="class"
                     defaultTheme="system"

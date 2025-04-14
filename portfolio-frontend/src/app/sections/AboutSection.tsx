@@ -1,7 +1,7 @@
 import Section from '@/components/HomePage/Section';
 import Image from 'next/image';
 import profile1 from '@/assets/images/profile1.png';
-import AnimatedText from '@/components/HomePage/ScrollFadeParagraph';
+// import AnimatedText from '@/components/HomePage/ScrollFadeParagraph';
 import HugeiconsUniversity from '@/assets/icons/HugeiconsUniversity';
 import * as motion from 'motion/react-client';
 
@@ -15,41 +15,47 @@ const aboutText = `
 const AboutSection = () => {
     return (
         <Section className="relative py-10">
-            <div className="flex max-mobile-lg:flex-col-reverse justify-start items-stretch gap-2 overflow-hidden">
-                <motion.div
-                    initial={{ opacity: 0, y: 50 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, amount: 0.1 }}
-                    transition={{ duration: 0.6, ease: 'easeOut' }}
-                    className="bg-primary/5 border border-border rounded-lg p-4"
-                >
-                    <h1 className=" mb-3">About me</h1>
-                    <AnimatedText
-                        wordClass=" text-xl max-mobile-lg:!text-lg"
-                        motionClass="text-primary !text-xl max-mobile-lg:!text-lg"
-                        text={aboutText}
-                    />
-                </motion.div>
-
+            <div className="flex max-mobile-lg:flex-col-reverse   gap-2 overflow-hidden">
                 <motion.div
                     initial={{ opacity: 0, x: 50 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true, amount: 0.1 }}
                     transition={{ duration: 0.6, ease: 'easeOut', delay: 0.2 }}
-                    className="bg-card flex flex-col max-mobile-lg:flex-row gap-2 rounded-lg p-4 border border-border"
+                    className="bg-card basis-2/12 rounded-lg  border  overflow-hidden"
                 >
-                    <div className="w-60 h-60">
+                    <div className="bg-muted flex justify-between items-center p-2">
+                        <div className="flex gap-2  ">
+                            <div className="w-3.5 h-3.5 bg-red-500 rounded-full"></div>
+                            <div className="w-3.5 h-3.5 bg-yellow-400 rounded-full"></div>
+                            <div className="w-3.5 h-3.5 bg-green-500 rounded-full"></div>
+                        </div>
+                        <p>@fiamanillah</p>
+                    </div>
+                    <div className="w-60">
                         <Image
                             src={profile1}
                             alt="Fi Amanillah"
-                            className="rounded-lg w-full h-full object-cover"
+                            className=" w-full h-full object-cover"
                         />
                     </div>
-                    <div className="flex flex-col">
-                        <span>fi@amanillah.com</span>
-                        <span>+880608505647</span>
-                        <span>Mirpur 1, Dhaka, Bangladesh</span>
-                    </div>
+                    <div className="h-1 p-3 bg-muted"></div>
+                </motion.div>
+
+                <motion.div
+                    initial={{ opacity: 0, y: 50 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, amount: 0.1 }}
+                    transition={{ duration: 0.6, ease: 'easeOut' }}
+                    className="basis-10/12 "
+                >
+                    <h1 className=" mb-3">About me</h1>
+                    {/* <AnimatedText
+                        wordClass=" text-xl max-mobile-lg:!text-lg"
+                        motionClass="text-primary !text-xl max-mobile-lg:!text-lg"
+                        text={aboutText}
+                    /> */}
+
+                    <p className="text-xl max-mobile-lg:text-lg">{aboutText}</p>
                 </motion.div>
             </div>
 
