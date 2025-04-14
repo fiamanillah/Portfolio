@@ -5,7 +5,7 @@ import * as motion from 'motion/react-client';
 import { useTransform, useScroll, MotionValue } from 'motion/react';
 import { useRef } from 'react';
 import { Button } from '../ui/button';
-import { SquareArrowOutUpRight, Code, NotepadText } from 'lucide-react';
+import { SquareArrowOutUpRight, Code } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
 import { Project } from '@/app/sections/ProjectSection';
