@@ -61,7 +61,7 @@ const HeroSection: React.FC = () => {
                                     fill="transparent"
                                     className="text-primary stroke-primary stroke-[5px] opacity-10"
                                 >
-                                    Fi Amanillah Bitu
+                                    Fi Amanillah
                                 </text>
                             </svg>
                         </div>
@@ -90,7 +90,7 @@ const HeroSection: React.FC = () => {
 
                         <TextReveal className={'bg-primary'}>
                             <h1 className="text-6xl font-bold relative text-primary">
-                                Fi Amanillah
+                                Fi Amanillah Bitu
                             </h1>
                         </TextReveal>
 
