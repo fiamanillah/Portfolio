@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+    portfolio-frontend:
+        build:
+            context: ./portfolio-frontend # Current directory (portfolio-frontend)
+            dockerfile: Dockerfile # Optional if your Dockerfile is named this
+        ports:
+            - '3010:3010'
+        env_file:
+            - ./portfolio-frontend/.env.production # Or .env if you want
+        restart: unless-stopped

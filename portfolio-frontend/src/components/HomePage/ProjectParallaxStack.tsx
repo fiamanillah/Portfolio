@@ -120,10 +120,7 @@ const Card: React.FC<CardProps> = ({ project, progress, range, targetScale, inde
 
                         <div>
                             <h2 className="max-mobile-sm:text-2xl">{project.title}</h2>
-                            <p className="max-mobile-sm:text-md max-mobile-sm:max-h-[20vh] max-mobile-sm:overflow-y-auto max-mobile-sm:text-ellipsis">
-                                {project.description}
-                            </p>
-                            <div className="flex flex-wrap gap-2">
+                            <div className="flex flex-wrap gap-2 py-1">
                                 {project.techUsed.map(tech => (
                                     <Badge
                                         className="rounded-sm text-sm shadow-lg text-nowrap"
@@ -133,6 +130,9 @@ const Card: React.FC<CardProps> = ({ project, progress, range, targetScale, inde
                                     </Badge>
                                 ))}
                             </div>
+                            <p className="max-mobile-sm:text-md max-mobile-sm:max-h-[20vh] max-mobile-sm:overflow-y-auto max-mobile-sm:text-ellipsis">
+                                {project.description}
+                            </p>
                         </div>
                     </div>
                 </div>

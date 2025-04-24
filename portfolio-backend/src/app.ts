@@ -4,6 +4,7 @@ import errorMiddleware from './middleware/errorHandler';
 import formRoutes from './routes/formRoutes';
 import imageUploadRouter from './routes/imageUpload';
 import blogRoutes from './routes/blogRoutes';
+import authRoutes from './routes/authRoutes.';
 const app = express();
 
 // CORS configuration
@@ -33,6 +34,9 @@ app.get('/', (req: Request, res: Response) => {
 app.use('/api/form', formRoutes);
 app.use('/api/uploadImage', imageUploadRouter);
 app.use('/api/blog', blogRoutes);
+
+app.use('/api/auth', authRoutes);
+
 // Error handling middleware
 app.use(errorMiddleware);
 

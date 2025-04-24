@@ -15,12 +15,15 @@ import linux from '@/assets/icons/skill/skill-icons--linux-light.svg';
 import nodejs from '@/assets/icons/skill/skill-icons--nodejs-light.svg';
 import react from '@/assets/icons/skill/skill-icons--react-light.svg';
 import redux from '@/assets/icons/skill/skill-icons--redux.svg';
+import docker from '@/assets/icons/skill/skill-icons--docker.svg';
 import tailwindcss from '@/assets/icons/skill/skill-icons--tailwindcss-dark.svg';
+import typescript from '@/assets/icons/skill/skill-icons--typescript.svg';
 
 const logos = [
     html,
     css,
     javascript,
+    typescript,
     mongoose,
     expressjs,
     mongodb,
@@ -30,6 +33,7 @@ const logos = [
     react,
     redux,
     tailwindcss,
+    docker,
 ];
 
 const LogoSlideSection: React.FC = () => {

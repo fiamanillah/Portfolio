@@ -112,7 +112,10 @@ const HeroSection: React.FC = () => {
                         </TextReveal>
 
                         <div className="my-3">
-                            <Link href={'#contact'}>
+                            <Link
+                                href={'https://www.upwork.com/freelancers/~013ee29be647f4f6a4'}
+                                target="_blank"
+                            >
                                 <Button size="lg">Hire Me</Button>
                             </Link>
                             <a href={'#projects'}>

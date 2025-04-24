@@ -13,4 +13,3 @@ const transporter = nodemailer.createTransport({
 });
 
 export default transporter;
-// This snippet creates a nodemailer transporter object using the email and email password environment variables. The transporter object is then exported for use in other parts of the application.
