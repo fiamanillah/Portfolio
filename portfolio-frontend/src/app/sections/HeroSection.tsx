@@ -61,7 +61,7 @@ const HeroSection: React.FC = () => {
                                     fill="transparent"
                                     className="text-primary stroke-primary stroke-[5px] opacity-10"
                                 >
-                                    Fi Amanillah
+                                    Fi Amanillah Bitu
                                 </text>
                             </svg>
                         </div>

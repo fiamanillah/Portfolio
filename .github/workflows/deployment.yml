@@ -20,3 +20,4 @@ jobs:
                   script: |
                       cd ./FiAmanillah/Portfolio
                       git pull origin main
+                      docker compose up -d
