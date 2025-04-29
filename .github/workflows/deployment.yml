@@ -33,7 +33,6 @@ jobs:
               uses: docker/build-push-action@v4
               with:
                   context: ./portfolio-frontend
-                  file: ./portfolio-frontend/Dockerfile
                   push: true
                   tags: |
                       ${{ env.DOCKER_HUB_USERNAME }}/portfolio-frontend:latest
