@@ -43,4 +43,4 @@ jobs:
                   echo ${{ env.DOCKER_HUB_TOKEN }}
                   echo ${{ env.VPS_HOST }}
                   echo ${{ env.VPS_USER }}
-                  echo ${{ secrets.NEXT_PUBLIC_BACKEND_URI }}
+                  echo ${{ vars.NEXT_PUBLIC_BACKEND_URI }}
