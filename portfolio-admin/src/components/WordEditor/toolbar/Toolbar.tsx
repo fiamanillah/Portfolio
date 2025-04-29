@@ -18,7 +18,7 @@ interface ToolbarProps {
 const Toolbar = ({ editor }: ToolbarProps) => {
     return (
         <div className="bg-background  rounded-xl border p-1 sticky top-0">
-            <div className="flex gap-2 items-center flex-wrap">
+            <div className="flex gap-1 items-center flex-wrap">
                 <UndoRedoOptions editor={editor} />
                 <HeadingSelector editor={editor} />
                 <TextFormatingOption editor={editor} />

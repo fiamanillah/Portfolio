@@ -193,7 +193,7 @@ const WordEditor = ({ onContentChange, initialContent, editable = true }: WordEd
     }
 
     return (
-        <div className="mdx-prose  bg-card border rounded-2xl w-full mx-auto mt-5 shadow-md overflow-y-auto h-[90vh] relative">
+        <div className="mdx-prose  bg-card border rounded-2xl w-full mx-auto mt-5 shadow-md overflow-hidden relative">
             <div>
                 {editable && (
                     <div className=" sticky top-0 bg-card p-2 border-b z-10">

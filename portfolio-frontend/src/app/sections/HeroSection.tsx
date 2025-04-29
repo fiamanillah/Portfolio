@@ -90,7 +90,7 @@ const HeroSection: React.FC = () => {
 
                         <TextReveal className={'bg-primary'}>
                             <h1 className="text-6xl font-bold relative text-primary">
-                                Fi Amanillah Bitu
+                                Fi Amanillah Bitu Ci CD
                             </h1>
                         </TextReveal>
 

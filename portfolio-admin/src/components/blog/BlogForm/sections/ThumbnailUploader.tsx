@@ -101,7 +101,7 @@ export default function ThumbnailUploader({ uploadHandler, initialImage }: Thumb
     return (
         <div className="h-full space-y-2">
             <div
-                className="flex flex-col justify-center items-center w-full h-full p-4 rounded-3xl bg-card aspect-video"
+                className="flex flex-col justify-center items-center w-full h-full p-2 rounded-3xl bg-card aspect-video"
                 onClick={() => inputRef.current?.click()}
             >
                 <input
