@@ -1,28 +1,29 @@
-# Use Node.js LTS Alpine for a lightweight image
-FROM node:lts-alpine
+# Stage 1: Build the application
+FROM node:lts-alpine AS builder
 
-# Set the working directory inside the container
 WORKDIR /app
 
-# Copy only dependency-related files first for better caching
 COPY package.json pnpm-lock.yaml ./
+RUN npm i -g pnpm && pnpm install
 
-# Install pnpm globally and install dependencies
-RUN npm install -g pnpm && pnpm install --frozen-lockfile
-
-# Copy the rest of the application files
 COPY . .
+RUN pnpm run build
 
+# Stage 2: Run the application
+FROM node:lts-alpine
 
-# Set environment variables (you can also use a .env file)
-ENV NEXT_PUBLIC_BACKEND_URI=https://portfolio-backend.amanillah.com/
+WORKDIR /app
 
+RUN npm i -g pnpm
 
-# Build the Next.js application
-RUN pnpm build
+ENV NODE_ENV production
 
-# Expose necessary ports for Next.js development (HMR, API)
-EXPOSE 3010 3010
+COPY --from=builder /app/package.json /app/pnpm-lock.yaml ./
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/next.config.ts ./
 
-# Default command for development mode
-CMD ["pnpm", "run", "start"]
+EXPOSE 3010
+
+CMD ["pnpm", "start"]

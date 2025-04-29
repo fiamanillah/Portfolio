@@ -2,9 +2,9 @@ version: '3.8'
 
 services:
     portfolio-frontend:
+        image: fiamanillah/portfolio-frontend:latest
         build:
             context: ./portfolio-frontend # Current directory (portfolio-frontend)
-            dockerfile: Dockerfile # Optional if your Dockerfile is named this
         ports:
             - '3010:3010'
         env_file:
