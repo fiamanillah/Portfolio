@@ -1,17 +1,16 @@
-name: Deploy To VPS
+name: Deploy
 
 on:
     push:
         branches:
-            - main
+            - prod
     workflow_dispatch:
 
 env:
     DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
     DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
-    VPS_HOST: ${{ secrets.VPS_HOST }}
-    VPS_USER: ${{ secrets.VPS_USER }}
-    VPS_SSH_PRIVATE_KEY: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
+    VITE_BASE_API_URL: ${{ secrets.VITE_BASE_API_URL }}
+    VITE_BASE_SOCKET_URL: ${{ secrets.VITE_BASE_SOCKET_URL }}
 
 jobs:
     deploy:
@@ -32,15 +31,18 @@ jobs:
             - name: Build and push
               uses: docker/build-push-action@v4
               with:
-                  context: ./portfolio-frontend
+                  context: ./
+                  file: ./Dockerfile
+                  build-args: |
+                      NODE_ENV=production
+                      VITE_BASE_API_URL=${{ env.VITE_BASE_API_URL }}
+                      VITE_BASE_SOCKET_URL=${{ env.VITE_BASE_SOCKET_URL }}
                   push: true
                   tags: |
-                      ${{ env.DOCKER_HUB_USERNAME }}/portfolio-frontend:latest
+                      ${{ env.DOCKER_HUB_USERNAME }}/portfolio-frontend:prod
                       ${{ env.DOCKER_HUB_USERNAME }}/portfolio-frontend:${{ github.sha }}
             - name: Check env
               run: |
                   echo ${{ env.DOCKER_HUB_USERNAME }}
                   echo ${{ env.DOCKER_HUB_TOKEN }}
-                  echo ${{ env.VPS_HOST }}
-                  echo ${{ env.VPS_USER }}
                   echo ${{ github }}
