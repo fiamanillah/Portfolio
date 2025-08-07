@@ -3,7 +3,7 @@ FROM node:lts-alpine AS builder
 
 WORKDIR /app
 
-COPY package.json pnpm-lock.yaml ./
+COPY package.json ./
 RUN npm i -g pnpm && pnpm install
 
 COPY . .
