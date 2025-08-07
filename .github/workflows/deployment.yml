@@ -17,26 +17,26 @@ jobs:
     deploy:
         runs-on: ubuntu-latest
         steps:
-            # - name: Checkout
-            #   uses: actions/checkout@v3
+            - name: Checkout
+              uses: actions/checkout@v3
 
-            # - name: Login to Docker Hub
-            #   uses: docker/login-action@v3
-            #   with:
-            #       username: ${{ env.DOCKER_HUB_USERNAME }}
-            #       password: ${{ env.DOCKER_HUB_TOKEN }}
+            - name: Login to Docker Hub
+              uses: docker/login-action@v3
+              with:
+                  username: ${{ env.DOCKER_HUB_USERNAME }}
+                  password: ${{ env.DOCKER_HUB_TOKEN }}
 
-            # - name: Set up Docker Buildx
-            #   uses: docker/setup-buildx-action@v3
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@v3
 
-            # - name: Build and push
-            #   uses: docker/build-push-action@v4
-            #   with:
-            #       context: ./portfolio-frontend
-            #       push: true
-            #       tags: |
-            #           ${{ env.DOCKER_HUB_USERNAME }}/portfolio-frontend:latest
-            #           ${{ env.DOCKER_HUB_USERNAME }}/portfolio-frontend:${{ github.sha }}
+            - name: Build and push
+              uses: docker/build-push-action@v4
+              with:
+                  context: ./portfolio-frontend
+                  push: true
+                  tags: |
+                      ${{ env.DOCKER_HUB_USERNAME }}/portfolio-frontend:latest
+                      ${{ env.DOCKER_HUB_USERNAME }}/portfolio-frontend:${{ github.sha }}
             - name: Check env
               run: |
                   echo ${{ env.DOCKER_HUB_USERNAME }}
