@@ -610,7 +610,7 @@ export function ShadcnShowcase() {
               </ShowcaseSection>
 
               <ShowcaseSection title="Resizable">
-                <ResizablePanelGroup className="min-h-[120px] rounded-lg border">
+                <ResizablePanelGroup className="min-h-30 rounded-lg border">
                   <ResizablePanel defaultSize={50} className="p-3">
                     Left Panel
                   </ResizablePanel>
@@ -673,7 +673,7 @@ export function ShadcnShowcase() {
                 className="xl:col-span-2"
                 contentClassName="overflow-x-auto"
               >
-                <div className="min-w-[520px] overflow-hidden rounded-md border">
+                <div className="min-w-130 overflow-hidden rounded-md border">
                   <SidebarProvider className="h-56 min-h-0 overflow-hidden">
                     <div className="flex h-full w-full">
                       <Sidebar
@@ -763,7 +763,7 @@ export function ShadcnShowcase() {
                 className="xl:col-span-2"
                 contentClassName="overflow-x-auto"
               >
-                <Table className="min-w-[420px]">
+                <Table className="min-w-105">
                   <TableCaption>Sample table data.</TableCaption>
                   <TableHeader>
                     <TableRow>
