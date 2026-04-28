@@ -1,125 +1,53 @@
 ---
+import MySiteLayout from "@/layouts/MySiteLayout.astro"
 import "@workspace/ui/globals.css"
-import { Button } from "@workspace/ui/components/button"
-import { Badge } from "@workspace/ui/components/badge"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@workspace/ui/components/card"
-import { FirstBracketSquareIcon } from "@hugeicons/core-free-icons"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { ThemeToggle } from "../components/theme-toggle"
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <title>Portfolio</title>
-  </head>
+<MySiteLayout>
   <body class="bg-background text-foreground">
     <div
       class="min-h-svh bg-[radial-gradient(circle_at_top_left,var(--color-muted),transparent_45%)]"
     >
-      <main
-        class="mx-auto flex w-full max-w-6xl flex-col gap-8 px-6 py-10 md:gap-10 md:px-10 md:py-14"
-      >
-        <div class="flex justify-end">
-          <ThemeToggle client:load />
-        </div>
-
+      <main>
         <section
-          class="rounded-4xl border border-border/70 bg-card/90 p-6 shadow-sm backdrop-blur-sm md:p-8"
+          class="relative flex h-[600px] w-full items-center justify-center overflow-hidden bg-background"
         >
-          <div class="flex flex-wrap items-center gap-3">
-            <Badge variant="secondary">Portfolio Theme</Badge>
-            <Badge variant="outline">Design System: Radix Luma</Badge>
+          {/* 2. The Static Grid Background */}
+          <div
+            class="bg-cyber-grid pointer-events-none absolute inset-0 z-0 h-full w-full opacity-50"
+          >
           </div>
 
-          <div class="mt-5 max-w-3xl space-y-4">
-            <h1 class="text-3xl font-semibold tracking-tight md:text-5xl">
-              Building thoughtful digital products.
-            </h1>
-            <p
-              class="text-base leading-relaxed text-muted-foreground md:text-lg"
+          {/* 3. The Animated Horizontal "Shine" Line */}
+          <div
+            class="pointer-events-none absolute top-1/3 left-0 z-0 h-[1px] w-[200px] animate-scan-horizontal"
+          >
+            {/* The glowing effect */}
+            <div
+              class="h-full w-full bg-gradient-to-r from-transparent via-primary to-transparent opacity-80 shadow-[0_0_15px_3px_var(--primary)] blur-[2px]"
             >
-              This portfolio now uses the shared design-system color tokens for
-              surfaces, text, borders, and accents so the look stays consistent
-              across apps and components.
+            </div>
+            {/* The solid core of the laser */}
+            <div
+              class="absolute inset-0 h-full w-full bg-gradient-to-r from-transparent via-white to-transparent opacity-100"
+            >
+            </div>
+          </div>
+
+          {
+            /* 4. Your Actual Content (Ensure z-index is higher than background) */
+          }
+          <div class="relative z-10 text-center">
+            <h1 class="text-5xl font-bold text-foreground">
+              AI Connectivity <br />
+              <span class="text-primary italic">for Backend Systems</span>
+            </h1>
+            <p class="mt-4 text-muted-foreground">
+              Secure, manage, and scale serverless microservices.
             </p>
           </div>
-
-          <div class="mt-7 flex flex-wrap gap-3">
-            <Button client:load>View Projects</Button>
-            <Button client:load variant="outline">Contact Me</Button>
-            <a
-              href="/components"
-              class="inline-flex items-center rounded-3xl border border-border bg-secondary px-4 py-2 text-sm font-medium text-secondary-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
-            >
-              Browse Component Theme
-            </a>
-          </div>
-        </section>
-
-        <section class="grid gap-4 md:grid-cols-3">
-          <Card>
-            <CardHeader>
-              <CardTitle>Primary Accent</CardTitle>
-              <CardDescription>Call-to-actions and highlights.</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div
-                class="rounded-2xl border border-border bg-primary p-4 text-primary-foreground"
-              >
-                Uses <code>--primary</code> and <code>--primary-foreground</code
-                >
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Surface System</CardTitle>
-              <CardDescription
-                >Cards, popovers, and backgrounds.</CardDescription
-              >
-            </CardHeader>
-            <CardContent>
-              <div
-                class="rounded-2xl border border-border bg-muted p-4 text-muted-foreground"
-              >
-                Uses <code>--card</code>, <code>--background</code>, and <code
-                  >--muted</code
-                >
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Icon Accent</CardTitle>
-              <CardDescription>Visual anchor for branding.</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div
-                class="inline-flex items-center gap-2 rounded-2xl border border-border bg-background px-4 py-3"
-              >
-                <HugeiconsIcon
-                  icon={FirstBracketSquareIcon}
-                  className="text-primary"
-                />
-                <span class="text-sm text-muted-foreground"
-                  >Brand icon uses theme accent</span
-                >
-              </div>
-            </CardContent>
-          </Card>
         </section>
       </main>
     </div>
   </body>
-</html>
+</MySiteLayout>
