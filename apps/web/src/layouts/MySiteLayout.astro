@@ -1,5 +1,8 @@
 ---
+import "@workspace/ui/globals.css"
+import GridLines from "@/components/GridLines.astro"
 import SiteNav from "@/components/site-nav.astro"
+import ThemeScript from "@/components/ThemeScript.astro"
 ---
 
 <html lang="en">
@@ -10,25 +13,12 @@ import SiteNav from "@/components/site-nav.astro"
     <title>Fi Amanillah</title>
   </head>
   <body class="min-h-svh bg-background text-foreground">
-    <div class="relative min-h-svh overflow-x-clip">
-      <div
-        class="pointer-events-none absolute inset-y-0 right-0 left-0 z-99 hidden lg:block"
-      >
-        <div class="relative container mx-auto h-full">
-          <div class="absolute inset-y-0 left-[-4%] w-px bg-primary/50"></div>
-          <div class="absolute inset-y-0 right-[-4%] w-px bg-primary/50"></div>
-          <div class="absolute inset-y-0 left-[0%] w-px bg-primary/50"></div>
-          <div class="absolute inset-y-0 right-[0%] w-px bg-primary/50"></div>
-          <div
-            class="sticky top-[30%] h-40 w-7 translate-x-[-30%] rounded-2xl border border-primary/50 bg-primary/50"
-          >
-          </div>
-        </div>
-      </div>
-      <header
-        class="sticky top-0 z-50 border-b border-primary/40 bg-background/80 backdrop-blur"
-      >
-        <div class="container mx-auto px-4">
+    <!-- GridLines renders a fixed full-viewport canvas — no wrapper needed -->
+
+    <GridLines lines={[-0.04, 0, 1, 1.04]} />
+    <div class="relative mx-[4%]">
+      <header class="">
+        <div class="container mx-auto bg-black px-4">
           <SiteNav />
         </div>
       </header>
@@ -37,4 +27,6 @@ import SiteNav from "@/components/site-nav.astro"
       </main>
     </div>
   </body>
+
+  <ThemeScript />
 </html>

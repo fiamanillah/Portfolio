@@ -1,7 +1,6 @@
 ---
 import "@workspace/ui/globals.css"
 import { ShadcnShowcase } from "../components/shadcn-showcase"
-import { ThemeToggle } from "../components/theme-toggle"
 
 const colorTokens = [
   { token: "background", onToken: "foreground" },
@@ -34,7 +33,7 @@ const colorTokens = [
   </head>
   <body class="bg-background text-foreground">
     <div class="fixed top-4 right-4 z-50">
-      <ThemeToggle client:load />
+      <!-- <ThemeToggle client:load /> -->
     </div>
 
     <main

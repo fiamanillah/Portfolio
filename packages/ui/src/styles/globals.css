@@ -77,6 +77,10 @@
   --input: oklch(0.88 0.01 210);
   --ring: oklch(0.6 0.14 200 / 40%);
   --radius: 0.625rem; /* Clean, modern Bento-box radius */
+
+  /* Grid colors for GridLines component */
+  --grid-line-color: rgba(0, 220, 200, 0.18);
+  --grid-cross-color: rgba(0, 220, 200, 0.55);
 }
 
 .dark {
@@ -111,6 +115,10 @@
   --border: oklch(0.3 0.015 210);
   --input: oklch(0.3 0.015 210);
   --ring: oklch(0.75 0.15 200 / 50%);
+
+  /* Grid colors for GridLines component */
+  --grid-line-color: rgba(0, 220, 200, 0.18);
+  --grid-cross-color: rgba(0, 220, 200, 0.55);
 }
 
 @layer base {

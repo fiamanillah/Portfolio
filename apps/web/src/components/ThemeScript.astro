@@ -1,0 +1,22 @@
+<script is:inline>
+  ;(function () {
+    const STORAGE_KEY = "ui-theme"
+
+    try {
+      const savedTheme = localStorage.getItem(STORAGE_KEY)
+      const prefersDark = window.matchMedia(
+        "(prefers-color-scheme: dark)"
+      ).matches
+      const isDark =
+        savedTheme === "dark" || savedTheme === "system"
+          ? prefersDark
+          : savedTheme === "theme-light"
+            ? false
+            : prefersDark
+
+      document.documentElement.classList[isDark ? "add" : "remove"]("dark")
+    } catch (error) {
+      // Silently fail if localStorage is unavailable
+    }
+  })()
+</script>

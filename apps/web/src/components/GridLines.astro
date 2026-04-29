@@ -1,0 +1,172 @@
+---
+// src/components/GridLines.astro
+interface Props {
+  lines?: number[]
+}
+const { lines = [-0.04, 0, 1, 1.04] } = Astro.props
+---
+
+<!-- Changed from fixed to absolute, height removed from inline styles -->
+<canvas
+  id="grid-lines-canvas"
+  class="pointer-events-none absolute top-0 left-0 z-0"
+  style="width:100%;will-change:transform;transform:translateZ(0);"></canvas>
+
+<script define:vars={{ lines }}>
+  const canvas = document.getElementById("grid-lines-canvas")
+  const ctx = canvas.getContext("2d")
+
+  // --- CONFIG ---
+  const LINE_COLOR =
+    getComputedStyle(document.documentElement)
+      .getPropertyValue("--grid-line-color")
+      .trim() || "rgba(0,220,200,0.18)"
+  const CROSS_COLOR =
+    getComputedStyle(document.documentElement)
+      .getPropertyValue("--grid-cross-color")
+      .trim() || "rgba(0,220,200,0.55)"
+  const LINE_WIDTH = 0.75
+  const CROSS_ARM = 6
+
+  let dpr = 1
+  let lineXs = []
+  let absYs = []
+
+  function resize() {
+    dpr = window.devicePixelRatio || 1
+
+    // Canvas now spans the ENTIRE scrollable height of the document
+    const W = document.documentElement.scrollWidth
+    const H = Math.max(
+      document.body.scrollHeight,
+      document.documentElement.scrollHeight
+    )
+
+    canvas.width = W * dpr
+    canvas.height = H * dpr
+    canvas.style.width = W + "px"
+    canvas.style.height = H + "px"
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+  }
+
+  function cacheXs() {
+    const el =
+      document.querySelector("main.container") ||
+      document.querySelector("main") ||
+      document.querySelector(".container")
+    const { left, width } = el
+      ? el.getBoundingClientRect()
+      : { left: 0, width: document.documentElement.scrollWidth }
+    lineXs = lines.map((f) => left + f * width)
+  }
+
+  function cacheYs() {
+    absYs = []
+    document.querySelectorAll("[data-grid-cross]").forEach((el) => {
+      const rect = el.getBoundingClientRect()
+      // We no longer need to subtract scrollY later. This is the absolute position on the page.
+      absYs.push(rect.top + window.scrollY, rect.bottom + window.scrollY)
+    })
+  }
+
+  // --- DRAW (Runs ONLY once on load, and on window resize) ---
+  function draw() {
+    const W = canvas.width / dpr
+    const H = canvas.height / dpr
+    ctx.clearRect(0, 0, W, H)
+
+    // BATCH 1: Vertical & Horizontal Lines
+    ctx.strokeStyle = LINE_COLOR
+    ctx.lineWidth = LINE_WIDTH
+    ctx.beginPath()
+
+    // Plot vertical lines
+    for (let i = 0; i < lineXs.length; i++) {
+      const x = lineXs[i]
+      ctx.moveTo(x, 0)
+      ctx.lineTo(x, H)
+    }
+
+    // Plot horizontal lines
+    for (let i = 0; i < absYs.length; i++) {
+      const y = absYs[i]
+      ctx.moveTo(0, y)
+      ctx.lineTo(W, y)
+    }
+
+    ctx.stroke()
+
+    // BATCH 2: Crosshairs
+    ctx.strokeStyle = CROSS_COLOR
+    ctx.lineWidth = 1
+    ctx.beginPath()
+
+    for (let i = 0; i < absYs.length; i++) {
+      const y = absYs[i]
+      for (let j = 0; j < lineXs.length; j++) {
+        const x = lineXs[j]
+        ctx.moveTo(x - CROSS_ARM, y)
+        ctx.lineTo(x + CROSS_ARM, y)
+        ctx.moveTo(x, y - CROSS_ARM)
+        ctx.lineTo(x, y + CROSS_ARM)
+      }
+    }
+
+    ctx.stroke()
+  }
+
+  // --- EVENT LISTENERS ---
+
+  // Throttle window resize to the monitor's display refresh rate
+  let resizeScheduled = false
+  window.addEventListener("resize", () => {
+    if (!resizeScheduled) {
+      resizeScheduled = true
+      requestAnimationFrame(() => {
+        resize()
+        cacheXs()
+        cacheYs()
+        draw()
+        resizeScheduled = false
+      })
+    }
+  })
+
+  // Throttle DOM element size changes the exact same way
+  let roScheduled = false
+  const ro = new ResizeObserver(() => {
+    if (!roScheduled) {
+      roScheduled = true
+      requestAnimationFrame(() => {
+        resize()
+        cacheYs()
+        draw()
+        roScheduled = false
+      })
+    }
+  })
+
+  document.querySelectorAll("[data-grid-cross]").forEach((el) => ro.observe(el))
+
+  // --- INIT ---
+  function init() {
+    resize()
+    cacheXs()
+    cacheYs()
+    draw() // Draw once!
+
+    // Safety re-draw after web fonts or lazy images push the layout down
+    setTimeout(() => {
+      resize()
+      cacheXs()
+      cacheYs()
+      draw()
+    }, 500)
+  }
+
+  if (document.readyState === "complete") {
+    init()
+  } else {
+    window.addEventListener("load", init)
+  }
+</script>

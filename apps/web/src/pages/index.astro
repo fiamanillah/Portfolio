@@ -1,27 +1,20 @@
 ---
 import MySiteLayout from "@/layouts/MySiteLayout.astro"
-import "@workspace/ui/globals.css"
 ---
 
 <MySiteLayout>
-  <section
-    class="relative mx-auto flex min-h-[calc(100svh-5rem)] w-full items-center justify-center bg-primary py-16"
-  >
-    <div class="mx-auto text-center">
-      <h1
-        class="text-4xl font-bold text-balance text-foreground sm:text-5xl lg:text-6xl"
-      >
-        AI Connectivity <br />
-        <span class="text-primary italic">for Backend Systems</span>
-      </h1>
-      <p class="mx-auto mt-5 text-lg text-muted-foreground">
-        Secure, manage, and scale serverless microservices.
-      </p>
-    </div>
+  <!-- index.astro -->
+  <section data-grid-cross class="py-24">
+    <h1>Hero</h1>
+  </section>
+
+  <section class="py-16">
+    <h2>Work</h2>
   </section>
 
   <section
-    class="relative mx-auto flex min-h-[calc(100svh-5rem)] w-full items-center justify-center bg-primary py-16"
+    data-grid-cross
+    class="relative mx-auto flex min-h-[calc(100svh-5rem)] w-full items-center justify-center bg-primary/10 py-16"
   >
     <div class="mx-auto text-center">
       <h1

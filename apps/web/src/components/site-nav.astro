@@ -1,12 +1,12 @@
 ---
-import { ThemeToggle } from "@/components/theme-toggle"
-
 const navLinks = [
   { href: "/", label: "Home" },
   { href: "/components", label: "Components" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
 ]
+
+import { ModeToggle } from "@workspace/ui/components/ModeToggle"
 ---
 
 <nav
@@ -42,6 +42,8 @@ const navLinks = [
       }
     </ul>
 
-    <ThemeToggle client:load />
+    <div class="flex items-center">
+      <ModeToggle client:load />
+    </div>
   </div>
 </nav>
