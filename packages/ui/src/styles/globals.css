@@ -141,6 +141,60 @@
     text-rendering: optimizeLegibility;
   }
 
+  #mouse-glow {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .mouse-glow-ball {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 10rem;
+    height: 10rem;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(
+      circle,
+      rgba(17, 229, 226, 0.5) 0%,
+      rgba(17, 229, 226, 0.28) 20%,
+      rgba(17, 229, 226, 0.12) 35%,
+      transparent 65%
+    );
+    filter: blur(6rem);
+    opacity: 0;
+    transition: opacity 180ms ease;
+    mix-blend-mode: screen;
+    pointer-events: none;
+    will-change: transform, opacity;
+    box-shadow:
+      0 0 6rem rgba(17, 229, 226, 0.35),
+      0 0 14rem rgba(17, 229, 226, 0.18);
+  }
+
+  .mouse-glow-ball::after {
+    content: "";
+    position: absolute;
+    inset: 25%;
+    border-radius: 50%;
+    background: radial-gradient(
+      circle,
+      rgba(17, 229, 226, 0.9) 0%,
+      rgba(17, 229, 226, 0.35) 85%,
+      transparent 100%
+    );
+    pointer-events: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mouse-glow-ball {
+      transition: none;
+      filter: blur(2rem);
+    }
+  }
+
   h1,
   h2,
   h3,

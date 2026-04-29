@@ -1,0 +1,72 @@
+---
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+  InputGroupButton,
+} from "@workspace/ui/components/input-group"
+
+import { HugeiconsIcon } from "@hugeicons/react"
+import { ArrowUpRight03Icon } from "@hugeicons/core-free-icons"
+---
+
+<!-- Hero Section -->
+<section
+  data-grid-cross
+  class="relative flex min-h-[calc(100svh-5rem)] w-full flex-col items-center justify-center overflow-hidden py-24 text-center"
+>
+  <div class="pointer-events-none absolute inset-0">
+    <div
+      class="absolute inset-0 bg-[linear-gradient(90deg,rgba(255,255,255,0.08)_1px,transparent_1px),linear-gradient(rgba(255,255,255,0.08)_1px,transparent_1px)] bg-[length:3rem_3rem] opacity-40"
+    >
+    </div>
+    <div class="absolute inset-0"></div>
+  </div>
+
+  <div class="z-10 flex max-w-3xl flex-col items-center gap-6 px-4">
+    <div
+      class="inline-flex items-center rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-sm font-medium text-primary backdrop-blur-md"
+    >
+      <span class="mr-2 flex h-2 w-2 animate-pulse rounded-full bg-primary"
+      ></span>
+      Available for new opportunities
+    </div>
+
+    <h1
+      class="text-5xl font-extrabold tracking-tight text-balance text-foreground sm:text-6xl lg:text-7xl"
+    >
+      Hi, I'm <span class="text-primary">Fi Amanillah</span>
+    </h1>
+
+    <p class="text-lg text-balance text-muted-foreground sm:text-xl">
+      A Full-Stack Developer with over a year of hands-on professional
+      experience specializing in robust backend systems. I build scalable
+      microservices and minimalist user interfaces.
+    </p>
+    <div class="w-full max-w-md">
+      <InputGroup
+        className="text-bold h-14 rounded-full border border-input bg-foreground/90 text-background"
+      >
+        <InputGroupInput
+          type="email"
+          placeholder="Enter your email"
+          className="text-2xl"
+        />
+        <InputGroupAddon align="inline-end">
+          <InputGroupButton
+            variant="default"
+            className="h-12 rounded-full px-5 text-sm font-medium transition-colors hover:bg-primary hover:text-primary-foreground focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none"
+          >
+            Subscribe
+          </InputGroupButton>
+        </InputGroupAddon>
+      </InputGroup>
+    </div>
+    <div class="mt-6 flex items-center gap-2 text-sm text-muted-foreground">
+      Know more about me! <a href="/about" class="text-primary hover:underline"
+        >Read my story</a
+      >
+      <HugeiconsIcon icon={ArrowUpRight03Icon} className="size-4" />
+    </div>
+  </div>
+</section>

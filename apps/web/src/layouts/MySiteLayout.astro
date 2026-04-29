@@ -12,13 +12,21 @@ import ThemeScript from "@/components/ThemeScript.astro"
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>Fi Amanillah</title>
   </head>
-  <body class="min-h-svh bg-background text-foreground">
+  <body
+    class="min-h-svh overflow-x-hidden bg-background text-foreground backdrop-blur-2xl"
+  >
     <!-- GridLines renders a fixed full-viewport canvas — no wrapper needed -->
+    <div id="mouse-glow" class="pointer-events-none fixed inset-0 -z-20">
+      <div id="glow-ball" class="mouse-glow-ball"></div>
+    </div>
 
     <GridLines lines={[-0.04, 0, 1, 1.04]} />
-    <div class="relative mx-[4%]">
-      <header class="">
-        <div class="container mx-auto bg-black px-4">
+
+    <div class="relative z-0 mx-[4%]">
+      <header class="sticky top-0 z-10">
+        <div
+          class="border-grid-line-color container mx-auto border-b bg-background px-4"
+        >
           <SiteNav />
         </div>
       </header>
@@ -26,6 +34,21 @@ import ThemeScript from "@/components/ThemeScript.astro"
         <slot />
       </main>
     </div>
+
+    <script>
+      const glowBall = document.getElementById("glow-ball")
+      if (glowBall) {
+        window.addEventListener("pointermove", (event) => {
+          glowBall.style.left = `${event.clientX}px`
+          glowBall.style.top = `${event.clientY}px`
+          glowBall.style.opacity = "1"
+        })
+
+        window.addEventListener("pointerleave", () => {
+          glowBall.style.opacity = "0"
+        })
+      }
+    </script>
   </body>
 
   <ThemeScript />
