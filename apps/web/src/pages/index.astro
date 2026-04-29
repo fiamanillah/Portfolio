@@ -4,50 +4,35 @@ import "@workspace/ui/globals.css"
 ---
 
 <MySiteLayout>
-  <body class="bg-background text-foreground">
-    <div
-      class="min-h-svh bg-[radial-gradient(circle_at_top_left,var(--color-muted),transparent_45%)]"
-    >
-      <main>
-        <section
-          class="relative flex h-[600px] w-full items-center justify-center overflow-hidden bg-background"
-        >
-          {/* 2. The Static Grid Background */}
-          <div
-            class="bg-cyber-grid pointer-events-none absolute inset-0 z-0 h-full w-full opacity-50"
-          >
-          </div>
-
-          {/* 3. The Animated Horizontal "Shine" Line */}
-          <div
-            class="pointer-events-none absolute top-1/3 left-0 z-0 h-[1px] w-[200px] animate-scan-horizontal"
-          >
-            {/* The glowing effect */}
-            <div
-              class="h-full w-full bg-gradient-to-r from-transparent via-primary to-transparent opacity-80 shadow-[0_0_15px_3px_var(--primary)] blur-[2px]"
-            >
-            </div>
-            {/* The solid core of the laser */}
-            <div
-              class="absolute inset-0 h-full w-full bg-gradient-to-r from-transparent via-white to-transparent opacity-100"
-            >
-            </div>
-          </div>
-
-          {
-            /* 4. Your Actual Content (Ensure z-index is higher than background) */
-          }
-          <div class="relative z-10 text-center">
-            <h1 class="text-5xl font-bold text-foreground">
-              AI Connectivity <br />
-              <span class="text-primary italic">for Backend Systems</span>
-            </h1>
-            <p class="mt-4 text-muted-foreground">
-              Secure, manage, and scale serverless microservices.
-            </p>
-          </div>
-        </section>
-      </main>
+  <section
+    class="relative mx-auto flex min-h-[calc(100svh-5rem)] w-full items-center justify-center bg-primary py-16"
+  >
+    <div class="mx-auto text-center">
+      <h1
+        class="text-4xl font-bold text-balance text-foreground sm:text-5xl lg:text-6xl"
+      >
+        AI Connectivity <br />
+        <span class="text-primary italic">for Backend Systems</span>
+      </h1>
+      <p class="mx-auto mt-5 text-lg text-muted-foreground">
+        Secure, manage, and scale serverless microservices.
+      </p>
     </div>
-  </body>
+  </section>
+
+  <section
+    class="relative mx-auto flex min-h-[calc(100svh-5rem)] w-full items-center justify-center bg-primary py-16"
+  >
+    <div class="mx-auto text-center">
+      <h1
+        class="text-4xl font-bold text-balance text-foreground sm:text-5xl lg:text-6xl"
+      >
+        AI Connectivity <br />
+        <span class="text-primary italic">for Backend Systems</span>
+      </h1>
+      <p class="mx-auto mt-5 text-lg text-muted-foreground">
+        Secure, manage, and scale serverless microservices.
+      </p>
+    </div>
+  </section>
 </MySiteLayout>
