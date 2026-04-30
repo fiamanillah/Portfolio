@@ -37,10 +37,12 @@ import ThemeScript from "@/components/ThemeScript.astro"
 
     <script>
       const glowBall = document.getElementById("glow-ball")
-      if (glowBall) {
+      const mouseGlow = document.getElementById("mouse-glow")
+
+      if (glowBall && mouseGlow) {
         window.addEventListener("pointermove", (event) => {
           glowBall.style.left = `${event.clientX}px`
-          glowBall.style.top = `${event.clientY}px`
+          glowBall.style.top = `${event.clientY + window.scrollY}px`
           glowBall.style.opacity = "1"
         })
 

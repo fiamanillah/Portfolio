@@ -53,7 +53,7 @@
 
 :root {
   /* Light Mode - Crisp, icy white for clean blog reading */
-  --background: oklch(0.98 0.005 210);
+  --background: oklch(96.033% 0.03169 214.052);
   --foreground: oklch(0.18 0.02 210);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.18 0.02 210);
@@ -251,10 +251,10 @@
   table {
     margin: 0;
   }
-
+  /* 
   p {
     max-width: 68ch;
-  }
+  } */
 
   p + p,
   p + ul,

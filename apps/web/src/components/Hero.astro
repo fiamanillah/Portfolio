@@ -5,68 +5,194 @@ import {
   InputGroupInput,
   InputGroupButton,
 } from "@workspace/ui/components/input-group"
-
 import { HugeiconsIcon } from "@hugeicons/react"
 import { ArrowUpRight03Icon } from "@hugeicons/core-free-icons"
 ---
 
-<!-- Hero Section -->
 <section
   data-grid-cross
-  class="relative flex min-h-[calc(100svh-5rem)] w-full flex-col items-center justify-center overflow-hidden py-24 text-center"
+  class="relative flex min-h-[calc(100svh-5rem)] w-full items-center justify-center overflow-hidden py-24"
 >
-  <div class="pointer-events-none absolute inset-0">
+  <!-- Background Effects -->
+  <div class="pointer-events-none absolute inset-0 -z-10">
+    <!-- Ambient Glow -->
     <div
-      class="absolute inset-0 bg-[linear-gradient(90deg,rgba(255,255,255,0.08)_1px,transparent_1px),linear-gradient(rgba(255,255,255,0.08)_1px,transparent_1px)] bg-[length:3rem_3rem] opacity-40"
+      class="absolute top-1/2 left-1/2 h-125 w-125 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/10 blur-[120px]"
     >
     </div>
-    <div class="absolute inset-0"></div>
   </div>
 
-  <div class="z-10 flex max-w-3xl flex-col items-center gap-6 px-4">
-    <div
-      class="inline-flex items-center rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-sm font-medium text-primary backdrop-blur-md"
-    >
-      <span class="mr-2 flex h-2 w-2 animate-pulse rounded-full bg-primary"
-      ></span>
-      Available for new opportunities
-    </div>
-
-    <h1
-      class="text-5xl font-extrabold tracking-tight text-balance text-foreground sm:text-6xl lg:text-7xl"
-    >
-      Hi, I'm <span class="text-primary">Fi Amanillah</span>
-    </h1>
-
-    <p class="text-lg text-balance text-muted-foreground sm:text-xl">
-      A Full-Stack Developer with over a year of hands-on professional
-      experience specializing in robust backend systems. I build scalable
-      microservices and minimalist user interfaces.
-    </p>
-    <div class="w-full max-w-md">
-      <InputGroup
-        className="text-bold h-14 rounded-full border border-input bg-foreground/90 text-background"
+  <div
+    class="z-10 container mx-auto grid grid-cols-1 justify-between gap-12 px-4 lg:grid-cols-2 lg:gap-[30%]"
+  >
+    <!-- Left Side: Main Content -->
+    <div class="flex flex-col justify-center space-y-8">
+      <!-- Availability Badge -->
+      <div
+        class="group inline-flex w-fit items-center rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-xs font-semibold tracking-wider text-primary uppercase backdrop-blur-xl transition-all hover:border-primary/40 hover:bg-primary/10"
       >
-        <InputGroupInput
-          type="email"
-          placeholder="Enter your email"
-          className="text-2xl"
-        />
-        <InputGroupAddon align="inline-end">
-          <InputGroupButton
-            variant="default"
-            className="h-12 rounded-full px-5 text-sm font-medium transition-colors hover:bg-primary hover:text-primary-foreground focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none"
+        <span class="mr-2.5 flex h-2 w-2">
+          <span
+            class="absolute inline-flex h-2 w-2 animate-ping rounded-full bg-primary opacity-75"
+          ></span>
+          <span class="relative inline-flex h-2 w-2 rounded-full bg-primary"
+          ></span>
+        </span>
+        Available for new opportunities
+      </div>
+
+      <!-- Main Heading -->
+      <div class="space-y-4">
+        <h1
+          class="text-5xl font-black tracking-tighter text-balance text-foreground sm:text-6xl lg:text-7xl"
+        >
+          Hi, I'm <br />
+          <span class="relative inline-block">
+            <span class="relative z-10 text-primary">Fi Amanillah</span>
+            <span
+              class="absolute -bottom-2 left-0 -z-10 h-4 w-full bg-primary/20 blur-sm"
+            ></span>
+          </span>
+        </h1>
+        <p
+          class="text-lg leading-relaxed font-medium text-balance text-muted-foreground sm:text-xl"
+        >
+          Junior Full-Stack Developer specializing in <span
+            class="text-foreground">robust backend systems</span
+          > and <span class="text-foreground">minimalist interfaces</span>. I
+          bridge the gap between complex logic and clean design.
+        </p>
+      </div>
+
+      <!-- Call to Action: Email Input -->
+      <div class="w-full max-w-md">
+        <InputGroup
+          className="h-14 rounded-full border-2 border-primary bg-foreground text-2xl! font-medium text-background"
+        >
+          <InputGroupInput
+            type="email"
+            placeholder="Work with me: email@example.com"
+          />
+          <InputGroupAddon align="inline-end">
+            <InputGroupButton
+              className="h-12 rounded-full px-4"
+              variant={"default"}
+            >
+              Connect
+            </InputGroupButton>
+          </InputGroupAddon>
+        </InputGroup>
+      </div>
+
+      <!-- Secondary Navigation -->
+      <div class="flex items-center gap-6">
+        <div
+          class="flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+        >
+          <span>Read my story</span>
+          <a
+            href="/about"
+            class="group flex items-center gap-1 text-primary underline-offset-4 hover:underline"
           >
-            Subscribe
-          </InputGroupButton>
-        </InputGroupAddon>
-      </InputGroup>
+            Portfolio
+            <HugeiconsIcon
+              icon={ArrowUpRight03Icon}
+              className="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+            />
+          </a>
+        </div>
+        <div class="h-4 w-[1px] bg-border"></div>
+        <a
+          href="#work"
+          class="text-sm font-medium text-muted-foreground hover:text-foreground"
+          >View Projects</a
+        >
+      </div>
     </div>
-    <div class="mt-6 flex items-center gap-2 text-sm text-muted-foreground">
-      Know more about me! <a href="/about" class="text-primary hover:underline"
-        >Read my story</a
-      >
-      <HugeiconsIcon icon={ArrowUpRight03Icon} className="size-4" />
+
+    <!-- Right Side: Details About Me -->
+    <div class="flex flex-col justify-center space-y-6 text-right">
+      <div class="space-y-6">
+        <div class="space-y-4 text-muted-foreground">
+          <div class="space-y-2">
+            <h2 class="text-2xl font-bold text-foreground">About Me</h2>
+
+            <p>
+              Passionate about creating digital experiences that matter. With a
+              background in both frontend and backend development, I focus on
+              building scalable solutions that users love to interact with.
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 justify-items-end gap-4 sm:grid-cols-2">
+            <div class="space-y-2 text-right">
+              <h3 class="font-semibold text-foreground">Location</h3>
+              <p>Based in [Your Location]</p>
+            </div>
+            <div class="space-y-2 text-right">
+              <h3 class="font-semibold text-foreground">Experience</h3>
+              <p>1+ Years Professional</p>
+            </div>
+            <div class="space-y-2 text-right">
+              <h3 class="font-semibold text-foreground">Specialties</h3>
+              <p>Full-Stack Development</p>
+            </div>
+            <div class="space-y-2 text-right">
+              <h3 class="font-semibold text-foreground">Focus</h3>
+              <p>Backend & UI/UX</p>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="font-semibold text-foreground">Tech Stack</h3>
+            <div class="flex flex-wrap justify-end gap-2">
+              <span
+                class="rounded-full bg-primary/10 px-3 py-1 text-sm text-primary"
+                >React</span
+              >
+              <span
+                class="rounded-full bg-primary/10 px-3 py-1 text-sm text-primary"
+                >Node.js</span
+              >
+              <span
+                class="rounded-full bg-primary/10 px-3 py-1 text-sm text-primary"
+                >TypeScript</span
+              >
+              <span
+                class="rounded-full bg-primary/10 px-3 py-1 text-sm text-primary"
+                >PostgreSQL</span
+              >
+              <span
+                class="rounded-full bg-primary/10 px-3 py-1 text-sm text-primary"
+                >AWS</span
+              >
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="font-semibold text-foreground">Currently</h3>
+            <p>
+              Open to new opportunities and exciting projects. Let's build
+              something amazing together!
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Background Image Handling -->
+  <div
+    class="pointer-events-none absolute inset-x-0 bottom-0 -z-20 h-full overflow-hidden"
+  >
+    <img
+      src="/fi.png"
+      alt="Hero Image"
+      class="absolute bottom-0 left-1/2 w-[70%] -translate-x-1/2 object-contain opacity-50 grayscale transition-opacity duration-700 hover:opacity-30 sm:w-[50%]"
+    />
+    <div
+      class="absolute inset-0 bg-linear-to-t from-background via-background/0 to-transparent"
+    >
     </div>
   </div>
 </section>
