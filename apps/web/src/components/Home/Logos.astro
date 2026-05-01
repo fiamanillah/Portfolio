@@ -1,0 +1,90 @@
+---
+import { Icon } from "astro-icon/components"
+
+// List of all your tech stack icons
+const icons = [
+  "devicon-plain:astro", "mdi:react", "mdi:tailwind", "bxl:typescript",
+  "devicon-plain:docker", "bxl:nest-js", "bxl:express-js", "mdi:nodejs",
+  "bxl:postgresql", "mdi:aws", "devicon-plain:redis", "bxl:mongodb",
+  "bxl:prisma-orm", "devicon-plain:linux", "mdi:git", "bxl:javascript",
+  "devicon-plain:go", "devicon-plain:css", "devicon-plain:nextjs",
+  "bxl:redux", "simple-icons:rabbitmq", "simple-icons:mongoose"
+];
+---
+
+<section
+  data-grid-cross
+  class="relative container mx-auto flex  items-center justify-center overflow-hidden py-px"
+>
+  <!-- Visible 8-Column Grid Boxes -->
+  <div class="grid grid-cols-8  items-stretch w-full justify-center text-foreground/80 z-10 ">
+    {Array.from({ length: 8 }).map((_) => (
+      <div class=" border-l last:border-r border-primary/30 bg-background shadow-sm flex justify-center items-center py-6">
+
+      <div class="icon-slot  transition-all duration-500 ease-in-out">
+        <!-- SVGs will be injected here dynamically -->
+      </div>
+      </div>
+    ))}
+  </div>
+
+  <!-- Hidden Pool of Rendered Icons -->
+  <div id="icon-pool" class="hidden">
+    {icons.map((icon) => (
+      <div data-icon={icon}>
+        <Icon name={icon} class="size-8 md:size-14" />
+      </div>
+    ))}
+  </div>
+</section>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // Grab the rendered SVGs and the visible slots
+    const poolElements = Array.from(document.querySelectorAll('#icon-pool > div'));
+    const slots = Array.from(document.querySelectorAll('.icon-slot'));
+
+    let availableIcons = [...poolElements];
+    let activeIcons: Element[] = [];
+
+    // 1. Initial setup: Fill the 8 slots with random icons
+    slots.forEach((slot) => {
+      const randomIndex = Math.floor(Math.random() * availableIcons.length);
+      const selectedIcon = availableIcons.splice(randomIndex, 1)[0];
+      
+      activeIcons.push(selectedIcon);
+      slot.innerHTML = selectedIcon.innerHTML;
+    });
+
+    // 2. Animation logic: Randomly swap one icon every 1.5 seconds
+    const swapIcon = () => {
+      // Pick a random slot to animate
+      const slotIndex = Math.floor(Math.random() * slots.length);
+      const slot = slots[slotIndex];
+
+      // Trigger fade-out & shrink animation
+      slot.classList.add('opacity-0', 'scale-50');
+
+      // Wait for CSS transition to finish before swapping the SVG
+      setTimeout(() => {
+        // Return current icon to the available pool
+        const oldIcon = activeIcons[slotIndex];
+        availableIcons.push(oldIcon);
+
+        // Pick a new random icon from the pool
+        const newRandomIndex = Math.floor(Math.random() * availableIcons.length);
+        const newIcon = availableIcons.splice(newRandomIndex, 1)[0];
+        activeIcons[slotIndex] = newIcon;
+
+        // Replace the HTML
+        slot.innerHTML = newIcon.innerHTML;
+
+        // Trigger fade-in & grow animation
+        slot.classList.remove('opacity-0', 'scale-50');
+      }, 500); // 500ms matches the `duration-500` Tailwind class
+    };
+
+    // Run the swap continuously
+    setInterval(swapIcon, 1500);
+  });
+</script>

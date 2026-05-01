@@ -1,0 +1,37 @@
+---
+import MySiteLayout from "@/layouts/MySiteLayout.astro"
+---
+
+<MySiteLayout>
+  <section
+    class="flex min-h-[calc(100vh-6rem)] flex-col items-center justify-center px-6 py-24 text-center sm:px-10"
+  >
+    <span
+      class="text-sm font-semibold tracking-[0.35em] text-muted-foreground uppercase"
+      >Page not found</span
+    >
+    <h1 class="mt-6 text-6xl font-black sm:text-7xl">404</h1>
+    <p
+      class="mt-6 max-w-2xl text-lg leading-8 text-muted-foreground sm:text-xl"
+    >
+      The page you are looking for does not exist, or it has been moved.
+      Let&apos;s get you back on track.
+    </p>
+    <div
+      class="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center"
+    >
+      <a
+        href="/"
+        class="rounded-full bg-accent px-6 py-3 text-sm font-semibold text-accent-foreground transition hover:bg-accent/90 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+      >
+        Go home
+      </a>
+      <a
+        href="/components"
+        class="rounded-full border border-border px-6 py-3 text-sm font-semibold text-foreground transition hover:border-primary hover:text-primary focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+      >
+        View components
+      </a>
+    </div>
+  </section>
+</MySiteLayout>

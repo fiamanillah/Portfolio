@@ -1,0 +1,54 @@
+---
+import "@workspace/ui/globals.css"
+import GridLines from "@/components/GridLines.astro"
+import SiteNav from "@/components/site-nav.astro"
+import ThemeScript from "@/components/ThemeScript.astro"
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>Fi Amanillah</title>
+    <ThemeScript />
+  </head>
+  <body class="min-h-svh overflow-x-hidden bg-background text-foreground">
+    <!-- GridLines renders a fixed full-viewport canvas — no wrapper needed -->
+    <div id="mouse-glow" class="pointer-events-none fixed inset-0 -z-20">
+      <div id="glow-ball" class="mouse-glow-ball"></div>
+    </div>
+
+    <GridLines lines={[-0.04, 0, 1, 1.04]} />
+
+    <div class="relative z-0 mx-[4%]">
+      <header class="sticky top-0 z-50">
+        <div
+          class="border-grid-line-color container mx-auto border-b bg-background px-4"
+        >
+          <SiteNav />
+        </div>
+      </header>
+      <main class="relative container mx-auto">
+        <slot />
+      </main>
+    </div>
+
+    <script>
+      const glowBall = document.getElementById("glow-ball")
+      const mouseGlow = document.getElementById("mouse-glow")
+
+      if (glowBall && mouseGlow) {
+        window.addEventListener("pointermove", (event) => {
+          glowBall.style.left = `${event.clientX}px`
+          glowBall.style.top = `${event.clientY + window.scrollY}px`
+          glowBall.style.opacity = "1"
+        })
+
+        window.addEventListener("pointerleave", () => {
+          glowBall.style.opacity = "0"
+        })
+      }
+    </script>
+  </body>
+</html>

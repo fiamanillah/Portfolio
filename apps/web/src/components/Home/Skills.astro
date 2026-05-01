@@ -1,0 +1,389 @@
+---
+// components/Home/Skills.astro
+---
+
+<section
+  id="skills"
+  data-grid-cross
+  class="relative z-10 container mx-auto mb-px"
+>
+  <div class="bg-background/40 shadow-sm backdrop-blur-3xl">
+    <!-- Top Header Section -->
+    <div class="border-b border-border text-center">
+      <p
+        class="mb-4 pt-6 font-mono text-[10px] tracking-[0.2em] text-muted-foreground uppercase"
+      >
+        A curated selection of technical proficiencies by
+      </p>
+      <!-- Using serif/italic to mimic the signature style in the reference -->
+      <h2
+        class="mb-4 text-5xl font-black tracking-tighter text-foreground italic md:text-7xl"
+      >
+        Fi Amanillah
+      </h2>
+      <p
+        class="mb-6 text-[11px] font-semibold tracking-[0.15em] text-foreground uppercase"
+      >
+        Capabilities & Stack / Vol 04
+      </p>
+    </div>
+
+    <!-- 3-Column Grid -->
+    <div
+      class="grid grid-cols-1 divide-y divide-border md:grid-cols-3 md:divide-x md:divide-y-0"
+    >
+      <!-- COLUMN 1: Frontend & Languages -->
+      <div class="flex flex-col p-8 md:p-10">
+        <div class="mb-12">
+          <h3
+            class="flex items-start gap-1 text-5xl font-black tracking-tighter text-foreground"
+          >
+            FRN <span
+              class="mt-1.5 font-mono text-lg tracking-normal text-muted-foreground"
+              >01<sup class="text-[10px]">ST</sup></span
+            >
+          </h3>
+          <p
+            class="mt-4 font-mono text-[10px] tracking-widest text-muted-foreground uppercase"
+          >
+            Frontend & Languages
+          </p>
+        </div>
+
+        <div class="space-y-8">
+          <div>
+            <h4
+              class="text-xl font-bold tracking-tight text-foreground uppercase"
+            >
+              HTML / CSS / JS
+            </h4>
+            <div class="mt-1.5 flex items-center gap-2">
+              <span
+                class="font-mono text-[9px] tracking-widest text-muted-foreground uppercase"
+                >Core Web</span
+              >
+              <span class="h-1 w-1 rounded-full bg-muted-foreground"></span>
+              <span
+                class="font-mono text-[9px] tracking-widest text-muted-foreground uppercase"
+                >DOM Styling</span
+              >
+            </div>
+          </div>
+          <div>
+            <h4
+              class="text-xl font-bold tracking-tight text-foreground uppercase"
+            >
+              Typescript / Go
+            </h4>
+            <div class="mt-1.5 flex items-center gap-2">
+              <span
+                class="font-mono text-[9px] tracking-widest text-muted-foreground uppercase"
+                >Strict Mode</span
+              >
+              <span class="h-1 w-1 rounded-full bg-muted-foreground"></span>
+              <span
+                class="font-mono text-[9px] tracking-widest text-muted-foreground uppercase"
+                >Basic Level</span
+              >
+            </div>
+          </div>
+          <div>
+            <h4
+              class="text-xl font-bold tracking-tight text-foreground uppercase"
+            >
+              React / Next.js
+            </h4>
+            <div class="mt-1.5 flex items-center gap-2">
+              <span
+                class="font-mono text-[9px] tracking-widest text-muted-foreground uppercase"
+                >Core Stack</span
+              >
+              <span class="h-1 w-1 rounded-full bg-muted-foreground"></span>
+              <span
+                class="font-mono text-[9px] tracking-widest text-muted-foreground uppercase"
+                >SSR Ready</span
+              >
+            </div>
+          </div>
+          <div>
+            <h4
+              class="text-xl font-bold tracking-tight text-foreground uppercase"
+            >
+              Tailwind / Shadcn UI
+            </h4>
+            <div class="mt-1.5 flex items-center gap-2">
+              <span
+                class="font-mono text-[9px] tracking-widest text-muted-foreground uppercase"
+                >Atomic CSS</span
+              >
+              <span class="h-1 w-1 rounded-full bg-muted-foreground"></span>
+              <span
+                class="font-mono text-[9px] tracking-widest text-muted-foreground uppercase"
+                >Systemic Design</span
+              >
+            </div>
+          </div>
+          <div>
+            <h4
+              class="text-xl font-bold tracking-tight text-foreground uppercase"
+            >
+              Redux / WebSockets
+            </h4>
+            <div class="mt-1.5 flex items-center gap-2">
+              <span
+                class="font-mono text-[9px] tracking-widest text-muted-foreground uppercase"
+                >State Mgmt</span
+              >
+              <span class="h-1 w-1 rounded-full bg-muted-foreground"></span>
+              <span
+                class="font-mono text-[9px] tracking-widest text-muted-foreground uppercase"
+                >Realtime</span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- COLUMN 2: Backend & Databases -->
+      <div class="flex flex-col p-8 md:p-10">
+        <div class="mb-12">
+          <h3
+            class="flex items-start gap-1 text-5xl font-black tracking-tighter text-foreground"
+          >
+            BKN <span
+              class="mt-1.5 font-mono text-lg tracking-normal text-muted-foreground"
+              >02<sup class="text-[10px]">ND</sup></span
+            >
+          </h3>
+          <p
+            class="mt-4 font-mono text-[10px] tracking-widest text-muted-foreground uppercase"
+          >
+            Backend & Data Layer
+          </p>
+        </div>
+
+        <div class="space-y-8">
+          <div>
+            <h4
+              class="text-xl font-bold tracking-tight text-foreground uppercase"
+            >
+              Node / Express
+            </h4>
+            <div class="mt-1.5 flex items-center gap-2">
+              <span
+                class="font-mono text-[9px] tracking-widest text-muted-foreground uppercase"
+                >Runtime</span
+              >
+              <span class="h-1 w-1 rounded-full bg-muted-foreground"></span>
+              <span
+                class="font-mono text-[9px] tracking-widest text-muted-foreground uppercase"
+                >API Design</span
+              >
+            </div>
+          </div>
+          <div>
+            <h4
+              class="text-xl font-bold tracking-tight text-foreground uppercase"
+            >
+              Nest.js
+            </h4>
+            <div class="mt-1.5 flex items-center gap-2">
+              <span
+                class="font-mono text-[9px] tracking-widest text-muted-foreground uppercase"
+                >Architecture</span
+              >
+              <span class="h-1 w-1 rounded-full bg-muted-foreground"></span>
+              <span
+                class="font-mono text-[9px] tracking-widest text-muted-foreground uppercase"
+                >Scalable</span
+              >
+            </div>
+          </div>
+          <div>
+            <h4
+              class="text-xl font-bold tracking-tight text-foreground uppercase"
+            >
+              PostgreSQL / MySQL
+            </h4>
+            <div class="mt-1.5 flex items-center gap-2">
+              <span
+                class="font-mono text-[9px] tracking-widest text-muted-foreground uppercase"
+                >Relational</span
+              >
+              <span class="h-1 w-1 rounded-full bg-muted-foreground"></span>
+              <span
+                class="font-mono text-[9px] tracking-widest text-muted-foreground uppercase"
+                >Data Integrity</span
+              >
+            </div>
+          </div>
+          <div>
+            <h4
+              class="text-xl font-bold tracking-tight text-foreground uppercase"
+            >
+              MongoDB / Redis
+            </h4>
+            <div class="mt-1.5 flex items-center gap-2">
+              <span
+                class="font-mono text-[9px] tracking-widest text-muted-foreground uppercase"
+                >NoSQL</span
+              >
+              <span class="h-1 w-1 rounded-full bg-muted-foreground"></span>
+              <span
+                class="font-mono text-[9px] tracking-widest text-muted-foreground uppercase"
+                >Caching Layer</span
+              >
+            </div>
+          </div>
+          <div>
+            <h4
+              class="text-xl font-bold tracking-tight text-foreground uppercase"
+            >
+              Prisma / Mongoose
+            </h4>
+            <div class="mt-1.5 flex items-center gap-2">
+              <span
+                class="font-mono text-[9px] tracking-widest text-muted-foreground uppercase"
+                >ORMs</span
+              >
+              <span class="h-1 w-1 rounded-full bg-muted-foreground"></span>
+              <span
+                class="font-mono text-[9px] tracking-widest text-muted-foreground uppercase"
+                >Modeling</span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- COLUMN 3: DevOps & CI/CD -->
+      <div class="flex flex-col p-8 md:p-10">
+        <div class="mb-12">
+          <h3
+            class="flex items-start gap-1 text-5xl font-black tracking-tighter text-foreground"
+          >
+            OPS <span
+              class="mt-1.5 font-mono text-lg tracking-normal text-muted-foreground"
+              >03<sup class="text-[10px]">RD</sup></span
+            >
+          </h3>
+          <p
+            class="mt-4 font-mono text-[10px] tracking-widest text-muted-foreground uppercase"
+          >
+            Operational Flow
+          </p>
+        </div>
+
+        <div class="space-y-8">
+          <div>
+            <h4
+              class="text-xl font-bold tracking-tight text-foreground uppercase"
+            >
+              Docker / Nginx
+            </h4>
+            <div class="mt-1.5 flex items-center gap-2">
+              <span
+                class="font-mono text-[9px] tracking-widest text-muted-foreground uppercase"
+                >Containers</span
+              >
+              <span class="h-1 w-1 rounded-full bg-muted-foreground"></span>
+              <span
+                class="font-mono text-[9px] tracking-widest text-muted-foreground uppercase"
+                >Reverse Proxy</span
+              >
+            </div>
+          </div>
+          <div>
+            <h4
+              class="text-xl font-bold tracking-tight text-foreground uppercase"
+            >
+              Linux / VPS
+            </h4>
+            <div class="mt-1.5 flex items-center gap-2">
+              <span
+                class="font-mono text-[9px] tracking-widest text-muted-foreground uppercase"
+                >SysAdmin</span
+              >
+              <span class="h-1 w-1 rounded-full bg-muted-foreground"></span>
+              <span
+                class="font-mono text-[9px] tracking-widest text-muted-foreground uppercase"
+                >Self-Managed</span
+              >
+            </div>
+          </div>
+          <div>
+            <h4
+              class="text-xl font-bold tracking-tight text-foreground uppercase"
+            >
+              AWS / GCP
+            </h4>
+            <div class="mt-1.5 flex items-center gap-2">
+              <span
+                class="font-mono text-[9px] tracking-widest text-muted-foreground uppercase"
+                >Cloud</span
+              >
+              <span class="h-1 w-1 rounded-full bg-muted-foreground"></span>
+              <span
+                class="font-mono text-[9px] tracking-widest text-muted-foreground uppercase"
+                >Infrastructure</span
+              >
+            </div>
+          </div>
+          <div>
+            <h4
+              class="text-xl font-bold tracking-tight text-foreground uppercase"
+            >
+              Proxmox / KVM
+            </h4>
+            <div class="mt-1.5 flex items-center gap-2">
+              <span
+                class="font-mono text-[9px] tracking-widest text-muted-foreground uppercase"
+                >Hypervisor</span
+              >
+              <span class="h-1 w-1 rounded-full bg-muted-foreground"></span>
+              <span
+                class="font-mono text-[9px] tracking-widest text-muted-foreground uppercase"
+                >Virtualization</span
+              >
+            </div>
+          </div>
+          <div>
+            <h4
+              class="text-xl font-bold tracking-tight text-foreground uppercase"
+            >
+              RabbitMQ / CI/CD
+            </h4>
+            <div class="mt-1.5 flex items-center gap-2">
+              <span
+                class="font-mono text-[9px] tracking-widest text-muted-foreground uppercase"
+                >Message Brokers</span
+              >
+              <span class="h-1 w-1 rounded-full bg-muted-foreground"></span>
+              <span
+                class="font-mono text-[9px] tracking-widest text-muted-foreground uppercase"
+                >Pipelines</span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer Bar 1 -->
+    <div
+      class="flex flex-col items-center justify-between gap-2 border-t border-b border-border px-6 py-4 font-mono text-[9px] tracking-widest text-muted-foreground uppercase md:flex-row"
+    >
+      <span>Resident Engineer: [Fi_Amanillah]</span>
+
+      <span>Vrs.2026.05 / Updated: May</span>
+    </div>
+
+    <!-- Footer Bar 2 -->
+    <div
+      class="my-1 flex flex-col items-center justify-between gap-2 px-6 py-4 font-mono text-[9px] tracking-widest text-muted-foreground uppercase md:flex-row"
+    >
+      <span>Remote Sessions. Global Coverage. Index 101.</span>
+      <span>Nearest Node: [Dhaka_BD]</span>
+    </div>
+  </div>
+</section>

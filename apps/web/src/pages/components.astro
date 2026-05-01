@@ -1,0 +1,110 @@
+---
+import "@workspace/ui/globals.css"
+import { ShadcnShowcase } from "../components/shadcn-showcase"
+
+const colorTokens = [
+  { token: "background", onToken: "foreground" },
+  { token: "foreground", onToken: "background" },
+  { token: "card", onToken: "card-foreground" },
+  { token: "card-foreground", onToken: "card" },
+  { token: "popover", onToken: "popover-foreground" },
+  { token: "popover-foreground", onToken: "popover" },
+  { token: "primary", onToken: "primary-foreground" },
+  { token: "primary-foreground", onToken: "primary" },
+  { token: "secondary", onToken: "secondary-foreground" },
+  { token: "secondary-foreground", onToken: "secondary" },
+  { token: "muted", onToken: "muted-foreground" },
+  { token: "muted-foreground", onToken: "muted" },
+  { token: "accent", onToken: "accent-foreground" },
+  { token: "accent-foreground", onToken: "accent" },
+  { token: "destructive", onToken: "background" },
+  { token: "border", onToken: "foreground" },
+  { token: "input", onToken: "foreground" },
+  { token: "ring", onToken: "foreground" },
+]
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>Shadcn Components</title>
+  </head>
+  <body class="bg-background text-foreground">
+    <div class="fixed top-4 right-4 z-50">
+      <!-- <ThemeToggle client:load /> -->
+    </div>
+
+    <main
+      class="mx-auto flex w-full max-w-6xl flex-col gap-4 px-4 py-4 md:gap-5 md:px-6 md:py-6"
+    >
+      <section
+        class="rounded-3xl border border-border/70 bg-card/90 p-4 backdrop-blur-sm md:p-5"
+      >
+        <p class="text-xs tracking-[0.16em] text-muted-foreground uppercase">
+          Design System
+        </p>
+        <h1>Color + Typography Profile</h1>
+        <p class="text-sm text-muted-foreground">
+          Instant preview of semantic colors and default typography. Toggle
+          theme to compare modes.
+        </p>
+      </section>
+
+      <section class="grid gap-4">
+        <article
+          class="rounded-3xl border border-border/70 bg-card/80 p-4 md:p-5"
+        >
+          <div class="mb-3 flex items-end justify-between gap-3">
+            <h2>Color Tokens</h2>
+            <p class="text-xs text-muted-foreground">18 semantic tokens</p>
+          </div>
+          <div class="grid gap-2 sm:grid-cols-6">
+            {
+              colorTokens.map(({ token, onToken }) => (
+                <div class="rounded-xl border border-border/70 bg-background/70 p-2">
+                  <div
+                    class="mb-2 h-10 rounded-md border border-border/80"
+                    style={`background: var(--${token});`}
+                  />
+                  <p class="text-[11px] tracking-wide text-muted-foreground uppercase">
+                    --{token}
+                  </p>
+                  <div
+                    class="mt-1 rounded-md border border-border/60 px-2 py-1 text-xs"
+                    style={`background: var(--${token}); color: var(--${onToken});`}
+                  >
+                    Aa 123
+                  </div>
+                </div>
+              ))
+            }
+          </div>
+        </article>
+
+        <article
+          class="rounded-3xl border border-border/70 bg-card/80 p-4 md:p-5"
+        >
+          <h2 class="mb-3">Typography</h2>
+          <div
+            class="space-y-2 rounded-xl border border-border/70 bg-background/70 p-3"
+          >
+            <h1>Heading 1 Sample</h1>
+            <h2>Heading 2 Sample</h2>
+            <h3>Heading 3 Sample</h3>
+            <h4>Heading 4 Sample</h4>
+            <h5>Heading 5 Sample</h5>
+            <h6>Heading 6 Sample</h6>
+            <p>
+              Body text with <a href="#">link style</a> and inline
+              <code>code-token</code>.
+            </p>
+          </div>
+        </article>
+      </section>
+
+      <ShadcnShowcase client:only="react" />
+    </main>
+  </body>
+</html>
