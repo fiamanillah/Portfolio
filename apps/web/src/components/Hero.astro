@@ -268,10 +268,15 @@ import { Badge } from "@workspace/ui/components/badge"
   <div
     class="pointer-events-none absolute inset-x-0 bottom-0 -z-20 h-full overflow-hidden"
   >
+    <div
+      class="absolute inset-0 z-0 opacity-75"
+      style="background-image: radial-gradient(rgba(148, 163, 184, 0.22) 1.25px, transparent 1.25px); background-position: 0 0; background-size: 22px 22px; background-repeat: repeat; mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0.85) 70%, transparent 100%); -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0.85) 70%, transparent 100%);"
+    >
+    </div>
     <img
       src="/fi.png"
       alt="Hero Image"
-      class="absolute bottom-0 left-1/2 w-[70%] -translate-x-1/2 object-contain opacity-50 grayscale transition-opacity duration-700 hover:opacity-30 sm:w-[50%]"
+      class="absolute bottom-0 left-1/2 z-10 w-[70%] -translate-x-1/2 object-contain opacity-80 grayscale transition-opacity duration-700 hover:opacity-30 sm:w-[50%]"
     />
     <div
       class="absolute inset-0 bg-linear-to-t from-background via-background/0 to-transparent"
