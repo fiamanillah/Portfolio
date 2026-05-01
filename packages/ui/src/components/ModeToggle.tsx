@@ -10,6 +10,8 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import { Moon, Sun } from "@hugeicons/core-free-icons"
 
 export function ModeToggle() {
+  const STORAGE_KEY = "ui-theme"
+
   // 1. Use a lazy initializer function to read the DOM only once during initial setup.
   const [theme, setThemeState] = React.useState<
     "theme-light" | "dark" | "system"
@@ -33,6 +35,13 @@ export function ModeToggle() {
         window.matchMedia("(prefers-color-scheme: dark)").matches)
 
     document.documentElement.classList[isDark ? "add" : "remove"]("dark")
+    document.documentElement.style.colorScheme = isDark ? "dark" : "light"
+
+    try {
+      localStorage.setItem(STORAGE_KEY, theme)
+    } catch {
+      // Ignore storage failures in private mode or restricted environments.
+    }
   }, [theme])
 
   return (
