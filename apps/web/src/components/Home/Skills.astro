@@ -1,0 +1,147 @@
+---
+import { Badge } from "@workspace/ui/components/badge"
+
+// components/Home/Skills.astro
+
+const skillSections = [
+  {
+    code: "FRN",
+    ordinal: "01",
+    suffix: "ST",
+    label: "Frontend & Languages",
+    badge: "Frontend & Languages",
+    items: [
+      { title: "HTML / CSS / JS", left: "Core Web", right: "DOM Styling" },
+      { title: "Typescript / Go", left: "Strict Mode", right: "Basic Level" },
+      { title: "React / Next.js", left: "Core Stack", right: "SSR Ready" },
+      {
+        title: "Tailwind / Shadcn UI",
+        left: "Atomic CSS",
+        right: "Systemic Design",
+      },
+      { title: "Redux / WebSockets", left: "State Mgmt", right: "Realtime" },
+    ],
+  },
+  {
+    code: "BKN",
+    ordinal: "02",
+    suffix: "ND",
+    label: "Backend & Data Layer",
+    badge: "Backend & Data Layer",
+    items: [
+      { title: "Node / Express", left: "Runtime", right: "API Design" },
+      { title: "Nest.js", left: "Architecture", right: "Scalable" },
+      {
+        title: "PostgreSQL / MySQL",
+        left: "Relational",
+        right: "Data Integrity",
+      },
+      { title: "MongoDB / Redis", left: "NoSQL", right: "Caching Layer" },
+      { title: "Prisma / Mongoose", left: "ORMs", right: "Modeling" },
+    ],
+  },
+  {
+    code: "OPS",
+    ordinal: "03",
+    suffix: "RD",
+    label: "Operational Flow",
+    badge: "Operational Flow",
+    items: [
+      { title: "Docker / Nginx", left: "Containers", right: "Reverse Proxy" },
+      { title: "Linux / VPS", left: "SysAdmin", right: "Self-Managed" },
+      { title: "AWS / GCP", left: "Cloud", right: "Infrastructure" },
+      { title: "Proxmox / KVM", left: "Hypervisor", right: "Virtualization" },
+      {
+        title: "RabbitMQ / CI/CD",
+        left: "Message Brokers",
+        right: "Pipelines",
+      },
+    ],
+  },
+]
+---
+
+<section
+  id="skills"
+  data-grid-cross
+  class="relative z-10 container mx-auto mb-px"
+>
+  <div class="bg-background/40 shadow-sm backdrop-blur-3xl">
+    <!-- Top Header Section -->
+    <div class="border-b border-border text-center">
+      <p
+        class="mb-4 pt-6 font-mono text-[10px] tracking-[0.2em] text-muted-foreground uppercase"
+      >
+        Practical tools, systems, and workflows I use to build products
+      </p>
+      <h2
+        class="mb-4 text-5xl font-black tracking-tighter text-foreground italic md:text-7xl"
+      >
+        Skills <span class="text-primary"> & </span> Stack
+      </h2>
+      <p
+        class="mb-6 text-[11px] font-semibold tracking-[0.15em] text-foreground uppercase"
+      >
+        Frontend, backend, and infrastructure
+      </p>
+    </div>
+
+    <!-- 3-Column Grid -->
+    <div
+      class="grid grid-cols-1 divide-y divide-border md:grid-cols-3 md:divide-x md:divide-y-0"
+    >
+      {
+        skillSections.map((section) => (
+          <div class="flex flex-col p-8 md:p-10">
+            <div class="mb-12">
+              <h3 class="flex items-start gap-1 text-5xl font-black tracking-tighter text-foreground">
+                {section.code}{" "}
+                <span class="mt-1.5 font-mono text-lg tracking-normal text-muted-foreground">
+                  {section.ordinal}
+                  <sup class="text-[10px]">{section.suffix}</sup>
+                </span>
+              </h3>
+              <Badge> {section.badge} </Badge>
+            </div>
+
+            <div class="space-y-8">
+              {section.items.map((item) => (
+                <div>
+                  <h4 class="text-xl font-bold tracking-tight text-foreground uppercase">
+                    {item.title}
+                  </h4>
+                  <div class="mt-1.5 flex items-center gap-2">
+                    <span class="font-mono text-[9px] tracking-widest text-muted-foreground uppercase">
+                      {item.left}
+                    </span>
+                    <span class="h-1 w-1 rounded-full bg-muted-foreground" />
+                    <span class="font-mono text-[9px] tracking-widest text-muted-foreground uppercase">
+                      {item.right}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))
+      }
+    </div>
+
+    <!-- Footer Bar 1 -->
+    <div
+      class="flex flex-col items-center justify-between gap-2 border-t border-b border-border px-6 py-4 font-mono text-[9px] tracking-widest text-muted-foreground uppercase md:flex-row"
+    >
+      <span>Resident Engineer: [Fi_Amanillah]</span>
+
+      <span>Vrs.2026.05 / Updated: May</span>
+    </div>
+
+    <!-- Footer Bar 2 -->
+    <div
+      class="my-1 flex flex-col items-center justify-between gap-2 px-6 py-4 font-mono text-[9px] tracking-widest text-muted-foreground uppercase md:flex-row"
+    >
+      <span>Remote Sessions. Global Coverage. Index 101.</span>
+      <span>Nearest Node: [Dhaka_BD]</span>
+    </div>
+  </div>
+</section>

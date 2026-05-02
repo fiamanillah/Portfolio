@@ -11,10 +11,9 @@ import ThemeScript from "@/components/ThemeScript.astro"
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>Fi Amanillah</title>
+    <ThemeScript />
   </head>
-  <body
-    class="min-h-svh overflow-x-hidden bg-background text-foreground backdrop-blur-2xl"
-  >
+  <body class="min-h-svh overflow-x-hidden bg-background text-foreground">
     <!-- GridLines renders a fixed full-viewport canvas — no wrapper needed -->
     <div id="mouse-glow" class="pointer-events-none fixed inset-0 -z-20">
       <div id="glow-ball" class="mouse-glow-ball"></div>
@@ -52,6 +51,4 @@ import ThemeScript from "@/components/ThemeScript.astro"
       }
     </script>
   </body>
-
-  <ThemeScript />
 </html>

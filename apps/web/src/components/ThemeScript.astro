@@ -8,13 +8,11 @@
         "(prefers-color-scheme: dark)"
       ).matches
       const isDark =
-        savedTheme === "dark" || savedTheme === "system"
-          ? prefersDark
-          : savedTheme === "theme-light"
-            ? false
-            : prefersDark
+        savedTheme === "dark" ||
+        (savedTheme === "system" || !savedTheme ? prefersDark : false)
 
       document.documentElement.classList[isDark ? "add" : "remove"]("dark")
+      document.documentElement.style.colorScheme = isDark ? "dark" : "light"
     } catch (error) {
       // Silently fail if localStorage is unavailable
     }
