@@ -2,6 +2,7 @@
 import Hero from "@/components/Home/Hero.astro"
 import Logos from "@/components/Home/Logos.astro"
 import Skills from "@/components/Home/Skills.astro" // Import the new component
+import Work from "@/components/Home/Work.astro"
 import MySiteLayout from "@/layouts/MySiteLayout.astro"
 ---
 
@@ -9,17 +10,11 @@ import MySiteLayout from "@/layouts/MySiteLayout.astro"
   <Hero />
   <Logos />
 
-  <!-- Add the Skills Section Here -->
+  <!--  Skills Section  -->
   <Skills />
 
-  <!-- Work Section -->
-  <section id="work" class="py-16">
-    <div class="container mx-auto px-4">
-      <h2 class="text-2xl font-semibold tracking-tight text-foreground">
-        Work
-      </h2>
-    </div>
-  </section>
+  <!-- Work showcase -->
+  <Work />
 
   <section
     data-grid-cross

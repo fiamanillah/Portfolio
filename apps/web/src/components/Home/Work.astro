@@ -1,0 +1,111 @@
+---
+// components/Home/Work.astro
+
+const projects = [
+  {
+    title: "Open Source API Gateway",
+    description: "A performant, modular API gateway with built-in auth and observability.",
+    tech: ["Node", "Nest.js", "Postgres"],
+    href: "#",
+    img: "/assets/images/project1.png",
+    index: "01",
+  },
+  {
+    title: "Realtime Chat Service",
+    description: "WebSocket-based chat with presence and typing indicators.",
+    tech: ["Redis", "WebSockets", "React"],
+    href: "#",
+    img: "/assets/images/project2.png",
+    index: "02",
+  },
+  {
+    title: "Deployment Automation",
+    description: "CI/CD pipelines and infra-as-code for zero-downtime deploys.",
+    tech: ["Docker", "GitHub Actions", "Terraform"],
+    href: "#",
+    img: "/assets/images/project3.png",
+    index: "03",
+  },
+]
+---
+
+<section id="work" class="relative z-10 mx-auto   pt-20">
+
+  <!-- Header -->
+  <div class="mb-14 text-center">
+    <p class="mb-2 font-mono text-[9.5px] uppercase tracking-[0.22em] text-muted-foreground">
+      Selected projects and case studies
+    </p>
+    <h2 class="text-5xl font-black tracking-tighter text-foreground">
+      Work
+      <span class="ml-2 text-base font-semibold tracking-tight text-muted-foreground">
+        Showcase
+      </span>
+    </h2>
+    <p class="mx-auto mt-3 max-w-[46ch] font-mono text-[11.5px] leading-relaxed text-muted-foreground">
+      Production-ready systems, tooling and integrations that demonstrate
+      engineering approach and impact.
+    </p>
+  </div>
+
+  <!-- Grid -->
+  <div class="grid grid-cols-1 border-l border-t border-border sm:grid-cols-2">
+
+    {projects.map((p) => (
+      <article class="group relative flex flex-col border-b border-r border-border bg-background transition-colors hover:bg-muted/40">
+
+        <!-- TL corner accent -->
+        <div class="pointer-events-none absolute left-0 top-0 z-10 h-[18px] w-[18px] border-l-[1.5px] border-t-[1.5px] border-foreground" />
+
+       
+
+        <!-- Body -->
+        <div class="flex flex-1 flex-col gap-2.5 p-5">
+          <p class="font-mono text-[9.5px] tracking-[0.15em] text-muted-foreground">
+            {p.index}
+          </p>
+          <h3 class="text-[1.05rem] font-black leading-snug tracking-tight text-foreground">
+            {p.title}
+          </h3>
+          <p class="flex-1 font-mono text-[11px] leading-relaxed text-muted-foreground">
+            {p.description}
+          </p>
+          <div class="mt-1 flex flex-wrap gap-1.5">
+            {p.tech.map((t) => (
+              <span class="rounded-none border border-border px-2.5 py-0.5 font-mono text-[10px] text-muted-foreground">
+                {t}
+              </span>
+            ))}
+          </div>
+        </div>
+
+         <!-- Image / placeholder -->
+        <div class="aspect-video w-full overflow-hidden p-4">
+          <img
+            src={p.img}
+            alt={p.title}
+            class="h-full w-full object-cover grayscale transition duration-300 hover:grayscale-0 hover:scale-[1.02]"
+          />
+        </div>
+
+        <!-- Footer -->
+        <div class="flex items-center border-t border-border px-5 py-3.5">
+          <a href={p.href} target="_blank" rel="noopener noreferrer">
+            View project
+            <span class="inline-flex h-[18px] w-[18px] items-center justify-center border border-border text-[11px] transition-transform hover:translate-x-0.5 hover:-translate-y-0.5">
+              ↗
+            </span>
+          </a>
+        </div>
+
+      </article>
+    ))}
+
+    <!-- Empty cell to fill the 2×2 grid when there are 3 cards -->
+    {projects.length % 2 !== 0 && (
+      <div class="border-b border-r border-border bg-background" />
+    )}
+
+  </div>
+
+</section>
