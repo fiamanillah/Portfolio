@@ -1,13 +1,15 @@
 ---
-import { Badge } from "@workspace/ui/components/badge";
-import { Button } from "@workspace/ui/components/button";
+import { Badge } from "@workspace/ui/components/badge"
+import { Button } from "@workspace/ui/components/button"
+import { Icon } from "astro-icon/components"
 
 // components/Home/Work.astro
 
 const projects = [
   {
     title: "ASK SAM",
-    description: "AI intelligence module utilizing NLP for care operations monitoring and automated compliance detection.",
+    description:
+      "AI intelligence module utilizing NLP for care operations monitoring and automated compliance detection.",
     role: "Backend Architecture",
     impact: "Automated manual compliance checks processing.",
     tech: ["Node", "PostgreSQL", "Python", "NLP"],
@@ -21,9 +23,11 @@ const projects = [
   },
   {
     title: "VertiAccess Portal",
-    description: "Multi-sided marketplace facilitating seamless booking and payment modules for drone and flight operators.",
+    description:
+      "Multi-sided marketplace facilitating seamless booking and payment modules for drone and flight operators.",
     role: "Full-Stack Developer",
-    impact: "Engineered robust subscription logic and secure transaction pipelines.",
+    impact:
+      "Engineered robust subscription logic and secure transaction pipelines.",
     tech: ["Next.js", "TypeScript", "PostgreSQL", "Docker"],
     links: {
       live: "https://vertiaccess.com",
@@ -35,7 +39,8 @@ const projects = [
   },
   {
     title: "Automated Content Pipeline",
-    description: "Serverless workflow architecture aggregating dynamic media content into published articles.",
+    description:
+      "Serverless workflow architecture aggregating dynamic media content into published articles.",
     role: "Integration Engineer",
     impact: "Eliminated manual content entry bottlenecks.",
     tech: ["n8n", "Gemini 2.5 Flash", "WordPress", "Zapier"],
@@ -46,7 +51,7 @@ const projects = [
     },
     img: "/assets/images/project3.png",
     index: "03",
-  }, 
+  },
   {
     title: "CyberNark",
     description: "Scalable backend infrastructure and data management system.",
@@ -58,33 +63,44 @@ const projects = [
       github: "#",
       caseStudy: "#",
     },
-    img: "/assets/images/project4.png",
+    img: "/assets/images/project3.png",
     index: "04",
   },
 ]
 
-const CARD_HEADER_HEIGHT = 50; // px 
-const BASE_TOP_OFFSET = 72; 
+const CARD_HEADER_HEIGHT = 50 // px
+const BASE_TOP_OFFSET = 72
 ---
 
-<section id="work" class="relative z-10 mx-auto ">
+<section id="work" class="relative z-10 mx-auto">
   <!-- Header -->
   <div class="mb-14 text-center">
-    <p class="mb-2 font-mono text-[9.5px] tracking-[0.22em] text-muted-foreground uppercase">
+    <p
+      class="mb-2 text-[9.5px] tracking-[0.22em] text-muted-foreground uppercase"
+    >
       Selected projects and case studies
     </p>
-    
-    
-    <h1 class="flex items-center justify-center gap-3 text-4xl font-black tracking-tighter text-foreground sm:text-5xl">
+
+    <h1
+      class="flex items-center justify-center gap-3 text-4xl font-black tracking-tighter text-foreground sm:text-5xl"
+    >
       <span>Work</span>
       <span class="text-primary">/</span>
-      <span class="flex flex-col items-start text-left mt-1 leading-none">
-        <span class="text-sm font-bold uppercase tracking-widest text-foreground">Project</span>
-        <span class="text-xs font-semibold tracking-tight text-muted-foreground mt-0.5">Showcase</span>
+      <span class="mt-1 flex flex-col items-start text-left leading-none">
+        <span
+          class="text-sm font-bold tracking-widest text-foreground uppercase"
+          >Project</span
+        >
+        <span
+          class="mt-0.5 text-xs font-semibold tracking-tight text-muted-foreground"
+          >Showcase</span
+        >
       </span>
     </h1>
-    
-    <p class="mx-auto mt-4 max-w-[46ch] font-mono text-[11.5px] leading-relaxed text-muted-foreground">
+
+    <p
+      class="mx-auto mt-4 max-w-[46ch] text-[11.5px] leading-relaxed text-muted-foreground"
+    >
       Production-ready systems, tooling and integrations that demonstrate
       engineering approach and impact.
     </p>
@@ -96,41 +112,36 @@ const BASE_TOP_OFFSET = 72;
       projects.map((p, i) => (
         <article
           class={`sticky-card group sticky flex flex-col border border-border bg-background transition-colors ${
-            i > 0 ? ' origin-top' : ''
+            i > 0 ? " origin-top" : ""
           }`}
-          style={`top: ${BASE_TOP_OFFSET + (i * CARD_HEADER_HEIGHT)}px; z-index: ${10 + i};`}
+          style={`top: ${BASE_TOP_OFFSET + i * CARD_HEADER_HEIGHT}px; z-index: ${10 + i};`}
           data-stuck="false"
         >
-          <!-- Corner brackets -->
+          {/* Corner brackets */}
           <div class="pointer-events-none absolute top-2 left-2 z-10 h-4 w-4 border-t-[1.5px] border-l-[1.5px] border-foreground" />
           <div class="pointer-events-none absolute top-2 right-2 z-10 h-4 w-4 border-t-[1.5px] border-r-[1.5px] border-foreground" />
           <div class="pointer-events-none absolute bottom-2 left-2 z-10 h-4 w-4 border-b-[1.5px] border-l-[1.5px] border-foreground" />
           <div class="pointer-events-none absolute right-2 bottom-2 z-10 h-4 w-4 border-r-[1.5px] border-b-[1.5px] border-foreground" />
 
-          <!-- Card header -->
-          <div 
+          {/* Card header */}
+          <div
             class="flex items-start justify-between gap-6 border px-4 py-3"
             style={`height: ${CARD_HEADER_HEIGHT}px;`}
           >
             <div class="flex min-w-0 flex-1">
-              <p class="font-mono text-[9.5px] tracking-[0.15em] text-muted-foreground">
+              <p class="text-[9.5px] tracking-[0.15em] text-muted-foreground">
                 {p.index}
               </p>
-              <h3 class="truncate leading-snug font-black tracking-tight text-primary transition-all duration-300 group-data-[stuck=true]:text-foreground group-data-[stuck=true]:text-2xl">
+              <h3 class="truncate leading-snug font-black tracking-tight text-primary transition-all duration-300 group-data-[stuck=true]:text-2xl group-data-[stuck=true]:text-foreground">
                 {p.title}
               </h3>
             </div>
 
             <div class="flex shrink-0 items-center gap-2">
-              <a
-                href={p.links.live}
-                target="_blank"
-                rel="noopener noreferrer"
-                
-              >
+              <a href={p.links.live} target="_blank" rel="noopener noreferrer">
                 <Button variant={"outline"} size={"sm"}>
-                Live
-                <span class="text-[10px]">↗</span>
+                  Live
+                  <span class="text-[10px]">↗</span>
                 </Button>
               </a>
               {p.links.github && (
@@ -138,83 +149,96 @@ const BASE_TOP_OFFSET = 72;
                   href={p.links.github}
                   target="_blank"
                   rel="noopener noreferrer"
-                 
                 >
                   <Button variant={"outline"} size={"sm"}>
-                  Code
-                  <span class="text-[10px]">↗</span>
+                    Code
+                    <span class="text-[10px]">↗</span>
                   </Button>
                 </a>
               )}
             </div>
           </div>
 
-          <!-- Card body -->
+          {/* Card body */}
           <div class="grid gap-4 border-t border-border px-5 py-4 lg:grid-cols-[minmax(0,1fr)_minmax(280px,1fr)] lg:items-stretch">
             <div class="flex flex-col justify-between gap-4">
-              <div class="grid gap-3 sm:grid-cols-1">
-                <div class="border border-border bg-muted/20 p-3">
-                  <p class="font-mono text-[9px] uppercase tracking-[0.18em] text-muted-foreground">
-                    Role
-                  </p>
-                  <p class="mt-1 text-sm font-medium text-foreground">
-                    {p.role}
-                  </p>
-                </div>
-                <div class="border border-border bg-muted/20 p-3">
-                  <p class="font-mono text-[9px] uppercase tracking-[0.18em] text-muted-foreground">
-                    Impact
-                  </p>
-                  <p class="mt-1 text-sm font-medium text-foreground">
-                    {p.impact}
-                  </p>
-                </div>
-              </div>
-
-              <p class="font-mono text-[11px] leading-relaxed text-muted-foreground">
-                {p.description}
-              </p>
-
               <div class="flex flex-wrap gap-1.5">
-                {p.tech.map((t) => (
-                  <Badge variant={"outline"}>
-                    {t}
-                  </Badge>
-                ))}
+                <div class="flex flex-col gap-2">
+                  <div>
+                    {p.tech.map((t) => (
+                      <Badge variant={"outline"}>{t}</Badge>
+                    ))}
+                  </div>
+
+                  <div>
+                    <p>{p.description}</p>
+                  </div>
+                </div>
               </div>
 
-              <div class="flex flex-wrap gap-2 pt-1">
-                <a
-                  href={p.links.live}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                 
-                >
-                  <Button>
-                  Visit site
-                  <span class="text-[10px]">↗</span>
-                  </Button>
-                </a>
-                {p.links.caseStudy && (
+              <div class="grid gap-3 sm:grid-cols-1">
+                <div class="grid gap-3 rounded-2xl border border-border bg-muted/20 p-3">
+                  <div class="flex items-start gap-2.5">
+                    <Icon
+                      name="oui:app-users-roles"
+                      class="mt-0.5 size-5 shrink-0 text-primary"
+                    />
+                    <div class="min-w-0">
+                      <p class="text-[9px] tracking-[0.18em] text-muted-foreground uppercase">
+                        Role
+                      </p>
+                      <p class="mt-1 text-sm leading-snug font-medium text-foreground">
+                        {p.role}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div class="h-px bg-border/70" />
+
+                  <div class="flex items-start gap-2.5">
+                    <Icon
+                      name="mdi:chart-line-variant"
+                      class="mt-0.5 size-5 shrink-0 text-primary"
+                    />
+                    <div class="min-w-0">
+                      <p class="text-[9px] tracking-[0.18em] text-muted-foreground uppercase">
+                        Impact
+                      </p>
+                      <p class="mt-1 text-sm leading-snug font-medium text-foreground">
+                        {p.impact}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex flex-wrap gap-2 pt-1">
                   <a
-                    href={p.links.caseStudy}
+                    href={p.links.live}
                     target="_blank"
                     rel="noopener noreferrer"
-                    
                   >
-                    <Button variant={"secondary"}>
-
-
-                    Case study
-                    <span class="text-[10px]">↗</span>
+                    <Button>
+                      Visit site
+                      <span class="text-[10px]">↗</span>
                     </Button>
                   </a>
-                )}
+                  {p.links.caseStudy && (
+                    <a
+                      href={p.links.caseStudy}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Button variant={"secondary"}>
+                        Case study
+                        <span class="text-[10px]">↗</span>
+                      </Button>
+                    </a>
+                  )}
+                </div>
               </div>
             </div>
 
-             <!-- Project Image -->
-            <div class="relative aspect-video w-full overflow-hidden border border-border rounded-lg">
+            {/* Project Image */}
+            <div class="relative aspect-video w-full overflow-hidden rounded-lg border border-border">
               <img
                 src={p.img}
                 alt={p.title}
@@ -231,46 +255,46 @@ const BASE_TOP_OFFSET = 72;
 <!-- Script to calculate scroll positions and detect if a card is currently stuck -->
 <script>
   function setupStickyObserver() {
-    const cards = document.querySelectorAll('.sticky-card');
-    
+    const cards = document.querySelectorAll(".sticky-card")
+
     const checkStickyStates = () => {
       cards.forEach((card) => {
         // Parse the exact top property we assigned in the HTML
-        const styleAttr = card.getAttribute('style') || '';
-        const match = styleAttr.match(/top:\s*([0-9.]+)px/);
-        const rect = card.getBoundingClientRect();
+        const styleAttr = card.getAttribute("style") || ""
+        const match = styleAttr.match(/top:\s*([0-9.]+)px/)
+        const rect = card.getBoundingClientRect()
 
         // If we couldn't parse a sticky top value, mark as not stuck and skip
         if (!match) {
-          card.setAttribute('data-stuck', 'false');
-          return;
+          card.setAttribute("data-stuck", "false")
+          return
         }
 
-        const stickyTop = parseFloat(match[1]);
+        const stickyTop = parseFloat(match[1])
 
         // If the card is flush with its sticky top boundary (or past it), mark it as stuck
         // We use <= stickyTop + 1 to account for sub-pixel rendering variations
         if (rect.top <= stickyTop + 1) {
-          card.setAttribute('data-stuck', 'true');
+          card.setAttribute("data-stuck", "true")
         } else {
-          card.setAttribute('data-stuck', 'false');
+          card.setAttribute("data-stuck", "false")
         }
-      });
-    };
+      })
+    }
 
     // Attach listeners
-    window.addEventListener('scroll', checkStickyStates, { passive: true });
-    window.addEventListener('resize', checkStickyStates, { passive: true });
-    
+    window.addEventListener("scroll", checkStickyStates, { passive: true })
+    window.addEventListener("resize", checkStickyStates, { passive: true })
+
     // Check states immediately on load
-    checkStickyStates();
+    checkStickyStates()
   }
 
   // Ensure compatibility with Astro's View Transitions if enabled
-  document.addEventListener('astro:page-load', setupStickyObserver);
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', setupStickyObserver);
+  document.addEventListener("astro:page-load", setupStickyObserver)
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", setupStickyObserver)
   } else {
-    setupStickyObserver();
+    setupStickyObserver()
   }
 </script>
