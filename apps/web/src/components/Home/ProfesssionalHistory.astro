@@ -1,4 +1,6 @@
 ---
+import { Button } from "@workspace/ui/components/button"
+
 const experiences = [
   {
     year: "2023",
@@ -16,13 +18,23 @@ const experiences = [
       "Shipped 3 major releases with zero critical production incidents",
       "Architected microservices migration from monolith",
     ],
-    technologies: ["TypeScript", "React", "Node.js", "AWS", "PostgreSQL", "Redis", "Docker", "GraphQL"],
+    technologies: [
+      "TypeScript",
+      "React",
+      "Node.js",
+      "AWS",
+      "PostgreSQL",
+      "Redis",
+      "Docker",
+      "GraphQL",
+    ],
     stats: [
       { label: "Performance Gain", value: "40%" },
       { label: "Engineers Mentored", value: "4" },
       { label: "Releases Shipped", value: "3" },
     ],
-    learned: "Learned how to balance technical debt reduction with feature velocity in a high-growth environment.",
+    learned:
+      "Learned how to balance technical debt reduction with feature velocity in a high-growth environment.",
   },
   {
     year: "2021",
@@ -40,13 +52,23 @@ const experiences = [
       "Integrated Stripe payments processing $2M+ monthly",
       "Built internal analytics dashboard used by 3 teams",
     ],
-    technologies: ["JavaScript", "Next.js", "PostgreSQL", "Stripe", "GitHub Actions", "Vercel", "Prisma", "Tailwind"],
+    technologies: [
+      "JavaScript",
+      "Next.js",
+      "PostgreSQL",
+      "Stripe",
+      "GitHub Actions",
+      "Vercel",
+      "Prisma",
+      "Tailwind",
+    ],
     stats: [
       { label: "Deployment Speedup", value: "60%" },
       { label: "Monthly Users", value: "200K" },
       { label: "Revenue Processed", value: "$2M+" },
     ],
-    learned: "Mastered the art of incremental migrations — rewriting systems in production without disrupting users.",
+    learned:
+      "Mastered the art of incremental migrations — rewriting systems in production without disrupting users.",
   },
   {
     year: "2020",
@@ -64,19 +86,30 @@ const experiences = [
       "Reduced bundle size by 35% through code splitting",
       "Achieved 95+ Lighthouse score across all landing pages",
     ],
-    technologies: ["HTML/CSS", "Vue.js", "Firebase", "Figma", "Webpack", "Jest", "Sass", "PWA"],
+    technologies: [
+      "HTML/CSS",
+      "Vue.js",
+      "Firebase",
+      "Figma",
+      "Webpack",
+      "Jest",
+      "Sass",
+      "PWA",
+    ],
     stats: [
       { label: "Components Built", value: "20+" },
       { label: "Bundle Size Reduction", value: "35%" },
       { label: "Lighthouse Score", value: "95+" },
     ],
-    learned: "Developed a deep appreciation for design systems and how great component architecture scales with the product.",
+    learned:
+      "Developed a deep appreciation for design systems and how great component architecture scales with the product.",
   },
 ]
 
 const totalYears = 5
 const totalCompanies = experiences.length
-const totalTech = [...new Set(experiences.flatMap((e) => e.technologies))].length
+const totalTech = [...new Set(experiences.flatMap((e) => e.technologies))]
+  .length
 ---
 
 <section
@@ -87,7 +120,9 @@ const totalTech = [...new Set(experiences.flatMap((e) => e.technologies))].lengt
     <div class="bg-background/40 shadow-sm backdrop-blur-3xl">
       <!-- Top Header Section -->
       <div class="border-b border-border text-center">
-        <p class="mb-4 pt-6 text-[10px] tracking-[0.2em] text-muted-foreground uppercase">
+        <p
+          class="mb-4 pt-6 text-[10px] tracking-[0.2em] text-muted-foreground uppercase"
+        >
           A brief overview of my professional journey, highlighting key roles,
           projects, and achievements that have shaped my career in software
           development.
@@ -95,23 +130,46 @@ const totalTech = [...new Set(experiences.flatMap((e) => e.technologies))].lengt
         <h1 class="mb-4 font-black tracking-tighter text-foreground italic">
           Professional <span class="font-bold text-primary">History</span>
         </h1>
-        <p class="mb-6 text-[11px] font-semibold tracking-[0.15em] text-foreground uppercase">
-          The places I've worked, the projects I've built, and the impact I've made
+        <p
+          class="mb-6 text-[11px] font-semibold tracking-[0.15em] text-foreground uppercase"
+        >
+          The places I've worked, the projects I've built, and the impact I've
+          made
         </p>
 
         <!-- Summary Stats Bar -->
-        <div class="border-t border-border grid grid-cols-3 divide-x divide-border">
-          <div class="py-5 flex flex-col items-center gap-1 group">
-            <span class="text-3xl font-black tracking-tighter text-primary tabular-nums">{totalYears}+</span>
-            <span class="text-[9px] tracking-[0.2em] uppercase text-muted-foreground font-semibold">Years Experience</span>
+        <div
+          class="grid grid-cols-3 divide-x divide-border border-t border-border"
+        >
+          <div class="group flex flex-col items-center gap-1 py-5">
+            <span
+              class="text-3xl font-black tracking-tighter text-primary tabular-nums"
+              >{totalYears}+</span
+            >
+            <span
+              class="text-[9px] font-semibold tracking-[0.2em] text-muted-foreground uppercase"
+              >Years Experience</span
+            >
           </div>
-          <div class="py-5 flex flex-col items-center gap-1 group">
-            <span class="text-3xl font-black tracking-tighter text-primary tabular-nums">{totalCompanies}</span>
-            <span class="text-[9px] tracking-[0.2em] uppercase text-muted-foreground font-semibold">Companies</span>
+          <div class="group flex flex-col items-center gap-1 py-5">
+            <span
+              class="text-3xl font-black tracking-tighter text-primary tabular-nums"
+              >{totalCompanies}</span
+            >
+            <span
+              class="text-[9px] font-semibold tracking-[0.2em] text-muted-foreground uppercase"
+              >Companies</span
+            >
           </div>
-          <div class="py-5 flex flex-col items-center gap-1 group">
-            <span class="text-3xl font-black tracking-tighter text-primary tabular-nums">{totalTech}+</span>
-            <span class="text-[9px] tracking-[0.2em] uppercase text-muted-foreground font-semibold">Technologies</span>
+          <div class="group flex flex-col items-center gap-1 py-5">
+            <span
+              class="text-3xl font-black tracking-tighter text-primary tabular-nums"
+              >{totalTech}+</span
+            >
+            <span
+              class="text-[9px] font-semibold tracking-[0.2em] text-muted-foreground uppercase"
+              >Technologies</span
+            >
           </div>
         </div>
       </div>
@@ -119,7 +177,9 @@ const totalTech = [...new Set(experiences.flatMap((e) => e.technologies))].lengt
 
     <div class="flex w-full border border-border">
       <!-- Vertical Label -->
-      <div class="flex w-20 items-center justify-center px-4 py-8 text-5xl font-semibold text-muted-foreground border-r border-border">
+      <div
+        class="flex w-20 items-center justify-center border-r border-border px-4 py-8 text-5xl font-semibold text-muted-foreground"
+      >
         <h2 class="inline-block origin-center -rotate-90 whitespace-nowrap">
           Track Record
         </h2>
@@ -127,41 +187,63 @@ const totalTech = [...new Set(experiences.flatMap((e) => e.technologies))].lengt
 
       <!-- Grid Background -->
       <div
-        class="relative w-full font-sans bg-[linear-gradient(rgba(128,128,128,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(128,128,128,0.08)_1px,transparent_1px)] bg-[length:40px_40px]"
+        class="relative w-full bg-[linear-gradient(rgba(128,128,128,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(128,128,128,0.08)_1px,transparent_1px)] bg-[length:40px_40px] font-sans"
       >
         <div class="mx-auto border border-border bg-transparent">
           {
             experiences.map((exp, index) => (
-              <div class={`exp-entry flex flex-col ${index !== experiences.length - 1 ? "border-b" : ""} border-border md:flex-row`}>
+              <div
+                class={`exp-entry flex flex-col ${index !== experiences.length - 1 ? "border-b" : ""} border-border md:flex-row`}
+              >
                 {/* Left Column: Dates + Stats */}
                 <div class="flex w-full flex-row justify-between border-b border-border md:w-1/4 md:flex-col md:border-r md:border-b-0 md:p-8 lg:w-[22%]">
                   <h2 class="text-6xl font-black tracking-tighter text-foreground md:text-7xl">
                     {exp.year}
                   </h2>
-                  <p class="mt-auto pt-8 text-[10px] font-bold tracking-widest uppercase text-muted-foreground md:text-xs">
+                  <p class="mt-auto pt-8 text-[10px] font-bold tracking-widest text-muted-foreground uppercase md:text-xs">
                     {exp.period}
                   </p>
 
                   {/* Achievement stats */}
-                  <div class="hidden md:flex flex-col gap-3 mt-8 pt-8 border-t border-border">
+                  <div class="mt-8 hidden flex-col gap-3 border-t border-border pt-8 md:flex">
                     {exp.stats.map((stat) => (
                       <div>
-                        <div class="text-xl font-black tracking-tighter text-primary">{stat.value}</div>
-                        <div class="text-[9px] tracking-[0.15em] uppercase text-muted-foreground font-semibold leading-tight">{stat.label}</div>
+                        <div class="text-xl font-black tracking-tighter text-primary">
+                          {stat.value}
+                        </div>
+                        <div class="text-[9px] leading-tight font-semibold tracking-[0.15em] text-muted-foreground uppercase">
+                          {stat.label}
+                        </div>
                       </div>
                     ))}
                   </div>
 
                   {/* Location + Type badge */}
-                  <div class="hidden md:flex flex-col gap-2 mt-6">
+                  <div class="mt-6 hidden flex-col gap-2 md:flex">
                     <div class="flex items-center gap-1.5">
-                      <svg class="w-2.5 h-2.5 text-muted-foreground shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                      <svg
+                        class="h-2.5 w-2.5 shrink-0 text-muted-foreground"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        stroke-width="2"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                        />
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                        />
                       </svg>
-                      <span class="text-[9px] tracking-wider text-muted-foreground uppercase">{exp.location}</span>
+                      <span class="text-[9px] tracking-wider text-muted-foreground uppercase">
+                        {exp.location}
+                      </span>
                     </div>
-                    <div class="inline-flex w-fit items-center border border-primary/30 bg-primary/5 px-2 py-0.5 text-[9px] font-bold tracking-widest uppercase text-primary">
+                    <div class="inline-flex w-fit items-center border border-primary/30 bg-primary/5 px-2 py-0.5 text-[9px] font-bold tracking-widest text-primary uppercase">
                       {exp.type}
                     </div>
                   </div>
@@ -171,13 +253,13 @@ const totalTech = [...new Set(experiences.flatMap((e) => e.technologies))].lengt
                 <div class="flex w-full flex-col p-6 md:w-3/4 md:p-8 lg:w-[78%]">
                   {/* Company badge + title */}
                   <div class="mb-4">
-                    <div class="mb-4 inline-block border-2 border-border px-2 py-0.5 text-[10px] font-bold tracking-widest uppercase text-foreground md:text-xs">
+                    <div class="mb-4 inline-block border-2 border-border px-2 py-0.5 text-[10px] font-bold tracking-widest text-foreground uppercase md:text-xs">
                       {exp.company}
                     </div>
-                    <h3 class="text-5xl leading-[0.85] font-black uppercase text-foreground md:text-7xl lg:text-[5.5rem]">
+                    <h3 class="text-5xl leading-[0.85] font-black text-foreground uppercase md:text-7xl lg:text-[5.5rem]">
                       {exp.title.map((line, i) => (
                         <>
-                          <span class="inline-block scale-x-[1.3] origin-left pr-[20%]">
+                          <span class="inline-block origin-left scale-x-[1.3] pr-[20%]">
                             {line}
                           </span>
                           {i < exp.title.length - 1 && <br />}
@@ -189,7 +271,9 @@ const totalTech = [...new Set(experiences.flatMap((e) => e.technologies))].lengt
                   {/* Description + Highlights grid */}
                   <div class="mt-12 grid grid-cols-1 gap-8 md:mt-24 md:grid-cols-2 md:gap-12 lg:gap-24">
                     <div>
-                      <p class="mb-4 text-[10px] font-bold text-foreground md:text-xs">&gt;&gt;</p>
+                      <p class="mb-4 text-[10px] font-bold text-foreground md:text-xs">
+                        &gt;&gt;
+                      </p>
                       <p class="text-[10px] leading-relaxed font-medium text-foreground md:text-xs">
                         {exp.description}
                       </p>
@@ -198,8 +282,12 @@ const totalTech = [...new Set(experiences.flatMap((e) => e.technologies))].lengt
                       <ul class="mt-6 flex flex-col gap-2">
                         {exp.highlights.map((h) => (
                           <li class="flex items-start gap-2">
-                            <span class="mt-px text-primary text-[10px] leading-none font-black shrink-0">▸</span>
-                            <span class="text-[10px] leading-relaxed text-muted-foreground font-medium">{h}</span>
+                            <span class="mt-px shrink-0 text-[10px] leading-none font-black text-primary">
+                              ▸
+                            </span>
+                            <span class="text-[10px] leading-relaxed font-medium text-muted-foreground">
+                              {h}
+                            </span>
                           </li>
                         ))}
                       </ul>
@@ -208,10 +296,12 @@ const totalTech = [...new Set(experiences.flatMap((e) => e.technologies))].lengt
                     <div class="flex flex-col gap-8">
                       {/* Technologies */}
                       <div>
-                        <p class="mb-3 text-[10px] font-bold text-foreground md:text-xs">&gt;&gt; STACK</p>
+                        <p class="mb-3 text-[10px] font-bold text-foreground md:text-xs">
+                          &gt;&gt; STACK
+                        </p>
                         <div class="flex flex-wrap gap-1.5">
                           {exp.technologies.map((tech) => (
-                            <span class="inline-flex items-center border border-border bg-muted/40 px-2 py-0.5 text-[9px] font-bold tracking-wider uppercase text-foreground hover:border-primary/50 hover:text-primary transition-colors duration-200">
+                            <span class="inline-flex items-center border border-border bg-muted/40 px-2 py-0.5 text-[9px] font-bold tracking-wider text-foreground uppercase transition-colors duration-200 hover:border-primary/50 hover:text-primary">
                               {tech}
                             </span>
                           ))}
@@ -220,7 +310,9 @@ const totalTech = [...new Set(experiences.flatMap((e) => e.technologies))].lengt
 
                       {/* What I learned */}
                       <div class="border-l-2 border-primary/40 pl-4">
-                        <p class="mb-2 text-[9px] font-bold tracking-[0.2em] uppercase text-primary">KEY TAKEAWAY</p>
+                        <p class="mb-2 text-[9px] font-bold tracking-[0.2em] text-primary uppercase">
+                          KEY TAKEAWAY
+                        </p>
                         <p class="text-[10px] leading-relaxed font-medium text-muted-foreground italic">
                           "{exp.learned}"
                         </p>
@@ -230,8 +322,12 @@ const totalTech = [...new Set(experiences.flatMap((e) => e.technologies))].lengt
                       <div class="flex gap-6 md:hidden">
                         {exp.stats.map((stat) => (
                           <div>
-                            <div class="text-xl font-black tracking-tighter text-primary">{stat.value}</div>
-                            <div class="text-[9px] tracking-[0.15em] uppercase text-muted-foreground font-semibold leading-tight">{stat.label}</div>
+                            <div class="text-xl font-black tracking-tighter text-primary">
+                              {stat.value}
+                            </div>
+                            <div class="text-[9px] leading-tight font-semibold tracking-[0.15em] text-muted-foreground uppercase">
+                              {stat.label}
+                            </div>
                           </div>
                         ))}
                       </div>
@@ -244,21 +340,33 @@ const totalTech = [...new Set(experiences.flatMap((e) => e.technologies))].lengt
         </div>
 
         <!-- Bottom CTA strip -->
-        <div class="border-t border-border flex flex-col sm:flex-row items-center justify-between px-8 py-6 gap-4">
+        <div
+          class="flex flex-col items-center justify-between gap-4 border-t border-border px-8 py-6 sm:flex-row"
+        >
           <div class="flex items-center gap-3">
-            <div class="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
-            <p class="text-[10px] tracking-[0.2em] uppercase text-muted-foreground font-semibold">
+            <div class="h-2 w-2 animate-pulse rounded-full bg-primary"></div>
+            <p
+              class="text-[10px] font-semibold tracking-[0.2em] text-muted-foreground uppercase"
+            >
               Currently open to new opportunities
             </p>
           </div>
-          <a
-            href="#contact"
-            class="group inline-flex items-center gap-2 border border-primary/40 bg-primary/5 px-5 py-2 text-[10px] font-bold tracking-[0.2em] uppercase text-primary transition-all duration-200 hover:bg-primary hover:text-primary-foreground hover:border-primary"
-          >
-            Get In Touch
-            <svg class="w-3 h-3 transition-transform duration-200 group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/>
-            </svg>
+          <a href="#contact">
+            <Button variant="outline" size="sm">
+              Get In Touch
+              <svg
+                class="h-3 w-3 transition-transform duration-200 group-hover:translate-x-0.5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2.5"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"></path>
+              </svg>
+            </Button>
           </a>
         </div>
       </div>

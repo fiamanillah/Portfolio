@@ -80,30 +80,42 @@ const CARD_HEADER_HEIGHT = 50 // px
 const BASE_TOP_OFFSET = 72
 ---
 
-<section id="work" class="relative z-10 mx-auto">
+<section id="work" class="relative z-10 mx-auto py-12">
   <!-- Header -->
   <div class="mb-14 text-center">
-    <p class="mb-2 text-[9.5px] tracking-[0.22em] text-muted-foreground uppercase">
+    <p
+      class="mb-2 text-[9.5px] tracking-[0.22em] text-muted-foreground uppercase"
+    >
       Selected projects and case studies
     </p>
 
-    <h1 class="flex items-center justify-center gap-3 text-4xl font-black tracking-tighter text-foreground sm:text-5xl">
+    <h1
+      class="flex items-center justify-center gap-3 text-4xl font-black tracking-tighter text-foreground sm:text-5xl"
+    >
       <span>Work</span>
       <span class="text-primary">/</span>
       <span class="mt-1 flex flex-col items-start text-left leading-none">
-        <span class="text-sm font-bold tracking-widest text-foreground uppercase">Project</span>
-        <span class="mt-0.5 text-xs font-semibold tracking-tight text-muted-foreground">Showcase</span>
+        <span
+          class="text-sm font-bold tracking-widest text-foreground uppercase"
+          >Project</span
+        >
+        <span
+          class="mt-0.5 text-xs font-semibold tracking-tight text-muted-foreground"
+          >Showcase</span
+        >
       </span>
     </h1>
 
-    <p class="mx-auto mt-4 max-w-[46ch] text-[11.5px] leading-relaxed text-muted-foreground">
+    <p
+      class="mx-auto mt-4 max-w-[46ch] text-[11.5px] leading-relaxed text-muted-foreground"
+    >
       Production-ready systems, tooling and integrations that demonstrate
       engineering approach and impact.
     </p>
   </div>
 
   <!-- Stack Container -->
-  <div class="relative flex flex-col gap-12 pb-24">
+  <div class="relative flex flex-col gap-12">
     {
       projects.map((p, i) => (
         <article
@@ -114,10 +126,10 @@ const BASE_TOP_OFFSET = 72
           data-stuck="false"
         >
           {/* Corner brackets */}
-          <div class="pointer-events-none absolute top-2 left-2 z-10 h-4 w-4 border-t-[1.5px] border-l-[1.5px] border-border transition-all duration-220 group-hover:w-5 group-hover:h-5 group-hover:border-[oklch(var(--primary)/70%)]" />
-          <div class="pointer-events-none absolute top-2 right-2 z-10 h-4 w-4 border-t-[1.5px] border-r-[1.5px] border-border transition-all duration-220 group-hover:w-5 group-hover:h-5 group-hover:border-[oklch(var(--primary)/70%)]" />
-          <div class="pointer-events-none absolute bottom-2 left-2 z-10 h-4 w-4 border-b-[1.5px] border-l-[1.5px] border-border transition-all duration-220 group-hover:w-5 group-hover:h-5 group-hover:border-[oklch(var(--primary)/70%)]" />
-          <div class="pointer-events-none absolute right-2 bottom-2 z-10 h-4 w-4 border-r-[1.5px] border-b-[1.5px] border-border transition-all duration-220 group-hover:w-5 group-hover:h-5 group-hover:border-[oklch(var(--primary)/70%)]" />
+          <div class="pointer-events-none absolute top-2 left-2 z-10 h-4 w-4 border-t-[1.5px] border-l-[1.5px] border-border transition-all duration-220 group-hover:h-5 group-hover:w-5 group-hover:border-[oklch(var(--primary)/70%)]" />
+          <div class="pointer-events-none absolute top-2 right-2 z-10 h-4 w-4 border-t-[1.5px] border-r-[1.5px] border-border transition-all duration-220 group-hover:h-5 group-hover:w-5 group-hover:border-[oklch(var(--primary)/70%)]" />
+          <div class="pointer-events-none absolute bottom-2 left-2 z-10 h-4 w-4 border-b-[1.5px] border-l-[1.5px] border-border transition-all duration-220 group-hover:h-5 group-hover:w-5 group-hover:border-[oklch(var(--primary)/70%)]" />
+          <div class="pointer-events-none absolute right-2 bottom-2 z-10 h-4 w-4 border-r-[1.5px] border-b-[1.5px] border-border transition-all duration-220 group-hover:h-5 group-hover:w-5 group-hover:border-[oklch(var(--primary)/70%)]" />
 
           {/* Card header */}
           <div
@@ -136,8 +148,8 @@ const BASE_TOP_OFFSET = 72
 
               {/* Status pill */}
               <div class="hidden items-center gap-1.5 sm:flex">
-                <span class="w-1.5 h-1.5 rounded-full bg-primary animate-[pulse_2s_infinite]" />
-                <span class="font-mono text-[8px] tracking-[0.18em] uppercase text-muted-foreground">
+                <span class="h-1.5 w-1.5 animate-[pulse_2s_infinite] rounded-full bg-primary" />
+                <span class="font-mono text-[8px] tracking-[0.18em] text-muted-foreground uppercase">
                   {p.status}
                 </span>
               </div>
@@ -156,7 +168,11 @@ const BASE_TOP_OFFSET = 72
                 </Button>
               </a>
               {p.links.github && (
-                <a href={p.links.github} target="_blank" rel="noopener noreferrer">
+                <a
+                  href={p.links.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <Button variant={"outline"} size={"sm"}>
                     Code
                     <span class="text-[10px]">↗</span>
@@ -174,7 +190,7 @@ const BASE_TOP_OFFSET = 72
                   {/* Tech badges */}
                   <div class="flex flex-wrap gap-1">
                     {p.tech.map((t) => (
-                      <span class="inline-flex items-center border border-border bg-muted/30 px-2 py-0.5 font-mono text-[9px] font-bold tracking-wider uppercase text-foreground transition-all duration-180 hover:bg-[oklch(var(--primary)/12%)] hover:text-primary hover:border-[oklch(var(--primary)/40%)]">
+                      <span class="inline-flex items-center border border-border bg-muted/30 px-2 py-0.5 font-mono text-[9px] font-bold tracking-wider text-foreground uppercase transition-all duration-180 hover:border-[oklch(var(--primary)/40%)] hover:bg-[oklch(var(--primary)/12%)] hover:text-primary">
                         {t}
                       </span>
                     ))}
@@ -182,14 +198,16 @@ const BASE_TOP_OFFSET = 72
 
                   {/* Description */}
                   <div>
-                    <p class="text-[12px] leading-relaxed text-foreground/80">{p.description}</p>
+                    <p class="text-[12px] leading-relaxed text-foreground/80">
+                      {p.description}
+                    </p>
                   </div>
                 </div>
               </div>
 
               <div class="grid gap-3 sm:grid-cols-1">
                 {/* Role / Impact panel */}
-                <div class="grid gap-3 rounded-2xl border border-border bg-muted/20 p-3 transition-all duration-250 group-hover:border-[oklch(var(--primary)/25%)] group-hover:bg-[oklch(var(--primary)/4%_/_var(--color-muted)_20%)]">
+                <div class="grid gap-3 border border-border bg-muted/20 p-3 transition-all duration-250">
                   <div class="flex items-start gap-2.5">
                     <Icon
                       name="oui:app-users-roles"
@@ -225,14 +243,22 @@ const BASE_TOP_OFFSET = 72
 
                 {/* CTA Buttons */}
                 <div class="flex flex-wrap gap-2 pt-1">
-                  <a href={p.links.live} target="_blank" rel="noopener noreferrer">
+                  <a
+                    href={p.links.live}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     <Button>
                       Visit site
                       <span class="text-[10px]">↗</span>
                     </Button>
                   </a>
                   {p.links.caseStudy && (
-                    <a href={p.links.caseStudy} target="_blank" rel="noopener noreferrer">
+                    <a
+                      href={p.links.caseStudy}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       <Button variant={"secondary"}>
                         Case study
                         <span class="text-[10px]">↗</span>
@@ -244,7 +270,7 @@ const BASE_TOP_OFFSET = 72
             </div>
 
             {/* Project Image */}
-            <div class="relative aspect-video w-full overflow-hidden rounded-lg border border-border before:absolute before:inset-0 before:bg-[linear-gradient(105deg,transparent_40%,oklch(var(--primary)/8%)_50%,transparent_60%)] before:bg-[length:200%_100%] before:bg-[position:200%_0] before:pointer-events-none before:z-10 before:transition-all before:duration-600 hover:before:bg-[position:-100%_0] after:absolute after:inset-0 after:bg-[repeating-linear-gradient(0deg,transparent,transparent_3px,rgba(0,0,0,0.04)_3px,rgba(0,0,0,0.04)_4px)] after:pointer-events-none after:opacity-60 after:transition-opacity after:duration-400 group-hover:after:opacity-0 group-data-[stuck=true]:after:opacity-0">
+            <div class="relative aspect-video w-full overflow-hidden rounded-lg border border-border before:pointer-events-none before:absolute before:inset-0 before:z-10 before:bg-[linear-gradient(105deg,transparent_40%,oklch(var(--primary)/8%)_50%,transparent_60%)] before:bg-[length:200%_100%] before:bg-[position:200%_0] before:transition-all before:duration-600 after:pointer-events-none after:absolute after:inset-0 after:bg-[repeating-linear-gradient(0deg,transparent,transparent_3px,rgba(0,0,0,0.04)_3px,rgba(0,0,0,0.04)_4px)] after:opacity-60 after:transition-opacity after:duration-400 group-hover:after:opacity-0 group-data-[stuck=true]:after:opacity-0 hover:before:bg-[position:-100%_0]">
               <img
                 src={p.img}
                 alt={p.title}
@@ -252,8 +278,8 @@ const BASE_TOP_OFFSET = 72
               />
 
               {/* Bottom-left image label */}
-              <div class="absolute bottom-0 left-0 right-0 flex items-end justify-between bg-gradient-to-t from-black/50 to-transparent px-3 py-2 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                <span class="font-mono text-[9px] font-bold tracking-widest uppercase text-white/80">
+              <div class="absolute right-0 bottom-0 left-0 flex items-end justify-between bg-gradient-to-t from-black/50 to-transparent px-3 py-2 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                <span class="font-mono text-[9px] font-bold tracking-widest text-white/80 uppercase">
                   {p.title}
                 </span>
                 <span class="font-mono text-[9px] tracking-wider text-white/50">

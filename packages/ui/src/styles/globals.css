@@ -76,7 +76,8 @@
   --border: oklch(0.85 0.01 210);
   --input: oklch(0.85 0.01 210);
   --ring: oklch(0.6 0.14 200 / 40%);
-  --radius: 0.625rem; /* Clean, modern Bento-box radius */
+  --radius: 0.625rem;
+  /* Clean, modern Bento-box radius */
 
   /* Grid colors for GridLines component */
   --grid-line-color: var(--border);
@@ -85,7 +86,7 @@
 
 .dark {
   /* Dark Mode - Deep Gunmetal/Slate (Your primary aesthetic) */
-  --background: oklch(0.16 0.015 210);
+  --background: oklch(20.932% 0.02573 218.194);
   --foreground: oklch(0.97 0.01 210);
 
   /* Bento Box Cards - Slightly elevated slate to create depth */
@@ -96,9 +97,8 @@
 
   /* Primary: High-Voltage Neon Cyan */
   --primary: oklch(0.75 0.15 200);
-  --primary-foreground: oklch(
-    0.16 0.015 210
-  ); /* Dark text on glowing buttons */
+  --primary-foreground: oklch(0.16 0.015 210);
+  /* Dark text on glowing buttons */
 
   --secondary: oklch(0.26 0.015 210);
   --secondary-foreground: oklch(0.97 0.01 210);
@@ -156,13 +156,11 @@
     width: 10rem;
     height: 10rem;
     transform: translate(-50%, -50%);
-    background: radial-gradient(
-      circle,
-      rgba(17, 229, 226, 0.5) 0%,
-      rgba(17, 229, 226, 0.28) 20%,
-      rgba(17, 229, 226, 0.12) 35%,
-      transparent 65%
-    );
+    background: radial-gradient(circle,
+        rgba(17, 229, 226, 0.5) 0%,
+        rgba(17, 229, 226, 0.28) 20%,
+        rgba(17, 229, 226, 0.12) 35%,
+        transparent 65%);
     filter: blur(6rem);
     opacity: 0;
     transition: opacity 180ms ease;
@@ -179,13 +177,22 @@
     position: absolute;
     inset: 25%;
     border-radius: 50%;
-    background: radial-gradient(
-      circle,
-      rgba(17, 229, 226, 0.9) 0%,
-      rgba(17, 229, 226, 0.35) 85%,
-      transparent 100%
-    );
+    background: radial-gradient(circle,
+        rgba(17, 229, 226, 0.9) 0%,
+        rgba(17, 229, 226, 0.35) 85%,
+        transparent 100%);
     pointer-events: none;
+  }
+
+  .diagonal-stripes {
+    background-color: var(--border);
+    opacity: 0.8;
+    background-size: 10px 10px;
+    background-image: repeating-linear-gradient(45deg,
+        color-mix(in oklch, var(--primary) 10%, transparent) 0,
+        color-mix(in oklch, var(--primary) 20%, transparent) 1px,
+        var(--background) 0,
+        var(--background) 50%);
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -251,23 +258,24 @@
   table {
     margin: 0;
   }
+
   /* 
   p {
     max-width: 68ch;
   } */
 
-  p + p,
-  p + ul,
-  p + ol,
-  ul + p,
-  ol + p,
-  blockquote + p,
-  h1 + *,
-  h2 + *,
-  h3 + *,
-  h4 + *,
-  h5 + *,
-  h6 + * {
+  p+p,
+  p+ul,
+  p+ol,
+  ul+p,
+  ol+p,
+  blockquote+p,
+  h1+*,
+  h2+*,
+  h3+*,
+  h4+*,
+  h5+*,
+  h6+* {
     margin-top: 1rem;
   }
 
@@ -284,7 +292,7 @@
     list-style: decimal;
   }
 
-  li + li {
+  li+li {
     margin-top: 0.35rem;
   }
 
