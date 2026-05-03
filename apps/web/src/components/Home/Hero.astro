@@ -68,7 +68,7 @@ import { TextScramble } from "@workspace/ui/components/text-scramble"
       <!-- Call to Action: Email Input -->
       <div class="w-full max-w-md">
         <InputGroup
-          className="h-14 rounded-full border-2 border-primary bg-foreground text-2xl! font-medium text-background"
+          className="h-14 rounded-full border-2 border-border bg-foreground text-2xl! font-medium text-background"
         >
           <InputGroupInput
             type="email"
@@ -258,7 +258,7 @@ import { TextScramble } from "@workspace/ui/components/text-scramble"
             ].map(({ name, color }) => (
               <Badge
                 variant={"outline"}
-                className="border-border/40 bg-background/50 py-1 backdrop-blur-sm"
+                className="border-border bg-background/50 py-1 backdrop-blur-sm"
               >
                 <span
                   class="mr-2 h-1.5 w-1.5 shrink-0 rounded-full"
@@ -298,3 +298,49 @@ import { TextScramble } from "@workspace/ui/components/text-scramble"
     </div>
   </div>
 </section>
+
+<script>
+  function setupStickyObserver() {
+    const cards = document.querySelectorAll(".sticky-card")
+
+    const checkStickyStates = () => {
+      cards.forEach((card) => {
+        // Parse the exact top property we assigned in the HTML
+        const styleAttr = card.getAttribute("style") || ""
+        const match = styleAttr.match(/top:\s*([0-9.]+)px/)
+        const rect = card.getBoundingClientRect()
+
+        // If we couldn't parse a sticky top value, mark as not stuck and skip
+        if (!match) {
+          card.setAttribute("data-stuck", "false")
+          return
+        }
+
+        const stickyTop = parseFloat(match[1])
+
+        // If the card is flush with its sticky top boundary (or past it), mark it as stuck
+        // We use <= stickyTop + 1 to account for sub-pixel rendering variations
+        if (rect.top <= stickyTop + 1) {
+          card.setAttribute("data-stuck", "true")
+        } else {
+          card.setAttribute("data-stuck", "false")
+        }
+      })
+    }
+
+    // Attach listeners
+    window.addEventListener("scroll", checkStickyStates, { passive: true })
+    window.addEventListener("resize", checkStickyStates, { passive: true })
+
+    // Check states immediately on load
+    checkStickyStates()
+  }
+
+  // Ensure compatibility with Astro's View Transitions if enabled
+  document.addEventListener("astro:page-load", setupStickyObserver)
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", setupStickyObserver)
+  } else {
+    setupStickyObserver()
+  }
+</script>

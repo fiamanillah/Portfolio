@@ -73,14 +73,14 @@
   --accent-foreground: oklch(0.18 0.02 210);
 
   --destructive: oklch(0.55 0.18 25);
-  --border: oklch(0.88 0.01 210);
-  --input: oklch(0.88 0.01 210);
+  --border: oklch(0.85 0.01 210);
+  --input: oklch(0.85 0.01 210);
   --ring: oklch(0.6 0.14 200 / 40%);
   --radius: 0.625rem; /* Clean, modern Bento-box radius */
 
   /* Grid colors for GridLines component */
-  --grid-line-color: rgba(0, 220, 200, 0.18);
-  --grid-cross-color: rgba(0, 220, 200, 0.55);
+  --grid-line-color: var(--border);
+  --grid-cross-color: var(--primary);
 }
 
 .dark {
@@ -112,8 +112,8 @@
   --destructive: oklch(0.6 0.18 25);
 
   /* Crisp, subtle borders for defining UI boundaries */
-  --border: oklch(0.3 0.015 210);
-  --input: oklch(0.3 0.015 210);
+  --border: oklch(0.35 0.015 210);
+  --input: oklch(0.35 0.015 210);
   --ring: oklch(0.75 0.15 200 / 50%);
 
   /* Grid colors for GridLines component */

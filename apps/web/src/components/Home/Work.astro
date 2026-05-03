@@ -20,6 +20,8 @@ const projects = [
     },
     img: "/assets/images/project1.png",
     index: "01",
+    status: "Live",
+    year: "2024",
   },
   {
     title: "VertiAccess Portal",
@@ -31,11 +33,13 @@ const projects = [
     tech: ["Next.js", "TypeScript", "PostgreSQL", "Docker"],
     links: {
       live: "https://vertiaccess.com",
-      github: null, // Hide button if null
+      github: null,
       caseStudy: "#",
     },
     img: "/assets/images/project2.png",
     index: "02",
+    status: "Live",
+    year: "2024",
   },
   {
     title: "Automated Content Pipeline",
@@ -51,6 +55,8 @@ const projects = [
     },
     img: "/assets/images/project3.png",
     index: "03",
+    status: "Shipped",
+    year: "2023",
   },
   {
     title: "CyberNark",
@@ -65,6 +71,8 @@ const projects = [
     },
     img: "/assets/images/project3.png",
     index: "04",
+    status: "Deployed",
+    year: "2023",
   },
 ]
 
@@ -75,32 +83,20 @@ const BASE_TOP_OFFSET = 72
 <section id="work" class="relative z-10 mx-auto">
   <!-- Header -->
   <div class="mb-14 text-center">
-    <p
-      class="mb-2 text-[9.5px] tracking-[0.22em] text-muted-foreground uppercase"
-    >
+    <p class="mb-2 text-[9.5px] tracking-[0.22em] text-muted-foreground uppercase">
       Selected projects and case studies
     </p>
 
-    <h1
-      class="flex items-center justify-center gap-3 text-4xl font-black tracking-tighter text-foreground sm:text-5xl"
-    >
+    <h1 class="flex items-center justify-center gap-3 text-4xl font-black tracking-tighter text-foreground sm:text-5xl">
       <span>Work</span>
       <span class="text-primary">/</span>
       <span class="mt-1 flex flex-col items-start text-left leading-none">
-        <span
-          class="text-sm font-bold tracking-widest text-foreground uppercase"
-          >Project</span
-        >
-        <span
-          class="mt-0.5 text-xs font-semibold tracking-tight text-muted-foreground"
-          >Showcase</span
-        >
+        <span class="text-sm font-bold tracking-widest text-foreground uppercase">Project</span>
+        <span class="mt-0.5 text-xs font-semibold tracking-tight text-muted-foreground">Showcase</span>
       </span>
     </h1>
 
-    <p
-      class="mx-auto mt-4 max-w-[46ch] text-[11.5px] leading-relaxed text-muted-foreground"
-    >
+    <p class="mx-auto mt-4 max-w-[46ch] text-[11.5px] leading-relaxed text-muted-foreground">
       Production-ready systems, tooling and integrations that demonstrate
       engineering approach and impact.
     </p>
@@ -111,33 +107,48 @@ const BASE_TOP_OFFSET = 72
     {
       projects.map((p, i) => (
         <article
-          class={`sticky-card group sticky flex flex-col border border-border bg-background transition-colors ${
+          class={`sticky-card group sticky flex flex-col border-b border-border bg-background transition-all duration-250 hover:shadow-[0_0_0_1px_oklch(var(--primary)/20%),0_8px_32px_-8px_oklch(var(--primary)/12%)] ${
             i > 0 ? " origin-top" : ""
           }`}
           style={`top: ${BASE_TOP_OFFSET + i * CARD_HEADER_HEIGHT}px; z-index: ${10 + i};`}
           data-stuck="false"
         >
           {/* Corner brackets */}
-          <div class="pointer-events-none absolute top-2 left-2 z-10 h-4 w-4 border-t-[1.5px] border-l-[1.5px] border-foreground" />
-          <div class="pointer-events-none absolute top-2 right-2 z-10 h-4 w-4 border-t-[1.5px] border-r-[1.5px] border-foreground" />
-          <div class="pointer-events-none absolute bottom-2 left-2 z-10 h-4 w-4 border-b-[1.5px] border-l-[1.5px] border-foreground" />
-          <div class="pointer-events-none absolute right-2 bottom-2 z-10 h-4 w-4 border-r-[1.5px] border-b-[1.5px] border-foreground" />
+          <div class="pointer-events-none absolute top-2 left-2 z-10 h-4 w-4 border-t-[1.5px] border-l-[1.5px] border-border transition-all duration-220 group-hover:w-5 group-hover:h-5 group-hover:border-[oklch(var(--primary)/70%)]" />
+          <div class="pointer-events-none absolute top-2 right-2 z-10 h-4 w-4 border-t-[1.5px] border-r-[1.5px] border-border transition-all duration-220 group-hover:w-5 group-hover:h-5 group-hover:border-[oklch(var(--primary)/70%)]" />
+          <div class="pointer-events-none absolute bottom-2 left-2 z-10 h-4 w-4 border-b-[1.5px] border-l-[1.5px] border-border transition-all duration-220 group-hover:w-5 group-hover:h-5 group-hover:border-[oklch(var(--primary)/70%)]" />
+          <div class="pointer-events-none absolute right-2 bottom-2 z-10 h-4 w-4 border-r-[1.5px] border-b-[1.5px] border-border transition-all duration-220 group-hover:w-5 group-hover:h-5 group-hover:border-[oklch(var(--primary)/70%)]" />
 
           {/* Card header */}
           <div
-            class="flex items-start justify-between gap-6 border px-4 py-3"
+            class="flex items-start justify-between gap-6 border-t px-4 py-3"
             style={`height: ${CARD_HEADER_HEIGHT}px;`}
           >
-            <div class="flex min-w-0 flex-1">
-              <p class="text-[9.5px] tracking-[0.15em] text-muted-foreground">
+            <div class="flex min-w-0 flex-1 items-center gap-3">
+              {/* Accent index */}
+              <span class="font-mono text-[9.5px] font-bold tracking-[0.2em] text-muted-foreground tabular-nums transition-colors duration-200 group-hover:text-primary">
                 {p.index}
-              </p>
+              </span>
+
               <h3 class="truncate leading-snug font-black tracking-tight text-primary transition-all duration-300 group-data-[stuck=true]:text-2xl group-data-[stuck=true]:text-foreground">
                 {p.title}
               </h3>
+
+              {/* Status pill */}
+              <div class="hidden items-center gap-1.5 sm:flex">
+                <span class="w-1.5 h-1.5 rounded-full bg-primary animate-[pulse_2s_infinite]" />
+                <span class="font-mono text-[8px] tracking-[0.18em] uppercase text-muted-foreground">
+                  {p.status}
+                </span>
+              </div>
             </div>
 
             <div class="flex shrink-0 items-center gap-2">
+              {/* Year label */}
+              <span class="hidden font-mono text-[9px] tracking-widest text-muted-foreground sm:block">
+                {p.year}
+              </span>
+
               <a href={p.links.live} target="_blank" rel="noopener noreferrer">
                 <Button variant={"outline"} size={"sm"}>
                   Live
@@ -145,11 +156,7 @@ const BASE_TOP_OFFSET = 72
                 </Button>
               </a>
               {p.links.github && (
-                <a
-                  href={p.links.github}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
+                <a href={p.links.github} target="_blank" rel="noopener noreferrer">
                   <Button variant={"outline"} size={"sm"}>
                     Code
                     <span class="text-[10px]">↗</span>
@@ -164,20 +171,25 @@ const BASE_TOP_OFFSET = 72
             <div class="flex flex-col justify-between gap-4">
               <div class="flex flex-wrap gap-1.5">
                 <div class="flex flex-col gap-2">
-                  <div>
+                  {/* Tech badges */}
+                  <div class="flex flex-wrap gap-1">
                     {p.tech.map((t) => (
-                      <Badge variant={"outline"}>{t}</Badge>
+                      <span class="inline-flex items-center border border-border bg-muted/30 px-2 py-0.5 font-mono text-[9px] font-bold tracking-wider uppercase text-foreground transition-all duration-180 hover:bg-[oklch(var(--primary)/12%)] hover:text-primary hover:border-[oklch(var(--primary)/40%)]">
+                        {t}
+                      </span>
                     ))}
                   </div>
 
+                  {/* Description */}
                   <div>
-                    <p>{p.description}</p>
+                    <p class="text-[12px] leading-relaxed text-foreground/80">{p.description}</p>
                   </div>
                 </div>
               </div>
 
               <div class="grid gap-3 sm:grid-cols-1">
-                <div class="grid gap-3 rounded-2xl border border-border bg-muted/20 p-3">
+                {/* Role / Impact panel */}
+                <div class="grid gap-3 rounded-2xl border border-border bg-muted/20 p-3 transition-all duration-250 group-hover:border-[oklch(var(--primary)/25%)] group-hover:bg-[oklch(var(--primary)/4%_/_var(--color-muted)_20%)]">
                   <div class="flex items-start gap-2.5">
                     <Icon
                       name="oui:app-users-roles"
@@ -193,7 +205,7 @@ const BASE_TOP_OFFSET = 72
                     </div>
                   </div>
 
-                  <div class="h-px bg-border/70" />
+                  <div class="h-px bg-border" />
 
                   <div class="flex items-start gap-2.5">
                     <Icon
@@ -210,23 +222,17 @@ const BASE_TOP_OFFSET = 72
                     </div>
                   </div>
                 </div>
+
+                {/* CTA Buttons */}
                 <div class="flex flex-wrap gap-2 pt-1">
-                  <a
-                    href={p.links.live}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
+                  <a href={p.links.live} target="_blank" rel="noopener noreferrer">
                     <Button>
                       Visit site
                       <span class="text-[10px]">↗</span>
                     </Button>
                   </a>
                   {p.links.caseStudy && (
-                    <a
-                      href={p.links.caseStudy}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
+                    <a href={p.links.caseStudy} target="_blank" rel="noopener noreferrer">
                       <Button variant={"secondary"}>
                         Case study
                         <span class="text-[10px]">↗</span>
@@ -238,12 +244,22 @@ const BASE_TOP_OFFSET = 72
             </div>
 
             {/* Project Image */}
-            <div class="relative aspect-video w-full overflow-hidden rounded-lg border border-border">
+            <div class="relative aspect-video w-full overflow-hidden rounded-lg border border-border before:absolute before:inset-0 before:bg-[linear-gradient(105deg,transparent_40%,oklch(var(--primary)/8%)_50%,transparent_60%)] before:bg-[length:200%_100%] before:bg-[position:200%_0] before:pointer-events-none before:z-10 before:transition-all before:duration-600 hover:before:bg-[position:-100%_0] after:absolute after:inset-0 after:bg-[repeating-linear-gradient(0deg,transparent,transparent_3px,rgba(0,0,0,0.04)_3px,rgba(0,0,0,0.04)_4px)] after:pointer-events-none after:opacity-60 after:transition-opacity after:duration-400 group-hover:after:opacity-0 group-data-[stuck=true]:after:opacity-0">
               <img
                 src={p.img}
                 alt={p.title}
                 class="h-full w-full object-cover grayscale transition duration-700 group-hover:grayscale-0 group-data-[stuck=true]:grayscale-0"
               />
+
+              {/* Bottom-left image label */}
+              <div class="absolute bottom-0 left-0 right-0 flex items-end justify-between bg-gradient-to-t from-black/50 to-transparent px-3 py-2 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                <span class="font-mono text-[9px] font-bold tracking-widest uppercase text-white/80">
+                  {p.title}
+                </span>
+                <span class="font-mono text-[9px] tracking-wider text-white/50">
+                  {p.index} / 04
+                </span>
+              </div>
             </div>
           </div>
         </article>

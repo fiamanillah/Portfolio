@@ -9,31 +9,86 @@ const navLinks = [
 import { ModeToggle } from "@workspace/ui/components/ModeToggle"
 ---
 
-<nav
-  aria-label="Primary"
-  class="z-50 flex flex-col items-start gap-3 py-4 sm:flex-row sm:items-center sm:justify-between"
->
-  <a
-    href="/"
-    class="text-lg font-semibold tracking-tight text-foreground transition-colors hover:text-primary"
+<nav aria-label="Primary" class="z-50 backdrop-blur-sm">
+  <div
+    class="container mx-auto flex items-center justify-between px-4 py-3 sm:py-4"
   >
-    <img
-      src="/logo1.svg"
-      alt="Fi Amanillah Logo"
-      class="mr-2 inline h-6 w-6"
-    />Fi Amanillah
-  </a>
+    <!-- Logo -->
+    <a
+      href="/"
+      class="flex items-center text-lg font-semibold tracking-tight text-foreground transition-colors hover:text-primary"
+    >
+      <img src="/logo1.svg" alt="Fi Amanillah Logo" class="mr-2 h-6 w-6" />
+      <span class="hidden sm:inline">Fi Amanillah</span>
+    </a>
 
-  <div class="flex w-full flex-wrap items-center gap-3 sm:w-auto sm:gap-4">
+    <!-- Desktop Navigation -->
+    <div class="hidden gap-8 sm:flex sm:items-center">
+      <ul
+        class="flex items-center gap-6 text-sm font-medium text-muted-foreground"
+      >
+        {
+          navLinks.map((link) => (
+            <li class="m-0 list-none">
+              <a
+                href={link.href}
+                class="rounded-md px-2 py-1 transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:outline-none"
+              >
+                {link.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <div class="flex items-center">
+        <ModeToggle client:load />
+      </div>
+    </div>
+
+    <!-- Mobile Menu Button & Theme Toggle -->
+    <div class="flex items-center gap-2 sm:hidden">
+      <ModeToggle client:load />
+      <button
+        id="mobile-menu-btn"
+        aria-label="Toggle menu"
+        aria-expanded="false"
+        class="rounded-md p-2 transition-colors hover:bg-background focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:outline-none"
+      >
+        <svg
+          id="menu-icon"
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="h-5 w-5 text-foreground transition-transform"
+        >
+          <line x1="4" y1="6" x2="20" y2="6"></line>
+          <line x1="4" y1="12" x2="20" y2="12"></line>
+          <line x1="4" y1="18" x2="20" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile Navigation Menu -->
+  <div
+    id="mobile-menu"
+    class="hidden border-t border-border bg-background/95 backdrop-blur-sm sm:hidden"
+  >
     <ul
-      class="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm font-medium text-muted-foreground"
+      class="flex flex-col items-start gap-1 px-4 py-3 text-sm font-medium text-muted-foreground"
     >
       {
         navLinks.map((link) => (
-          <li class="m-0 list-none!">
+          <li class="m-0 w-full list-none">
             <a
               href={link.href}
-              class="rounded-md px-2 py-1 transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:outline-none"
+              class="block rounded-md px-3 py-2 transition-colors hover:bg-primary/10 hover:text-foreground focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:outline-none"
             >
               {link.label}
             </a>
@@ -41,9 +96,35 @@ import { ModeToggle } from "@workspace/ui/components/ModeToggle"
         ))
       }
     </ul>
-
-    <div class="flex items-center">
-      <ModeToggle client:load />
-    </div>
   </div>
 </nav>
+
+<script>
+  const mobileMenuBtn = document.getElementById("mobile-menu-btn")
+  const mobileMenu = document.getElementById("mobile-menu")
+  const menuIcon = document.getElementById("menu-icon")
+
+  if (mobileMenuBtn && mobileMenu) {
+    mobileMenuBtn.addEventListener("click", () => {
+      const isOpen = mobileMenu.classList.contains("hidden")
+      mobileMenu.classList.toggle("hidden")
+      mobileMenuBtn.setAttribute("aria-expanded", String(isOpen))
+
+      // Animate icon
+      menuIcon?.style.setProperty(
+        "transform",
+        isOpen ? "rotate(90deg)" : "rotate(0deg)"
+      )
+    })
+
+    // Close menu when a link is clicked
+    const menuLinks = mobileMenu.querySelectorAll("a")
+    menuLinks.forEach((link) => {
+      link.addEventListener("click", () => {
+        mobileMenu.classList.add("hidden")
+        mobileMenuBtn?.setAttribute("aria-expanded", "false")
+        menuIcon?.style.setProperty("transform", "rotate(0deg)")
+      })
+    })
+  }
+</script>

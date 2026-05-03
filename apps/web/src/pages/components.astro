@@ -40,7 +40,7 @@ const colorTokens = [
       class="mx-auto flex w-full max-w-6xl flex-col gap-4 px-4 py-4 md:gap-5 md:px-6 md:py-6"
     >
       <section
-        class="rounded-3xl border border-border/70 bg-card/90 p-4 backdrop-blur-sm md:p-5"
+        class="rounded-3xl border border-border bg-card/90 p-4 backdrop-blur-sm md:p-5"
       >
         <p class="text-xs tracking-[0.16em] text-muted-foreground uppercase">
           Design System
@@ -54,7 +54,7 @@ const colorTokens = [
 
       <section class="grid gap-4">
         <article
-          class="rounded-3xl border border-border/70 bg-card/80 p-4 md:p-5"
+          class="rounded-3xl border border-border bg-card/80 p-4 md:p-5"
         >
           <div class="mb-3 flex items-end justify-between gap-3">
             <h2>Color Tokens</h2>
@@ -63,16 +63,16 @@ const colorTokens = [
           <div class="grid gap-2 sm:grid-cols-6">
             {
               colorTokens.map(({ token, onToken }) => (
-                <div class="rounded-xl border border-border/70 bg-background/70 p-2">
+                <div class="rounded-xl border border-border bg-background/70 p-2">
                   <div
-                    class="mb-2 h-10 rounded-md border border-border/80"
+                    class="mb-2 h-10 rounded-md border border-border"
                     style={`background: var(--${token});`}
                   />
                   <p class="text-[11px] tracking-wide text-muted-foreground uppercase">
                     --{token}
                   </p>
                   <div
-                    class="mt-1 rounded-md border border-border/60 px-2 py-1 text-xs"
+                    class="mt-1 rounded-md border border-border px-2 py-1 text-xs"
                     style={`background: var(--${token}); color: var(--${onToken});`}
                   >
                     Aa 123
@@ -84,11 +84,11 @@ const colorTokens = [
         </article>
 
         <article
-          class="rounded-3xl border border-border/70 bg-card/80 p-4 md:p-5"
+          class="rounded-3xl border border-border bg-card/80 p-4 md:p-5"
         >
           <h2 class="mb-3">Typography</h2>
           <div
-            class="space-y-2 rounded-xl border border-border/70 bg-background/70 p-3"
+            class="space-y-2 rounded-xl border border-border bg-background/70 p-3"
           >
             <h1>Heading 1 Sample</h1>
             <h2>Heading 2 Sample</h2>

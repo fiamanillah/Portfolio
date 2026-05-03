@@ -3,6 +3,7 @@ import "@workspace/ui/globals.css"
 import GridLines from "@/components/GridLines.astro"
 import SiteNav from "@/components/site-nav.astro"
 import ThemeScript from "@/components/ThemeScript.astro"
+import Footer from "@/components/footer.astro"
 ---
 
 <html lang="en">
@@ -33,6 +34,8 @@ import ThemeScript from "@/components/ThemeScript.astro"
         <slot />
       </main>
     </div>
+
+    <Footer />
 
     <script>
       const glowBall = document.getElementById("glow-ball")
