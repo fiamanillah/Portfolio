@@ -1,0 +1,183 @@
+---
+import { Button } from "@workspace/ui/components/button"
+---
+
+<section id="about" class="relative z-10 py-24" data-grid-cross>
+  <div class="container mx-auto px-4">
+    <div
+      class="grid grid-cols-1 items-start gap-12 lg:grid-cols-[0.85fr_1fr] lg:gap-16"
+    >
+      <!-- Left Column: Portrait + Status -->
+      <div class="flex flex-col gap-5">
+        <!-- Portrait Frame -->
+        <div
+          class="relative aspect-[4/5] overflow-hidden border border-border bg-card"
+        >
+          <!-- Corner brackets -->
+          <div
+            class="pointer-events-none absolute top-2 left-2 z-10 h-[18px] w-[18px] border-t-[1.5px] border-l-[1.5px] border-primary/60"
+          >
+          </div>
+          <div
+            class="pointer-events-none absolute top-2 right-2 z-10 h-[18px] w-[18px] border-t-[1.5px] border-r-[1.5px] border-primary/60"
+          >
+          </div>
+          <div
+            class="pointer-events-none absolute bottom-2 left-2 z-10 h-[18px] w-[18px] border-b-[1.5px] border-l-[1.5px] border-primary/60"
+          >
+          </div>
+          <div
+            class="pointer-events-none absolute right-2 bottom-2 z-10 h-[18px] w-[18px] border-r-[1.5px] border-b-[1.5px] border-primary/60"
+          >
+          </div>
+
+          <img
+            src="/fi.png"
+            alt="Fi Amanillah portrait"
+            class="h-full w-full object-cover object-top contrast-[1.1] grayscale-[0.8] transition-all duration-500 hover:contrast-[1.05] hover:grayscale-[0.5]"
+          />
+
+          <!-- Scanline overlay -->
+          <div
+            class="pointer-events-none absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,oklch(0_0_0/0.06)_2px,oklch(0_0_0/0.06)_4px)]"
+          >
+          </div>
+        </div>
+
+        <!-- Status + Experience Row -->
+        <div class="flex items-stretch gap-4">
+          <!-- Status Indicator -->
+          <div
+            class="flex flex-1 flex-col justify-center gap-1.5 border border-border bg-card/50 p-3 px-4"
+          >
+            <div class="flex items-center gap-2">
+              <span
+                class="h-1.5 w-1.5 animate-pulse rounded-full bg-primary shadow-[0_0_8px_oklch(var(--primary)/0.6)]"
+              ></span>
+              <span
+                class="text-[0.6rem] font-semibold tracking-[0.15em] text-muted-foreground uppercase"
+                >STATUS: ONLINE</span
+              >
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-[0.6rem] font-semibold text-primary">&gt;</span>
+              <span
+                class="text-[0.6rem] font-semibold tracking-[0.15em] text-muted-foreground uppercase"
+                >LOC: SECTOR_7G</span
+              >
+            </div>
+          </div>
+
+          <!-- Experience Badge -->
+          <div
+            class="flex flex-col items-center justify-center border border-primary/40 bg-primary/10 p-4 px-6"
+          >
+            <span
+              class="text-3xl leading-none font-black tracking-tighter text-primary"
+              >1+</span
+            >
+            <div
+              class="mt-1 flex flex-col items-center text-center text-[0.55rem] leading-tight font-bold tracking-[0.2em] text-muted-foreground uppercase"
+            >
+              <span>YEARS</span>
+              <span>EXPERIENCE</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Content -->
+      <div class="flex flex-col gap-8 pt-2">
+        <!-- Heading -->
+        <h2
+          class="text-[clamp(1.75rem,3.5vw,2.5rem)] leading-[1.15] font-extrabold tracking-[-0.04em] text-foreground"
+        >
+          I architect systems and build<br />
+          <em class="text-primary italic">seamless digital experiences.</em>
+        </h2>
+
+        <!-- Body Paragraphs -->
+        <div class="flex flex-col gap-5">
+          <p
+            class="max-w-[56ch] text-[0.825rem] leading-[1.85] text-muted-foreground"
+          >
+            I'm a seasoned Full-Stack Developer specializing in robust backend
+            architectures and minimalist, high-performance interfaces. I bridge
+            the gap between complex logic and clean design, transforming
+            intricate requirements into elegant solutions.
+          </p>
+          <p
+            class="max-w-[56ch] text-[0.825rem] leading-[1.85] text-muted-foreground"
+          >
+            Currently, my focus is on building scalable microservices and
+            exploring the intersection of AI integration within modern web
+            applications. I believe in writing code that is not just functional,
+            but readable, maintainable, and brutal in its simplicity.
+          </p>
+        </div>
+
+        <!-- Stats Row -->
+        <div
+          class="grid grid-cols-2 gap-6 border-y border-border py-6 sm:grid-cols-4"
+        >
+          <div class="flex flex-col gap-1.5">
+            <span
+              class="text-[0.6rem] font-semibold tracking-[0.2em] text-muted-foreground uppercase"
+              >PROJECTS</span
+            >
+            <span
+              class="text-3xl leading-none font-extrabold tracking-tight text-foreground"
+              >40+</span
+            >
+          </div>
+          <div class="flex flex-col gap-1.5">
+            <span
+              class="text-[0.6rem] font-semibold tracking-[0.2em] text-muted-foreground uppercase"
+              >COMMITS</span
+            >
+            <span
+              class="text-3xl leading-none font-extrabold tracking-tight text-foreground"
+              >12k+</span
+            >
+          </div>
+          <div class="flex flex-col gap-1.5">
+            <span
+              class="text-[0.6rem] font-semibold tracking-[0.2em] text-muted-foreground uppercase"
+              >TECH STACK</span
+            >
+            <span
+              class="text-3xl leading-none font-extrabold tracking-tight text-foreground"
+              >15+</span
+            >
+          </div>
+          <div class="flex flex-col gap-1.5">
+            <span
+              class="text-[0.6rem] font-semibold tracking-[0.2em] text-muted-foreground uppercase"
+              >COFFEE</span
+            >
+            <span
+              class="text-2xl leading-none font-extrabold tracking-tight text-primary"
+              >&infin;</span
+            >
+          </div>
+        </div>
+
+        <!-- CTA Button -->
+        <div class="pt-2">
+          <a
+            href="#contact"
+            class="group relative inline-flex cursor-pointer items-center gap-3 overflow-hidden border-2 border-primary bg-primary/10 p-4 px-10 text-[0.8rem] font-bold tracking-[0.2em] text-primary uppercase no-underline transition-all duration-250 before:absolute before:inset-0 before:z-0 before:-translate-x-[101%] before:bg-primary before:transition-transform before:duration-350 before:content-[''] hover:text-primary-foreground hover:shadow-[0_0_30px_oklch(var(--primary)/0.3),0_0_60px_oklch(var(--primary)/0.1)] hover:before:translate-x-0"
+          >
+            <span class="relative z-10 transition-transform duration-250"
+              >INITIALIZE CONTACT</span
+            >
+            <span
+              class="relative z-10 transition-transform duration-250 group-hover:translate-x-1"
+              >&rarr;</span
+            >
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

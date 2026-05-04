@@ -191,8 +191,7 @@ import {
   TooltipTrigger,
 } from "@workspace/ui/components/tooltip"
 
-const cardClass =
-  "rounded-2xl border border-border/70 bg-card p-4 overflow-hidden"
+const cardClass = "rounded-2xl border border-border bg-card p-4 overflow-hidden"
 
 function ShowcaseSection({
   title,
@@ -223,7 +222,7 @@ export function ShadcnShowcase() {
   return (
     <div className="min-h-screen bg-background p-4 text-foreground sm:p-8">
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-5">
-        <header className="rounded-2xl border border-border/70 bg-card/90 p-5 backdrop-blur-sm sm:p-6">
+        <header className="rounded-2xl border border-border bg-card/90 p-5 backdrop-blur-sm sm:p-6">
           <h1 className="text-2xl font-bold tracking-tight">
             Shadcn Components Preview
           </h1>
@@ -232,7 +231,7 @@ export function ShadcnShowcase() {
           </p>
         </header>
 
-        <nav className="flex flex-wrap gap-2 rounded-2xl border border-border/70 bg-card/75 p-3">
+        <nav className="flex flex-wrap gap-2 rounded-2xl border border-border bg-card/75 p-3">
           <a
             href="#core"
             className="rounded-full border border-border bg-background px-3 py-1 text-sm font-medium hover:bg-muted"

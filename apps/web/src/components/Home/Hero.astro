@@ -24,7 +24,7 @@ import { TextScramble } from "@workspace/ui/components/text-scramble"
   <div class="pointer-events-none absolute inset-0 -z-10">
     <!-- Ambient Glow -->
     <div
-      class="absolute top-1/2 left-1/2 h-125 w-125 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/10 blur-[120px]"
+      class="absolute top-1/2 left-1/2 h-125 w-125 -translate-x-1/2 -translate-y-1/2 bg-primary/10 blur-[120px]"
     >
     </div>
   </div>
@@ -68,17 +68,14 @@ import { TextScramble } from "@workspace/ui/components/text-scramble"
       <!-- Call to Action: Email Input -->
       <div class="w-full max-w-md">
         <InputGroup
-          className="h-14 rounded-full border-2 border-primary bg-foreground text-2xl! font-medium text-background"
+          className="h-14 border-2 border-border bg-foreground text-2xl! font-medium text-background"
         >
           <InputGroupInput
             type="email"
             placeholder="Work with me: email@example.com"
           />
           <InputGroupAddon align="inline-end">
-            <InputGroupButton
-              className="h-10 rounded-full px-4"
-              variant={"default"}
-            >
+            <InputGroupButton className="h-10 px-4" variant={"default"}>
               Connect
             </InputGroupButton>
           </InputGroupAddon>
@@ -127,7 +124,7 @@ import { TextScramble } from "@workspace/ui/components/text-scramble"
               <a
                 href={href}
                 aria-label={label}
-                class="inline-flex h-11 w-11 items-center justify-center rounded-full border border-border bg-background text-foreground transition hover:border-primary hover:bg-primary/10 focus:ring-2 focus:ring-primary/30 focus:outline-none"
+                class="inline-flex h-11 w-11 items-center justify-center border border-border bg-background text-foreground transition hover:border-primary hover:bg-primary/10 focus:ring-2 focus:ring-primary/30 focus:outline-none"
               >
                 <HugeiconsIcon
                   icon={icon}
@@ -193,15 +190,15 @@ import { TextScramble } from "@workspace/ui/components/text-scramble"
 
       <!-- Terminal (Modern macOS Window) -->
       <div
-        class="w-full max-w-md overflow-hidden rounded-xl border border-border bg-background/30 shadow-sm backdrop-blur-3xl"
+        class="w-full max-w-md overflow-hidden rounded-4xl border border-border bg-background/30 shadow-sm backdrop-blur-3xl"
       >
         <!-- Terminal Header -->
         <div
           class="flex items-center gap-1.5 border-b border-border bg-background px-4 py-3"
         >
-          <div class="h-2.5 w-2.5 rounded-full bg-rose-500/80"></div>
-          <div class="h-2.5 w-2.5 rounded-full bg-amber-500/80"></div>
-          <div class="h-2.5 w-2.5 rounded-full bg-emerald-500/80"></div>
+          <div class="h-2.5 w-2.5 bg-rose-500/80"></div>
+          <div class="h-2.5 w-2.5 bg-amber-500/80"></div>
+          <div class="h-2.5 w-2.5 bg-emerald-500/80"></div>
         </div>
         <!-- Terminal Body -->
         <div class="p-5 font-mono text-xs leading-relaxed backdrop-blur-3xl">
@@ -258,10 +255,10 @@ import { TextScramble } from "@workspace/ui/components/text-scramble"
             ].map(({ name, color }) => (
               <Badge
                 variant={"outline"}
-                className="border-border/40 bg-background/50 py-1 backdrop-blur-sm"
+                className="border-border bg-background/50 py-1 backdrop-blur-sm"
               >
                 <span
-                  class="mr-2 h-1.5 w-1.5 shrink-0 rounded-full"
+                  class="mr-2 h-1.5 w-1.5 shrink-0"
                   style={`background:${color}`}
                 />
                 {name}
@@ -298,3 +295,49 @@ import { TextScramble } from "@workspace/ui/components/text-scramble"
     </div>
   </div>
 </section>
+
+<script>
+  function setupStickyObserver() {
+    const cards = document.querySelectorAll(".sticky-card")
+
+    const checkStickyStates = () => {
+      cards.forEach((card) => {
+        // Parse the exact top property we assigned in the HTML
+        const styleAttr = card.getAttribute("style") || ""
+        const match = styleAttr.match(/top:\s*([0-9.]+)px/)
+        const rect = card.getBoundingClientRect()
+
+        // If we couldn't parse a sticky top value, mark as not stuck and skip
+        if (!match) {
+          card.setAttribute("data-stuck", "false")
+          return
+        }
+
+        const stickyTop = parseFloat(match[1])
+
+        // If the card is flush with its sticky top boundary (or past it), mark it as stuck
+        // We use <= stickyTop + 1 to account for sub-pixel rendering variations
+        if (rect.top <= stickyTop + 1) {
+          card.setAttribute("data-stuck", "true")
+        } else {
+          card.setAttribute("data-stuck", "false")
+        }
+      })
+    }
+
+    // Attach listeners
+    window.addEventListener("scroll", checkStickyStates, { passive: true })
+    window.addEventListener("resize", checkStickyStates, { passive: true })
+
+    // Check states immediately on load
+    checkStickyStates()
+  }
+
+  // Ensure compatibility with Astro's View Transitions if enabled
+  document.addEventListener("astro:page-load", setupStickyObserver)
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", setupStickyObserver)
+  } else {
+    setupStickyObserver()
+  }
+</script>

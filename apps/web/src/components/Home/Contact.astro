@@ -1,0 +1,308 @@
+---
+import {
+  GithubIcon,
+  Linkedin02Icon,
+  Facebook02Icon,
+} from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
+import { Button } from "@workspace/ui/components/button"
+import { Input } from "@workspace/ui/components/input"
+import { Textarea } from "@workspace/ui/components/textarea"
+import { Icon } from "astro-icon/components"
+---
+
+<section id="contact" class="relative z-10 mx-auto py-24" data-grid-cross>
+  <div class="container mx-auto px-4">
+    <div class="grid gap-16 lg:grid-cols-2 lg:gap-24">
+      <!-- Left Column: Copy & Contact Info -->
+      <div class="flex flex-col justify-between gap-12">
+        <!-- Header -->
+        <div class="space-y-6">
+          <!-- Module Tag -->
+          <div class="flex items-center gap-3">
+            <div class="h-px w-8 bg-primary"></div>
+            <span
+              class="font-mono text-[9.5px] tracking-[0.22em] text-primary uppercase"
+            >
+              Module // Transmission_03
+            </span>
+          </div>
+
+          <!-- Title -->
+          <h1
+            class="text-4xl font-black tracking-tighter text-foreground sm:text-5xl lg:text-6xl"
+          >
+            Establish<br />
+            <span class="text-primary">Connection</span><span
+              class="animate-pulse text-primary">_</span
+            >
+          </h1>
+
+          <!-- Description -->
+          <p class="max-w-[42ch] text-sm leading-relaxed text-muted-foreground">
+            The secure channel is open. Transmit your project directives or
+            inquiries. All packets are encrypted.
+          </p>
+        </div>
+
+        <!-- Contact Details -->
+        <div class="flex flex-col gap-6">
+          <!-- Email -->
+          <div class="group flex items-center gap-4">
+            <div
+              class="flex h-12 w-12 shrink-0 items-center justify-center border border-border bg-muted/20 text-muted-foreground transition-all duration-200 group-hover:border-primary/40 group-hover:bg-primary/5 group-hover:text-primary"
+            >
+              <Icon name="mdi:email-outline" class="size-5" />
+            </div>
+            <div>
+              <p
+                class="font-mono text-[8px] tracking-[0.2em] text-muted-foreground uppercase"
+              >
+                Secure Mail
+              </p>
+              <a
+                href="mailto:fiamanillah1@gmail.com"
+                class="text-sm font-semibold tracking-tight text-foreground transition-colors hover:text-primary"
+              >
+                fiamanillah1@gmail.com
+              </a>
+            </div>
+          </div>
+
+          <!-- Location -->
+          <div class="group flex items-center gap-4">
+            <div
+              class="flex h-12 w-12 shrink-0 items-center justify-center border border-border bg-muted/20 text-muted-foreground transition-all duration-200 group-hover:border-primary/40 group-hover:bg-primary/5 group-hover:text-primary"
+            >
+              <Icon name="mdi:map-marker-outline" class="size-5" />
+            </div>
+            <div>
+              <p
+                class="font-mono text-[8px] tracking-[0.2em] text-muted-foreground uppercase"
+              >
+                Global Base
+              </p>
+              <p class="text-sm font-semibold tracking-tight text-foreground">
+                Mirpur, Dhaka // Node_01
+              </p>
+            </div>
+          </div>
+
+          <!-- Social Uplink -->
+          <div class="group flex items-center gap-4">
+            <div
+              class="flex h-12 w-12 shrink-0 items-center justify-center border border-border bg-muted/20 text-muted-foreground transition-all duration-200 group-hover:border-primary/40 group-hover:bg-primary/5 group-hover:text-primary"
+            >
+              <Icon name="mdi:share-variant-outline" class="size-5" />
+            </div>
+            <div>
+              <p
+                class="font-mono text-[8px] tracking-[0.2em] text-muted-foreground uppercase"
+              >
+                Social Uplink
+              </p>
+              <div class="mt-1 flex items-center gap-2">
+                {
+                  [
+                    {
+                      href: "https://github.com/fiamanillah",
+                      label: "GitHub",
+                      icon: GithubIcon,
+                    },
+                    {
+                      href: "https://linkedin.com/in/fiamanillah",
+                      label: "LinkedIn",
+                      icon: Linkedin02Icon,
+                    },
+                    {
+                      href: "https://facebook.com/fiamanillah",
+                      label: "Facebook",
+                      icon: Facebook02Icon,
+                    },
+                  ].map(({ href, label, icon }) => (
+                    <a
+                      href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={label}
+                      class="inline-flex h-9 w-9 items-center justify-center border border-border bg-background text-muted-foreground transition-all duration-200 hover:border-primary/40 hover:bg-primary/10 hover:text-primary"
+                    >
+                      <HugeiconsIcon
+                        icon={icon}
+                        className="size-4"
+                        aria-hidden="true"
+                      />
+                    </a>
+                  ))
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Contact Form -->
+      <div class="relative">
+        <!-- Corner brackets -->
+        <div
+          class="pointer-events-none absolute top-2 left-2 z-10 h-5 w-5 border-t-[1.5px] border-l-[1.5px] border-primary/50"
+        >
+        </div>
+        <div
+          class="pointer-events-none absolute top-2 right-2 z-10 h-5 w-5 border-t-[1.5px] border-r-[1.5px] border-primary/50"
+        >
+        </div>
+        <div
+          class="pointer-events-none absolute bottom-2 left-2 z-10 h-5 w-5 border-b-[1.5px] border-l-[1.5px] border-primary/50"
+        >
+        </div>
+        <div
+          class="pointer-events-none absolute right-2 bottom-2 z-10 h-5 w-5 border-r-[1.5px] border-b-[1.5px] border-primary/50"
+        >
+        </div>
+
+        <!-- Form Card -->
+        <div
+          class="border border-border bg-card/50 p-6 backdrop-blur-sm sm:p-8"
+        >
+          <!-- Form Header -->
+          <div class="mb-8 flex items-center justify-between">
+            <span
+              class="font-mono text-[10px] font-bold tracking-[0.15em] text-foreground uppercase"
+            >
+              Transmission.V4
+            </span>
+            <div class="flex items-center gap-2">
+              <span class="h-1.5 w-1.5 animate-pulse rounded-full bg-primary">
+              </span>
+              <span
+                class="font-mono text-[8px] tracking-[0.15em] text-muted-foreground uppercase"
+              >
+                Res_256_Active
+              </span>
+            </div>
+          </div>
+
+          <!-- Form -->
+          <form id="contact-form" class="flex flex-col gap-6">
+            <!-- Name Field -->
+            <div class="flex flex-col gap-2">
+              <label
+                for="contact-name"
+                class="font-mono text-[8px] tracking-[0.2em] text-muted-foreground uppercase"
+              >
+                Ident_Name
+              </label>
+              <Input
+                type="text"
+                id="contact-name"
+                name="name"
+                placeholder="Ghost_User"
+                className="h-11 w-full rounded-none border-x-0 border-t-0 border-b border-border bg-transparent px-0 font-mono text-sm text-foreground transition-colors duration-200 outline-none placeholder:text-muted-foreground/40 focus-visible:border-primary focus-visible:ring-0"
+              />
+            </div>
+
+            <!-- Email Field -->
+            <div class="flex flex-col gap-2">
+              <label
+                for="contact-email"
+                class="font-mono text-[8px] tracking-[0.2em] text-muted-foreground uppercase"
+              >
+                Endpoint_Email
+              </label>
+              <Input
+                type="email"
+                id="contact-email"
+                name="email"
+                placeholder="user@domain.sys"
+                className="h-11 w-full rounded-none border-x-0 border-t-0 border-b border-border bg-transparent px-0 font-mono text-sm text-foreground transition-colors duration-200 outline-none placeholder:text-muted-foreground/40 focus-visible:border-primary focus-visible:ring-0"
+              />
+            </div>
+
+            <!-- Message Field -->
+            <div class="flex flex-col gap-2">
+              <label
+                for="contact-message"
+                class="font-mono text-[8px] tracking-[0.2em] text-muted-foreground uppercase"
+              >
+                Directive_Brief
+              </label>
+              <Textarea
+                id="contact-message"
+                name="message"
+                rows={4}
+                placeholder="Input_mission_parameters..."
+                className="min-h-32 w-full resize-none rounded-none border-x-0 border-t-0 border-b border-border bg-transparent px-0 font-mono text-sm text-foreground transition-colors duration-200 outline-none placeholder:text-muted-foreground/40 focus-visible:border-primary focus-visible:ring-0"
+              />
+            </div>
+
+            <!-- Submit Button -->
+            <Button type="submit" size="lg" id="contact-submit">
+              <span
+                class="transition-transform duration-200 group-hover/btn:-translate-x-1"
+              >
+                Transmit Signal
+              </span>
+              <span
+                class="transition-transform duration-200 group-hover/btn:translate-x-1"
+              >
+                ⚡
+              </span>
+            </Button>
+          </form>
+
+          <!-- Encryption Note -->
+          <p
+            class="mt-4 text-right font-mono text-[8px] tracking-wider text-muted-foreground/50"
+          >
+            :: end-to-end encrypted ::
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Form submission handler -->
+<script>
+  function setupContactForm() {
+    const form = document.getElementById(
+      "contact-form"
+    ) as HTMLFormElement | null
+    const submitBtn = document.getElementById(
+      "contact-submit"
+    ) as HTMLButtonElement | null
+
+    if (!form || !submitBtn) return
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault()
+
+      const originalText = submitBtn.innerHTML
+      submitBtn.innerHTML = `
+        <span class="animate-pulse">Transmitting...</span>
+      `
+      submitBtn.disabled = true
+
+      // Simulate transmission delay
+      await new Promise((resolve) => setTimeout(resolve, 2000))
+
+      submitBtn.innerHTML = `
+        <span class="text-primary-foreground">✓ Signal Received</span>
+      `
+
+      setTimeout(() => {
+        submitBtn.innerHTML = originalText
+        submitBtn.disabled = false
+        form.reset()
+      }, 3000)
+    })
+  }
+
+  document.addEventListener("astro:page-load", setupContactForm)
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", setupContactForm)
+  } else {
+    setupContactForm()
+  }
+</script>
