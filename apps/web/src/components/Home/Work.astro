@@ -83,32 +83,28 @@ const BASE_TOP_OFFSET = 72
 <section id="work" class="relative z-10 mx-auto py-12">
   <!-- Header -->
   <div class="mb-14 text-center">
-    <p
-      class="mb-2 text-[9.5px] tracking-[0.22em] text-muted-foreground uppercase"
-    >
+    <p class="mb-2 text-sm! text-muted-foreground uppercase">
       Selected projects and case studies
     </p>
 
     <h1
-      class="flex items-center justify-center gap-3 text-4xl font-black tracking-tighter text-foreground sm:text-5xl"
+      class="flex items-center justify-center gap-3 font-black tracking-tighter text-foreground"
     >
       <span>Work</span>
       <span class="text-primary">/</span>
       <span class="mt-1 flex flex-col items-start text-left leading-none">
         <span
-          class="text-sm font-bold tracking-widest text-foreground uppercase"
+          class="text-xl font-bold tracking-widest text-foreground uppercase"
           >Project</span
         >
         <span
-          class="mt-0.5 text-xs font-semibold tracking-tight text-muted-foreground"
+          class="mt-0.5 text-sm font-semibold tracking-tight text-muted-foreground"
           >Showcase</span
         >
       </span>
     </h1>
 
-    <p
-      class="mx-auto mt-4 max-w-[46ch] text-[11.5px] leading-relaxed text-muted-foreground"
-    >
+    <p class="mx-auto mt-4">
       Production-ready systems, tooling and integrations that demonstrate
       engineering approach and impact.
     </p>
@@ -138,7 +134,7 @@ const BASE_TOP_OFFSET = 72
           >
             <div class="flex min-w-0 flex-1 items-center gap-3">
               {/* Accent index */}
-              <span class="font-mono text-[9.5px] font-bold tracking-[0.2em] text-muted-foreground tabular-nums transition-colors duration-200 group-hover:text-primary">
+              <span class="font-bold tracking-[0.2em] text-muted-foreground tabular-nums transition-colors duration-200 group-hover:text-primary">
                 {p.index}
               </span>
 
@@ -149,7 +145,7 @@ const BASE_TOP_OFFSET = 72
               {/* Status pill */}
               <div class="hidden items-center gap-1.5 sm:flex">
                 <span class="h-1.5 w-1.5 animate-[pulse_2s_infinite] rounded-full bg-primary" />
-                <span class="font-mono text-[8px] tracking-[0.18em] text-muted-foreground uppercase">
+                <span class="text-[0.7rem] tracking-[0.18em] text-muted-foreground uppercase">
                   {p.status}
                 </span>
               </div>
@@ -157,14 +153,14 @@ const BASE_TOP_OFFSET = 72
 
             <div class="flex shrink-0 items-center gap-2">
               {/* Year label */}
-              <span class="hidden font-mono text-[9px] tracking-widest text-muted-foreground sm:block">
+              <span class="hidden tracking-widest text-muted-foreground sm:block">
                 {p.year}
               </span>
 
               <a href={p.links.live} target="_blank" rel="noopener noreferrer">
                 <Button variant={"outline"} size={"sm"}>
                   Live
-                  <span class="text-[10px]">↗</span>
+                  <span>↗</span>
                 </Button>
               </a>
               {p.links.github && (
@@ -175,7 +171,7 @@ const BASE_TOP_OFFSET = 72
                 >
                   <Button variant={"outline"} size={"sm"}>
                     Code
-                    <span class="text-[10px]">↗</span>
+                    <span>↗</span>
                   </Button>
                 </a>
               )}
@@ -190,17 +186,15 @@ const BASE_TOP_OFFSET = 72
                   {/* Tech badges */}
                   <div class="flex flex-wrap gap-1">
                     {p.tech.map((t) => (
-                      <span class="inline-flex items-center border border-border bg-muted/30 px-2 py-0.5 font-mono text-[9px] font-bold tracking-wider text-foreground uppercase transition-all duration-180 hover:border-[oklch(var(--primary)/40%)] hover:bg-[oklch(var(--primary)/12%)] hover:text-primary">
+                      <Badge key={t} variant={"outline"}>
                         {t}
-                      </span>
+                      </Badge>
                     ))}
                   </div>
 
                   {/* Description */}
                   <div>
-                    <p class="text-[12px] leading-relaxed text-foreground/80">
-                      {p.description}
-                    </p>
+                    <p class="leading-relaxed">{p.description}</p>
                   </div>
                 </div>
               </div>
@@ -214,9 +208,9 @@ const BASE_TOP_OFFSET = 72
                       class="mt-0.5 size-5 shrink-0 text-primary"
                     />
                     <div class="min-w-0">
-                      <p class="text-[9px] tracking-[0.18em] text-muted-foreground uppercase">
+                      <span class="text-[0.7rem] tracking-[0.18em] text-muted-foreground uppercase">
                         Role
-                      </p>
+                      </span>
                       <p class="mt-1 text-sm leading-snug font-medium text-foreground">
                         {p.role}
                       </p>
@@ -231,7 +225,7 @@ const BASE_TOP_OFFSET = 72
                       class="mt-0.5 size-5 shrink-0 text-primary"
                     />
                     <div class="min-w-0">
-                      <p class="text-[9px] tracking-[0.18em] text-muted-foreground uppercase">
+                      <p class="text-[0.7rem] tracking-[0.18em] text-muted-foreground uppercase">
                         Impact
                       </p>
                       <p class="mt-1 text-sm leading-snug font-medium text-foreground">
@@ -250,7 +244,7 @@ const BASE_TOP_OFFSET = 72
                   >
                     <Button>
                       Visit site
-                      <span class="text-[10px]">↗</span>
+                      <span>↗</span>
                     </Button>
                   </a>
                   {p.links.caseStudy && (
@@ -261,7 +255,7 @@ const BASE_TOP_OFFSET = 72
                     >
                       <Button variant={"secondary"}>
                         Case study
-                        <span class="text-[10px]">↗</span>
+                        <span>↗</span>
                       </Button>
                     </a>
                   )}
@@ -270,7 +264,7 @@ const BASE_TOP_OFFSET = 72
             </div>
 
             {/* Project Image */}
-            <div class="relative aspect-video w-full overflow-hidden rounded-lg border border-border before:pointer-events-none before:absolute before:inset-0 before:z-10 before:bg-[linear-gradient(105deg,transparent_40%,oklch(var(--primary)/8%)_50%,transparent_60%)] before:bg-[length:200%_100%] before:bg-[position:200%_0] before:transition-all before:duration-600 after:pointer-events-none after:absolute after:inset-0 after:bg-[repeating-linear-gradient(0deg,transparent,transparent_3px,rgba(0,0,0,0.04)_3px,rgba(0,0,0,0.04)_4px)] after:opacity-60 after:transition-opacity after:duration-400 group-hover:after:opacity-0 group-data-[stuck=true]:after:opacity-0 hover:before:bg-[position:-100%_0]">
+            <div class="relative aspect-video w-full overflow-hidden rounded-lg border border-border before:pointer-events-none before:absolute before:inset-0 before:z-10 before:bg-[linear-gradient(105deg,transparent_40%,oklch(var(--primary)/8%)_50%,transparent_60%)] before:bg-size-[200%_100%] before:transition-all before:duration-600 after:pointer-events-none after:absolute after:inset-0 after:bg-[repeating-linear-gradient(0deg,transparent,transparent_3px,rgba(0,0,0,0.04)_3px,rgba(0,0,0,0.04)_4px)] after:opacity-60 after:transition-opacity after:duration-400 group-hover:after:opacity-0 group-data-[stuck=true]:after:opacity-0 hover:before:bg-position-[-100%_0]">
               <img
                 src={p.img}
                 alt={p.title}
@@ -278,11 +272,11 @@ const BASE_TOP_OFFSET = 72
               />
 
               {/* Bottom-left image label */}
-              <div class="absolute right-0 bottom-0 left-0 flex items-end justify-between bg-gradient-to-t from-black/50 to-transparent px-3 py-2 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                <span class="font-mono text-[9px] font-bold tracking-widest text-white/80 uppercase">
+              <div class="absolute right-0 bottom-0 left-0 flex items-end justify-between bg-linear-to-t from-black/50 to-transparent px-3 py-2 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                <span class="text-[9px] font-bold tracking-widest text-white/80 uppercase">
                   {p.title}
                 </span>
-                <span class="font-mono text-[9px] tracking-wider text-white/50">
+                <span class="text-[9px] tracking-wider text-white/50">
                   {p.index} / 04
                 </span>
               </div>

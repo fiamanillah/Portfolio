@@ -1,17 +1,25 @@
 ---
+import About from "@/components/Home/About.astro"
+import Contact from "@/components/Home/Contact.astro"
 import Hero from "@/components/Home/Hero.astro"
 import Logos from "@/components/Home/Logos.astro"
 import ProfesssionalHistory from "@/components/Home/ProfesssionalHistory.astro"
-import Skills from "@/components/Home/Skills.astro" // Import the new component
+import Skills from "@/components/Home/Skills.astro"
 import Work from "@/components/Home/Work.astro"
 import MySiteLayout from "@/layouts/MySiteLayout.astro"
 ---
 
 <MySiteLayout>
+  <!-- Hero Section -->
   <Hero />
+
+  <!-- Logos -->
   <Logos />
 
-  <!--  Skills Section  -->
+  <!-- About Section -->
+  <About />
+
+  <!-- Skills Section -->
   <Skills />
 
   <!-- Work showcase -->
@@ -20,20 +28,6 @@ import MySiteLayout from "@/layouts/MySiteLayout.astro"
   <!-- Professional History -->
   <ProfesssionalHistory />
 
-  <section
-    data-grid-cross
-    class="relative mx-auto flex min-h-[calc(100svh-5rem)] w-full items-center justify-center bg-border py-16"
-  >
-    <div class="mx-auto px-4 text-center">
-      <h1
-        class="text-4xl font-bold text-balance text-foreground sm:text-5xl lg:text-6xl"
-      >
-        AI Connectivity <br />
-        <span class="text-primary italic">for Backend Systems</span>
-      </h1>
-      <p class="mx-auto mt-5 text-lg text-muted-foreground">
-        Secure, manage, and scale serverless microservices.
-      </p>
-    </div>
-  </section>
+  <!-- Contact / Transmission -->
+  <Contact />
 </MySiteLayout>

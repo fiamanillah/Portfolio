@@ -191,8 +191,7 @@ import {
   TooltipTrigger,
 } from "@workspace/ui/components/tooltip"
 
-const cardClass =
-  "rounded-2xl border border-border bg-card p-4 overflow-hidden"
+const cardClass = "rounded-2xl border border-border bg-card p-4 overflow-hidden"
 
 function ShowcaseSection({
   title,
