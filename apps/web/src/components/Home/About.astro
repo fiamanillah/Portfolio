@@ -1,4 +1,5 @@
 ---
+
 ---
 
 <style>
@@ -71,9 +72,7 @@
         class="about-left flex flex-col gap-5 opacity-0 [&.is-visible]:animate-[slide-in-left_700ms_ease_forwards]"
       >
         <!-- Terminal Window -->
-        <div
-          class="relative overflow-hidden border border-border bg-card"
-        >
+        <div class="relative overflow-hidden border border-border bg-card">
           <!-- Corner brackets -->
           <div
             class="pointer-events-none absolute top-2 left-2 z-10 h-[18px] w-[18px] border-t-[1.5px] border-l-[1.5px] border-primary/60"
@@ -125,8 +124,10 @@
             <div id="terminal-output" class="space-y-1"></div>
 
             <!-- Input line -->
-            <div class="flex items-center gap-0 mt-1">
-              <span class="text-muted-foreground/50 shrink-0 select-none">~/fi $&nbsp;</span>
+            <div class="mt-1 flex items-center gap-0">
+              <span class="shrink-0 text-muted-foreground/50 select-none"
+                >~/fi $&nbsp;</span
+              >
               <div class="relative flex-1">
                 <input
                   id="terminal-input"
@@ -139,7 +140,7 @@
                 <!-- Custom blinking cursor -->
                 <span
                   id="terminal-cursor"
-                  class="pointer-events-none absolute top-0 left-0 inline-block h-[1.2em] w-[7.2px] animate-pulse bg-primary"
+                  class="pointer-events-none absolute top-0 left-0 inline-block h-[1.2em] w-1 animate-pulse bg-primary"
                 ></span>
               </div>
             </div>
@@ -187,8 +188,6 @@
             but readable, maintainable, and brutal in its simplicity.
           </p>
         </div>
-
-      
 
         <!-- Experience badge + CTA row -->
         <div class="flex flex-col gap-5 sm:flex-row sm:items-center sm:gap-6">
@@ -487,4 +486,3 @@
     setupTerminal()
   }
 </script>
-

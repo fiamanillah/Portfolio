@@ -1,0 +1,175 @@
+---
+import {
+  ArrowUpRight01Icon,
+  Folder01Icon,
+  Github,
+  Clock01Icon,
+  UserIcon,
+  BuildingIcon,
+  Globe02Icon,
+} from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
+import { Badge } from "@workspace/ui/components/badge"
+import { Button } from "@workspace/ui/components/button"
+import CaseStudySectionTitle from "@/components/CaseStudy/CaseStudySectionTitle.astro"
+---
+
+<!-- Hero Section: Main project introduction and metadata display -->
+<article data-grid-cross class="relative overflow-hidden">
+  <!-- Ambient background glow -->
+  <div class="pointer-events-none absolute inset-0 -z-10">
+    <div
+      class="absolute top-1/3 left-1/4 h-[400px] w-[400px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/10 blur-[120px]"
+    >
+    </div>
+    <div
+      class="absolute right-1/4 bottom-0 h-[250px] w-[250px] rounded-full bg-primary/8 blur-[100px]"
+    >
+    </div>
+    <!-- Scanline overlay -->
+    <div
+      class="pointer-events-none absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,oklch(0_0_0/0.02)_2px,oklch(0_0_0/0.02)_4px)]"
+    >
+    </div>
+  </div>
+
+  <!-- Header: Project title and status indicator -->
+  <header class="relative flex items-center justify-between border-b px-5 py-3">
+    <span class="flex items-center gap-2 font-mono text-xs tracking-widest text-primary uppercase">
+      <HugeiconsIcon icon={Folder01Icon} className="size-3.5" />
+      <span>PROJECT_INIT //</span>
+    </span>
+    <div class="flex items-center gap-3">
+      <!-- Live indicator -->
+      <span class="flex items-center gap-1.5">
+        <span class="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500 shadow-[0_0_6px_oklch(var(--primary)/0.5)]"></span>
+        <span class="font-mono text-[9px] tracking-[0.15em] text-muted-foreground/60 uppercase">Active</span>
+      </span>
+      <Badge variant="outline" aria-label="Project Status" >
+        Status: In Progress
+      </Badge>
+    </div>
+  </header>
+
+  <!-- Main Content: Project title, description, tech stack, and call-to-action buttons -->
+  <section class="flex flex-col gap-8 px-5 py-8 md:flex-row md:items-start md:gap-12">
+    <!-- Project Description -->
+    <div class="flex flex-1 flex-col justify-between gap-8">
+      <div class="space-y-4">
+        <!-- Corner brackets on title block -->
+        <div class="relative">
+          <!-- Top-left bracket -->
+          <div class="pointer-events-none absolute -top-2 -left-2 h-[14px] w-[14px] border-t-[1.5px] border-l-[1.5px] border-primary/50"></div>
+          <!-- Top-right bracket -->
+          <div class="pointer-events-none absolute -top-2 -right-2 h-[14px] w-[14px] border-t-[1.5px] border-r-[1.5px] border-primary/50"></div>
+          <div class="px-3 py-2">
+            <h1 class="text-3xl leading-tight font-black tracking-tight text-foreground sm:text-4xl">
+              Case Study Title of the Project Goes Here and Can Span Multiple Lines
+            </h1>
+          </div>
+          <!-- Bottom-left bracket -->
+          <div class="pointer-events-none absolute -bottom-2 -left-2 h-[14px] w-[14px] border-b-[1.5px] border-l-[1.5px] border-primary/50"></div>
+          <!-- Bottom-right bracket -->
+          <div class="pointer-events-none absolute -bottom-2 -right-2 h-[14px] w-[14px] border-b-[1.5px] border-r-[1.5px] border-primary/50"></div>
+        </div>
+
+        <p class="max-w-[58ch] text-sm leading-[1.85] text-muted-foreground">
+          Case study description goes here. This section provides an overview of
+          the project, its goals, challenges, and outcomes. It should be concise
+          yet informative, giving readers a clear understanding of what the case
+          study will cover.
+        </p>
+      </div>
+
+      <!-- Tech Stack & Actions -->
+      <div class="flex flex-col gap-5">
+        <!-- Technology Stack Badges -->
+        <div class="space-y-2">
+          <span class="font-mono text-[9px] tracking-[0.2em] text-muted-foreground/60 uppercase">
+            // Tech_Stack
+          </span>
+          <nav aria-label="Technology Stack" class="flex flex-wrap gap-2">
+            <Badge variant="outline" >
+              <span class="mr-1.5 h-1.5 w-1.5 rounded-full bg-primary/70"></span>
+              React
+            </Badge>
+            <Badge variant="outline" >
+              <span class="mr-1.5 h-1.5 w-1.5 rounded-full bg-primary/70"></span>
+              Go
+            </Badge>
+            <Badge variant="outline" >
+              <span class="mr-1.5 h-1.5 w-1.5 rounded-full bg-primary/70"></span>
+              ClickHouse
+            </Badge>
+            <Badge variant="outline" >
+              <span class="mr-1.5 h-1.5 w-1.5 rounded-full bg-primary/70"></span>
+              WebGL
+            </Badge>
+          </nav>
+        </div>
+
+        <!-- Call-to-Action Buttons -->
+        <div class="flex gap-3">
+          <Button variant="outline" size="lg" aria-label="View repository" >
+            <HugeiconsIcon icon={Github} className="size-4" />
+            <span>Repo</span>
+          </Button>
+          <Button variant="default" size="lg" aria-label="Open live demo" >
+            <HugeiconsIcon icon={ArrowUpRight01Icon} className="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            <span>Live Demo</span>
+          </Button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hero Image: Project showcase visual -->
+    <figure class="relative flex-1 shrink-0 md:max-w-[55%]">
+      <!-- Corner brackets around image -->
+      <div class="pointer-events-none absolute -top-2 -left-2 z-10 h-[18px] w-[18px] border-t-[1.5px] border-l-[1.5px] border-primary/60"></div>
+      <div class="pointer-events-none absolute -top-2 -right-2 z-10 h-[18px] w-[18px] border-t-[1.5px] border-r-[1.5px] border-primary/60"></div>
+      <div class="pointer-events-none absolute -bottom-2 -left-2 z-10 h-[18px] w-[18px] border-b-[1.5px] border-l-[1.5px] border-primary/60"></div>
+      <div class="pointer-events-none absolute -right-2 -bottom-2 z-10 h-[18px] w-[18px] border-r-[1.5px] border-b-[1.5px] border-primary/60"></div>
+
+      <div class="overflow-hidden border border-border">
+        <img
+          src="/assets/images/project1.png"
+          alt="Project showcase - Acme Corp Data Infrastructure system"
+          class="aspect-video w-full object-cover transition-transform duration-700 hover:scale-105"
+        />
+        <!-- Image overlay with scan effect -->
+        <div class="pointer-events-none absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,oklch(0_0_0/0.015)_2px,oklch(0_0_0/0.015)_4px)]"></div>
+      </div>
+      <!-- Image label -->
+      <figcaption class="mt-1.5 flex items-center gap-1 font-mono text-[9px] tracking-[0.15em] text-muted-foreground/50 uppercase">
+        <span class="h-px w-4 bg-primary/40"></span>
+        <span>Project_Preview.png</span>
+      </figcaption>
+    </figure>
+  </section>
+
+  <!-- Metadata Grid: Project details (role, timeline, client, domain) -->
+  <div class="grid grid-cols-2 border-t border-border md:grid-cols-4">
+    {[
+      { label: "Role", value: "Lead Developer", icon: UserIcon },
+      { label: "Timeline", value: "Jan–Dec 2023", icon: Clock01Icon },
+      { label: "Client", value: "Acme Corp", icon: BuildingIcon },
+      { label: "Domain", value: "Data Infra", icon: Globe02Icon },
+    ].map(({ label, value, icon }, i) => (
+      <div
+        class={`group relative border-border p-4 transition-colors hover:bg-primary/5 ${i < 3 ? "border-r" : ""} ${i < 2 ? "border-b md:border-b-0" : ""}`}
+      >
+        <!-- Hover accent line -->
+        <div class="absolute inset-x-0 top-0 h-[1px] bg-primary/0 transition-colors duration-300 group-hover:bg-primary/40"></div>
+        <dl class="flex flex-col gap-2">
+          <dt class="flex items-center gap-1.5 font-mono text-[9px] tracking-[0.2em] text-muted-foreground/60 uppercase">
+            <HugeiconsIcon icon={icon} className="size-2.5 shrink-0" />
+            {label}
+          </dt>
+          <dd class="text-sm font-semibold tracking-tight text-foreground">{value}</dd>
+        </dl>
+      </div>
+    ))}
+  </div>
+
+  
+</article>
