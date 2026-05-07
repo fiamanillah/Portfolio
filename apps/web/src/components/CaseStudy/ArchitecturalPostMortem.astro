@@ -20,20 +20,31 @@ interface Props {
 const { items } = Astro.props as Props
 ---
 
-<section class="space-y-5">
+<section class="space-y-8">
   <CaseStudySectionTitle label="[ SEC_05 // ARCHITECTURAL_POST_MORTEM ]" />
   <div class="grid gap-6 md:grid-cols-2">
     {
       items.map((item, index) => (
-        <article class="group relative overflow-hidden rounded-lg border border-cyan-700/20 bg-[#071322]/90 p-6">
-          <div
-            class={`pointer-events-none absolute inset-x-0 top-0 h-1 ${index % 2 === 0 ? "bg-amber-400/65" : "bg-emerald-400/60"}`}
-          />
-          <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_140%_at_0%_0%,oklch(0.68_0.15_230/0.10),transparent_55%)]" />
+        <article class="group relative overflow-hidden border border-border bg-card p-6 transition-all duration-400 hover:border-primary/40 hover:bg-primary/5">
+          <!-- Corner brackets -->
+          <div class="pointer-events-none absolute left-0 top-0 h-3 w-3 border-l-[1.5px] border-t-[1.5px] border-primary/30 transition-colors duration-400 group-hover:border-primary/70" />
+          <div class="pointer-events-none absolute right-0 top-0 h-3 w-3 border-r-[1.5px] border-t-[1.5px] border-primary/30 transition-colors duration-400 group-hover:border-primary/70" />
+          <div class="pointer-events-none absolute bottom-0 left-0 h-3 w-3 border-b-[1.5px] border-l-[1.5px] border-primary/30 transition-colors duration-400 group-hover:border-primary/70" />
+          <div class="pointer-events-none absolute bottom-0 right-0 h-3 w-3 border-b-[1.5px] border-r-[1.5px] border-primary/30 transition-colors duration-400 group-hover:border-primary/70" />
 
-          <div class="relative z-10 flex items-center gap-2.5">
+          <!-- Top colored line -->
+          <div
+            class={`pointer-events-none absolute inset-x-0 top-0 h-[2px] opacity-70 transition-opacity duration-400 group-hover:opacity-100 ${index % 2 === 0 ? "bg-destructive/60" : "bg-primary/60"}`}
+          />
+          
+          <!-- Background glow -->
+          <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_140%_at_0%_0%,oklch(var(--primary)/0.05),transparent_55%)] opacity-50 transition-opacity duration-400 group-hover:opacity-100" />
+          <!-- Scanline overlay on hover -->
+          <div class="pointer-events-none absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,oklch(0_0_0/0.015)_2px,oklch(0_0_0/0.015)_4px)] opacity-0 transition-opacity duration-400 group-hover:opacity-100 dark:bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,oklch(1_1_1/0.015)_2px,oklch(1_1_1/0.015)_4px)]" />
+
+          <div class="relative z-10 flex items-center gap-3 border-b border-border/50 pb-4 transition-colors duration-400 group-hover:border-primary/30">
             <span
-              class={`inline-flex h-5 w-5 items-center justify-center rounded-full border ${index % 2 === 0 ? "border-amber-300/50 text-amber-300" : "border-emerald-300/50 text-emerald-300"}`}
+              class={`flex h-6 w-6 shrink-0 items-center justify-center border ${index % 2 === 0 ? "border-destructive/30 bg-destructive/10 text-destructive" : "border-primary/30 bg-primary/10 text-primary"} shadow-sm transition-colors duration-400 group-hover:border-current`}
             >
               {index % 2 === 0 ? (
                 <svg
@@ -41,7 +52,7 @@ const { items } = Astro.props as Props
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
-                  stroke-width="1.8"
+                  stroke-width="2"
                   stroke-linecap="round"
                   stroke-linejoin="round"
                   aria-hidden="true"
@@ -56,7 +67,7 @@ const { items } = Astro.props as Props
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
-                  stroke-width="1.8"
+                  stroke-width="2"
                   stroke-linecap="round"
                   stroke-linejoin="round"
                   aria-hidden="true"
@@ -65,25 +76,30 @@ const { items } = Astro.props as Props
                 </svg>
               )}
             </span>
-            <h3 class="text-2xl font-semibold tracking-tight text-foreground">
+            <h3 class="text-xl font-bold tracking-tight text-foreground transition-colors duration-300 group-hover:text-primary sm:text-2xl">
               {item.title}
             </h3>
           </div>
 
-          <div class="mt-5 space-y-4">
+          <div class="relative z-10 mt-5 space-y-5">
             {(
               item.entries ??
               (item.body ? [{ heading: "Summary", detail: item.body }] : [])
             ).map((entry) => (
-              <article class="border-l border-cyan-700/30 pl-4">
-                <h4 class="text-base font-semibold text-foreground">
-                  {entry.heading}
+              <article class="relative pl-5">
+                <!-- Left accent line -->
+                <div class="absolute bottom-0 left-0 top-1 w-px bg-border transition-colors duration-400 group-hover:bg-primary/40" />
+                <!-- Line notch -->
+                <div class="absolute left-0 top-1.5 h-1.5 w-px bg-primary opacity-0 transition-opacity duration-400 group-hover:opacity-100" />
+                
+                <h4 class="font-mono text-[11px] font-semibold tracking-[0.1em] text-foreground uppercase transition-colors duration-300 group-hover:text-primary/90">
+                  // {entry.heading}
                 </h4>
-                <p class="mt-1.5 text-sm leading-7 text-muted-foreground">
+                <p class="mt-2 text-[13px] leading-relaxed text-muted-foreground">
                   {entry.detail}
                 </p>
                 {entry.code && (
-                  <code class="mt-2 inline-block rounded border border-cyan-500/20 bg-cyan-900/20 px-2 py-1 text-xs text-cyan-200">
+                  <code class="mt-3 block border border-border/50 bg-background/50 px-3 py-2 font-mono text-[11px] text-foreground transition-colors duration-400 group-hover:border-primary/20">
                     {entry.code}
                   </code>
                 )}

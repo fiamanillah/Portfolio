@@ -114,7 +114,7 @@ const totalTech = [...new Set(experiences.flatMap((e) => e.technologies))]
 
 <section
   data-grid-cross
-  class="relative container mx-auto flex items-center justify-center overflow-hidden py-px"
+  class="relative container mx-auto flex items-center justify-center overflow-clip py-px"
 >
   <div class="w-full">
     <div class="bg-background/40 shadow-sm backdrop-blur-3xl">
@@ -175,117 +175,102 @@ const totalTech = [...new Set(experiences.flatMap((e) => e.technologies))]
       </div>
     </div>
 
-    <div class="flex w-full border border-border">
+    <!-- Timeline Grid -->
+    <div class="flex w-full border-x border-b border-border bg-card">
       <!-- Vertical Label -->
-      <div
-        class="flex w-20 items-center justify-center border-r border-border px-4 py-8 text-5xl font-semibold text-muted-foreground"
-      >
-        <h2 class="inline-block origin-center -rotate-90 whitespace-nowrap">
-          Track Record
-        </h2>
+      <div class="group relative hidden w-20 shrink-0 border-r border-border md:block">
+        <div class="pointer-events-none absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,oklch(0_0_0/0.015)_2px,oklch(0_0_0/0.015)_4px)] opacity-0 transition-opacity duration-400 group-hover:opacity-100 dark:bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,oklch(1_1_1/0.015)_2px,oklch(1_1_1/0.015)_4px)]" />
+        
+        <div class="sticky top-0 flex h-screen max-h-[100vh] items-center justify-center">
+          <h3 class="inline-block origin-center -rotate-90 whitespace-nowrap font-mono text-4xl font-bold tracking-widest text-muted-foreground/30 uppercase transition-colors duration-400 group-hover:text-primary/20">
+            TRACK_RECORD
+          </h3>
+        </div>
       </div>
 
-      <!-- Grid Background -->
-      <div
-        class="relative w-full bg-[linear-gradient(rgba(128,128,128,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(128,128,128,0.08)_1px,transparent_1px)] bg-[length:40px_40px] font-sans"
-      >
-        <div class="mx-auto border border-border bg-transparent">
+      <!-- Experiences -->
+      <div class="relative w-full overflow-hidden">
+        <!-- Blueprint Background -->
+        <div class="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,oklch(var(--border)/0.5)_1px,transparent_1px),linear-gradient(to_bottom,oklch(var(--border)/0.5)_1px,transparent_1px)] bg-[size:40px_40px] opacity-20" />
+
+        <div class="relative z-10 flex flex-col">
           {
             experiences.map((exp, index) => (
-              <div
-                class={`exp-entry flex flex-col ${index !== experiences.length - 1 ? "border-b" : ""} border-border md:flex-row`}
-              >
-                {/* Left Column: Dates + Stats */}
-                <div class="flex w-full flex-row justify-between border-b border-border md:w-1/4 md:flex-col md:border-r md:border-b-0 md:p-8 lg:w-[22%]">
-                  <h2 class="text-6xl font-black tracking-tighter text-foreground md:text-7xl">
-                    {exp.year}
-                  </h2>
-                  <p class="mt-auto pt-8 text-[10px] font-bold tracking-widest text-muted-foreground uppercase md:text-xs">
-                    {exp.period}
-                  </p>
+              <article class={`group relative flex flex-col border-border bg-background/50 backdrop-blur-sm transition-all duration-400 hover:bg-primary/5 md:flex-row ${index !== experiences.length - 1 ? 'border-b' : ''}`}>
+                
+                <!-- Left Column: Dates & Stats -->
+                <div class="flex w-full flex-row justify-between border-b border-border p-6 md:w-1/4 md:flex-col md:border-r md:border-b-0 md:p-8 lg:w-[25%] xl:w-[22%]">
+                  <div class="flex flex-col gap-1">
+                    <h3 class="text-5xl font-black tracking-tighter text-foreground transition-colors duration-400 group-hover:text-primary group-hover:drop-shadow-[0_0_8px_oklch(var(--primary)/0.5)] md:text-6xl xl:text-7xl">
+                      {exp.year}
+                    </h3>
+                    <div class="mt-2 h-px w-8 bg-primary/40 transition-all duration-400 group-hover:w-12 group-hover:bg-primary" />
+                    <p class="mt-3 font-mono text-[9px] tracking-[0.2em] text-muted-foreground uppercase transition-colors duration-400 group-hover:text-primary/80">
+                      // {exp.period}
+                    </p>
+                  </div>
 
-                  {/* Achievement stats */}
-                  <div class="mt-8 hidden flex-col gap-3 border-t border-border pt-8 md:flex">
+                  <!-- Location & Type Badge -->
+                  <div class="mt-8 hidden flex-col gap-3 md:flex">
+                    <div class="flex items-center gap-2">
+                      <span class="h-1.5 w-1.5 border border-primary/50" />
+                      <span class="font-mono text-[9px] tracking-[0.1em] text-muted-foreground uppercase">
+                        {exp.location}
+                      </span>
+                    </div>
+                    <div class="inline-flex w-fit items-center border border-primary/20 bg-primary/5 px-2 py-1 font-mono text-[9px] font-bold tracking-widest text-primary uppercase transition-colors duration-400 group-hover:border-primary/40 group-hover:bg-primary/10">
+                      {exp.type}
+                    </div>
+                  </div>
+
+                  <!-- Stats -->
+                  <div class="mt-auto hidden flex-col gap-5 border-t border-border pt-6 md:flex">
                     {exp.stats.map((stat) => (
-                      <div>
-                        <div class="text-xl font-black tracking-tighter text-primary">
+                      <div class="flex flex-col gap-1">
+                        <div class="text-xl font-black tracking-tighter text-foreground transition-colors duration-400 group-hover:text-primary">
                           {stat.value}
                         </div>
-                        <div class="text-[9px] leading-tight font-semibold tracking-[0.15em] text-muted-foreground uppercase">
+                        <div class="font-mono text-[8px] font-semibold tracking-[0.15em] text-muted-foreground uppercase transition-colors duration-400 group-hover:text-primary/70">
                           {stat.label}
                         </div>
                       </div>
                     ))}
                   </div>
-
-                  {/* Location + Type badge */}
-                  <div class="mt-6 hidden flex-col gap-2 md:flex">
-                    <div class="flex items-center gap-1.5">
-                      <svg
-                        class="h-2.5 w-2.5 shrink-0 text-muted-foreground"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        stroke-width="2"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                        />
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                        />
-                      </svg>
-                      <span class="text-[9px] tracking-wider text-muted-foreground uppercase">
-                        {exp.location}
-                      </span>
-                    </div>
-                    <div class="inline-flex w-fit items-center border border-primary/30 bg-primary/5 px-2 py-0.5 text-[9px] font-bold tracking-widest text-primary uppercase">
-                      {exp.type}
-                    </div>
-                  </div>
                 </div>
 
-                {/* Right Column: Content */}
-                <div class="flex w-full flex-col p-6 md:w-3/4 md:p-8 lg:w-[78%]">
-                  {/* Company badge + title */}
-                  <div class="mb-4">
-                    <div class="mb-4 inline-block border-2 border-border px-2 py-0.5 text-[10px] font-bold tracking-widest text-foreground uppercase md:text-xs">
+                <!-- Right Column: Content -->
+                <div class="flex w-full flex-col p-6 md:w-3/4 md:p-8 lg:w-[75%] xl:w-[78%]">
+                  <!-- Company & Role -->
+                  <div class="mb-8 flex flex-col gap-5">
+                    <div class="inline-block w-fit border border-border bg-card px-3 py-1 font-mono text-[10px] font-bold tracking-[0.2em] text-foreground uppercase transition-colors duration-400 group-hover:border-primary/40 group-hover:text-primary">
                       {exp.company}
                     </div>
-                    <h3 class="text-5xl leading-[0.85] font-black text-foreground uppercase md:text-7xl lg:text-[5.5rem]">
-                      {exp.title.map((line, i) => (
-                        <>
-                          <span class="inline-block origin-left scale-x-[1.3] pr-[20%]">
-                            {line}
-                          </span>
-                          {i < exp.title.length - 1 && <br />}
-                        </>
+                    <h4 class="text-4xl font-black leading-[0.85] text-foreground uppercase transition-colors duration-400 group-hover:text-foreground/90 md:text-5xl lg:text-[5.5rem] xl:text-[6.5rem]">
+                      {exp.title.map((line) => (
+                        <span class="block origin-left scale-x-[1.1] pr-[10%] sm:scale-x-[1.15] lg:scale-x-[1.2]">
+                          {line}
+                        </span>
                       ))}
-                    </h3>
+                    </h4>
                   </div>
 
-                  {/* Description + Highlights grid */}
-                  <div class="mt-12 grid grid-cols-1 gap-8 md:mt-24 md:grid-cols-2 md:gap-12 lg:gap-24">
-                    <div>
-                      <p class="mb-4 text-[10px] font-bold text-foreground md:text-xs">
-                        &gt;&gt;
-                      </p>
-                      <p class="text-[10px] leading-relaxed font-medium text-foreground md:text-xs">
-                        {exp.description}
-                      </p>
+                  <!-- Description Grid -->
+                  <div class="mt-6 grid grid-cols-1 gap-10 md:mt-12 lg:grid-cols-2 lg:gap-12 xl:gap-20">
+                    <div class="flex flex-col gap-6">
+                      <div class="relative pl-4">
+                        <div class="absolute bottom-0 left-0 top-1 w-px bg-primary/30 transition-colors duration-400 group-hover:bg-primary" />
+                        <p class="text-sm leading-relaxed text-muted-foreground">
+                          {exp.description}
+                        </p>
+                      </div>
 
-                      {/* Key highlights */}
-                      <ul class="mt-6 flex flex-col gap-2">
+                      <ul class="flex flex-col gap-3">
                         {exp.highlights.map((h) => (
-                          <li class="flex items-start gap-2">
-                            <span class="mt-px shrink-0 text-[10px] leading-none font-black text-primary">
-                              ▸
+                          <li class="flex items-start gap-3">
+                            <span class="mt-1 flex h-3 w-3 shrink-0 items-center justify-center border border-primary/30 bg-primary/10 text-[8px] text-primary transition-colors duration-400 group-hover:border-primary/60 group-hover:bg-primary/20">
+                              +
                             </span>
-                            <span class="text-[10px] leading-relaxed font-medium text-muted-foreground">
+                            <span class="text-xs leading-relaxed text-muted-foreground transition-colors duration-400 group-hover:text-foreground/80">
                               {h}
                             </span>
                           </li>
@@ -294,38 +279,38 @@ const totalTech = [...new Set(experiences.flatMap((e) => e.technologies))]
                     </div>
 
                     <div class="flex flex-col gap-8">
-                      {/* Technologies */}
-                      <div>
-                        <p class="mb-3 text-[10px] font-bold text-foreground md:text-xs">
-                          &gt;&gt; STACK
-                        </p>
-                        <div class="flex flex-wrap gap-1.5">
+                      <!-- Tech Stack -->
+                      <div class="flex flex-col gap-4">
+                        <h5 class="font-mono text-[10px] font-bold tracking-[0.2em] text-foreground uppercase">
+                          // TECH_STACK
+                        </h5>
+                        <div class="flex flex-wrap gap-2">
                           {exp.technologies.map((tech) => (
-                            <span class="inline-flex items-center border border-border bg-muted/40 px-2 py-0.5 text-[9px] font-bold tracking-wider text-foreground uppercase transition-colors duration-200 hover:border-primary/50 hover:text-primary">
+                            <span class="border border-border bg-muted/30 px-2 py-1 font-mono text-[9px] font-bold tracking-[0.1em] text-foreground uppercase transition-colors duration-300 hover:border-primary/50 hover:bg-primary/10 hover:text-primary">
                               {tech}
                             </span>
                           ))}
                         </div>
                       </div>
 
-                      {/* What I learned */}
-                      <div class="border-l-2 border-primary/40 pl-4">
-                        <p class="mb-2 text-[9px] font-bold tracking-[0.2em] text-primary uppercase">
-                          KEY TAKEAWAY
-                        </p>
-                        <p class="text-[10px] leading-relaxed font-medium text-muted-foreground italic">
+                      <!-- Key Takeaway -->
+                      <div class="border-l-[1.5px] border-border pl-4 transition-colors duration-400 group-hover:border-primary/40">
+                        <h5 class="mb-2 font-mono text-[9px] font-bold tracking-[0.2em] text-primary uppercase">
+                          [ KEY_TAKEAWAY ]
+                        </h5>
+                        <p class="text-xs leading-relaxed text-muted-foreground italic">
                           "{exp.learned}"
                         </p>
                       </div>
 
-                      {/* Mobile-only stats */}
-                      <div class="flex gap-6 md:hidden">
+                      <!-- Mobile-only stats -->
+                      <div class="flex flex-wrap gap-6 border-t border-border pt-6 md:hidden">
                         {exp.stats.map((stat) => (
-                          <div>
-                            <div class="text-xl font-black tracking-tighter text-primary">
+                          <div class="flex flex-col gap-1">
+                            <div class="text-xl font-black tracking-tighter text-foreground transition-colors duration-400 group-hover:text-primary">
                               {stat.value}
                             </div>
-                            <div class="text-[9px] leading-tight font-semibold tracking-[0.15em] text-muted-foreground uppercase">
+                            <div class="font-mono text-[8px] font-semibold tracking-[0.15em] text-muted-foreground uppercase transition-colors duration-400 group-hover:text-primary/70">
                               {stat.label}
                             </div>
                           </div>
@@ -334,41 +319,35 @@ const totalTech = [...new Set(experiences.flatMap((e) => e.technologies))]
                     </div>
                   </div>
                 </div>
-              </div>
+              </article>
             ))
           }
         </div>
+      </div>
+    </div>
 
-        <!-- Bottom CTA strip -->
-        <div
-          class="flex flex-col items-center justify-between gap-4 border-t border-border px-8 py-6 sm:flex-row"
-        >
-          <div class="flex items-center gap-3">
-            <div class="h-2 w-2 animate-pulse rounded-full bg-primary"></div>
-            <p
-              class="text-[10px] font-semibold tracking-[0.2em] text-muted-foreground uppercase"
-            >
-              Currently open to new opportunities
-            </p>
+    <!-- Bottom CTA -->
+    <div class="border-x border-b border-border bg-card">
+      <div class="relative flex flex-col items-center justify-between gap-6 overflow-hidden px-8 py-8 sm:flex-row">
+        <!-- Scanline overlay -->
+        <div class="pointer-events-none absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,oklch(0_0_0/0.015)_2px,oklch(0_0_0/0.015)_4px)] opacity-50 dark:bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,oklch(1_1_1/0.015)_2px,oklch(1_1_1/0.015)_4px)]" />
+        
+        <div class="relative z-10 flex items-center gap-4 border border-border bg-background px-4 py-2 shadow-sm">
+          <div class="relative flex h-2 w-2 items-center justify-center">
+            <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
+            <span class="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
           </div>
-          <a href="#contact">
-            <Button variant="outline" size="sm">
-              Get In Touch
-              <svg
-                class="h-3 w-3 transition-transform duration-200 group-hover:translate-x-0.5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                stroke-width="2.5"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"></path>
-              </svg>
-            </Button>
-          </a>
+          <p class="font-mono text-[10px] font-semibold tracking-[0.2em] text-muted-foreground uppercase">
+            System Online / Open to Opportunities
+          </p>
         </div>
+
+        <a href="#contact" class="group relative z-10 inline-flex items-center gap-3 border border-primary/30 bg-primary/10 px-6 py-3 font-mono text-[11px] font-bold tracking-[0.2em] text-primary uppercase transition-all duration-300 hover:border-primary hover:bg-primary hover:text-primary-foreground hover:shadow-[0_0_20px_oklch(var(--primary)/0.3)]">
+          <span>Initialize Contact</span>
+          <svg class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+          </svg>
+        </a>
       </div>
     </div>
   </div>
