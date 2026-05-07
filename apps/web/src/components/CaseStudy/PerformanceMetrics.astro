@@ -1,0 +1,46 @@
+---
+import CaseStudySectionTitle from "@/components/CaseStudy/CaseStudySectionTitle.astro"
+
+interface Metric {
+  value: string
+  label: string
+}
+
+interface Props {
+  metrics: Metric[]
+}
+
+const { metrics } = Astro.props as Props
+---
+
+<section class="space-y-8">
+  <CaseStudySectionTitle label="[ SEC_04 // PERFORMANCE_METRICS ]" />
+  <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    {
+      metrics.map((metric) => (
+        <article class="group relative flex flex-col justify-center overflow-hidden border border-border bg-background p-8 text-center transition-all duration-300 hover:border-primary/30 hover:bg-primary/5">
+          <!-- Corner brackets -->
+          <div class="pointer-events-none absolute left-0 top-0 h-3 w-3 border-l-[1.5px] border-t-[1.5px] border-primary/30 transition-colors duration-300 group-hover:border-primary/70" />
+          <div class="pointer-events-none absolute right-0 top-0 h-3 w-3 border-r-[1.5px] border-t-[1.5px] border-primary/30 transition-colors duration-300 group-hover:border-primary/70" />
+          <div class="pointer-events-none absolute bottom-0 left-0 h-3 w-3 border-b-[1.5px] border-l-[1.5px] border-primary/30 transition-colors duration-300 group-hover:border-primary/70" />
+          <div class="pointer-events-none absolute bottom-0 right-0 h-3 w-3 border-b-[1.5px] border-r-[1.5px] border-primary/30 transition-colors duration-300 group-hover:border-primary/70" />
+
+          <!-- Scanline overlay on hover -->
+          <div class="pointer-events-none absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,oklch(0_0_0/0.02)_2px,oklch(0_0_0/0.02)_4px)] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+
+          <div class="relative z-10 flex flex-col items-center gap-3">
+            <p class="text-4xl font-black tracking-tighter text-foreground transition-all duration-300 group-hover:text-primary group-hover:drop-shadow-[0_0_8px_oklch(var(--primary)/0.5)] sm:text-5xl">
+              {metric.value}
+            </p>
+            <div class="mt-1 flex flex-col items-center gap-2">
+              <div class="h-px w-6 bg-primary/20 transition-colors duration-300 group-hover:bg-primary/60" />
+              <p class="font-mono text-[9px] tracking-[0.2em] text-muted-foreground/70 uppercase transition-colors duration-300 group-hover:text-primary/90">
+                {metric.label}
+              </p>
+            </div>
+          </div>
+        </article>
+      ))
+    }
+  </div>
+</section>

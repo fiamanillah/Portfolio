@@ -1,0 +1,35 @@
+---
+import { Clock01Icon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
+import { Badge } from "@workspace/ui/components/badge"
+
+interface Props {
+  label?: string
+  icon?: typeof Clock01Icon
+  lineClass?: string
+  badgeClass?: string
+  iconClass?: string
+}
+
+const {
+  label = "[ SEC_01 // CONTEXT_&_PROBLEM ]",
+  icon = Clock01Icon,
+  lineClass = "bg-border",
+  badgeClass = "border-border bg-background",
+  iconClass = "text-primary",
+} = Astro.props as Props
+---
+
+<div class={`relative h-px w-full ${lineClass}`}>
+  <Badge
+    variant="outline"
+    className={`absolute -top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transform ${badgeClass} px-7`}
+  >
+    <HugeiconsIcon
+      icon={icon}
+      className={`size-4 ${iconClass}`}
+      aria-hidden="true"
+    />
+    {label}
+  </Badge>
+</div>

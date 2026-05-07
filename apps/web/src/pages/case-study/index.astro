@@ -1,0 +1,157 @@
+---
+import ArchitecturalPostMortem from "@/components/CaseStudy/ArchitecturalPostMortem.astro"
+import ArchitectureTopology from "@/components/CaseStudy/ArchitectureTopology.astro"
+import ContextSection from "@/components/CaseStudy/ContextSection.astro"
+import KeyFeatures from "@/components/CaseStudy/KeyFeatures.astro"
+import PerformanceMetrics from "@/components/CaseStudy/PerformanceMetrics.astro"
+import Hero from "@/components/CaseStudy/Hero.astro"
+import MySiteLayout from "@/layouts/MySiteLayout.astro"
+
+const contextBlocks = [
+  {
+    label: "The Problem",
+    body: "Peak-load ingestion was falling behind, operational visibility was fragmented, and the team needed a clearer path from request intake to deployment without adding more manual work.",
+  },
+  {
+    label: "The Solution",
+    body: "I designed a focused backend platform with a simpler service boundary, explicit data contracts, and a more observable pipeline so the product team could ship faster with less risk.",
+  },
+]
+
+const architectureLayers = [
+  {
+    name: "Edge / UI",
+    description:
+      "Client-facing UI and edge rendering for dashboards and flows.",
+    items: [
+      { title: "Next.js (React)", subtitle: "SSR dashboards & auth" },
+      { title: "Tailwind CSS", subtitle: "Utility-first styling" },
+      { title: "Zustand & SWR", subtitle: "State & data fetching" },
+    ],
+  },
+  {
+    name: "Compute",
+    description: "High-perf workers and API aggregation nodes.",
+    items: [
+      { title: "Go (Fiber / gRPC)", subtitle: "High-perf worker nodes" },
+      { title: "Node.js (Express)", subtitle: "Legacy API aggregation" },
+      { title: "NGINX", subtitle: "Reverse proxy & load balancer" },
+    ],
+  },
+  {
+    name: "Data Layer",
+    description: "Event backbone, analytics store and relational state.",
+    items: [
+      { title: "Apache Kafka", subtitle: "Event backbone & buffer" },
+      { title: "ClickHouse", subtitle: "OLAP columnar storage" },
+      { title: "PostgreSQL", subtitle: "Relational state & users" },
+    ],
+  },
+  {
+    name: "Infra / Delivery",
+    description:
+      "Containerized delivery, deployments, and runtime observability.",
+    items: [
+      { title: "Docker", subtitle: "Container runtime" },
+      { title: "CI/CD", subtitle: "Automated pipelines" },
+      { title: "Observability", subtitle: "Tracing & logs" },
+    ],
+  },
+]
+
+const features = [
+  {
+    title: "Automated Content Pipeline",
+    description:
+      "Reduced manual publishing work by letting the system ingest, normalize, and route content automatically before it reaches the editor surface.",
+    mediaType: "Image / Video",
+    mediaLabel: "Pipeline overview",
+    media: "/assets/images/project2.png",
+  },
+  {
+    title: "Typed Contract Boundary",
+    description:
+      "Introduced shared request and response contracts so frontend and backend changes could move independently without breaking integrations.",
+    mediaType: "Code Snippet",
+    mediaLabel: "Request schema",
+    media: `export const createProjectSchema = z.object({
+  title: z.string().min(1),
+  tagline: z.string().min(1),
+  techStack: z.array(z.string()).default([]),
+})`,
+  },
+  {
+    title: "Operational Visibility",
+    description:
+      "Built clear tracing around the critical path so load issues, failed jobs, and latency spikes were easier to isolate and fix.",
+    mediaType: "Image / Video",
+    mediaLabel: "Monitoring view",
+    media: "/assets/images/project3.png",
+  },
+]
+
+const metrics = [
+  { value: "1.2M", label: "Events per second" },
+  { value: "<200ms", label: "Query latency" },
+  { value: "99.9%", label: "Uptime" },
+  { value: "-42%", label: "Manual ops time" },
+]
+
+const postMortem = [
+  {
+    title: "Technical Challenges",
+    entries: [
+      {
+        heading: "ClickHouse Mutation Overheads",
+        detail:
+          "Initially we tried direct updates, but mutation-heavy workloads amplified write pressure and delayed analytics freshness. We switched to append-first modeling and controlled merge windows.",
+      },
+      {
+        heading: "Kafka Rebalancing Storms",
+        detail:
+          "When scaling workers dynamically, consumer rebalances caused brief processing stalls. We solved this with tuned session timeouts and more stable partition assignment.",
+        code: "session.timeout.ms",
+      },
+    ],
+  },
+  {
+    title: "Lessons Learned",
+    entries: [
+      {
+        heading: "Observability Is Day 1",
+        detail:
+          "Tracing, metrics, and dashboards should land before major load tests. It prevents slow debugging loops and makes bottlenecks obvious while architecture is still flexible.",
+      },
+      {
+        heading: "Language Fit Matters",
+        detail:
+          "Moving the CPU-heavy parsing path to Go reduced memory pressure and stabilized long-running worker behavior under burst traffic.",
+      },
+    ],
+  },
+]
+---
+
+<MySiteLayout>
+  <Hero />
+
+  <section class="mx-auto px-5 pt-10 pb-24 md:px-6 lg:px-8">
+    <ContextSection blocks={contextBlocks} />
+
+    <div class="mt-16">
+      <ArchitectureTopology layers={architectureLayers} />
+    </div>
+
+    <div class="mt-16">
+      <KeyFeatures features={features} />
+    </div>
+
+    <div class="mt-16">
+      <PerformanceMetrics metrics={metrics} />
+    </div>
+
+    <div class="mt-16">
+      <ArchitecturalPostMortem items={postMortem} />
+    </div>
+  </section>
+</MySiteLayout>

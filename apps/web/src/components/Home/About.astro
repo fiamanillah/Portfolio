@@ -1,18 +1,78 @@
 ---
-import { Button } from "@workspace/ui/components/button"
+
 ---
 
-<section id="about" class="relative z-10 py-24" data-grid-cross>
-  <div class="container mx-auto px-4">
+<style>
+  @keyframes border-flow {
+    0%,
+    100% {
+      opacity: 0.3;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+
+  @keyframes float-glow {
+    0%,
+    100% {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 0.12;
+    }
+    50% {
+      transform: translate(-50%, -50%) scale(1.15);
+      opacity: 0.2;
+    }
+  }
+
+  @keyframes slide-in-left {
+    from {
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes slide-in-right {
+    from {
+      opacity: 0;
+      transform: translateX(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+</style>
+
+<section id="about" class="relative z-10 overflow-hidden py-28" data-grid-cross>
+  <!-- Ambient background glow -->
+  <div class="pointer-events-none absolute inset-0 -z-10">
     <div
-      class="grid grid-cols-1 items-start gap-12 lg:grid-cols-[0.85fr_1fr] lg:gap-16"
+      class="absolute top-1/2 left-1/3 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 animate-[float-glow_6s_ease-in-out_infinite] rounded-full bg-primary/15 blur-[120px]"
     >
-      <!-- Left Column: Portrait + Status -->
-      <div class="flex flex-col gap-5">
-        <!-- Portrait Frame -->
-        <div
-          class="relative aspect-[4/5] overflow-hidden border border-border bg-card"
-        >
+    </div>
+    <div
+      class="absolute top-2/3 right-1/4 h-[300px] w-[300px] -translate-x-1/2 -translate-y-1/2 animate-[float-glow_6s_ease-in-out_infinite] rounded-full bg-primary/10 blur-[100px]"
+      style="animation-delay: -3s;"
+    >
+    </div>
+  </div>
+
+  <div class="container mx-auto px-4">
+    <!-- Main Grid -->
+    <div
+      class="grid grid-cols-1 items-center gap-12 lg:grid-cols-[1fr_1.15fr] lg:gap-20"
+    >
+      <!-- Left Column: Interactive Terminal -->
+      <div
+        class="about-left flex flex-col gap-5 opacity-0 [&.is-visible]:animate-[slide-in-left_700ms_ease_forwards]"
+      >
+        <!-- Terminal Window -->
+        <div class="relative overflow-hidden border border-border bg-card">
           <!-- Corner brackets -->
           <div
             class="pointer-events-none absolute top-2 left-2 z-10 h-[18px] w-[18px] border-t-[1.5px] border-l-[1.5px] border-primary/60"
@@ -31,75 +91,88 @@ import { Button } from "@workspace/ui/components/button"
           >
           </div>
 
-          <img
-            src="/fi.png"
-            alt="Fi Amanillah portrait"
-            class="h-full w-full object-cover object-top contrast-[1.1] grayscale-[0.8] transition-all duration-500 hover:contrast-[1.05] hover:grayscale-[0.5]"
-          />
+          <!-- Terminal Header Bar -->
+          <div
+            class="flex items-center justify-between border-b border-border bg-card px-4 py-2.5"
+          >
+            <div class="flex items-center gap-1.5">
+              <div class="h-2.5 w-2.5 rounded-full bg-rose-500/80"></div>
+              <div class="h-2.5 w-2.5 rounded-full bg-amber-500/80"></div>
+              <div class="h-2.5 w-2.5 rounded-full bg-emerald-500/80"></div>
+            </div>
+            <span
+              class="font-mono text-[9px] tracking-[0.15em] text-muted-foreground/60 uppercase"
+              >fi@portfolio — ~/about</span
+            >
+            <div class="flex items-center gap-2">
+              <span
+                class="h-1.5 w-1.5 animate-pulse rounded-full bg-primary shadow-[0_0_6px_oklch(var(--primary)/0.5)]"
+              ></span>
+              <span
+                class="font-mono text-[8px] tracking-[0.15em] text-muted-foreground/50 uppercase"
+                >LIVE</span
+              >
+            </div>
+          </div>
+
+          <!-- Terminal Body -->
+          <div
+            id="about-terminal"
+            class="relative h-[420px] cursor-text overflow-y-auto p-5 font-mono text-[12px] leading-[1.7]"
+          >
+            <!-- Output area -->
+            <div id="terminal-output" class="space-y-1"></div>
+
+            <!-- Input line -->
+            <div class="mt-1 flex items-center gap-0">
+              <span class="shrink-0 text-muted-foreground/50 select-none"
+                >~/fi $&nbsp;</span
+              >
+              <div class="relative flex-1">
+                <input
+                  id="terminal-input"
+                  type="text"
+                  class="w-full border-none bg-transparent font-mono text-[12px] text-foreground caret-transparent outline-none"
+                  spellcheck="false"
+                  autocomplete="off"
+                  autocapitalize="off"
+                />
+                <!-- Custom blinking cursor -->
+                <span
+                  id="terminal-cursor"
+                  class="pointer-events-none absolute top-0 left-0 inline-block h-[1.2em] w-1 animate-pulse bg-primary"
+                ></span>
+              </div>
+            </div>
+          </div>
 
           <!-- Scanline overlay -->
           <div
-            class="pointer-events-none absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,oklch(0_0_0/0.06)_2px,oklch(0_0_0/0.06)_4px)]"
+            class="pointer-events-none absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,oklch(0_0_0/0.03)_2px,oklch(0_0_0/0.03)_4px)]"
           >
-          </div>
-        </div>
-
-        <!-- Status + Experience Row -->
-        <div class="flex items-stretch gap-4">
-          <!-- Status Indicator -->
-          <div
-            class="flex flex-1 flex-col justify-center gap-1.5 border border-border bg-card/50 p-3 px-4"
-          >
-            <div class="flex items-center gap-2">
-              <span
-                class="h-1.5 w-1.5 animate-pulse rounded-full bg-primary shadow-[0_0_8px_oklch(var(--primary)/0.6)]"
-              ></span>
-              <span
-                class="text-[0.6rem] font-semibold tracking-[0.15em] text-muted-foreground uppercase"
-                >STATUS: ONLINE</span
-              >
-            </div>
-            <div class="flex items-center gap-2">
-              <span class="text-[0.6rem] font-semibold text-primary">&gt;</span>
-              <span
-                class="text-[0.6rem] font-semibold tracking-[0.15em] text-muted-foreground uppercase"
-                >LOC: SECTOR_7G</span
-              >
-            </div>
-          </div>
-
-          <!-- Experience Badge -->
-          <div
-            class="flex flex-col items-center justify-center border border-primary/40 bg-primary/10 p-4 px-6"
-          >
-            <span
-              class="text-3xl leading-none font-black tracking-tighter text-primary"
-              >1+</span
-            >
-            <div
-              class="mt-1 flex flex-col items-center text-center text-[0.55rem] leading-tight font-bold tracking-[0.2em] text-muted-foreground uppercase"
-            >
-              <span>YEARS</span>
-              <span>EXPERIENCE</span>
-            </div>
           </div>
         </div>
       </div>
 
       <!-- Right Column: Content -->
-      <div class="flex flex-col gap-8 pt-2">
+      <div
+        class="about-right flex flex-col gap-8 opacity-0 [&.is-visible]:animate-[slide-in-right_700ms_ease_forwards] [&.is-visible]:delay-150"
+      >
         <!-- Heading -->
-        <h2
-          class="text-[clamp(1.75rem,3.5vw,2.5rem)] leading-[1.15] font-extrabold tracking-[-0.04em] text-foreground"
-        >
-          I architect systems and build<br />
-          <em class="text-primary italic">seamless digital experiences.</em>
-        </h2>
+        <div class="space-y-4">
+          <h3
+            class="text-[clamp(1.75rem,3.5vw,2.5rem)] leading-[1.15] font-extrabold tracking-[-0.04em] text-foreground"
+          >
+            I architect systems and build<br />
+            <em class="text-primary italic">seamless digital experiences.</em>
+          </h3>
+          <div class="h-px w-16 bg-primary/40"></div>
+        </div>
 
         <!-- Body Paragraphs -->
         <div class="flex flex-col gap-5">
           <p
-            class="max-w-[56ch] text-[0.825rem] leading-[1.85] text-muted-foreground"
+            class="max-w-[56ch] text-[0.85rem] leading-[1.85] text-muted-foreground"
           >
             I'm a seasoned Full-Stack Developer specializing in robust backend
             architectures and minimalist, high-performance interfaces. I bridge
@@ -107,7 +180,7 @@ import { Button } from "@workspace/ui/components/button"
             intricate requirements into elegant solutions.
           </p>
           <p
-            class="max-w-[56ch] text-[0.825rem] leading-[1.85] text-muted-foreground"
+            class="max-w-[56ch] text-[0.85rem] leading-[1.85] text-muted-foreground"
           >
             Currently, my focus is on building scalable microservices and
             exploring the intersection of AI integration within modern web
@@ -116,54 +189,26 @@ import { Button } from "@workspace/ui/components/button"
           </p>
         </div>
 
-        <!-- Stats Row -->
-        <div
-          class="grid grid-cols-2 gap-6 border-y border-border py-6 sm:grid-cols-4"
-        >
-          <div class="flex flex-col gap-1.5">
+        <!-- Experience badge + CTA row -->
+        <div class="flex flex-col gap-5 sm:flex-row sm:items-center sm:gap-6">
+          <!-- Experience mini-badge -->
+          <div
+            class="flex items-center gap-3 border border-primary/30 bg-primary/5 px-5 py-3"
+          >
             <span
-              class="text-[0.6rem] font-semibold tracking-[0.2em] text-muted-foreground uppercase"
-              >PROJECTS</span
+              class="text-3xl leading-none font-black tracking-tighter text-primary"
+              >1+</span
             >
-            <span
-              class="text-3xl leading-none font-extrabold tracking-tight text-foreground"
-              >40+</span
+            <div class="h-8 w-px bg-primary/30"></div>
+            <div
+              class="flex flex-col text-[0.55rem] leading-tight font-bold tracking-[0.2em] text-muted-foreground uppercase"
             >
+              <span>YEARS</span>
+              <span>EXPERIENCE</span>
+            </div>
           </div>
-          <div class="flex flex-col gap-1.5">
-            <span
-              class="text-[0.6rem] font-semibold tracking-[0.2em] text-muted-foreground uppercase"
-              >COMMITS</span
-            >
-            <span
-              class="text-3xl leading-none font-extrabold tracking-tight text-foreground"
-              >12k+</span
-            >
-          </div>
-          <div class="flex flex-col gap-1.5">
-            <span
-              class="text-[0.6rem] font-semibold tracking-[0.2em] text-muted-foreground uppercase"
-              >TECH STACK</span
-            >
-            <span
-              class="text-3xl leading-none font-extrabold tracking-tight text-foreground"
-              >15+</span
-            >
-          </div>
-          <div class="flex flex-col gap-1.5">
-            <span
-              class="text-[0.6rem] font-semibold tracking-[0.2em] text-muted-foreground uppercase"
-              >COFFEE</span
-            >
-            <span
-              class="text-2xl leading-none font-extrabold tracking-tight text-primary"
-              >&infin;</span
-            >
-          </div>
-        </div>
 
-        <!-- CTA Button -->
-        <div class="pt-2">
+          <!-- CTA Button -->
           <a
             href="#contact"
             class="group relative inline-flex cursor-pointer items-center gap-3 overflow-hidden border-2 border-primary bg-primary/10 p-4 px-10 text-[0.8rem] font-bold tracking-[0.2em] text-primary uppercase no-underline transition-all duration-250 before:absolute before:inset-0 before:z-0 before:-translate-x-[101%] before:bg-primary before:transition-transform before:duration-350 before:content-[''] hover:text-primary-foreground hover:shadow-[0_0_30px_oklch(var(--primary)/0.3),0_0_60px_oklch(var(--primary)/0.1)] hover:before:translate-x-0"
@@ -181,3 +226,263 @@ import { Button } from "@workspace/ui/components/button"
     </div>
   </div>
 </section>
+
+<script>
+  function setupAboutObserver() {
+    const aboutLeft = document.querySelector(".about-left")
+    const aboutRight = document.querySelector(".about-right")
+
+    if (!aboutLeft || !aboutRight) return
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible")
+            observer.unobserve(entry.target)
+          }
+        })
+      },
+      {
+        threshold: 0.15,
+        rootMargin: "0px 0px -60px 0px",
+      }
+    )
+
+    observer.observe(aboutLeft)
+    observer.observe(aboutRight)
+  }
+
+  function setupTerminal() {
+    const input = document.getElementById(
+      "terminal-input"
+    ) as HTMLInputElement | null
+    const output = document.getElementById("terminal-output")
+    const terminal = document.getElementById("about-terminal")
+    const cursor = document.getElementById("terminal-cursor")
+
+    if (!input || !output || !terminal || !cursor) return
+
+    const history: string[] = []
+    let historyIndex = -1
+
+    // Command definitions
+    const commands: Record<string, () => string> = {
+      help: () =>
+        `<span class="text-primary">Available commands:</span>
+  <span class="text-foreground">whoami</span>      <span class="text-muted-foreground">— who is Fi Amanillah?</span>
+  <span class="text-foreground">skills</span>      <span class="text-muted-foreground">— list tech stack</span>
+  <span class="text-foreground">projects</span>    <span class="text-muted-foreground">— recent project stats</span>
+  <span class="text-foreground">contact</span>     <span class="text-muted-foreground">— how to reach me</span>
+  <span class="text-foreground">experience</span>  <span class="text-muted-foreground">— work timeline</span>
+  <span class="text-foreground">neofetch</span>    <span class="text-muted-foreground">— system info</span>
+  <span class="text-foreground">date</span>        <span class="text-muted-foreground">— current date/time</span>
+  <span class="text-foreground">uptime</span>      <span class="text-muted-foreground">— how long I've been coding</span>
+  <span class="text-foreground">clear</span>       <span class="text-muted-foreground">— clear terminal</span>`,
+
+      whoami: () =>
+        `<span class="text-primary">→</span> <span class="text-foreground font-semibold">Fi Amanillah</span>
+<span class="text-primary">→</span> <span class="text-muted-foreground">Full-Stack Developer</span>
+<span class="text-primary">→</span> <span class="text-muted-foreground">Specializes in backend systems & cloud infra</span>
+<span class="text-primary">→</span> <span class="text-muted-foreground">Loves clean code & brutal simplicity</span>
+<span class="text-primary">→</span> <span class="text-muted-foreground">Currently building:</span> <span class="text-foreground">something cool</span>`,
+
+      skills: () =>
+        `<span class="text-primary font-semibold">// FRONTEND</span>
+  <span class="text-muted-foreground">React · Next.js · TypeScript · Tailwind · Redux</span>
+
+<span class="text-primary font-semibold">// BACKEND</span>
+  <span class="text-muted-foreground">Node.js · Nest.js · Express · PostgreSQL · MongoDB</span>
+
+<span class="text-primary font-semibold">// DEVOPS</span>
+  <span class="text-muted-foreground">Docker · AWS · Linux · Nginx · CI/CD</span>`,
+
+      projects: () =>
+        `<span class="text-foreground font-semibold">40+</span> <span class="text-muted-foreground">projects completed</span>
+<span class="text-foreground font-semibold">12k+</span> <span class="text-muted-foreground">commits pushed</span>
+<span class="text-foreground font-semibold">15+</span>  <span class="text-muted-foreground">technologies mastered</span>
+<span class="text-foreground font-semibold">∞</span>    <span class="text-primary">cups of coffee consumed</span>`,
+
+      contact: () =>
+        `<span class="text-primary">📧 Email:</span>  <span class="text-foreground">fiamanillah1@gmail.com</span>
+<span class="text-primary">🔗 GitHub:</span> <a href="https://github.com/fiamanillah" target="_blank" class="text-foreground underline underline-offset-2 hover:text-primary transition-colors">github.com/fiamanillah</a>
+<span class="text-primary">💼 LinkedIn:</span> <a href="https://linkedin.com/in/fiamanillah" target="_blank" class="text-foreground underline underline-offset-2 hover:text-primary transition-colors">linkedin.com/in/fiamanillah</a>
+<span class="text-muted-foreground/60">Or scroll down to the contact form ↓</span>`,
+
+      experience: () =>
+        `<span class="text-primary font-semibold">1+ years</span> <span class="text-muted-foreground">of professional experience</span>
+
+<span class="text-foreground">▸ Full-Stack Developer</span>
+  <span class="text-muted-foreground">Building scalable web apps & microservices</span>
+  <span class="text-muted-foreground">Backend-heavy, cloud-native architecture</span>`,
+
+      date: () => {
+        const now = new Date()
+        return `<span class="text-foreground">${now.toLocaleString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit", second: "2-digit" })}</span>`
+      },
+
+      uptime: () => {
+        const start = new Date("2024-06-01")
+        const now = new Date()
+        const diff = now.getTime() - start.getTime()
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24))
+        const hours = Math.floor(
+          (diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+        )
+        return `<span class="text-foreground">up ${days} days, ${hours} hours</span> <span class="text-muted-foreground">— and counting</span>`
+      },
+
+      neofetch: () =>
+        `<span class="text-primary">        ╭──────────╮</span>
+<span class="text-primary">        │  ██████  │</span>     <span class="text-foreground font-semibold">fi@portfolio</span>
+<span class="text-primary">        │  ██  ██  │</span>     <span class="text-muted-foreground">───────────────</span>
+<span class="text-primary">        │  ██████  │</span>     <span class="text-primary">OS:</span> <span class="text-muted-foreground">Web v2026</span>
+<span class="text-primary">        │  ██      │</span>     <span class="text-primary">Host:</span> <span class="text-muted-foreground">Dhaka, Bangladesh</span>
+<span class="text-primary">        │  ██      │</span>     <span class="text-primary">Uptime:</span> <span class="text-muted-foreground">1+ years</span>
+<span class="text-primary">        ╰──────────╯</span>     <span class="text-primary">Stack:</span> <span class="text-muted-foreground">React, Node, AWS</span>
+                         <span class="text-primary">Editor:</span> <span class="text-muted-foreground">VS Code</span>
+                         <span class="text-primary">Coffee:</span> <span class="text-muted-foreground">∞</span>`,
+
+      clear: () => "__CLEAR__",
+    }
+
+    function addOutput(html: string) {
+      const line = document.createElement("div")
+      line.innerHTML = html
+      output!.appendChild(line)
+      terminal!.scrollTop = terminal!.scrollHeight
+    }
+
+    function processCommand(cmd: string) {
+      const trimmed = cmd.trim().toLowerCase()
+
+      // Echo the command
+      addOutput(
+        `<span class="text-muted-foreground/50">~/fi $</span> <span class="text-foreground font-semibold">${cmd}</span>`
+      )
+
+      if (trimmed === "") {
+        return
+      }
+
+      if (trimmed === "clear") {
+        output!.innerHTML = ""
+        return
+      }
+
+      const handler = commands[trimmed]
+      if (handler) {
+        const result = handler()
+        if (result !== "__CLEAR__") {
+          addOutput(
+            `<div class="pl-0 py-1 text-muted-foreground whitespace-pre">${result}</div>`
+          )
+        }
+      } else {
+        addOutput(
+          `<span class="text-destructive">command not found:</span> <span class="text-foreground">${trimmed}</span>
+<span class="text-muted-foreground">Type</span> <span class="text-primary">help</span> <span class="text-muted-foreground">for available commands.</span>`
+        )
+      }
+    }
+
+    // Update cursor position
+    function updateCursor() {
+      const text = input!.value
+      // Measure text width using a temp span
+      const measure = document.createElement("span")
+      measure.style.font = getComputedStyle(input!).font
+      measure.style.visibility = "hidden"
+      measure.style.position = "absolute"
+      measure.style.whiteSpace = "pre"
+      measure.textContent = text
+      document.body.appendChild(measure)
+      const width = measure.offsetWidth
+      document.body.removeChild(measure)
+      cursor!.style.left = `${width}px`
+    }
+
+    input.addEventListener("input", updateCursor)
+    input.addEventListener("click", updateCursor)
+
+    input.addEventListener("keydown", (e: KeyboardEvent) => {
+      if (e.key === "Enter") {
+        const cmd = input!.value
+        if (cmd.trim()) {
+          history.unshift(cmd)
+        }
+        historyIndex = -1
+        processCommand(cmd)
+        input!.value = ""
+        updateCursor()
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault()
+        if (historyIndex < history.length - 1) {
+          historyIndex++
+          input!.value = history[historyIndex]
+          updateCursor()
+        }
+      } else if (e.key === "ArrowDown") {
+        e.preventDefault()
+        if (historyIndex > 0) {
+          historyIndex--
+          input!.value = history[historyIndex]
+          updateCursor()
+        } else {
+          historyIndex = -1
+          input!.value = ""
+          updateCursor()
+        }
+      } else if (e.key === "l" && e.ctrlKey) {
+        e.preventDefault()
+        output!.innerHTML = ""
+      }
+    })
+
+    // Click anywhere in terminal to focus input
+    terminal!.addEventListener("click", () => {
+      input!.focus()
+    })
+
+    // Auto-type intro sequence
+    const introSequence = async () => {
+      const typeCmd = async (cmd: string, delay: number = 60) => {
+        for (const char of cmd) {
+          input!.value += char
+          updateCursor()
+          await new Promise((r) => setTimeout(r, delay + Math.random() * 40))
+        }
+        await new Promise((r) => setTimeout(r, 300))
+        processCommand(input!.value)
+        input!.value = ""
+        updateCursor()
+      }
+
+      await new Promise((r) => setTimeout(r, 1200))
+      await typeCmd("whoami")
+      await new Promise((r) => setTimeout(r, 600))
+      await typeCmd("help")
+    }
+
+    // Only run intro if terminal is freshly mounted (no prior output)
+    if (output!.children.length === 0) {
+      introSequence()
+    }
+
+    updateCursor()
+  }
+
+  document.addEventListener("astro:page-load", () => {
+    setupAboutObserver()
+    setupTerminal()
+  })
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", () => {
+      setupAboutObserver()
+      setupTerminal()
+    })
+  } else {
+    setupAboutObserver()
+    setupTerminal()
+  }
+</script>

@@ -1,0 +1,118 @@
+---
+import CaseStudySectionTitle from "@/components/CaseStudy/CaseStudySectionTitle.astro"
+
+interface Feature {
+  title: string
+  description: string
+  mediaType: string
+  mediaLabel: string
+  media: string
+}
+
+interface Props {
+  features: Feature[]
+}
+
+const { features } = Astro.props as Props
+---
+
+<section class="space-y-5">
+  <CaseStudySectionTitle label="[ SEC_03 // KEY_FEATURES ]" />
+  <div class="space-y-8">
+    {
+      features.map((feature, index) => (
+        <article
+          class={`group relative overflow-hidden border border-border bg-card p-6 transition-all duration-400 hover:border-primary/40 hover:bg-primary/5 lg:grid lg:grid-cols-2 lg:items-stretch lg:gap-8 ${index % 2 ? "lg:[&>*:first-child]:order-2" : ""}`}
+        >
+          <!-- Corner brackets -->
+          <div class="pointer-events-none absolute left-0 top-0 h-4 w-4 border-l-[1.5px] border-t-[1.5px] border-primary/30 transition-colors duration-400 group-hover:border-primary/70" />
+          <div class="pointer-events-none absolute right-0 top-0 h-4 w-4 border-r-[1.5px] border-t-[1.5px] border-primary/30 transition-colors duration-400 group-hover:border-primary/70" />
+          <div class="pointer-events-none absolute bottom-0 left-0 h-4 w-4 border-b-[1.5px] border-l-[1.5px] border-primary/30 transition-colors duration-400 group-hover:border-primary/70" />
+          <div class="pointer-events-none absolute bottom-0 right-0 h-4 w-4 border-b-[1.5px] border-r-[1.5px] border-primary/30 transition-colors duration-400 group-hover:border-primary/70" />
+
+          <!-- Background Patterns & Gradients -->
+          <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_140%_at_10%_0%,oklch(var(--primary)/0.08),transparent_55%)] opacity-70 transition-opacity duration-400 group-hover:opacity-100" />
+          <div class="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,oklch(var(--primary)/0.03)_1px,transparent_1px),linear-gradient(to_bottom,oklch(var(--primary)/0.03)_1px,transparent_1px)] bg-[size:28px_28px] opacity-30 transition-opacity duration-400 group-hover:opacity-60" />
+          
+          <!-- Scanline overlay on hover -->
+          <div class="pointer-events-none absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,oklch(0_0_0/0.02)_2px,oklch(0_0_0/0.02)_4px)] opacity-0 transition-opacity duration-400 group-hover:opacity-100 dark:bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,oklch(1_1_1/0.02)_2px,oklch(1_1_1/0.02)_4px)]" />
+
+          <!-- Decorative edge lines -->
+          <div class="pointer-events-none absolute left-0 top-0 h-24 w-[2px] bg-primary/40 transition-all duration-400 group-hover:h-32 group-hover:bg-primary/80" />
+          <div class="pointer-events-none absolute bottom-0 right-0 h-24 w-[2px] bg-primary/20 transition-all duration-400 group-hover:h-32 group-hover:bg-primary/60" />
+
+          <div class="relative z-10 flex flex-col justify-between gap-5">
+            <div class="space-y-4">
+              <div class="flex items-center justify-between gap-3">
+                <div class="inline-flex items-center gap-2 border border-primary/20 bg-primary/10 px-3 py-1">
+                  <span class="h-1.5 w-1.5 animate-pulse bg-primary shadow-[0_0_8px_oklch(var(--primary)/0.8)]" />
+                  <p class="font-mono text-[10px] tracking-[0.22em] text-primary uppercase">
+                    {feature.mediaType}
+                  </p>
+                </div>
+                <span class="font-mono text-[10px] tracking-[0.2em] text-muted-foreground/70 uppercase">
+                  Feature {String(index + 1).padStart(2, "0")}
+                </span>
+              </div>
+
+              <h3 class="text-2xl font-black tracking-tight text-foreground transition-all duration-300 group-hover:text-primary group-hover:drop-shadow-[0_0_8px_oklch(var(--primary)/0.5)] sm:text-3xl">
+                {feature.title}
+              </h3>
+
+              <p class="max-w-[60ch] text-sm leading-7 text-muted-foreground">
+                {feature.description}
+              </p>
+            </div>
+
+            <div class="flex items-center justify-between gap-3 border-t border-border pt-4 transition-colors duration-400 group-hover:border-primary/20">
+              <span class="text-xs font-semibold tracking-[0.18em] text-foreground uppercase transition-colors duration-400 group-hover:text-primary">
+                {feature.mediaLabel}
+              </span>
+              <span class="inline-flex items-center gap-2 text-[11px] tracking-[0.12em] text-muted-foreground uppercase">
+                <span class="h-px w-5 bg-primary/40 transition-all duration-400 group-hover:w-8 group-hover:bg-primary/80" />
+                Interactive Preview
+              </span>
+            </div>
+          </div>
+
+          <!-- Media Container -->
+          <div class="relative z-10 mt-6 overflow-hidden border border-border bg-background transition-all duration-400 group-hover:-translate-y-1 group-hover:border-primary/30 group-hover:shadow-[0_8px_30px_-12px_oklch(var(--primary)/0.2)] lg:mt-0">
+            {feature.mediaType === "Code Snippet" ? (
+              <div class="flex h-full flex-col">
+                <div class="flex items-center justify-between border-b border-border bg-muted/30 px-4 py-2 transition-colors duration-400 group-hover:border-primary/20">
+                  <div class="flex items-center gap-2">
+                    <span class="h-2 w-2 bg-rose-500/80" />
+                    <span class="h-2 w-2 bg-amber-500/80" />
+                    <span class="h-2 w-2 bg-emerald-500/80" />
+                  </div>
+                  <span class="font-mono text-[10px] tracking-[0.18em] text-muted-foreground uppercase transition-colors duration-400 group-hover:text-primary/70">
+                    snippet.ts
+                  </span>
+                </div>
+                <pre class="m-0 flex-1 overflow-auto bg-background/50 p-5 text-xs leading-6 text-foreground max-h-105">
+                  <code>{feature.media}</code>
+                </pre>
+              </div>
+            ) : (
+              <figure class="relative m-0 h-full min-h-72 w-full overflow-hidden">
+                <img
+                  src={feature.media}
+                  alt={feature.mediaLabel}
+                  class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.05]"
+                />
+                <!-- Gradient overlay -->
+                <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent transition-opacity duration-400 group-hover:opacity-70" />
+                <!-- Scanline over image -->
+                <div class="pointer-events-none absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_3px,oklch(0_0_0/0.05)_3px,oklch(0_0_0/0.05)_4px)] opacity-30 dark:bg-[repeating-linear-gradient(0deg,transparent,transparent_3px,oklch(1_1_1/0.03)_3px,oklch(1_1_1/0.03)_4px)]" />
+                
+                <figcaption class="absolute bottom-3 right-3 border border-border bg-background/90 px-3 py-1 font-mono text-[10px] tracking-[0.16em] text-muted-foreground uppercase backdrop-blur-sm transition-colors duration-400 group-hover:border-primary/40 group-hover:text-primary">
+                  Visual Evidence
+                </figcaption>
+              </figure>
+            )}
+          </div>
+        </article>
+      ))
+    }
+  </div>
+</section>
