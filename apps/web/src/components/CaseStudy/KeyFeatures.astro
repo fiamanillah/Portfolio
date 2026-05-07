@@ -1,0 +1,102 @@
+---
+import CaseStudySectionTitle from "@/components/CaseStudy/CaseStudySectionTitle.astro"
+
+interface Feature {
+  title: string
+  description: string
+  mediaType: string
+  mediaLabel: string
+  media: string
+}
+
+interface Props {
+  features: Feature[]
+}
+
+const { features } = Astro.props as Props
+---
+
+<section class="space-y-5">
+  <CaseStudySectionTitle label="[ SEC_03 // KEY_FEATURES ]" />
+  <div class="space-y-8">
+    {
+      features.map((feature, index) => (
+        <article
+          class={`group relative overflow-hidden rounded-xl border border-cyan-800/20 bg-[#071322]/90 p-6 transition-all duration-400 hover:border-cyan-500/40 lg:grid lg:grid-cols-2 lg:items-stretch lg:gap-8 ${index % 2 ? "lg:[&>*:first-child]:order-2" : ""}`}
+        >
+          <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_140%_at_10%_0%,oklch(0.68_0.15_230/0.12),transparent_55%)] opacity-70 transition-opacity duration-400 group-hover:opacity-100" />
+          <div class="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,oklch(0.7_0.13_235/0.06)_1px,transparent_1px),linear-gradient(to_bottom,oklch(0.7_0.13_235/0.06)_1px,transparent_1px)] bg-size-[28px_28px] opacity-30" />
+          <div class="pointer-events-none absolute top-0 left-0 h-24 w-1 bg-cyan-400/80" />
+          <div class="pointer-events-none absolute right-0 bottom-0 h-24 w-1 bg-cyan-400/40" />
+
+          <div class="relative z-10 flex flex-col justify-between gap-5">
+            <div class="space-y-4">
+              <div class="flex items-center justify-between gap-3">
+                <div class="inline-flex items-center gap-2 rounded-full border border-cyan-500/20 bg-cyan-500/10 px-3 py-1">
+                  <span class="h-1.5 w-1.5 rounded-full bg-cyan-300 shadow-[0_0_8px_oklch(0.75_0.13_230/0.8)]" />
+                  <p class="font-mono text-[10px] tracking-[0.22em] text-cyan-100 uppercase">
+                    {feature.mediaType}
+                  </p>
+                </div>
+                <span class="font-mono text-[10px] tracking-[0.2em] text-muted-foreground/70 uppercase">
+                  Feature {String(index + 1).padStart(2, "0")}
+                </span>
+              </div>
+
+              <h3 class="text-2xl font-black tracking-tight text-foreground transition-colors duration-300 group-hover:text-cyan-100 sm:text-3xl">
+                {feature.title}
+              </h3>
+
+              <p class="max-w-[60ch] text-sm leading-7 text-muted-foreground">
+                {feature.description}
+              </p>
+            </div>
+
+            <div class="flex items-center justify-between gap-3 border-t border-cyan-700/20 pt-4">
+              <span class="text-xs tracking-[0.18em] text-cyan-200 uppercase">
+                {feature.mediaLabel}
+              </span>
+              <span class="inline-flex items-center gap-2 text-[11px] tracking-[0.12em] text-muted-foreground uppercase">
+                <span class="h-px w-5 bg-cyan-400/60" />
+                Interactive Preview
+              </span>
+            </div>
+          </div>
+
+          <div class="relative z-10 mt-4 overflow-hidden rounded-lg border border-cyan-700/20 bg-[#020916] transition-transform duration-400 group-hover:-translate-y-0.5 lg:mt-0">
+            {feature.mediaType === "Code Snippet" ? (
+              <div>
+                <div class="flex items-center justify-between border-b border-cyan-700/20 bg-[#061328] px-4 py-2">
+                  <div class="flex items-center gap-2">
+                    <span class="h-2 w-2 rounded-full bg-rose-400/80" />
+                    <span class="h-2 w-2 rounded-full bg-amber-400/80" />
+                    <span class="h-2 w-2 rounded-full bg-emerald-400/80" />
+                  </div>
+                  <span class="font-mono text-[10px] tracking-[0.18em] text-cyan-100/70 uppercase">
+                    snippet.ts
+                  </span>
+                </div>
+                <pre class="m-0 max-h-105 overflow-auto p-5 text-xs leading-6 text-slate-100">
+                  <code>{feature.media}</code>
+                </pre>
+              </div>
+            ) : (
+              <figure class="relative m-0 h-full min-h-72 w-full overflow-hidden">
+                <img
+                  src={feature.media}
+                  alt={feature.mediaLabel}
+                  class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                />
+                <div class="pointer-events-none absolute inset-0 bg-linear-to-t from-[#020916]/70 via-transparent to-transparent" />
+                <div class="pointer-events-none absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_3px,oklch(0.8_0.06_250/0.06)_3px,oklch(0.8_0.06_250/0.06)_4px)] opacity-50" />
+                <figcaption class="absolute right-3 bottom-3 rounded-full border border-cyan-400/30 bg-[#031022]/90 px-3 py-1 font-mono text-[10px] tracking-[0.16em] text-cyan-100/80 uppercase">
+                  Visual Evidence
+                </figcaption>
+              </figure>
+            )}
+          </div>
+        </article>
+      ))
+    }
+  </div>
+</section>

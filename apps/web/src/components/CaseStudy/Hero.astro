@@ -11,7 +11,6 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Badge } from "@workspace/ui/components/badge"
 import { Button } from "@workspace/ui/components/button"
-import CaseStudySectionTitle from "@/components/CaseStudy/CaseStudySectionTitle.astro"
 ---
 
 <!-- Hero Section: Main project introduction and metadata display -->
@@ -45,7 +44,7 @@ import CaseStudySectionTitle from "@/components/CaseStudy/CaseStudySectionTitle.
         <span class="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500 shadow-[0_0_6px_oklch(var(--primary)/0.5)]"></span>
         <span class="font-mono text-[9px] tracking-[0.15em] text-muted-foreground/60 uppercase">Active</span>
       </span>
-      <Badge variant="outline" aria-label="Project Status" >
+      <Badge variant="outline" aria-label="Project Status">
         Status: In Progress
       </Badge>
     </div>
@@ -74,10 +73,9 @@ import CaseStudySectionTitle from "@/components/CaseStudy/CaseStudySectionTitle.
         </div>
 
         <p class="max-w-[58ch] text-sm leading-[1.85] text-muted-foreground">
-          Case study description goes here. This section provides an overview of
-          the project, its goals, challenges, and outcomes. It should be concise
-          yet informative, giving readers a clear understanding of what the case
-          study will cover.
+          A fast-moving case study for Nexus Core, a backend-first platform built
+          to stabilize ingestion, simplify operations, and give the product team
+          a cleaner path from request to delivery.
         </p>
       </div>
 
@@ -89,35 +87,42 @@ import CaseStudySectionTitle from "@/components/CaseStudy/CaseStudySectionTitle.
             // Tech_Stack
           </span>
           <nav aria-label="Technology Stack" class="flex flex-wrap gap-2">
-            <Badge variant="outline" >
+            <Badge variant="outline">
               <span class="mr-1.5 h-1.5 w-1.5 rounded-full bg-primary/70"></span>
               React
             </Badge>
-            <Badge variant="outline" >
+            <Badge variant="outline">
               <span class="mr-1.5 h-1.5 w-1.5 rounded-full bg-primary/70"></span>
               Go
             </Badge>
-            <Badge variant="outline" >
+            <Badge variant="outline">
               <span class="mr-1.5 h-1.5 w-1.5 rounded-full bg-primary/70"></span>
-              ClickHouse
+              PostgreSQL
             </Badge>
-            <Badge variant="outline" >
+            <Badge variant="outline">
               <span class="mr-1.5 h-1.5 w-1.5 rounded-full bg-primary/70"></span>
-              WebGL
+              Docker
             </Badge>
           </nav>
         </div>
 
         <!-- Call-to-Action Buttons -->
         <div class="flex gap-3">
-          <Button variant="outline" size="lg" aria-label="View repository" >
-            <HugeiconsIcon icon={Github} className="size-4" />
-            <span>Repo</span>
-          </Button>
-          <Button variant="default" size="lg" aria-label="Open live demo" >
-            <HugeiconsIcon icon={ArrowUpRight01Icon} className="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-            <span>Live Demo</span>
-          </Button>
+          <a href="#" aria-label="View repository">
+            <Button variant="outline" size="lg">
+              <HugeiconsIcon icon={Github} className="size-4" />
+              <span>GitHub Repo</span>
+            </Button>
+          </a>
+          <a href="#" aria-label="Open live demo">
+            <Button variant="default" size="lg">
+              <HugeiconsIcon
+                icon={ArrowUpRight01Icon}
+                className="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+              />
+              <span>Live Demo</span>
+            </Button>
+          </a>
         </div>
       </div>
     </div>
@@ -133,7 +138,7 @@ import CaseStudySectionTitle from "@/components/CaseStudy/CaseStudySectionTitle.
       <div class="overflow-hidden border border-border">
         <img
           src="/assets/images/project1.png"
-          alt="Project showcase - Acme Corp Data Infrastructure system"
+          alt="Project showcase thumbnail for Nexus Core"
           class="aspect-video w-full object-cover transition-transform duration-700 hover:scale-105"
         />
         <!-- Image overlay with scan effect -->
@@ -142,7 +147,7 @@ import CaseStudySectionTitle from "@/components/CaseStudy/CaseStudySectionTitle.
       <!-- Image label -->
       <figcaption class="mt-1.5 flex items-center gap-1 font-mono text-[9px] tracking-[0.15em] text-muted-foreground/50 uppercase">
         <span class="h-px w-4 bg-primary/40"></span>
-        <span>Project_Preview.png</span>
+        <span>Nexus_Core_thumbnail.png</span>
       </figcaption>
     </figure>
   </section>
@@ -150,10 +155,10 @@ import CaseStudySectionTitle from "@/components/CaseStudy/CaseStudySectionTitle.
   <!-- Metadata Grid: Project details (role, timeline, client, domain) -->
   <div class="grid grid-cols-2 border-t border-border md:grid-cols-4">
     {[
-      { label: "Role", value: "Lead Developer", icon: UserIcon },
-      { label: "Timeline", value: "Jan–Dec 2023", icon: Clock01Icon },
-      { label: "Client", value: "Acme Corp", icon: BuildingIcon },
-      { label: "Domain", value: "Data Infra", icon: Globe02Icon },
+      { label: "Role", value: "Lead Backend Engineer", icon: UserIcon },
+      { label: "Timeline", value: "April 2025 - August 2025", icon: Clock01Icon },
+      { label: "Client / Company", value: "Softvence", icon: BuildingIcon },
+      { label: "Tech Stack", value: "Next.js, TypeScript, Go, PostgreSQL", icon: Globe02Icon },
     ].map(({ label, value, icon }, i) => (
       <div
         class={`group relative border-border p-4 transition-colors hover:bg-primary/5 ${i < 3 ? "border-r" : ""} ${i < 2 ? "border-b md:border-b-0" : ""}`}

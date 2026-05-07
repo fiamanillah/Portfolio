@@ -1,0 +1,97 @@
+---
+import CaseStudySectionTitle from "@/components/CaseStudy/CaseStudySectionTitle.astro"
+
+interface Layer {
+  name: string
+  description: string
+  tech?: string[]
+  items?: { title: string; subtitle?: string }[]
+}
+
+interface Props {
+  layers: Layer[]
+}
+
+const { layers } = Astro.props as Props
+---
+
+<section class="space-y-5">
+  <CaseStudySectionTitle label="[ SEC_02 // ARCHITECTURE_TOPOLOGY ]" />
+  <div
+    class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+  >
+    {
+      layers.map((layer, i) => (
+        <article class="relative overflow-hidden rounded-lg border border-cyan-700/20 bg-muted/30 p-6 shadow-sm">
+          <div class="pointer-events-none absolute inset-0 rounded-lg border border-cyan-700/10 opacity-60" />
+
+          <div class="relative z-10 flex items-start justify-between">
+            <div class="flex items-center gap-3">
+              <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-cyan-600/20 bg-cyan-900/10 text-cyan-300">
+                <svg
+                  class="h-4 w-4"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <>
+                    <path d="M3 12h18" />
+                    <path d="M3 6h18" />
+                    <path d="M3 18h18" />
+                  </>
+                </svg>
+              </div>
+              <h3 class="text-sm font-semibold tracking-tight text-foreground">
+                {layer.name}
+              </h3>
+            </div>
+
+            <span class="font-mono text-[10px] tracking-widest text-muted-foreground/60 uppercase">
+              Layer {String(i + 1).padStart(2, "0")}
+            </span>
+          </div>
+
+          <p class="mt-4 text-sm leading-6 text-muted-foreground">
+            {layer.description}
+          </p>
+
+          <div class="mt-5 border-t border-cyan-700/10 pt-4">
+            {(
+              ((layer.items ?? layer.tech?.map((t: any) => ({ title: t }))) ||
+                []) as { title: string; subtitle?: string }[]
+            ).map((entry) => (
+              <div class="flex items-start gap-3 py-3">
+                <svg
+                  class="mt-0.5 h-4 w-4 shrink-0 text-cyan-300"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M9 18l6-6-6-6" />
+                </svg>
+                <div class="min-w-0">
+                  <p class="text-sm font-medium text-foreground">
+                    {entry.title}
+                  </p>
+                  {entry.subtitle && (
+                    <p class="mt-1 text-xs text-muted-foreground">
+                      {entry.subtitle}
+                    </p>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </article>
+      ))
+    }
+  </div>
+</section>
