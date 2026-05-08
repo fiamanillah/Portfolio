@@ -222,15 +222,27 @@
   }
 
   .diagonal-stripes {
-    background-color: var(--border);
-    opacity: 0.8;
-    background-size: 10px 10px;
+    background-color: transparent;
+    opacity: 0.9;
+    background-size: 14px 14px;
     background-image: repeating-linear-gradient(
       45deg,
-      color-mix(in oklch, var(--primary) 10%, transparent) 0,
-      color-mix(in oklch, var(--primary) 20%, transparent) 1px,
-      var(--background) 0,
-      var(--background) 50%
+      oklch(var(--primary) / 0.14) 0,
+      oklch(var(--primary) / 0.14) 1px,
+      transparent 1px,
+      transparent 7px
+    );
+  }
+
+  /* Animated accent bar under section header */
+  .accent-bar {
+    position: relative;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      oklch(var(--primary) / 40%),
+      transparent
     );
   }
 

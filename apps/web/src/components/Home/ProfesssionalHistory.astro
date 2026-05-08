@@ -119,70 +119,82 @@ const totalTech = [...new Set(experiences.flatMap((e) => e.technologies))]
   <div class="w-full">
     <div class="bg-background/40 shadow-sm backdrop-blur-3xl">
       <!-- Top Header Section -->
-      <div class="border-b border-border text-center">
-        <p
-          class="mb-4 pt-6 text-[10px] tracking-[0.2em] text-muted-foreground uppercase"
-        >
-          A brief overview of my professional journey, highlighting key roles,
-          projects, and achievements that have shaped my career in software
-          development.
-        </p>
-        <h1 class="mb-4 font-black tracking-tighter text-foreground italic">
-          Professional <span class="font-bold text-primary">History</span>
-        </h1>
-        <p
-          class="mb-6 text-[11px] font-semibold tracking-[0.15em] text-foreground uppercase"
-        >
-          The places I've worked, the projects I've built, and the impact I've
-          made
-        </p>
-
-        <!-- Summary Stats Bar -->
+      <div class="relative overflow-hidden border-b border-border text-center">
+        <!-- Background Pattern (diagonal stripes themed to site palette) -->
         <div
-          class="grid grid-cols-3 divide-x divide-border border-t border-border"
+          class="diagonal-stripes pointer-events-none absolute inset-0 z-10 bg-background"
+          aria-hidden="true"
         >
-          <div class="group flex flex-col items-center gap-1 py-5">
-            <span
-              class="text-3xl font-black tracking-tighter text-primary tabular-nums"
-              >{totalYears}+</span
-            >
-            <span
-              class="text-[9px] font-semibold tracking-[0.2em] text-muted-foreground uppercase"
-              >Years Experience</span
-            >
-          </div>
-          <div class="group flex flex-col items-center gap-1 py-5">
-            <span
-              class="text-3xl font-black tracking-tighter text-primary tabular-nums"
-              >{totalCompanies}</span
-            >
-            <span
-              class="text-[9px] font-semibold tracking-[0.2em] text-muted-foreground uppercase"
-              >Companies</span
-            >
-          </div>
-          <div class="group flex flex-col items-center gap-1 py-5">
-            <span
-              class="text-3xl font-black tracking-tighter text-primary tabular-nums"
-              >{totalTech}+</span
-            >
-            <span
-              class="text-[9px] font-semibold tracking-[0.2em] text-muted-foreground uppercase"
-              >Technologies</span
-            >
+        </div>
+
+        <div class="relative z-10">
+          <p
+            class="mb-4 pt-6 text-[10px] leading-relaxed tracking-[0.2em] text-muted-foreground uppercase"
+          >
+            A brief overview of my professional journey, highlighting key roles,
+            projects, and achievements that have shaped my career in software
+            development.
+          </p>
+          <h1 class="mb-4 text-4xl font-black tracking-tighter text-foreground italic md:text-5xl">
+            Professional <span class="font-bold text-primary">History</span>
+          </h1>
+          <p
+            class="mb-6 text-sm font-semibold tracking-[0.15em] text-foreground uppercase md:text-[0.95rem]"
+          >
+            The places I've worked, the projects I've built, and the impact I've
+            made
+          </p>
+
+          <!-- Accent bar -->
+          <div class="accent-bar mx-auto mb-6 w-48 md:w-56"></div>
+
+          <!-- Summary Stats Bar -->
+          <div
+            class="grid grid-cols-3 divide-x divide-border border-t border-border"
+          >
+            <div class="group flex flex-col items-center gap-1 py-5">
+              <span
+                class="text-2xl font-black tracking-tighter text-primary tabular-nums md:text-3xl"
+                >{totalYears}+</span
+              >
+              <span
+                class="text-[8px] font-semibold tracking-[0.2em] text-muted-foreground uppercase md:text-[9px]"
+                >Years Experience</span
+              >
+            </div>
+            <div class="group flex flex-col items-center gap-1 py-5">
+              <span
+                class="text-2xl font-black tracking-tighter text-primary tabular-nums md:text-3xl"
+                >{totalCompanies}</span
+              >
+              <span
+                class="text-[8px] font-semibold tracking-[0.2em] text-muted-foreground uppercase md:text-[9px]"
+                >Companies</span
+              >
+            </div>
+            <div class="group flex flex-col items-center gap-1 py-5">
+              <span
+                class="text-2xl font-black tracking-tighter text-primary tabular-nums md:text-3xl"
+                >{totalTech}+</span
+              >
+              <span
+                class="text-[8px] font-semibold tracking-[0.2em] text-muted-foreground uppercase md:text-[9px]"
+                >Technologies</span
+              >
+            </div>
           </div>
         </div>
       </div>
     </div>
 
     <!-- Timeline Grid -->
-    <div class="flex w-full border-x border-b border-border bg-card">
+    <div class="flex w-full  border-b border-border bg-card">
       <!-- Vertical Label -->
       <div class="group relative hidden w-20 shrink-0 border-r border-border md:block">
         <div class="pointer-events-none absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,oklch(0_0_0/0.015)_2px,oklch(0_0_0/0.015)_4px)] opacity-0 transition-opacity duration-400 group-hover:opacity-100 dark:bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,oklch(1_1_1/0.015)_2px,oklch(1_1_1/0.015)_4px)]" />
         
-        <div class="sticky top-0 flex h-screen max-h-[100vh] items-center justify-center">
-          <h3 class="inline-block origin-center -rotate-90 whitespace-nowrap font-mono text-4xl font-bold tracking-widest text-muted-foreground/30 uppercase transition-colors duration-400 group-hover:text-primary/20">
+        <div class="sticky top-0 flex h-screen max-h-screen items-center justify-center">
+          <h3 class="inline-block origin-center -rotate-90 whitespace-nowrap font-mono text-3xl font-bold tracking-widest text-muted-foreground/30 uppercase transition-colors duration-400 group-hover:text-primary/20 xl:text-4xl">
             TRACK_RECORD
           </h3>
         </div>
@@ -191,7 +203,7 @@ const totalTech = [...new Set(experiences.flatMap((e) => e.technologies))]
       <!-- Experiences -->
       <div class="relative w-full overflow-hidden">
         <!-- Blueprint Background -->
-        <div class="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,oklch(var(--border)/0.5)_1px,transparent_1px),linear-gradient(to_bottom,oklch(var(--border)/0.5)_1px,transparent_1px)] bg-[size:40px_40px] opacity-20" />
+        <div class="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,oklch(var(--border)/0.5)_1px,transparent_1px),linear-gradient(to_bottom,oklch(var(--border)/0.5)_1px,transparent_1px)] bg-size-[40px_40px] opacity-20" />
 
         <div class="relative z-10 flex flex-col">
           {
@@ -201,11 +213,11 @@ const totalTech = [...new Set(experiences.flatMap((e) => e.technologies))]
                 <!-- Left Column: Dates & Stats -->
                 <div class="flex w-full flex-row justify-between border-b border-border p-6 md:w-1/4 md:flex-col md:border-r md:border-b-0 md:p-8 lg:w-[25%] xl:w-[22%]">
                   <div class="flex flex-col gap-1">
-                    <h3 class="text-5xl font-black tracking-tighter text-foreground transition-colors duration-400 group-hover:text-primary group-hover:drop-shadow-[0_0_8px_oklch(var(--primary)/0.5)] md:text-6xl xl:text-7xl">
+                    <h3 class="text-[3rem] font-black tracking-tighter text-foreground transition-colors duration-400 group-hover:text-primary group-hover:drop-shadow-[0_0_8px_oklch(var(--primary)/0.5)] md:text-[4rem] xl:text-[4.75rem]">
                       {exp.year}
                     </h3>
                     <div class="mt-2 h-px w-8 bg-primary/40 transition-all duration-400 group-hover:w-12 group-hover:bg-primary" />
-                    <p class="mt-3 font-mono text-[9px] tracking-[0.2em] text-muted-foreground uppercase transition-colors duration-400 group-hover:text-primary/80">
+                    <p class="mt-3 font-mono text-[8px] tracking-[0.2em] text-muted-foreground uppercase transition-colors duration-400 group-hover:text-primary/80 md:text-[9px]">
                       // {exp.period}
                     </p>
                   </div>
@@ -214,7 +226,7 @@ const totalTech = [...new Set(experiences.flatMap((e) => e.technologies))]
                   <div class="mt-8 hidden flex-col gap-3 md:flex">
                     <div class="flex items-center gap-2">
                       <span class="h-1.5 w-1.5 border border-primary/50" />
-                      <span class="font-mono text-[9px] tracking-[0.1em] text-muted-foreground uppercase">
+                      <span class="font-mono text-[9px] tracking-widest text-muted-foreground uppercase">
                         {exp.location}
                       </span>
                     </div>
@@ -230,7 +242,7 @@ const totalTech = [...new Set(experiences.flatMap((e) => e.technologies))]
                         <div class="text-xl font-black tracking-tighter text-foreground transition-colors duration-400 group-hover:text-primary">
                           {stat.value}
                         </div>
-                        <div class="font-mono text-[8px] font-semibold tracking-[0.15em] text-muted-foreground uppercase transition-colors duration-400 group-hover:text-primary/70">
+                        <div class="font-mono text-[7px] font-semibold tracking-[0.15em] text-muted-foreground uppercase transition-colors duration-400 group-hover:text-primary/70 md:text-[8px]">
                           {stat.label}
                         </div>
                       </div>
@@ -242,12 +254,12 @@ const totalTech = [...new Set(experiences.flatMap((e) => e.technologies))]
                 <div class="flex w-full flex-col p-6 md:w-3/4 md:p-8 lg:w-[75%] xl:w-[78%]">
                   <!-- Company & Role -->
                   <div class="mb-8 flex flex-col gap-5">
-                    <div class="inline-block w-fit border border-border bg-card px-3 py-1 font-mono text-[10px] font-bold tracking-[0.2em] text-foreground uppercase transition-colors duration-400 group-hover:border-primary/40 group-hover:text-primary">
+                    <div class="inline-block w-fit border border-border bg-card px-3 py-1 font-mono text-[9px] font-bold tracking-[0.2em] text-foreground uppercase transition-colors duration-400 group-hover:border-primary/40 group-hover:text-primary md:text-[10px]">
                       {exp.company}
                     </div>
-                    <h4 class="text-4xl font-black leading-[0.85] text-foreground uppercase transition-colors duration-400 group-hover:text-foreground/90 md:text-5xl lg:text-[5.5rem] xl:text-[6.5rem]">
+                    <h4 class="text-[2.25rem] font-black leading-[0.88] text-foreground uppercase transition-colors duration-400 group-hover:text-foreground/90 md:text-5xl lg:text-[4.25rem] xl:text-[5rem]">
                       {exp.title.map((line) => (
-                        <span class="block origin-left scale-x-[1.1] pr-[10%] sm:scale-x-[1.15] lg:scale-x-[1.2]">
+                        <span class="block origin-left pr-[10%] leading-[0.92] tracking-[-0.04em] sm:tracking-tighter">
                           {line}
                         </span>
                       ))}
@@ -259,7 +271,7 @@ const totalTech = [...new Set(experiences.flatMap((e) => e.technologies))]
                     <div class="flex flex-col gap-6">
                       <div class="relative pl-4">
                         <div class="absolute bottom-0 left-0 top-1 w-px bg-primary/30 transition-colors duration-400 group-hover:bg-primary" />
-                        <p class="text-sm leading-relaxed text-muted-foreground">
+                        <p class="text-[0.95rem] leading-relaxed text-muted-foreground md:text-base">
                           {exp.description}
                         </p>
                       </div>
@@ -267,10 +279,10 @@ const totalTech = [...new Set(experiences.flatMap((e) => e.technologies))]
                       <ul class="flex flex-col gap-3">
                         {exp.highlights.map((h) => (
                           <li class="flex items-start gap-3">
-                            <span class="mt-1 flex h-3 w-3 shrink-0 items-center justify-center border border-primary/30 bg-primary/10 text-[8px] text-primary transition-colors duration-400 group-hover:border-primary/60 group-hover:bg-primary/20">
+                            <span class="mt-1 flex h-3 w-3 shrink-0 items-center justify-center border border-primary/30 bg-primary/10 text-[7px] text-primary transition-colors duration-400 group-hover:border-primary/60 group-hover:bg-primary/20 md:text-[8px]">
                               +
                             </span>
-                            <span class="text-xs leading-relaxed text-muted-foreground transition-colors duration-400 group-hover:text-foreground/80">
+                            <span class="text-[0.82rem] leading-relaxed text-muted-foreground transition-colors duration-400 group-hover:text-foreground/80 md:text-sm">
                               {h}
                             </span>
                           </li>
@@ -281,12 +293,12 @@ const totalTech = [...new Set(experiences.flatMap((e) => e.technologies))]
                     <div class="flex flex-col gap-8">
                       <!-- Tech Stack -->
                       <div class="flex flex-col gap-4">
-                        <h5 class="font-mono text-[10px] font-bold tracking-[0.2em] text-foreground uppercase">
+                        <h5 class="font-mono text-[9px] font-bold tracking-[0.2em] text-foreground uppercase md:text-[10px]">
                           // TECH_STACK
                         </h5>
                         <div class="flex flex-wrap gap-2">
                           {exp.technologies.map((tech) => (
-                            <span class="border border-border bg-muted/30 px-2 py-1 font-mono text-[9px] font-bold tracking-[0.1em] text-foreground uppercase transition-colors duration-300 hover:border-primary/50 hover:bg-primary/10 hover:text-primary">
+                            <span class="border border-border bg-muted/30 px-2 py-1 font-mono text-[8px] font-bold tracking-widest text-foreground uppercase transition-colors duration-300 hover:border-primary/50 hover:bg-primary/10 hover:text-primary md:text-[9px]">
                               {tech}
                             </span>
                           ))}
@@ -295,10 +307,10 @@ const totalTech = [...new Set(experiences.flatMap((e) => e.technologies))]
 
                       <!-- Key Takeaway -->
                       <div class="border-l-[1.5px] border-border pl-4 transition-colors duration-400 group-hover:border-primary/40">
-                        <h5 class="mb-2 font-mono text-[9px] font-bold tracking-[0.2em] text-primary uppercase">
+                        <h5 class="mb-2 font-mono text-[8px] font-bold tracking-[0.2em] text-primary uppercase md:text-[9px]">
                           [ KEY_TAKEAWAY ]
                         </h5>
-                        <p class="text-xs leading-relaxed text-muted-foreground italic">
+                        <p class="text-[0.82rem] leading-relaxed text-muted-foreground italic md:text-sm">
                           "{exp.learned}"
                         </p>
                       </div>
@@ -307,10 +319,10 @@ const totalTech = [...new Set(experiences.flatMap((e) => e.technologies))]
                       <div class="flex flex-wrap gap-6 border-t border-border pt-6 md:hidden">
                         {exp.stats.map((stat) => (
                           <div class="flex flex-col gap-1">
-                            <div class="text-xl font-black tracking-tighter text-foreground transition-colors duration-400 group-hover:text-primary">
+                            <div class="text-lg font-black tracking-tighter text-foreground transition-colors duration-400 group-hover:text-primary md:text-xl">
                               {stat.value}
                             </div>
-                            <div class="font-mono text-[8px] font-semibold tracking-[0.15em] text-muted-foreground uppercase transition-colors duration-400 group-hover:text-primary/70">
+                            <div class="font-mono text-[7px] font-semibold tracking-[0.15em] text-muted-foreground uppercase transition-colors duration-400 group-hover:text-primary/70 md:text-[8px]">
                               {stat.label}
                             </div>
                           </div>
@@ -327,7 +339,7 @@ const totalTech = [...new Set(experiences.flatMap((e) => e.technologies))]
     </div>
 
     <!-- Bottom CTA -->
-    <div class="border-x border-b border-border bg-card">
+    <div class="  border-border bg-card">
       <div class="relative flex flex-col items-center justify-between gap-6 overflow-hidden px-8 py-8 sm:flex-row">
         <!-- Scanline overlay -->
         <div class="pointer-events-none absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,oklch(0_0_0/0.015)_2px,oklch(0_0_0/0.015)_4px)] opacity-50 dark:bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,oklch(1_1_1/0.015)_2px,oklch(1_1_1/0.015)_4px)]" />
@@ -337,12 +349,12 @@ const totalTech = [...new Set(experiences.flatMap((e) => e.technologies))]
             <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
             <span class="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
           </div>
-          <p class="font-mono text-[10px] font-semibold tracking-[0.2em] text-muted-foreground uppercase">
+          <p class="font-mono text-[9px] font-semibold tracking-[0.2em] text-muted-foreground uppercase md:text-[10px]">
             System Online / Open to Opportunities
           </p>
         </div>
 
-        <a href="#contact" class="group relative z-10 inline-flex items-center gap-3 border border-primary/30 bg-primary/10 px-6 py-3 font-mono text-[11px] font-bold tracking-[0.2em] text-primary uppercase transition-all duration-300 hover:border-primary hover:bg-primary hover:text-primary-foreground hover:shadow-[0_0_20px_oklch(var(--primary)/0.3)]">
+        <a href="#contact" class="group relative z-10 inline-flex items-center gap-3 border border-primary/30 bg-primary/10 px-6 py-3 font-mono text-[10px] font-bold tracking-[0.2em] text-primary uppercase transition-all duration-300 hover:border-primary hover:bg-primary hover:text-primary-foreground hover:shadow-[0_0_20px_oklch(var(--primary)/0.3)] md:text-[11px]">
           <span>Initialize Contact</span>
           <svg class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
