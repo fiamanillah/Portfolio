@@ -37,7 +37,7 @@ import { TextScramble } from "@workspace/ui/components/text-scramble"
       <!-- Main Heading -->
       <div class="space-y-4">
         <h1
-          class="text-5xl font-black tracking-tighter text-balance text-foreground sm:text-6xl lg:text-7xl"
+          class="text-4xl font-black tracking-tighter text-balance text-foreground sm:text-5xl lg:text-6xl"
         >
           Hi, I'm <br />
           <span class="relative inline-block">
@@ -45,7 +45,7 @@ import { TextScramble } from "@workspace/ui/components/text-scramble"
           </span>
         </h1>
         <div
-          class="text-lg leading-relaxed font-medium text-balance text-primary sm:text-xl"
+          class="text-base leading-relaxed font-medium text-balance text-primary sm:text-lg"
         >
           <span class="text-foreground"> I'm a </span>
           <TextScramble
@@ -56,7 +56,7 @@ import { TextScramble } from "@workspace/ui/components/text-scramble"
           />
         </div>
         <p
-          class="text-sm! leading-relaxed font-medium text-balance text-muted-foreground sm:text-xl"
+          class="text-sm! leading-relaxed font-medium text-balance text-muted-foreground sm:text-base"
         >
           Junior Full-Stack Developer specializing in <span
             class="text-foreground">robust backend systems</span
@@ -68,7 +68,7 @@ import { TextScramble } from "@workspace/ui/components/text-scramble"
       <!-- Call to Action: Email Input -->
       <div class="w-full max-w-md">
         <InputGroup
-          className="h-14 border-2 border-border bg-foreground text-2xl! font-medium text-background"
+          className="h-14 border-2 border-border bg-foreground text-lg! font-medium text-background sm:text-xl!"
         >
           <InputGroupInput
             type="email"
@@ -85,7 +85,7 @@ import { TextScramble } from "@workspace/ui/components/text-scramble"
       <!-- Secondary Navigation -->
       <div class="flex items-center gap-6">
         <div
-          class="flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+          class="flex items-center gap-2 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground sm:text-sm"
         >
           <span>Read my story</span>
           <a
@@ -102,7 +102,7 @@ import { TextScramble } from "@workspace/ui/components/text-scramble"
         <div class="h-4 w-px bg-border"></div>
         <a
           href="#work"
-          class="text-sm font-medium text-muted-foreground hover:text-foreground"
+          class="text-xs font-medium text-muted-foreground hover:text-foreground sm:text-sm"
           >View Projects</a
         >
       </div>
@@ -110,7 +110,7 @@ import { TextScramble } from "@workspace/ui/components/text-scramble"
       <!-- Social Links -->
       <div class="flex flex-col gap-3 pt-2">
         <span
-          class="text-[0.5rem] font-semibold tracking-[0.3em] text-muted-foreground uppercase"
+          class="text-[0.45rem] font-semibold tracking-[0.3em] text-muted-foreground uppercase sm:text-[0.5rem]"
         >
           Follow me
         </span>
@@ -146,10 +146,11 @@ import { TextScramble } from "@workspace/ui/components/text-scramble"
           class="flex items-center justify-between border-b border-border pb-3"
         >
           <span
-            class="font-mono text-[11px] tracking-widest text-muted-foreground uppercase"
+            class="font-mono text-[10px] tracking-widest text-muted-foreground uppercase"
             >Location</span
           >
-          <span class="text-sm font-semibold tracking-tight text-foreground"
+          <span
+            class="text-xs font-semibold tracking-tight text-foreground sm:text-sm"
             >Mirpur, Dhaka-1216</span
           >
         </div>
@@ -157,10 +158,11 @@ import { TextScramble } from "@workspace/ui/components/text-scramble"
           class="flex items-center justify-between border-b border-border pb-3"
         >
           <span
-            class="font-mono text-[11px] tracking-widest text-muted-foreground uppercase"
+            class="font-mono text-[10px] tracking-widest text-muted-foreground uppercase"
             >Experience</span
           >
-          <span class="text-sm font-semibold tracking-tight text-foreground"
+          <span
+            class="text-xs font-semibold tracking-tight text-foreground sm:text-sm"
             >1+ Years</span
           >
         </div>
@@ -168,10 +170,11 @@ import { TextScramble } from "@workspace/ui/components/text-scramble"
           class="flex items-center justify-between border-b border-border pb-3"
         >
           <span
-            class="font-mono text-[11px] tracking-widest text-muted-foreground uppercase"
+            class="font-mono text-[10px] tracking-widest text-muted-foreground uppercase"
             >Specialty</span
           >
-          <span class="text-sm font-semibold tracking-tight text-foreground"
+          <span
+            class="text-xs font-semibold tracking-tight text-foreground sm:text-sm"
             >Full-Stack Dev</span
           >
         </div>
@@ -179,10 +182,11 @@ import { TextScramble } from "@workspace/ui/components/text-scramble"
           class="flex items-center justify-between border-b border-border pb-3"
         >
           <span
-            class="font-mono text-[11px] tracking-widest text-muted-foreground uppercase"
+            class="font-mono text-[10px] tracking-widest text-muted-foreground uppercase"
             >Focus</span
           >
-          <span class="text-sm font-semibold tracking-tight text-foreground"
+          <span
+            class="text-xs font-semibold tracking-tight text-foreground sm:text-sm"
             >Backend & Cloud</span
           >
         </div>
@@ -201,7 +205,9 @@ import { TextScramble } from "@workspace/ui/components/text-scramble"
           <div class="h-2.5 w-2.5 bg-emerald-500/80"></div>
         </div>
         <!-- Terminal Body -->
-        <div class="p-5 font-mono text-xs leading-relaxed backdrop-blur-3xl">
+        <div
+          class="p-5 font-mono text-[11px] leading-relaxed backdrop-blur-3xl"
+        >
           <p>
             <span class="text-muted-foreground/60">~/fi $</span>
             <span class="ml-2 font-semibold text-foreground"
@@ -239,7 +245,7 @@ import { TextScramble } from "@workspace/ui/components/text-scramble"
         <div class="flex items-center justify-end gap-3">
           <div class="h-px w-12 bg-border"></div>
           <span
-            class="font-mono text-[11px] tracking-widest whitespace-nowrap text-muted-foreground uppercase"
+            class="font-mono text-[10px] tracking-widest whitespace-nowrap text-muted-foreground uppercase"
             >Tech Stack</span
           >
         </div>

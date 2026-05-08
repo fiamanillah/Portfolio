@@ -80,34 +80,45 @@ const CARD_HEADER_HEIGHT = 50 // px
 const BASE_TOP_OFFSET = 72
 ---
 
-<section id="work" class="relative z-10 mx-auto py-12">
+<section id="work" class="relative z-10 mx-auto">
   <!-- Header -->
-  <div class="mb-14 text-center">
-    <p class="mb-2 text-sm! text-muted-foreground uppercase">
-      Selected projects and case studies
-    </p>
-
-    <h1
-      class="flex items-center justify-center gap-3 font-black tracking-tighter text-foreground"
+  <div class="relative overflow-hidden text-center">
+    <!-- Background Pattern (diagonal stripes themed to site palette) -->
+    <div
+      class="diagonal-stripes pointer-events-none absolute inset-0 z-10 bg-background"
+      aria-hidden="true"
     >
-      <span>Work</span>
-      <span class="text-primary">/</span>
-      <span class="mt-1 flex flex-col items-start text-left leading-none">
-        <span
-          class="text-xl font-bold tracking-widest text-foreground uppercase"
-          >Project</span
-        >
-        <span
-          class="mt-0.5 text-sm font-semibold tracking-tight text-muted-foreground"
-          >Showcase</span
-        >
-      </span>
-    </h1>
+    </div>
 
-    <p class="mx-auto mt-4">
-      Production-ready systems, tooling and integrations that demonstrate
-      engineering approach and impact.
-    </p>
+    <div class="relative z-10 py-8">
+      <p class="mb-2 text-sm! text-muted-foreground uppercase">
+        Selected projects and case studies
+      </p>
+
+      <h1
+        class="flex items-center justify-center gap-3 font-black tracking-tighter text-foreground"
+      >
+        <span>Work</span>
+        <span class="text-primary">/</span>
+        <span class="mt-1 flex flex-col items-start text-left leading-none">
+          <span
+            class="text-xl font-bold tracking-widest text-foreground uppercase"
+            >Project</span
+          >
+          <span
+            class="mt-0.5 text-sm font-semibold tracking-tight text-muted-foreground"
+            >Showcase</span
+          >
+        </span>
+      </h1>
+
+      <p class="mx-auto mt-4">
+        Production-ready systems, tooling and integrations that demonstrate
+        engineering approach and impact.
+      </p>
+      <!--  Accent bar -->
+      <div class="accent-bar mx-auto mb-6 w-60"></div>
+    </div>
   </div>
 
   <!-- Stack Container -->
@@ -141,14 +152,6 @@ const BASE_TOP_OFFSET = 72
               <h3 class="truncate leading-snug font-black tracking-tight text-primary transition-all duration-300 group-data-[stuck=true]:text-2xl group-data-[stuck=true]:text-foreground">
                 {p.title}
               </h3>
-
-              {/* Status pill */}
-              <div class="hidden items-center gap-1.5 sm:flex">
-                <span class="h-1.5 w-1.5 animate-[pulse_2s_infinite] rounded-full bg-primary" />
-                <span class="text-[0.7rem] tracking-[0.18em] text-muted-foreground uppercase">
-                  {p.status}
-                </span>
-              </div>
             </div>
 
             <div class="flex shrink-0 items-center gap-2">
@@ -179,7 +182,7 @@ const BASE_TOP_OFFSET = 72
           </div>
 
           {/* Card body */}
-          <div class="grid gap-4 border-t border-border px-5 py-4 lg:grid-cols-[minmax(0,1fr)_minmax(280px,1fr)] lg:items-stretch">
+          <div class="grid gap-4 border-border px-5 py-4 lg:grid-cols-[minmax(0,1fr)_minmax(280px,1fr)] lg:items-stretch">
             <div class="flex flex-col justify-between gap-4">
               <div class="flex flex-wrap gap-1.5">
                 <div class="flex flex-col gap-2">
