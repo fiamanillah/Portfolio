@@ -5,305 +5,393 @@ import {
   Facebook02Icon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"
 import { Textarea } from "@workspace/ui/components/textarea"
 import { Icon } from "astro-icon/components"
 ---
 
+<style>
+  /* Left-border hover accent on contact info rows */
+  .contact-info-row {
+    border-left: 2px solid transparent;
+    padding-left: 1rem;
+    transition:
+      border-color 200ms ease,
+      background 200ms ease;
+  }
+  .contact-info-row:hover {
+    border-left-color: oklch(var(--primary) / 70%);
+    background: oklch(var(--primary) / 4%);
+  }
+
+  /* Form field focus-within label lift */
+  .field-group:focus-within label {
+    color: oklch(var(--primary));
+  }
+
+  /* Subtle shimmer on submit hover */
+  @keyframes shimmer-x {
+    0% {
+      background-position: -200% center;
+    }
+    100% {
+      background-position: 200% center;
+    }
+  }
+  .btn-shimmer:hover {
+    animation: shimmer-x 1.4s ease infinite;
+    background-image: linear-gradient(
+      105deg,
+      oklch(var(--primary)) 0%,
+      oklch(var(--primary) / 85%) 45%,
+      oklch(var(--primary)) 55%,
+      oklch(var(--primary)) 100%
+    );
+    background-size: 200% auto;
+  }
+</style>
+
 <section
   id="contact"
-  class="relative z-10 container mx-auto flex items-center justify-center overflow-hidden py-px"
+  class="relative z-10 container mx-auto overflow-hidden"
   data-grid-cross
 >
-  <div class="w-full">
-    <!-- Main wrapper with border and brackets -->
-    <div class="group relative overflow-hidden bg-card">
-      <div
-        class="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_140%_at_50%_0%,oklch(var(--primary)/0.03),transparent_55%)]"
-      >
-      </div>
-      <div
-        class="pointer-events-none absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,oklch(0_0_0/0.015)_2px,oklch(0_0_0/0.015)_4px)] opacity-50 dark:bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,oklch(1_1_1/0.015)_2px,oklch(1_1_1/0.015)_4px)]"
-      >
-      </div>
+  <!-- ── Section Header ─────────────────────────────────────────── -->
+  <div class="relative overflow-hidden border-b border-border text-center">
+    <!-- Diagonal stripe background -->
+    <div
+      class="diagonal-stripes pointer-events-none absolute inset-0 z-10 bg-background"
+      aria-hidden="true"
+    >
+    </div>
 
-      <div class="relative z-10 grid lg:grid-cols-2">
-        <!-- Left Column: Copy & Contact Info -->
-        <div
-          class="flex flex-col justify-between border-b border-border p-8 md:p-12 lg:border-r lg:border-b-0 lg:p-16"
-        >
-          <!-- Header -->
-          <div class="space-y-6">
+    <!-- Ambient glow -->
+    <div class="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
+      <div
+        class="absolute top-1/2 left-1/2 h-40 w-80 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/10 blur-[80px]"
+      >
+      </div>
+    </div>
+
+    <div class="relative z-10 py-8">
+      <p class="section-label mb-4 pt-6">
+        Open to opportunities · Remote friendly
+      </p>
+      <h2
+        class="section-title mb-4 text-foreground"
+        style="font-style: normal;"
+      >
+        Get In <span class="text-primary">Touch</span>
+      </h2>
+      <div class="accent-bar mx-auto mb-6 w-48"></div>
+    </div>
+  </div>
+
+  <!-- ── Main Content ───────────────────────────────────────────── -->
+  <div class="grid bg-card lg:grid-cols-[1fr_1.25fr]">
+    <!-- Left Column: Info & Context -->
+    <div
+      class="flex flex-col justify-between border-b border-border p-8 md:p-10 lg:border-r lg:border-b-0"
+    >
+      <div class="flex flex-col gap-8">
+        <!-- Editorial statement -->
+        <div class="space-y-4">
+          <p
+            class="text-2xl leading-[1.15] font-bold tracking-tight text-foreground md:text-3xl"
+          >
+            Got a project in mind?<br />
+            <span class="text-primary">Let's make it happen.</span>
+          </p>
+          <p class="max-w-[42ch] text-sm leading-relaxed text-muted-foreground">
+            Whether it's a full-stack application, backend architecture, or
+            cloud infrastructure — I'm open to freelance work, full-time roles,
+            and interesting collaborations.
+          </p>
+        </div>
+
+        <!-- Contact details (info + socials unified) -->
+        <div class="flex flex-col gap-1 border-t border-border pt-6">
+          <!-- Email -->
+          <a
+            href="mailto:fiamanillah1@gmail.com"
+            class="contact-info-row group flex items-center gap-4 py-3 no-underline"
+          >
             <div
-              class="inline-flex items-center gap-2 border border-primary/20 bg-primary/10 px-3 py-1"
+              class="flex h-10 w-10 shrink-0 items-center justify-center border border-border bg-background text-muted-foreground transition-all duration-200 group-hover:border-primary/40 group-hover:bg-primary/10 group-hover:text-primary"
             >
-              <span
-                class="h-1.5 w-1.5 animate-pulse bg-primary shadow-[0_0_8px_oklch(var(--primary)/0.8)]"
-              ></span>
-              <span
-                class="font-mono text-[9px] tracking-[0.22em] text-primary uppercase sm:text-[10px]"
-              >
-                Module // Transmission_03
-              </span>
+              <Icon name="mdi:email-outline" class="size-4" />
             </div>
-
-            <h2
-              class="text-3xl font-black tracking-tighter text-foreground sm:text-4xl lg:text-5xl"
-            >
-              Establish<br />
-              <span
-                class="text-primary transition-all duration-400 group-hover:drop-shadow-[0_0_12px_oklch(var(--primary)/0.4)]"
-                >Connection</span
-              ><span class="animate-pulse text-primary">_</span>
-            </h2>
-
-            <div class="relative pl-4">
-              <div
-                class="absolute top-1 bottom-0 left-0 w-px bg-primary/30 transition-colors duration-400 group-hover:bg-primary"
-              >
-              </div>
+            <div>
               <p
-                class="max-w-[42ch] text-[0.95rem] leading-relaxed text-muted-foreground sm:text-sm"
+                class="font-mono text-[10px] tracking-[0.14em] text-muted-foreground uppercase"
               >
-                The secure channel is open. Transmit your project directives or
-                inquiries. All packets are encrypted.
+                Email
+              </p>
+              <p
+                class="text-sm font-semibold text-foreground transition-colors group-hover:text-primary"
+              >
+                fiamanillah1@gmail.com
+              </p>
+            </div>
+          </a>
+
+          <!-- Response time -->
+          <div class="contact-info-row flex items-center gap-4 py-3">
+            <div
+              class="flex h-10 w-10 shrink-0 items-center justify-center border border-border bg-background text-muted-foreground"
+            >
+              <Icon name="mdi:clock-outline" class="size-4" />
+            </div>
+            <div>
+              <p
+                class="font-mono text-[10px] tracking-[0.14em] text-muted-foreground uppercase"
+              >
+                Response Time
+              </p>
+              <p class="text-sm font-semibold text-foreground">
+                Within 24 hours
               </p>
             </div>
           </div>
 
-          <!-- Contact Details -->
-          <div class="mt-12 flex flex-col gap-6 border-t border-border pt-8">
-            <!-- Email -->
-            <div class="group/item flex items-center gap-5">
-              <div
-                class="flex h-12 w-12 shrink-0 items-center justify-center border border-border bg-background text-muted-foreground transition-all duration-300 group-hover/item:border-primary/50 group-hover/item:bg-primary/10 group-hover/item:text-primary group-hover/item:shadow-[0_0_12px_oklch(var(--primary)/0.2)]"
-              >
-                <Icon name="mdi:email-outline" class="size-5" />
-              </div>
-              <div class="flex flex-col gap-1.5">
-                <p
-                  class="font-mono text-[7px] tracking-[0.2em] text-muted-foreground uppercase transition-colors duration-300 group-hover/item:text-primary/70 sm:text-[8px]"
-                >
-                  Secure Mail
-                </p>
-                <a
-                  href="mailto:fiamanillah1@gmail.com"
-                  class="font-mono text-xs font-bold tracking-tight text-foreground transition-colors duration-300 group-hover/item:text-primary hover:text-primary sm:text-sm"
-                >
-                  fiamanillah1@gmail.com
-                </a>
-              </div>
-            </div>
-
-            <!-- Location -->
-            <div class="group/item flex items-center gap-5">
-              <div
-                class="flex h-12 w-12 shrink-0 items-center justify-center border border-border bg-background text-muted-foreground transition-all duration-300 group-hover/item:border-primary/50 group-hover/item:bg-primary/10 group-hover/item:text-primary group-hover/item:shadow-[0_0_12px_oklch(var(--primary)/0.2)]"
-              >
-                <Icon name="mdi:map-marker-outline" class="size-5" />
-              </div>
-              <div class="flex flex-col gap-1.5">
-                <p
-                  class="font-mono text-[7px] tracking-[0.2em] text-muted-foreground uppercase transition-colors duration-300 group-hover/item:text-primary/70 sm:text-[8px]"
-                >
-                  Global Base
-                </p>
-                <p
-                  class="font-mono text-xs font-bold tracking-tight text-foreground transition-colors duration-300 group-hover/item:text-primary sm:text-sm"
-                >
-                  Mirpur, Dhaka // Node_01
-                </p>
-              </div>
-            </div>
-
-            <!-- Social Uplink -->
-            <div class="group/item flex items-center gap-5">
-              <div
-                class="flex h-12 w-12 shrink-0 items-center justify-center border border-border bg-background text-muted-foreground transition-all duration-300 group-hover/item:border-primary/50 group-hover/item:bg-primary/10 group-hover/item:text-primary group-hover/item:shadow-[0_0_12px_oklch(var(--primary)/0.2)]"
-              >
-                <Icon name="mdi:share-variant-outline" class="size-5" />
-              </div>
-              <div class="flex flex-col gap-1.5">
-                <p
-                  class="font-mono text-[7px] tracking-[0.2em] text-muted-foreground uppercase transition-colors duration-300 group-hover/item:text-primary/70 sm:text-[8px]"
-                >
-                  Social Uplink
-                </p>
-                <div class="mt-0.5 flex items-center gap-2">
-                  {
-                    [
-                      {
-                        href: "https://github.com/fiamanillah",
-                        label: "GitHub",
-                        icon: GithubIcon,
-                      },
-                      {
-                        href: "https://linkedin.com/in/fiamanillah",
-                        label: "LinkedIn",
-                        icon: Linkedin02Icon,
-                      },
-                      {
-                        href: "https://facebook.com/fiamanillah",
-                        label: "Facebook",
-                        icon: Facebook02Icon,
-                      },
-                    ].map(({ href, label, icon }) => (
-                      <a
-                        href={href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label={label}
-                        class="inline-flex h-8 w-8 items-center justify-center border border-border bg-background text-muted-foreground transition-all duration-200 hover:border-primary/50 hover:bg-primary/10 hover:text-primary hover:shadow-[0_0_8px_oklch(var(--primary)/0.2)]"
-                      >
-                        <HugeiconsIcon
-                          icon={icon}
-                          className="size-4"
-                          aria-hidden="true"
-                        />
-                      </a>
-                    ))
-                  }
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Right Column: Contact Form -->
-        <div
-          class="relative flex flex-col justify-between bg-background/50 p-8 backdrop-blur-sm md:p-12 lg:p-16"
-        >
-          <!-- Inner Corner brackets -->
-          <div
-            class="pointer-events-none absolute top-0 left-0 h-2 w-2 border-t-[1.5px] border-l-[1.5px] border-primary/40"
-          >
-          </div>
-          <div
-            class="pointer-events-none absolute top-0 right-0 h-2 w-2 border-t-[1.5px] border-r-[1.5px] border-primary/40"
-          >
-          </div>
-
-          <!-- Form Header -->
-          <div
-            class="mb-8 flex items-center justify-between border-b border-border pb-4"
-          >
-            <span
-              class="font-mono text-[9px] font-bold tracking-[0.2em] text-foreground uppercase sm:text-[10px]"
-            >
-              Transmission.V4
-            </span>
-            <div
-              class="flex items-center gap-2 border border-border bg-background px-2 py-1"
-            >
-              <span
-                class="relative flex h-1.5 w-1.5 items-center justify-center"
-              >
-                <span
-                  class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"
-                ></span>
-                <span
-                  class="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500"
-                ></span>
-              </span>
-              <span
-                class="font-mono text-[7px] tracking-[0.15em] text-muted-foreground uppercase sm:text-[8px]"
-              >
-                Res_256_Active
-              </span>
-            </div>
-          </div>
-
-          <!-- Form -->
-          <form id="contact-form" class="flex flex-col gap-6">
-            <!-- Name Field -->
+          <!-- Social links — same row pattern as above -->
+          <div class="contact-info-row flex items-center gap-4 py-3">
             <div class="flex flex-col gap-2">
-              <label
-                for="contact-name"
-                class="font-mono text-[7px] tracking-[0.2em] text-muted-foreground uppercase transition-colors focus-within:text-primary sm:text-[8px]"
+              <p
+                class="font-mono text-[10px] tracking-[0.14em] text-muted-foreground uppercase"
               >
-                Ident_Name
-              </label>
-              <Input
-                type="text"
-                id="contact-name"
-                name="name"
-                placeholder="Ghost_User"
-                className="h-11 w-full rounded-none border-x-0 border-t-0 border-b border-border bg-background/30 px-3 font-mono text-sm text-foreground transition-colors duration-200 outline-none placeholder:text-muted-foreground/30 focus-visible:border-primary focus-visible:bg-primary/5 focus-visible:ring-0"
-              />
-            </div>
-
-            <!-- Email Field -->
-            <div class="flex flex-col gap-2">
-              <label
-                for="contact-email"
-                class="font-mono text-[7px] tracking-[0.2em] text-muted-foreground uppercase transition-colors focus-within:text-primary sm:text-[8px]"
-              >
-                Endpoint_Email
-              </label>
-              <Input
-                type="email"
-                id="contact-email"
-                name="email"
-                placeholder="user@domain.sys"
-                className="h-11 w-full rounded-none border-x-0 border-t-0 border-b border-border bg-background/30 px-3 font-mono text-sm text-foreground transition-colors duration-200 outline-none placeholder:text-muted-foreground/30 focus-visible:border-primary focus-visible:bg-primary/5 focus-visible:ring-0"
-              />
-            </div>
-
-            <!-- Message Field -->
-            <div class="flex flex-col gap-2">
-              <label
-                for="contact-message"
-                class="font-mono text-[7px] tracking-[0.2em] text-muted-foreground uppercase transition-colors focus-within:text-primary sm:text-[8px]"
-              >
-                Directive_Brief
-              </label>
-              <Textarea
-                id="contact-message"
-                name="message"
-                rows={4}
-                placeholder="Input_mission_parameters..."
-                className="min-h-32 w-full resize-none rounded-none border-x-0 border-t-0 border-b border-border bg-background/30 p-3 font-mono text-sm text-foreground transition-colors duration-200 outline-none placeholder:text-muted-foreground/30 focus-visible:border-primary focus-visible:bg-primary/5 focus-visible:ring-0"
-              />
-            </div>
-
-            <!-- Submit Button -->
-            <button
-              type="submit"
-              id="contact-submit"
-              class="group/btn relative mt-4 inline-flex w-full items-center justify-center gap-3 border border-primary/30 bg-primary/10 px-6 py-4 font-mono text-[0.7rem] font-bold tracking-[0.2em] text-primary uppercase transition-all duration-300 hover:border-primary hover:bg-primary hover:text-primary-foreground hover:shadow-[0_0_20px_oklch(var(--primary)/0.3)] sm:text-xs"
-            >
-              <span
-                class="transition-transform duration-200 group-hover/btn:-translate-x-1"
-                >Transmit Signal</span
-              >
-              <span
-                class="transition-transform duration-200 group-hover/btn:translate-x-1"
-                >⚡</span
-              >
-            </button>
-          </form>
-
-          <!-- Encryption Note -->
-          <div class="mt-6 flex justify-end">
-            <div
-              class="inline-flex items-center gap-2 border border-border bg-background px-2 py-1"
-            >
-              <Icon name="mdi:lock-outline" class="size-3 text-primary/50" />
-              <span
-                class="font-mono text-[7px] tracking-wider text-muted-foreground/60 uppercase sm:text-[8px]"
-              >
-                end-to-end encrypted
-              </span>
+                Find me on
+              </p>
+              <div class="flex items-center gap-2">
+                {
+                  [
+                    {
+                      href: "https://github.com/fiamanillah",
+                      label: "GitHub",
+                      icon: GithubIcon,
+                    },
+                    {
+                      href: "https://linkedin.com/in/fiamanillah",
+                      label: "LinkedIn",
+                      icon: Linkedin02Icon,
+                    },
+                    {
+                      href: "https://facebook.com/fiamanillah",
+                      label: "Facebook",
+                      icon: Facebook02Icon,
+                    },
+                  ].map(({ href, label, icon }) => (
+                    <a
+                      href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={label}
+                      class="inline-flex h-9 w-9 items-center justify-center border border-border bg-background text-muted-foreground transition-all duration-200 hover:border-primary/50 hover:bg-primary/10 hover:text-primary hover:shadow-[0_0_10px_oklch(var(--primary)/0.2)]"
+                    >
+                      <HugeiconsIcon
+                        icon={icon}
+                        className="size-4"
+                        aria-hidden="true"
+                      />
+                    </a>
+                  ))
+                }
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
+
+    <!-- Right Column: Form -->
+    <div class="relative bg-background/50 p-8 md:p-10">
+      <!-- Corner brackets -->
+      <div
+        class="pointer-events-none absolute top-3 left-3 h-5 w-5 border-t-[1.5px] border-l-[1.5px] border-primary/30"
+      >
+      </div>
+      <div
+        class="pointer-events-none absolute top-3 right-3 h-5 w-5 border-t-[1.5px] border-r-[1.5px] border-primary/30"
+      >
+      </div>
+      <div
+        class="pointer-events-none absolute bottom-3 left-3 h-5 w-5 border-b-[1.5px] border-l-[1.5px] border-primary/30"
+      >
+      </div>
+      <div
+        class="pointer-events-none absolute right-3 bottom-3 h-5 w-5 border-r-[1.5px] border-b-[1.5px] border-primary/30"
+      >
+      </div>
+
+      <!-- Form header row -->
+      <div
+        class="mb-6 flex items-center justify-between border-b border-border pb-4"
+      >
+        <span
+          class="font-mono text-xs font-bold tracking-[0.12em] text-foreground uppercase"
+        >
+          Send a Message
+        </span>
+        <div
+          class="flex items-center gap-2 border border-border bg-background px-2.5 py-1"
+        >
+          <Icon name="mdi:lock-outline" class="size-3 text-primary/50" />
+          <span
+            class="font-mono text-[10px] tracking-[0.1em] text-muted-foreground uppercase"
+          >
+            Secure
+          </span>
+        </div>
+      </div>
+
+      <!-- Form -->
+      <form id="contact-form" class="flex flex-col gap-5">
+        <!-- Name + Email row -->
+        <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+          <!-- Name -->
+          <div class="field-group flex flex-col gap-2">
+            <label
+              for="contact-name"
+              class="font-mono text-xs tracking-[0.12em] text-muted-foreground uppercase transition-colors"
+            >
+              Full Name <span class="text-primary">*</span>
+            </label>
+            <Input
+              type="text"
+              id="contact-name"
+              name="name"
+              required
+              placeholder="Your name"
+              className="h-11 w-full rounded-none border border-border bg-background/60 px-3 font-mono text-sm text-foreground transition-all duration-200 outline-none placeholder:text-muted-foreground/40 focus-visible:border-primary focus-visible:bg-primary/5 focus-visible:shadow-[0_0_0_1px_oklch(var(--primary)/30%)] focus-visible:ring-0"
+            />
+          </div>
+
+          <!-- Email -->
+          <div class="field-group flex flex-col gap-2">
+            <label
+              for="contact-email"
+              class="font-mono text-xs tracking-[0.12em] text-muted-foreground uppercase transition-colors"
+            >
+              Email Address <span class="text-primary">*</span>
+            </label>
+            <Input
+              type="email"
+              id="contact-email"
+              name="email"
+              required
+              placeholder="you@example.com"
+              className="h-11 w-full rounded-none border border-border bg-background/60 px-3 font-mono text-sm text-foreground transition-all duration-200 outline-none placeholder:text-muted-foreground/40 focus-visible:border-primary focus-visible:bg-primary/5 focus-visible:shadow-[0_0_0_1px_oklch(var(--primary)/30%)] focus-visible:ring-0"
+            />
+          </div>
+        </div>
+
+        <!-- Subject -->
+        <div class="field-group flex flex-col gap-2">
+          <label
+            for="contact-subject"
+            class="font-mono text-xs tracking-[0.12em] text-muted-foreground uppercase transition-colors"
+          >
+            Subject
+          </label>
+          <Input
+            type="text"
+            id="contact-subject"
+            name="subject"
+            placeholder="What's this about?"
+            className="h-11 w-full rounded-none border border-border bg-background/60 px-3 font-mono text-sm text-foreground transition-all duration-200 outline-none placeholder:text-muted-foreground/40 focus-visible:border-primary focus-visible:bg-primary/5 focus-visible:shadow-[0_0_0_1px_oklch(var(--primary)/30%)] focus-visible:ring-0"
+          />
+        </div>
+
+        <!-- Message -->
+        <div class="field-group flex flex-col gap-2">
+          <label
+            for="contact-message"
+            class="font-mono text-xs tracking-[0.12em] text-muted-foreground uppercase transition-colors"
+          >
+            Message <span class="text-primary">*</span>
+          </label>
+          <Textarea
+            id="contact-message"
+            name="message"
+            required
+            rows={5}
+            placeholder="Tell me about your project, timeline, and budget..."
+            className="min-h-[7.5rem] w-full resize-none rounded-none border border-border bg-background/60 p-3 font-mono text-sm text-foreground transition-all duration-200 outline-none placeholder:text-muted-foreground/40 focus-visible:border-primary focus-visible:bg-primary/5 focus-visible:shadow-[0_0_0_1px_oklch(var(--primary)/30%)] focus-visible:ring-0"
+          />
+        </div>
+
+        <!-- Submit Button -->
+        <button
+          type="submit"
+          id="contact-submit"
+          class="btn-shimmer group/btn relative mt-2 inline-flex w-full items-center justify-center gap-3 border border-primary bg-primary px-6 py-3.5 font-mono text-[0.75rem] font-bold tracking-[0.15em] text-primary-foreground uppercase transition-all duration-300 hover:shadow-[0_0_24px_oklch(var(--primary)/0.4)] disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          <span
+            id="contact-submit-text"
+            class="flex items-center gap-3 transition-transform duration-200"
+          >
+            Send Message
+            <svg
+              class="size-4 transition-transform duration-200 group-hover/btn:translate-x-1"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2.5"
+              aria-hidden="true"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+            </svg>
+          </span>
+        </button>
+      </form>
+
+      <!-- Privacy note -->
+      <p
+        class="mt-4 font-mono text-[10px] tracking-wide text-muted-foreground/60 uppercase"
+      >
+        Your information is kept private and never shared.
+      </p>
+    </div>
+  </div>
+
+  <!-- ── Bottom Status Bar ───────────────────────────────────────── -->
+  <div
+    class="relative flex flex-col items-center justify-between gap-3 overflow-hidden border-t border-border bg-card px-6 py-4 md:flex-row"
+  >
+    <!-- Shimmer line -->
+    <div
+      class="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-primary/30 to-transparent opacity-60"
+      aria-hidden="true"
+    >
+    </div>
+
+    <span
+      class="font-mono text-xs tracking-[0.1em] text-muted-foreground uppercase"
+    >
+      Fi Amanillah · Full-Stack Developer · Dhaka, BD
+    </span>
+
+    <div class="flex items-center gap-2">
+      <span class="relative flex h-1.5 w-1.5">
+        <span
+          class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"
+        ></span>
+        <span
+          class="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500"
+        ></span>
+      </span>
+      <span
+        class="font-mono text-xs tracking-[0.1em] text-muted-foreground uppercase"
+      >
+        Open to remote opportunities
+      </span>
+    </div>
   </div>
 </section>
 
-<!-- Form submission handler -->
 <script>
   function setupContactForm() {
     const form = document.getElementById(
@@ -312,27 +400,32 @@ import { Icon } from "astro-icon/components"
     const submitBtn = document.getElementById(
       "contact-submit"
     ) as HTMLButtonElement | null
+    const submitText = document.getElementById("contact-submit-text")
 
-    if (!form || !submitBtn) return
+    if (!form || !submitBtn || !submitText) return
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault()
 
-      const originalText = submitBtn.innerHTML
-      submitBtn.innerHTML = `
-        <span class="animate-pulse">Transmitting...</span>
-      `
+      const originalHTML = submitText.innerHTML
       submitBtn.disabled = true
+      submitText.innerHTML = `<span class="animate-pulse">Sending...</span>`
 
-      // Simulate transmission delay
       await new Promise((resolve) => setTimeout(resolve, 2000))
 
-      submitBtn.innerHTML = `
-        <span class="text-primary-foreground">✓ Signal Received</span>
+      submitText.innerHTML = `
+        <svg class="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+        </svg>
+        Message Sent!
       `
+      submitBtn.classList.remove("bg-primary", "border-primary")
+      submitBtn.classList.add("bg-emerald-600", "border-emerald-600")
 
       setTimeout(() => {
-        submitBtn.innerHTML = originalText
+        submitText.innerHTML = originalHTML
+        submitBtn.classList.add("bg-primary", "border-primary")
+        submitBtn.classList.remove("bg-emerald-600", "border-emerald-600")
         submitBtn.disabled = false
         form.reset()
       }, 3000)

@@ -246,6 +246,29 @@
     );
   }
 
+  /* ─── Section Heading System ────────────────────────────────────
+     Use .section-title on every section's primary <h2>.
+     Use .section-label on the small uppercase descriptor above it.
+  ──────────────────────────────────────────────────────────────── */
+  .section-title {
+    font-size: clamp(2.25rem, 4vw, 3.75rem);
+    font-weight: 900;
+    letter-spacing: -0.05em;
+    line-height: 0.95;
+    font-style: italic;
+    text-wrap: balance;
+  }
+
+  .section-label {
+    display: block;
+    font-size: 0.75rem; /* 12px — minimum readable uppercase label */
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: oklch(var(--muted-foreground));
+    margin-bottom: 0.75rem;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .mouse-glow-ball {
       transition: none;

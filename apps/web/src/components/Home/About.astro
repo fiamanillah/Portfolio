@@ -101,7 +101,7 @@
               <div class="h-2.5 w-2.5 rounded-full bg-emerald-500/80"></div>
             </div>
             <span
-              class="font-mono text-[9px] tracking-[0.15em] text-muted-foreground/60 uppercase"
+              class="font-mono text-xs tracking-[0.1em] text-muted-foreground/60 uppercase"
               >fi@portfolio — ~/about</span
             >
             <div class="flex items-center gap-2"></div>
@@ -152,63 +152,43 @@
       >
         <!-- Heading -->
         <div class="space-y-4">
-          <h3
-            class="text-[clamp(1.55rem,3vw,2.2rem)] leading-[1.15] font-extrabold tracking-[-0.04em] text-foreground"
+          <h2
+            class="section-title text-foreground"
           >
-            I architect systems and build<br />
-            <em class="text-primary italic">seamless digital experiences.</em>
-          </h3>
+            I architect systems and build
+            <em class="text-primary"> seamless digital experiences.</em>
+          </h2>
           <div class="h-px w-16 bg-primary/40"></div>
         </div>
 
-        <!-- Body Paragraphs -->
+        <!-- Body Paragraph -->
         <div class="flex flex-col gap-5">
           <p class="max-w-[56ch] text-sm leading-[1.85] text-muted-foreground">
-            I'm a seasoned Full-Stack Developer specializing in robust backend
+            I'm a Full-Stack Developer specializing in robust backend
             architectures and minimalist, high-performance interfaces. I bridge
             the gap between complex logic and clean design, transforming
             intricate requirements into elegant solutions.
           </p>
           <p class="max-w-[56ch] text-sm leading-[1.85] text-muted-foreground">
-            Currently, my focus is on building scalable microservices and
-            exploring the intersection of AI integration within modern web
-            applications. I believe in writing code that is not just functional,
-            but readable, maintainable, and brutal in its simplicity.
+            Currently focused on scalable microservices and AI integration within
+            modern web applications — writing code that is functional, readable,
+            and brutal in its simplicity.
           </p>
         </div>
 
-        <!-- Experience badge + CTA row -->
-        <div class="flex flex-col gap-5 sm:flex-row sm:items-center sm:gap-6">
-          <!-- Experience mini-badge -->
-          <div
-            class="flex items-center gap-3 border border-primary/30 bg-primary/5 px-5 py-3"
+        <!-- CTA row -->
+        <div class="flex items-center gap-4 pt-2">
+          <a
+            href="#work"
+            class="group inline-flex items-center gap-2 border border-primary/30 bg-primary/10 px-6 py-3 text-[0.8rem] font-bold tracking-[0.15em] text-primary uppercase no-underline transition-all duration-250 hover:border-primary hover:bg-primary hover:text-primary-foreground"
           >
-            <span
-              class="text-2xl leading-none font-black tracking-tighter text-primary sm:text-3xl"
-              >1+</span
-            >
-            <div class="h-8 w-px bg-primary/30"></div>
-            <div
-              class="flex flex-col text-[0.5rem] leading-tight font-bold tracking-[0.2em] text-muted-foreground uppercase sm:text-[0.55rem]"
-            >
-              <span>YEARS</span>
-              <span>EXPERIENCE</span>
-            </div>
-          </div>
-
-          <!-- CTA Button -->
+            <span>View My Work</span>
+            <span class="transition-transform duration-200 group-hover:translate-x-1">↓</span>
+          </a>
           <a
             href="#contact"
-            class="group relative inline-flex cursor-pointer items-center gap-3 overflow-hidden border-2 border-primary bg-primary/10 p-4 px-10 text-[0.8rem] font-bold tracking-[0.2em] text-primary uppercase no-underline transition-all duration-250 before:absolute before:inset-0 before:z-0 before:translate-x-[-101%] before:bg-primary before:transition-transform before:duration-350 before:content-[''] hover:text-primary-foreground hover:shadow-[0_0_30px_oklch(var(--primary)/0.3),0_0_60px_oklch(var(--primary)/0.1)] hover:before:translate-x-0"
-          >
-            <span class="relative z-10 transition-transform duration-250"
-              >INITIALIZE CONTACT</span
-            >
-            <span
-              class="relative z-10 transition-transform duration-250 group-hover:translate-x-1"
-              >&rarr;</span
-            >
-          </a>
+            class="text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
+          >Get in touch →</a>
         </div>
       </div>
     </div>
