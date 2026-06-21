@@ -1,0 +1,11 @@
+{
+  "name": "ssh",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "go run . --ssh --port 2222",
+    "build": "go build -o portfolio",
+    "lint": "go vet ./...",
+    "format": "go fmt ./..."
+  }
+}
