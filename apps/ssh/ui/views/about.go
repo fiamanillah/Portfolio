@@ -16,8 +16,12 @@ func DrawAbout(width int) string {
 
 	// ── Section header ─────────────────────────────────────────────
 	sb.WriteString("\n")
-	sb.WriteString(" " + styles.StyleTitleLarge.Render("ABOUT ME") + "\n")
-	sb.WriteString(" " + styles.StyleFaint.Render(strings.Repeat("─", iw-2)) + "\n\n")
+	sb.WriteString(" ")
+	sb.WriteString(styles.StyleTitleLarge.Render("ABOUT ME"))
+	sb.WriteString("\n")
+	sb.WriteString(" ")
+	sb.WriteString(styles.StyleFaint.Render(strings.Repeat("─", iw-2)))
+	sb.WriteString("\n\n")
 
 	// ── Bio ──────────────────────────────────────────────────────
 	bioLines := []string{
@@ -36,13 +40,17 @@ func DrawAbout(width int) string {
 		if line == "" {
 			sb.WriteString("\n")
 		} else {
-			sb.WriteString(" " + styles.StyleBody.Render(line) + "\n")
+			sb.WriteString(" ")
+			sb.WriteString(styles.StyleBody.Render(line))
+			sb.WriteString("\n")
 		}
 	}
 	sb.WriteString("\n")
 
 	// ── Stats row ──────────────────────────────────────────────────
-	sb.WriteString(" " + styles.SectionDivider(iw-2, "AT A GLANCE") + "\n\n")
+	sb.WriteString(" ")
+	sb.WriteString(styles.SectionDivider(iw-2, "AT A GLANCE"))
+	sb.WriteString("\n\n")
 
 	stats := []struct{ value, label string }{
 		{"1+", "Years Exp."},
@@ -76,10 +84,14 @@ func DrawAbout(width int) string {
 		statCards = append(statCards, card)
 	}
 	statsRow := lipgloss.JoinHorizontal(lipgloss.Top, statCards...)
-	sb.WriteString(" " + statsRow + "\n\n")
+	sb.WriteString(" ")
+	sb.WriteString(statsRow)
+	sb.WriteString("\n\n")
 
 	// ── Philosophy cards ───────────────────────────────────────────
-	sb.WriteString(" " + styles.SectionDivider(iw-2, "PHILOSOPHY") + "\n\n")
+	sb.WriteString(" ")
+	sb.WriteString(styles.SectionDivider(iw-2, "PHILOSOPHY"))
+	sb.WriteString("\n\n")
 
 	philosophy := []struct {
 		icon, title, desc string
@@ -121,13 +133,17 @@ func DrawAbout(width int) string {
 			Padding(0, 1).
 			Render(titleLine + "\n" + descLine)
 
-		sb.WriteString(" " + card + "\n")
+		sb.WriteString(" ")
+		sb.WriteString(card)
+		sb.WriteString("\n")
 	}
 
 	sb.WriteString("\n")
 
 	// ── Credentials ────────────────────────────────────────────────
-	sb.WriteString(" " + styles.SectionDivider(iw-2, "CREDENTIALS") + "\n\n")
+	sb.WriteString(" ")
+	sb.WriteString(styles.SectionDivider(iw-2, "CREDENTIALS"))
+	sb.WriteString("\n\n")
 
 	credentials := []struct{ year, title, detail string }{
 		{"2023", "Self-Taught Full-Stack Developer", "Node.js · React · PostgreSQL · Docker · Go"},

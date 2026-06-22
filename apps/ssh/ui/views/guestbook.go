@@ -17,8 +17,12 @@ func DrawGuestbook(gm *guestbook.GuestbookModel, width int) string {
 
 	// ── Section header ─────────────────────────────────────────────
 	sb.WriteString("\n")
-	sb.WriteString(" " + styles.StyleTitleLarge.Render("GUESTBOOK") + "\n")
-	sb.WriteString(" " + styles.StyleFaint.Render(strings.Repeat("─", iw-2)) + "\n\n")
+	sb.WriteString(" ")
+	sb.WriteString(styles.StyleTitleLarge.Render("GUESTBOOK"))
+	sb.WriteString("\n")
+	sb.WriteString(" ")
+	sb.WriteString(styles.StyleFaint.Render(strings.Repeat("─", iw-2)))
+	sb.WriteString("\n\n")
 
 	if gm.State == guestbook.StateViewing {
 		// ── Controls ──────────────────────────────────────────────
@@ -33,11 +37,15 @@ func DrawGuestbook(gm *guestbook.GuestbookModel, width int) string {
 				styles.StyleBadgePrimary.Render(c.key)+" "+styles.StyleMuted.Render(c.action),
 			)
 		}
-		sb.WriteString(" " + strings.Join(ctrlParts, "   ") + "\n\n")
+		sb.WriteString(" ")
+		sb.WriteString(strings.Join(ctrlParts, "   "))
+		sb.WriteString("\n\n")
 
 		// ── Error message ─────────────────────────────────────────
 		if gm.ErrorMsg != "" {
-			sb.WriteString(" " + styles.StyleError.Render("! "+gm.ErrorMsg) + "\n\n")
+			sb.WriteString(" ")
+			sb.WriteString(styles.StyleError.Render("! "+gm.ErrorMsg))
+			sb.WriteString("\n\n")
 		}
 
 		// ── Empty state ───────────────────────────────────────────
@@ -55,7 +63,9 @@ func DrawGuestbook(gm *guestbook.GuestbookModel, width int) string {
 					styles.StyleMuted.Render("No messages yet — be the first to leave your mark!") + "\n" +
 						styles.StyleFaint.Render("Press 's' to sign the guestbook"),
 				)
-			sb.WriteString(" " + emptyBox + "\n")
+			sb.WriteString(" ")
+			sb.WriteString(emptyBox)
+			sb.WriteString("\n")
 			return sb.String()
 		}
 
@@ -64,7 +74,9 @@ func DrawGuestbook(gm *guestbook.GuestbookModel, width int) string {
 		if len(gm.Entries) != 1 {
 			countStr += "s"
 		}
-		sb.WriteString(" " + styles.StyleMuted.Render("◈ "+countStr) + "\n\n")
+		sb.WriteString(" ")
+		sb.WriteString(styles.StyleMuted.Render("◈ "+countStr))
+		sb.WriteString("\n\n")
 
 		// ── Entry boxes ───────────────────────────────────────────
 		// entryW + 1(left border) + 2(PaddingLeft) must fit in iw
@@ -105,7 +117,9 @@ func DrawGuestbook(gm *guestbook.GuestbookModel, width int) string {
 				Width(entryW).
 				Render(nameStr + dateStrFmt + "\n" + msgStr)
 
-			sb.WriteString(" " + entryBox + "\n\n")
+			sb.WriteString(" ")
+			sb.WriteString(entryBox)
+			sb.WriteString("\n\n")
 		}
 
 		// ── Scroll indicator ──────────────────────────────────────
@@ -122,8 +136,12 @@ func DrawGuestbook(gm *guestbook.GuestbookModel, width int) string {
 
 	} else {
 		// ── Sign form ─────────────────────────────────────────────
-		sb.WriteString(" " + styles.StyleBody.Render("Leave a message for visitors of this terminal.") + "\n")
-		sb.WriteString(" " + styles.StyleMuted.Render("Press ESC to cancel  ·  ENTER to proceed") + "\n\n")
+		sb.WriteString(" ")
+		sb.WriteString(styles.StyleBody.Render("Leave a message for visitors of this terminal."))
+		sb.WriteString("\n")
+		sb.WriteString(" ")
+		sb.WriteString(styles.StyleMuted.Render("Press ESC to cancel  ·  ENTER to proceed"))
+		sb.WriteString("\n\n")
 
 		// formW + 2(border) must fit in iw
 		formW := iw - 4
@@ -136,24 +154,30 @@ func DrawGuestbook(gm *guestbook.GuestbookModel, width int) string {
 
 		var formSb strings.Builder
 
-		formSb.WriteString(styles.StyleHighlight.Render("✦  SIGN THE GUESTBOOK") + "\n")
-		formSb.WriteString(styles.StyleFaint.Render(strings.Repeat("─", formW-4)) + "\n\n")
+		formSb.WriteString(styles.StyleHighlight.Render("✦  SIGN THE GUESTBOOK"))
+		formSb.WriteString("\n")
+		formSb.WriteString(styles.StyleFaint.Render(strings.Repeat("─", formW-6)))
+		formSb.WriteString("\n\n")
 
 		// Name field
 		nameLabel := styles.StyleMuted.Render("Name")
 		if gm.State == guestbook.StateEnteringName {
 			nameLabel = styles.StyleKey.Render("▸ Name  [active]")
 		}
-		formSb.WriteString(nameLabel + "\n")
-		formSb.WriteString(gm.NameInput.View() + "\n\n")
+		formSb.WriteString(nameLabel)
+		formSb.WriteString("\n")
+		formSb.WriteString(gm.NameInput.View())
+		formSb.WriteString("\n\n")
 
 		// Message field
 		msgLabel := styles.StyleMuted.Render("Message")
 		if gm.State == guestbook.StateEnteringMessage {
 			msgLabel = styles.StyleKey.Render("▸ Message  [active]")
 		}
-		formSb.WriteString(msgLabel + "\n")
-		formSb.WriteString(gm.MsgInput.View() + "\n\n")
+		formSb.WriteString(msgLabel)
+		formSb.WriteString("\n")
+		formSb.WriteString(gm.MsgInput.View())
+		formSb.WriteString("\n\n")
 
 		// Step indicator
 		var stepStr string
@@ -173,7 +197,9 @@ func DrawGuestbook(gm *guestbook.GuestbookModel, width int) string {
 			Padding(1, 2).
 			Render(formSb.String())
 
-		sb.WriteString(" " + formBox + "\n")
+		sb.WriteString(" ")
+		sb.WriteString(formBox)
+		sb.WriteString("\n")
 	}
 
 	return sb.String()

@@ -42,15 +42,26 @@ func DrawHome(width int) string {
 	sb.WriteString("\n")
 
 	// whoami command
-	sb.WriteString(" " + prompt + " " + styles.StyleBody.Render("whoami") + "\n")
-	sb.WriteString(
-		" " + styles.StyleHighlight.Render("Fi Amanillah") +
-			"  " + styles.StyleFaint.Render("// Junior Full-Stack Developer") + "\n",
-	)
-	sb.WriteString(" " + divLine + "\n\n")
+	sb.WriteString(" ")
+	sb.WriteString(prompt)
+	sb.WriteString(" ")
+	sb.WriteString(styles.StyleBody.Render("whoami"))
+	sb.WriteString("\n")
+	sb.WriteString(" ")
+	sb.WriteString(styles.StyleHighlight.Render("Fi Amanillah"))
+	sb.WriteString("  ")
+	sb.WriteString(styles.StyleFaint.Render("// Junior Full-Stack Developer"))
+	sb.WriteString("\n")
+	sb.WriteString(" ")
+	sb.WriteString(divLine)
+	sb.WriteString("\n\n")
 
 	// cat profile.json command
-	sb.WriteString(" " + prompt + " " + styles.StyleBody.Render("cat profile.json") + "\n")
+	sb.WriteString(" ")
+	sb.WriteString(prompt)
+	sb.WriteString(" ")
+	sb.WriteString(styles.StyleBody.Render("cat profile.json"))
+	sb.WriteString("\n")
 
 	fields := []struct{ k, v string }{
 		{"location  ", `"Dhaka, Bangladesh"`},
@@ -61,7 +72,9 @@ func DrawHome(width int) string {
 		{"status    ", `"open to opportunities"`},
 	}
 
-	sb.WriteString(" " + styles.StyleFaint.Render("{") + "\n")
+	sb.WriteString(" ")
+	sb.WriteString(styles.StyleFaint.Render("{"))
+	sb.WriteString("\n")
 	for i, f := range fields {
 		comma := ","
 		if i == len(fields)-1 {
@@ -73,13 +86,23 @@ func DrawHome(width int) string {
 			styles.StyleGreen.Render(f.v),
 			styles.StyleFaint.Render(comma),
 		)
-		sb.WriteString(" " + line + "\n")
+		sb.WriteString(" ")
+		sb.WriteString(line)
+		sb.WriteString("\n")
 	}
-	sb.WriteString(" " + styles.StyleFaint.Render("}") + "\n\n")
+	sb.WriteString(" ")
+	sb.WriteString(styles.StyleFaint.Render("}"))
+	sb.WriteString("\n\n")
 
 	// ls links/ command
-	sb.WriteString(" " + prompt + " " + styles.StyleBody.Render("ls links/") + "\n")
-	sb.WriteString(" " + divLine + "\n")
+	sb.WriteString(" ")
+	sb.WriteString(prompt)
+	sb.WriteString(" ")
+	sb.WriteString(styles.StyleBody.Render("ls links/"))
+	sb.WriteString("\n")
+	sb.WriteString(" ")
+	sb.WriteString(divLine)
+	sb.WriteString("\n")
 
 	links := []struct{ icon, label, value string }{
 		{"[github]  ", "GitHub", "github.com/fiamanillah"},
@@ -96,8 +119,14 @@ func DrawHome(width int) string {
 	sb.WriteString("\n")
 
 	// ── Tech stack badges ─────────────────────────────────────────
-	sb.WriteString(" " + prompt + " " + styles.StyleBody.Render("cat stack.txt") + "\n")
-	sb.WriteString(" " + divLine + "\n")
+	sb.WriteString(" ")
+	sb.WriteString(prompt)
+	sb.WriteString(" ")
+	sb.WriteString(styles.StyleBody.Render("cat stack.txt"))
+	sb.WriteString("\n")
+	sb.WriteString(" ")
+	sb.WriteString(divLine)
+	sb.WriteString("\n")
 
 	stacks := []struct {
 		name  string
@@ -116,16 +145,20 @@ func DrawHome(width int) string {
 	var badgeLine strings.Builder
 	badgeLine.WriteString(" ")
 	for _, s := range stacks {
-		badgeLine.WriteString(s.style.Render(s.name) + " ")
+		badgeLine.WriteString(s.style.Render(s.name))
+		badgeLine.WriteString(" ")
 	}
-	sb.WriteString(badgeLine.String() + "\n\n")
+	sb.WriteString(badgeLine.String())
+	sb.WriteString("\n\n")
 
 	// ── Status indicator ──────────────────────────────────────────
 	avail := lipgloss.NewStyle().
 		Foreground(styles.ColorGreen).
 		Bold(true).
 		Render("●  Available for freelance & full-time positions")
-	sb.WriteString(" " + avail + "\n")
+	sb.WriteString(" ")
+	sb.WriteString(avail)
+	sb.WriteString("\n")
 
 	return sb.String()
 }

@@ -97,9 +97,15 @@ func DrawExperience(selectedIndex int, expandedIndex int, width int) string {
 
 	// ── Section header ─────────────────────────────────────────────
 	sb.WriteString("\n")
-	sb.WriteString(" " + styles.StyleTitleLarge.Render("PROFESSIONAL TIMELINE") + "\n")
-	sb.WriteString(" " + styles.StyleMuted.Render("j/k or Up/Down: navigate  ·  ENTER: expand/collapse") + "\n")
-	sb.WriteString(" " + styles.StyleFaint.Render(strings.Repeat("─", iw-2)) + "\n\n")
+	sb.WriteString(" ")
+	sb.WriteString(styles.StyleTitleLarge.Render("PROFESSIONAL TIMELINE"))
+	sb.WriteString("\n")
+	sb.WriteString(" ")
+	sb.WriteString(styles.StyleMuted.Render("j/k or Up/Down: navigate  ·  ENTER: expand/collapse"))
+	sb.WriteString("\n")
+	sb.WriteString(" ")
+	sb.WriteString(styles.StyleFaint.Render(strings.Repeat("─", iw-2)))
+	sb.WriteString("\n\n")
 
 	for i, exp := range Experiences {
 		isSelected := i == selectedIndex
@@ -158,10 +164,13 @@ func DrawExperience(selectedIndex int, expandedIndex int, width int) string {
 			var detSb strings.Builder
 
 			// Description
-			detSb.WriteString("\n" + styles.StyleBody.Render(exp.Description) + "\n\n")
+			detSb.WriteString("\n")
+			detSb.WriteString(styles.StyleBody.Render(exp.Description))
+			detSb.WriteString("\n\n")
 
 			// Highlights
-			detSb.WriteString(styles.StyleKey.Render("HIGHLIGHTS") + "\n")
+			detSb.WriteString(styles.StyleKey.Render("HIGHLIGHTS"))
+			detSb.WriteString("\n")
 			for _, h := range exp.Highlights {
 				detSb.WriteString(fmt.Sprintf(" %s  %s\n",
 					lipgloss.NewStyle().Foreground(styles.ColorPrimary).Render("◈"),
@@ -171,7 +180,8 @@ func DrawExperience(selectedIndex int, expandedIndex int, width int) string {
 			detSb.WriteString("\n")
 
 			// Impact stats
-			detSb.WriteString(styles.StyleKey.Render("IMPACT") + "\n")
+			detSb.WriteString(styles.StyleKey.Render("IMPACT"))
+			detSb.WriteString("\n")
 			var statParts []string
 			for _, s := range exp.Stats {
 				statParts = append(statParts, fmt.Sprintf("%s %s",
@@ -179,15 +189,19 @@ func DrawExperience(selectedIndex int, expandedIndex int, width int) string {
 					styles.StyleMuted.Render(s.Label),
 				))
 			}
-			detSb.WriteString(" " + strings.Join(statParts, "   ·   ") + "\n\n")
+			detSb.WriteString(" ")
+			detSb.WriteString(strings.Join(statParts, "   ·   "))
+			detSb.WriteString("\n\n")
 
 			// Technologies
-			detSb.WriteString(styles.StyleKey.Render("TECHNOLOGIES") + "\n ")
+			detSb.WriteString(styles.StyleKey.Render("TECHNOLOGIES"))
+			detSb.WriteString("\n ")
 			for j, tech := range exp.Technologies {
 				if j > 0 && j%5 == 0 {
 					detSb.WriteString("\n ")
 				}
-				detSb.WriteString(styles.StyleBadge.Render(tech) + " ")
+				detSb.WriteString(styles.StyleBadge.Render(tech))
+				detSb.WriteString(" ")
 			}
 			detSb.WriteString("\n\n")
 
@@ -199,7 +213,8 @@ func DrawExperience(selectedIndex int, expandedIndex int, width int) string {
 				Foreground(styles.ColorSubtle).
 				Italic(true).
 				Render(styles.StyleKey.Render("TAKEAWAY") + "\n\"" + exp.Takeaway + "\"")
-			detSb.WriteString(takeaway + "\n")
+			detSb.WriteString(takeaway)
+			detSb.WriteString("\n")
 
 			detailBox := lipgloss.NewStyle().
 				Border(lipgloss.RoundedBorder()).
@@ -208,14 +223,20 @@ func DrawExperience(selectedIndex int, expandedIndex int, width int) string {
 				Padding(0, 1).
 				Render(detSb.String())
 
-			sb.WriteString("\n  " + detailBox + "\n")
+			sb.WriteString("\n  ")
+			sb.WriteString(detailBox)
+			sb.WriteString("\n")
 		} else {
-			sb.WriteString("    " + styles.StyleFaint.Render("[ ENTER to expand ]") + "\n")
+			sb.WriteString("    ")
+			sb.WriteString(styles.StyleFaint.Render("[ ENTER to expand ]"))
+			sb.WriteString("\n")
 		}
 
 		// Separator between entries
 		if i < len(Experiences)-1 {
-			sb.WriteString(" " + styles.StyleFaint.Render(strings.Repeat("╌", iw-2)) + "\n")
+			sb.WriteString(" ")
+			sb.WriteString(styles.StyleFaint.Render(strings.Repeat("╌", iw-2)))
+			sb.WriteString("\n")
 		}
 		sb.WriteString("\n")
 	}

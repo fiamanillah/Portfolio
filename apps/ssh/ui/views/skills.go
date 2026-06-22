@@ -80,7 +80,7 @@ func skillBar(level int) string {
 }
 
 // levelLabel returns a short proficiency label.
-func levelLabel(level int, borderColor lipgloss.Color) string {
+func levelLabel(level int) string {
 	switch level {
 	case 5:
 		return styles.StyleHighlight.Render("Expert")
@@ -100,17 +100,26 @@ func DrawSkills(width int) string {
 
 	// ── Section header ─────────────────────────────────────────────
 	sb.WriteString("\n")
-	sb.WriteString(" " + styles.StyleTitleLarge.Render("SKILLS & TECH STACK") + "\n")
-	sb.WriteString(" " + styles.StyleMuted.Render("Languages · Libraries · Databases · Infrastructure") + "\n")
-	sb.WriteString(" " + styles.StyleFaint.Render(strings.Repeat("─", iw-2)) + "\n\n")
+	sb.WriteString(" ")
+	sb.WriteString(styles.StyleTitleLarge.Render("SKILLS & TECH STACK"))
+	sb.WriteString("\n")
+	sb.WriteString(" ")
+	sb.WriteString(styles.StyleMuted.Render("Languages · Libraries · Databases · Infrastructure"))
+	sb.WriteString("\n")
+	sb.WriteString(" ")
+	sb.WriteString(styles.StyleFaint.Render(strings.Repeat("─", iw-2)))
+	sb.WriteString("\n\n")
 
 	// ── Proficiency legend ─────────────────────────────────────────
-	sb.WriteString(" " +
-		styles.StyleFaint.Render("Proficiency: ") +
-		styles.StyleHighlight.Render("█████") + styles.StyleFaint.Render(" Expert  ") +
-		styles.StyleHighlight.Render("████░") + styles.StyleFaint.Render(" Advanced  ") +
-		styles.StyleHighlight.Render("███░░") + styles.StyleFaint.Render(" Mid-Level") +
-		"\n\n")
+	sb.WriteString(" ")
+	sb.WriteString(styles.StyleFaint.Render("Proficiency: "))
+	sb.WriteString(styles.StyleHighlight.Render("█████"))
+	sb.WriteString(styles.StyleFaint.Render(" Expert  "))
+	sb.WriteString(styles.StyleHighlight.Render("████░"))
+	sb.WriteString(styles.StyleFaint.Render(" Advanced  "))
+	sb.WriteString(styles.StyleHighlight.Render("███░░"))
+	sb.WriteString(styles.StyleFaint.Render(" Mid-Level"))
+	sb.WriteString("\n\n")
 
 	// ── Column layout ──────────────────────────────────────────────
 	// Each col: Width(colW) + 2 border chars = colW+2 rendered width
@@ -151,18 +160,21 @@ func DrawSkills(width int) string {
 			iconStyle.Render(section.Icon),
 			lipgloss.NewStyle().Foreground(borderColor).Bold(true).Render(section.Title),
 		))
-		colSb.WriteString(headerBadge + "\n")
-		colSb.WriteString(styles.StyleFaint.Render(strings.Repeat("─", colW)) + "\n\n")
+		colSb.WriteString(headerBadge)
+		colSb.WriteString("\n")
+		colSb.WriteString(styles.StyleFaint.Render(strings.Repeat("─", colW)))
+		colSb.WriteString("\n\n")
 
 		for _, item := range section.Items {
 			colSb.WriteString(lipgloss.NewStyle().
 				Foreground(styles.ColorForeground).Bold(true).
-				Render(item.Title) + "\n")
+				Render(item.Title))
+			colSb.WriteString("\n")
 
 			bar := skillBar(item.Level)
 			colSb.WriteString(fmt.Sprintf(" %s %s\n",
 				lipgloss.NewStyle().Foreground(borderColor).Render(bar),
-				levelLabel(item.Level, borderColor),
+				levelLabel(item.Level),
 			))
 
 			// Tags (one line)
@@ -170,7 +182,8 @@ func DrawSkills(width int) string {
 			for _, tag := range item.Tags {
 				tagLine += styles.StyleBadge.Render(tag) + " "
 			}
-			colSb.WriteString(tagLine + "\n\n")
+			colSb.WriteString(tagLine)
+			colSb.WriteString("\n\n")
 		}
 
 		colStyle := lipgloss.NewStyle().
@@ -185,16 +198,22 @@ func DrawSkills(width int) string {
 	// Layout: side-by-side or stacked
 	if iw >= 3*(colW+2)+2 {
 		joined := lipgloss.JoinHorizontal(lipgloss.Top, columns...)
-		sb.WriteString(" " + joined + "\n")
+		sb.WriteString(" ")
+		sb.WriteString(joined)
+		sb.WriteString("\n")
 	} else {
 		for _, col := range columns {
-			sb.WriteString(" " + col + "\n")
+			sb.WriteString(" ")
+			sb.WriteString(col)
+			sb.WriteString("\n")
 		}
 	}
 
 	// ── Tools row ─────────────────────────────────────────────────
 	sb.WriteString("\n")
-	sb.WriteString(" " + styles.SectionDivider(iw-2, "TOOLS") + "\n\n")
+	sb.WriteString(" ")
+	sb.WriteString(styles.SectionDivider(iw-2, "TOOLS"))
+	sb.WriteString("\n\n")
 
 	tools := []string{
 		"Git", "Vim", "Postman", "Prisma", "Drizzle",
@@ -204,7 +223,8 @@ func DrawSkills(width int) string {
 	for _, t := range tools {
 		toolLine += styles.StyleBadge.Render(t) + " "
 	}
-	sb.WriteString(toolLine + "\n")
+	sb.WriteString(toolLine)
+	sb.WriteString("\n")
 
 	return sb.String()
 }
