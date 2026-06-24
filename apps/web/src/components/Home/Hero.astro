@@ -50,7 +50,11 @@ import { TextScramble } from "@workspace/ui/components/text-scramble"
           <span class="text-foreground"> I'm a </span>
           <TextScramble
             client:load
-            texts={["Developer", "Backend Specialist", "Cloud Engineer"]}
+            texts={[
+              "Full-Stack Developer",
+              "Backend Specialist",
+              "DevOps Engineer",
+            ]}
             speed={5000}
             scrambleSpeed={50}
           />
@@ -58,10 +62,11 @@ import { TextScramble } from "@workspace/ui/components/text-scramble"
         <p
           class="text-sm! leading-relaxed font-medium text-balance text-muted-foreground sm:text-base"
         >
-          Junior Full-Stack Developer specializing in <span
-            class="text-foreground">robust backend systems</span
-          > and <span class="text-foreground">minimalist interfaces</span>. I
-          bridge the gap between complex logic and clean design.
+          Full-Stack Developer with 1+ year of professional experience building
+          scalable MERN stack, Nest.js, and Next.js applications. Specializing
+          in <span class="text-foreground">robust backend systems</span> and <span
+            class="text-foreground">DevOps automation</span
+          >.
         </p>
       </div>
 
@@ -72,7 +77,7 @@ import { TextScramble } from "@workspace/ui/components/text-scramble"
         >
           <InputGroupInput
             type="email"
-            placeholder="Work with me: email@example.com"
+            placeholder="Work with me: fi@amanillah.com"
           />
           <InputGroupAddon align="inline-end">
             <InputGroupButton className="h-10 px-4" variant={"default"}>
@@ -117,12 +122,26 @@ import { TextScramble } from "@workspace/ui/components/text-scramble"
         <div class="flex items-center gap-3">
           {
             [
-              { href: "#", label: "GitHub", icon: GithubIcon },
-              { href: "#", label: "LinkedIn", icon: Linkedin02Icon },
-              { href: "#", label: "Facebook", icon: Facebook02Icon },
+              {
+                href: "https://github.com/fiamanillah",
+                label: "GitHub",
+                icon: GithubIcon,
+              },
+              {
+                href: "https://www.linkedin.com/in/fi-amanillah/",
+                label: "LinkedIn",
+                icon: Linkedin02Icon,
+              },
+              {
+                href: "https://www.facebook.com/fiamanillah.b2",
+                label: "Facebook",
+                icon: Facebook02Icon,
+              },
             ].map(({ href, label, icon }) => (
               <a
                 href={href}
+                target="_blank"
+                rel="noopener noreferrer"
                 aria-label={label}
                 class="inline-flex h-11 w-11 items-center justify-center border border-border bg-background text-foreground transition hover:border-primary hover:bg-primary/10 focus:ring-2 focus:ring-primary/30 focus:outline-none"
               >
@@ -151,7 +170,7 @@ import { TextScramble } from "@workspace/ui/components/text-scramble"
           >
           <span
             class="text-xs font-semibold tracking-tight text-foreground sm:text-sm"
-            >Lost somewhere in the terminal or IDE</span
+            >Dhaka, Bangladesh</span
           >
         </div>
         <div
@@ -187,56 +206,84 @@ import { TextScramble } from "@workspace/ui/components/text-scramble"
           >
           <span
             class="text-xs font-semibold tracking-tight text-foreground sm:text-sm"
-            >Backend & Cloud</span
+            >Backend & DevOps</span
           >
         </div>
       </div>
 
-      <!-- Terminal (Modern macOS Window) -->
-      <div
-        class="w-full max-w-md overflow-hidden rounded-4xl border border-border bg-background/30 shadow-sm backdrop-blur-3xl"
-      >
-        <!-- Terminal Header -->
-        <div
-          class="flex items-center gap-1.5 border-b border-border bg-background px-4 py-3"
-        >
-          <div class="h-2.5 w-2.5 bg-rose-500/80"></div>
-          <div class="h-2.5 w-2.5 bg-amber-500/80"></div>
-          <div class="h-2.5 w-2.5 bg-emerald-500/80"></div>
+      <!-- SSH Connection -->
+      <div class="w-full max-w-md space-y-3.5">
+        <div class="flex items-center justify-end gap-3">
+          <div class="h-px w-12 bg-border"></div>
+          <span
+            class="font-mono text-xs tracking-[0.1em] whitespace-nowrap text-muted-foreground uppercase"
+            >Live SSH CV</span
+          >
         </div>
-        <!-- Terminal Body -->
+
+        <p class="text-right text-xs leading-relaxed text-muted-foreground">
+          Access my interactive retro terminal CV directly from your command
+          line:
+        </p>
+
+        <!-- Command Box -->
         <div
-          class="p-5 font-mono text-[11px] leading-relaxed backdrop-blur-3xl"
+          class="group relative flex items-center justify-between border border-border bg-background/30 p-3.5 pl-4 font-mono text-sm backdrop-blur-md transition-all duration-300 hover:border-primary/50 hover:bg-background/40"
         >
-          <p>
-            <span class="text-muted-foreground/60">~/fi $</span>
-            <span class="ml-2 font-semibold text-foreground"
-              >whoami --verbose</span
+          <!-- Command text -->
+          <div
+            class="scrollbar-none flex items-center gap-2 overflow-x-auto pr-12 whitespace-nowrap select-all"
+          >
+            <span class="text-muted-foreground/40 select-none">$</span>
+            <span class="font-semibold text-primary">ssh</span>
+            <span class="text-muted-foreground">-p 2222</span>
+            <span class="text-foreground">amanillah.com</span>
+          </div>
+
+          <!-- Copy button overlay -->
+          <button
+            id="copy-ssh-btn"
+            data-copy-text="ssh -p 2222 amanillah.com"
+            class="absolute right-2 flex h-8 w-8 cursor-pointer items-center justify-center border border-border bg-background/80 text-muted-foreground transition-all duration-200 hover:scale-105 hover:border-primary/30 hover:text-foreground"
+            aria-label="Copy SSH command"
+          >
+            <!-- Copy Icon -->
+            <svg
+              id="copy-icon"
+              class="size-4 transition-transform duration-200"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
             >
-          </p>
-          <p class="mt-2">
-            <span class="text-emerald-500">→</span>
-            <span class="ml-2 text-muted-foreground"
-              >Junior Full-Stack Developer</span
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"
+              ></path>
+            </svg>
+            <!-- Success/Check Icon -->
+            <svg
+              id="check-icon"
+              class="hidden size-4 text-emerald-500 transition-transform duration-200"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2.5"
             >
-          </p>
-          <p class="mt-1">
-            <span class="text-emerald-500">→</span>
-            <span class="ml-2 text-muted-foreground"
-              >Loves clean code & brutal simplicity</span
-            >
-          </p>
-          <p class="mt-1">
-            <span class="text-emerald-500">→</span>
-            <span class="ml-2 text-muted-foreground">Currently building: </span>
-            <span class="text-foreground">something cool</span>
-          </p>
-          <p class="mt-2">
-            <span class="text-muted-foreground/60">~/fi $</span>
-            <span
-              class="ml-2 inline-block h-3.5 w-1.5 animate-pulse bg-foreground align-middle"
-            ></span>
-          </p>
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M5 13l4 4L19 7"></path>
+            </svg>
+          </button>
+        </div>
+
+        <div
+          class="flex items-center justify-between font-mono text-[10px] text-muted-foreground/50 uppercase"
+        >
+          <span>🔐 Secure Connection</span>
+          <span>No installation needed</span>
         </div>
       </div>
 
@@ -339,11 +386,47 @@ import { TextScramble } from "@workspace/ui/components/text-scramble"
     checkStickyStates()
   }
 
+  function setupCopySSH() {
+    const btn = document.getElementById("copy-ssh-btn")
+    if (!btn) return
+
+    const copyText =
+      btn.getAttribute("data-copy-text") || "ssh -p 2222 amanillah.com"
+    const copyIcon = document.getElementById("copy-icon")
+    const checkIcon = document.getElementById("check-icon")
+
+    btn.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(copyText)
+        if (copyIcon && checkIcon) {
+          copyIcon.classList.add("hidden")
+          checkIcon.classList.remove("hidden")
+          btn.classList.add("border-emerald-500/50", "bg-emerald-500/10")
+
+          setTimeout(() => {
+            checkIcon.classList.add("hidden")
+            copyIcon.classList.remove("hidden")
+            btn.classList.remove("border-emerald-500/50", "bg-emerald-500/10")
+          }, 2000)
+        }
+      } catch (err) {
+        console.error("Failed to copy text: ", err)
+      }
+    })
+  }
+
   // Ensure compatibility with Astro's View Transitions if enabled
-  document.addEventListener("astro:page-load", setupStickyObserver)
+  document.addEventListener("astro:page-load", () => {
+    setupStickyObserver()
+    setupCopySSH()
+  })
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", setupStickyObserver)
+    document.addEventListener("DOMContentLoaded", () => {
+      setupStickyObserver()
+      setupCopySSH()
+    })
   } else {
     setupStickyObserver()
+    setupCopySSH()
   }
 </script>

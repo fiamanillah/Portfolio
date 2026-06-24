@@ -7,72 +7,40 @@ import { Icon } from "astro-icon/components"
 
 const projects = [
   {
-    title: "ASK SAM",
+    title: "Mickanic",
     description:
-      "AI intelligence module utilizing NLP for care operations monitoring and automated compliance detection.",
-    role: "Backend Architecture",
-    impact: "Automated manual compliance checks processing.",
-    tech: ["Node", "PostgreSQL", "Python", "NLP"],
+      "A high-performance REST API and bidding engine for a service-based freelance marketplace, utilizing decoupled microservices, containerized services, and tiered subscriptions.",
+    role: "Backend & DevOps",
+    impact:
+      "Engineered contractor credit/bidding engine with Stripe billing, real-time Socket.io messaging with Redis, and Docker Compose deployment.",
+    tech: ["TypeScript", "Express", "Prisma", "PostgreSQL", "RabbitMQ", "Redis", "Socket.io", "Stripe", "Docker", "Bun"],
     links: {
-      live: "https://asksam.live",
-      github: "https://github.com/...",
+      live: "#",
+      github: "https://github.com/fiamanillah",
       caseStudy: "#",
     },
     img: "/assets/images/project1.png",
     index: "01",
-    status: "Live",
-    year: "2024",
+    status: "Completed",
+    year: "2025 - 2026",
   },
   {
-    title: "VertiAccess Portal",
+    title: "Moja Cares",
     description:
-      "Multi-sided marketplace facilitating seamless booking and payment modules for drone and flight operators.",
-    role: "Full-Stack Developer",
+      "Comprehensive healthcare management portal featuring multi-role RBAC, real-time clinical team chats, automated alerts, and AI-powered document insight extraction.",
+    role: "Backend Developer",
     impact:
-      "Engineered robust subscription logic and secure transaction pipelines.",
-    tech: ["Next.js", "TypeScript", "PostgreSQL", "Docker"],
+      "Architected OpenAI API health insights worker, WebSocket patient-care chat, SES/Postmark alert dispatch, and Paystack billing.",
+    tech: ["TypeScript", "Express", "Prisma", "Redis", "RabbitMQ", "WebSockets", "OpenAI API", "AWS S3", "Paystack"],
     links: {
-      live: "https://vertiaccess.com",
-      github: null,
+      live: "#",
+      github: "https://github.com/fiamanillah",
       caseStudy: "#",
     },
     img: "/assets/images/project2.png",
     index: "02",
     status: "Live",
-    year: "2024",
-  },
-  {
-    title: "Automated Content Pipeline",
-    description:
-      "Serverless workflow architecture aggregating dynamic media content into published articles.",
-    role: "Integration Engineer",
-    impact: "Eliminated manual content entry bottlenecks.",
-    tech: ["n8n", "Gemini 2.5 Flash", "WordPress", "Zapier"],
-    links: {
-      live: "#",
-      github: "#",
-      caseStudy: "#",
-    },
-    img: "/assets/images/project3.png",
-    index: "03",
-    status: "Shipped",
-    year: "2023",
-  },
-  {
-    title: "CyberNark",
-    description: "Scalable backend infrastructure and data management system.",
-    role: "Lead Developer",
-    impact: "Deployed on self-managed VPS for optimized resource utilization.",
-    tech: ["MERN", "Docker", "Hostinger VPS"],
-    links: {
-      live: "#",
-      github: "#",
-      caseStudy: "#",
-    },
-    img: "/assets/images/project3.png",
-    index: "04",
-    status: "Deployed",
-    year: "2023",
+    year: "2026",
   },
 ]
 
@@ -265,7 +233,7 @@ const BASE_TOP_OFFSET = 72
                   {p.title}
                 </span>
                 <span class="text-[9px] tracking-wider text-white/50">
-                  {p.index} / 04
+                  {p.index} / 02
                 </span>
               </div>
             </div>

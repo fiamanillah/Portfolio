@@ -8,13 +8,6 @@ import { HugeiconsIcon } from "@hugeicons/react"
 
 const currentYear = new Date().getFullYear()
 
-const socialLinks = [
-  { label: "GitHub", href: "https://github.com", icon: "github" },
-  { label: "LinkedIn", href: "https://linkedin.com", icon: "linkedin" },
-  { label: "Twitter", href: "https://twitter.com", icon: "twitter" },
-  { label: "Email", href: "mailto:hello@example.com", icon: "mail" },
-]
-
 const footerLinks = [
   {
     title: "Navigation",
@@ -59,19 +52,20 @@ const footerLinks = [
           Fi Amanillah
         </a>
         <p class="text-sm leading-relaxed text-muted-foreground">
-          Full-stack developer building beautiful and functional digital
-          experiences.
+          Full-Stack Developer building scalable MERN stack, Nest.js, and Next.js applications.
         </p>
         <!-- Social Links -->
         <div class="flex items-center gap-3">
           {
             [
-              { href: "#", label: "GitHub", icon: GithubIcon },
-              { href: "#", label: "LinkedIn", icon: Linkedin02Icon },
-              { href: "#", label: "Facebook", icon: Facebook02Icon },
+              { href: "https://github.com/fiamanillah", label: "GitHub", icon: GithubIcon },
+              { href: "https://www.linkedin.com/in/fi-amanillah/", label: "LinkedIn", icon: Linkedin02Icon },
+              { href: "https://www.facebook.com/fiamanillah.b2", label: "Facebook", icon: Facebook02Icon },
             ].map(({ href, label, icon }) => (
               <a
                 href={href}
+                target="_blank"
+                rel="noopener noreferrer"
                 aria-label={label}
                 class="inline-flex h-11 w-11 items-center justify-center rounded-full border border-border bg-background text-foreground transition hover:border-primary hover:bg-primary/10 focus:ring-2 focus:ring-primary/30 focus:outline-none"
               >

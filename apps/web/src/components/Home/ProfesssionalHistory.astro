@@ -1,115 +1,50 @@
 ---
-import { Button } from "@workspace/ui/components/button"
 
 const experiences = [
   {
-    year: "2023",
-    period: "PRESENT // 18 MO",
-    company: "TechCorp Inc.",
-    role: "SENIOR SOFTWARE ENGINEER",
-    title: ["SENIOR SOFTWARE", "ENGINEER"],
-    location: "San Francisco, CA · Remote",
+    year: "2025",
+    period: "PRESENT // 14 MO",
+    company: "Softvence Agency",
+    role: "FULL STACK DEVELOPER",
+    title: ["FULL STACK", "DEVELOPER"],
+    location: "Dhaka, Bangladesh · Remote-Friendly",
     type: "Full-Time",
     description:
-      "Led the architectural redesign of the core platform, increasing system throughput by 40%. Owned end-to-end delivery of three major product releases and established engineering best practices adopted company-wide.",
+      "Architected type-safe backend systems with TypeScript, Express.js, and Prisma ORM, integrated with React.js frontends to deliver responsive, high-performance applications.",
     highlights: [
-      "Reduced API latency by 40% via caching & query optimization",
-      "Mentored 4 junior engineers through structured growth plans",
-      "Shipped 3 major releases with zero critical production incidents",
-      "Architected microservices migration from monolith",
+      "Decoupled intensive background tasks like email and AI processing using RabbitMQ message brokers",
+      "Improved database query latency and API response times by implementing Redis caching",
+      "Built granular role-based access control (RBAC), real-time WebSockets, and Stripe/Paystack tiered subscription billing",
+      "Containerized multi-service environments with Docker and managed VPS deployments with AWS S3/MinIO media storage",
     ],
     technologies: [
       "TypeScript",
-      "React",
-      "Node.js",
-      "AWS",
+      "Express.js",
+      "Prisma ORM",
       "PostgreSQL",
       "Redis",
-      "Docker",
-      "GraphQL",
-    ],
-    stats: [
-      { label: "Performance Gain", value: "40%" },
-      { label: "Engineers Mentored", value: "4" },
-      { label: "Releases Shipped", value: "3" },
-    ],
-    learned:
-      "Learned how to balance technical debt reduction with feature velocity in a high-growth environment.",
-  },
-  {
-    year: "2021",
-    period: "2023 // 24 MO",
-    company: "DevStudio Ltd.",
-    role: "FULL STACK DEVELOPER",
-    title: ["FULL STACK", "DEVELOPER"],
-    location: "New York, NY · Hybrid",
-    type: "Full-Time",
-    description:
-      "Built and maintained production-grade web applications serving 200k+ monthly users. Designed and implemented CI/CD pipelines that cut deployment time by 60%, and led the migration to a modern React frontend.",
-    highlights: [
-      "Cut deployment pipeline time from 45 min → 18 min",
-      "Migrated legacy jQuery app to React 18 with zero downtime",
-      "Integrated Stripe payments processing $2M+ monthly",
-      "Built internal analytics dashboard used by 3 teams",
-    ],
-    technologies: [
-      "JavaScript",
-      "Next.js",
-      "PostgreSQL",
+      "RabbitMQ",
+      "WebSockets",
       "Stripe",
-      "GitHub Actions",
-      "Vercel",
-      "Prisma",
-      "Tailwind",
+      "Paystack",
+      "Docker",
+      "AWS S3",
+      "MinIO",
+      "Linux VPS",
     ],
     stats: [
-      { label: "Deployment Speedup", value: "60%" },
-      { label: "Monthly Users", value: "200K" },
-      { label: "Revenue Processed", value: "$2M+" },
+      { label: "Background Queues", value: "RabbitMQ" },
+      { label: "Billing Systems", value: "Stripe & Paystack" },
+      { label: "Storage Providers", value: "AWS S3 / MinIO" },
     ],
     learned:
-      "Mastered the art of incremental migrations — rewriting systems in production without disrupting users.",
-  },
-  {
-    year: "2020",
-    period: "2021 // 12 MO",
-    company: "LaunchPad Startup",
-    role: "JUNIOR DEVELOPER",
-    title: ["JUNIOR", "DEVELOPER"],
-    location: "Austin, TX · On-Site",
-    type: "Full-Time",
-    description:
-      "Contributed to a fast-moving startup building a SaaS product for the EdTech space. Delivered responsive UI components, collaborated closely with designers, and contributed to 2 open-source libraries.",
-    highlights: [
-      "Shipped 20+ reusable UI components to the design system",
-      "Contributed to 2 open-source Vue.js plugins (800+ GitHub stars)",
-      "Reduced bundle size by 35% through code splitting",
-      "Achieved 95+ Lighthouse score across all landing pages",
-    ],
-    technologies: [
-      "HTML/CSS",
-      "Vue.js",
-      "Firebase",
-      "Figma",
-      "Webpack",
-      "Jest",
-      "Sass",
-      "PWA",
-    ],
-    stats: [
-      { label: "Components Built", value: "20+" },
-      { label: "Bundle Size Reduction", value: "35%" },
-      { label: "Lighthouse Score", value: "95+" },
-    ],
-    learned:
-      "Developed a deep appreciation for design systems and how great component architecture scales with the product.",
+      "Mastered decoupling intensive background jobs and optimizing database access patterns to ensure seamless scalability and real-time reliability under load.",
   },
 ]
 
-const totalYears = 5
+const totalYears = 1
 const totalCompanies = experiences.length
-const totalTech = [...new Set(experiences.flatMap((e) => e.technologies))]
-  .length
+const totalTech = [...new Set(experiences.flatMap((e) => e.technologies))].length
 ---
 
 <section
