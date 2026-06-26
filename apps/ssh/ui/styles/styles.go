@@ -184,6 +184,48 @@ var (
 				Bold(true)
 )
 
+// ─── Layout Constants ────────────────────────────────────────────────────────
+const (
+	// ContentIndent is the standard left margin for all view content.
+	ContentIndent = "  "
+	// ContainerPadding is the horizontal padding inside the main container.
+	// Container: Width(m.width-2), Padding(0,2) → inner = (m.width-2) - 4.
+	ContainerPadding = 6
+)
+
+// ContentWidth returns the safe content width for rendering inside the container.
+// Views receive m.width, so inner = width - ContainerPadding.
+func ContentWidth(width int) int {
+	w := width - ContainerPadding
+	if w > 90 {
+		w = 90
+	}
+	if w < 24 {
+		w = 24
+	}
+	return w
+}
+
+// ─── Section Header Helper ──────────────────────────────────────────────────
+// SectionHeader renders a standardized section title + optional subtitle + divider.
+func SectionHeader(title, subtitle string, width int) string {
+	iw := ContentWidth(width + ContainerPadding) // adjust since we're receiving inner width
+	var sb strings.Builder
+	sb.WriteString("\n")
+	sb.WriteString(ContentIndent)
+	sb.WriteString(StyleTitleLarge.Render(title))
+	sb.WriteString("\n")
+	if subtitle != "" {
+		sb.WriteString(ContentIndent)
+		sb.WriteString(StyleMuted.Render(subtitle))
+		sb.WriteString("\n")
+	}
+	sb.WriteString(ContentIndent)
+	sb.WriteString(StyleFaint.Render(strings.Repeat("─", iw-2)))
+	sb.WriteString("\n\n")
+	return sb.String()
+}
+
 // ─── Section Divider Helper ──────────────────────────────────────────────────
 // Uses utf8.RuneCountInString so multi-byte box-drawing chars count correctly.
 func SectionDivider(width int, label string) string {

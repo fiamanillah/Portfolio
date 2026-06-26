@@ -14,13 +14,14 @@ import (
 func DrawGuestbook(gm *guestbook.GuestbookModel, width int) string {
 	var sb strings.Builder
 	iw := innerWidth(width)
+	ci := styles.ContentIndent
 
 	// ── Section header ─────────────────────────────────────────────
 	sb.WriteString("\n")
-	sb.WriteString(" ")
+	sb.WriteString(ci)
 	sb.WriteString(styles.StyleTitleLarge.Render("GUESTBOOK"))
 	sb.WriteString("\n")
-	sb.WriteString(" ")
+	sb.WriteString(ci)
 	sb.WriteString(styles.StyleFaint.Render(strings.Repeat("─", iw-2)))
 	sb.WriteString("\n\n")
 
@@ -37,14 +38,14 @@ func DrawGuestbook(gm *guestbook.GuestbookModel, width int) string {
 				styles.StyleBadgePrimary.Render(c.key)+" "+styles.StyleMuted.Render(c.action),
 			)
 		}
-		sb.WriteString(" ")
+		sb.WriteString(ci)
 		sb.WriteString(strings.Join(ctrlParts, "   "))
 		sb.WriteString("\n\n")
 
 		// ── Error message ─────────────────────────────────────────
 		if gm.ErrorMsg != "" {
-			sb.WriteString(" ")
-			sb.WriteString(styles.StyleError.Render("! "+gm.ErrorMsg))
+			sb.WriteString(ci)
+			sb.WriteString(styles.StyleError.Render("! " + gm.ErrorMsg))
 			sb.WriteString("\n\n")
 		}
 
@@ -63,7 +64,7 @@ func DrawGuestbook(gm *guestbook.GuestbookModel, width int) string {
 					styles.StyleMuted.Render("No messages yet — be the first to leave your mark!") + "\n" +
 						styles.StyleFaint.Render("Press 's' to sign the guestbook"),
 				)
-			sb.WriteString(" ")
+			sb.WriteString(ci)
 			sb.WriteString(emptyBox)
 			sb.WriteString("\n")
 			return sb.String()
@@ -74,13 +75,11 @@ func DrawGuestbook(gm *guestbook.GuestbookModel, width int) string {
 		if len(gm.Entries) != 1 {
 			countStr += "s"
 		}
-		sb.WriteString(" ")
-		sb.WriteString(styles.StyleMuted.Render("◈ "+countStr))
+		sb.WriteString(ci)
+		sb.WriteString(styles.StyleMuted.Render("◈ " + countStr))
 		sb.WriteString("\n\n")
 
 		// ── Entry boxes ───────────────────────────────────────────
-		// entryW + 1(left border) + 2(PaddingLeft) must fit in iw
-		// entryW = iw - 4
 		entryW := iw - 4
 		if entryW > 76 {
 			entryW = 76
@@ -117,7 +116,7 @@ func DrawGuestbook(gm *guestbook.GuestbookModel, width int) string {
 				Width(entryW).
 				Render(nameStr + dateStrFmt + "\n" + msgStr)
 
-			sb.WriteString(" ")
+			sb.WriteString(ci)
 			sb.WriteString(entryBox)
 			sb.WriteString("\n\n")
 		}
@@ -126,7 +125,8 @@ func DrawGuestbook(gm *guestbook.GuestbookModel, width int) string {
 		if len(gm.Entries) > 5 {
 			total := len(gm.Entries)
 			showing := min(gm.ScrollOffset+5, total)
-			sb.WriteString(fmt.Sprintf(" %s\n",
+			sb.WriteString(fmt.Sprintf("%s%s\n",
+				ci,
 				styles.StyleFaint.Render(fmt.Sprintf(
 					"Showing %d-%d of %d  ·  use Up/Down to scroll",
 					gm.ScrollOffset+1, showing, total,
@@ -136,14 +136,13 @@ func DrawGuestbook(gm *guestbook.GuestbookModel, width int) string {
 
 	} else {
 		// ── Sign form ─────────────────────────────────────────────
-		sb.WriteString(" ")
+		sb.WriteString(ci)
 		sb.WriteString(styles.StyleBody.Render("Leave a message for visitors of this terminal."))
 		sb.WriteString("\n")
-		sb.WriteString(" ")
+		sb.WriteString(ci)
 		sb.WriteString(styles.StyleMuted.Render("Press ESC to cancel  ·  ENTER to proceed"))
 		sb.WriteString("\n\n")
 
-		// formW + 2(border) must fit in iw
 		formW := iw - 4
 		if formW > 60 {
 			formW = 60
@@ -197,7 +196,7 @@ func DrawGuestbook(gm *guestbook.GuestbookModel, width int) string {
 			Padding(1, 2).
 			Render(formSb.String())
 
-		sb.WriteString(" ")
+		sb.WriteString(ci)
 		sb.WriteString(formBox)
 		sb.WriteString("\n")
 	}

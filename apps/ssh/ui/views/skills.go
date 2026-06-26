@@ -27,40 +27,40 @@ var SkillSections = []SkillSection{
 	{
 		Icon:  "◈",
 		Title: "Frontend",
-		Badge: "UI & Languages",
+		Badge: "Frontend & Languages",
 		Color: "cyan",
 		Items: []SkillItem{
 			{Title: "HTML / CSS / JS", Level: 5, Tags: []string{"Core Web", "DOM"}},
-			{Title: "TypeScript", Level: 4, Tags: []string{"Strict Mode"}},
+			{Title: "TypeScript / Go", Level: 4, Tags: []string{"Languages"}},
 			{Title: "React / Next.js", Level: 4, Tags: []string{"SSR", "App Router"}},
 			{Title: "Tailwind / Shadcn", Level: 4, Tags: []string{"Atomic CSS"}},
-			{Title: "Redux / Zustand", Level: 3, Tags: []string{"State Mgmt"}},
+			{Title: "Redux / WebSockets", Level: 3, Tags: []string{"State", "Realtime"}},
 		},
 	},
 	{
 		Icon:  "◉",
 		Title: "Backend",
-		Badge: "APIs & Data",
+		Badge: "Backend & Data Layer",
 		Color: "indigo",
 		Items: []SkillItem{
-			{Title: "Node.js / Express", Level: 5, Tags: []string{"REST", "Runtime"}},
-			{Title: "Nest.js", Level: 4, Tags: []string{"DI", "Arch"}},
-			{Title: "Go", Level: 3, Tags: []string{"CLI", "Services"}},
+			{Title: "Node / Express", Level: 5, Tags: []string{"Runtime", "API"}},
+			{Title: "Nest.js", Level: 4, Tags: []string{"Architecture"}},
 			{Title: "PostgreSQL / MySQL", Level: 4, Tags: []string{"Relational"}},
 			{Title: "MongoDB / Redis", Level: 4, Tags: []string{"NoSQL", "Cache"}},
+			{Title: "Prisma / Mongoose", Level: 4, Tags: []string{"ORM", "Modeling"}},
 		},
 	},
 	{
 		Icon:  "✦",
 		Title: "Infra",
-		Badge: "Ops & Cloud",
+		Badge: "Operational Flow",
 		Color: "gold",
 		Items: []SkillItem{
 			{Title: "Docker / Nginx", Level: 4, Tags: []string{"Containers"}},
 			{Title: "Linux / VPS", Level: 4, Tags: []string{"SysAdmin"}},
-			{Title: "AWS / GCP", Level: 3, Tags: []string{"Cloud"}},
+			{Title: "AWS / GCP / Git", Level: 3, Tags: []string{"Cloud", "CI/CD"}},
 			{Title: "Proxmox / KVM", Level: 3, Tags: []string{"Hypervisor"}},
-			{Title: "GitHub Actions", Level: 4, Tags: []string{"CI/CD"}},
+			{Title: "RabbitMQ / BullMQ", Level: 3, Tags: []string{"Msg Broker"}},
 		},
 	},
 }
@@ -97,34 +97,35 @@ func levelLabel(level int) string {
 func DrawSkills(width int) string {
 	var sb strings.Builder
 	iw := innerWidth(width)
+	ci := styles.ContentIndent
 
 	// ── Section header ─────────────────────────────────────────────
 	sb.WriteString("\n")
-	sb.WriteString(" ")
+	sb.WriteString(ci)
 	sb.WriteString(styles.StyleTitleLarge.Render("SKILLS & TECH STACK"))
 	sb.WriteString("\n")
-	sb.WriteString(" ")
+	sb.WriteString(ci)
 	sb.WriteString(styles.StyleMuted.Render("Languages · Libraries · Databases · Infrastructure"))
 	sb.WriteString("\n")
-	sb.WriteString(" ")
+	sb.WriteString(ci)
 	sb.WriteString(styles.StyleFaint.Render(strings.Repeat("─", iw-2)))
 	sb.WriteString("\n\n")
 
 	// ── Proficiency legend ─────────────────────────────────────────
-	sb.WriteString(" ")
+	sb.WriteString(ci)
 	sb.WriteString(styles.StyleFaint.Render("Proficiency: "))
 	sb.WriteString(styles.StyleHighlight.Render("█████"))
 	sb.WriteString(styles.StyleFaint.Render(" Expert  "))
 	sb.WriteString(styles.StyleHighlight.Render("████░"))
-	sb.WriteString(styles.StyleFaint.Render(" Advanced  "))
+	sb.WriteString(styles.StyleFaint.Render(" Adv  "))
 	sb.WriteString(styles.StyleHighlight.Render("███░░"))
-	sb.WriteString(styles.StyleFaint.Render(" Mid-Level"))
+	sb.WriteString(styles.StyleFaint.Render(" Mid"))
 	sb.WriteString("\n\n")
 
 	// ── Column layout ──────────────────────────────────────────────
-	// Each col: Width(colW) + 2 border chars = colW+2 rendered width
-	// 3 cols: 3*(colW+2) must fit in iw (no extra margin prefix beyond the " " indent)
-	// So: colW = (iw - 2 - 3*2) / 3  →  (iw - 8) / 3
+	// Total rendered width for 3 side-by-side columns + indent:
+	//   ci(2) + 3 * (colW + 2_border) = 3*colW + 8
+	// Must fit in iw: 3*colW + 8 <= iw → colW <= (iw - 8) / 3
 	colW := (iw - 8) / 3
 	if colW > 28 {
 		colW = 28
@@ -162,7 +163,12 @@ func DrawSkills(width int) string {
 		))
 		colSb.WriteString(headerBadge)
 		colSb.WriteString("\n")
-		colSb.WriteString(styles.StyleFaint.Render(strings.Repeat("─", colW)))
+		// Divider: colW - 2 because Padding(0,1) takes 2 chars from content area
+		divW := colW - 2
+		if divW < 4 {
+			divW = 4
+		}
+		colSb.WriteString(styles.StyleFaint.Render(strings.Repeat("─", divW)))
 		colSb.WriteString("\n\n")
 
 		for _, item := range section.Items {
@@ -195,15 +201,15 @@ func DrawSkills(width int) string {
 		columns = append(columns, colStyle.Render(colSb.String()))
 	}
 
-	// Layout: side-by-side or stacked
+	// Layout: side-by-side if 3 columns + indent fit, otherwise stack
 	if iw >= 3*(colW+2)+2 {
 		joined := lipgloss.JoinHorizontal(lipgloss.Top, columns...)
-		sb.WriteString(" ")
+		sb.WriteString(ci)
 		sb.WriteString(joined)
 		sb.WriteString("\n")
 	} else {
 		for _, col := range columns {
-			sb.WriteString(" ")
+			sb.WriteString(ci)
 			sb.WriteString(col)
 			sb.WriteString("\n")
 		}
@@ -211,15 +217,15 @@ func DrawSkills(width int) string {
 
 	// ── Tools row ─────────────────────────────────────────────────
 	sb.WriteString("\n")
-	sb.WriteString(" ")
+	sb.WriteString(ci)
 	sb.WriteString(styles.SectionDivider(iw-2, "TOOLS"))
 	sb.WriteString("\n\n")
 
 	tools := []string{
 		"Git", "Vim", "Postman", "Prisma", "Drizzle",
-		"RabbitMQ", "Jest", "Vitest", "Figma", "VSCode",
+		"RabbitMQ", "Jest", "Vitest", "Figma", "VSCode", "Bun",
 	}
-	toolLine := " "
+	toolLine := ci
 	for _, t := range tools {
 		toolLine += styles.StyleBadge.Render(t) + " "
 	}

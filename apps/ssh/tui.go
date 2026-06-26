@@ -9,6 +9,7 @@ import (
 	"portfolio-ssh/ui/views"
 
 	"github.com/charmbracelet/bubbles/textinput"
+	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 )
@@ -19,6 +20,7 @@ type model struct {
 	activeTab   int
 	width       int
 	height      int
+	viewport    viewport.Model
 	expSelected int
 	expExpanded int
 	guestbook   guestbook.GuestbookModel
@@ -27,10 +29,13 @@ type model struct {
 
 func initialModel(guestbookFile string) model {
 	gm := guestbook.NewGuestbookModel(guestbookFile)
+	vp := viewport.New(80, 20)
+	vp.MouseWheelEnabled = true
 	return model{
 		activeTab:   0,
 		width:       80,
 		height:      24,
+		viewport:    vp,
 		expSelected: 0,
 		expExpanded: -1,
 		guestbook:   gm,
@@ -51,6 +56,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.WindowSizeMsg:
 		m.width = msg.Width
 		m.height = msg.Height
+		m.viewport = m.recalcViewport()
 		return m, nil
 
 	case tea.KeyMsg:
@@ -102,6 +108,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 
 		// Standard navigation
+		prevTab := m.activeTab
 		switch msg.String() {
 		case "1":
 			m.activeTab = 0
@@ -128,6 +135,9 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				if m.guestbook.ScrollOffset > 0 {
 					m.guestbook.ScrollOffset--
 				}
+			} else {
+				// Scroll viewport up
+				m.viewport.LineUp(3)
 			}
 
 		case "down", "j":
@@ -139,7 +149,16 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				if m.guestbook.ScrollOffset < len(m.guestbook.Entries)-1 {
 					m.guestbook.ScrollOffset++
 				}
+			} else {
+				// Scroll viewport down
+				m.viewport.LineDown(3)
 			}
+
+		case "pgup":
+			m.viewport.HalfViewUp()
+
+		case "pgdown":
+			m.viewport.HalfViewDown()
 
 		case "enter":
 			if m.activeTab == 2 {
@@ -162,9 +181,35 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.guestbook.LoadEntries()
 			}
 		}
+
+		// Reset scroll on tab change
+		if m.activeTab != prevTab {
+			m.viewport.GotoTop()
+		}
 	}
 
 	return m, nil
+}
+
+// recalcViewport creates a viewport with the correct dimensions.
+func (m model) recalcViewport() viewport.Model {
+	// Overhead: header(1) + tabs(1) + container border(2) + footer(2) = 6
+	// Container padding top/bottom = 0, so no extra
+	const overheadLines = 6
+	contentHeight := m.height - overheadLines
+	if contentHeight < 4 {
+		contentHeight = 4
+	}
+
+	// Inner content width: container is (m.width-2) with Padding(0,2) = m.width-6
+	contentW := m.width - 6
+	if contentW < 20 {
+		contentW = 20
+	}
+
+	vp := viewport.New(contentW, contentHeight)
+	vp.MouseWheelEnabled = true
+	return vp
 }
 
 // ─── View ─────────────────────────────────────────────────────────────────────
@@ -188,7 +233,6 @@ func (m model) View() string {
 	var sb strings.Builder
 
 	// ── 1. Header bar ────────────────────────────────────────────
-	// Full-width two-tone bar: brand left, info right, fill center
 	leftBrand := styles.StyleHeader.Render(" FI AMANILLAH ")
 	rightInfo := styles.StyleHeaderDim.Render(fmt.Sprintf(" SSH Portfolio · %dx%d ", m.width, m.height))
 	fillNeeded := m.width - lipgloss.Width(leftBrand) - lipgloss.Width(rightInfo)
@@ -199,8 +243,6 @@ func (m model) View() string {
 	sb.WriteString(leftBrand + centerFill + rightInfo + "\n")
 
 	// ── 2. Tab bar ────────────────────────────────────────────────
-	// Keep labels short so all 5 tabs fit comfortably on 80-col terminals.
-	// Format: "[N] Label" with Padding(0,1) — total per tab ~10-14 chars → ~60 chars total, safe.
 	tabDefs := []struct{ num, label string }{
 		{"1", "Home"},
 		{"2", "About"},
@@ -221,7 +263,7 @@ func (m model) View() string {
 
 	tabsJoined := lipgloss.JoinHorizontal(lipgloss.Bottom, renderedTabs...)
 	tabWidth := lipgloss.Width(tabsJoined)
-	gapWidth := m.width - tabWidth - 2 // -2 for left margin of content box
+	gapWidth := m.width - tabWidth - 2
 	if gapWidth < 0 {
 		gapWidth = 0
 	}
@@ -244,27 +286,29 @@ func (m model) View() string {
 		body = views.DrawGuestbook(&m.guestbook, m.width)
 	}
 
-	// Overhead line count (exact):
-	//   1  header
-	//   1  tab row
-	//   2  container border (top + bottom) — lipgloss Border adds 1 line each side
-	//   2  footer (top-border line + content line)
-	// ──────
-	//   6  total overhead  →  contentHeight = height - 6
-	//
-	// The container Padding(0,2) does NOT add lines, only columns, so it doesn't
-	// affect the vertical count.
+	// Calculate content height
 	const overheadLines = 6
 	contentHeight := m.height - overheadLines
 	if contentHeight < 4 {
 		contentHeight = 4
 	}
 
-	// Container width: m.width-2 leaves 1 char margin on each side.
-	// Inner content area = (m.width-2) - 2*horizontalPadding(2) = m.width-6.
-	// Views receive m.width and derive contentWidth = m.width - 6 to match.
+	// Container width
 	containerW := m.width - 2
 
+	// Set viewport content and dimensions
+	m.viewport.Width = containerW - 4 // account for container padding(0,2) = 4 cols
+	m.viewport.Height = contentHeight
+	m.viewport.SetContent(body)
+
+	// Determine if content is scrollable and show indicator
+	var scrollHint string
+	if m.viewport.TotalLineCount() > m.viewport.Height {
+		scrollPct := m.viewport.ScrollPercent()
+		scrollHint = styles.StyleFaint.Render(fmt.Sprintf(" ↕ %d%% ", int(scrollPct*100)))
+	}
+
+	// Render the viewport content inside the styled container
 	var containerStyle lipgloss.Style
 	if m.activeTab == 0 {
 		containerStyle = styles.StyleContainerGlow
@@ -275,7 +319,7 @@ func (m model) View() string {
 	contentBox := containerStyle.
 		Height(contentHeight).
 		Width(containerW).
-		Render(body)
+		Render(m.viewport.View())
 
 	sb.WriteString(contentBox + "\n")
 
@@ -285,17 +329,17 @@ func (m model) View() string {
 	case m.activeTab == 4 && m.guestbook.State != guestbook.StateViewing:
 		footerLeft = " ESC: Cancel  ENTER: Next/Submit"
 	case m.activeTab == 2:
-		footerLeft = " j/k or Up/Down: navigate  ENTER: expand"
+		footerLeft = " j/k: navigate  ENTER: expand"
 	case m.activeTab == 4:
-		footerLeft = " s: Sign  r: Reload  Up/Down: Scroll"
+		footerLeft = " s: Sign  r: Reload  ↑/↓: Scroll"
 	default:
-		footerLeft = " Tab/Shift-Tab: navigate  1-5: jump"
+		footerLeft = " Tab: navigate  1-5: jump  ↑/↓: scroll"
 	}
-	footerRight := " q: Quit"
+	footerRight := scrollHint + " q: Quit"
 
 	footerW := m.width - 2
 	footerRightW := lipgloss.Width(footerRight)
-	footerLeftW := footerW - footerRightW - 2 // -2 for footer padding
+	footerLeftW := footerW - footerRightW - 2
 	if footerLeftW < 0 {
 		footerLeftW = 0
 	}

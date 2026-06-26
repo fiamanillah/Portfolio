@@ -31,58 +31,22 @@ type ExpStat struct {
 
 var Experiences = []Experience{
 	{
-		Year:        "2024",
-		Period:      "PRESENT · 6 MO",
-		Company:     "Freelance / Self-Employed",
-		Role:        "FULL-STACK DEVELOPER",
-		Location:    "Dhaka, BD · Remote",
-		Type:        "Contract",
-		Description: "Developing custom web applications and REST APIs for clients across EdTech and e-commerce. Architecting Node.js backends with PostgreSQL, React frontends, and deploying on self-managed Linux VPS infrastructure.",
+		Year:        "2025",
+		Period:      "PRESENT // 14 MO",
+		Company:     "Softvence Agency",
+		Role:        "FULL STACK DEVELOPER",
+		Location:    "Dhaka, BD · Remote-Friendly",
+		Type:        "Full-Time",
+		Description: "Architected type-safe backend systems with TypeScript, Express.js, and Prisma ORM, integrated with React.js frontends to deliver responsive, high-performance applications.",
 		Highlights: []string{
-			"Delivered 3 production web apps with zero critical issues",
-			"Reduced API response times 50% via query optimization & Redis",
-			"Full Docker + Nginx + SSL deployment pipelines for all clients",
-			"Real-time inventory dashboard using WebSockets",
+			"Decoupled intensive background tasks (email, AI) using RabbitMQ message brokers",
+			"Improved DB query latency and API response times with Redis caching",
+			"Built granular RBAC, real-time WebSockets, and Stripe/Paystack billing",
+			"Containerized multi-service environments with Docker on VPS with AWS S3/MinIO",
 		},
-		Technologies: []string{"Node.js", "React", "PostgreSQL", "Redis", "Docker", "Nginx", "TypeScript", "Prisma"},
-		Takeaway:     "Communication matters as much as code — understand the real problem before writing a line.",
-		Stats:        []ExpStat{{"Apps Delivered", "3"}, {"API Speedup", "50%"}, {"Uptime", "99.9%"}},
-	},
-	{
-		Year:        "2023",
-		Period:      "2024 · 12 MO",
-		Company:     "Personal Projects & OSS",
-		Role:        "BACKEND ENGINEER (SELF-DIRECTED)",
-		Location:    "Dhaka, BD · Local",
-		Type:        "Self-Directed",
-		Description: "Deep-dived into backend systems and infrastructure. Built several production-grade personal projects including a URL shortener with analytics, a task management API, and contributed to open-source Go libraries.",
-		Highlights: []string{
-			"URL shortener handling 10K+ redirects/day with Go & Redis",
-			"Task API with JWT auth, rate limiting, 85% test coverage",
-			"Contributed to 2 open-source Go libs (500+ combined stars)",
-			"Set up Proxmox virtualization lab for homelab experiments",
-		},
-		Technologies: []string{"Go", "Redis", "PostgreSQL", "JWT", "Linux", "Proxmox", "Docker", "GitHub Actions"},
-		Takeaway:     "Owning something end-to-end with full responsibility is the fastest way to grow.",
-		Stats:        []ExpStat{{"Redirects/Day", "10K+"}, {"OSS Stars", "500+"}, {"Test Coverage", "85%"}},
-	},
-	{
-		Year:        "2021",
-		Period:      "2023 · 18 MO",
-		Company:     "Frontend & Web Design Phase",
-		Role:        "JUNIOR WEB DEVELOPER",
-		Location:    "Dhaka, BD · Remote",
-		Type:        "Freelance",
-		Description: "Started career building responsive websites and landing pages. Transitioned from HTML/CSS to React and Next.js while mastering performance, accessibility, and web standards.",
-		Highlights: []string{
-			"Shipped 15+ landing pages for local SMBs",
-			"Achieved 90+ Lighthouse scores across all client projects",
-			"Learned React ecosystem and shipped first Next.js app",
-			"Reduced average page load time to under 1.5s",
-		},
-		Technologies: []string{"HTML/CSS", "JavaScript", "React", "Next.js", "Figma", "Tailwind", "Vercel", "GSAP"},
-		Takeaway:     "A strong frontend foundation makes you a much better backend engineer.",
-		Stats:        []ExpStat{{"Sites Shipped", "15+"}, {"Lighthouse Score", "90+"}, {"Avg Load Time", "<1.5s"}},
+		Technologies: []string{"TypeScript", "Express.js", "Prisma", "PostgreSQL", "Redis", "RabbitMQ", "WebSockets", "Stripe", "Paystack", "Docker", "AWS S3", "MinIO", "Linux VPS"},
+		Takeaway:     "Mastered decoupling intensive background jobs and optimizing database access patterns for scalability and real-time reliability.",
+		Stats:        []ExpStat{{"Background Queues", "RabbitMQ"}, {"Billing", "Stripe/Paystack"}, {"Storage", "AWS S3/MinIO"}},
 	},
 }
 
@@ -94,16 +58,17 @@ func GetExperiencesLength() int {
 func DrawExperience(selectedIndex int, expandedIndex int, width int) string {
 	var sb strings.Builder
 	iw := innerWidth(width)
+	ci := styles.ContentIndent
 
 	// ── Section header ─────────────────────────────────────────────
 	sb.WriteString("\n")
-	sb.WriteString(" ")
+	sb.WriteString(ci)
 	sb.WriteString(styles.StyleTitleLarge.Render("PROFESSIONAL TIMELINE"))
 	sb.WriteString("\n")
-	sb.WriteString(" ")
+	sb.WriteString(ci)
 	sb.WriteString(styles.StyleMuted.Render("j/k or Up/Down: navigate  ·  ENTER: expand/collapse"))
 	sb.WriteString("\n")
-	sb.WriteString(" ")
+	sb.WriteString(ci)
 	sb.WriteString(styles.StyleFaint.Render(strings.Repeat("─", iw-2)))
 	sb.WriteString("\n\n")
 
@@ -125,6 +90,8 @@ func DrawExperience(selectedIndex int, expandedIndex int, width int) string {
 
 		var typeTag string
 		switch exp.Type {
+		case "Full-Time":
+			typeTag = styles.StyleBadgeGreen.Render(exp.Type)
 		case "Contract":
 			typeTag = styles.StyleBadgeAccent.Render(exp.Type)
 		case "Self-Directed":
@@ -140,19 +107,18 @@ func DrawExperience(selectedIndex int, expandedIndex int, width int) string {
 			companyStyle = lipgloss.NewStyle().Foreground(styles.ColorForeground).Bold(true)
 		}
 
-		sb.WriteString(fmt.Sprintf(" %s%s  %s  %s\n",
-			arrow, yearPart, companyStyle.Render(exp.Company), typeTag,
+		sb.WriteString(fmt.Sprintf("%s%s%s  %s  %s\n",
+			ci, arrow, yearPart, companyStyle.Render(exp.Company), typeTag,
 		))
-		sb.WriteString(fmt.Sprintf("    %s  %s\n",
+		sb.WriteString(fmt.Sprintf("%s    %s  %s\n",
+			ci,
 			styles.StyleAccent.Render(exp.Role),
 			styles.StyleMuted.Render("· "+exp.Location),
 		))
-		sb.WriteString(fmt.Sprintf("    %s\n", styles.StyleFaint.Render(exp.Period)))
+		sb.WriteString(fmt.Sprintf("%s    %s\n", ci, styles.StyleFaint.Render(exp.Period)))
 
 		if isExpanded {
 			// ── Expanded detail box ───────────────────────────────
-			// boxW: must satisfy  boxW + 2(border) + 2(left indent " ")  <= iw
-			// i.e.  boxW <= iw - 4
 			boxW := iw - 6
 			if boxW > 80 {
 				boxW = 80
@@ -223,10 +189,13 @@ func DrawExperience(selectedIndex int, expandedIndex int, width int) string {
 				Padding(0, 1).
 				Render(detSb.String())
 
-			sb.WriteString("\n  ")
+			sb.WriteString("\n")
+			sb.WriteString(ci)
+			sb.WriteString("  ")
 			sb.WriteString(detailBox)
 			sb.WriteString("\n")
 		} else {
+			sb.WriteString(ci)
 			sb.WriteString("    ")
 			sb.WriteString(styles.StyleFaint.Render("[ ENTER to expand ]"))
 			sb.WriteString("\n")
@@ -234,7 +203,7 @@ func DrawExperience(selectedIndex int, expandedIndex int, width int) string {
 
 		// Separator between entries
 		if i < len(Experiences)-1 {
-			sb.WriteString(" ")
+			sb.WriteString(ci)
 			sb.WriteString(styles.StyleFaint.Render(strings.Repeat("╌", iw-2)))
 			sb.WriteString("\n")
 		}
