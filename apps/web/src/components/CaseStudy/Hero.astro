@@ -107,7 +107,7 @@ import { Button } from "@workspace/ui/components/button"
         </div>
 
         <!-- Call-to-Action Buttons -->
-        <div class="flex gap-3">
+        <div class="flex flex-wrap gap-3">
           <a href="#" aria-label="View repository">
             <Button variant="outline" size="lg">
               <HugeiconsIcon icon={Github} className="size-4" />
@@ -161,7 +161,7 @@ import { Button } from "@workspace/ui/components/button"
       { label: "Tech Stack", value: "Next.js, TypeScript, Go, PostgreSQL", icon: Globe02Icon },
     ].map(({ label, value, icon }, i) => (
       <div
-        class={`group relative border-border p-4 transition-colors hover:bg-primary/5 ${i < 3 ? "border-r" : ""} ${i < 2 ? "border-b md:border-b-0" : ""}`}
+        class={`group relative border-border p-4 transition-colors hover:bg-primary/5 ${i % 2 === 0 ? "border-r" : ""} ${i < 2 ? "border-b" : ""} md:border-b-0 md:border-r md:last:border-r-0`}
       >
         <!-- Hover accent line -->
         <div class="absolute inset-x-0 top-0 h-[1px] bg-primary/0 transition-colors duration-300 group-hover:bg-primary/40"></div>

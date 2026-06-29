@@ -30,7 +30,7 @@ import { TextScramble } from "@workspace/ui/components/text-scramble"
   </div>
 
   <div
-    class="z-10 container mx-auto grid grid-cols-1 justify-between gap-12 px-4 lg:grid-cols-2 lg:gap-[30%]"
+    class="z-10 container mx-auto grid grid-cols-1 justify-between gap-12 px-4 lg:grid-cols-2 lg:gap-16 xl:gap-24"
   >
     <!-- Left Side: Main Content -->
     <div class="flex flex-col justify-center space-y-8">
@@ -70,17 +70,16 @@ import { TextScramble } from "@workspace/ui/components/text-scramble"
         </p>
       </div>
 
-      <!-- Call to Action: Email Input -->
       <div class="w-full max-w-md">
         <InputGroup
-          className="h-14 border-2 border-border bg-foreground text-lg! font-medium text-background sm:text-xl!"
+          className="h-12 sm:h-14 border-2 border-border bg-foreground text-sm! sm:text-base! md:text-lg! font-medium text-background"
         >
           <InputGroupInput
             type="email"
             placeholder="Work with me: fi@amanillah.com"
           />
           <InputGroupAddon align="inline-end">
-            <InputGroupButton className="h-10 px-4" variant={"default"}>
+            <InputGroupButton className="h-8 sm:h-10 px-3 sm:px-4" variant={"default"}>
               Connect
             </InputGroupButton>
           </InputGroupAddon>
@@ -158,7 +157,7 @@ import { TextScramble } from "@workspace/ui/components/text-scramble"
     </div>
 
     <!-- Right Side: Details About Me -->
-    <div class="flex flex-col items-end justify-center space-y-10">
+    <div class="flex flex-col items-start lg:items-end justify-center space-y-10">
       <!-- Identity Details (Minimalist List) -->
       <div class="flex w-full max-w-md flex-col gap-4 pt-4">
         <div
@@ -213,7 +212,7 @@ import { TextScramble } from "@workspace/ui/components/text-scramble"
 
       <!-- SSH Connection -->
       <div class="w-full max-w-md space-y-3.5">
-        <div class="flex items-center justify-end gap-3">
+        <div class="flex items-center justify-start lg:justify-end gap-3">
           <div class="h-px w-12 bg-border"></div>
           <span
             class="font-mono text-xs tracking-[0.1em] whitespace-nowrap text-muted-foreground uppercase"
@@ -221,7 +220,7 @@ import { TextScramble } from "@workspace/ui/components/text-scramble"
           >
         </div>
 
-        <p class="text-right text-xs leading-relaxed text-muted-foreground">
+        <p class="text-left lg:text-right text-xs leading-relaxed text-muted-foreground">
           Access my interactive retro terminal CV directly from your command
           line:
         </p>
@@ -289,14 +288,14 @@ import { TextScramble } from "@workspace/ui/components/text-scramble"
 
       <!-- Tech Stack (Floating Badges) -->
       <div class="w-full max-w-md space-y-4">
-        <div class="flex items-center justify-end gap-3">
+        <div class="flex items-center justify-start lg:justify-end gap-3">
           <div class="h-px w-12 bg-border"></div>
           <span
             class="font-mono text-xs tracking-[0.1em] whitespace-nowrap text-muted-foreground uppercase"
             >Tech Stack</span
           >
         </div>
-        <div class="flex flex-wrap justify-end gap-2.5">
+        <div class="flex flex-wrap justify-start lg:justify-end gap-2.5">
           {
             [
               { name: "React", color: "#61DAFB" },
@@ -340,7 +339,7 @@ import { TextScramble } from "@workspace/ui/components/text-scramble"
     <img
       src="/fi.png"
       alt="Hero Image"
-      class="absolute bottom-0 left-1/2 w-[70%] -translate-x-1/2 object-contain opacity-80 grayscale transition-opacity duration-700 hover:opacity-30 sm:w-[50%]"
+      class="absolute bottom-0 left-1/2 w-[70%] -translate-x-1/2 object-contain opacity-25 sm:opacity-50 lg:opacity-80 grayscale transition-opacity duration-700 hover:opacity-10 sm:hover:opacity-20 lg:hover:opacity-30 sm:w-[50%]"
     />
     <div
       class="absolute inset-0 bg-linear-to-t from-background via-background/0 to-transparent"
