@@ -15,11 +15,10 @@ const projects = [
       "Engineered contractor credit/bidding engine with Stripe billing, real-time Socket.io messaging with Redis, and Docker Compose deployment.",
     tech: ["TypeScript", "Express", "Prisma", "PostgreSQL", "RabbitMQ", "Redis", "Socket.io", "Stripe", "Docker", "Bun"],
     links: {
-      live: "#",
-      github: "https://github.com/fiamanillah",
-      caseStudy: "#",
+      live: "https://mickanic.ca/",
+      caseStudy: "/case-study/mickanic",
     },
-    img: "/assets/images/project1.png",
+    img: "/assets/images/mickanic-cover.png",
     index: "01",
     status: "Completed",
     year: "2025 - 2026",
@@ -33,11 +32,10 @@ const projects = [
       "Architected OpenAI API health insights worker, WebSocket patient-care chat, SES/Postmark alert dispatch, and Paystack billing.",
     tech: ["TypeScript", "Express", "Prisma", "Redis", "RabbitMQ", "WebSockets", "OpenAI API", "AWS S3", "Paystack"],
     links: {
-      live: "#",
-      github: "https://github.com/fiamanillah",
-      caseStudy: "#",
+      live: "https://dev.mojacares.com/",
+      caseStudy: "/case-study/moja-cares",
     },
-    img: "/assets/images/project2.png",
+    img: "/assets/images/moja-cares-cover.png",
     index: "02",
     status: "Live",
     year: "2026",
@@ -113,13 +111,15 @@ const BASE_TOP_OFFSET = 72
                 {p.year}
               </span>
 
-              <a href={p.links.live} target="_blank" rel="noopener noreferrer">
-                <Button variant={"outline"} size={"sm"}>
-                  Live
-                  <span>↗</span>
-                </Button>
-              </a>
-              {p.links.github && (
+              {p.links.live && p.links.live !== "#" && (
+                <a href={p.links.live} target="_blank" rel="noopener noreferrer">
+                  <Button variant={"outline"} size={"sm"}>
+                    Live
+                    <span>↗</span>
+                  </Button>
+                </a>
+              )}
+              {p.links.github && p.links.github !== "#" && (
                 <a
                   href={p.links.github}
                   target="_blank"
@@ -192,30 +192,34 @@ const BASE_TOP_OFFSET = 72
                 </div>
 
                 {/* CTA Buttons */}
-                <div class="flex flex-wrap gap-2 pt-1">
-                  <a
-                    href={p.links.live}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <Button>
-                      Visit site
-                      <span>↗</span>
-                    </Button>
-                  </a>
-                  {p.links.caseStudy && (
-                    <a
-                      href={p.links.caseStudy}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <Button variant={"secondary"}>
-                        Case study
-                        <span>↗</span>
-                      </Button>
-                    </a>
-                  )}
-                </div>
+                {((p.links.live && p.links.live !== "#") || (p.links.caseStudy && p.links.caseStudy !== "#")) && (
+                  <div class="flex flex-wrap gap-2 pt-1">
+                    {p.links.live && p.links.live !== "#" && (
+                      <a
+                        href={p.links.live}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Button>
+                          Visit site
+                          <span>↗</span>
+                        </Button>
+                      </a>
+                    )}
+                    {p.links.caseStudy && p.links.caseStudy !== "#" && (
+                      <a
+                        href={p.links.caseStudy}
+                        target={p.links.caseStudy.startsWith("/") ? "_self" : "_blank"}
+                        rel={p.links.caseStudy.startsWith("/") ? undefined : "noopener noreferrer"}
+                      >
+                        <Button variant={"secondary"}>
+                          Case study
+                          <span>↗</span>
+                        </Button>
+                      </a>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
 

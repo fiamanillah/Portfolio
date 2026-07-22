@@ -76,16 +76,16 @@ const { features } = Astro.props as Props
           </div>
 
           <!-- Media Container -->
-          <div class="relative z-10 mt-6 overflow-hidden border border-border bg-background transition-all duration-400 group-hover:-translate-y-1 group-hover:border-primary/30 group-hover:shadow-[0_8px_30px_-12px_oklch(var(--primary)/0.2)] lg:mt-0">
+          <div class="relative z-10 mt-6 overflow-hidden rounded-lg border border-border/80 bg-background lg:mt-0">
             {feature.mediaType === "Code Snippet" ? (
               <div class="flex h-full flex-col">
-                <div class="flex items-center justify-between border-b border-border bg-muted/30 px-4 py-2 transition-colors duration-400 group-hover:border-primary/20">
+                <div class="flex items-center justify-between border-b border-border bg-muted/30 px-4 py-2">
                   <div class="flex items-center gap-2">
-                    <span class="h-2 w-2 bg-rose-500/80" />
-                    <span class="h-2 w-2 bg-amber-500/80" />
-                    <span class="h-2 w-2 bg-emerald-500/80" />
+                    <span class="h-2 w-2 rounded-full bg-rose-500/80" />
+                    <span class="h-2 w-2 rounded-full bg-amber-500/80" />
+                    <span class="h-2 w-2 rounded-full bg-emerald-500/80" />
                   </div>
-                  <span class="font-mono text-[10px] tracking-[0.18em] text-muted-foreground uppercase transition-colors duration-400 group-hover:text-primary/70">
+                  <span class="font-mono text-[10px] tracking-[0.18em] text-muted-foreground uppercase">
                     snippet.ts
                   </span>
                 </div>
@@ -98,16 +98,8 @@ const { features } = Astro.props as Props
                 <img
                   src={feature.media}
                   alt={feature.mediaLabel}
-                  class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.05]"
+                  class="h-full w-full object-cover"
                 />
-                <!-- Gradient overlay -->
-                <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent transition-opacity duration-400 group-hover:opacity-70" />
-                <!-- Scanline over image -->
-                <div class="pointer-events-none absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_3px,oklch(0_0_0/0.05)_3px,oklch(0_0_0/0.05)_4px)] opacity-30 dark:bg-[repeating-linear-gradient(0deg,transparent,transparent_3px,oklch(1_1_1/0.03)_3px,oklch(1_1_1/0.03)_4px)]" />
-                
-                <figcaption class="absolute bottom-3 right-3 border border-border bg-background/90 px-3 py-1 font-mono text-[10px] tracking-[0.16em] text-muted-foreground uppercase backdrop-blur-sm transition-colors duration-400 group-hover:border-primary/40 group-hover:text-primary">
-                  Visual Evidence
-                </figcaption>
               </figure>
             )}
           </div>

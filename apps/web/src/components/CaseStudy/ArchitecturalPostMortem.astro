@@ -25,7 +25,7 @@ const { items } = Astro.props as Props
   <div class="grid gap-6 md:grid-cols-2">
     {
       items.map((item, index) => (
-        <article class="group relative overflow-hidden border border-border bg-card p-6 transition-all duration-400 hover:border-primary/40 hover:bg-primary/5">
+        <article class="group relative overflow-hidden rounded-lg border border-border/80 bg-card/60 p-6 shadow-sm transition-all duration-400 hover:border-primary/40 hover:bg-primary/5">
           <!-- Corner brackets -->
           <div class="pointer-events-none absolute left-0 top-0 h-3 w-3 border-l-[1.5px] border-t-[1.5px] border-primary/30 transition-colors duration-400 group-hover:border-primary/70" />
           <div class="pointer-events-none absolute right-0 top-0 h-3 w-3 border-r-[1.5px] border-t-[1.5px] border-primary/30 transition-colors duration-400 group-hover:border-primary/70" />
@@ -39,8 +39,6 @@ const { items } = Astro.props as Props
           
           <!-- Background glow -->
           <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_140%_at_0%_0%,oklch(var(--primary)/0.05),transparent_55%)] opacity-50 transition-opacity duration-400 group-hover:opacity-100" />
-          <!-- Scanline overlay on hover -->
-          <div class="pointer-events-none absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,oklch(0_0_0/0.015)_2px,oklch(0_0_0/0.015)_4px)] opacity-0 transition-opacity duration-400 group-hover:opacity-100 dark:bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,oklch(1_1_1/0.015)_2px,oklch(1_1_1/0.015)_4px)]" />
 
           <div class="relative z-10 flex items-center gap-3 border-b border-border/50 pb-4 transition-colors duration-400 group-hover:border-primary/30">
             <span
