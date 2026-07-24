@@ -1,0 +1,62 @@
+---
+import ArchitecturalPostMortem from "@/components/CaseStudy/ArchitecturalPostMortem.astro"
+import ArchitectureTopology from "@/components/CaseStudy/ArchitectureTopology.astro"
+import ContextSection from "@/components/CaseStudy/ContextSection.astro"
+import KeyFeatures from "@/components/CaseStudy/KeyFeatures.astro"
+import PerformanceMetrics from "@/components/CaseStudy/PerformanceMetrics.astro"
+import Hero from "@/components/CaseStudy/Hero.astro"
+import OtherCaseStudies from "@/components/CaseStudy/OtherCaseStudies.astro"
+import MySiteLayout from "@/layouts/MySiteLayout.astro"
+import { getAllCaseStudyDetails, type CaseStudyDetail } from "@/data/caseStudies"
+
+export async function getStaticPaths() {
+  const caseStudies = getAllCaseStudyDetails()
+  return caseStudies.map((study) => ({
+    params: { slug: study.slug },
+    props: { caseStudy: study },
+  }))
+}
+
+interface Props {
+  caseStudy: CaseStudyDetail
+}
+
+const { caseStudy } = Astro.props
+---
+
+<MySiteLayout>
+  <Hero
+    title={caseStudy.title}
+    description={caseStudy.description}
+    status={caseStudy.status}
+    techStack={caseStudy.techStack}
+    liveUrl={caseStudy.liveUrl}
+    image={caseStudy.image}
+    imageLabel={caseStudy.imageLabel}
+    metadata={caseStudy.metadata}
+  />
+
+  <section class="mx-auto px-5 pt-10 pb-24 md:px-6 lg:px-8">
+    <ContextSection blocks={caseStudy.contextBlocks} />
+
+    <div class="mt-16">
+      <ArchitectureTopology layers={caseStudy.architectureLayers} />
+    </div>
+
+    <div class="mt-16">
+      <KeyFeatures features={caseStudy.features} />
+    </div>
+
+    <div class="mt-16">
+      <PerformanceMetrics metrics={caseStudy.metrics} />
+    </div>
+
+    <div class="mt-16">
+      <ArchitecturalPostMortem items={caseStudy.postMortem} />
+    </div>
+
+    <div class="mt-16">
+      <OtherCaseStudies currentSlug={caseStudy.slug} />
+    </div>
+  </section>
+</MySiteLayout>

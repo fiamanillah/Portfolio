@@ -2,45 +2,10 @@
 import { Badge } from "@workspace/ui/components/badge"
 import { Button } from "@workspace/ui/components/button"
 import { Icon } from "astro-icon/components"
+import { projectsData as projects } from "@/data/projects"
 
 // components/Home/Work.astro
 
-const projects = [
-  {
-    title: "Mickanic",
-    description:
-      "A high-performance REST API and bidding engine for a service-based freelance marketplace, utilizing decoupled microservices, containerized services, and tiered subscriptions.",
-    role: "Backend & DevOps",
-    impact:
-      "Engineered contractor credit/bidding engine with Stripe billing, real-time Socket.io messaging with Redis, and Docker Compose deployment.",
-    tech: ["TypeScript", "Express", "Prisma", "PostgreSQL", "RabbitMQ", "Redis", "Socket.io", "Stripe", "Docker", "Bun"],
-    links: {
-      live: "https://mickanic.ca/",
-      caseStudy: "/case-study/mickanic",
-    },
-    img: "/assets/images/mickanic-cover.png",
-    index: "01",
-    status: "Completed",
-    year: "2025 - 2026",
-  },
-  {
-    title: "Moja Cares",
-    description:
-      "Comprehensive healthcare management portal featuring multi-role RBAC, real-time clinical team chats, automated alerts, and AI-powered document insight extraction.",
-    role: "Backend Developer",
-    impact:
-      "Architected OpenAI API health insights worker, WebSocket patient-care chat, SES/Postmark alert dispatch, and Paystack billing.",
-    tech: ["TypeScript", "Express", "Prisma", "Redis", "RabbitMQ", "WebSockets", "OpenAI API", "AWS S3", "Paystack"],
-    links: {
-      live: "https://dev.mojacares.com/",
-      caseStudy: "/case-study/moja-cares",
-    },
-    img: "/assets/images/moja-cares-cover.png",
-    index: "02",
-    status: "Live",
-    year: "2026",
-  },
-]
 
 const CARD_HEADER_HEIGHT = 50 // px
 const BASE_TOP_OFFSET = 72

@@ -1,0 +1,127 @@
+{
+  "slug": "mickanic",
+  "title": "Mickanic — Real-Time Bidding & Service Marketplace Platform",
+  "description": "I architected a service-based marketplace using Next.js 16 and Bun, integrating real-time bidding, Socket.io messaging, and tiered Stripe subscriptions, backed by PostgreSQL and RabbitMQ.",
+  "status": "Status: Completed",
+  "techStack": [
+    "Next.js 16",
+    "Bun",
+    "PostgreSQL",
+    "Prisma",
+    "RabbitMQ",
+    "Redis",
+    "Socket.io",
+    "Stripe",
+    "Docker",
+    "Redux Toolkit",
+    "Tailwind CSS 4"
+  ],
+  "liveUrl": "https://mickanic.ca/",
+  "image": "/assets/images/mickanic-cover.png",
+  "imageLabel": "Mickanic_Architecture_Overview.png",
+  "contextBlocks": [
+    {
+      "label": "The Problem",
+      "body": "Drivers needed a platform to post vehicle-service jobs, while mechanics needed a centralized place to browse jobs, submit bids, and manage subscriptions. A seamless way to connect and communicate was required for the Mickanic platform."
+    },
+    {
+      "label": "The Solution",
+      "body": "I developed a service-based marketplace connecting consumers and contractors. The solution features a Next.js frontend and a Bun-powered API, featuring real-time Socket.io messaging and RabbitMQ background workers."
+    }
+  ],
+  "architectureLayers": [
+    {
+      "name": "Client / UI",
+      "description": "Frontend application catering to Admin, Consumer, and Contractor roles.",
+      "items": [
+        { "title": "Next.js 16 & React 19", "subtitle": "App Router framework" },
+        { "title": "Tailwind CSS 4", "subtitle": "Utility-first styling" },
+        { "title": "Redux Toolkit Query", "subtitle": "State & API data fetching" }
+      ]
+    },
+    {
+      "name": "API & Compute",
+      "description": "High-performance backend API and WebSocket server.",
+      "items": [
+        { "title": "Bun", "subtitle": "JavaScript runtime and package manager" },
+        { "title": "Express", "subtitle": "Backend API framework" },
+        { "title": "Socket.IO", "subtitle": "Real-time communication" }
+      ]
+    },
+    {
+      "name": "Data Layer",
+      "description": "Relational database, caching, and object storage.",
+      "items": [
+        { "title": "PostgreSQL", "subtitle": "Primary database via Prisma ORM" },
+        { "title": "Redis", "subtitle": "In-memory caching store" },
+        { "title": "MinIO", "subtitle": "S3-compatible object storage" }
+      ]
+    },
+    {
+      "name": "Infra / Delivery",
+      "description": "Containerized orchestration and asynchronous task queues.",
+      "items": [
+        { "title": "Docker Compose", "subtitle": "Multi-container orchestration" },
+        { "title": "RabbitMQ", "subtitle": "Asynchronous message broker" },
+        { "title": "Stripe", "subtitle": "Payment and subscription processing" }
+      ]
+    }
+  ],
+  "features": [
+    {
+      "title": "Real-Time Bidding & Messaging",
+      "description": "Implemented a real-time messaging system between consumers and contractors using Socket.IO. The frontend utilizes Redux Toolkit Query alongside real-time hooks to manage conversations and typing indicators without full page reloads.",
+      "mediaType": "Image / Video",
+      "mediaLabel": "Messaging Interface",
+      "media": "/assets/images/mickanic-chat.png"
+    },
+    {
+      "title": "Tiered Subscription Engine",
+      "description": "Integrated tiered subscription plans (Basic, Premium, Pro) for contractors, which govern job application limits, lead costs, and platform visibility. Stripe is used for handling the subscription and payment workflows.",
+      "mediaType": "Image / Video",
+      "mediaLabel": "Subscription Plans",
+      "media": "/assets/images/mickanic-billing.png"
+    },
+    {
+      "title": "Event-Driven Background Processing",
+      "description": "Offloaded heavy processing like email delivery and web-push notifications to a background worker using RabbitMQ. This ensures the main API remains responsive during high-traffic events, with an hourly email limit of 150 strictly enforced.",
+      "mediaType": "Code Snippet",
+      "mediaLabel": "Docker Compose Worker Setup",
+      "media": "email-worker:\n  image: sandraluty-backend\n  command: bun run email_worker:prod\n  depends_on:\n    - postgres\n    - redis\n    - rabbitmq"
+    }
+  ],
+  "metrics": [
+    { "value": "3", "label": "Distinct user roles (Admin, Consumer, Contractor)" },
+    { "value": "150", "label": "Hourly email sending limit via RabbitMQ" },
+    { "value": "3", "label": "Contractor subscription tiers (Basic, Premium, Pro)" },
+    { "value": "100%", "label": "Type safety with Prisma and TypeScript" }
+  ],
+  "postMortem": [
+    {
+      "title": "Technical Challenges",
+      "entries": [
+        {
+          "heading": "Real-Time State Synchronization",
+          "detail": "Keeping the optimistic UI in sync with backend state was complex. We leveraged Redux Toolkit Query to cache data and refresh active conversations automatically upon receiving Socket.IO events."
+        },
+        {
+          "heading": "Asynchronous Notification Delivery",
+          "detail": "Blocking the main thread for transactional emails degraded performance. Implementing RabbitMQ allowed us to queue tasks like contact_auto_reply, handling them via a dedicated Bun email worker."
+        }
+      ]
+    },
+    {
+      "title": "Lessons Learned",
+      "entries": [
+        {
+          "heading": "Infrastructure Orchestration",
+          "detail": "Bundling PostgreSQL, Redis, and RabbitMQ within a single docker-compose.yml file simplified local development and ensured parity across environments."
+        },
+        {
+          "heading": "Schema-Driven Type Safety",
+          "detail": "Using Prisma allowed us to define a single schema for users, contractors, jobs, and bids. Generating the client directly from the schema ensured reliable database operations."
+        }
+      ]
+    }
+  ]
+}

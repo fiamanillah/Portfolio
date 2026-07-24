@@ -1,0 +1,132 @@
+{
+  "slug": "moja-cares",
+  "title": "Moja Cares — Healthcare Management & Patient Care Portal",
+  "description": "Comprehensive healthcare management portal featuring multi-role RBAC, real-time clinical team chats, automated alerts, AI-powered document insight extraction, and Paystack billing integration.",
+  "status": "Status: Live",
+  "techStack": [
+    "TypeScript",
+    "Express",
+    "Prisma",
+    "PostgreSQL",
+    "Redis",
+    "RabbitMQ",
+    "WebSockets",
+    "OpenAI API",
+    "AWS S3",
+    "Paystack"
+  ],
+  "liveUrl": "https://dev.mojacares.com/",
+  "image": "/assets/images/moja-cares-cover.png",
+  "imageLabel": "Moja_Cares_Dashboard_Overview.png",
+  "metadata": [
+    { "label": "Role", "value": "Backend Developer" },
+    { "label": "Timeline", "value": "2026" },
+    { "label": "Client / Company", "value": "Moja Cares" },
+    { "label": "Tech Stack", "value": "Express, TypeScript, OpenAI API, WebSockets" }
+  ],
+  "contextBlocks": [
+    {
+      "label": "The Problem",
+      "body": "Healthcare providers and clinical care teams needed a unified digital platform to handle multi-role patient access, stream real-time patient status updates, manage team communication, and analyze unstructured clinical documents without manual data entry bottlenecks."
+    },
+    {
+      "label": "The Solution",
+      "body": "I architected the Moja Cares portal with a high-throughput Express API, WebSocket infrastructure for real-time care team chat, asynchronous message queues for transactional alerts, an automated OpenAI worker for medical document processing, and Paystack subscription management."
+    }
+  ],
+  "architectureLayers": [
+    {
+      "name": "Client / UI",
+      "description": "Multi-role responsive web application for Admins, Doctors, Nurses, and Patients.",
+      "items": [
+        { "title": "Next.js & React", "subtitle": "App Router & SSR" },
+        { "title": "Tailwind CSS", "subtitle": "Utility-first styling system" },
+        { "title": "Zustand & SWR", "subtitle": "Optimistic state & data hydration" }
+      ]
+    },
+    {
+      "name": "API & Compute",
+      "description": "High-performance backend services and WebSocket communication nodes.",
+      "items": [
+        { "title": "Express (Node.js)", "subtitle": "Primary REST API aggregation" },
+        { "title": "WebSockets", "subtitle": "Full-duplex clinical chat nodes" },
+        { "title": "OpenAI Worker", "subtitle": "Background document analysis pipeline" }
+      ]
+    },
+    {
+      "name": "Data Layer",
+      "description": "Relational database state, ephemeral memory caching, and object storage.",
+      "items": [
+        { "title": "PostgreSQL", "subtitle": "Relational medical records via Prisma" },
+        { "title": "Redis", "subtitle": "Session cache & socket event pub/sub" },
+        { "title": "AWS S3", "subtitle": "Secure patient document storage" }
+      ]
+    },
+    {
+      "name": "Infra / Delivery",
+      "description": "Event brokering, notification dispatch, and payment gateways.",
+      "items": [
+        { "title": "RabbitMQ", "subtitle": "Asynchronous worker queue orchestration" },
+        { "title": "AWS SES / Postmark", "subtitle": "Transactional alert dispatch" },
+        { "title": "Paystack API", "subtitle": "Subscription & medical billing webhooks" }
+      ]
+    }
+  ],
+  "features": [
+    {
+      "title": "Real-Time Clinical Team Chat",
+      "description": "Implemented persistent WebSocket channels allowing doctors, nurses, and care administrators to exchange encrypted patient updates instantly with typing indicators and read receipts.",
+      "mediaType": "Image / Video",
+      "mediaLabel": "Clinical Team Messaging",
+      "media": "/assets/images/moja-cares-chat.png"
+    },
+    {
+      "title": "AI-Powered Document Insight Extraction",
+      "description": "Developed an automated background pipeline leveraging the OpenAI API to extract critical medical markers, risk flags, and summary points from uploaded health records.",
+      "mediaType": "Image / Video",
+      "mediaLabel": "AI Document Analysis",
+      "media": "/assets/images/moja-cares-insights.png"
+    },
+    {
+      "title": "Automated Alert Dispatch & Queuing",
+      "description": "Offloaded instant SMS and email notifications to background RabbitMQ workers consumed by standalone microservices to ensure reliable alert delivery under peak clinical loads.",
+      "mediaType": "Code Snippet",
+      "mediaLabel": "Alert Worker Queue Setup",
+      "media": "export async function queuePatientAlert(alert: PatientAlert) {\n  await rabbitChannel.sendToQueue(\n    \"clinical_alerts\",\n    Buffer.from(JSON.stringify(alert)),\n    { persistent: true }\n  );\n}"
+    }
+  ],
+  "metrics": [
+    { "value": "4", "label": "Distinct user roles (Admin, Doctor, Nurse, Patient)" },
+    { "value": "<50ms", "label": "WebSocket real-time chat latency" },
+    { "value": "10k+", "label": "Clinical health insights extracted via AI worker" },
+    { "value": "99.9%", "label": "Uptime for asynchronous alert delivery" }
+  ],
+  "postMortem": [
+    {
+      "title": "Technical Challenges",
+      "entries": [
+        {
+          "heading": "Handling Large Medical Document Processing",
+          "detail": "Parsing heavy medical PDF records caused API response stalls. Solved by decoupling document uploads directly to AWS S3, then dispatching asynchronous AI processing jobs over RabbitMQ."
+        },
+        {
+          "heading": "Real-Time Multi-Party Socket Sync",
+          "detail": "Syncing care team chat state across multiple server instances required unified pub/sub. Implemented Redis Pub/Sub adapter for WebSockets to guarantee message delivery across nodes."
+        }
+      ]
+    },
+    {
+      "title": "Lessons Learned",
+      "entries": [
+        {
+          "heading": "Asynchronous First Architecture",
+          "detail": "Offloading document intelligence and email dispatches to dedicated background workers protected core patient API latency during peak clinic hours."
+        },
+        {
+          "heading": "Strict Type Safety",
+          "detail": "Defining centralized Prisma schemas and TypeScript contracts eliminated schema drift between care team APIs, socket payloads, and billing webhooks."
+        }
+      ]
+    }
+  ]
+}

@@ -2,14 +2,7 @@
 import CaseStudySectionTitle from "@/components/CaseStudy/CaseStudySectionTitle.astro"
 import { ArrowUpRight01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-
-interface CaseStudyLink {
-  title: string
-  description: string
-  href: string
-  image: string
-  techStack?: string[]
-}
+import { getCaseStudies } from "@/data/projects"
 
 interface Props {
   currentSlug: string
@@ -17,40 +10,18 @@ interface Props {
 
 const { currentSlug } = Astro.props as Props
 
-const allCaseStudies: (CaseStudyLink & { slug: string })[] = [
-  {
-    slug: "",
-    title: "Mickanic — Real-Time Bidding & Service Marketplace",
-    description: "Service-based marketplace with real-time bidding, Socket.io messaging, and tiered Stripe subscriptions.",
-    href: "/case-study/",
-    image: "/assets/images/mickanic-cover.png",
-    techStack: ["Next.js 16", "Bun", "PostgreSQL", "Socket.io"],
-  },
-  {
-    slug: "mickanic",
-    title: "Mickanic — Real-Time Bidding & Service Marketplace",
-    description: "Service-based marketplace with real-time bidding, Socket.io messaging, and tiered Stripe subscriptions.",
-    href: "/case-study/mickanic/",
-    image: "/assets/images/mickanic-cover.png",
-    techStack: ["Next.js 16", "Bun", "PostgreSQL", "Socket.io"],
-  },
-  {
-    slug: "moja-cares",
-    title: "Moja Cares — Healthcare Management Portal",
-    description: "Healthcare portal with multi-role RBAC, real-time clinical chats, AI-powered document insights, and Paystack billing.",
-    href: "/case-study/moja-cares/",
-    image: "/assets/images/moja-cares-cover.png",
-    techStack: ["Express", "PostgreSQL", "WebSockets", "OpenAI API"],
-  },
-]
+const allCaseStudies = getCaseStudies().map((p) => ({
+  slug: p.slug || p.id,
+  title: p.subtitle ? `${p.title} — ${p.subtitle}` : p.title,
+  description: p.description,
+  href: p.links.caseStudy || `#`,
+  image: p.img,
+  techStack: p.tech.slice(0, 4),
+}))
 
-// Filter out the current case study and deduplicate by href
-const seen = new Set<string>()
-const otherStudies = allCaseStudies.filter((study) => {
-  if (study.slug === currentSlug || seen.has(study.href)) return false
-  seen.add(study.href)
-  return true
-})
+const otherStudies = allCaseStudies.filter(
+  (study) => study.slug !== currentSlug && study.href !== "#"
+)
 ---
 
 {otherStudies.length > 0 && (
