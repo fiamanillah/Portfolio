@@ -7,6 +7,9 @@ interface Feature {
   mediaType: string
   mediaLabel: string
   media: string
+  tags?: string[]
+  highlights?: string[]
+  codeLang?: string
 }
 
 interface Props {
@@ -16,92 +19,171 @@ interface Props {
 const { features } = Astro.props as Props
 ---
 
-<section class="space-y-5">
+<section class="space-y-6">
   <CaseStudySectionTitle label="[ SEC_03 // KEY_FEATURES ]" />
-  <div class="space-y-6">
+  <div class="space-y-8">
     {
-      features.map((feature, index) => (
-        <article
-          class={`group relative overflow-hidden rounded-lg border border-border/80 bg-card/60 shadow-sm transition-colors duration-300 hover:border-primary/30 lg:grid lg:grid-cols-[2fr_3fr] lg:items-stretch ${index % 2 ? "lg:[&>*:first-child]:order-2 lg:grid-cols-[3fr_2fr]" : ""}`}
-        >
-          {/* Corner brackets */}
-          <div class="pointer-events-none absolute left-0 top-0 h-3 w-3 border-l-[1.5px] border-t-[1.5px] border-primary/30" />
-          <div class="pointer-events-none absolute right-0 top-0 h-3 w-3 border-r-[1.5px] border-t-[1.5px] border-primary/30" />
-          <div class="pointer-events-none absolute bottom-0 left-0 h-3 w-3 border-b-[1.5px] border-l-[1.5px] border-primary/30" />
-          <div class="pointer-events-none absolute bottom-0 right-0 h-3 w-3 border-b-[1.5px] border-r-[1.5px] border-primary/30" />
+      features.map((feature, index) => {
+        const isCode = feature.mediaType === "Code Snippet"
+        const filename = feature.mediaLabel.toLowerCase().replace(/[^a-z0-9]+/g, "_") + "." + (feature.codeLang || "ts")
+        const codeLines = isCode ? feature.media.split("\n") : []
+        const isEven = index % 2 === 1
 
-          {/* Content Side */}
-          <div class="relative z-10 flex flex-col justify-between gap-5 p-6 lg:p-8">
-            <div class="space-y-4">
-              {/* Feature index + type badge row */}
-              <div class="flex items-center justify-between gap-3">
-                <div class="flex items-center gap-3">
-                  <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-primary/20 bg-primary/10 font-mono text-xs font-bold text-primary">
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
-                  <span class="font-mono text-[10px] tracking-[0.2em] text-muted-foreground/60 uppercase">
-                    Feature {String(index + 1).padStart(2, "0")}
-                  </span>
-                </div>
-                <div class="inline-flex items-center gap-2 rounded-md border border-border bg-muted/40 px-2.5 py-1">
-                  <span class="h-1.5 w-1.5 rounded-full bg-primary" />
-                  <span class="font-mono text-[9px] tracking-[0.18em] text-muted-foreground uppercase">
-                    {feature.mediaType}
-                  </span>
-                </div>
-              </div>
+        return (
+          <article
+            class="group relative overflow-hidden rounded-xl border border-border/70 bg-card/50 backdrop-blur-md shadow-sm transition-all duration-300 hover:border-primary/40 hover:shadow-xl hover:shadow-primary/5 lg:grid lg:grid-cols-12 lg:items-stretch"
+          >
+            {/* Cyber Corner brackets with glow on group-hover */}
+            <div class="pointer-events-none absolute left-0 top-0 h-3 w-3 border-l-2 border-t-2 border-primary/30 group-hover:border-primary transition-colors duration-300 z-20" />
+            <div class="pointer-events-none absolute right-0 top-0 h-3 w-3 border-r-2 border-t-2 border-primary/30 group-hover:border-primary transition-colors duration-300 z-20" />
+            <div class="pointer-events-none absolute bottom-0 left-0 h-3 w-3 border-b-2 border-l-2 border-primary/30 group-hover:border-primary transition-colors duration-300 z-20" />
+            <div class="pointer-events-none absolute bottom-0 right-0 h-3 w-3 border-b-2 border-r-2 border-primary/30 group-hover:border-primary transition-colors duration-300 z-20" />
 
-              {/* Title */}
-              <h3 class="text-xl font-bold tracking-tight text-foreground sm:text-2xl">
-                {feature.title}
-              </h3>
-
-              {/* Description */}
-              <p class="max-w-[60ch] text-sm leading-7 text-muted-foreground">
-                {feature.description}
-              </p>
-            </div>
-
-            {/* Footer */}
-            <div class="flex items-center gap-3 border-t border-border/50 pt-4">
-              <span class="h-px w-5 bg-primary/40" />
-              <span class="font-mono text-[10px] tracking-[0.15em] text-muted-foreground uppercase">
-                {feature.mediaLabel}
-              </span>
-            </div>
-          </div>
-
-          {/* Media Container */}
-          <div class={`relative z-10 overflow-hidden border-border/50 bg-background/50 ${index % 2 ? "lg:border-r" : "lg:border-l"}`}>
-            {feature.mediaType === "Code Snippet" ? (
-              <div class="flex h-full flex-col">
-                {/* Code editor header */}
-                <div class="flex items-center justify-between border-b border-border/60 bg-muted/30 px-4 py-2.5">
-                  <div class="flex items-center gap-2">
-                    <span class="h-2.5 w-2.5 rounded-full bg-rose-500/70" />
-                    <span class="h-2.5 w-2.5 rounded-full bg-amber-500/70" />
-                    <span class="h-2.5 w-2.5 rounded-full bg-emerald-500/70" />
+            {/* Content Side */}
+            <div class={`relative z-10 flex flex-col justify-between gap-6 p-6 sm:p-8 lg:col-span-6 ${isEven ? "lg:order-2" : ""}`}>
+              <div class="space-y-5">
+                {/* Header row: Index Badge + Tech Tags */}
+                <div class="flex flex-wrap items-center justify-between gap-3 border-b border-border/40 pb-4">
+                  <div class="flex items-center gap-3">
+                    <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded border border-primary/30 bg-primary/10 font-mono text-xs font-bold text-primary shadow-inner">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <span class="font-mono text-[10px] tracking-[0.2em] text-muted-foreground/70 uppercase">
+                      FEATURE {String(index + 1).padStart(2, "0")}
+                    </span>
                   </div>
-                  <span class="font-mono text-[10px] tracking-[0.15em] text-muted-foreground/70 uppercase">
-                    snippet.ts
+
+                  {/* Media / Category Badge */}
+                  <div class="inline-flex items-center gap-2 rounded-full border border-border/80 bg-muted/40 px-3 py-1 text-[10px]">
+                    <span class="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
+                    <span class="font-mono tracking-widest text-muted-foreground uppercase font-semibold">
+                      {feature.mediaType}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Title */}
+                <h3 class="text-xl font-bold tracking-tight text-foreground sm:text-2xl lg:text-2xl group-hover:text-primary transition-colors duration-200">
+                  {feature.title}
+                </h3>
+
+                {/* Description */}
+                <p class="text-sm leading-relaxed text-muted-foreground">
+                  {feature.description}
+                </p>
+
+                {/* Highlights List (if available) */}
+                {feature.highlights && feature.highlights.length > 0 && (
+                  <div class="space-y-2.5 pt-2">
+                    <span class="font-mono text-[10px] font-semibold tracking-widest text-primary/80 uppercase block">
+                      // KEY TAKEAWAYS
+                    </span>
+                    <ul class="space-y-2">
+                      {feature.highlights.map((highlight) => (
+                        <li class="flex items-start gap-2 text-xs text-foreground/80 leading-snug">
+                          <span class="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-primary/15 text-primary text-[10px] font-bold">
+                            ✓
+                          </span>
+                          <span>{highlight}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {/* Tech Tags Pills */}
+                {feature.tags && feature.tags.length > 0 && (
+                  <div class="flex flex-wrap gap-1.5 pt-1">
+                    {feature.tags.map((tag) => (
+                      <span class="rounded border border-primary/20 bg-primary/5 px-2 py-0.5 font-mono text-[10px] font-medium text-primary/90">
+                        #{tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Footer */}
+              <div class="flex items-center justify-between border-t border-border/40 pt-4 mt-2">
+                <div class="flex items-center gap-2">
+                  <span class="h-1.5 w-1.5 rounded-full bg-primary/60" />
+                  <span class="font-mono text-[10px] tracking-wider text-muted-foreground uppercase font-medium">
+                    {feature.mediaLabel}
                   </span>
                 </div>
-                <pre class="m-0 flex-1 overflow-auto bg-background/30 p-5 text-xs leading-6 text-foreground max-h-105">
-                  <code>{feature.media}</code>
-                </pre>
+                <span class="font-mono text-[10px] text-muted-foreground/40 group-hover:text-primary/70 transition-colors">
+                  SEC_03 // F{String(index + 1).padStart(2, "0")}
+                </span>
               </div>
-            ) : (
-              <figure class="relative m-0 h-full min-h-72 w-full overflow-hidden">
-                <img
-                  src={feature.media}
-                  alt={feature.mediaLabel}
-                  class="h-full w-full object-cover"
-                />
-              </figure>
-            )}
-          </div>
-        </article>
-      ))
+            </div>
+
+            {/* Media Side */}
+            <div class={`relative z-10 flex flex-col justify-center overflow-hidden border-t lg:border-t-0 border-border/50 bg-background/60 lg:col-span-6 ${isEven ? "lg:border-r lg:order-1" : "lg:border-l"}`}>
+              {isCode ? (
+                <div class="flex h-full flex-col min-h-72">
+                  {/* IDE Window Bar */}
+                  <div class="flex items-center justify-between border-b border-border/60 bg-muted/40 px-4 py-2.5">
+                    <div class="flex items-center gap-2">
+                      <span class="h-2.5 w-2.5 rounded-full bg-rose-500/80 shadow-sm" />
+                      <span class="h-2.5 w-2.5 rounded-full bg-amber-500/80 shadow-sm" />
+                      <span class="h-2.5 w-2.5 rounded-full bg-emerald-500/80 shadow-sm" />
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <span class="font-mono text-[10px] font-medium text-muted-foreground/80 tracking-wider">
+                        {filename}
+                      </span>
+                    </div>
+                    <span class="font-mono text-[9px] px-2 py-0.5 rounded border border-primary/20 bg-primary/10 text-primary uppercase font-bold">
+                      {feature.codeLang || "code"}
+                    </span>
+                  </div>
+                  {/* Code Editor Body */}
+                  <div class="relative flex-1 overflow-x-auto bg-black/40 p-4 font-mono text-xs leading-6 text-foreground/90 max-h-115">
+                    <table class="w-full border-collapse">
+                      <tbody>
+                        {codeLines.map((line, lineIdx) => (
+                          <tr>
+                            <td class="w-8 select-none pr-3 text-right font-mono text-[11px] text-muted-foreground/30 border-r border-border/30">
+                              {lineIdx + 1}
+                            </td>
+                            <td class="pl-4 font-mono text-[12px] whitespace-pre text-emerald-400/90 font-medium">
+                              {line}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              ) : (
+                <div class="flex h-full flex-col min-h-72">
+                  {/* Browser Window Bar */}
+                  <div class="flex items-center justify-between border-b border-border/60 bg-muted/40 px-4 py-2">
+                    <div class="flex items-center gap-1.5">
+                      <span class="h-2 w-2 rounded-full bg-rose-500/70" />
+                      <span class="h-2 w-2 rounded-full bg-amber-500/70" />
+                      <span class="h-2 w-2 rounded-full bg-emerald-500/70" />
+                    </div>
+                    <div class="max-w-[200px] truncate rounded bg-background/60 px-3 py-0.5 text-center font-mono text-[10px] text-muted-foreground/70 border border-border/40">
+                      https://preview.internal/{feature.mediaLabel.toLowerCase().replace(/[^a-z0-9]+/g, "-")}
+                    </div>
+                    <span class="font-mono text-[9px] text-muted-foreground/40 uppercase">LIVE</span>
+                  </div>
+                  {/* Media Viewport */}
+                  <figure class="relative m-0 flex-1 w-full overflow-hidden bg-muted/10 min-h-64 flex items-center justify-center">
+                    <img
+                      src={feature.media}
+                      alt={feature.mediaLabel}
+                      class="h-full w-full object-cover object-top transition-transform duration-700 ease-out group-hover:scale-105"
+                    />
+                    <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/40 via-transparent to-transparent opacity-60" />
+                  </figure>
+                </div>
+              )}
+            </div>
+          </article>
+        )
+      })
     }
   </div>
 </section>

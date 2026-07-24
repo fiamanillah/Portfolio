@@ -73,21 +73,40 @@
       "description": "Implemented a real-time messaging system between consumers and contractors using Socket.IO. The frontend utilizes Redux Toolkit Query alongside real-time hooks to manage conversations and typing indicators without full page reloads.",
       "mediaType": "Image / Video",
       "mediaLabel": "Messaging Interface",
-      "media": "/assets/images/mickanic-chat.png"
+      "media": "/assets/images/mickanic-chat.png",
+      "tags": ["Socket.IO", "RTK Query", "Optimistic UI"],
+      "highlights": [
+        "Instant bid updates & chat sync across active browser clients",
+        "Optimistic state updates via Redux Toolkit Query handlers",
+        "Typing indicators & read receipt state management"
+      ]
     },
     {
       "title": "Tiered Subscription Engine",
       "description": "Integrated tiered subscription plans (Basic, Premium, Pro) for contractors, which govern job application limits, lead costs, and platform visibility. Stripe is used for handling the subscription and payment workflows.",
       "mediaType": "Image / Video",
       "mediaLabel": "Subscription Plans",
-      "media": "/assets/images/mickanic-billing.png"
+      "media": "/assets/images/mickanic-billing.png",
+      "tags": ["Stripe API", "Webhooks", "Tiered Access"],
+      "highlights": [
+        "Dynamic job bidding quota management based on tier levels",
+        "Stripe Customer Portal integration for effortless plan upgrades",
+        "Idempotent webhook handlers for subscription lifecycle events"
+      ]
     },
     {
       "title": "Event-Driven Background Processing",
       "description": "Offloaded heavy processing like email delivery and web-push notifications to a background worker using RabbitMQ. This ensures the main API remains responsive during high-traffic events, with an hourly email limit of 150 strictly enforced.",
       "mediaType": "Code Snippet",
       "mediaLabel": "Docker Compose Worker Setup",
-      "media": "email-worker:\n  image: sandraluty-backend\n  command: bun run email_worker:prod\n  depends_on:\n    - postgres\n    - redis\n    - rabbitmq"
+      "codeLang": "yaml",
+      "media": "email-worker:\n  image: sandraluty-backend\n  command: bun run email_worker:prod\n  depends_on:\n    - postgres\n    - redis\n    - rabbitmq",
+      "tags": ["Docker", "Bun Runtime", "RabbitMQ"],
+      "highlights": [
+        "Isolated background containerized execution via Docker Compose",
+        "Bun runtime execution for fast startup & minimal memory overhead",
+        "Rate-limited queue consumer processing strictly 150 emails/hour"
+      ]
     }
   ],
   "metrics": [

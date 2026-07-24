@@ -23,6 +23,9 @@ export interface FeatureItem {
   mediaType: string
   mediaLabel: string
   media: string
+  tags?: string[]
+  highlights?: string[]
+  codeLang?: string
 }
 
 export interface PerformanceMetric {

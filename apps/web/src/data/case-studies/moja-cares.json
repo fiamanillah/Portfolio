@@ -78,21 +78,40 @@
       "description": "Implemented persistent WebSocket channels allowing doctors, nurses, and care administrators to exchange encrypted patient updates instantly with typing indicators and read receipts.",
       "mediaType": "Image / Video",
       "mediaLabel": "Clinical Team Messaging",
-      "media": "/assets/images/moja-cares-chat.png"
+      "media": "/assets/images/moja-cares-chat.png",
+      "tags": ["WebSockets", "Redis Pub/Sub", "Encrypted Messaging"],
+      "highlights": [
+        "Sub-50ms message latency across distributed care nodes",
+        "Role-restricted multi-party channels (Admins, Doctors, Nurses)",
+        "Presence tracking & real-time typing indicators"
+      ]
     },
     {
       "title": "AI-Powered Document Insight Extraction",
       "description": "Developed an automated background pipeline leveraging the OpenAI API to extract critical medical markers, risk flags, and summary points from uploaded health records.",
       "mediaType": "Image / Video",
       "mediaLabel": "AI Document Analysis",
-      "media": "/assets/images/moja-cares-insights.png"
+      "media": "/assets/images/moja-cares-insights.png",
+      "tags": ["OpenAI API", "AWS S3", "Async Worker"],
+      "highlights": [
+        "Automated extraction of vital medical markers & risk alerts",
+        "Direct pre-signed AWS S3 upload pipeline avoiding API bottlenecks",
+        "Structured JSON schema response parsing with fallback validation"
+      ]
     },
     {
       "title": "Automated Alert Dispatch & Queuing",
       "description": "Offloaded instant SMS and email notifications to background RabbitMQ workers consumed by standalone microservices to ensure reliable alert delivery under peak clinical loads.",
       "mediaType": "Code Snippet",
       "mediaLabel": "Alert Worker Queue Setup",
-      "media": "export async function queuePatientAlert(alert: PatientAlert) {\n  await rabbitChannel.sendToQueue(\n    \"clinical_alerts\",\n    Buffer.from(JSON.stringify(alert)),\n    { persistent: true }\n  );\n}"
+      "codeLang": "ts",
+      "media": "export async function queuePatientAlert(alert: PatientAlert) {\n  await rabbitChannel.sendToQueue(\n    \"clinical_alerts\",\n    Buffer.from(JSON.stringify(alert)),\n    { persistent: true }\n  );\n}",
+      "tags": ["RabbitMQ", "Microservices", "Event-Driven"],
+      "highlights": [
+        "Guaranteed persistent message delivery for high-priority alerts",
+        "Non-blocking API throughput under heavy emergency care events",
+        "Dead-letter exchange setup for failed notification retries"
+      ]
     }
   ],
   "metrics": [
