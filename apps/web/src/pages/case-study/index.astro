@@ -5,6 +5,7 @@ import ContextSection from "@/components/CaseStudy/ContextSection.astro"
 import KeyFeatures from "@/components/CaseStudy/KeyFeatures.astro"
 import PerformanceMetrics from "@/components/CaseStudy/PerformanceMetrics.astro"
 import Hero from "@/components/CaseStudy/Hero.astro"
+import OtherCaseStudies from "@/components/CaseStudy/OtherCaseStudies.astro"
 import MySiteLayout from "@/layouts/MySiteLayout.astro"
 
 const contextBlocks = [
@@ -164,6 +165,10 @@ const postMortem = [
 
     <div class="mt-16">
       <ArchitecturalPostMortem items={postMortem} />
+    </div>
+
+    <div class="mt-16">
+      <OtherCaseStudies currentSlug="" />
     </div>
   </section>
 </MySiteLayout>

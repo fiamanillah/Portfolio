@@ -2,14 +2,18 @@
   "$schema": "https://turbo.build/schema.json",
   "ui": "tui",
   "tasks": {
+    "db:generate": {
+      "inputs": ["prisma/schema.prisma", "src/prisma/schema.prisma"],
+      "outputs": ["node_modules/.prisma/**", "node_modules/@prisma/client/**"]
+    },
     "build": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["^db:generate", "^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
       "outputs": ["dist/**"]
     },
     "lint": { "dependsOn": ["^lint"] },
     "format": { "dependsOn": ["^format"] },
-    "typecheck": { "dependsOn": ["^typecheck"] },
+    "typecheck": { "dependsOn": ["^db:generate", "^typecheck"] },
     "dev": { "cache": false, "persistent": true }
   }
 }

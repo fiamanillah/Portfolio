@@ -1,0 +1,118 @@
+---
+import CaseStudySectionTitle from "@/components/CaseStudy/CaseStudySectionTitle.astro"
+import { ArrowUpRight01Icon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
+
+interface CaseStudyLink {
+  title: string
+  description: string
+  href: string
+  image: string
+  techStack?: string[]
+}
+
+interface Props {
+  currentSlug: string
+}
+
+const { currentSlug } = Astro.props as Props
+
+const allCaseStudies: (CaseStudyLink & { slug: string })[] = [
+  {
+    slug: "",
+    title: "Mickanic — Real-Time Bidding & Service Marketplace",
+    description: "Service-based marketplace with real-time bidding, Socket.io messaging, and tiered Stripe subscriptions.",
+    href: "/case-study/",
+    image: "/assets/images/mickanic-cover.png",
+    techStack: ["Next.js 16", "Bun", "PostgreSQL", "Socket.io"],
+  },
+  {
+    slug: "mickanic",
+    title: "Mickanic — Real-Time Bidding & Service Marketplace",
+    description: "Service-based marketplace with real-time bidding, Socket.io messaging, and tiered Stripe subscriptions.",
+    href: "/case-study/mickanic/",
+    image: "/assets/images/mickanic-cover.png",
+    techStack: ["Next.js 16", "Bun", "PostgreSQL", "Socket.io"],
+  },
+  {
+    slug: "moja-cares",
+    title: "Moja Cares — Healthcare Management Portal",
+    description: "Healthcare portal with multi-role RBAC, real-time clinical chats, AI-powered document insights, and Paystack billing.",
+    href: "/case-study/moja-cares/",
+    image: "/assets/images/moja-cares-cover.png",
+    techStack: ["Express", "PostgreSQL", "WebSockets", "OpenAI API"],
+  },
+]
+
+// Filter out the current case study and deduplicate by href
+const seen = new Set<string>()
+const otherStudies = allCaseStudies.filter((study) => {
+  if (study.slug === currentSlug || seen.has(study.href)) return false
+  seen.add(study.href)
+  return true
+})
+---
+
+{otherStudies.length > 0 && (
+  <section class="space-y-5">
+    <CaseStudySectionTitle label="[ MORE // CASE_STUDIES ]" />
+    <div class="grid gap-6 md:grid-cols-2">
+      {otherStudies.map((study) => (
+        <a
+          href={study.href}
+          class="group relative flex flex-col overflow-hidden rounded-lg border border-border/80 bg-card/60 shadow-sm transition-colors duration-300 hover:border-primary/30"
+        >
+          {/* Corner brackets */}
+          <div class="pointer-events-none absolute left-0 top-0 h-3 w-3 border-l-[1.5px] border-t-[1.5px] border-primary/30" />
+          <div class="pointer-events-none absolute right-0 top-0 h-3 w-3 border-r-[1.5px] border-t-[1.5px] border-primary/30" />
+          <div class="pointer-events-none absolute bottom-0 left-0 h-3 w-3 border-b-[1.5px] border-l-[1.5px] border-primary/30" />
+          <div class="pointer-events-none absolute bottom-0 right-0 h-3 w-3 border-b-[1.5px] border-r-[1.5px] border-primary/30" />
+
+          {/* Thumbnail */}
+          <div class="relative aspect-video w-full overflow-hidden border-b border-border/50">
+            <img
+              src={study.image}
+              alt={study.title}
+              class="h-full w-full object-cover"
+            />
+          </div>
+
+          {/* Content */}
+          <div class="relative z-10 flex flex-1 flex-col gap-4 p-5">
+            <div class="flex-1 space-y-2">
+              <h3 class="text-base font-bold tracking-tight text-foreground sm:text-lg">
+                {study.title}
+              </h3>
+              <p class="text-sm leading-relaxed text-muted-foreground line-clamp-2">
+                {study.description}
+              </p>
+            </div>
+
+            {/* Tech stack tags */}
+            {study.techStack && study.techStack.length > 0 && (
+              <div class="flex flex-wrap gap-1.5">
+                {study.techStack.map((tech) => (
+                  <span class="rounded border border-border bg-muted/40 px-2 py-0.5 font-mono text-[10px] tracking-wide text-muted-foreground">
+                    {tech}
+                  </span>
+                ))}
+              </div>
+            )}
+
+            {/* View link */}
+            <div class="flex items-center gap-2 border-t border-border/50 pt-3">
+              <span class="h-px w-4 bg-primary/40" />
+              <span class="font-mono text-[10px] tracking-[0.15em] text-muted-foreground uppercase transition-colors duration-300 group-hover:text-primary">
+                View Case Study
+              </span>
+              <HugeiconsIcon
+                icon={ArrowUpRight01Icon}
+                className="size-3 text-muted-foreground transition-colors duration-300 group-hover:text-primary"
+              />
+            </div>
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+)}

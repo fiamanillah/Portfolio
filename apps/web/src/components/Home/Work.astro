@@ -119,9 +119,9 @@ const BASE_TOP_OFFSET = 72
                   </Button>
                 </a>
               )}
-              {p.links.github && p.links.github !== "#" && (
+              {'github' in p.links && p.links.github && p.links.github !== "#" && (
                 <a
-                  href={p.links.github}
+                  href={p.links.github as string}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
