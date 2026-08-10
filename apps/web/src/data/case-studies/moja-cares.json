@@ -102,10 +102,9 @@
     {
       "title": "Automated Alert Dispatch & Queuing",
       "description": "Offloaded instant SMS and email notifications to background RabbitMQ workers consumed by standalone microservices to ensure reliable alert delivery under peak clinical loads.",
-      "mediaType": "Code Snippet",
-      "mediaLabel": "Alert Worker Queue Setup",
-      "codeLang": "ts",
-      "media": "export async function queuePatientAlert(alert: PatientAlert) {\n  await rabbitChannel.sendToQueue(\n    \"clinical_alerts\",\n    Buffer.from(JSON.stringify(alert)),\n    { persistent: true }\n  );\n}",
+      "mediaType": "Architecture / Infra",
+      "mediaLabel": "Alert Worker Architecture",
+      "media": "/assets/images/moja-cares-cover.png",
       "tags": ["RabbitMQ", "Microservices", "Event-Driven"],
       "highlights": [
         "Guaranteed persistent message delivery for high-priority alerts",

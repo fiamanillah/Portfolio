@@ -97,10 +97,9 @@
     {
       "title": "Event-Driven Background Processing",
       "description": "Offloaded heavy processing like email delivery and web-push notifications to a background worker using RabbitMQ. This ensures the main API remains responsive during high-traffic events, with an hourly email limit of 150 strictly enforced.",
-      "mediaType": "Code Snippet",
-      "mediaLabel": "Docker Compose Worker Setup",
-      "codeLang": "yaml",
-      "media": "email-worker:\n  image: sandraluty-backend\n  command: bun run email_worker:prod\n  depends_on:\n    - postgres\n    - redis\n    - rabbitmq",
+      "mediaType": "Architecture / Infra",
+      "mediaLabel": "Docker Worker Architecture",
+      "media": "/assets/images/mickanic-cover.png",
       "tags": ["Docker", "Bun Runtime", "RabbitMQ"],
       "highlights": [
         "Isolated background containerized execution via Docker Compose",
