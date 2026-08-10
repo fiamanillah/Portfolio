@@ -52,6 +52,19 @@ export const config = {
     email: process.env.DEFAULT_ADMIN_EMAIL,
     password: process.env.DEFAULT_ADMIN_PASSWORD,
   },
+  plunk: {
+    secretKey: process.env.PLUNK_SECRET_KEY || "",
+    templateId: process.env.PLUNK_TEMPLATE_ID || "bd6771fd-935f-48b8-92f1-3c9ff8368a6b",
+    confirmationTemplateId: process.env.PLUNK_CONFIRMATION_TEMPLATE_ID || "bd6771fd-935f-48b8-92f1-3c9ff8368a6b",
+  },
+  turnstile: {
+    secretKey: process.env.TURNSTILE_SECRET_KEY || "",
+  },
+  contact: {
+    recipientEmail: process.env.CONTACT_RECIPIENT_EMAIL || "fi@amanillah.com",
+    rateLimitWindowMs: parseInt(process.env.CONTACT_RATE_LIMIT_WINDOW_MS || "3600000"), // 1 hour
+    rateLimitMax: parseInt(process.env.CONTACT_RATE_LIMIT_MAX || "5"), // 5 requests / IP / hour
+  },
   logging: {
     level: process.env.LOG_LEVEL || "info",
     path: process.env.LOG_FILE_PATH || "logs/app.log",

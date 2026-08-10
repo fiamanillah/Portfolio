@@ -227,6 +227,12 @@ import { Icon } from "astro-icon/components"
 
       <!-- Form -->
       <form id="contact-form" class="flex flex-col gap-5">
+        <!-- Honeypot Field (The Silent Trap: hidden visually and from screen readers) -->
+        <div aria-hidden="true" style="display:none; position:absolute; left:-9999px; opacity:0; pointer-events:none;">
+          <label for="contact-hp">Leave this field empty</label>
+          <input type="text" id="contact-hp" name="hp_field" tabindex="-1" autocomplete="off" />
+        </div>
+
         <!-- Name + Email row -->
         <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
           <!-- Name -->
@@ -299,6 +305,17 @@ import { Icon } from "astro-icon/components"
             placeholder="Tell me about your project, timeline, and budget..."
             className="min-h-[7.5rem] w-full resize-none rounded-none border border-border bg-background/60 p-3 font-mono text-sm text-foreground transition-all duration-200 outline-none placeholder:text-muted-foreground/40 focus-visible:border-primary focus-visible:bg-primary/5 focus-visible:shadow-[0_0_0_1px_oklch(var(--primary)/30%)] focus-visible:ring-0"
           />
+        </div>
+
+        <!-- Cloudflare Turnstile Container -->
+        <div id="turnstile-container" class="flex justify-center empty:hidden"></div>
+
+        <!-- Status Message Banner -->
+        <div
+          id="contact-status"
+          class="hidden rounded border p-3 font-mono text-xs leading-relaxed transition-all"
+          role="alert"
+        >
         </div>
 
         <!-- Submit Button -->
@@ -374,42 +391,168 @@ import { Icon } from "astro-icon/components"
 </section>
 
 <script>
+  let turnstileWidgetId: string | null = null
+
+  function showStatus(message: string, isError: boolean) {
+    const statusDiv = document.getElementById("contact-status")
+    if (!statusDiv) return
+
+    statusDiv.classList.remove(
+      "hidden",
+      "bg-emerald-500/10",
+      "border-emerald-500/30",
+      "text-emerald-400",
+      "bg-destructive/10",
+      "border-destructive/30",
+      "text-destructive"
+    )
+
+    if (isError) {
+      statusDiv.classList.add(
+        "bg-destructive/10",
+        "border-destructive/30",
+        "text-destructive"
+      )
+    } else {
+      statusDiv.classList.add(
+        "bg-emerald-500/10",
+        "border-emerald-500/30",
+        "text-emerald-400"
+      )
+    }
+
+    statusDiv.textContent = message
+  }
+
+  function hideStatus() {
+    const statusDiv = document.getElementById("contact-status")
+    if (statusDiv) {
+      statusDiv.classList.add("hidden")
+      statusDiv.textContent = ""
+    }
+  }
+
+  function initTurnstile() {
+    const turnstileKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY
+    if (!turnstileKey) return
+
+    const container = document.getElementById("turnstile-container")
+    if (!container) return
+
+    if ((window as any).turnstile && !turnstileWidgetId) {
+      try {
+        turnstileWidgetId = (window as any).turnstile.render("#turnstile-container", {
+          sitekey: turnstileKey,
+          theme: "dark",
+        })
+      } catch (err) {
+        console.warn("Turnstile render error:", err)
+      }
+    }
+  }
+
   function setupContactForm() {
-    const form = document.getElementById(
-      "contact-form"
-    ) as HTMLFormElement | null
-    const submitBtn = document.getElementById(
-      "contact-submit"
-    ) as HTMLButtonElement | null
+    const form = document.getElementById("contact-form") as HTMLFormElement | null
+    const submitBtn = document.getElementById("contact-submit") as HTMLButtonElement | null
     const submitText = document.getElementById("contact-submit-text")
 
     if (!form || !submitBtn || !submitText) return
 
+    // Inject Cloudflare Turnstile script dynamically if key is provided
+    const turnstileKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY
+    if (turnstileKey && !document.getElementById("cf-turnstile-script")) {
+      const script = document.createElement("script")
+      script.id = "cf-turnstile-script"
+      script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js"
+      script.async = true
+      script.defer = true
+      script.onload = () => initTurnstile()
+      document.head.appendChild(script)
+    } else if (turnstileKey) {
+      initTurnstile()
+    }
+
     form.addEventListener("submit", async (e) => {
       e.preventDefault()
+      hideStatus()
+
+      const formData = new FormData(form)
+      const name = (formData.get("name") as string)?.trim()
+      const email = (formData.get("email") as string)?.trim()
+      const subject = (formData.get("subject") as string)?.trim()
+      const message = (formData.get("message") as string)?.trim()
+      const hp_field = (formData.get("hp_field") as string) || ""
+
+      let captchaToken = ""
+      if ((window as any).turnstile && turnstileWidgetId) {
+        captchaToken = (window as any).turnstile.getResponse(turnstileWidgetId) || ""
+      }
 
       const originalHTML = submitText.innerHTML
       submitBtn.disabled = true
-      submitText.innerHTML = `<span class="animate-pulse">Sending...</span>`
+      submitText.innerHTML = `<span class="animate-pulse">Sending message...</span>`
 
-      await new Promise((resolve) => setTimeout(resolve, 2000))
+      const apiUrl = import.meta.env.PUBLIC_API_URL || "http://localhost:3030"
 
-      submitText.innerHTML = `
-        <svg class="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-        </svg>
-        Message Sent!
-      `
-      submitBtn.classList.remove("bg-primary", "border-primary")
-      submitBtn.classList.add("bg-emerald-600", "border-emerald-600")
+      try {
+        const response = await fetch(`${apiUrl}/contact/v1/send`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name,
+            email,
+            subject,
+            message,
+            hp_field,
+            captchaToken,
+          }),
+        })
 
-      setTimeout(() => {
+        const data = await response.json().catch(() => ({}))
+
+        if (response.ok && data.success) {
+          submitText.innerHTML = `
+            <svg class="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+            Message Sent!
+          `
+          submitBtn.classList.remove("bg-primary", "border-primary")
+          submitBtn.classList.add("bg-emerald-600", "border-emerald-600")
+
+          showStatus(data.message || "Thank you! Your message has been delivered.", false)
+          form.reset()
+
+          if ((window as any).turnstile && turnstileWidgetId) {
+            (window as any).turnstile.reset(turnstileWidgetId)
+          }
+
+          setTimeout(() => {
+            submitText.innerHTML = originalHTML
+            submitBtn.classList.add("bg-primary", "border-primary")
+            submitBtn.classList.remove("bg-emerald-600", "border-emerald-600")
+            submitBtn.disabled = false
+          }, 4000)
+        } else {
+          // Handle specific backend error codes/responses
+          const errorMessage = data.message || "Failed to send message. Please try again."
+          showStatus(errorMessage, true)
+
+          submitText.innerHTML = originalHTML
+          submitBtn.disabled = false
+
+          if ((window as any).turnstile && turnstileWidgetId) {
+            (window as any).turnstile.reset(turnstileWidgetId)
+          }
+        }
+      } catch (error) {
+        console.error("Contact form error:", error)
+        showStatus("Network error occurred. Please check your connection or send an email directly to fi@amanillah.com", true)
         submitText.innerHTML = originalHTML
-        submitBtn.classList.add("bg-primary", "border-primary")
-        submitBtn.classList.remove("bg-emerald-600", "border-emerald-600")
         submitBtn.disabled = false
-        form.reset()
-      }, 3000)
+      }
     })
   }
 
@@ -420,3 +563,4 @@ import { Icon } from "astro-icon/components"
     setupContactForm()
   }
 </script>
+
