@@ -6,7 +6,7 @@ import { config } from "@/core/config";
 import { validateRequest } from "@/middleware/validation";
 import { SubscriberService } from "./subscriber.service";
 import { SubscriberController } from "./subscriber.controller";
-import { subscribeSchema, unsubscribeSchema, updateSubscriberSchema } from "./SubscriberDTO";
+import { subscribeSchema, unsubscribeSchema, updateSubscriberSchema, changeEmailSchema } from "./SubscriberDTO";
 
 export class SubscriberModule extends BaseModule {
   public name: string = "SubscriberModule";
@@ -50,11 +50,24 @@ export class SubscriberModule extends BaseModule {
       controller.subscribe.bind(controller)
     );
 
-    // POST /subscriber/v1/unsubscribe
+    // POST /subscriber/v1/unsubscribe (by email body)
     this.router.post(
       "/unsubscribe",
       validateRequest(unsubscribeSchema),
       controller.unsubscribe.bind(controller)
+    );
+
+    // GET /subscriber/v1/unsubscribe?token= (one-click from email link)
+    this.router.get(
+      "/unsubscribe",
+      controller.unsubscribeByToken.bind(controller)
+    );
+
+    // POST /subscriber/v1/change-email
+    this.router.post(
+      "/change-email",
+      validateRequest(changeEmailSchema),
+      controller.changeEmail.bind(controller)
     );
 
     // ── CRUD Admin Endpoints ─────────────────────────────────────────
@@ -74,6 +87,6 @@ export class SubscriberModule extends BaseModule {
     // DELETE /subscriber/v1/:id
     this.router.delete("/:id", controller.deleteSubscriber.bind(controller));
 
-    this.logger.info("✔ Subscriber routes configured: POST /subscriber/v1/subscribe, CRUD /subscriber/v1/*");
+    this.logger.info("✔ Subscriber routes configured: POST /subscriber/v1/subscribe, GET /subscriber/v1/unsubscribe, CRUD /subscriber/v1/*");
   }
 }

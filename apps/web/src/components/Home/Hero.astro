@@ -482,7 +482,8 @@ import { TextScramble } from "@workspace/ui/components/text-scramble"
         const data = await response.json().catch(() => ({}))
 
         if (response.ok && data.success) {
-          submitText.textContent = "Connected!"
+          const isAlready = data.data?.alreadySubscribed || false
+          submitText.textContent = isAlready ? "Subscribed!" : "Connected!"
           if (statusDiv) {
             statusDiv.classList.remove("hidden", "bg-destructive/10", "border-destructive/30", "text-destructive")
             statusDiv.classList.add("bg-emerald-500/10", "border-emerald-500/30", "text-emerald-400")

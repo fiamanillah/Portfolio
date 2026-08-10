@@ -4,6 +4,8 @@ import { config } from "@/core/config";
 import { AppLogger } from "@/core/logging/logger";
 import { AppError, BadRequestError, ExternalServiceError } from "@/core/errors/AppError";
 import { prisma } from "@/lib/prisma";
+import { renderContactNotificationEmail } from "@/templates/emails/contactNotification";
+import { renderContactConfirmationEmail } from "@/templates/emails/contactConfirmation";
 
 export interface ContactSubmissionPayload {
   name: string;
@@ -247,30 +249,13 @@ export class ContactService {
     const recipientEmail = config.contact.recipientEmail;
     const templateId = config.plunk.templateId;
 
-    const emailSubject = payload.subject ? `[Portfolio Contact] ${payload.subject}` : `[Portfolio Contact] Message from ${payload.name}`;
-    const emailBody = `
-<div style="font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; border: 1px solid #e5e7eb; border-radius: 8px; background-color: #ffffff; color: #1f2937;">
-  <div style="border-bottom: 2px solid #10b981; padding-bottom: 12px; margin-bottom: 20px;">
-    <h2 style="margin: 0; color: #111827; font-size: 20px; font-weight: 700;">New Portfolio Contact Message</h2>
-    <p style="margin: 4px 0 0 0; color: #6b7280; font-size: 13px;">Received via portfolio defense-in-depth contact form</p>
-  </div>
-  
-  <div style="margin-bottom: 16px;">
-    <p style="margin: 4px 0; font-size: 14px;"><strong>From:</strong> ${payload.name} (&lt;<a href="mailto:${payload.email}" style="color: #10b981; text-decoration: none;">${payload.email}</a>&gt;)</p>
-    <p style="margin: 4px 0; font-size: 14px;"><strong>Subject:</strong> ${payload.subject}</p>
-    <p style="margin: 4px 0; font-size: 14px;"><strong>Subscribed to Newsletter:</strong> ${payload.subscribe ? 'Yes' : 'No'}</p>
-  </div>
-
-  <div style="background-color: #f9fafb; border: 1px solid #f3f4f6; border-radius: 6px; padding: 16px; margin-top: 16px;">
-    <p style="margin: 0 0 8px 0; font-size: 12px; font-weight: 600; text-transform: uppercase; color: #9ca3af; letter-spacing: 0.05em;">Message Content</p>
-    <div style="white-space: pre-wrap; font-size: 14px; line-height: 1.6; color: #374151;">${payload.message}</div>
-  </div>
-
-  <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #f3f4f6; text-align: center; font-size: 12px; color: #9ca3af;">
-    Sent from Fi Amanillah's Portfolio System
-  </div>
-</div>
-    `.trim();
+    const { subject: emailSubject, html: emailBody } = renderContactNotificationEmail({
+      name: payload.name,
+      email: payload.email,
+      subject: payload.subject,
+      message: payload.message,
+      subscribed: payload.subscribe,
+    });
 
     if (this.isPlaceholderKey(secretKey)) {
       this.logger.info("ℹ️ [SIMULATED EMAIL DELIVERY] Missing or placeholder PLUNK_SECRET_KEY detected in .env.");
@@ -287,7 +272,6 @@ export class ContactService {
         reply: payload.email,
         subject: emailSubject,
         body: emailBody,
-        subscribed: payload.subscribe ?? false,
         data: {
           name: payload.name,
           email: payload.email,
@@ -346,36 +330,13 @@ export class ContactService {
     const recipientEmail = config.contact.recipientEmail;
     const confirmationTemplateId = config.plunk.confirmationTemplateId || config.plunk.templateId;
 
-    const emailSubject = `[Confirmation] Thank you for getting in touch! - Fi Amanillah`;
-    const emailBody = `
-<div style="font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; border: 1px solid #e5e7eb; border-radius: 8px; background-color: #ffffff; color: #1f2937;">
-  <div style="border-bottom: 2px solid #10b981; padding-bottom: 12px; margin-bottom: 20px;">
-    <h2 style="margin: 0; color: #111827; font-size: 20px; font-weight: 700;">Thank You for Getting in Touch!</h2>
-    <p style="margin: 4px 0 0 0; color: #6b7280; font-size: 13px;">Your message has been successfully received</p>
-  </div>
-  
-  <p style="font-size: 15px; line-height: 1.6; color: #374151;">Hi <strong>${payload.name}</strong>,</p>
-  <p style="font-size: 14px; line-height: 1.6; color: #4b5563;">
-    Thank you for reaching out. I have received your message regarding "<strong>${payload.subject}</strong>" and will review it as soon as possible.
-  </p>
-
-  <div style="background-color: #f9fafb; border: 1px solid #f3f4f6; border-radius: 6px; padding: 16px; margin: 20px 0;">
-    <p style="margin: 0 0 8px 0; font-size: 12px; font-weight: 600; text-transform: uppercase; color: #9ca3af; letter-spacing: 0.05em;">Copy of your message</p>
-    <div style="white-space: pre-wrap; font-size: 14px; line-height: 1.6; color: #4b5563;">${payload.message}</div>
-  </div>
-
-  ${payload.subscribe ? '<p style="font-size: 13px; color: #10b981;">✔ You have also been subscribed to my newsletter & updates.</p>' : ''}
-
-  <p style="font-size: 14px; line-height: 1.6; color: #4b5563;">
-    If your inquiry is urgent, feel free to reply directly to this email.
-  </p>
-
-  <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #f3f4f6; text-align: center; font-size: 12px; color: #9ca3af;">
-    Best regards,<br/>
-    <strong>Fi Amanillah</strong>
-  </div>
-</div>
-    `.trim();
+    const { subject: emailSubject, html: emailBody } = renderContactConfirmationEmail({
+      name: payload.name,
+      email: payload.email,
+      subject: payload.subject,
+      message: payload.message,
+      subscribed: payload.subscribe,
+    });
 
     if (this.isPlaceholderKey(secretKey)) {
       this.logger.info("ℹ️ [SIMULATED CONFIRMATION EMAIL DELIVERY] Missing or placeholder PLUNK_SECRET_KEY detected in .env.");

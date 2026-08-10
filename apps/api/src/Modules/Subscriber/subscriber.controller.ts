@@ -36,7 +36,7 @@ export class SubscriberController extends BaseController {
       }
 
       // ── Stage 4 & 5: Sanitization, Plunk Verification, Persistence & Sync ──
-      const subscriber = await this.subscriberService.subscribe({
+      const result = await this.subscriberService.subscribe({
         email: payload.email,
         name: payload.name,
         source: payload.source || "hero_section",
@@ -45,9 +45,9 @@ export class SubscriberController extends BaseController {
       this.sendResponse(
         req,
         res,
-        "Thank you for subscribing! Check your inbox for confirmation.",
+        result.message || "Thank you for subscribing!",
         HTTPStatusCode.OK,
-        subscriber
+        result
       );
     } catch (error) {
       next(error);
@@ -55,13 +55,53 @@ export class SubscriberController extends BaseController {
   }
 
   /**
-   * POST /subscriber/v1/unsubscribe — Public unsubscription endpoint
+   * POST /subscriber/v1/unsubscribe — Public unsubscription endpoint (by email in body)
    */
   public async unsubscribe(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { email } = req.body;
       const result = await this.subscriberService.unsubscribe(email);
-      this.sendResponse(req, res, "You have been successfully unsubscribed.", HTTPStatusCode.OK, result);
+      this.sendResponse(
+        req,
+        res,
+        result.message || "You have been unsubscribed.",
+        HTTPStatusCode.OK,
+        result
+      );
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * GET /subscriber/v1/unsubscribe?token= — One-click unsubscribe from email link
+   */
+  public async unsubscribeByToken(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const token = req.query.token as string;
+      if (!token) {
+        throw new BadRequestError("Missing unsubscribe token.");
+      }
+      const result = await this.subscriberService.unsubscribeByToken(token);
+      this.sendResponse(
+        req,
+        res,
+        result.message || "You have been unsubscribed.",
+        HTTPStatusCode.OK,
+        result
+      );
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * POST /subscriber/v1/change-email — Change subscription email address
+   */
+  public async changeEmail(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const result = await this.subscriberService.changeSubscriptionEmail(req.body);
+      this.sendResponse(req, res, `Subscription email successfully updated to ${result.newEmail}.`, HTTPStatusCode.OK, result);
     } catch (error) {
       next(error);
     }

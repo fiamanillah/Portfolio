@@ -60,6 +60,9 @@ export const config = {
   turnstile: {
     secretKey: process.env.TURNSTILE_SECRET_KEY || "",
   },
+  site: {
+    webUrl: process.env.PUBLIC_WEB_URL || "https://fi.amanillah.com",
+  },
   contact: {
     recipientEmail: process.env.CONTACT_RECIPIENT_EMAIL || "fi@amanillah.com",
     rateLimitWindowMs: parseInt(process.env.CONTACT_RATE_LIMIT_WINDOW_MS || "3600000"), // 1 hour

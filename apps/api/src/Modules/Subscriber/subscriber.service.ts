@@ -1,9 +1,11 @@
 // src/Modules/Subscriber/subscriber.service.ts
 import axios from "axios";
+import crypto from "crypto";
 import { config } from "@/core/config";
 import { AppLogger } from "@/core/logging/logger";
 import { AppError, BadRequestError, ExternalServiceError, NotFoundError } from "@/core/errors/AppError";
 import { prisma } from "@/lib/prisma";
+import { renderSubscriptionConfirmationEmail } from "@/templates/emails/subscriptionConfirmation";
 
 export interface SubscriberPayload {
   email: string;
@@ -37,6 +39,57 @@ export class SubscriberService {
     );
   }
 
+  // ── Unsubscribe Token Helpers ──────────────────────────────────────────────
+
+  /**
+   * Generates a stateless HMAC-SHA256 signed unsubscribe token for a given email.
+   * Format: base64url(<email>:<hmac-sha256>)
+   */
+  public generateUnsubscribeToken(email: string): string {
+    const secret = config.security.jwt.secret || "portfolio-unsub-secret";
+    const normalizedEmail = email.trim().toLowerCase();
+    const hmac = crypto.createHmac("sha256", secret).update(normalizedEmail).digest("hex");
+    const payload = `${normalizedEmail}:${hmac}`;
+    return Buffer.from(payload).toString("base64url");
+  }
+
+  /**
+   * Verifies an unsubscribe token and returns the email if valid.
+   * Throws BadRequestError if the token is invalid or tampered.
+   */
+  public verifyUnsubscribeToken(token: string): string {
+    try {
+      const decoded = Buffer.from(token, "base64url").toString("utf-8");
+      const colonIdx = decoded.lastIndexOf(":");
+      if (colonIdx === -1) throw new Error("Malformed token");
+
+      const email = decoded.substring(0, colonIdx);
+      const providedHmac = decoded.substring(colonIdx + 1);
+
+      const secret = config.security.jwt.secret || "portfolio-unsub-secret";
+      const expectedHmac = crypto.createHmac("sha256", secret).update(email).digest("hex");
+
+      // Constant-time comparison to prevent timing attacks
+      if (!crypto.timingSafeEqual(Buffer.from(providedHmac, "hex"), Buffer.from(expectedHmac, "hex"))) {
+        throw new Error("HMAC mismatch");
+      }
+
+      return email;
+    } catch {
+      throw new BadRequestError("Invalid or expired unsubscribe link.");
+    }
+  }
+
+  /**
+   * Generates the full unsubscribe URL for embedding in emails.
+   */
+  public buildUnsubscribeUrl(email: string): string {
+    const token = this.generateUnsubscribeToken(email);
+    return `${config.site.webUrl}/unsubscribe?token=${token}`;
+  }
+
+  // ── Stage 2: Honeypot ──────────────────────────────────────────────────────
+
   /**
    * Stage 2 Check: Honeypot trap evaluation
    */
@@ -47,6 +100,8 @@ export class SubscriberService {
     }
     return false;
   }
+
+  // ── Stage 3: Turnstile ────────────────────────────────────────────────────
 
   /**
    * Stage 3: Cloudflare Turnstile CAPTCHA token verification
@@ -93,6 +148,8 @@ export class SubscriberService {
       return true;
     }
   }
+
+  // ── Stage 4: Sanitization & Email Hygiene ─────────────────────────────────
 
   /**
    * Stage 4a: Data Hygiene & Input Sanitization
@@ -148,6 +205,8 @@ export class SubscriberService {
     }
   }
 
+  // ── Core CRUD Operations ───────────────────────────────────────────────────
+
   /**
    * CREATE / SUBSCRIBE: Upsert subscriber in PostgreSQL DB & sync with Plunk
    */
@@ -155,6 +214,19 @@ export class SubscriberService {
     const cleanEmail = payload.email.trim().toLowerCase();
     const cleanName = this.sanitizeInput(payload.name);
     const cleanSource = this.sanitizeInput(payload.source || "hero_section");
+
+    // Check if subscriber is already subscribed in DB
+    const existing = await prisma.subscriber.findUnique({ where: { email: cleanEmail } });
+    if (existing && existing.status === "subscribed") {
+      this.logger.info(`ℹ️ Subscriber ${cleanEmail} is already subscribed.`);
+      // Sync Plunk to guarantee Plunk alignment
+      await this.syncSubscriberToPlunk(cleanEmail, cleanName || existing.name || "", true, cleanSource);
+      return {
+        subscriber: existing,
+        alreadySubscribed: true,
+        message: "You are already subscribed to the newsletter!",
+      };
+    }
 
     // 1. Verify email validity
     await this.verifyEmailWithPlunk(cleanEmail);
@@ -181,10 +253,14 @@ export class SubscriberService {
     // 3. Sync subscriber to Plunk subscriber list (/v1/contacts API)
     await this.syncSubscriberToPlunk(cleanEmail, cleanName, true, cleanSource);
 
-    // 4. Send welcome confirmation email
+    // 4. Send welcome confirmation email with unsubscribe link
     await this.sendWelcomeEmail(cleanEmail, cleanName);
 
-    return subscriber;
+    return {
+      subscriber,
+      alreadySubscribed: false,
+      message: "Thank you for subscribing! Check your inbox for confirmation.",
+    };
   }
 
   /**
@@ -194,24 +270,88 @@ export class SubscriberService {
     const cleanEmail = email.trim().toLowerCase();
 
     const existing = await prisma.subscriber.findUnique({ where: { email: cleanEmail } });
-    if (!existing) {
-      throw new NotFoundError(`Subscriber with email ${cleanEmail} not found`);
-    }
+    const wasAlreadyUnsubscribed = existing?.status === "unsubscribed";
 
-    const subscriber = await prisma.subscriber.update({
+    const subscriber = await prisma.subscriber.upsert({
       where: { email: cleanEmail },
-      data: {
+      update: {
         status: "unsubscribed",
         updatedAt: new Date(),
       },
+      create: {
+        email: cleanEmail,
+        name: null,
+        status: "unsubscribed",
+        source: "unsubscribe",
+      },
     });
 
-    this.logger.info(`✔ Subscriber ${cleanEmail} marked unsubscribed in DB`);
+    this.logger.info(`✔ Subscriber ${cleanEmail} marked unsubscribed in PostgreSQL DB`);
 
-    // Sync unsubscribe state with Plunk
-    await this.syncSubscriberToPlunk(cleanEmail, existing.name || "", false);
+    // Sync unsubscribe state with Plunk (POST /v1/contacts with subscribed: false)
+    await this.syncSubscriberToPlunk(cleanEmail, subscriber.name || "", false);
 
-    return subscriber;
+    return {
+      subscriber,
+      alreadyUnsubscribed: wasAlreadyUnsubscribed,
+      message: wasAlreadyUnsubscribed
+        ? "You are already unsubscribed from the newsletter."
+        : "You have been successfully unsubscribed.",
+    };
+  }
+
+  /**
+   * UNSUBSCRIBE BY TOKEN: Verify the token, then mark as unsubscribed
+   */
+  public async unsubscribeByToken(token: string): Promise<{ email: string; alreadyUnsubscribed: boolean; message: string }> {
+    const email = this.verifyUnsubscribeToken(token);
+    const result = await this.unsubscribe(email);
+    this.logger.info(`✔ Subscriber ${email} unsubscribed via signed token link`);
+    return {
+      email,
+      alreadyUnsubscribed: result.alreadyUnsubscribed,
+      message: result.message,
+    };
+  }
+
+  /**
+   * CHANGE SUBSCRIPTION EMAIL: Unsubscribes old email in DB & Plunk, and subscribes new email in DB & Plunk.
+   */
+  public async changeSubscriptionEmail(payload: {
+    oldEmail?: string;
+    token?: string;
+    newEmail: string;
+  }): Promise<{ oldEmail: string; newEmail: string }> {
+    let cleanOldEmail = payload.oldEmail ? payload.oldEmail.trim().toLowerCase() : "";
+
+    if (payload.token) {
+      try {
+        cleanOldEmail = this.verifyUnsubscribeToken(payload.token);
+      } catch (err) {
+        if (!cleanOldEmail) throw err;
+      }
+    }
+
+    if (!cleanOldEmail) {
+      throw new BadRequestError("Previous email address or valid token is required to change subscription email.");
+    }
+
+    const cleanNewEmail = payload.newEmail.trim().toLowerCase();
+    if (cleanOldEmail === cleanNewEmail) {
+      throw new BadRequestError("New email address must be different from current email address.");
+    }
+
+    // 1. Unsubscribe old email in PostgreSQL DB & Plunk
+    await this.unsubscribe(cleanOldEmail);
+
+    // 2. Subscribe new email in PostgreSQL DB & Plunk (verifies email, upserts in DB, syncs Plunk, sends welcome email)
+    await this.subscribe({
+      email: cleanNewEmail,
+      source: `email_change_from_${cleanOldEmail}`,
+    });
+
+    this.logger.info(`✔ Subscription email successfully changed from ${cleanOldEmail} to ${cleanNewEmail}`);
+    return { oldEmail: cleanOldEmail, newEmail: cleanNewEmail };
   }
 
   /**
@@ -291,8 +431,11 @@ export class SubscriberService {
     await this.syncSubscriberToPlunk(existing.email, existing.name || "", false);
   }
 
+  // ── Plunk Sync & Email Dispatch ───────────────────────────────────────────
+
   /**
-   * Helper: Sync subscriber to Plunk POST /v1/contacts API
+   * Helper: Sync subscriber to Plunk contacts API per Plunk Contacts documentation
+   * POST /v1/contacts upserts the contact with subscribed: true or subscribed: false
    */
   public async syncSubscriberToPlunk(email: string, name?: string, subscribed: boolean = true, source?: string): Promise<void> {
     const secretKey = config.plunk.secretKey;
@@ -302,15 +445,17 @@ export class SubscriberService {
       return;
     }
 
+    const cleanEmail = email.trim().toLowerCase();
+
     try {
-      await axios.post(
+      const response = await axios.post(
         "https://next-api.useplunk.com/v1/contacts",
         {
-          email,
+          email: cleanEmail,
           subscribed,
           data: {
             name: name || "",
-            source: source || "hero_section",
+            ...(source ? { source } : {}),
           },
         },
         {
@@ -322,43 +467,34 @@ export class SubscriberService {
         }
       );
 
-      this.logger.info(`✔ Synced subscriber ${email} to Plunk (subscribed: ${subscribed})`);
+      this.logger.info(`✔ Synced subscriber ${cleanEmail} to Plunk (subscribed: ${subscribed})`, { data: response.data });
     } catch (error) {
-      this.logger.warn(`Failed to sync subscriber ${email} to Plunk contacts API`, { error });
+      const errorDetails = axios.isAxiosError(error) ? error.response?.data : error;
+      this.logger.warn(`Failed to sync subscriber ${cleanEmail} to Plunk contacts API`, { error: errorDetails });
     }
   }
 
   /**
    * Helper: Send Welcome / Subscription Confirmation Email via Plunk /v1/send
+   * Includes a signed unsubscribe URL in the email body and List-Unsubscribe header.
    */
   private async sendWelcomeEmail(email: string, name?: string): Promise<void> {
     const secretKey = config.plunk.secretKey;
     const recipientEmail = config.contact.recipientEmail;
     const templateId = config.plunk.confirmationTemplateId || config.plunk.templateId;
 
-    const emailSubject = `[Newsletter] Welcome to Fi Amanillah's Updates!`;
-    const displayName = name || "there";
-    const emailBody = `
-<div style="font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; border: 1px solid #e5e7eb; border-radius: 8px; background-color: #ffffff; color: #1f2937;">
-  <div style="border-bottom: 2px solid #10b981; padding-bottom: 12px; margin-bottom: 20px;">
-    <h2 style="margin: 0; color: #111827; font-size: 20px; font-weight: 700;">Welcome to My Newsletter!</h2>
-    <p style="margin: 4px 0 0 0; color: #6b7280; font-size: 13px;">You're now subscribed to project updates & tech insights</p>
-  </div>
-  
-  <p style="font-size: 15px; line-height: 1.6; color: #374151;">Hi <strong>${displayName}</strong>,</p>
-  <p style="font-size: 14px; line-height: 1.6; color: #4b5563;">
-    Thank you for subscribing! You will receive periodic updates regarding my latest full-stack projects, architecture articles, and DevOps automated solutions.
-  </p>
+    // Generate the one-click unsubscribe URL
+    const unsubscribeUrl = this.buildUnsubscribeUrl(email);
 
-  <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #f3f4f6; text-align: center; font-size: 12px; color: #9ca3af;">
-    Best regards,<br/>
-    <strong>Fi Amanillah</strong>
-  </div>
-</div>
-    `.trim();
+    const { subject: emailSubject, html: emailBody, listUnsubscribeHeader } = renderSubscriptionConfirmationEmail({
+      email,
+      name,
+      source: "newsletter_subscription",
+      unsubscribeUrl,
+    });
 
     if (this.isPlaceholderKey(secretKey)) {
-      this.logger.info(`ℹ️ [SIMULATED WELCOME EMAIL] Sent welcome email to ${email}`);
+      this.logger.info(`ℹ️ [SIMULATED WELCOME EMAIL] Sent welcome email to ${email} | Unsubscribe: ${unsubscribeUrl}`);
       return;
     }
 
@@ -368,10 +504,14 @@ export class SubscriberService {
         reply: recipientEmail,
         subject: emailSubject,
         body: emailBody,
-        subscribed: true,
         data: {
           name: name || "",
           email,
+          unsubscribeUrl,
+        },
+        headers: {
+          "List-Unsubscribe": listUnsubscribeHeader,
+          "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
         },
       };
 
@@ -387,7 +527,7 @@ export class SubscriberService {
         timeout: 10000,
       });
 
-      this.logger.info(`✔ Welcome email delivered to ${email} via Plunk`);
+      this.logger.info(`✔ Welcome email with unsubscribe link delivered to ${email} via Plunk`);
     } catch (error) {
       this.logger.warn(`Failed to send welcome email to ${email}`, { error });
     }

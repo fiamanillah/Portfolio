@@ -24,6 +24,16 @@ export const updateSubscriberSchema = {
   }),
 };
 
+export const changeEmailSchema = {
+  body: z.object({
+    oldEmail: z.string().email("Invalid current email address").optional(),
+    token: z.string().optional(),
+    newEmail: z.string().email("Invalid new email address"),
+  }),
+};
+
 export type SubscribeDTO = z.infer<typeof subscribeSchema.body>;
 export type UnsubscribeDTO = z.infer<typeof unsubscribeSchema.body>;
 export type UpdateSubscriberDTO = z.infer<typeof updateSubscriberSchema.body>;
+export type ChangeEmailDTO = z.infer<typeof changeEmailSchema.body>;
+
