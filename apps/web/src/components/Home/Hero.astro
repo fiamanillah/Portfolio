@@ -71,19 +71,43 @@ import { TextScramble } from "@workspace/ui/components/text-scramble"
       </div>
 
       <div class="w-full max-w-md">
-        <InputGroup
-          className="h-12 sm:h-14 border-2 border-border bg-foreground text-sm! sm:text-base! md:text-lg! font-medium text-background"
-        >
-          <InputGroupInput
-            type="email"
-            placeholder="Work with me: fi@amanillah.com"
-          />
-          <InputGroupAddon align="inline-end">
-            <InputGroupButton className="h-8 sm:h-10 px-3 sm:px-4" variant={"default"}>
-              Connect
-            </InputGroupButton>
-          </InputGroupAddon>
-        </InputGroup>
+        <form id="hero-subscribe-form" class="space-y-2">
+          <!-- Honeypot trap field (silent bot protection) -->
+          <div aria-hidden="true" style="display:none; position:absolute; left:-9999px; opacity:0; pointer-events:none;">
+            <label for="hero-hp">Leave empty</label>
+            <input type="text" id="hero-hp" name="hp_field" tabindex="-1" autocomplete="off" />
+          </div>
+
+          <InputGroup
+            className="h-12 sm:h-14 border-2 border-border bg-foreground text-sm! sm:text-base! md:text-lg! font-medium text-background"
+          >
+            <InputGroupInput
+              type="email"
+              id="hero-email"
+              name="email"
+              required
+              placeholder="Work with me: fi@amanillah.com"
+            />
+            <InputGroupAddon align="inline-end">
+              <InputGroupButton
+                type="submit"
+                id="hero-submit-btn"
+                className="h-8 sm:h-10 px-3 sm:px-4 cursor-pointer"
+                variant={"default"}
+              >
+                <span id="hero-submit-text">Connect</span>
+              </InputGroupButton>
+            </InputGroupAddon>
+          </InputGroup>
+
+          <!-- Interactive Status Alert Banner -->
+          <div
+            id="hero-status"
+            class="hidden rounded border p-2.5 font-mono text-xs leading-relaxed transition-all"
+            role="alert"
+          >
+          </div>
+        </form>
       </div>
 
       <!-- Secondary Navigation -->
@@ -414,18 +438,100 @@ import { TextScramble } from "@workspace/ui/components/text-scramble"
     })
   }
 
+  function setupHeroSubscription() {
+    const form = document.getElementById("hero-subscribe-form") as HTMLFormElement | null
+    const submitBtn = document.getElementById("hero-submit-btn") as HTMLButtonElement | null
+    const submitText = document.getElementById("hero-submit-text")
+    const statusDiv = document.getElementById("hero-status")
+
+    if (!form || !submitBtn || !submitText) return
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault()
+
+      if (statusDiv) {
+        statusDiv.classList.add("hidden")
+        statusDiv.textContent = ""
+      }
+
+      const formData = new FormData(form)
+      const email = (formData.get("email") as string)?.trim()
+      const hp_field = (formData.get("hp_field") as string) || ""
+
+      if (!email) return
+
+      const originalText = submitText.textContent
+      submitBtn.disabled = true
+      submitText.textContent = "Connecting..."
+
+      const apiUrl = import.meta.env.PUBLIC_API_URL || "http://localhost:3030"
+
+      try {
+        const response = await fetch(`${apiUrl}/subscriber/v1/subscribe`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email,
+            source: "hero_section",
+            hp_field,
+          }),
+        })
+
+        const data = await response.json().catch(() => ({}))
+
+        if (response.ok && data.success) {
+          submitText.textContent = "Connected!"
+          if (statusDiv) {
+            statusDiv.classList.remove("hidden", "bg-destructive/10", "border-destructive/30", "text-destructive")
+            statusDiv.classList.add("bg-emerald-500/10", "border-emerald-500/30", "text-emerald-400")
+            statusDiv.textContent = data.message || "Thank you for subscribing!"
+          }
+          form.reset()
+
+          setTimeout(() => {
+            submitText.textContent = originalText
+            submitBtn.disabled = false
+          }, 4000)
+        } else {
+          const errorMessage = data.message || "Failed to subscribe. Please try again."
+          if (statusDiv) {
+            statusDiv.classList.remove("hidden", "bg-emerald-500/10", "border-emerald-500/30", "text-emerald-400")
+            statusDiv.classList.add("bg-destructive/10", "border-destructive/30", "text-destructive")
+            statusDiv.textContent = errorMessage
+          }
+          submitText.textContent = originalText
+          submitBtn.disabled = false
+        }
+      } catch (err) {
+        console.error("Hero subscription error:", err)
+        if (statusDiv) {
+          statusDiv.classList.remove("hidden", "bg-emerald-500/10", "border-emerald-500/30", "text-emerald-400")
+          statusDiv.classList.add("bg-destructive/10", "border-destructive/30", "text-destructive")
+          statusDiv.textContent = "Network error. Please try again."
+        }
+        submitText.textContent = originalText
+        submitBtn.disabled = false
+      }
+    })
+  }
+
   // Ensure compatibility with Astro's View Transitions if enabled
   document.addEventListener("astro:page-load", () => {
     setupStickyObserver()
     setupCopySSH()
+    setupHeroSubscription()
   })
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", () => {
       setupStickyObserver()
       setupCopySSH()
+      setupHeroSubscription()
     })
   } else {
     setupStickyObserver()
     setupCopySSH()
+    setupHeroSubscription()
   }
 </script>

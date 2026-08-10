@@ -45,7 +45,14 @@ export class ContactController extends BaseController {
         email: payload.email.trim(),
         subject: sanitizedSubject,
         message: sanitizedMessage,
+        subscribe: Boolean(payload.subscribe),
       };
+
+      // Save submission record & subscriber to Postgres DB & sync Plunk subscriber list
+      await this.contactService.saveSubmissionAndSubscription({
+        ...formattedPayload,
+        ipAddress: clientIp,
+      });
 
       await this.contactService.sendContactEmail(formattedPayload);
 

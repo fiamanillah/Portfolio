@@ -307,6 +307,23 @@ import { Icon } from "astro-icon/components"
           />
         </div>
 
+        <!-- Optional Newsletter Subscription Checkbox -->
+        <div class="field-group flex items-center gap-3 pt-1">
+          <input
+            type="checkbox"
+            id="contact-subscribe"
+            name="subscribe"
+            class="h-4 w-4 shrink-0 rounded-none border border-border bg-background/60 text-primary accent-primary cursor-pointer focus:ring-0 focus:ring-offset-0"
+            checked
+          />
+          <label
+            for="contact-subscribe"
+            class="font-mono text-xs text-muted-foreground/90 cursor-pointer select-none"
+          >
+            Subscribe to newsletter & project updates <span class="text-xs text-muted-foreground/60">(optional)</span>
+          </label>
+        </div>
+
         <!-- Cloudflare Turnstile Container -->
         <div id="turnstile-container" class="flex justify-center empty:hidden"></div>
 
@@ -482,6 +499,8 @@ import { Icon } from "astro-icon/components"
       const subject = (formData.get("subject") as string)?.trim()
       const message = (formData.get("message") as string)?.trim()
       const hp_field = (formData.get("hp_field") as string) || ""
+      const subscribeInput = document.getElementById("contact-subscribe") as HTMLInputElement | null
+      const subscribe = subscribeInput ? subscribeInput.checked : Boolean(formData.get("subscribe"))
 
       let captchaToken = ""
       if ((window as any).turnstile && turnstileWidgetId) {
@@ -505,6 +524,7 @@ import { Icon } from "astro-icon/components"
             email,
             subject,
             message,
+            subscribe,
             hp_field,
             captchaToken,
           }),

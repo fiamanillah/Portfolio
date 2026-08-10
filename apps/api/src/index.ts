@@ -8,6 +8,7 @@ import { PrismaProvider } from "./providers/PrismaProvider";
 import { prisma } from "./lib/prisma";
 import { AuthModule } from "./Modules/Auth/AuthModule";
 import { ContactModule } from "./Modules/Contact/ContactModule";
+import { SubscriberModule } from "./Modules/Subscriber/SubscriberModule";
 
 // Modules (Business Logic)
 
@@ -26,6 +27,7 @@ async function bootstrap() {
     AppLogger.info("⚙ Registering modules...");
     app.registerModule(new AuthModule());
     app.registerModule(new ContactModule());
+    app.registerModule(new SubscriberModule());
     AppLogger.info("✔ All modules registered successfully");
 
     // 4. Spark the server!

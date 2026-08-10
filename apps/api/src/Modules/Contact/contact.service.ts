@@ -3,12 +3,14 @@ import axios from "axios";
 import { config } from "@/core/config";
 import { AppLogger } from "@/core/logging/logger";
 import { AppError, BadRequestError, ExternalServiceError } from "@/core/errors/AppError";
+import { prisma } from "@/lib/prisma";
 
 export interface ContactSubmissionPayload {
   name: string;
   email: string;
   subject?: string;
   message: string;
+  subscribe?: boolean;
   captchaToken?: string;
   hp_field?: string;
 }
@@ -30,7 +32,10 @@ export class ContactService {
       trimmed.includes("placeholder") ||
       trimmed.includes("change-me") ||
       trimmed.startsWith("plunk_sk_your") ||
-      trimmed.startsWith("0x4aaaaaaa")
+      trimmed.startsWith("0x4aaaaaaa") ||
+      trimmed.startsWith("1x0000000") ||
+      trimmed.startsWith("2x0000000") ||
+      trimmed.startsWith("3x0000000")
     );
   }
 
@@ -147,9 +152,97 @@ export class ContactService {
   }
 
   /**
+   * Save contact submission and optional subscriber to PostgreSQL DB
+   * and sync subscriber to Plunk subscriber list via POST /v1/contacts API
+   */
+  public async saveSubmissionAndSubscription(payload: {
+    name: string;
+    email: string;
+    subject?: string;
+    message: string;
+    subscribe?: boolean;
+    ipAddress?: string;
+  }): Promise<void> {
+    try {
+      // 1. Save contact submission record in PostgreSQL database
+      await prisma.contactSubmission.create({
+        data: {
+          name: payload.name,
+          email: payload.email,
+          subject: payload.subject,
+          message: payload.message,
+          subscribed: payload.subscribe ?? false,
+          ipAddress: payload.ipAddress,
+        },
+      });
+      this.logger.info(`✔ Saved contact submission record in DB for ${payload.email}`);
+
+      // 2. If subscribe checkbox is selected, persist Subscriber in DB & sync with Plunk
+      if (payload.subscribe) {
+        await prisma.subscriber.upsert({
+          where: { email: payload.email },
+          update: {
+            name: payload.name,
+            status: "subscribed",
+            updatedAt: new Date(),
+          },
+          create: {
+            email: payload.email,
+            name: payload.name,
+            status: "subscribed",
+            source: "contact_form",
+          },
+        });
+        this.logger.info(`✔ Saved subscriber in DB for ${payload.email}`);
+
+        // Sync with Plunk contact list (/v1/contacts)
+        await this.addSubscriberToPlunk(payload.email, payload.name);
+      }
+    } catch (dbError) {
+      this.logger.error("Error persisting contact submission/subscriber in database", { error: dbError });
+      // Non-blocking fallback: do not crash request if DB write fails
+    }
+  }
+
+  /**
+   * Sync subscriber to Plunk contact subscriber list via POST /v1/contacts API
+   */
+  public async addSubscriberToPlunk(email: string, name?: string): Promise<void> {
+    const secretKey = config.plunk.secretKey;
+    if (this.isPlaceholderKey(secretKey)) {
+      this.logger.info(`ℹ️ [SIMULATED PLUNK SUBSCRIBER SYNC] Added ${email} to Plunk subscriber list`);
+      return;
+    }
+
+    try {
+      await axios.post(
+        "https://next-api.useplunk.com/v1/contacts",
+        {
+          email,
+          subscribed: true,
+          data: {
+            name: name || "",
+            source: "contact_form",
+          },
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${secretKey}`,
+            "Content-Type": "application/json",
+          },
+          timeout: 5000,
+        }
+      );
+      this.logger.info(`✔ Added/updated subscriber ${email} in Plunk subscriber list`);
+    } catch (error) {
+      this.logger.warn(`Failed to sync subscriber ${email} to Plunk contacts API`, { error });
+    }
+  }
+
+  /**
    * Stage 5a: Delivery of Admin Notification via Plunk /v1/send with Plunk Template support
    */
-  public async sendContactEmail(payload: { name: string; email: string; subject: string; message: string }): Promise<void> {
+  public async sendContactEmail(payload: { name: string; email: string; subject: string; message: string; subscribe?: boolean }): Promise<void> {
     const secretKey = config.plunk.secretKey;
     const recipientEmail = config.contact.recipientEmail;
     const templateId = config.plunk.templateId;
@@ -165,6 +258,7 @@ export class ContactService {
   <div style="margin-bottom: 16px;">
     <p style="margin: 4px 0; font-size: 14px;"><strong>From:</strong> ${payload.name} (&lt;<a href="mailto:${payload.email}" style="color: #10b981; text-decoration: none;">${payload.email}</a>&gt;)</p>
     <p style="margin: 4px 0; font-size: 14px;"><strong>Subject:</strong> ${payload.subject}</p>
+    <p style="margin: 4px 0; font-size: 14px;"><strong>Subscribed to Newsletter:</strong> ${payload.subscribe ? 'Yes' : 'No'}</p>
   </div>
 
   <div style="background-color: #f9fafb; border: 1px solid #f3f4f6; border-radius: 6px; padding: 16px; margin-top: 16px;">
@@ -193,11 +287,13 @@ export class ContactService {
         reply: payload.email,
         subject: emailSubject,
         body: emailBody,
+        subscribed: payload.subscribe ?? false,
         data: {
           name: payload.name,
           email: payload.email,
           subject: payload.subject,
           message: payload.message,
+          subscribed: payload.subscribe ?? false,
         },
       };
 
@@ -245,7 +341,7 @@ export class ContactService {
    * Stage 5b: Delivery of Confirmation Email to Form Submitter via Plunk /v1/send
    * Triggered AFTER passing disposable email test and all security checks.
    */
-  public async sendConfirmationEmail(payload: { name: string; email: string; subject: string; message: string }): Promise<void> {
+  public async sendConfirmationEmail(payload: { name: string; email: string; subject: string; message: string; subscribe?: boolean }): Promise<void> {
     const secretKey = config.plunk.secretKey;
     const recipientEmail = config.contact.recipientEmail;
     const confirmationTemplateId = config.plunk.confirmationTemplateId || config.plunk.templateId;
@@ -267,6 +363,8 @@ export class ContactService {
     <p style="margin: 0 0 8px 0; font-size: 12px; font-weight: 600; text-transform: uppercase; color: #9ca3af; letter-spacing: 0.05em;">Copy of your message</p>
     <div style="white-space: pre-wrap; font-size: 14px; line-height: 1.6; color: #4b5563;">${payload.message}</div>
   </div>
+
+  ${payload.subscribe ? '<p style="font-size: 13px; color: #10b981;">✔ You have also been subscribed to my newsletter & updates.</p>' : ''}
 
   <p style="font-size: 14px; line-height: 1.6; color: #4b5563;">
     If your inquiry is urgent, feel free to reply directly to this email.
@@ -293,11 +391,13 @@ export class ContactService {
         reply: recipientEmail,
         subject: emailSubject,
         body: emailBody,
+        subscribed: payload.subscribe ?? false,
         data: {
           name: payload.name,
           email: payload.email,
           subject: payload.subject,
           message: payload.message,
+          subscribed: payload.subscribe ?? false,
         },
       };
 
