@@ -6,6 +6,7 @@ import KeyFeatures from "@/components/CaseStudy/KeyFeatures.astro"
 import PerformanceMetrics from "@/components/CaseStudy/PerformanceMetrics.astro"
 import Hero from "@/components/CaseStudy/Hero.astro"
 import OtherCaseStudies from "@/components/CaseStudy/OtherCaseStudies.astro"
+import NewsletterSection from "@/components/Newsletter/NewsletterSection.astro"
 import MySiteLayout from "@/layouts/MySiteLayout.astro"
 import { getAllCaseStudyDetails, type CaseStudyDetail } from "@/data/caseStudies"
 
@@ -43,5 +44,13 @@ const { caseStudy } = Astro.props
     <PerformanceMetrics metrics={caseStudy.metrics} />
     <ArchitecturalPostMortem items={caseStudy.postMortem} />
     <OtherCaseStudies currentSlug={caseStudy.slug} />
+
+    <NewsletterSection
+      title="Never Miss an Architecture Breakdown"
+      subtitle="Subscribe to receive future post-mortems, DevOps automation guides, and system design patterns directly in your inbox."
+      source="case_study_detail"
+      idPrefix="cs-detail-newsletter"
+    />
   </div>
 </MySiteLayout>
+

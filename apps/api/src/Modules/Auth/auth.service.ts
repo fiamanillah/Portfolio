@@ -22,7 +22,7 @@ export class AuthServices {
     this.logger.info("Attempting to register user", { email });
 
     // 3. Business Logic & Database Interaction
-    const existingUser = await this.prisma.user.findUnique({
+    const existingUser = await (this.prisma as any).user.findUnique({
       where: { email },
     });
 
@@ -32,7 +32,7 @@ export class AuthServices {
       throw new ConflictError("A user with this email already exists");
     }
 
-    const newUser = await this.prisma.user.create({
+    const newUser = await (this.prisma as any).user.create({
       data: {
         email,
         firstName,

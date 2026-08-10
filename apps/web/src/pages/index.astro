@@ -6,6 +6,7 @@ import Logos from "@/components/Home/Logos.astro"
 import ProfesssionalHistory from "@/components/Home/ProfesssionalHistory.astro"
 import Skills from "@/components/Home/Skills.astro"
 import Work from "@/components/Home/Work.astro"
+import NewsletterSection from "@/components/Newsletter/NewsletterSection.astro"
 import MySiteLayout from "@/layouts/MySiteLayout.astro"
 ---
 
@@ -28,6 +29,13 @@ import MySiteLayout from "@/layouts/MySiteLayout.astro"
   <!-- Professional History -->
   <ProfesssionalHistory />
 
+  <!-- Subscribe to Newsletter & Updates -->
+  <NewsletterSection
+    source="homepage_newsletter"
+    idPrefix="home-newsletter"
+  />
+
   <!-- Contact / Transmission -->
   <Contact />
 </MySiteLayout>
+
