@@ -15,36 +15,30 @@ interface Props {
 const { blocks } = Astro.props as Props
 ---
 
-<section class="space-y-5">
+<section class="space-y-6">
   <CaseStudySectionTitle label="[ SEC_01 // CONTEXT_&_PROBLEM ]" />
-  <div class="grid gap-6 md:grid-cols-2">
-    {
-      blocks.map((block, i) => (
-        <article class="relative overflow-hidden rounded-lg border border-border bg-muted/30 p-6 shadow-md">
-          {/* Accent bar */}
-          <div
-            class={`absolute top-0 bottom-0 left-0 w-1.5 ${i === 0 ? "bg-rose-500/80" : "bg-cyan-500/70"}`}
-          />
 
-          <div class="relative z-10 flex flex-col gap-4 pl-4">
-            <div class="flex items-start gap-3">
-              <div
-                class={`flex h-9 w-9 items-center justify-center rounded-md ${i === 0 ? "bg-rose-600/20" : "bg-cyan-600/20"}`}
-              >
+  <div class="px-5 md:px-6 lg:px-8">
+    <div class="grid gap-6 md:grid-cols-2">
+      {
+        blocks.map((block, i) => (
+          <article class="flex flex-col gap-4 rounded-lg border border-border/70 bg-card/40 p-6 transition-colors duration-200 hover:border-border">
+            <div class="flex items-center gap-3">
+              <div class="flex h-8 w-8 items-center justify-center rounded-md border border-border/60 bg-muted/30 text-primary">
                 <HugeiconsIcon
                   icon={i === 0 ? CircleIcon : LightbulbOffIcon}
-                  className="size-4 text-current"
+                  className="size-4"
                 />
               </div>
-              <h4 class="text-sm font-semibold tracking-tight text-foreground">
+              <h4 class="text-base font-semibold tracking-tight text-foreground">
                 {block.label}
               </h4>
             </div>
 
-            <p class="text-sm leading-7 text-muted-foreground">{block.body}</p>
-          </div>
-        </article>
-      ))
-    }
+            <p class="text-sm leading-relaxed text-muted-foreground">{block.body}</p>
+          </article>
+        ))
+      }
+    </div>
   </div>
 </section>

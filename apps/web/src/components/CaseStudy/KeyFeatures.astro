@@ -21,11 +21,11 @@ const { features } = Astro.props as Props
 <section class="space-y-6">
   <CaseStudySectionTitle label="[ SEC_03 // KEY_FEATURES ]" />
 
-  <div class="space-y-6">
+  <div class="px-5 md:px-6 lg:px-8 space-y-8">
     {
       features.map((feature, index) => {
         return (
-          <article class="group overflow-hidden rounded-xl border border-border/60 bg-card/40 transition-colors duration-200 hover:border-border">
+          <article class="group overflow-hidden rounded-lg border border-border/70 bg-card/40 transition-colors duration-200 hover:border-border">
             <div class="grid lg:grid-cols-12 lg:items-stretch">
               {/* Content Side */}
               <div class="flex flex-col justify-between gap-6 p-6 sm:p-8 lg:col-span-6">
@@ -76,7 +76,7 @@ const { features } = Astro.props as Props
                 )}
               </div>
 
-              {/* Image Side (Flush with edges, no gap around image) */}
+              {/* Image Side */}
               <div class="relative min-h-[260px] overflow-hidden bg-muted/20 lg:col-span-6">
                 <img
                   src={feature.media}

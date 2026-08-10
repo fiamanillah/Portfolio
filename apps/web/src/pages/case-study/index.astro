@@ -200,7 +200,7 @@ const totalTechCount = new Set(allProjects.flatMap((p) => p.tech)).size
                 <!-- Tech Stack Badges (Filtered key techs) -->
                 <div class="flex flex-wrap items-center gap-1.5 pt-0.5">
                   {project.tech.slice(0, 7).map((t) => (
-                    <Badge variant="outline" class="font-mono text-[10px] px-2 py-0.5">
+                    <Badge variant="outline" className="font-mono text-[10px] px-2 py-0.5">
                       {t}
                     </Badge>
                   ))}
@@ -215,7 +215,7 @@ const totalTechCount = new Set(allProjects.flatMap((p) => p.tech)).size
               <!-- Action Links -->
               <div class="mt-5 flex flex-wrap items-center gap-3 border-t border-border/50 pt-4">
                 <a href={project.links.caseStudy}>
-                  <Button size="sm" class="gap-1.5 font-medium">
+                  <Button size="sm" className="gap-1.5 font-medium">
                     Read Full Case Study
                     <HugeiconsIcon icon={ArrowUpRight01Icon} className="size-3.5" />
                   </Button>
@@ -223,7 +223,7 @@ const totalTechCount = new Set(allProjects.flatMap((p) => p.tech)).size
 
                 {project.links.live && project.links.live !== "#" && (
                   <a href={project.links.live} target="_blank" rel="noopener noreferrer">
-                    <Button variant="outline" size="sm" class="gap-1.5 text-xs">
+                    <Button variant="outline" size="sm" className="gap-1.5 text-xs">
                       Live App ↗
                     </Button>
                   </a>
@@ -302,14 +302,14 @@ const totalTechCount = new Set(allProjects.flatMap((p) => p.tech)).size
             <div class="mt-6 flex items-center gap-3 border-t border-border/40 pt-4">
               {project.links.github && (
                 <a href={project.links.github} target="_blank" rel="noopener noreferrer">
-                  <Button variant="outline" size="sm" class="gap-1.5 text-xs">
+                  <Button variant="outline" size="sm" className="gap-1.5 text-xs">
                     View Source Code ↗
                   </Button>
                 </a>
               )}
               {project.links.live && project.links.live !== "#" && (
                 <a href={project.links.live} target="_blank" rel="noopener noreferrer">
-                  <Button variant="outline" size="sm" class="gap-1.5 text-xs">
+                  <Button variant="outline" size="sm" className="gap-1.5 text-xs">
                     Live Demo ↗
                   </Button>
                 </a>
@@ -331,7 +331,7 @@ const totalTechCount = new Set(allProjects.flatMap((p) => p.tech)).size
         </p>
         <div class="pt-2">
           <a href="/contact">
-            <Button size="lg" class="font-semibold">
+            <Button size="lg" className="font-semibold">
               Get in Touch
             </Button>
           </a>

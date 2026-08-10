@@ -36,27 +36,12 @@ const { caseStudy } = Astro.props
     metadata={caseStudy.metadata}
   />
 
-  <section class="mx-auto px-5 pt-10 pb-24 md:px-6 lg:px-8">
+  <div class="w-full pt-10 pb-24 space-y-16">
     <ContextSection blocks={caseStudy.contextBlocks} />
-
-    <div class="mt-16">
-      <ArchitectureTopology layers={caseStudy.architectureLayers} />
-    </div>
-
-    <div class="mt-16">
-      <KeyFeatures features={caseStudy.features} />
-    </div>
-
-    <div class="mt-16">
-      <PerformanceMetrics metrics={caseStudy.metrics} />
-    </div>
-
-    <div class="mt-16">
-      <ArchitecturalPostMortem items={caseStudy.postMortem} />
-    </div>
-
-    <div class="mt-16">
-      <OtherCaseStudies currentSlug={caseStudy.slug} />
-    </div>
-  </section>
+    <ArchitectureTopology layers={caseStudy.architectureLayers} />
+    <KeyFeatures features={caseStudy.features} />
+    <PerformanceMetrics metrics={caseStudy.metrics} />
+    <ArchitecturalPostMortem items={caseStudy.postMortem} />
+    <OtherCaseStudies currentSlug={caseStudy.slug} />
+  </div>
 </MySiteLayout>
