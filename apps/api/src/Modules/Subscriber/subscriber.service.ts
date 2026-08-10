@@ -177,7 +177,7 @@ export class SubscriberService {
     }
 
     try {
-      const response = await axios.get(`https://next-api.useplunk.com/v1/verify?email=${encodeURIComponent(email)}`, {
+      const response = await axios.get(`${config.plunk.apiUrl}/verify?email=${encodeURIComponent(email)}`, {
         headers: {
           Authorization: `Bearer ${secretKey}`,
         },
@@ -449,7 +449,7 @@ export class SubscriberService {
 
     try {
       const response = await axios.post(
-        "https://next-api.useplunk.com/v1/contacts",
+        `${config.plunk.apiUrl}/contacts`,
         {
           email: cleanEmail,
           subscribed,
@@ -519,7 +519,7 @@ export class SubscriberService {
         plunkPayload.template = templateId;
       }
 
-      await axios.post("https://next-api.useplunk.com/v1/send", plunkPayload, {
+      await axios.post(`${config.plunk.apiUrl}/send`, plunkPayload, {
         headers: {
           Authorization: `Bearer ${secretKey}`,
           "Content-Type": "application/json",
