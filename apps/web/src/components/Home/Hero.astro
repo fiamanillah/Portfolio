@@ -100,6 +100,9 @@ import { TextScramble } from "@workspace/ui/components/text-scramble"
             </InputGroupAddon>
           </InputGroup>
 
+          <!-- Cloudflare Turnstile Container -->
+          <div id="hero-turnstile-container" class="flex justify-start empty:hidden py-1"></div>
+
           <!-- Interactive Status Alert Banner -->
           <div
             id="hero-status"
@@ -438,20 +441,67 @@ import { TextScramble } from "@workspace/ui/components/text-scramble"
     })
   }
 
+  let heroTurnstileWidgetId: string | null = null
+
+  function initHeroTurnstileOnDemand() {
+    const turnstileKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY
+    const container = document.getElementById("hero-turnstile-container")
+    if (!turnstileKey || !container || heroTurnstileWidgetId !== null) return
+
+    const render = () => {
+      if ((window as any).turnstile && heroTurnstileWidgetId === null) {
+        try {
+          heroTurnstileWidgetId = (window as any).turnstile.render("#hero-turnstile-container", {
+            sitekey: turnstileKey,
+            theme: "dark",
+          })
+        } catch (err) {
+          console.warn("Hero Turnstile render error:", err)
+        }
+      }
+    }
+
+    if ((window as any).turnstile) {
+      render()
+      return
+    }
+
+    let script = document.getElementById("cf-turnstile-script") as HTMLScriptElement | null
+    if (!script) {
+      script = document.createElement("script")
+      script.id = "cf-turnstile-script"
+      script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js"
+      script.async = true
+      script.defer = true
+      document.head.appendChild(script)
+    }
+    script.addEventListener("load", render, { once: true })
+  }
+
   function setupHeroSubscription() {
     const form = document.getElementById("hero-subscribe-form") as HTMLFormElement | null
     const submitBtn = document.getElementById("hero-submit-btn") as HTMLButtonElement | null
     const submitText = document.getElementById("hero-submit-text")
     const statusDiv = document.getElementById("hero-status")
+    const emailInput = document.getElementById("hero-email") as HTMLInputElement | null
 
     if (!form || !submitBtn || !submitText) return
 
+    if (form.dataset.bound === "true") return
+    form.dataset.bound = "true"
+
+    // Lazy load Turnstile on interaction
+    emailInput?.addEventListener("focus", initHeroTurnstileOnDemand, { once: true })
+    emailInput?.addEventListener("click", initHeroTurnstileOnDemand, { once: true })
+    form.addEventListener("mouseenter", initHeroTurnstileOnDemand, { once: true })
+
     form.addEventListener("submit", async (e) => {
       e.preventDefault()
+      initHeroTurnstileOnDemand()
 
       if (statusDiv) {
         statusDiv.classList.add("hidden")
-        statusDiv.textContent = ""
+        statusDiv.innerHTML = ""
       }
 
       const formData = new FormData(form)
@@ -459,6 +509,11 @@ import { TextScramble } from "@workspace/ui/components/text-scramble"
       const hp_field = (formData.get("hp_field") as string) || ""
 
       if (!email) return
+
+      let captchaToken = ""
+      if ((window as any).turnstile && heroTurnstileWidgetId !== null) {
+        captchaToken = (window as any).turnstile.getResponse(heroTurnstileWidgetId) || ""
+      }
 
       const originalText = submitText.textContent
       submitBtn.disabled = true
@@ -476,6 +531,7 @@ import { TextScramble } from "@workspace/ui/components/text-scramble"
             email,
             source: "hero_section",
             hp_field,
+            captchaToken,
           }),
         })
 
@@ -491,17 +547,48 @@ import { TextScramble } from "@workspace/ui/components/text-scramble"
           }
           form.reset()
 
+          if ((window as any).turnstile && heroTurnstileWidgetId !== null) {
+            (window as any).turnstile.reset(heroTurnstileWidgetId)
+          }
+
           setTimeout(() => {
             submitText.textContent = originalText
             submitBtn.disabled = false
           }, 4000)
         } else {
-          const errorMessage = data.message || "Failed to subscribe. Please try again."
+          const errorMessage = data.message || data.error?.message || "Failed to subscribe. Please try again."
+          const suggestedEmail = data.data?.suggestedEmail || data.details?.suggestedEmail || data.error?.details?.suggestedEmail
+
           if (statusDiv) {
             statusDiv.classList.remove("hidden", "bg-emerald-500/10", "border-emerald-500/30", "text-emerald-400")
             statusDiv.classList.add("bg-destructive/10", "border-destructive/30", "text-destructive")
-            statusDiv.textContent = errorMessage
+
+            if (suggestedEmail) {
+              statusDiv.innerHTML = `
+                <div>${errorMessage}</div>
+                <div class="mt-2 flex items-center justify-between gap-2 border-t border-destructive/20 pt-2 text-amber-300 font-semibold">
+                  <span>Did you mean <strong>${suggestedEmail}</strong>?</span>
+                  <button type="button" id="hero-apply-suggestion" class="rounded bg-amber-400 px-2 py-0.5 font-mono text-[10px] font-bold uppercase text-black transition hover:bg-amber-300 cursor-pointer">
+                    Apply
+                  </button>
+                </div>
+              `
+              const applyBtn = document.getElementById("hero-apply-suggestion")
+              applyBtn?.addEventListener("click", () => {
+                if (emailInput) emailInput.value = suggestedEmail
+                statusDiv.classList.add("hidden")
+                statusDiv.innerHTML = ""
+                emailInput?.focus()
+              })
+            } else {
+              statusDiv.textContent = errorMessage
+            }
           }
+
+          if ((window as any).turnstile && heroTurnstileWidgetId !== null) {
+            (window as any).turnstile.reset(heroTurnstileWidgetId)
+          }
+
           submitText.textContent = originalText
           submitBtn.disabled = false
         }

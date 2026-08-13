@@ -2,9 +2,15 @@
 import { Request, Response } from "express";
 import { HTTPStatusCode } from "@/types/HTTPStatusCode";
 import { ApiResponse, PaginatedResponse } from "@/types/types";
-import { AppLogger } from "./logging/logger";
+import { AppLogger } from "@workspace/logger";
 
 export abstract class BaseController {
+  protected logger: AppLogger;
+
+  constructor() {
+    this.logger = new AppLogger(this.constructor.name || "BaseController");
+  }
+
   /**
    * Send a standard successful response
    */
@@ -16,7 +22,7 @@ export abstract class BaseController {
     data?: T,
   ): Response<ApiResponse<T>> | void {
     if (req.timedout || res.headersSent) {
-      AppLogger.warn(
+      this.logger.warn(
         `[Blocked] Prevented sending response for ${req.method} ${req.originalUrl} - Request timed out or was closed.`,
       );
       return;
@@ -46,7 +52,7 @@ export abstract class BaseController {
     data?: T[],
   ): Response<PaginatedResponse<T>> | void {
     if (req.timedout || res.headersSent || req.abortSignal.aborted) {
-      AppLogger.warn(
+      this.logger.warn(
         `[Blocked] Prevented sending response for ${req.method} ${req.originalUrl} - Request timed out or was closed.`,
       );
       return;

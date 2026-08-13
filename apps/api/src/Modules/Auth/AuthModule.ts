@@ -1,5 +1,5 @@
 import { BaseModule } from "@/core/BaseModule";
-import { AppLogger } from "@/core/logging/logger";
+import { AppLogger } from "@workspace/logger";
 import { AuthServices } from "./auth.service";
 import { AuthController } from "./auth.controller";
 import { validateRequest } from "@/middleware/validation";
@@ -11,7 +11,7 @@ export class AuthModule extends BaseModule {
   public basePath: string = "/auth/v1/";
   public dependencies?: string[] | undefined;
 
-  private logger = new AppLogger("AuthModule");
+  protected logger = new AppLogger("AuthModule");
 
   protected async setupUseCases(): Promise<void> {
     const prisma = this.context.getService("prisma");

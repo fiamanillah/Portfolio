@@ -1,11 +1,12 @@
 // src/Modules/Contact/contact.service.ts
 import axios from "axios";
 import { config } from "@/core/config";
-import { AppLogger } from "@/core/logging/logger";
+import { AppLogger } from "@workspace/logger";
 import { AppError, BadRequestError, ExternalServiceError } from "@/core/errors/AppError";
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@workspace/db";
 import { renderContactNotificationEmail } from "@/templates/emails/contactNotification";
 import { renderContactConfirmationEmail } from "@/templates/emails/contactConfirmation";
+import { PlunkVerifyService } from "@/services/PlunkVerifyService";
 
 export interface ContactSubmissionPayload {
   name: string;
@@ -24,21 +25,7 @@ export class ContactService {
    * Helper to check if an API secret key is missing or is a placeholder/example key
    */
   private isPlaceholderKey(key?: string): boolean {
-    if (!key) return true;
-    const trimmed = key.trim().toLowerCase();
-    return (
-      trimmed === "" ||
-      trimmed.includes("your_key") ||
-      trimmed.includes("your_secret") ||
-      trimmed.includes("yourturnstile") ||
-      trimmed.includes("placeholder") ||
-      trimmed.includes("change-me") ||
-      trimmed.startsWith("plunk_sk_your") ||
-      trimmed.startsWith("0x4aaaaaaa") ||
-      trimmed.startsWith("1x0000000") ||
-      trimmed.startsWith("2x0000000") ||
-      trimmed.startsWith("3x0000000")
-    );
+    return PlunkVerifyService.isPlaceholderKey(key);
   }
 
   /**
@@ -113,44 +100,10 @@ export class ContactService {
   }
 
   /**
-   * Stage 4b: Plunk Email Verification (Disposable check & syntax check)
+   * Stage 4b: Plunk Email Verification (Disposable check, typo check, MX records check)
    */
   public async verifyEmailWithPlunk(email: string): Promise<void> {
-    const secretKey = config.plunk.secretKey;
-
-    if (this.isPlaceholderKey(secretKey)) {
-      this.logger.warn("⚠️ PLUNK_SECRET_KEY missing or placeholder. Skipping Plunk /v1/verify in dev/demo mode.");
-      return;
-    }
-
-    try {
-      const response = await axios.get(`${config.plunk.apiUrl}/verify?email=${encodeURIComponent(email)}`, {
-        headers: {
-          Authorization: `Bearer ${secretKey}`,
-        },
-        timeout: 5000,
-      });
-
-      const data = response.data;
-      if (data && (data.disposable || data.is_disposable || data.valid === false)) {
-        this.logger.warn(`Rejected contact form submission from disposable/invalid email: ${email}`);
-        throw new BadRequestError("Disposable or invalid email addresses are not allowed. Please provide a primary email address.");
-      }
-
-      this.logger.info(`✔ Plunk email verification passed for ${email}`);
-    } catch (error) {
-      if (error instanceof AppError) throw error;
-
-      // If Plunk returns 400 or disposable error
-      if (axios.isAxiosError(error) && error.response) {
-        const resData = error.response.data;
-        if (resData?.message?.includes("disposable") || error.response.status === 400) {
-          throw new BadRequestError("The email provided appears to be temporary or improperly formatted. Please use a valid email.");
-        }
-      }
-
-      this.logger.warn("Plunk verify check encountered issue, allowing submission to proceed if properly formatted", { error });
-    }
+    await PlunkVerifyService.verifyEmail(email);
   }
 
   /**
@@ -285,7 +238,7 @@ export class ContactService {
         plunkPayload.template = templateId;
       }
 
-      await axios.post(`${config.plunk.apiUrl}/send`, plunkPayload, {
+      await axios.post(`${config.plunk.apiUrl}/v1/send`, plunkPayload, {
         headers: {
           Authorization: `Bearer ${secretKey}`,
           "Content-Type": "application/json",
@@ -365,7 +318,7 @@ export class ContactService {
         plunkPayload.template = confirmationTemplateId;
       }
 
-      await axios.post(`${config.plunk.apiUrl}/send`, plunkPayload, {
+      await axios.post(`${config.plunk.apiUrl}/v1/send`, plunkPayload, {
         headers: {
           Authorization: `Bearer ${secretKey}`,
           "Content-Type": "application/json",

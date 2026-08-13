@@ -1,6 +1,6 @@
 // src/Modules/Auth/AuthServices.ts
-import { PrismaClient } from "@/prisma/generated/client";
-import { AppLogger } from "@/core/logging/logger";
+import { PrismaClient } from "@workspace/db";
+import { AppLogger } from "@workspace/logger";
 import { ConflictError, NotFoundError } from "@/core/errors/AppError";
 
 export class AuthServices {

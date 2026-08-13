@@ -1,9 +1,11 @@
-import { AppLogger } from "@/core/logging/logger";
+import { AppLogger } from "@workspace/logger";
 import { Request, Response, NextFunction } from "express";
 import crypto from "crypto";
 import config from "@/core/config";
 
 export function requestLogger() {
+  const logger = new AppLogger("HTTP");
+
   return (req: Request, res: Response, next: NextFunction) => {
     const start = Date.now();
 
@@ -36,7 +38,7 @@ export function requestLogger() {
       };
 
       // Log as a single string
-      AppLogger.info(logMessage, payloadData);
+      logger.info(logMessage, payloadData);
     });
 
     // Listen for aborted requests
@@ -60,7 +62,7 @@ export function requestLogger() {
         }
 
         // Log as a single string
-        AppLogger.warn(abortMessage);
+        logger.warn(abortMessage);
       }
     });
 

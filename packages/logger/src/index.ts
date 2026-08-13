@@ -1,13 +1,23 @@
-// logging/logger.ts
 import { createLogger, format, transports, Logger } from "winston";
 import DailyRotateFile from "winston-daily-rotate-file";
 import chalk from "chalk";
 import { format as dateFnsFormat } from "date-fns";
-import config from "../config";
+import path from "node:path";
 
 const { combine, timestamp, printf, errors, json } = format;
 
-const LOG_DIR = config.logging.path;
+const getLogDir = (): string => {
+  const envPath = process.env.LOG_FILE_PATH || process.env.LOG_DIR;
+  if (envPath) {
+    if (envPath.endsWith(".log")) {
+      return path.dirname(envPath);
+    }
+    return envPath;
+  }
+  return "logs";
+};
+
+const LOG_DIR = getLogDir();
 
 // Console format with colors/emojis
 const consoleFormat = printf(
@@ -16,12 +26,12 @@ const consoleFormat = printf(
       string,
       { emoji: string; color: (msg: string) => string }
     > = {
-      error: { emoji: "", color: chalk.red.bold },
-      warn: { emoji: "⚠", color: chalk.yellow.bold },
-      info: { emoji: "ℹ", color: chalk.cyan.bold },
+      error: { emoji: "❌", color: chalk.red.bold },
+      warn: { emoji: "⚠️", color: chalk.yellow.bold },
+      info: { emoji: "ℹ️", color: chalk.cyan.bold },
       http: { emoji: "⇄", color: chalk.magenta.bold },
       verbose: { emoji: "›", color: chalk.blue },
-      debug: { emoji: "⚙", color: chalk.green },
+      debug: { emoji: "⚙️", color: chalk.green },
       silly: { emoji: "∼", color: chalk.gray },
     };
 
@@ -55,6 +65,7 @@ export class AppLogger {
   private static init(): Logger {
     if (!AppLogger.instance) {
       AppLogger.instance = createLogger({
+        level: process.env.LOG_LEVEL || "debug",
         exitOnError: false,
         format: combine(
           errors({ stack: true }),
@@ -144,3 +155,5 @@ export class AppLogger {
     }
   }
 }
+
+export default AppLogger;

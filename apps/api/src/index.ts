@@ -1,42 +1,44 @@
 // src/index.ts
 import { IgnitorApp } from "./core/IgnitorApp";
-import { AppLogger } from "./core/logging/logger";
+import { AppLogger } from "@workspace/logger";
 import { config } from "./core/config";
 
 // Providers (Infrastructure)
 import { PrismaProvider } from "./providers/PrismaProvider";
-import { prisma } from "./lib/prisma";
+import { prisma } from "@workspace/db";
 import { AuthModule } from "./Modules/Auth/AuthModule";
 import { ContactModule } from "./Modules/Contact/ContactModule";
 import { SubscriberModule } from "./Modules/Subscriber/SubscriberModule";
 
 // Modules (Business Logic)
 
+const logger = new AppLogger("Bootstrap");
+
 async function bootstrap() {
   try {
-    AppLogger.info("🗹 Starting application bootstrap");
+    logger.info("🗹 Starting application bootstrap");
 
     // 1. Initialize the Ignitor Engine
     const app = new IgnitorApp();
 
     // 2. Register Infrastructure Providers
-    AppLogger.info("⚙ Registering infrastructure...");
+    logger.info("⚙ Registering infrastructure...");
     app.getContext().registerProvider("prisma", new PrismaProvider(prisma));
 
     // 3. Register Application Modules
-    AppLogger.info("⚙ Registering modules...");
+    logger.info("⚙ Registering modules...");
     app.registerModule(new AuthModule());
     app.registerModule(new ContactModule());
     app.registerModule(new SubscriberModule());
-    AppLogger.info("✔ All modules registered successfully");
+    logger.info("✔ All modules registered successfully");
 
     // 4. Spark the server!
     await app.spark(config.server.port);
 
-    AppLogger.info("✷ Ignitor sparked successfully");
+    logger.info("✷ Ignitor sparked successfully");
   } catch (error) {
     // Centralized Bootstrap Error Handling
-    AppLogger.error("⬤ Failed to initialize application:", {
+    logger.error("⬤ Failed to initialize application:", {
       error: error instanceof Error ? error : new Error(String(error)),
       context: "application-bootstrap",
       stack: error instanceof Error ? error.stack : undefined,
@@ -47,6 +49,6 @@ async function bootstrap() {
 
 // Start the application
 bootstrap().catch((err) => {
-  AppLogger.error("❌ Unhandled bootstrap error:", { error: err });
+  logger.error("❌ Unhandled bootstrap error:", { error: err });
   process.exit(1);
 });

@@ -2,10 +2,11 @@
 import axios from "axios";
 import crypto from "crypto";
 import { config } from "@/core/config";
-import { AppLogger } from "@/core/logging/logger";
+import { AppLogger } from "@workspace/logger";
 import { AppError, BadRequestError, ExternalServiceError, NotFoundError } from "@/core/errors/AppError";
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@workspace/db";
 import { renderSubscriptionConfirmationEmail } from "@/templates/emails/subscriptionConfirmation";
+import { PlunkVerifyService } from "@/services/PlunkVerifyService";
 
 export interface SubscriberPayload {
   email: string;
@@ -22,21 +23,7 @@ export class SubscriberService {
    * Helper to check if an API secret key is missing or is a placeholder/example key
    */
   private isPlaceholderKey(key?: string): boolean {
-    if (!key) return true;
-    const trimmed = key.trim().toLowerCase();
-    return (
-      trimmed === "" ||
-      trimmed.includes("your_key") ||
-      trimmed.includes("your_secret") ||
-      trimmed.includes("yourturnstile") ||
-      trimmed.includes("placeholder") ||
-      trimmed.includes("change-me") ||
-      trimmed.startsWith("plunk_sk_your") ||
-      trimmed.startsWith("0x4aaaaaaa") ||
-      trimmed.startsWith("1x0000000") ||
-      trimmed.startsWith("2x0000000") ||
-      trimmed.startsWith("3x0000000")
-    );
+    return PlunkVerifyService.isPlaceholderKey(key);
   }
 
   // ── Unsubscribe Token Helpers ──────────────────────────────────────────────
@@ -115,8 +102,8 @@ export class SubscriberService {
     }
 
     if (!token) {
-      this.logger.info("ℹ️ No Turnstile CAPTCHA token provided in subscriber payload. Relying on Honeypot & Rate Limiter defenses.");
-      return true;
+      this.logger.warn("CAPTCHA token missing from subscriber submission payload");
+      return false;
     }
 
     try {
@@ -145,7 +132,7 @@ export class SubscriberService {
       return true;
     } catch (error) {
       this.logger.error("Error connecting to Cloudflare Turnstile API", { error });
-      return true;
+      throw new ExternalServiceError("Failed to verify security token with Cloudflare");
     }
   }
 
@@ -166,43 +153,10 @@ export class SubscriberService {
   }
 
   /**
-   * Stage 4b: Plunk Email Hygiene & Disposable check (/v1/verify)
+   * Stage 4b: Plunk Email Verification (Disposable check, typo check, MX records check)
    */
   public async verifyEmailWithPlunk(email: string): Promise<void> {
-    const secretKey = config.plunk.secretKey;
-
-    if (this.isPlaceholderKey(secretKey)) {
-      this.logger.warn("⚠️ PLUNK_SECRET_KEY missing or placeholder. Skipping Plunk /v1/verify in dev/demo mode.");
-      return;
-    }
-
-    try {
-      const response = await axios.get(`${config.plunk.apiUrl}/verify?email=${encodeURIComponent(email)}`, {
-        headers: {
-          Authorization: `Bearer ${secretKey}`,
-        },
-        timeout: 5000,
-      });
-
-      const data = response.data;
-      if (data && (data.disposable || data.is_disposable || data.valid === false)) {
-        this.logger.warn(`Rejected subscription from disposable/invalid email: ${email}`);
-        throw new BadRequestError("Disposable or invalid email addresses are not allowed. Please provide a primary email address.");
-      }
-
-      this.logger.info(`✔ Plunk email verification passed for subscriber ${email}`);
-    } catch (error) {
-      if (error instanceof AppError) throw error;
-
-      if (axios.isAxiosError(error) && error.response) {
-        const resData = error.response.data;
-        if (resData?.message?.includes("disposable") || error.response.status === 400) {
-          throw new BadRequestError("The email provided appears to be temporary or improperly formatted. Please use a valid email.");
-        }
-      }
-
-      this.logger.warn("Plunk verify check encountered issue, allowing subscription to proceed if properly formatted", { error });
-    }
+    await PlunkVerifyService.verifyEmail(email);
   }
 
   // ── Core CRUD Operations ───────────────────────────────────────────────────
@@ -446,9 +400,14 @@ export class SubscriberService {
     }
 
     const cleanEmail = email.trim().toLowerCase();
+    const headers = {
+      Authorization: `Bearer ${secretKey}`,
+      "Content-Type": "application/json",
+    };
 
     try {
-      const response = await axios.post(
+      // Step 1: POST /contacts to upsert the contact and retrieve its Plunk ID
+      const upsertResponse = await axios.post(
         `${config.plunk.apiUrl}/contacts`,
         {
           email: cleanEmail,
@@ -458,19 +417,40 @@ export class SubscriberService {
             ...(source ? { source } : {}),
           },
         },
-        {
-          headers: {
-            Authorization: `Bearer ${secretKey}`,
-            "Content-Type": "application/json",
-          },
-          timeout: 5000,
-        }
+        { headers, timeout: 5000 }
       );
 
-      this.logger.info(`✔ Synced subscriber ${cleanEmail} to Plunk (subscribed: ${subscribed})`, { data: response.data });
+      const contactData = upsertResponse.data;
+      const contactId = contactData?.id;
+      const isUpdate = contactData?._meta?.isUpdate === true;
+
+      this.logger.info(`✔ Plunk POST /contacts response for ${cleanEmail}`, {
+        id: contactId,
+        isNew: contactData?._meta?.isNew,
+        isUpdate,
+        status: upsertResponse.status,
+      });
+
+      // Step 2: For existing contacts, POST upsert may not update the `subscribed` field.
+      // Use PATCH /contacts/:id to explicitly set the subscription state.
+      if (contactId && isUpdate) {
+        const patchResponse = await axios.patch(
+          `${config.plunk.apiUrl}/contacts/${contactId}`,
+          { subscribed },
+          { headers, timeout: 5000 }
+        );
+
+        this.logger.info(`✔ Plunk PATCH /contacts/${contactId} — subscribed set to ${subscribed}`, {
+          data: patchResponse.data,
+        });
+      }
+
+      this.logger.info(`✔ Synced subscriber ${cleanEmail} to Plunk (subscribed: ${subscribed})`);
     } catch (error) {
-      const errorDetails = axios.isAxiosError(error) ? error.response?.data : error;
-      this.logger.warn(`Failed to sync subscriber ${cleanEmail} to Plunk contacts API`, { error: errorDetails });
+      const errorDetails = axios.isAxiosError(error)
+        ? { status: error.response?.status, data: error.response?.data, url: error.config?.url }
+        : error;
+      this.logger.error(`❌ Failed to sync subscriber ${cleanEmail} to Plunk contacts API`, { error: errorDetails });
     }
   }
 
@@ -519,7 +499,7 @@ export class SubscriberService {
         plunkPayload.template = templateId;
       }
 
-      await axios.post(`${config.plunk.apiUrl}/send`, plunkPayload, {
+      await axios.post(`${config.plunk.apiUrl}/v1/send`, plunkPayload, {
         headers: {
           Authorization: `Bearer ${secretKey}`,
           "Content-Type": "application/json",

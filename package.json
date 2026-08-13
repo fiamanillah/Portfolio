@@ -9,8 +9,12 @@
     "format": "turbo format",
     "typecheck": "turbo typecheck",
     "db:generate": "turbo db:generate",
-    "db:migrate": "bun --filter=@workspace/api db:migrate",
-    "db:studio": "bun --filter=@workspace/api db:studio"
+    "db:migrate": "bun --filter=@workspace/db db:migrate",
+    "db:studio": "bun --filter=@workspace/db db:studio",
+    "db:push": "bun --filter=@workspace/db db:push",
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down",
+    "docker:logs": "docker compose logs -f"
   },
   "devDependencies": {
     "prettier": "^3.8.1",

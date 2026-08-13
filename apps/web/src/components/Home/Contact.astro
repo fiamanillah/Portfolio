@@ -410,8 +410,9 @@ import { Icon } from "astro-icon/components"
 <script>
   let turnstileWidgetId: string | null = null
 
-  function showStatus(message: string, isError: boolean) {
+  function showStatus(message: string, isError: boolean, suggestedEmail?: string) {
     const statusDiv = document.getElementById("contact-status")
+    const emailInput = document.getElementById("contact-email") as HTMLInputElement | null
     if (!statusDiv) return
 
     statusDiv.classList.remove(
@@ -438,34 +439,68 @@ import { Icon } from "astro-icon/components"
       )
     }
 
-    statusDiv.textContent = message
+    if (suggestedEmail) {
+      statusDiv.innerHTML = `
+        <div>${message}</div>
+        <div class="mt-2 flex items-center justify-between gap-2 border-t border-destructive/20 pt-2 text-amber-300 font-semibold">
+          <span>Did you mean <strong>${suggestedEmail}</strong>?</span>
+          <button type="button" id="contact-apply-suggestion" class="rounded bg-amber-400 px-2 py-0.5 font-mono text-[10px] font-bold uppercase text-black transition hover:bg-amber-300 cursor-pointer">
+            Apply
+          </button>
+        </div>
+      `
+      const applyBtn = document.getElementById("contact-apply-suggestion")
+      applyBtn?.addEventListener("click", () => {
+        if (emailInput) emailInput.value = suggestedEmail
+        hideStatus()
+        emailInput?.focus()
+      })
+    } else {
+      statusDiv.textContent = message
+    }
   }
 
   function hideStatus() {
     const statusDiv = document.getElementById("contact-status")
     if (statusDiv) {
       statusDiv.classList.add("hidden")
-      statusDiv.textContent = ""
+      statusDiv.innerHTML = ""
     }
   }
 
-  function initTurnstile() {
+  function initContactTurnstileOnDemand() {
     const turnstileKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY
-    if (!turnstileKey) return
-
     const container = document.getElementById("turnstile-container")
-    if (!container) return
+    if (!turnstileKey || !container || turnstileWidgetId !== null) return
 
-    if ((window as any).turnstile && !turnstileWidgetId) {
-      try {
-        turnstileWidgetId = (window as any).turnstile.render("#turnstile-container", {
-          sitekey: turnstileKey,
-          theme: "dark",
-        })
-      } catch (err) {
-        console.warn("Turnstile render error:", err)
+    const render = () => {
+      if ((window as any).turnstile && turnstileWidgetId === null) {
+        try {
+          turnstileWidgetId = (window as any).turnstile.render("#turnstile-container", {
+            sitekey: turnstileKey,
+            theme: "dark",
+          })
+        } catch (err) {
+          console.warn("Turnstile render error:", err)
+        }
       }
     }
+
+    if ((window as any).turnstile) {
+      render()
+      return
+    }
+
+    let script = document.getElementById("cf-turnstile-script") as HTMLScriptElement | null
+    if (!script) {
+      script = document.createElement("script")
+      script.id = "cf-turnstile-script"
+      script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js"
+      script.async = true
+      script.defer = true
+      document.head.appendChild(script)
+    }
+    script.addEventListener("load", render, { once: true })
   }
 
   function setupContactForm() {
@@ -475,22 +510,20 @@ import { Icon } from "astro-icon/components"
 
     if (!form || !submitBtn || !submitText) return
 
-    // Inject Cloudflare Turnstile script dynamically if key is provided
-    const turnstileKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY
-    if (turnstileKey && !document.getElementById("cf-turnstile-script")) {
-      const script = document.createElement("script")
-      script.id = "cf-turnstile-script"
-      script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js"
-      script.async = true
-      script.defer = true
-      script.onload = () => initTurnstile()
-      document.head.appendChild(script)
-    } else if (turnstileKey) {
-      initTurnstile()
-    }
+    if (form.dataset.bound === "true") return
+    form.dataset.bound = "true"
+
+    // Attach lazy Turnstile listeners to all form inputs
+    const inputs = form.querySelectorAll("input, textarea")
+    inputs.forEach((input) => {
+      input.addEventListener("focus", initContactTurnstileOnDemand, { once: true })
+      input.addEventListener("click", initContactTurnstileOnDemand, { once: true })
+    })
+    form.addEventListener("mouseenter", initContactTurnstileOnDemand, { once: true })
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault()
+      initContactTurnstileOnDemand()
       hideStatus()
 
       const formData = new FormData(form)
@@ -557,8 +590,9 @@ import { Icon } from "astro-icon/components"
           }, 4000)
         } else {
           // Handle specific backend error codes/responses
-          const errorMessage = data.message || "Failed to send message. Please try again."
-          showStatus(errorMessage, true)
+          const errorMessage = data.message || data.error?.message || "Failed to send message. Please try again."
+          const suggestedEmail = data.data?.suggestedEmail || data.details?.suggestedEmail || data.error?.details?.suggestedEmail
+          showStatus(errorMessage, true, suggestedEmail)
 
           submitText.innerHTML = originalHTML
           submitBtn.disabled = false

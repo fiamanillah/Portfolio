@@ -1,7 +1,7 @@
 // src/Modules/Subscriber/SubscriberModule.ts
 import rateLimit from "express-rate-limit";
 import { BaseModule } from "@/core/BaseModule";
-import { AppLogger } from "@/core/logging/logger";
+import { AppLogger } from "@workspace/logger";
 import { config } from "@/core/config";
 import { validateRequest } from "@/middleware/validation";
 import { SubscriberService } from "./subscriber.service";
@@ -14,7 +14,7 @@ export class SubscriberModule extends BaseModule {
   public basePath: string = "/subscriber/v1/";
   public dependencies?: string[] | undefined;
 
-  private logger = new AppLogger("SubscriberModule");
+  protected logger = new AppLogger("SubscriberModule");
 
   protected async setupUseCases(): Promise<void> {
     this.registerService("SubscriberService", new SubscriberService());

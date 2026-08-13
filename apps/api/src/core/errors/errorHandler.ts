@@ -5,7 +5,7 @@ import {
   PayloadTooLargeError,
   ValidationError,
 } from "./AppError";
-import { AppLogger } from "../logging/logger";
+import { AppLogger } from "@workspace/logger";
 import { HTTPStatusCode } from "@/types/HTTPStatusCode";
 import { errorMapperRegistry } from "./ErrorMapperRegistry";
 import { MulterError } from "multer";
@@ -147,6 +147,8 @@ function handleMulterError(err: MulterError): AppError {
 }
 
 function logError(error: AppError, req: Request): void {
+  const logger = new AppLogger("ErrorHandler");
+
   // Safely extract IP
   const xff = req.headers["x-forwarded-for"];
   const ip = Array.isArray(xff) ? xff[0] : xff || req.ip;
@@ -164,10 +166,10 @@ function logError(error: AppError, req: Request): void {
   // Log based on severity without passing a giant meta object
   if (error.statusCode >= 500) {
     // We still pass the stack trace as meta for 500 errors so you can debug crashes
-    AppLogger.error(`❌ ${logMessage}`, { stack: error.stack });
+    logger.error(`❌ ${logMessage}`, { stack: error.stack });
   } else if (error.statusCode >= 400) {
-    AppLogger.warn(`⚠️ ${logMessage}`);
+    logger.warn(`⚠️ ${logMessage}`);
   } else {
-    AppLogger.info(`ℹ️ ${logMessage}`);
+    logger.info(`ℹ️ ${logMessage}`);
   }
 }

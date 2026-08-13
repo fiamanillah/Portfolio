@@ -110,6 +110,12 @@ import MySiteLayout from "@/layouts/MySiteLayout.astro"
                   Transfer your newsletter subscription to a different email address.
                 </p>
                 <form id="change-email-form" class="flex flex-col gap-3">
+                  <!-- Honeypot Field -->
+                  <div aria-hidden="true" style="display:none; position:absolute; left:-9999px; opacity:0; pointer-events:none;">
+                    <label for="change-email-hp">Leave empty</label>
+                    <input type="text" id="change-email-hp" name="hp_field" tabindex="-1" autocomplete="off" />
+                  </div>
+
                   <div>
                     <label for="change-email-new-input" class="mb-1 block font-mono text-[11px] text-muted-foreground uppercase">
                       New Email Address
@@ -122,6 +128,10 @@ import MySiteLayout from "@/layouts/MySiteLayout.astro"
                       class="h-10 w-full rounded-none border border-border bg-background/80 px-3 font-mono text-xs text-foreground outline-none focus:border-primary"
                     />
                   </div>
+
+                  <!-- Turnstile container -->
+                  <div id="change-email-turnstile-container" class="flex justify-center empty:hidden py-1"></div>
+
                   <button
                     type="submit"
                     id="submit-change-email-btn"
@@ -170,6 +180,12 @@ import MySiteLayout from "@/layouts/MySiteLayout.astro"
               </p>
 
               <form id="unsub-manual-form" class="flex flex-col gap-4">
+                <!-- Honeypot Field -->
+                <div aria-hidden="true" style="display:none; position:absolute; left:-9999px; opacity:0; pointer-events:none;">
+                  <label for="unsub-manual-hp">Leave empty</label>
+                  <input type="text" id="unsub-manual-hp" name="hp_field" tabindex="-1" autocomplete="off" />
+                </div>
+
                 <div>
                   <label for="unsub-email-input" class="mb-1.5 block font-mono text-xs font-semibold tracking-wider text-muted-foreground uppercase">
                     Email Address
@@ -183,6 +199,9 @@ import MySiteLayout from "@/layouts/MySiteLayout.astro"
                     class="h-11 w-full rounded-none border border-border bg-background/80 px-3 font-mono text-sm text-foreground transition-all duration-200 outline-none placeholder:text-muted-foreground/50 focus:border-primary focus:bg-primary/5 focus:ring-0"
                   />
                 </div>
+
+                <!-- Turnstile container -->
+                <div id="unsub-manual-turnstile-container" class="flex justify-center empty:hidden py-1"></div>
 
                 <!-- Status -->
                 <div
@@ -276,7 +295,69 @@ import MySiteLayout from "@/layouts/MySiteLayout.astro"
     else stateManual.classList.remove("hidden")
   }
 
-  function showActionStatus(msg: string, isError: boolean) {
+  let manualTurnstileWidgetId: string | null = null
+  let changeEmailTurnstileWidgetId: string | null = null
+
+  function loadTurnstileScriptLazy(callback: () => void) {
+    const turnstileKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY
+    if (!turnstileKey) return
+
+    if ((window as any).turnstile) {
+      callback()
+      return
+    }
+
+    let script = document.getElementById("cf-turnstile-script") as HTMLScriptElement | null
+    if (!script) {
+      script = document.createElement("script")
+      script.id = "cf-turnstile-script"
+      script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js"
+      script.async = true
+      script.defer = true
+      document.head.appendChild(script)
+    }
+    script.addEventListener("load", callback, { once: true })
+  }
+
+  function initManualTurnstileOnDemand() {
+    const turnstileKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY
+    const container = document.getElementById("unsub-manual-turnstile-container")
+    if (!turnstileKey || !container || manualTurnstileWidgetId !== null) return
+
+    loadTurnstileScriptLazy(() => {
+      if ((window as any).turnstile && manualTurnstileWidgetId === null) {
+        try {
+          manualTurnstileWidgetId = (window as any).turnstile.render("#unsub-manual-turnstile-container", {
+            sitekey: turnstileKey,
+            theme: "dark",
+          })
+        } catch (err) {
+          console.warn("Manual Unsub Turnstile error:", err)
+        }
+      }
+    })
+  }
+
+  function initChangeEmailTurnstileOnDemand() {
+    const turnstileKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY
+    const container = document.getElementById("change-email-turnstile-container")
+    if (!turnstileKey || !container || changeEmailTurnstileWidgetId !== null) return
+
+    loadTurnstileScriptLazy(() => {
+      if ((window as any).turnstile && changeEmailTurnstileWidgetId === null) {
+        try {
+          changeEmailTurnstileWidgetId = (window as any).turnstile.render("#change-email-turnstile-container", {
+            sitekey: turnstileKey,
+            theme: "dark",
+          })
+        } catch (err) {
+          console.warn("Change Email Turnstile error:", err)
+        }
+      }
+    })
+  }
+
+  function showActionStatus(msg: string, isError: boolean, suggestedEmail?: string) {
     actionStatus.classList.remove(
       "hidden",
       "bg-emerald-500/10", "border-emerald-500/30", "text-emerald-400",
@@ -287,10 +368,30 @@ import MySiteLayout from "@/layouts/MySiteLayout.astro"
     } else {
       actionStatus.classList.add("bg-emerald-500/10", "border-emerald-500/30", "text-emerald-400")
     }
-    actionStatus.textContent = msg
+
+    if (suggestedEmail) {
+      actionStatus.innerHTML = `
+        <div>${msg}</div>
+        <div class="mt-2 flex items-center justify-between gap-2 border-t border-destructive/20 pt-2 text-amber-300 font-semibold">
+          <span>Did you mean <strong>${suggestedEmail}</strong>?</span>
+          <button type="button" id="action-apply-suggestion" class="rounded bg-amber-400 px-2 py-0.5 font-mono text-[10px] font-bold uppercase text-black transition hover:bg-amber-300 cursor-pointer">
+            Apply
+          </button>
+        </div>
+      `
+      const applyBtn = document.getElementById("action-apply-suggestion")
+      applyBtn?.addEventListener("click", () => {
+        if (changeEmailNewInput) changeEmailNewInput.value = suggestedEmail
+        actionStatus.classList.add("hidden")
+        actionStatus.innerHTML = ""
+        changeEmailNewInput?.focus()
+      })
+    } else {
+      actionStatus.textContent = msg
+    }
   }
 
-  function showManualStatus(msg: string, isError: boolean) {
+  function showManualStatus(msg: string, isError: boolean, suggestedEmail?: string) {
     manualStatus.classList.remove(
       "hidden",
       "bg-emerald-500/10", "border-emerald-500/30", "text-emerald-400",
@@ -301,7 +402,27 @@ import MySiteLayout from "@/layouts/MySiteLayout.astro"
     } else {
       manualStatus.classList.add("bg-emerald-500/10", "border-emerald-500/30", "text-emerald-400")
     }
-    manualStatus.textContent = msg
+
+    if (suggestedEmail) {
+      manualStatus.innerHTML = `
+        <div>${msg}</div>
+        <div class="mt-2 flex items-center justify-between gap-2 border-t border-destructive/20 pt-2 text-amber-300 font-semibold">
+          <span>Did you mean <strong>${suggestedEmail}</strong>?</span>
+          <button type="button" id="manual-apply-suggestion" class="rounded bg-amber-400 px-2 py-0.5 font-mono text-[10px] font-bold uppercase text-black transition hover:bg-amber-300 cursor-pointer">
+            Apply
+          </button>
+        </div>
+      `
+      const applyBtn = document.getElementById("manual-apply-suggestion")
+      applyBtn?.addEventListener("click", () => {
+        if (manualEmailInput) manualEmailInput.value = suggestedEmail
+        manualStatus.classList.add("hidden")
+        manualStatus.innerHTML = ""
+        manualEmailInput?.focus()
+      })
+    } else {
+      manualStatus.textContent = msg
+    }
   }
 
   // 1-Click Unsubscribe via Token
@@ -377,7 +498,7 @@ import MySiteLayout from "@/layouts/MySiteLayout.astro"
         oneClickResubscribeBtn.classList.remove("bg-primary", "border-primary")
         oneClickResubscribeBtn.classList.add("bg-emerald-600", "border-emerald-600")
       } else {
-        const msg = data.message || "Failed to re-subscribe. Please try again."
+        const msg = data.message || data.error?.message || "Failed to re-subscribe. Please try again."
         showActionStatus(msg, true)
         resubscribeBtnText.textContent = originalBtnText
         oneClickResubscribeBtn.disabled = false
@@ -389,10 +510,18 @@ import MySiteLayout from "@/layouts/MySiteLayout.astro"
     }
   })
 
+  // Attach lazy Turnstile event listeners to inputs
+  manualEmailInput?.addEventListener("focus", initManualTurnstileOnDemand, { once: true })
+  manualEmailInput?.addEventListener("click", initManualTurnstileOnDemand, { once: true })
+
+  changeEmailNewInput?.addEventListener("focus", initChangeEmailTurnstileOnDemand, { once: true })
+  changeEmailNewInput?.addEventListener("click", initChangeEmailTurnstileOnDemand, { once: true })
+
   // Toggle Change Email Panel
   toggleChangeEmailBtn?.addEventListener("click", () => {
     changeEmailPanel.classList.toggle("hidden")
     if (!changeEmailPanel.classList.contains("hidden")) {
+      initChangeEmailTurnstileOnDemand()
       changeEmailNewInput.focus()
     }
   })
@@ -400,10 +529,17 @@ import MySiteLayout from "@/layouts/MySiteLayout.astro"
   // Submit Change Email Form
   changeEmailForm?.addEventListener("submit", async (e) => {
     e.preventDefault()
+    initChangeEmailTurnstileOnDemand()
     actionStatus.classList.add("hidden")
 
     const newEmail = changeEmailNewInput.value.trim()
     if (!newEmail) return
+
+    const hp_field = (new FormData(changeEmailForm).get("hp_field") as string) || ""
+    let captchaToken = ""
+    if ((window as any).turnstile && changeEmailTurnstileWidgetId !== null) {
+      captchaToken = (window as any).turnstile.getResponse(changeEmailTurnstileWidgetId) || ""
+    }
 
     const originalSubmitText = submitChangeEmailText.textContent
     submitChangeEmailBtn.disabled = true
@@ -417,6 +553,8 @@ import MySiteLayout from "@/layouts/MySiteLayout.astro"
           oldEmail: currentEmail || undefined,
           token: currentToken || undefined,
           newEmail,
+          hp_field,
+          captchaToken,
         }),
       })
 
@@ -434,11 +572,21 @@ import MySiteLayout from "@/layouts/MySiteLayout.astro"
         changeEmailPanel.classList.add("hidden")
         changeEmailForm.reset()
 
+        if ((window as any).turnstile && changeEmailTurnstileWidgetId !== null) {
+          (window as any).turnstile.reset(changeEmailTurnstileWidgetId)
+        }
+
         submitChangeEmailText.textContent = originalSubmitText
         submitChangeEmailBtn.disabled = false
       } else {
-        const msg = data.message || "Failed to update email. Please try again."
-        showActionStatus(msg, true)
+        const msg = data.message || data.error?.message || "Failed to update email. Please try again."
+        const suggestedEmail = data.data?.suggestedEmail || data.details?.suggestedEmail || data.error?.details?.suggestedEmail
+        showActionStatus(msg, true, suggestedEmail)
+
+        if ((window as any).turnstile && changeEmailTurnstileWidgetId !== null) {
+          (window as any).turnstile.reset(changeEmailTurnstileWidgetId)
+        }
+
         submitChangeEmailText.textContent = originalSubmitText
         submitChangeEmailBtn.disabled = false
       }
@@ -452,10 +600,17 @@ import MySiteLayout from "@/layouts/MySiteLayout.astro"
   // Manual Unsubscribe Form Handler
   manualForm?.addEventListener("submit", async (e) => {
     e.preventDefault()
+    initManualTurnstileOnDemand()
     manualStatus.classList.add("hidden")
 
     const email = manualEmailInput.value.trim()
     if (!email) return
+
+    const hp_field = (new FormData(manualForm).get("hp_field") as string) || ""
+    let captchaToken = ""
+    if ((window as any).turnstile && manualTurnstileWidgetId !== null) {
+      captchaToken = (window as any).turnstile.getResponse(manualTurnstileWidgetId) || ""
+    }
 
     const originalText = manualBtnText.textContent
     manualSubmitBtn.disabled = true
@@ -465,7 +620,11 @@ import MySiteLayout from "@/layouts/MySiteLayout.astro"
       const res = await fetch(`${API_URL}/subscriber/v1/unsubscribe`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({
+          email,
+          hp_field,
+          captchaToken,
+        }),
       })
 
       const data = await res.json().catch(() => ({}))
@@ -486,8 +645,14 @@ import MySiteLayout from "@/layouts/MySiteLayout.astro"
         resubscribeBtnText.textContent = `Re-subscribe as ${email}`
         showState("success")
       } else {
-        const msg = data.message || "Failed to unsubscribe. Please try again."
-        showManualStatus(msg, true)
+        const msg = data.message || data.error?.message || "Failed to unsubscribe. Please try again."
+        const suggestedEmail = data.data?.suggestedEmail || data.details?.suggestedEmail || data.error?.details?.suggestedEmail
+        showManualStatus(msg, true, suggestedEmail)
+
+        if ((window as any).turnstile && manualTurnstileWidgetId !== null) {
+          (window as any).turnstile.reset(manualTurnstileWidgetId)
+        }
+
         manualBtnText.textContent = originalText ?? "Unsubscribe Now"
         manualSubmitBtn.disabled = false
       }
@@ -501,6 +666,7 @@ import MySiteLayout from "@/layouts/MySiteLayout.astro"
   // Show manual form button from error view
   showManualFormBtn?.addEventListener("click", () => {
     showState("manual")
+    initManualTurnstileOnDemand()
     setTimeout(() => {
       manualEmailInput?.focus()
     }, 100)

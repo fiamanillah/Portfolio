@@ -197,7 +197,9 @@ const submitTextId = `${idPrefix}-submit-text`
 
     let widgetId: string | null = null
 
-    function showStatus(message: string, isError: boolean) {
+    const emailInput = document.getElementById(`${prefix}-email`) as HTMLInputElement | null
+
+    function showStatus(message: string, isError: boolean, suggestedEmail?: string) {
       if (!statusDiv) return
       statusDiv.classList.remove(
         "hidden",
@@ -222,52 +224,83 @@ const submitTextId = `${idPrefix}-submit-text`
           "text-emerald-400"
         )
       }
-      statusDiv.textContent = message
+
+      if (suggestedEmail) {
+        statusDiv.innerHTML = `
+          <div>${message}</div>
+          <div class="mt-2 flex items-center justify-between gap-2 border-t border-destructive/20 pt-2 text-amber-300 font-semibold">
+            <span>Did you mean <strong>${suggestedEmail}</strong>?</span>
+            <button type="button" id="${prefix}-apply-suggestion" class="rounded bg-amber-400 px-2 py-0.5 font-mono text-[10px] font-bold uppercase text-black transition hover:bg-amber-300 cursor-pointer">
+              Apply
+            </button>
+          </div>
+        `
+        const applyBtn = document.getElementById(`${prefix}-apply-suggestion`)
+        applyBtn?.addEventListener("click", () => {
+          if (emailInput) emailInput.value = suggestedEmail
+          hideStatus()
+          emailInput?.focus()
+        })
+      } else {
+        statusDiv.textContent = message
+      }
     }
 
     function hideStatus() {
       if (statusDiv) {
         statusDiv.classList.add("hidden")
-        statusDiv.textContent = ""
+        statusDiv.innerHTML = ""
       }
     }
 
-    function renderTurnstile() {
+    function initNewsletterTurnstileOnDemand() {
       const turnstileKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY
-      if (!turnstileKey || !turnstileContainer) return
+      if (!turnstileKey || !turnstileContainer || widgetId !== null) return
 
-      if ((window as any).turnstile && !widgetId) {
-        try {
-          widgetId = (window as any).turnstile.render(`#${prefix}-turnstile-container`, {
-            sitekey: turnstileKey,
-            theme: "dark",
-          })
-        } catch (err) {
-          console.warn(`[Turnstile] ${prefix} render warning:`, err)
+      const render = () => {
+        if ((window as any).turnstile && widgetId === null) {
+          try {
+            widgetId = (window as any).turnstile.render(`#${prefix}-turnstile-container`, {
+              sitekey: turnstileKey,
+              theme: "dark",
+            })
+          } catch (err) {
+            console.warn(`[Turnstile] ${prefix} render warning:`, err)
+          }
         }
       }
-    }
 
-    // Dynamic Turnstile script loader
-    const turnstileKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY
-    if (turnstileKey && !document.getElementById("cf-turnstile-script")) {
-      const script = document.createElement("script")
-      script.id = "cf-turnstile-script"
-      script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js"
-      script.async = true
-      script.defer = true
-      script.onload = () => renderTurnstile()
-      document.head.appendChild(script)
-    } else if (turnstileKey) {
-      renderTurnstile()
+      if ((window as any).turnstile) {
+        render()
+        return
+      }
+
+      let script = document.getElementById("cf-turnstile-script") as HTMLScriptElement | null
+      if (!script) {
+        script = document.createElement("script")
+        script.id = "cf-turnstile-script"
+        script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js"
+        script.async = true
+        script.defer = true
+        document.head.appendChild(script)
+      }
+      script.addEventListener("load", render, { once: true })
     }
 
     // Avoid duplicate event listener binding
     if (formElement.dataset.bound === "true") return
     formElement.dataset.bound = "true"
 
+    const nameInput = document.getElementById(`${prefix}-name`) as HTMLInputElement | null
+    emailInput?.addEventListener("focus", initNewsletterTurnstileOnDemand, { once: true })
+    emailInput?.addEventListener("click", initNewsletterTurnstileOnDemand, { once: true })
+    nameInput?.addEventListener("focus", initNewsletterTurnstileOnDemand, { once: true })
+    nameInput?.addEventListener("click", initNewsletterTurnstileOnDemand, { once: true })
+    formElement.addEventListener("mouseenter", initNewsletterTurnstileOnDemand, { once: true })
+
     formElement.addEventListener("submit", async (e) => {
       e.preventDefault()
+      initNewsletterTurnstileOnDemand()
       hideStatus()
 
       const formData = new FormData(formElement)
@@ -333,8 +366,9 @@ const submitTextId = `${idPrefix}-submit-text`
             submitBtn.disabled = false
           }, 5000)
         } else {
-          const errorMessage = data.message || "Failed to subscribe. Please try again."
-          showStatus(errorMessage, true)
+          const errorMessage = data.message || data.error?.message || "Failed to subscribe. Please try again."
+          const suggestedEmail = data.data?.suggestedEmail || data.details?.suggestedEmail || data.error?.details?.suggestedEmail
+          showStatus(errorMessage, true, suggestedEmail)
           submitText.innerHTML = originalHTML
           submitBtn.disabled = false
 

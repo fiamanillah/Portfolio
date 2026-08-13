@@ -8,7 +8,7 @@ services:
             POSTGRES_PASSWORD: fiamanillah
             POSTGRES_DB: portfolio_db
         ports:
-            - '5436:5432'
+            - '5435:5432'
         volumes:
             - portfolio_postgres_data:/var/lib/postgresql/data
         networks:

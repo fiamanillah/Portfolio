@@ -14,6 +14,8 @@ export const subscribeSchema = {
 export const unsubscribeSchema = {
   body: z.object({
     email: z.string().email("Invalid email address"),
+    captchaToken: z.string().optional(),
+    hp_field: z.string().optional(),
   }),
 };
 
@@ -29,6 +31,8 @@ export const changeEmailSchema = {
     oldEmail: z.string().email("Invalid current email address").optional(),
     token: z.string().optional(),
     newEmail: z.string().email("Invalid new email address"),
+    captchaToken: z.string().optional(),
+    hp_field: z.string().optional(),
   }),
 };
 

@@ -6,7 +6,7 @@ import { config } from "./config";
 import { BaseModule } from "./BaseModule";
 import { AppError } from "./errors/AppError";
 import { HTTPStatusCode } from "@/types/HTTPStatusCode";
-import { AppLogger } from "./logging/logger";
+import { AppLogger } from "@workspace/logger";
 import { errorHandler } from "./errors/errorHandler";
 import { notFoundHandler } from "@/middleware/notFound";
 import { setupGlobalMiddlewares } from "@/middleware/globalMiddlewares";
@@ -17,6 +17,7 @@ export class IgnitorApp {
   private app: Express;
   private context: Context;
   private modules: IgnitorModule[] = [];
+  private logger = new AppLogger("IgnitorApp");
 
   constructor() {
     this.app = express();
@@ -38,7 +39,7 @@ export class IgnitorApp {
   // Register an application module
   public registerModule(module: IgnitorModule): void {
     this.modules.push(module);
-    AppLogger.info(`⚙ Registered module: ${module.name}`);
+    this.logger.info(`⚙ Registered module: ${module.name}`);
   }
 
   // The main boot sequence
@@ -55,7 +56,7 @@ export class IgnitorApp {
         // 3. Register module routes automatically if it's a BaseModule
         if (module instanceof BaseModule) {
           this.app.use(module.basePath, module.getRouter());
-          AppLogger.info(`↩ Registered routes for module: ${module.name}`);
+          this.logger.info(`↩ Registered routes for module: ${module.name}`);
         }
       }
 
@@ -72,9 +73,9 @@ export class IgnitorApp {
       this.app.use(errorHandler());
 
       // 5. Start the server
-      AppLogger.info("🙭 Starting server...");
+      this.logger.info("🙭 Starting server...");
       const server = this.app.listen(port, () => {
-        AppLogger.info(
+        this.logger.info(
           `🗲 Ignitor Server running on port ${port} in ${config.server.env} mode`,
         );
       });
@@ -83,9 +84,9 @@ export class IgnitorApp {
       this.setupServerEvents(server, port);
       this.setupGracefulShutdown(server);
 
-      AppLogger.info("✔ Server setup complete");
+      this.logger.info("✔ Server setup complete");
     } catch (error) {
-      AppLogger.error(" Failed to start server:", { error });
+      this.logger.error(" Failed to start server:", { error });
       throw error;
     }
   }
@@ -108,7 +109,7 @@ export class IgnitorApp {
 
     shutdownSignals.forEach((signal) => {
       process.on(signal, async () => {
-        AppLogger.info(` Received ${signal}, starting graceful shutdown...`);
+        this.logger.info(` Received ${signal}, starting graceful shutdown...`);
 
         // Stop accepting new connections
         server.close(async () => {
@@ -116,14 +117,14 @@ export class IgnitorApp {
             await this.shutdown();
             process.exit(0);
           } catch (error) {
-            AppLogger.error(" Error during shutdown:", { error });
+            this.logger.error(" Error during shutdown:", { error });
             process.exit(1);
           }
         });
 
         // Force shutdown if taking too long
         setTimeout(() => {
-          AppLogger.error(" Forced shutdown due to timeout");
+          this.logger.error(" Forced shutdown due to timeout");
           process.exit(1);
         }, 30000);
       });
@@ -131,17 +132,17 @@ export class IgnitorApp {
   }
 
   public async shutdown(): Promise<void> {
-    AppLogger.info("🙭 Shutting down application...");
+    this.logger.info("🙭 Shutting down application...");
 
     // 1. Shutdown modules in reverse order
     for (let i = this.modules.length - 1; i >= 0; i--) {
       const module = this.modules[i];
       if (module.onShutdown) {
         try {
-          AppLogger.info(`⚙ Shutting down module: ${module.name}`);
+          this.logger.info(`⚙ Shutting down module: ${module.name}`);
           await module.onShutdown();
         } catch (error) {
-          AppLogger.error(` Error shutting down module ${module.name}`, {
+          this.logger.error(` Error shutting down module ${module.name}`, {
             error,
           });
         }
@@ -150,6 +151,6 @@ export class IgnitorApp {
 
     // 2. Shutdown infrastructure (Disconnect Prisma, Redis, etc.)
     await this.context.shutdown();
-    AppLogger.info("✔ Application shutdown complete");
+    this.logger.info("✔ Application shutdown complete");
   }
 }

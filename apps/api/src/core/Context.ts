@@ -1,4 +1,4 @@
-import { AppLogger } from "./logging/logger";
+import { AppLogger } from "@workspace/logger";
 import { config as AppConfig } from "./config";
 import { ServiceMap } from "@/types/ServiceMap";
 import { InfrastructureProvider } from "./InfrastructureProvider";
@@ -7,6 +7,7 @@ import { HTTPStatusCode } from "@/types/HTTPStatusCode";
 
 export class Context {
   public readonly config = AppConfig;
+  private logger = new AppLogger("Context");
 
   // The internal registry of services
   private providers: Map<keyof ServiceMap, InfrastructureProvider> = new Map();
@@ -19,7 +20,7 @@ export class Context {
     provider: InfrastructureProvider<ServiceMap[K]>,
   ): void {
     this.providers.set(key, provider);
-    AppLogger.debug(`Registered infrastructure provider: ${provider.name}`);
+    this.logger.debug(`Registered infrastructure provider: ${provider.name}`);
   }
 
   /**
@@ -43,9 +44,9 @@ export class Context {
     for (const provider of this.providers.values()) {
       try {
         await provider.connect();
-        AppLogger.info(`⛁ ${provider.name} connected successfully`);
+        this.logger.info(`⛁ ${provider.name} connected successfully`);
       } catch (error) {
-        AppLogger.error(` Failed to connect ${provider.name}`, { error });
+        this.logger.error(` Failed to connect ${provider.name}`, { error });
         throw error;
       }
     }
@@ -57,9 +58,9 @@ export class Context {
     for (const provider of providers) {
       try {
         await provider.disconnect();
-        AppLogger.info(`⛁ ${provider.name} disconnected successfully`);
+        this.logger.info(`⛁ ${provider.name} disconnected successfully`);
       } catch (error) {
-        AppLogger.error(` Failed to disconnect ${provider.name}`, { error });
+        this.logger.error(` Failed to disconnect ${provider.name}`, { error });
       }
     }
   }

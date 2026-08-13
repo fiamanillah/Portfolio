@@ -3,8 +3,8 @@
   "ui": "tui",
   "tasks": {
     "db:generate": {
-      "inputs": ["prisma/schema.prisma", "src/prisma/schema.prisma"],
-      "outputs": ["node_modules/.prisma/**", "node_modules/@prisma/client/**"]
+      "inputs": ["packages/db/prisma/schema.prisma", "prisma/schema.prisma"],
+      "outputs": ["node_modules/.prisma/**", "node_modules/@prisma/client/**", "packages/db/node_modules/**"]
     },
     "build": {
       "dependsOn": ["^db:generate", "^build"],

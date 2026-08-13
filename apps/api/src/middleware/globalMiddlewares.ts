@@ -20,11 +20,24 @@ export function setupGlobalMiddlewares(app: Express) {
     }),
   );
 
+  const allowedOrigins = config.security.cors.allowedOrigins
+    .split(",")
+    .map((url) => url.trim());
+
   app.use(
     cors({
-      origin: config.security.cors.allowedOrigins
-        .split(",")
-        .map((url) => url.trim()),
+      origin: (origin, callback) => {
+        // Allow requests with no origin (like mobile apps, curl, server-to-server)
+        if (!origin) return callback(null, true);
+        if (
+          allowedOrigins.includes(origin) ||
+          allowedOrigins.includes("*") ||
+          !config.server.isProduction
+        ) {
+          return callback(null, true);
+        }
+        return callback(new Error(`CORS blocked for origin: ${origin}`));
+      },
       credentials: true,
       optionsSuccessStatus: 200,
     }),

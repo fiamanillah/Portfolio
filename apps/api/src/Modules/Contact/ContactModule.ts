@@ -1,7 +1,7 @@
 // src/Modules/Contact/ContactModule.ts
 import rateLimit from "express-rate-limit";
 import { BaseModule } from "@/core/BaseModule";
-import { AppLogger } from "@/core/logging/logger";
+import { AppLogger } from "@workspace/logger";
 import { config } from "@/core/config";
 import { validateRequest } from "@/middleware/validation";
 import { ContactService } from "./contact.service";
@@ -14,7 +14,7 @@ export class ContactModule extends BaseModule {
   public basePath: string = "/contact/v1/";
   public dependencies?: string[] | undefined;
 
-  private logger = new AppLogger("ContactModule");
+  protected logger = new AppLogger("ContactModule");
 
   protected async setupUseCases(): Promise<void> {
     this.registerService("ContactService", new ContactService());

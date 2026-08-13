@@ -1,13 +1,13 @@
 // src/Modules/Auth/AuthController.ts
 import { Request, Response } from "express";
 import { BaseController } from "@/core/BaseController";
-import { AppLogger } from "@/core/logging/logger";
+import { AppLogger } from "@workspace/logger";
 import { CreateUserDTO } from "./AuthDTO";
 import { AuthServices } from "./auth.service";
 
 export class AuthController extends BaseController {
   // Initialize the contextual logger
-  private logger = new AppLogger("AuthController");
+  protected logger = new AppLogger("AuthController");
 
   // Inject the service via the constructor
   constructor(private readonly authService: AuthServices) {

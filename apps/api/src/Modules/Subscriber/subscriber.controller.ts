@@ -59,7 +59,21 @@ export class SubscriberController extends BaseController {
    */
   public async unsubscribe(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const { email } = req.body;
+      const { email, hp_field, captchaToken } = req.body;
+      const clientIp = (req.headers["x-forwarded-for"] as string)?.split(",")[0]?.trim() || req.socket.remoteAddress;
+
+      // Honeypot trap check
+      if (this.subscriberService.isHoneypotTriggered(hp_field)) {
+        this.sendResponse(req, res, "You have been unsubscribed.");
+        return;
+      }
+
+      // Turnstile verification
+      const isCaptchaValid = await this.subscriberService.verifyTurnstileToken(captchaToken, clientIp);
+      if (!isCaptchaValid) {
+        throw new BadRequestError("Security check failed. Please refresh and try again.");
+      }
+
       const result = await this.subscriberService.unsubscribe(email);
       this.sendResponse(
         req,
@@ -100,6 +114,21 @@ export class SubscriberController extends BaseController {
    */
   public async changeEmail(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
+      const { hp_field, captchaToken } = req.body;
+      const clientIp = (req.headers["x-forwarded-for"] as string)?.split(",")[0]?.trim() || req.socket.remoteAddress;
+
+      // Honeypot trap check
+      if (this.subscriberService.isHoneypotTriggered(hp_field)) {
+        this.sendResponse(req, res, "Subscription email successfully updated.");
+        return;
+      }
+
+      // Turnstile verification
+      const isCaptchaValid = await this.subscriberService.verifyTurnstileToken(captchaToken, clientIp);
+      if (!isCaptchaValid) {
+        throw new BadRequestError("Security check failed. Please refresh and try again.");
+      }
+
       const result = await this.subscriberService.changeSubscriptionEmail(req.body);
       this.sendResponse(req, res, `Subscription email successfully updated to ${result.newEmail}.`, HTTPStatusCode.OK, result);
     } catch (error) {
