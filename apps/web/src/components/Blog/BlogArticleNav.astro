@@ -1,0 +1,84 @@
+---
+import { Badge } from "@workspace/ui/components/badge"
+import type { BlogPost } from "@/data/blogPosts"
+
+interface Props {
+  prevPost: BlogPost | null
+  nextPost: BlogPost | null
+}
+
+const { prevPost, nextPost } = Astro.props
+---
+
+{
+  (prevPost || nextPost) && (
+    <nav
+      aria-label="Article Navigation"
+      class="my-12 grid grid-cols-1 gap-6 border-t border-border/80 pt-8 sm:grid-cols-2"
+    >
+      {/* Previous Post Link */}
+      {prevPost ? (
+        <a
+          href={`/blog/${prevPost.slug}`}
+          class="group relative flex items-center gap-4 border border-border bg-background/60 p-4 transition-all duration-200 hover:border-primary/40 hover:bg-background/90"
+        >
+          <div class="pointer-events-none absolute top-1.5 left-1.5 h-2.5 w-2.5 border-t border-l border-border transition-colors group-hover:border-primary" />
+          <div class="pointer-events-none absolute right-1.5 bottom-1.5 h-2.5 w-2.5 border-r border-b border-border transition-colors group-hover:border-primary" />
+
+          <div class="relative h-14 w-20 shrink-0 overflow-hidden border border-border/60 bg-muted/30">
+            <img
+              src={prevPost.thumbnail}
+              alt={prevPost.title}
+              class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+            />
+          </div>
+
+          <div class="min-w-0 flex-1">
+            <span class="font-mono text-[10px] uppercase tracking-widest text-muted-foreground group-hover:text-primary transition-colors">
+              ← PREVIOUS ARTICLE
+            </span>
+            <h4 class="truncate font-bold text-sm text-foreground transition-colors group-hover:text-primary">
+              {prevPost.title}
+            </h4>
+            <span class="font-mono text-[10px] text-muted-foreground">
+              {prevPost.readTime}
+            </span>
+          </div>
+        </a>
+      ) : (
+        <div class="hidden sm:block" />
+      )}
+
+      {/* Next Post Link */}
+      {nextPost && (
+        <a
+          href={`/blog/${nextPost.slug}`}
+          class="group relative flex items-center justify-between gap-4 border border-border bg-background/60 p-4 transition-all duration-200 hover:border-primary/40 hover:bg-background/90 text-right"
+        >
+          <div class="pointer-events-none absolute top-1.5 right-1.5 h-2.5 w-2.5 border-t border-r border-border transition-colors group-hover:border-primary" />
+          <div class="pointer-events-none absolute left-1.5 bottom-1.5 h-2.5 w-2.5 border-l border-b border-border transition-colors group-hover:border-primary" />
+
+          <div class="min-w-0 flex-1">
+            <span class="font-mono text-[10px] uppercase tracking-widest text-muted-foreground group-hover:text-primary transition-colors">
+              NEXT ARTICLE →
+            </span>
+            <h4 class="truncate font-bold text-sm text-foreground transition-colors group-hover:text-primary">
+              {nextPost.title}
+            </h4>
+            <span class="font-mono text-[10px] text-muted-foreground">
+              {nextPost.readTime}
+            </span>
+          </div>
+
+          <div class="relative h-14 w-20 shrink-0 overflow-hidden border border-border/60 bg-muted/30">
+            <img
+              src={nextPost.thumbnail}
+              alt={nextPost.title}
+              class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+            />
+          </div>
+        </a>
+      )}
+    </nav>
+  )
+}

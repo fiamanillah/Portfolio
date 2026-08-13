@@ -1,11 +1,12 @@
 ---
 import MySiteLayout from "@/layouts/MySiteLayout.astro"
 import BlogContentBody from "@/components/Blog/BlogContentBody.astro"
+import BlogArticleNav from "@/components/Blog/BlogArticleNav.astro"
 import BlogCard from "@/components/Blog/BlogCard.astro"
 import NewsletterSection from "@/components/Newsletter/NewsletterSection.astro"
 import {
   blogPostsData,
-  getBlogPostBySlug,
+  getAdjacentBlogPosts,
   type BlogPost,
 } from "@/data/blogPosts"
 
@@ -21,58 +22,221 @@ interface Props {
 }
 
 const { post } = Astro.props
+const { prevPost, nextPost } = getAdjacentBlogPosts(post.slug)
 
-// Find related posts (excluding current post)
+// Related posts matching category or general
 const relatedPosts = blogPostsData
   .filter((p) => p.slug !== post.slug)
   .slice(0, 2)
+
+const siteUrl = "https://fiamanillah.com"
+const postUrl = `${siteUrl}/blog/${post.slug}`
+const thumbnailUrl = `${siteUrl}${post.thumbnail}`
+
+// JSON-LD Structured Data Schema for Google Crawlers & AI Bots
+const jsonLdSchema = {
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": post.title,
+  "description": post.summary,
+  "image": [thumbnailUrl],
+  "datePublished": "2025-08-01T00:00:00Z",
+  "author": {
+    "@type": "Person",
+    "name": post.author.name,
+    "jobTitle": post.author.role,
+  },
+  "publisher": {
+    "@type": "Person",
+    "name": "Fi Amanillah",
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": postUrl,
+  },
+  "keywords": post.tags.join(", "),
+}
 ---
 
 <MySiteLayout>
-  <!-- Breadcrumb Bar -->
-  <div class="border-b border-border/60 bg-background/50 py-3">
-    <div class="container mx-auto flex items-center gap-2 px-4 font-mono text-xs text-muted-foreground">
-      <a href="/" class="hover:text-foreground">Home</a>
-      <span>/</span>
-      <a href="/blog" class="hover:text-foreground">Blog</a>
-      <span>/</span>
-      <span class="truncate font-semibold text-foreground">{post.title}</span>
-    </div>
+  <!-- SEO & Crawler Head Tags Injection -->
+  <Fragment slot="head">
+    <title>{post.title} | Fi Amanillah Blog</title>
+    <meta name="description" content={post.summary} />
+    <meta name="keywords" content={post.tags.join(", ")} />
+    <link rel="canonical" href={postUrl} />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content={postUrl} />
+    <meta property="og:title" content={post.title} />
+    <meta property="og:description" content={post.summary} />
+    <meta property="og:image" content={thumbnailUrl} />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content={postUrl} />
+    <meta name="twitter:title" content={post.title} />
+    <meta name="twitter:description" content={post.summary} />
+    <meta name="twitter:image" content={thumbnailUrl} />
+
+    <!-- Structured Data Schema for Crawlers -->
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLdSchema)} />
+  </Fragment>
+
+  <!-- Top Reading Progress Bar (fixed under navbar) -->
+  <div id="top-progress-track" class="fixed left-0 right-0 z-40 h-[3px] bg-border/20" style="top: 0; opacity: 0;">
+    <div
+      id="top-reading-progress"
+      class="h-full bg-primary transition-[width] duration-150 ease-out"
+      style="width: 0%"
+    ></div>
   </div>
 
-  <main class="container mx-auto px-4 py-8">
-    <!-- Article Content -->
+  <!-- Centered Breadcrumbs Bar -->
+  <nav aria-label="Breadcrumbs" class="border-b border-border/60 bg-background/50 py-3.5">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-wrap items-center gap-2 font-mono text-xs text-muted-foreground">
+        <a href="/" class="hover:text-foreground transition-colors">Home</a>
+        <span>/</span>
+        <a href="/blog" class="hover:text-foreground transition-colors">Blog</a>
+        <span>/</span>
+        <a href={`/blog?category=${encodeURIComponent(post.category.toLowerCase())}`} class="text-primary hover:underline">
+          {post.category}
+        </a>
+        <span>/</span>
+        <span class="truncate font-semibold text-foreground max-w-xs">{post.title}</span>
+      </div>
+    </div>
+  </nav>
+
+  <main class="w-full py-4">
+    {/* Reader Body (Main Article + Sticky Right TOC) */}
     <BlogContentBody post={post} />
 
-    <!-- Related Articles Section -->
-    {
-      relatedPosts.length > 0 && (
-        <section class="mx-auto max-w-4xl border-t border-border/80 pt-12 mt-12">
-          <div class="mb-6 flex items-center justify-between">
-            <h2 class="font-mono text-xs font-bold tracking-widest text-primary uppercase">
-              // CONTINUE READING
-            </h2>
-            <a href="/blog" class="font-mono text-xs text-muted-foreground hover:text-foreground">
-              View All Articles →
-            </a>
-          </div>
-          <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-            {relatedPosts.map((relatedPost) => (
-              <BlogCard post={relatedPost} />
-            ))}
-          </div>
-        </section>
-      )
-    }
+    {/* Bottom Sections Container — full container width */}
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 
-    <!-- Newsletter Section -->
-    <div class="mx-auto max-w-4xl mt-16">
-      <NewsletterSection
-        title="Enjoyed this Article?"
-        subtitle="Get notified as soon as new system architecture breakdowns and performance guides are published."
-        source="blog_detail"
-        idPrefix="blog-detail-newsletter"
-      />
+      {/* Decorative section divider */}
+      <div class="flex items-center gap-4 my-4">
+        <div class="h-px flex-1 bg-gradient-to-r from-transparent via-primary/20 to-transparent"></div>
+        <span class="font-mono text-[10px] tracking-widest text-primary/40 uppercase">CONTINUE</span>
+        <div class="h-px flex-1 bg-gradient-to-r from-transparent via-primary/20 to-transparent"></div>
+      </div>
+
+      {/* Previous & Next Article Navigation — full width */}
+      <BlogArticleNav prevPost={prevPost} nextPost={nextPost} />
+
+      {/* Related Articles Recommendation Grid — full width */}
+      {
+        relatedPosts.length > 0 && (
+          <section class="border-t border-border/80 pt-12 mt-8 blog-bottom-animate">
+            <div class="mb-6 flex items-center justify-between">
+              <h2 class="font-mono text-xs font-bold tracking-widest text-primary uppercase">
+                // CONTINUE READING RELATED ARTICLES
+              </h2>
+              <a href="/blog" class="font-mono text-xs text-muted-foreground hover:text-foreground transition-colors">
+                View All Articles →
+              </a>
+            </div>
+            <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+              {relatedPosts.map((relatedPost) => (
+                <BlogCard post={relatedPost} />
+              ))}
+            </div>
+          </section>
+        )
+      }
+
+      {/* Newsletter Subscription Form — full width */}
+      <div class="mt-16 pb-12 blog-bottom-animate">
+        <NewsletterSection
+          title="Enjoyed this Article?"
+          subtitle="Get notified as soon as new system architecture breakdowns and performance guides are published."
+          source="blog_detail"
+          idPrefix="blog-detail-newsletter"
+        />
+      </div>
     </div>
   </main>
 </MySiteLayout>
+
+<style>
+  /* Bottom section entrance animations */
+  @keyframes blog-bottom-fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .blog-bottom-animate {
+    opacity: 0;
+    animation: blog-bottom-fade-in 0.6s ease-out forwards;
+    animation-play-state: paused;
+  }
+
+  .blog-bottom-animate.is-visible {
+    animation-play-state: running;
+  }
+</style>
+
+<script>
+  // Top reading progress bar
+  function initTopProgress() {
+    const track = document.getElementById("top-progress-track")
+    const bar = document.getElementById("top-reading-progress")
+    if (!track || !bar) return
+
+    // Position the bar below the sticky nav header
+    const nav = document.querySelector("header.sticky")
+    if (nav) {
+      const navHeight = nav.getBoundingClientRect().height
+      track.style.top = `${navHeight}px`
+    }
+    track.style.opacity = "1"
+
+    let ticking = false
+    window.addEventListener("scroll", () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          const scrollY = window.scrollY
+          const docHeight = document.documentElement.scrollHeight - window.innerHeight
+          const progress = docHeight > 0 ? Math.min(100, (scrollY / docHeight) * 100) : 0
+          bar.style.width = `${progress}%`
+          ticking = false
+        })
+        ticking = true
+      }
+    })
+  }
+
+  // Bottom sections entrance animation
+  function initBottomAnimations() {
+    const elements = document.querySelectorAll(".blog-bottom-animate")
+    if (!elements.length) return
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible")
+            observer.unobserve(entry.target)
+          }
+        })
+      },
+      { rootMargin: "0px 0px -60px 0px", threshold: 0.1 }
+    )
+
+    elements.forEach((el) => observer.observe(el))
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    initTopProgress()
+    initBottomAnimations()
+  })
+</script>

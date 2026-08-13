@@ -1,6 +1,7 @@
 ---
 import { Badge } from "@workspace/ui/components/badge"
-import { Button } from "@workspace/ui/components/button"
+import BlogArticleHeader from "@/components/Blog/BlogArticleHeader.astro"
+import BlogTableOfContents from "@/components/Blog/BlogTableOfContents.astro"
 import type { BlogPost } from "@/data/blogPosts"
 
 interface Props {
@@ -8,143 +9,110 @@ interface Props {
 }
 
 const { post } = Astro.props
+
+const sections = post.sections || []
 ---
 
-<article class="mx-auto max-w-4xl px-4 py-10">
-  {/* Header Metadata & Title */}
-  <div class="border-b border-border/80 pb-8">
-    <div class="mb-4 flex flex-wrap items-center gap-2">
-      <a href="/blog">
-        <Button variant="outline" size="sm" class="h-7 gap-1 font-mono text-xs text-muted-foreground hover:text-primary">
-          ← Back to Articles
-        </Button>
-      </a>
-      <Badge variant="outline" class="border-primary/40 bg-primary/10 font-mono text-xs text-primary uppercase">
-        {post.category}
-      </Badge>
-      {post.featured && (
-        <Badge class="bg-primary text-primary-foreground font-mono text-xs uppercase">
-          FEATURED STORY
-        </Badge>
-      )}
-    </div>
+<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8" style="scroll-behavior: smooth;">
+  <div class="grid grid-cols-1 gap-10 lg:grid-cols-12">
+    {/* Main Article Reading Column (8 cols lg) */}
+    <article class="lg:col-span-8 min-w-0">
+      {/* Article Header — full article-column width */}
+      <BlogArticleHeader post={post} />
 
-    <h1 class="text-3xl font-black tracking-tight text-foreground sm:text-5xl">
-      {post.title}
-    </h1>
-
-    {post.subtitle && (
-      <p class="mt-3 text-lg font-medium text-muted-foreground sm:text-xl">
-        {post.subtitle}
-      </p>
-    )}
-
-    {/* Author & Reading Meta bar */}
-    <div class="mt-8 flex flex-wrap items-center justify-between gap-4 border-t border-border/60 pt-6">
-      <div class="flex items-center gap-3">
+      {/* Main Cover Artwork — full article-column width */}
+      <div class="relative my-8 aspect-[16/9] w-full overflow-hidden border border-border bg-muted/30 blog-animate-in">
         <img
-          src={post.author.avatar}
-          alt={post.author.name}
-          class="h-10 w-10 rounded-full border border-primary/40 object-cover"
+          src={post.thumbnail}
+          alt={post.title}
+          class="h-full w-full object-cover"
         />
-        <div>
-          <p class="font-mono text-sm font-bold text-foreground">
-            {post.author.name}
-          </p>
-          <p class="text-xs text-muted-foreground">
-            {post.author.role}
-          </p>
+        <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent"></div>
+        <div class="absolute bottom-3 left-4 font-mono text-xs text-muted-foreground">
+          // COVER IMAGE: {post.title}
         </div>
       </div>
 
-      <div class="flex items-center gap-3 font-mono text-xs text-muted-foreground">
-        <span>PUBLISHED {post.date}</span>
-        <span class="text-primary">•</span>
-        <span>{post.readTime}</span>
-        {post.views && (
-          <>
-            <span class="text-primary">•</span>
-            <span>{post.views} VIEWS</span>
-          </>
+      {/* Key Takeaways Callout Box — full article-column width */}
+      {post.keyTakeaways && post.keyTakeaways.length > 0 && (
+        <div class="relative my-8 overflow-hidden border border-primary/30 bg-primary/5 p-6 backdrop-blur-sm blog-animate-in">
+          <div class="pointer-events-none absolute top-2 left-2 z-10 h-3 w-3 border-t border-l border-primary" />
+          <div class="pointer-events-none absolute top-2 right-2 z-10 h-3 w-3 border-t border-r border-primary" />
+          <div class="pointer-events-none absolute bottom-2 left-2 z-10 h-3 w-3 border-b border-l border-primary" />
+          <div class="pointer-events-none absolute right-2 bottom-2 z-10 h-3 w-3 border-r border-b border-primary" />
+
+          <h3 class="font-mono text-xs font-bold tracking-widest text-primary uppercase">
+            // KEY TAKEAWAYS & ARCHITECTURE HIGHLIGHTS
+          </h3>
+          <ul class="mt-3 space-y-2 text-sm text-foreground/90 leading-relaxed">
+            {post.keyTakeaways.map((item) => (
+              <li class="flex items-start gap-2.5">
+                <span class="mt-0.5 text-primary">⚡</span>
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/* Main Reading Content — narrower for optimal readability */}
+      <div class="prose prose-invert max-w-3xl space-y-10 text-foreground/90 leading-relaxed text-base">
+        <p class="text-lg font-medium text-muted-foreground leading-relaxed border-l-2 border-primary/60 pl-4 py-1 blog-animate-in">
+          {post.summary}
+        </p>
+
+        {sections.length > 0 ? (
+          sections.map((sec, i) => {
+            const sectionId = `section-${i + 1}`
+            return (
+              <section id={sectionId} data-article-section class="scroll-mt-28 space-y-4 pt-4 blog-animate-in">
+                <h2 class="text-2xl font-bold tracking-tight text-foreground border-b border-border/40 pb-2">
+                  <a href={`#${sectionId}`} class="hover:text-primary transition-colors">
+                    # {sec.heading}
+                  </a>
+                </h2>
+                <p class="text-base text-muted-foreground leading-relaxed">
+                  {sec.body}
+                </p>
+
+                {sec.codeSnippet && (
+                  <div class="relative my-6 overflow-hidden border border-border bg-slate-950 p-4 font-mono text-xs text-slate-100 shadow-md">
+                    <div class="mb-2 flex items-center justify-between border-b border-slate-800 pb-2 font-mono text-[10px] text-slate-400">
+                      <span class="uppercase tracking-wider text-primary font-bold">{sec.codeSnippet.language}</span>
+                      <button
+                        type="button"
+                        class="copy-code-btn cursor-pointer hover:text-slate-200 transition-colors"
+                        data-code={sec.codeSnippet.code}
+                      >
+                        Copy Code 📋
+                      </button>
+                    </div>
+                    <pre class="overflow-x-auto p-2 font-mono leading-relaxed">
+                      <code>{sec.codeSnippet.code}</code>
+                    </pre>
+                  </div>
+                )}
+              </section>
+            )
+          })
+        ) : (
+          <div class="space-y-4 pt-4">
+            <p class="text-base text-muted-foreground leading-relaxed">
+              Full technical postmortem and detailed code examples for {post.title} continue in this article. Check back regularly for updated benchmarks and architectural references.
+            </p>
+          </div>
         )}
       </div>
-    </div>
-  </div>
 
-  {/* Main Thumbnail Hero Image */}
-  <div class="relative my-8 aspect-[16/9] w-full overflow-hidden border border-border bg-muted/30">
-    <img
-      src={post.thumbnail}
-      alt={post.title}
-      class="h-full w-full object-cover"
-    />
-    <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent"></div>
-  </div>
-
-  {/* Key Takeaways Callout Box */}
-  {post.keyTakeaways && post.keyTakeaways.length > 0 && (
-    <div class="relative my-8 overflow-hidden border border-primary/30 bg-primary/5 p-6 backdrop-blur-sm">
-      <div class="pointer-events-none absolute top-2 left-2 z-10 h-3 w-3 border-t border-l border-primary"></div>
-      <div class="pointer-events-none absolute top-2 right-2 z-10 h-3 w-3 border-t border-r border-primary"></div>
-      <div class="pointer-events-none absolute bottom-2 left-2 z-10 h-3 w-3 border-b border-l border-primary"></div>
-      <div class="pointer-events-none absolute right-2 bottom-2 z-10 h-3 w-3 border-r border-b border-primary"></div>
-
-      <h3 class="font-mono text-xs font-bold tracking-widest text-primary uppercase">
-        // KEY TAKEAWAYS & HIGHLIGHTS
-      </h3>
-      <ul class="mt-3 space-y-2 text-sm text-foreground/90">
-        {post.keyTakeaways.map((item) => (
-          <li class="flex items-start gap-2.5">
-            <span class="mt-1 text-primary">⚡</span>
-            <span>{item}</span>
-          </li>
-        ))}
-      </ul>
-    </div>
-  )}
-
-  {/* Article Body Content */}
-  <div class="prose prose-invert max-w-none space-y-8 text-foreground/90 leading-relaxed">
-    <p class="text-lg text-muted-foreground leading-relaxed">
-      {post.summary}
-    </p>
-
-    {post.sections && post.sections.length > 0 ? (
-      post.sections.map((sec) => (
-        <section class="space-y-4 pt-4">
-          <h2 class="text-2xl font-bold tracking-tight text-foreground border-b border-border/40 pb-2">
-            {sec.heading}
-          </h2>
-          <p class="text-base text-muted-foreground leading-relaxed">
-            {sec.body}
-          </p>
-
-          {sec.codeSnippet && (
-            <div class="relative my-4 overflow-hidden border border-border bg-slate-950 p-4 font-mono text-xs text-slate-100">
-              <div class="mb-2 flex items-center justify-between border-b border-slate-800 pb-2 font-mono text-[10px] text-slate-400">
-                <span>{sec.codeSnippet.language.toUpperCase()}</span>
-                <span>SNIPPET</span>
-              </div>
-              <pre class="overflow-x-auto p-2">
-                <code>{sec.codeSnippet.code}</code>
-              </pre>
-            </div>
-          )}
-        </section>
-      ))
-    ) : (
-      <div class="space-y-4 pt-4">
-        <p class="text-base text-muted-foreground leading-relaxed">
-          Full technical postmortem and detailed code examples for {post.title} continue in this article. Check back regularly for detailed benchmarks and code references.
-        </p>
+      {/* Decorative divider between content and meta */}
+      <div class="my-12 flex items-center gap-4">
+        <div class="h-px flex-1 bg-gradient-to-r from-transparent via-border to-transparent"></div>
+        <span class="font-mono text-[10px] tracking-widest text-muted-foreground/50 uppercase">END OF ARTICLE</span>
+        <div class="h-px flex-1 bg-gradient-to-r from-transparent via-border to-transparent"></div>
       </div>
-    )}
-  </div>
 
-  {/* Article Footer: Tags & Share */}
-  <div class="mt-12 border-t border-border/80 pt-8">
-    <div class="flex flex-wrap items-center justify-between gap-4">
-      <div class="flex flex-wrap items-center gap-2">
+      {/* Article Tags — full article-column width */}
+      <div class="border-t border-border/60 pt-6 flex flex-wrap items-center gap-2 blog-animate-in">
         <span class="font-mono text-xs text-muted-foreground">TAGS:</span>
         {post.tags.map((tag) => (
           <Badge variant="secondary" class="font-mono text-xs">
@@ -153,11 +121,103 @@ const { post } = Astro.props
         ))}
       </div>
 
-      <a href="/blog">
-        <Button variant="outline" size="sm" class="font-mono text-xs gap-1">
-          ← All Articles
-        </Button>
-      </a>
-    </div>
+      {/* Author Bio Card — full article-column width */}
+      <div class="mt-8 overflow-hidden border border-border bg-background/80 p-6 backdrop-blur-sm blog-animate-in">
+        <div class="flex flex-col sm:flex-row items-center gap-5">
+          <img
+            src={post.author.avatar}
+            alt={post.author.name}
+            class="h-16 w-16 rounded-full border-2 border-primary/40 object-cover shrink-0"
+          />
+          <div class="text-center sm:text-left">
+            <h4 class="font-mono text-base font-bold text-foreground">
+              Written by {post.author.name}
+            </h4>
+            <p class="font-mono text-xs text-primary mb-2">
+              {post.author.role}
+            </p>
+            <p class="text-xs text-muted-foreground leading-relaxed">
+              Full Stack Engineer specializing in TypeScript backend architecture, event-driven microservices with RabbitMQ & Redis, Prisma ORM tuning, and cloud VPS deployments.
+            </p>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    {/* Right Sidebar Column: Sticky Table of Contents (4 cols lg) */}
+    <aside class="lg:col-span-4 min-w-0 h-full">
+      <BlogTableOfContents sections={sections} />
+    </aside>
   </div>
-</article>
+</div>
+
+<style>
+  /* Section entrance animation */
+  @keyframes blog-fade-in-up {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .blog-animate-in {
+    opacity: 0;
+    animation: blog-fade-in-up 0.5s ease-out forwards;
+  }
+</style>
+
+<script>
+  // Copy Code Snippet buttons logic
+  document.querySelectorAll(".copy-code-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const code = btn.getAttribute("data-code")
+      if (code) {
+        navigator.clipboard.writeText(code).then(() => {
+          const original = btn.textContent
+          btn.textContent = "Copied! ✓"
+          setTimeout(() => {
+            btn.textContent = original
+          }, 2000)
+        })
+      }
+    })
+  })
+
+  // Intersection Observer for section entrance animations
+  function initSectionAnimations() {
+    const animateElements = document.querySelectorAll(".blog-animate-in")
+    if (!animateElements.length) return
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry, index) => {
+          if (entry.isIntersecting) {
+            const el = entry.target as HTMLElement
+            // Stagger the animation slightly for each element
+            el.style.animationDelay = `${index * 0.05}s`
+            el.style.animationPlayState = "running"
+            observer.unobserve(el)
+          }
+        })
+      },
+      { rootMargin: "0px 0px -40px 0px", threshold: 0.1 }
+    )
+
+    animateElements.forEach((el) => {
+      const htmlEl = el as HTMLElement
+      htmlEl.style.animationPlayState = "paused"
+      observer.observe(el)
+    })
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initSectionAnimations)
+  } else {
+    initSectionAnimations()
+  }
+  document.addEventListener("astro:page-load", initSectionAnimations)
+</script>

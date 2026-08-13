@@ -1,0 +1,130 @@
+---
+import { Badge } from "@workspace/ui/components/badge"
+import type { BlogPost } from "@/data/blogPosts"
+
+interface Props {
+  post: BlogPost
+}
+
+const { post } = Astro.props
+---
+
+<header id="article-top" class="border-b border-border/80 pb-8 text-left">
+  {/* Category & Featured Badges */}
+  <div class="mb-4 flex flex-wrap items-center gap-2">
+    <a href={`/blog?category=${encodeURIComponent(post.category.toLowerCase())}`}>
+      <Badge
+        variant="outline"
+        class="border-primary/40 bg-primary/10 font-mono text-xs text-primary uppercase transition-colors hover:border-primary"
+      >
+        {post.category}
+      </Badge>
+    </a>
+    {
+      post.featured && (
+        <Badge class="bg-primary text-primary-foreground font-mono text-xs uppercase">
+          FEATURED STORY
+        </Badge>
+      )
+    }
+  </div>
+
+  {/* Main Article Title */}
+  <h1 class="text-3xl font-black tracking-tight text-foreground sm:text-4xl lg:text-5xl leading-[1.15]">
+    {post.title}
+  </h1>
+
+  {/* Subtitle */}
+  {
+    post.subtitle && (
+      <p class="mt-4 text-base font-medium text-muted-foreground sm:text-lg leading-relaxed">
+        {post.subtitle}
+      </p>
+    )
+  }
+
+  {/* Author & Reading Metadata Bar */}
+  <div class="mt-8 flex flex-col justify-between gap-6 border-t border-border/60 pt-6 sm:flex-row sm:items-center">
+    <div class="flex items-center gap-3">
+      <img
+        src={post.author.avatar}
+        alt={post.author.name}
+        class="h-11 w-11 rounded-full border border-primary/40 object-cover shadow-sm"
+      />
+      <div>
+        <p class="font-mono text-sm font-bold text-foreground">
+          {post.author.name}
+        </p>
+        <p class="text-xs text-muted-foreground">
+          {post.author.role}
+        </p>
+      </div>
+    </div>
+
+    <div class="flex flex-wrap items-center gap-4">
+      <div class="flex items-center gap-2 font-mono text-xs text-muted-foreground">
+        <span>{post.date}</span>
+        <span class="text-primary">•</span>
+        <span>{post.readTime}</span>
+        {
+          post.views && (
+            <>
+              <span class="text-primary">•</span>
+              <span>{post.views} VIEWS</span>
+            </>
+          )
+        }
+      </div>
+
+      {/* Social Sharing Actions */}
+      <div class="flex items-center gap-1.5 border-l border-border/60 pl-4">
+        <button
+          type="button"
+          id="copy-link-btn"
+          title="Copy article link"
+          class="flex h-8 items-center gap-1.5 border border-border bg-background px-3 font-mono text-xs text-muted-foreground transition-colors hover:border-primary hover:text-foreground cursor-pointer"
+        >
+          <span>🔗</span>
+          <span id="copy-text">Share</span>
+        </button>
+
+        <a
+          href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(`https://fiamanillah.com/blog/${post.slug}`)}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          title="Share on Twitter / X"
+          class="flex h-8 w-8 items-center justify-center border border-border bg-background font-mono text-xs text-muted-foreground transition-colors hover:border-primary hover:text-foreground"
+        >
+          𝕏
+        </a>
+
+        <a
+          href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`https://fiamanillah.com/blog/${post.slug}`)}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          title="Share on LinkedIn"
+          class="flex h-8 w-8 items-center justify-center border border-border bg-background font-mono text-xs text-muted-foreground transition-colors hover:border-primary hover:text-foreground"
+        >
+          in
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<script>
+  // Copy Link Script
+  const copyBtn = document.getElementById("copy-link-btn")
+  const copyText = document.getElementById("copy-text")
+
+  if (copyBtn && copyText) {
+    copyBtn.addEventListener("click", () => {
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        copyText.textContent = "Copied! ✓"
+        setTimeout(() => {
+          copyText.textContent = "Share"
+        }, 2000)
+      })
+    })
+  }
+</script>
