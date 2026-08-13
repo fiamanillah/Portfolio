@@ -1,0 +1,149 @@
+---
+import { Badge } from "@workspace/ui/components/badge"
+import { Button } from "@workspace/ui/components/button"
+import type { BlogPost } from "@/data/blogPosts"
+
+interface Props {
+  post: BlogPost
+  class?: string
+}
+
+const { post, class: className = "" } = Astro.props
+---
+
+<article
+  class={`group relative flex flex-col justify-between overflow-hidden border border-border bg-background/60 backdrop-blur-sm transition-all duration-300 hover:border-primary/40 hover:bg-background/90 hover:shadow-[0_0_0_1px_oklch(var(--primary)/20%),0_8px_32px_-8px_oklch(var(--primary)/12%)] ${className}`}
+>
+  {/* Cyberpunk corner brackets */}
+  <div
+    class="pointer-events-none absolute top-2 left-2 z-20 h-3.5 w-3.5 border-t-[1.5px] border-l-[1.5px] border-border transition-all duration-200 group-hover:h-4.5 group-hover:w-4.5 group-hover:border-primary"
+  >
+  </div>
+  <div
+    class="pointer-events-none absolute top-2 right-2 z-20 h-3.5 w-3.5 border-t-[1.5px] border-r-[1.5px] border-border transition-all duration-200 group-hover:h-4.5 group-hover:w-4.5 group-hover:border-primary"
+  >
+  </div>
+  <div
+    class="pointer-events-none absolute bottom-2 left-2 z-20 h-3.5 w-3.5 border-b-[1.5px] border-l-[1.5px] border-border transition-all duration-200 group-hover:h-4.5 group-hover:w-4.5 group-hover:border-primary"
+  >
+  </div>
+  <div
+    class="pointer-events-none absolute right-2 bottom-2 z-20 h-3.5 w-3.5 border-r-[1.5px] border-b-[1.5px] border-border transition-all duration-200 group-hover:h-4.5 group-hover:w-4.5 group-hover:border-primary"
+  >
+  </div>
+
+  <div>
+    {/* Card Thumbnail Container */}
+    <div class="relative aspect-[16/9] w-full overflow-hidden border-b border-border/80 bg-muted/40">
+      <img
+        src={post.thumbnail}
+        alt={post.title}
+        class="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+        loading="lazy"
+      />
+      {/* Vignette Overlay */}
+      <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent"></div>
+
+      {/* Category Badge on Top-Left */}
+      <div class="absolute top-3 left-3 z-10">
+        <Badge
+          variant="outline"
+          class="border-primary/40 bg-background/80 font-mono text-[10px] font-semibold tracking-wider text-primary uppercase backdrop-blur-md"
+        >
+          {post.category}
+        </Badge>
+      </div>
+
+      {/* Featured Badge if applicable */}
+      {
+        post.featured && (
+          <div class="absolute top-3 right-3 z-10">
+            <Badge class="bg-primary text-primary-foreground font-mono text-[10px] font-bold tracking-wider uppercase shadow-sm">
+              FEATURED
+            </Badge>
+          </div>
+        )
+      }
+    </div>
+
+    {/* Content Container */}
+    <div class="p-6">
+      {/* Date & Read Time Metadata */}
+      <div class="flex items-center gap-2 font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
+        <span>{post.date}</span>
+        <span class="text-primary/60">•</span>
+        <span>{post.readTime}</span>
+        {post.views && (
+          <>
+            <span class="text-primary/60">•</span>
+            <span>{post.views} VIEWS</span>
+          </>
+        )}
+      </div>
+
+      {/* Title */}
+      <h3 class="mt-3 text-lg font-bold tracking-tight text-foreground transition-colors duration-200 group-hover:text-primary line-clamp-2">
+        <a href={`/blog/${post.slug}`} class="focus:outline-none">
+          <span class="absolute inset-0 z-10" aria-hidden="true"></span>
+          {post.title}
+        </a>
+      </h3>
+
+      {/* Summary */}
+      <p class="mt-2.5 text-sm leading-relaxed text-muted-foreground line-clamp-3">
+        {post.summary}
+      </p>
+    </div>
+  </div>
+
+  {/* Footer: Tags & Action */}
+  <div class="p-6 pt-0">
+    <div class="mb-4 flex flex-wrap gap-1.5">
+      {
+        post.tags.slice(0, 3).map((tag) => (
+          <Badge
+            variant="secondary"
+            class="font-mono text-[10px] font-normal text-muted-foreground/90 transition-colors group-hover:border-primary/20"
+          >
+            #{tag}
+          </Badge>
+        ))
+      }
+      {post.tags.length > 3 && (
+        <span class="font-mono text-[10px] text-muted-foreground/60 align-self-center">
+          +{post.tags.length - 3}
+        </span>
+      )}
+    </div>
+
+    <div class="relative z-20 flex items-center justify-between border-t border-border/60 pt-4">
+      {/* Author avatar & info */}
+      <div class="flex items-center gap-2">
+        {post.author.avatar && (
+          <img
+            src={post.author.avatar}
+            alt={post.author.name}
+            class="h-6 w-6 rounded-full border border-border object-cover"
+          />
+        )}
+        <span class="font-mono text-xs text-muted-foreground transition-colors group-hover:text-foreground">
+          {post.author.name}
+        </span>
+      </div>
+
+      {/* Action button */}
+      <a href={`/blog/${post.slug}`} class="inline-block relative z-20">
+        <Button
+          variant="outline"
+          size="sm"
+          class="h-8 gap-1.5 font-mono text-xs transition-colors group-hover:border-primary group-hover:text-primary"
+        >
+          Read
+          <span class="transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
+            ↗
+          </span>
+        </Button>
+      </a>
+    </div>
+  </div>
+</article>

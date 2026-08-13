@@ -1,0 +1,50 @@
+---
+import { Badge } from "@workspace/ui/components/badge"
+
+interface Props {
+  totalPosts: number
+  totalCategories: number
+}
+
+const { totalPosts, totalCategories } = Astro.props
+---
+
+<header class="relative overflow-hidden border-b border-border py-12 text-center sm:py-16">
+  {/* Background Pattern (diagonal stripes themed to site palette) */}
+  <div
+    class="diagonal-stripes pointer-events-none absolute inset-0 z-10 bg-background/50"
+    aria-hidden="true"
+  >
+  </div>
+
+  <div class="relative z-20 mx-auto max-w-4xl px-4">
+    <p class="section-label mb-3 font-mono text-xs tracking-widest text-primary uppercase">
+      // SYSTEM LOGS & ENGINEERING JOURNAL
+    </p>
+
+    <h1 class="section-title text-3xl font-black tracking-tight text-foreground sm:text-5xl">
+      Blog <span class="text-primary">/</span> Articles & Insights
+    </h1>
+
+    <p class="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+      In-depth technical writeups on distributed systems, message queue decoupling, database latency optimization, and real-time backend engineering.
+    </p>
+
+    {/* Accent bar */}
+    <div class="accent-bar mx-auto mb-6 mt-6 w-60"></div>
+
+    {/* Stats pill badges */}
+    <div class="flex flex-wrap items-center justify-center gap-3 font-mono text-xs">
+      <Badge variant="outline" class="gap-1.5 border-border bg-background/60 py-1 px-3 text-muted-foreground">
+        <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        <span>{totalPosts} Technical Articles</span>
+      </Badge>
+      <Badge variant="outline" class="gap-1.5 border-border bg-background/60 py-1 px-3 text-muted-foreground">
+        <span>{totalCategories} Specializations</span>
+      </Badge>
+      <Badge variant="outline" class="gap-1.5 border-border bg-background/60 py-1 px-3 text-muted-foreground">
+        <span>Updated Monthly</span>
+      </Badge>
+    </div>
+  </div>
+</header>

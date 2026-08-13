@@ -1,0 +1,45 @@
+---
+import MySiteLayout from "@/layouts/MySiteLayout.astro"
+import BlogHeader from "@/components/Blog/BlogHeader.astro"
+import BlogFeaturedGrid from "@/components/Blog/BlogFeaturedGrid.astro"
+import { BlogExplorer } from "@/components/Blog/BlogExplorer"
+import NewsletterSection from "@/components/Newsletter/NewsletterSection.astro"
+import {
+  blogPostsData,
+  getBlogCategories,
+  getFeaturedBlogPosts,
+} from "@/data/blogPosts"
+
+const categories = getBlogCategories()
+const featuredPosts = getFeaturedBlogPosts()
+---
+
+<MySiteLayout>
+  <!-- Hero Header -->
+  <BlogHeader
+    totalPosts={blogPostsData.length}
+    totalCategories={categories.length - 1}
+  />
+
+  <main class="container mx-auto px-4 py-12">
+    <!-- Featured Stories Grid Section (Displays multiple featured articles in a grid) -->
+    <BlogFeaturedGrid featuredPosts={featuredPosts} />
+
+    <!-- Interactive Articles Explorer (Instant Category Filtering & Pagination) -->
+    <BlogExplorer
+      client:load
+      initialPosts={blogPostsData}
+      categories={categories}
+    />
+
+    <!-- Newsletter Section -->
+    <div class="mt-20">
+      <NewsletterSection
+        title="Stay Ahead in Engineering Architecture"
+        subtitle="Subscribe to get technical deep-dives, benchmark reports, and new articles delivered directly to your inbox."
+        source="blog_index"
+        idPrefix="blog-page-newsletter"
+      />
+    </div>
+  </main>
+</MySiteLayout>

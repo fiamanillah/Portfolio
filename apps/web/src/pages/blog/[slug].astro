@@ -1,0 +1,78 @@
+---
+import MySiteLayout from "@/layouts/MySiteLayout.astro"
+import BlogContentBody from "@/components/Blog/BlogContentBody.astro"
+import BlogCard from "@/components/Blog/BlogCard.astro"
+import NewsletterSection from "@/components/Newsletter/NewsletterSection.astro"
+import {
+  blogPostsData,
+  getBlogPostBySlug,
+  type BlogPost,
+} from "@/data/blogPosts"
+
+export async function getStaticPaths() {
+  return blogPostsData.map((post) => ({
+    params: { slug: post.slug },
+    props: { post },
+  }))
+}
+
+interface Props {
+  post: BlogPost
+}
+
+const { post } = Astro.props
+
+// Find related posts (excluding current post)
+const relatedPosts = blogPostsData
+  .filter((p) => p.slug !== post.slug)
+  .slice(0, 2)
+---
+
+<MySiteLayout>
+  <!-- Breadcrumb Bar -->
+  <div class="border-b border-border/60 bg-background/50 py-3">
+    <div class="container mx-auto flex items-center gap-2 px-4 font-mono text-xs text-muted-foreground">
+      <a href="/" class="hover:text-foreground">Home</a>
+      <span>/</span>
+      <a href="/blog" class="hover:text-foreground">Blog</a>
+      <span>/</span>
+      <span class="truncate font-semibold text-foreground">{post.title}</span>
+    </div>
+  </div>
+
+  <main class="container mx-auto px-4 py-8">
+    <!-- Article Content -->
+    <BlogContentBody post={post} />
+
+    <!-- Related Articles Section -->
+    {
+      relatedPosts.length > 0 && (
+        <section class="mx-auto max-w-4xl border-t border-border/80 pt-12 mt-12">
+          <div class="mb-6 flex items-center justify-between">
+            <h2 class="font-mono text-xs font-bold tracking-widest text-primary uppercase">
+              // CONTINUE READING
+            </h2>
+            <a href="/blog" class="font-mono text-xs text-muted-foreground hover:text-foreground">
+              View All Articles →
+            </a>
+          </div>
+          <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+            {relatedPosts.map((relatedPost) => (
+              <BlogCard post={relatedPost} />
+            ))}
+          </div>
+        </section>
+      )
+    }
+
+    <!-- Newsletter Section -->
+    <div class="mx-auto max-w-4xl mt-16">
+      <NewsletterSection
+        title="Enjoyed this Article?"
+        subtitle="Get notified as soon as new system architecture breakdowns and performance guides are published."
+        source="blog_detail"
+        idPrefix="blog-detail-newsletter"
+      />
+    </div>
+  </main>
+</MySiteLayout>

@@ -1,0 +1,113 @@
+---
+import { Button } from "@workspace/ui/components/button"
+
+interface Props {
+  currentPage: number
+  totalPages: number
+  baseUrl?: string
+  currentCategory?: string
+}
+
+const {
+  currentPage,
+  totalPages,
+  baseUrl = "/blog",
+  currentCategory = "All",
+} = Astro.props
+
+const buildPageUrl = (pageNumber: number) => {
+  const params = new URLSearchParams()
+  if (currentCategory && currentCategory !== "All") {
+    params.set("category", currentCategory.toLowerCase())
+  }
+  if (pageNumber > 1) {
+    params.set("page", pageNumber.toString())
+  }
+  const queryString = params.toString()
+  return queryString ? `${baseUrl}?${queryString}` : baseUrl
+}
+
+const pages = Array.from({ length: totalPages }, (_, i) => i + 1)
+---
+
+{
+  totalPages > 1 && (
+    <nav
+      aria-label="Blog Pagination"
+      class="mt-12 flex flex-col items-center justify-between gap-4 border-t border-border/80 pt-8 sm:flex-row"
+    >
+      <div class="font-mono text-xs text-muted-foreground">
+        PAGE <span class="font-bold text-foreground">{currentPage}</span> OF{" "}
+        <span class="font-bold text-foreground">{totalPages}</span>
+      </div>
+
+      <div class="flex items-center gap-2">
+        {/* Previous Button */}
+        {currentPage > 1 ? (
+          <a href={buildPageUrl(currentPage - 1)}>
+            <Button
+              variant="outline"
+              size="sm"
+              class="font-mono text-xs border-border hover:border-primary hover:text-primary"
+            >
+              ← Prev
+            </Button>
+          </a>
+        ) : (
+          <Button
+            variant="outline"
+            size="sm"
+            disabled
+            class="font-mono text-xs opacity-40 cursor-not-allowed"
+          >
+            ← Prev
+          </Button>
+        )}
+
+        {/* Page Number Buttons */}
+        <div class="flex items-center gap-1">
+          {pages.map((p) => {
+            const isCurrent = p === currentPage
+            return (
+              <a href={buildPageUrl(p)}>
+                <Button
+                  variant={isCurrent ? "default" : "outline"}
+                  size="sm"
+                  class={`h-8 w-8 font-mono text-xs p-0 ${
+                    isCurrent
+                      ? "bg-primary text-primary-foreground font-bold shadow-sm"
+                      : "border-border hover:border-primary hover:text-primary"
+                  }`}
+                >
+                  {p}
+                </Button>
+              </a>
+            )
+          })}
+        </div>
+
+        {/* Next Button */}
+        {currentPage < totalPages ? (
+          <a href={buildPageUrl(currentPage + 1)}>
+            <Button
+              variant="outline"
+              size="sm"
+              class="font-mono text-xs border-border hover:border-primary hover:text-primary"
+            >
+              Next →
+            </Button>
+          </a>
+        ) : (
+          <Button
+            variant="outline"
+            size="sm"
+            disabled
+            class="font-mono text-xs opacity-40 cursor-not-allowed"
+          >
+            Next →
+          </Button>
+        )}
+      </div>
+    </nav>
+  )
+}
