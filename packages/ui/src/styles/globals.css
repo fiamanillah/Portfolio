@@ -654,12 +654,24 @@ html.dark .shiki span {
   line-height: 1.6;
 }
 
-/* Horizontal rule */
-.markdown-content hr {
-  margin-top: 2.5rem;
-  margin-bottom: 2.5rem;
-  border: 0;
-  border-top: 1px solid oklch(var(--border) / 60%);
+/* Custom Cyberpunk Scrollbar Utility */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: oklch(var(--muted) / 20%);
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: oklch(var(--border) / 80%);
+  border-radius: 0;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: oklch(var(--primary) / 70%);
+}
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: oklch(var(--border) / 80%) transparent;
 }
 
 

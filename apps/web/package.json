@@ -15,6 +15,7 @@
   "dependencies": {
     "@astrojs/check": "^0.9.8",
     "@astrojs/react": "^4.4.2",
+    "@astrojs/sitemap": "^3.7.3",
     "@hugeicons/core-free-icons": "^4.1.1",
     "@hugeicons/react": "^1.1.6",
     "@types/marked": "^6.0.0",
@@ -26,7 +27,8 @@
     "marked": "^18.0.9",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
-    "shiki": "^4.4.3"
+    "shiki": "^4.4.3",
+    "sonner": "^2.0.7"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",

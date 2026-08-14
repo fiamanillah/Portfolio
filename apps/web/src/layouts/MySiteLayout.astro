@@ -4,6 +4,7 @@ import GridLines from "@/components/GridLines.astro"
 import SiteNav from "@/components/site-nav.astro"
 import ThemeScript from "@/components/ThemeScript.astro"
 import Footer from "@/components/footer.astro"
+import { Toaster } from "@workspace/ui/components/sonner"
 ---
 
 <html lang="en">
@@ -11,8 +12,15 @@ import Footer from "@/components/footer.astro"
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <title>Fi Amanillah</title>
+    <link rel="sitemap" href="/sitemap-index.xml" />
     <ThemeScript />
+    <slot name="head">
+      <title>Fi Amanillah | Full Stack & DevOps Engineer</title>
+      <meta
+        name="description"
+        content="Portfolio & Engineering Blog of Fi Amanillah — Full Stack & DevOps Engineer."
+      />
+    </slot>
   </head>
   <body class="min-h-svh overflow-x-hidden bg-background text-foreground">
     <!-- GridLines renders a fixed full-viewport canvas — no wrapper needed -->
@@ -35,6 +43,7 @@ import Footer from "@/components/footer.astro"
       </main>
     </div>
 
+    <Toaster client:load />
     <Footer />
 
     <script>

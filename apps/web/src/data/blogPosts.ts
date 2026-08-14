@@ -8,6 +8,11 @@ import typescriptMonorepoTurboData from "./blog-posts/typescript-monorepo-turbo.
 import distributedTracingOpentelemetryData from "./blog-posts/distributed-tracing-opentelemetry.json"
 import cicdArtifactSigningSecurityData from "./blog-posts/cicd-artifact-signing-security.json"
 
+import {
+  DEFAULT_COMMENTS_REGISTRY,
+  DEFAULT_REACTIONS_REGISTRY,
+} from "./commentsData"
+
 export interface BlogAuthor {
   name: string
   role: string
@@ -27,12 +32,14 @@ export interface BlogPost {
   thumbnail: string
   featured?: boolean
   views?: string
+  likesCount?: number
+  commentsCount?: number
   author: BlogAuthor
   keyTakeaways?: string[]
   content: string
 }
 
-export const blogPostsRegistry: Record<string, BlogPost> = {
+const rawRegistry: Record<string, BlogPost> = {
   "building-distributed-systems-websockets-redis": buildingDistributedSystemsData as BlogPost,
   "scaling-rabbitmq-redis": scalingRabbitmqRedisData as BlogPost,
   "realtime-websockets-stripe": realtimeWebsocketsStripeData as BlogPost,
@@ -43,6 +50,25 @@ export const blogPostsRegistry: Record<string, BlogPost> = {
   "distributed-tracing-opentelemetry": distributedTracingOpentelemetryData as BlogPost,
   "cicd-artifact-signing-security": cicdArtifactSigningSecurityData as BlogPost,
 }
+
+export const blogPostsRegistry: Record<string, BlogPost> = Object.fromEntries(
+  Object.entries(rawRegistry).map(([slug, post]) => {
+    const reactions = DEFAULT_REACTIONS_REGISTRY[slug]
+    const comments = DEFAULT_COMMENTS_REGISTRY[slug] || []
+    const totalComments = comments.reduce(
+      (acc, c) => acc + 1 + (c.replies ? c.replies.length : 0),
+      0
+    )
+    return [
+      slug,
+      {
+        ...post,
+        likesCount: reactions?.likes ?? 42,
+        commentsCount: totalComments,
+      },
+    ]
+  })
+)
 
 export const blogPostsData: BlogPost[] = Object.values(blogPostsRegistry)
 

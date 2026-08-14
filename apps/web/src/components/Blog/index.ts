@@ -26,3 +26,12 @@ export { default as BlogFeaturedGrid } from "./featured/BlogFeaturedGrid.astro"
 
 // Hero & Header Components
 export { default as BlogHeader } from "./hero/BlogHeader.astro"
+
+// Engagement & Interaction Components
+export {
+  AuthModal,
+  ArticleReactionStation,
+  CommentComposer,
+  CommentItem,
+  BlogCommentsSection,
+} from "./engagement"

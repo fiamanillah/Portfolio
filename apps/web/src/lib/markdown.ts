@@ -339,7 +339,7 @@ export async function renderMarkdown(content: string): Promise<MarkdownRenderRes
     renderer: {
       heading({ depth, text }) {
         const rawText = text.replace(/<[^>]*>/g, "").trim()
-        let slug = slugify(rawText)
+        const slug = slugify(rawText)
 
         // Ensure unique slug
         let uniqueSlug = slug

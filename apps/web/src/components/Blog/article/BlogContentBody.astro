@@ -1,6 +1,7 @@
 ---
 import BlogArticleHeader from "@/components/Blog/article/BlogArticleHeader.astro"
 import BlogTableOfContents from "@/components/Blog/article/BlogTableOfContents.astro"
+import { ArticleReactionStation, BlogCommentsSection } from "@/components/Blog/engagement"
 import { renderMarkdown } from "@/lib/markdown"
 import type { BlogPost } from "@/data/blogPosts"
 
@@ -78,8 +79,13 @@ const { html: renderedMarkdownHtml, headings: tocHeadings } = await renderMarkdo
         ))}
       </div>
 
+      {/* Article Reaction & Like Station */}
+      <div class="blog-animate-in">
+        <ArticleReactionStation client:load postSlug={post.slug} postTitle={post.title} />
+      </div>
+
       {/* Author Bio Card — full article-column width */}
-      <div class="relative mt-12 overflow-hidden border border-border/80 bg-background/80 p-6 sm:p-7 backdrop-blur-md blog-animate-in">
+      <div class="relative mt-8 overflow-hidden border border-border/80 bg-background/80 p-6 sm:p-7 backdrop-blur-md blog-animate-in">
         {/* Cyberpunk corner brackets */}
         <div class="pointer-events-none absolute top-2 left-2 h-3.5 w-3.5 border-t-[1.5px] border-l-[1.5px] border-primary/40" />
         <div class="pointer-events-none absolute top-2 right-2 h-3.5 w-3.5 border-t-[1.5px] border-r-[1.5px] border-primary/40" />
@@ -111,6 +117,11 @@ const { html: renderedMarkdownHtml, headings: tocHeadings } = await renderMarkdo
             </p>
           </div>
         </div>
+      </div>
+
+      {/* Discussion & Comments Hub */}
+      <div class="blog-animate-in">
+        <BlogCommentsSection client:load postSlug={post.slug} postTitle={post.title} />
       </div>
     </article>
 

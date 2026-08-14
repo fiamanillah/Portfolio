@@ -1,5 +1,7 @@
 ---
 import type { BlogPost } from "@/data/blogPosts"
+import { HugeiconsIcon } from "@hugeicons/react"
+import { FavouriteIcon, Comment01Icon } from "@hugeicons/core-free-icons"
 
 interface Props {
   post: BlogPost
@@ -40,7 +42,7 @@ const { post } = Astro.props
     {/* Right: Content & Metadata (5 cols) */}
     <div class="flex flex-col justify-between p-6 sm:p-8 lg:col-span-5">
       <div>
-        <div class="flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-muted-foreground">
+        <div class="flex flex-wrap items-center gap-2 font-mono text-xs uppercase tracking-widest text-muted-foreground">
           <span>{post.date}</span>
           <span class="text-primary">•</span>
           <span>{post.readTime}</span>
@@ -48,6 +50,24 @@ const { post } = Astro.props
             <>
               <span class="text-primary">•</span>
               <span>{post.views} VIEWS</span>
+            </>
+          )}
+          {post.likesCount !== undefined && (
+            <>
+              <span class="text-primary">•</span>
+              <span class="inline-flex items-center gap-1 text-rose-400">
+                <HugeiconsIcon icon={FavouriteIcon} className="size-3.5 fill-rose-400/40 text-rose-400" />
+                <span>{post.likesCount}</span>
+              </span>
+            </>
+          )}
+          {post.commentsCount !== undefined && (
+            <>
+              <span class="text-primary">•</span>
+              <span class="inline-flex items-center gap-1 text-primary">
+                <HugeiconsIcon icon={Comment01Icon} className="size-3.5" />
+                <span>{post.commentsCount}</span>
+              </span>
             </>
           )}
         </div>
