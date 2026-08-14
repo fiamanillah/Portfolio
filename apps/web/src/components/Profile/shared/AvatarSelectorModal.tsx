@@ -1,0 +1,181 @@
+import { useState } from "react"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@workspace/ui/components/dialog"
+import { Button } from "@workspace/ui/components/button"
+import { Input } from "@workspace/ui/components/input"
+import { Field, FieldLabel, FieldDescription } from "@workspace/ui/components/field"
+import { AVATAR_OPTIONS } from "@/data/commentsData"
+import { HugeiconsIcon } from "@hugeicons/react"
+import {
+  CheckmarkBadge01Icon,
+  Globe02Icon,
+  Tick02Icon,
+} from "@hugeicons/core-free-icons"
+
+interface AvatarSelectorModalProps {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  currentAvatar: string
+  onSaveAvatar: (newAvatar: string) => void
+}
+
+const PRESET_AVATARS = [
+  "/fi.png",
+  ...AVATAR_OPTIONS,
+  "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
+]
+
+export function AvatarSelectorModal({
+  open,
+  onOpenChange,
+  currentAvatar,
+  onSaveAvatar,
+}: AvatarSelectorModalProps) {
+  const [selected, setSelected] = useState<string>(currentAvatar)
+  const [customUrl, setCustomUrl] = useState<string>("")
+  const [error, setError] = useState<string | null>(null)
+
+  const handleApply = () => {
+    const target = customUrl.trim() || selected
+    if (!target) {
+      setError("Please select a preset avatar or enter an image URL.")
+      return
+    }
+    onSaveAvatar(target)
+    onOpenChange(false)
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-md rounded-lg border border-border bg-card/95 p-5 backdrop-blur-xl sm:p-6">
+        <DialogHeader>
+          <DialogTitle className="text-base font-semibold text-foreground">
+            Select Profile Avatar
+          </DialogTitle>
+          <DialogDescription className="text-xs text-muted-foreground">
+            Choose a preset avatar or paste a custom image URL.
+          </DialogDescription>
+        </DialogHeader>
+
+        <div className="space-y-4 py-3">
+          {/* Active Preview */}
+          <div className="flex items-center gap-3.5 rounded-lg border border-border bg-background/60 p-3">
+            <div className="relative shrink-0">
+              <img
+                src={customUrl.trim() || selected || currentAvatar}
+                alt="Avatar preview"
+                className="size-14 rounded-full border-2 border-primary/30 object-cover"
+                onError={(e) => {
+                  ;(e.target as HTMLImageElement).src =
+                    "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80"
+                }}
+              />
+              <span className="absolute -bottom-0.5 -right-0.5 flex size-4 items-center justify-center rounded-full bg-primary text-primary-foreground">
+                <HugeiconsIcon icon={Tick02Icon} className="size-2.5" />
+              </span>
+            </div>
+            <div className="min-w-0">
+              <p className="text-sm font-medium text-foreground">Preview</p>
+              <p className="text-xs text-muted-foreground truncate">
+                Shown in comments, reviews & navbar
+              </p>
+            </div>
+          </div>
+
+          {/* Preset Grid */}
+          <div className="space-y-1.5">
+            <FieldLabel className="text-xs">Presets</FieldLabel>
+            <div className="grid grid-cols-4 gap-2.5">
+              {PRESET_AVATARS.map((avatar, idx) => {
+                const isSelected = !customUrl && selected === avatar
+                return (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => {
+                      setSelected(avatar)
+                      setCustomUrl("")
+                      setError(null)
+                    }}
+                    className={`group relative flex aspect-square items-center justify-center overflow-hidden rounded-lg border p-1 transition-all cursor-pointer ${
+                      isSelected
+                        ? "border-primary ring-2 ring-primary/30"
+                        : "border-border hover:border-primary/50"
+                    }`}
+                  >
+                    <img
+                      src={avatar}
+                      alt={`Avatar option ${idx + 1}`}
+                      className="size-full rounded-full object-cover transition-transform group-hover:scale-105"
+                    />
+                    {isSelected && (
+                      <span className="absolute inset-0 flex items-center justify-center bg-primary/20 backdrop-blur-[1px] rounded-lg">
+                        <HugeiconsIcon icon={CheckmarkBadge01Icon} className="size-4 text-primary" />
+                      </span>
+                    )}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+
+          {/* Custom URL */}
+          <Field className="space-y-1.5">
+            <FieldLabel htmlFor="avatar-custom-url" className="text-xs">
+              Or Custom URL
+            </FieldLabel>
+            <div className="relative">
+              <Input
+                id="avatar-custom-url"
+                type="url"
+                placeholder="https://github.com/username.png"
+                value={customUrl}
+                onChange={(e) => {
+                  setCustomUrl(e.target.value)
+                  setError(null)
+                }}
+                className="rounded-md text-sm pl-8"
+              />
+              <HugeiconsIcon
+                icon={Globe02Icon}
+                className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground pointer-events-none"
+              />
+            </div>
+            {error && <p className="text-xs text-destructive">{error}</p>}
+            <FieldDescription className="text-[11px] text-muted-foreground">
+              Tip: Use <code className="text-foreground">https://github.com/[username].png</code>
+            </FieldDescription>
+          </Field>
+        </div>
+
+        <DialogFooter className="flex flex-row justify-end gap-2 pt-2 border-t border-border/50">
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={() => onOpenChange(false)}
+            className="rounded-md text-xs cursor-pointer"
+          >
+            Cancel
+          </Button>
+          <Button
+            type="button"
+            size="sm"
+            onClick={handleApply}
+            className="rounded-md text-xs cursor-pointer"
+          >
+            <HugeiconsIcon icon={Tick02Icon} className="size-3.5 mr-1" />
+            Save Avatar
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  )
+}

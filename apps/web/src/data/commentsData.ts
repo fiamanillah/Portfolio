@@ -8,6 +8,15 @@ export interface AuthUser {
   badge?: string
   bio?: string
   joinedAt?: string
+  subscribedToNewsletter?: boolean
+  location?: string
+  website?: string
+  githubUrl?: string
+  twitterUrl?: string
+  linkedinUrl?: string
+  pronouns?: string
+  customStatus?: string
+  twoFactorEnabled?: boolean
 }
 
 export interface BlogComment {
@@ -48,6 +57,15 @@ export const DEMO_USERS: AuthUser[] = [
     badge: "Author",
     bio: "Full Stack & DevOps Engineer building high-throughput distributed systems.",
     joinedAt: "2024-01-01",
+    location: "Singapore / Remote",
+    website: "https://amanillah.dev",
+    githubUrl: "https://github.com/fiamanillah",
+    twitterUrl: "https://twitter.com/fiamanillah",
+    linkedinUrl: "https://linkedin.com/in/fiamanillah",
+    pronouns: "he/him",
+    customStatus: "⚡ Optimizing distributed queues",
+    subscribedToNewsletter: true,
+    twoFactorEnabled: true,
   },
   {
     id: "user-alex",
@@ -57,8 +75,17 @@ export const DEMO_USERS: AuthUser[] = [
     avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80",
     role: "Senior Frontend Engineer",
     badge: "Core Contributor",
-    bio: "React & TypeScript enthusiast. Building reactive UI systems.",
+    bio: "React & TypeScript enthusiast. Building reactive UI systems and design infrastructure.",
     joinedAt: "2024-03-15",
+    location: "San Francisco, CA",
+    website: "https://alexchen.dev",
+    githubUrl: "https://github.com/alexchen",
+    twitterUrl: "https://twitter.com/alexchen_dev",
+    linkedinUrl: "https://linkedin.com/in/alexchen",
+    pronouns: "they/them",
+    customStatus: "🎨 Crafting fluid micro-interactions",
+    subscribedToNewsletter: true,
+    twoFactorEnabled: false,
   },
   {
     id: "user-sarah",
@@ -70,6 +97,15 @@ export const DEMO_USERS: AuthUser[] = [
     badge: "SRE Lead",
     bio: "Passionate about Kubernetes, Redis Streams, and sub-second latency topologies.",
     joinedAt: "2024-02-20",
+    location: "Seattle, WA",
+    website: "https://sarahlin.cloud",
+    githubUrl: "https://github.com/sarahlin",
+    twitterUrl: "https://twitter.com/sarahlin_sre",
+    linkedinUrl: "https://linkedin.com/in/sarahlin",
+    pronouns: "she/her",
+    customStatus: "☸️ Tuning Kubernetes cluster mesh",
+    subscribedToNewsletter: true,
+    twoFactorEnabled: true,
   },
   {
     id: "user-marcus",
@@ -81,6 +117,15 @@ export const DEMO_USERS: AuthUser[] = [
     badge: "Security Pro",
     bio: "Hardening production infrastructure, zero-trust APIs, and automated CI/CD security.",
     joinedAt: "2024-05-10",
+    location: "Berlin, Germany",
+    website: "https://secops.vance.io",
+    githubUrl: "https://github.com/marcusvance",
+    twitterUrl: "https://twitter.com/marcus_secops",
+    linkedinUrl: "https://linkedin.com/in/marcusvance",
+    pronouns: "he/him",
+    customStatus: "🛡️ Zero-trust vulnerability audit",
+    subscribedToNewsletter: false,
+    twoFactorEnabled: true,
   },
 ]
 

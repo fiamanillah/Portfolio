@@ -1,0 +1,19 @@
+---
+import MySiteLayout from "@/layouts/MySiteLayout.astro"
+import { ProfileContainer } from "@/components/Profile/ProfileContainer"
+---
+
+<MySiteLayout>
+  <Fragment slot="head">
+    <title>Profile & Account Settings | Fi Amanillah</title>
+    <meta
+      name="description"
+      content="Manage your developer account credentials, 2FA security, code typography themes, reading bookmarks, notification channels, and personal API tokens."
+    />
+    <meta name="robots" content="noindex, nofollow" />
+  </Fragment>
+
+  <section class="relative min-h-[calc(100svh-12rem)] pb-16">
+    <ProfileContainer client:load />
+  </section>
+</MySiteLayout>

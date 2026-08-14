@@ -1,17 +1,20 @@
-import { useState, useRef } from "react"
-import { useAuthSession } from "@/lib/authStore"
+import { useState, useRef, type FormEvent } from "react"
 import { Button } from "@workspace/ui/components/button"
 import { Textarea } from "@workspace/ui/components/textarea"
+import { Field, FieldError, FieldDescription } from "@workspace/ui/components/field"
+import { useAuthSession } from "@/lib/authStore"
+import { toast } from "@workspace/ui/components/sonner"
 import { HugeiconsIcon } from "@hugeicons/react"
 import {
+  Login01Icon,
   CodeIcon,
   QuoteDownIcon,
-  Login01Icon,
   ArrowTurnBackwardIcon,
+  Loading03Icon,
 } from "@hugeicons/core-free-icons"
-import { toast } from "@workspace/ui/components/sonner"
 
 interface CommentComposerProps {
+  postSlug?: string
   onSubmit: (content: string) => void
   onOpenAuth: () => void
   isReply?: boolean
@@ -30,10 +33,11 @@ export function CommentComposer({
 }: CommentComposerProps) {
   const { user, isAuthenticated, logout } = useAuthSession()
   const [content, setContent] = useState("")
+  const [composerError, setComposerError] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
     if (!isAuthenticated || !user) {
       onOpenAuth()
@@ -42,10 +46,15 @@ export function CommentComposer({
 
     const trimmed = content.trim()
     if (!trimmed) {
-      toast.error("Please write a comment first")
+      setComposerError("Please enter your comment before submitting")
+      return
+    }
+    if (trimmed.length < 3) {
+      setComposerError("Comment must be at least 3 characters")
       return
     }
 
+    setComposerError(null)
     setIsSubmitting(true)
     try {
       onSubmit(trimmed)
@@ -59,31 +68,32 @@ export function CommentComposer({
   }
 
   const insertFormatting = (prefix: string, suffix: string = "") => {
-    const textarea = textareaRef.current
-    if (!textarea) return
-
-    const start = textarea.selectionStart
-    const end = textarea.selectionEnd
-    const selectedText = content.substring(start, end)
-    const replacement = `${prefix}${selectedText || "text"}${suffix}`
-
+    if (!textareaRef.current) return
+    const el = textareaRef.current
+    const start = el.selectionStart
+    const end = el.selectionEnd
+    const selected = content.slice(start, end)
+    const replacement = `${prefix}${selected || "text"}${suffix}`
     const newContent =
-      content.substring(0, start) + replacement + content.substring(end)
+      content.slice(0, start) + replacement + content.slice(end)
+
     setContent(newContent)
+    if (composerError) setComposerError(null)
 
     setTimeout(() => {
-      textarea.focus()
-      textarea.setSelectionRange(
-        start + prefix.length,
-        start + prefix.length + (selectedText.length || 4)
-      )
-    }, 10)
+      el.focus()
+      const cursorTarget =
+        selected.length > 0
+          ? start + replacement.length
+          : start + prefix.length
+      el.setSelectionRange(cursorTarget, cursorTarget + (selected ? 0 : 4))
+    }, 0)
   }
 
-  // If user is not authenticated and not in inline reply mode, show full CTA banner
+  // Guest Prompt Callout
   if (!isAuthenticated) {
     return (
-      <div className="relative overflow-hidden border border-primary/30 bg-primary/5 p-6 backdrop-blur-md">
+      <div className="relative border border-border/80 bg-background/50 p-4 sm:p-5 backdrop-blur-xs">
         {/* Cyberpunk corner accents */}
         <div className="pointer-events-none absolute top-2 left-2 h-3 w-3 border-t border-l border-primary" />
         <div className="pointer-events-none absolute top-2 right-2 h-3 w-3 border-t border-r border-primary" />
@@ -129,9 +139,9 @@ export function CommentComposer({
     )
   }
 
-  // Authenticated Composer Form
+  // Authenticated Composer Form with shadcn Field Component
   return (
-    <form onSubmit={handleSubmit} className="space-y-3">
+    <form onSubmit={handleSubmit} noValidate className="space-y-3">
       {/* Active User Header */}
       <div className="flex items-center justify-between border-b border-border/50 pb-2.5">
         <div className="flex items-center gap-2.5">
@@ -173,62 +183,69 @@ export function CommentComposer({
         </div>
       </div>
 
-      {/* Editor Box */}
-      <div className="relative border border-border bg-background/90 focus-within:border-primary/60 transition-colors">
-        {/* Formatting Toolbar */}
-        <div className="flex items-center justify-between border-b border-border/40 bg-muted/30 px-3 py-1.5">
-          <div className="flex items-center gap-1">
-            <button
-              type="button"
-              onClick={() => insertFormatting("`", "`")}
-              className="p-1 font-mono text-xs text-muted-foreground hover:text-primary transition-colors cursor-pointer"
-              title="Inline Code (`code`)"
-            >
-              <HugeiconsIcon icon={CodeIcon} className="size-3.5" />
-            </button>
-            <button
-              type="button"
-              onClick={() => insertFormatting("**", "**")}
-              className="p-1 font-mono text-xs font-bold text-muted-foreground hover:text-primary transition-colors cursor-pointer"
-              title="Bold (**bold**)"
-            >
-              B
-            </button>
-            <button
-              type="button"
-              onClick={() => insertFormatting("> ")}
-              className="p-1 font-mono text-xs text-muted-foreground hover:text-primary transition-colors cursor-pointer"
-              title="Quote (> text)"
-            >
-              <HugeiconsIcon icon={QuoteDownIcon} className="size-3.5" />
-            </button>
+      {/* Editor Box within Field */}
+      <Field data-invalid={!!composerError}>
+        <div className="relative border border-border bg-background/90 focus-within:border-primary/60 transition-colors">
+          {/* Formatting Toolbar */}
+          <div className="flex items-center justify-between border-b border-border/40 bg-muted/30 px-3 py-1.5">
+            <div className="flex items-center gap-1">
+              <button
+                type="button"
+                onClick={() => insertFormatting("`", "`")}
+                className="p-1 font-mono text-xs text-muted-foreground hover:text-primary transition-colors cursor-pointer"
+                title="Inline Code (`code`)"
+              >
+                <HugeiconsIcon icon={CodeIcon} className="size-3.5" />
+              </button>
+              <button
+                type="button"
+                onClick={() => insertFormatting("**", "**")}
+                className="p-1 font-mono text-xs font-bold text-muted-foreground hover:text-primary transition-colors cursor-pointer"
+                title="Bold (**bold**)"
+              >
+                B
+              </button>
+              <button
+                type="button"
+                onClick={() => insertFormatting("> ")}
+                className="p-1 font-mono text-xs text-muted-foreground hover:text-primary transition-colors cursor-pointer"
+                title="Quote (> text)"
+              >
+                <HugeiconsIcon icon={QuoteDownIcon} className="size-3.5" />
+              </button>
+            </div>
+
+            <span className="font-mono text-[10px] text-muted-foreground/70">
+              {content.length} / 1000
+            </span>
           </div>
 
-          <span className="font-mono text-[10px] text-muted-foreground/70">
-            {content.length} / 1000
-          </span>
+          <Textarea
+            ref={textareaRef}
+            autoFocus={autoFocus}
+            maxLength={1000}
+            value={content}
+            onChange={(e) => {
+              setContent(e.target.value)
+              if (composerError) setComposerError(null)
+            }}
+            aria-invalid={!!composerError}
+            placeholder={
+              isReply
+                ? `Write a thoughtful reply to @${replyToName}...`
+                : "Share your architectural thoughts, benchmarks, or ask a technical question..."
+            }
+            className="min-h-[90px] w-full resize-y rounded-none border-0 bg-transparent p-3 font-sans text-xs leading-relaxed text-foreground placeholder:text-muted-foreground/60 focus-visible:ring-0"
+          />
         </div>
-
-        <Textarea
-          ref={textareaRef}
-          autoFocus={autoFocus}
-          maxLength={1000}
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          placeholder={
-            isReply
-              ? `Write a thoughtful reply to @${replyToName}...`
-              : "Share your architectural thoughts, benchmarks, or ask a technical question..."
-          }
-          className="min-h-[90px] w-full resize-y rounded-none border-0 bg-transparent p-3 font-sans text-xs leading-relaxed text-foreground placeholder:text-muted-foreground/60 focus-visible:ring-0"
-        />
-      </div>
+        <FieldError errors={composerError ?? undefined} />
+      </Field>
 
       {/* Actions */}
       <div className="flex items-center justify-between pt-1">
-        <span className="font-mono text-[10px] text-muted-foreground">
+        <FieldDescription>
           Markdown supported (`code`, **bold**, &gt; quotes)
-        </span>
+        </FieldDescription>
 
         <div className="flex items-center gap-2">
           {isReply && onCancelReply && (
@@ -246,7 +263,16 @@ export function CommentComposer({
             disabled={isSubmitting || !content.trim()}
             className="rounded-none font-mono text-xs font-bold uppercase tracking-wider bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50 cursor-pointer h-8 px-4"
           >
-            {isSubmitting ? "Publishing..." : isReply ? "Reply" : "Post Comment"}
+            {isSubmitting ? (
+              <>
+                <HugeiconsIcon icon={Loading03Icon} className="size-3 animate-spin mr-1" />
+                <span>Publishing...</span>
+              </>
+            ) : isReply ? (
+              "Reply"
+            ) : (
+              "Post Comment"
+            )}
           </Button>
         </div>
       </div>

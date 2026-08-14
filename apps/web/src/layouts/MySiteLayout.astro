@@ -5,6 +5,7 @@ import SiteNav from "@/components/site-nav.astro"
 import ThemeScript from "@/components/ThemeScript.astro"
 import Footer from "@/components/footer.astro"
 import { Toaster } from "@workspace/ui/components/sonner"
+import { AuthModal } from "@/components/auth/AuthModal"
 ---
 
 <html lang="en">
@@ -44,6 +45,7 @@ import { Toaster } from "@workspace/ui/components/sonner"
     </div>
 
     <Toaster client:load />
+    <AuthModal client:load />
     <Footer />
 
     <script>

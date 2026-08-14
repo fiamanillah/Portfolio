@@ -9,6 +9,7 @@ const navLinks = [
 ]
 
 import { ModeToggle } from "@workspace/ui/components/ModeToggle"
+import { NavUserButton } from "@/components/auth/NavUserButton"
 ---
 
 <nav aria-label="Primary" class="z-50 backdrop-blur-sm">
@@ -42,14 +43,16 @@ import { ModeToggle } from "@workspace/ui/components/ModeToggle"
           ))
         }
       </ul>
-      <div class="flex items-center">
+      <div class="flex items-center gap-3">
         <ModeToggle client:load />
+        <NavUserButton client:load />
       </div>
     </div>
 
     <!-- Mobile Menu Button & Theme Toggle -->
     <div class="flex items-center gap-2 sm:hidden">
       <ModeToggle client:load />
+      <NavUserButton client:load />
       <button
         id="mobile-menu-btn"
         aria-label="Toggle menu"
