@@ -1,0 +1,32 @@
+{
+  "id": "typescript-monorepo-turbo",
+  "slug": "typescript-monorepo-turbo",
+  "title": "Building Scalable Monorepos with Turborepo & Bun",
+  "subtitle": "Structuring shared packages, UI design systems, and cross-application code reuse",
+  "summary": "Learn how to manage multi-app repositories with Turborepo, sharing UI component libraries, database schemas, and shared utilities across Next.js, Astro, and Express apps.",
+  "date": "MAR 2025",
+  "readTime": "11 MIN READ",
+  "category": "Architecture",
+  "tags": [
+    "TypeScript",
+    "Turborepo",
+    "Bun",
+    "Monorepo",
+    "Architecture"
+  ],
+  "thumbnail": "/assets/images/project2.png",
+  "featured": false,
+  "views": "2.5k",
+  "author": {
+    "name": "Fi Amanillah",
+    "role": "Full Stack & DevOps Engineer",
+    "avatar": "/fi.png"
+  },
+  "keyTakeaways": [
+    "Organize apps and reusable packages cleanly using pnpm or Bun workspace protocols.",
+    "Share tailwind CSS design systems and React / Astro components seamlessly across apps.",
+    "Configure Turborepo pipelines for cached zero-config builds and rapid incremental testing.",
+    "Decouple database ORM logic into a standalone `@workspace/db` internal package."
+  ],
+  "content": "## Monorepo Architecture: Why Turborepo & Bun?\n\nAs software teams grow, maintaining separate repositories for web frontends, backend APIs, design systems, and shared TypeScript types leads to code duplication and version synchronization friction. A unified monorepo powered by Turborepo and Bun enables atomic cross-project commits, shared tooling configurations, and lightning-fast build caching.\n\n---\n\n## Workspace Directory Layout & Package Dependency Management\n\nA clean monorepo separates application entry points from shared internal packages. Internal packages use the `workspace:*` dependency protocol to reference local packages directly without publishing to public NPM registries.\n\n```json\n// Root package.json\n{\n  \"name\": \"portfolio-monorepo\",\n  \"private\": true,\n  \"workspaces\": [\n    \"apps/*\",\n    \"packages/*\"\n  ],\n  \"scripts\": {\n    \"dev\": \"turbo run dev\",\n    \"build\": \"turbo run build\",\n    \"lint\": \"turbo run lint\"\n  },\n  \"devDependencies\": {\n    \"turbo\": \"^2.0.0\"\n  }\n}\n```\n\n---\n\n## Decoupling Shared UI Design Systems & Tailwind Configs\n\nExtracting shared UI components (buttons, badges, inputs, dialogs) into `@workspace/ui` ensures consistent design tokens and atomic styling across Next.js dashboards and Astro landing pages.\n\n```typescript\n// packages/ui/src/components/badge.tsx\nimport * as React from \"react\";\nimport { cva, type VariantProps } from \"class-variance-authority\";\n\nconst badgeVariants = cva(\n  \"inline-flex items-center border px-2.5 py-0.5 text-xs font-semibold font-mono transition-colors\",\n  {\n    variants: {\n      variant: {\n        default: \"border-transparent bg-primary text-primary-foreground\",\n        secondary: \"border-border bg-secondary text-secondary-foreground\",\n        outline: \"text-foreground border-border\",\n      },\n    },\n    defaultVariants: { variant: \"default\" },\n  }\n);\n\nexport function Badge({ className, variant, ...props }: React.HTMLAttributes<HTMLDivElement> & VariantProps<typeof badgeVariants>) {\n  return <div class={badgeVariants({ variant })} {...props} />;\n}\n```\n\n---\n\n## Extracting Database Schemas & Shared Prisma Client Package\n\nHousing Prisma schema definitions and client instantiations in `@workspace/db` allows backend Express servers, Astro SSR pages, and CLI scripts to import identical database types natively.\n\n```typescript\n// packages/db/src/index.ts\nimport { PrismaClient } from \"@prisma/client\";\n\nconst globalForPrisma = globalThis as unknown as { prisma: PrismaClient };\n\nexport const prisma =\n  globalForPrisma.prisma ||\n  new PrismaClient({\n    log: process.env.NODE_ENV === \"development\" ? [\"query\", \"error\", \"warn\"] : [\"error\"],\n  });\n\nif (process.env.NODE_ENV !== \"production\") globalForPrisma.prisma = prisma;\n\nexport * from \"@prisma/client\";\n```\n\n---\n\n## Configuring Turborepo Task Graph Pipelines & Caching Rules\n\nTurborepo uses DAG (Directed Acyclic Graph) task definitions in `turbo.json` to execute tasks in optimal topological order. Unchanged build outputs are restored instantly from local or remote build caches.\n\n```json\n{\n  \"$schema\": \"https://turbo.build/schema.json\",\n  \"pipeline\": {\n    \"build\": {\n      \"dependsOn\": [\"^build\"],\n      \"outputs\": [\"dist/**\", \".next/**\"]\n    },\n    \"lint\": {\n      \"outputs\": []\n    },\n    \"dev\": {\n      \"cache\": false,\n      \"persistent\": true\n    }\n  }\n}\n```\n\n---\n\n## Accelerating Builds with Bun & Workspace Protocol\n\nLeveraging Bun as the package installer and script executor cuts package installation times down to sub-seconds while offering native TypeScript execution without transpilation steps.\n\n---\n\n## CI/CD Optimization: Incremental Builds & Remote Caching setup\n\nConnecting Turborepo to remote cache storage ensures CI runners bypass building untouched apps, cutting deployment build pipeline durations by over 70%.\n\n---\n\n## Developer Experience: Monorepo Scripts & Automated Versioning\n\nUtilizing Changesets simplifies versioning and changelog generation across monorepo workspace packages prior to deployment releases."
+}

@@ -1,0 +1,52 @@
+---
+import { Icon } from "astro-icon/components"
+
+interface Props {
+  totalCount: number
+  postsPerPage: number
+  activeCategory?: string
+  class?: string
+}
+
+const {
+  totalCount,
+  postsPerPage,
+  activeCategory = "all",
+  class: className = "",
+} = Astro.props
+
+const initialTo = Math.min(postsPerPage, totalCount)
+---
+
+<div
+  class={`my-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-b border-border/40 pb-4 ${className}`}
+>
+  <!-- Left Side: Section Monospace Title & Category Indicator -->
+  <div class="flex flex-wrap items-center gap-3">
+    <div class="flex items-center gap-2">
+      <span class="inline-block h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.7)] animate-pulse" />
+      <h2
+        data-journal-title
+        class="font-mono text-xs font-bold tracking-widest text-foreground uppercase"
+      >
+        {activeCategory !== "all" ? `// ARTICLES JOURNAL [${activeCategory.toUpperCase()}]` : "// ARTICLES JOURNAL"}
+      </h2>
+    </div>
+
+    <span
+      data-active-category-badge
+      class="inline-flex items-center gap-1 border border-primary/30 bg-primary/10 px-2 py-0.5 font-mono text-[10px] font-semibold text-primary uppercase"
+    >
+      <Icon name="mdi:tag-outline" class="size-3" />
+      <span data-active-category-text>{activeCategory.toUpperCase()}</span>
+    </span>
+  </div>
+
+  <!-- Right Side: Live Count Summary -->
+  <div class="flex items-center gap-2 font-mono text-xs text-muted-foreground">
+    <Icon name="mdi:newspaper-variant-outline" class="size-3.5 text-primary/70" />
+    <span data-showing-count>
+      {totalCount > 0 ? `SHOWING 1-${initialTo} OF ${totalCount} ARTICLES` : "0 ARTICLES AVAILABLE"}
+    </span>
+  </div>
+</div>

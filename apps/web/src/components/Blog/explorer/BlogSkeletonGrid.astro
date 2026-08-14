@@ -1,0 +1,80 @@
+---
+interface Props {
+  count?: number
+  class?: string
+}
+
+const { count = 6, class: className = "" } = Astro.props
+const skeletonCards = Array.from({ length: count }, (_, i) => i)
+---
+
+<div
+  data-skeleton-grid
+  aria-hidden="true"
+  class={`grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3 transition-opacity duration-200 ${className}`}
+>
+  {
+    skeletonCards.map(() => (
+      <div class="relative flex flex-col justify-between overflow-hidden border border-border/80 bg-background/40 backdrop-blur-sm animate-pulse">
+        {/* Cyberpunk corner bracket skeletons */}
+        <div class="pointer-events-none absolute top-2 left-2 z-20 h-3.5 w-3.5 border-t-[1.5px] border-l-[1.5px] border-border/40" />
+        <div class="pointer-events-none absolute top-2 right-2 z-20 h-3.5 w-3.5 border-t-[1.5px] border-r-[1.5px] border-border/40" />
+        <div class="pointer-events-none absolute bottom-2 left-2 z-20 h-3.5 w-3.5 border-b-[1.5px] border-l-[1.5px] border-border/40" />
+        <div class="pointer-events-none absolute right-2 bottom-2 z-20 h-3.5 w-3.5 border-r-[1.5px] border-b-[1.5px] border-border/40" />
+
+        <div>
+          {/* Thumbnail Skeleton */}
+          <div class="relative aspect-[16/9] w-full overflow-hidden border-b border-border/60 bg-muted/60">
+            <div class="absolute inset-0 bg-gradient-to-r from-transparent via-background/10 to-transparent animate-shimmer" />
+            <div class="absolute top-3 left-3 h-5 w-20 rounded-none bg-muted/80" />
+          </div>
+
+          {/* Content Body Skeleton */}
+          <div class="p-6 space-y-3">
+            {/* Metadata Line (Date & ReadTime) */}
+            <div class="flex items-center gap-2">
+              <div class="h-3 w-20 bg-muted/70 rounded-sm" />
+              <div class="h-1.5 w-1.5 rounded-full bg-muted/40" />
+              <div class="h-3 w-16 bg-muted/70 rounded-sm" />
+            </div>
+
+            {/* Title Lines */}
+            <div class="space-y-2 pt-1">
+              <div class="h-5 w-full bg-muted/80 rounded-sm" />
+              <div class="h-5 w-3/4 bg-muted/80 rounded-sm" />
+            </div>
+
+            {/* Summary Lines */}
+            <div class="space-y-1.5 pt-2">
+              <div class="h-3.5 w-full bg-muted/50 rounded-sm" />
+              <div class="h-3.5 w-11/12 bg-muted/50 rounded-sm" />
+              <div class="h-3.5 w-4/5 bg-muted/50 rounded-sm" />
+            </div>
+          </div>
+        </div>
+
+        {/* Footer Skeleton: Tags & Author */}
+        <div class="p-6 pt-0 space-y-4">
+          {/* Tag Badges */}
+          <div class="flex flex-wrap gap-1.5">
+            <div class="h-4 w-14 bg-muted/60 rounded-sm" />
+            <div class="h-4 w-16 bg-muted/60 rounded-sm" />
+            <div class="h-4 w-12 bg-muted/60 rounded-sm" />
+          </div>
+
+          {/* Author & Button Bar */}
+          <div class="flex items-center justify-between border-t border-border/60 pt-4">
+            <div class="flex items-center gap-2.5">
+              <div class="h-8 w-8 rounded-full bg-muted/70 shrink-0" />
+              <div class="space-y-1">
+                <div class="h-3 w-20 bg-muted/60 rounded-sm" />
+                <div class="h-2 w-28 bg-muted/50 rounded-sm" />
+              </div>
+            </div>
+            <div class="h-8 w-16 bg-muted/70 rounded-none border border-border/40 shrink-0" />
+          </div>
+        </div>
+      </div>
+    ))
+  }
+</div>

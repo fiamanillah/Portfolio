@@ -1,6 +1,6 @@
 ---
 import { Button } from "@workspace/ui/components/button"
-import BlogCard from "@/components/Blog/BlogCard.astro"
+import BlogCard from "@/components/Blog/cards/BlogCard.astro"
 import { blogPostsData as blogPosts } from "@/data/blogPosts"
 
 // Select recent blog posts for home page showcase (e.g. 3 posts)
@@ -43,7 +43,7 @@ const recentPosts = blogPosts.slice(0, 3)
         <Button
           variant="outline"
           size="lg"
-          class="border-primary/40 font-mono text-xs tracking-wider text-primary transition-all duration-200 hover:bg-primary/10 hover:shadow-[0_0_16px_rgba(var(--primary-rgb),0.2)]"
+          className="border-primary/40 font-mono text-xs tracking-wider text-primary transition-all duration-200 hover:bg-primary/10 hover:shadow-[0_0_16px_rgba(var(--primary-rgb),0.2)]"
         >
           Explore All Articles
           <span class="ml-1.5 transition-transform duration-200 hover:translate-x-0.5">↗</span>

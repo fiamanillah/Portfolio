@@ -7,6 +7,15 @@ import icon from "astro-icon"
 
 // https://astro.build/config
 export default defineConfig({
+  markdown: {
+    shikiConfig: {
+      themes: {
+        light: "github-light",
+        dark: "tokyo-night",
+      },
+      wrap: false,
+    },
+  },
   vite: {
     plugins: [tailwindcss()],
   },

@@ -1,0 +1,73 @@
+---
+import { Icon } from "astro-icon/components"
+
+interface CategoryItem {
+  name: string
+  count: number
+}
+
+interface Props {
+  categories: CategoryItem[]
+  activeCategory?: string
+  class?: string
+}
+
+const {
+  categories = [],
+  activeCategory = "all",
+  class: className = "",
+} = Astro.props
+---
+
+<div class={`w-full border-b border-border/60 pb-6 pt-2 ${className}`}>
+  <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <!-- Filter Label with Monospace Terminal Accent -->
+    <div class="flex items-center gap-2 text-muted-foreground">
+      <Icon name="mdi:filter-variant" class="size-4 text-primary" />
+      <span class="font-mono text-xs font-semibold tracking-wider uppercase">
+        Filter by Category:
+      </span>
+    </div>
+
+    <!-- Category Pill Buttons -->
+    <div
+      data-category-buttons
+      class="flex flex-wrap items-center gap-2"
+      role="group"
+      aria-label="Category Filters"
+    >
+      {
+        categories.map((cat, idx) => {
+          const isAll = idx === 0 || cat.name.toLowerCase() === "all"
+          const isActive = activeCategory.toLowerCase() === cat.name.toLowerCase() || (isAll && activeCategory.toLowerCase() === "all")
+
+          return (
+            <button
+              type="button"
+              data-category-btn
+              data-category-name={cat.name}
+              aria-pressed={isActive ? "true" : "false"}
+              class={`group/btn category-btn flex items-center gap-2 border px-3.5 py-1.5 font-mono text-xs transition-all duration-200 cursor-pointer select-none rounded-none ${
+                isActive
+                  ? "active border-primary bg-primary/10 text-primary font-bold shadow-[0_0_14px_oklch(var(--primary)/20%)]"
+                  : "border-border bg-background/50 text-muted-foreground hover:border-primary/40 hover:text-foreground hover:bg-background/80"
+              }`}
+            >
+              <span class="tracking-wide">{cat.name}</span>
+              <span
+                data-category-count
+                class={`inline-flex h-4 min-w-[1.25rem] items-center justify-center rounded-sm px-1.5 font-mono text-[10px] transition-colors ${
+                  isActive
+                    ? "bg-primary text-primary-foreground font-bold"
+                    : "bg-muted text-muted-foreground group-hover/btn:text-foreground group-hover/btn:bg-muted/80"
+                }`}
+              >
+                {cat.count}
+              </span>
+            </button>
+          )
+        })
+      }
+    </div>
+  </div>
+</div>

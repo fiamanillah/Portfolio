@@ -1,0 +1,32 @@
+{
+  "id": "cicd-artifact-signing-security",
+  "slug": "cicd-artifact-signing-security",
+  "title": "CI/CD Security: Signing Container Artifacts & Automated Scans",
+  "subtitle": "Preventing supply chain attacks with Cosign, Trivy vulnerability scans, and secret detection",
+  "summary": "Comprehensive DevOps security pipeline setup for signing OCI container images, detecting hardcoded secrets in pull requests, and scanning dependencies for CVE vulnerabilities.",
+  "date": "JAN 2025",
+  "readTime": "12 MIN READ",
+  "category": "Security",
+  "tags": [
+    "Security",
+    "DevOps",
+    "Cosign",
+    "Docker",
+    "CI/CD"
+  ],
+  "thumbnail": "/assets/images/project444.png",
+  "featured": false,
+  "views": "1.9k",
+  "author": {
+    "name": "Fi Amanillah",
+    "role": "Full Stack & DevOps Engineer",
+    "avatar": "/fi.png"
+  },
+  "keyTakeaways": [
+    "Sign container images keylessly using Sigstore Cosign and OIDC GitHub tokens.",
+    "Automate vulnerability scanning in CI pipelines using Aqua Security Trivy.",
+    "Block committed API keys and credentials using Gitleaks pre-commit scanning.",
+    "Generate Software Bill of Materials (SBOM) in SPDX format with Syft."
+  ],
+  "content": "## Software Supply Chain Risks & Attestation Frameworks\n\nRecent high-profile security incidents have shown that software supply chains are prime targets for malicious actors. Attackers compromise third-party dependencies, hijack CI runners, or inject malicious code into unsigned container images. Adopting SLSA (Supply-chain Levels for Software Artifacts) security standards guarantees artifact authenticity and origin integrity.\n\n---\n\n## Keyless Cryptographic Container Signing with Sigstore Cosign\n\nTraditional container signing required managing vulnerable long-lived private PGP keys. Sigstore Cosign enables keyless signing by leveraging short-lived OIDC identity tokens provided natively by GitHub Actions runners and recording signatures in the Rekor public transparency log.\n\n```yaml\n- name: Install Cosign\n  uses: sigstore/cosign-installer@v3.3.0\n\n- name: Sign Container Image (Keyless)\n  env:\n    TAGS: ghcr.io/fiamanillah/portfolio-web:latest\n    COSIGN_EXPERIMENTAL: \"1\"\n  run: |\n    cosign sign --yes ${TAGS}\n```\n\n---\n\n## Automated Image Vulnerability Scanning with Trivy in CI/CD\n\nScanning container filesystem layers and OS packages with Trivy before publishing guarantees that containers with HIGH or CRITICAL CVE vulnerabilities are blocked before reaching production.\n\n```yaml\n- name: Run Trivy Vulnerability Scanner\n  uses: aquasecurity/trivy-action@master\n  with:\n    image-ref: 'ghcr.io/fiamanillah/portfolio-web:latest'\n    format: 'table'\n    exit-code: '1' # Fail pipeline if severe vulnerabilities exist\n    ignore-unfixed: true\n    vuln-type: 'os,library'\n    severity: 'CRITICAL,HIGH'\n```\n\n---\n\n## Preventing Hardcoded Secret Leaks with Gitleaks & Pre-commit Hooks\n\nAccidentally committing AWS secrets, Stripe API keys, or private SSH keys to public GitHub repositories leads to instant exploitation by automated scanners. Integrating Gitleaks into local pre-commit hooks and pull request workflows catches leaked credentials prior to commit pushes.\n\n```bash\n# Run Gitleaks locally to audit repository history\ngitleaks detect --source . --verbose --config .gitleaks.toml\n```\n\n---\n\n## Generating & Verifying Software Bill of Materials (SBOM) with Syft\n\nA Software Bill of Materials (SBOM) provides a complete nested inventory of every open-source library, runtime dependency, and OS binary included inside a release container. Generating SBOMs with Syft ensures compliance transparency.\n\n```bash\n# Generate SPDX-JSON formatted SBOM\nsyft ghcr.io/fiamanillah/portfolio-web:latest -o spdx-json=sbom.spdx.json\n```\n\n---\n\n## Runtime Policy Enforcement with Kyverno & Kubernetes Admission Controllers\n\nSigning images is effective only if Kubernetes or Docker hosts reject unsigned images at deploy time. Admission controllers automatically verify Cosign signatures on image deployment payloads.\n\n---\n\n## Enforcing Signed Artifact Attestations in Production Clusters\n\nAttestation policies require images to pass both Cosign signature validation and Trivy vulnerability threshold attestations before deployment pods are scheduled.\n\n---\n\n## Continuous Compliance Auditing & Security Posture Dashboards\n\nAggregating SBOM manifests, vulnerability scan logs, and image signatures into centralized security dashboards maintains continuous audit readiness."
+}

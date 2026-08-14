@@ -1,6 +1,4 @@
 ---
-import { Badge } from "@workspace/ui/components/badge"
-
 interface CategoryItem {
   name: string
   count: number
@@ -42,14 +40,13 @@ const { categories, activeCategory = "All", baseUrl = "/blog" } = Astro.props
               }`}
             >
               <span>{cat.name}</span>
-              <Badge
-                variant="secondary"
-                class={`h-4 min-w-[1.25rem] justify-center p-0 font-mono text-[10px] ${
+              <span
+                class={`inline-flex h-4 min-w-[1.25rem] items-center justify-center rounded-sm px-1 font-mono text-[10px] ${
                   isActive ? "bg-primary text-primary-foreground font-bold" : "bg-muted text-muted-foreground"
                 }`}
               >
                 {cat.count}
-              </Badge>
+              </span>
             </button>
           </a>
         )

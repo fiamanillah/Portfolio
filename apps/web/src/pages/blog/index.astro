@@ -1,8 +1,8 @@
 ---
 import MySiteLayout from "@/layouts/MySiteLayout.astro"
-import BlogHeader from "@/components/Blog/BlogHeader.astro"
-import BlogFeaturedGrid from "@/components/Blog/BlogFeaturedGrid.astro"
-import { BlogExplorer } from "@/components/Blog/BlogExplorer"
+import BlogHeader from "@/components/Blog/hero/BlogHeader.astro"
+import BlogFeaturedGrid from "@/components/Blog/featured/BlogFeaturedGrid.astro"
+import BlogExplorer from "@/components/Blog/explorer/BlogExplorer.astro"
 import NewsletterSection from "@/components/Newsletter/NewsletterSection.astro"
 import {
   blogPostsData,
@@ -12,6 +12,7 @@ import {
 
 const categories = getBlogCategories()
 const featuredPosts = getFeaturedBlogPosts()
+const totalTopics = new Set(blogPostsData.flatMap((p) => p.tags)).size
 ---
 
 <MySiteLayout>
@@ -19,6 +20,7 @@ const featuredPosts = getFeaturedBlogPosts()
   <BlogHeader
     totalPosts={blogPostsData.length}
     totalCategories={categories.length - 1}
+    totalTopics={totalTopics}
   />
 
   <main class="container mx-auto px-4 py-12">
@@ -27,7 +29,6 @@ const featuredPosts = getFeaturedBlogPosts()
 
     <!-- Interactive Articles Explorer (Instant Category Filtering & Pagination) -->
     <BlogExplorer
-      client:load
       initialPosts={blogPostsData}
       categories={categories}
     />

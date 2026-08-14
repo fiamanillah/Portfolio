@@ -1,7 +1,5 @@
 ---
-import { Badge } from "@workspace/ui/components/badge"
-import { Button } from "@workspace/ui/components/button"
-import BlogFeaturedCard from "@/components/Blog/BlogFeaturedCard.astro"
+import BlogFeaturedCard from "@/components/Blog/cards/BlogFeaturedCard.astro"
 import type { BlogPost } from "@/data/blogPosts"
 
 interface Props {
@@ -17,7 +15,7 @@ const secondaryFeatured = featuredPosts.slice(1)
 {
   featuredPosts.length > 0 && (
     <section class="mb-16">
-      {/* Section Sub-Header (without blinking dot) */}
+      {/* Section Sub-Header */}
       <div class="mb-6 flex items-center justify-between border-b border-border/60 pb-3">
         <div class="flex items-center gap-2">
           <h2 class="font-mono text-xs font-bold tracking-widest text-primary uppercase">
@@ -62,9 +60,9 @@ const secondaryFeatured = featuredPosts.slice(1)
                     />
                     <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent"></div>
                     <div class="absolute top-2 left-2 z-10">
-                      <Badge variant="outline" class="border-primary/40 bg-background/90 font-mono text-[9px] font-semibold text-primary uppercase backdrop-blur-md px-1.5 py-0">
+                      <span class="inline-flex items-center border border-primary/40 bg-background/90 font-mono text-[9px] font-semibold text-primary uppercase backdrop-blur-md px-1.5 py-0.5">
                         {post.category}
-                      </Badge>
+                      </span>
                     </div>
                   </div>
 
@@ -89,19 +87,28 @@ const secondaryFeatured = featuredPosts.slice(1)
                       </p>
                     </div>
 
-                    <div class="mt-3 relative z-20 flex items-center justify-between border-t border-border/60 pt-2">
-                      <span class="font-mono text-[10px] font-semibold text-primary">
-                        FEATURED
-                      </span>
-                      <a href={`/blog/${post.slug}`} class="inline-block relative z-20">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          class="h-7 px-2.5 font-mono text-[11px] gap-1 transition-colors group-hover:border-primary group-hover:text-primary"
+                    <div class="mt-3 relative z-20 flex items-center justify-between border-t border-border/60 pt-2.5">
+                      <div class="flex items-center gap-2 min-w-0">
+                        {post.author.avatar && (
+                          <img
+                            src={post.author.avatar}
+                            alt={post.author.name}
+                            class="h-5 w-5 rounded-full border border-primary/30 object-cover shrink-0"
+                          />
+                        )}
+                        <span class="font-mono text-[11px] font-semibold text-muted-foreground truncate group-hover:text-foreground transition-colors">
+                          {post.author.name}
+                        </span>
+                      </div>
+
+                      <a href={`/blog/${post.slug}`} class="inline-block relative z-20 shrink-0 ml-2">
+                        <button
+                          type="button"
+                          class="inline-flex items-center h-7 px-2.5 font-mono text-[11px] gap-1 border border-border bg-background transition-colors hover:border-primary hover:text-primary cursor-pointer"
                         >
-                          Read
+                          <span>Read</span>
                           <span class="transition-transform duration-200 group-hover:translate-x-0.5">↗</span>
-                        </Button>
+                        </button>
                       </a>
                     </div>
                   </div>

@@ -1,7 +1,7 @@
 ---
-import { Badge } from "@workspace/ui/components/badge"
-import BlogArticleHeader from "@/components/Blog/BlogArticleHeader.astro"
-import BlogTableOfContents from "@/components/Blog/BlogTableOfContents.astro"
+import BlogArticleHeader from "@/components/Blog/article/BlogArticleHeader.astro"
+import BlogTableOfContents from "@/components/Blog/article/BlogTableOfContents.astro"
+import { renderMarkdown } from "@/lib/markdown"
 import type { BlogPost } from "@/data/blogPosts"
 
 interface Props {
@@ -10,7 +10,7 @@ interface Props {
 
 const { post } = Astro.props
 
-const sections = post.sections || []
+const { html: renderedMarkdownHtml, headings: tocHeadings } = await renderMarkdown(post.content || "")
 ---
 
 <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8" style="scroll-behavior: smooth;">
@@ -55,54 +55,11 @@ const sections = post.sections || []
         </div>
       )}
 
-      {/* Main Reading Content — narrower for optimal readability */}
-      <div class="prose prose-invert max-w-3xl space-y-10 text-foreground/90 leading-relaxed text-base">
-        <p class="text-lg font-medium text-muted-foreground leading-relaxed border-l-2 border-primary/60 pl-4 py-1 blog-animate-in">
-          {post.summary}
-        </p>
-
-        {sections.length > 0 ? (
-          sections.map((sec, i) => {
-            const sectionId = `section-${i + 1}`
-            return (
-              <section id={sectionId} data-article-section class="scroll-mt-28 space-y-4 pt-4 blog-animate-in">
-                <h2 class="text-2xl font-bold tracking-tight text-foreground border-b border-border/40 pb-2">
-                  <a href={`#${sectionId}`} class="hover:text-primary transition-colors">
-                    # {sec.heading}
-                  </a>
-                </h2>
-                <p class="text-base text-muted-foreground leading-relaxed">
-                  {sec.body}
-                </p>
-
-                {sec.codeSnippet && (
-                  <div class="relative my-6 overflow-hidden border border-border bg-slate-950 p-4 font-mono text-xs text-slate-100 shadow-md">
-                    <div class="mb-2 flex items-center justify-between border-b border-slate-800 pb-2 font-mono text-[10px] text-slate-400">
-                      <span class="uppercase tracking-wider text-primary font-bold">{sec.codeSnippet.language}</span>
-                      <button
-                        type="button"
-                        class="copy-code-btn cursor-pointer hover:text-slate-200 transition-colors"
-                        data-code={sec.codeSnippet.code}
-                      >
-                        Copy Code 📋
-                      </button>
-                    </div>
-                    <pre class="overflow-x-auto p-2 font-mono leading-relaxed">
-                      <code>{sec.codeSnippet.code}</code>
-                    </pre>
-                  </div>
-                )}
-              </section>
-            )
-          })
-        ) : (
-          <div class="space-y-4 pt-4">
-            <p class="text-base text-muted-foreground leading-relaxed">
-              Full technical postmortem and detailed code examples for {post.title} continue in this article. Check back regularly for updated benchmarks and architectural references.
-            </p>
-          </div>
-        )}
-      </div>
+      {/* Main Reading Content (Markdown Rendered) */}
+      <div
+        class="markdown-content max-w-3xl space-y-6 text-foreground/90 leading-relaxed text-base blog-animate-in"
+        set:html={renderedMarkdownHtml}
+      />
 
       {/* Decorative divider between content and meta */}
       <div class="my-12 flex items-center gap-4">
@@ -115,28 +72,41 @@ const sections = post.sections || []
       <div class="border-t border-border/60 pt-6 flex flex-wrap items-center gap-2 blog-animate-in">
         <span class="font-mono text-xs text-muted-foreground">TAGS:</span>
         {post.tags.map((tag) => (
-          <Badge variant="secondary" class="font-mono text-xs">
+          <span class="inline-flex items-center border border-border bg-muted/60 px-2.5 py-0.5 font-mono text-xs text-muted-foreground">
             #{tag}
-          </Badge>
+          </span>
         ))}
       </div>
 
       {/* Author Bio Card — full article-column width */}
-      <div class="mt-8 overflow-hidden border border-border bg-background/80 p-6 backdrop-blur-sm blog-animate-in">
-        <div class="flex flex-col sm:flex-row items-center gap-5">
-          <img
-            src={post.author.avatar}
-            alt={post.author.name}
-            class="h-16 w-16 rounded-full border-2 border-primary/40 object-cover shrink-0"
-          />
-          <div class="text-center sm:text-left">
-            <h4 class="font-mono text-base font-bold text-foreground">
-              Written by {post.author.name}
+      <div class="relative mt-12 overflow-hidden border border-border/80 bg-background/80 p-6 sm:p-7 backdrop-blur-md blog-animate-in">
+        {/* Cyberpunk corner brackets */}
+        <div class="pointer-events-none absolute top-2 left-2 h-3.5 w-3.5 border-t-[1.5px] border-l-[1.5px] border-primary/40" />
+        <div class="pointer-events-none absolute top-2 right-2 h-3.5 w-3.5 border-t-[1.5px] border-r-[1.5px] border-primary/40" />
+        <div class="pointer-events-none absolute bottom-2 left-2 h-3.5 w-3.5 border-b-[1.5px] border-l-[1.5px] border-primary/40" />
+        <div class="pointer-events-none absolute right-2 bottom-2 h-3.5 w-3.5 border-r-[1.5px] border-b-[1.5px] border-primary/40" />
+
+        <div class="flex flex-col sm:flex-row items-center sm:items-start gap-5">
+          <div class="relative shrink-0">
+            <img
+              src={post.author.avatar}
+              alt={post.author.name}
+              class="h-16 w-16 rounded-full border-2 border-primary/50 object-cover shadow-md"
+            />
+            <span class="absolute bottom-0 right-0 h-4 w-4 rounded-full border-2 border-background bg-emerald-500 shadow-sm" />
+          </div>
+
+          <div class="text-center sm:text-left space-y-1">
+            <span class="inline-block font-mono text-[10px] font-semibold text-primary uppercase tracking-wider">
+              [ AUTHOR // LEAD_ARCHITECT ]
+            </span>
+            <h4 class="font-mono text-base font-bold text-foreground leading-tight">
+              {post.author.name}
             </h4>
-            <p class="font-mono text-xs text-primary mb-2">
+            <p class="font-mono text-xs text-muted-foreground leading-none">
               {post.author.role}
             </p>
-            <p class="text-xs text-muted-foreground leading-relaxed">
+            <p class="text-xs text-muted-foreground/90 leading-relaxed pt-2">
               Full Stack Engineer specializing in TypeScript backend architecture, event-driven microservices with RabbitMQ & Redis, Prisma ORM tuning, and cloud VPS deployments.
             </p>
           </div>
@@ -146,7 +116,7 @@ const sections = post.sections || []
 
     {/* Right Sidebar Column: Sticky Table of Contents (4 cols lg) */}
     <aside class="lg:col-span-4 min-w-0 h-full">
-      <BlogTableOfContents sections={sections} />
+      <BlogTableOfContents headings={tocHeadings} />
     </aside>
   </div>
 </div>
@@ -171,22 +141,6 @@ const sections = post.sections || []
 </style>
 
 <script>
-  // Copy Code Snippet buttons logic
-  document.querySelectorAll(".copy-code-btn").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const code = btn.getAttribute("data-code")
-      if (code) {
-        navigator.clipboard.writeText(code).then(() => {
-          const original = btn.textContent
-          btn.textContent = "Copied! ✓"
-          setTimeout(() => {
-            btn.textContent = original
-          }, 2000)
-        })
-      }
-    })
-  })
-
   // Intersection Observer for section entrance animations
   function initSectionAnimations() {
     const animateElements = document.querySelectorAll(".blog-animate-in")
@@ -214,10 +168,51 @@ const sections = post.sections || []
     })
   }
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initSectionAnimations)
-  } else {
-    initSectionAnimations()
+  // Initialize Code Block Copy Buttons for Markdown content
+  function initMarkdownCodeCopy() {
+    document.querySelectorAll(".code-copy-btn").forEach((btn) => {
+      if (btn.hasAttribute("data-copy-initialized")) return
+      btn.setAttribute("data-copy-initialized", "true")
+
+      btn.addEventListener("click", async () => {
+        const code = btn.getAttribute("data-code")
+        if (!code) return
+
+        try {
+          await navigator.clipboard.writeText(code)
+          const copyIcon = btn.querySelector(".copy-icon")
+          const checkIcon = btn.querySelector(".check-icon")
+          const textSpan = btn.querySelector(".btn-text")
+
+          if (copyIcon && checkIcon && textSpan) {
+            copyIcon.classList.add("hidden")
+            checkIcon.classList.remove("hidden")
+            textSpan.textContent = "Copied!"
+            btn.classList.add("text-emerald-500")
+
+            setTimeout(() => {
+              copyIcon.classList.remove("hidden")
+              checkIcon.classList.add("hidden")
+              textSpan.textContent = "Copy"
+              btn.classList.remove("text-emerald-500")
+            }, 2000)
+          }
+        } catch (err) {
+          console.error("Failed to copy code:", err)
+        }
+      })
+    })
   }
-  document.addEventListener("astro:page-load", initSectionAnimations)
+
+  function initAll() {
+    initSectionAnimations()
+    initMarkdownCodeCopy()
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initAll)
+  } else {
+    initAll()
+  }
+  document.addEventListener("astro:page-load", initAll)
 </script>

@@ -1,6 +1,4 @@
 ---
-import { Button } from "@workspace/ui/components/button"
-
 interface Props {
   currentPage: number
   totalPages: number
@@ -45,23 +43,21 @@ const pages = Array.from({ length: totalPages }, (_, i) => i + 1)
         {/* Previous Button */}
         {currentPage > 1 ? (
           <a href={buildPageUrl(currentPage - 1)}>
-            <Button
-              variant="outline"
-              size="sm"
-              class="font-mono text-xs border-border hover:border-primary hover:text-primary"
+            <button
+              type="button"
+              class="inline-flex items-center border border-border bg-background px-3 py-1.5 font-mono text-xs transition-colors hover:border-primary hover:text-primary cursor-pointer select-none"
             >
               ← Prev
-            </Button>
+            </button>
           </a>
         ) : (
-          <Button
-            variant="outline"
-            size="sm"
+          <button
+            type="button"
             disabled
-            class="font-mono text-xs opacity-40 cursor-not-allowed"
+            class="inline-flex items-center border border-border bg-background px-3 py-1.5 font-mono text-xs opacity-40 cursor-not-allowed select-none"
           >
             ← Prev
-          </Button>
+          </button>
         )}
 
         {/* Page Number Buttons */}
@@ -70,17 +66,16 @@ const pages = Array.from({ length: totalPages }, (_, i) => i + 1)
             const isCurrent = p === currentPage
             return (
               <a href={buildPageUrl(p)}>
-                <Button
-                  variant={isCurrent ? "default" : "outline"}
-                  size="sm"
-                  class={`h-8 w-8 font-mono text-xs p-0 ${
+                <button
+                  type="button"
+                  class={`h-8 w-8 font-mono text-xs transition-colors cursor-pointer select-none ${
                     isCurrent
                       ? "bg-primary text-primary-foreground font-bold shadow-sm"
-                      : "border-border hover:border-primary hover:text-primary"
+                      : "border border-border bg-background text-muted-foreground hover:border-primary hover:text-primary"
                   }`}
                 >
                   {p}
-                </Button>
+                </button>
               </a>
             )
           })}
@@ -89,23 +84,21 @@ const pages = Array.from({ length: totalPages }, (_, i) => i + 1)
         {/* Next Button */}
         {currentPage < totalPages ? (
           <a href={buildPageUrl(currentPage + 1)}>
-            <Button
-              variant="outline"
-              size="sm"
-              class="font-mono text-xs border-border hover:border-primary hover:text-primary"
+            <button
+              type="button"
+              class="inline-flex items-center border border-border bg-background px-3 py-1.5 font-mono text-xs transition-colors hover:border-primary hover:text-primary cursor-pointer select-none"
             >
               Next →
-            </Button>
+            </button>
           </a>
         ) : (
-          <Button
-            variant="outline"
-            size="sm"
+          <button
+            type="button"
             disabled
-            class="font-mono text-xs opacity-40 cursor-not-allowed"
+            class="inline-flex items-center border border-border bg-background px-3 py-1.5 font-mono text-xs opacity-40 cursor-not-allowed select-none"
           >
             Next →
-          </Button>
+          </button>
         )}
       </div>
     </nav>

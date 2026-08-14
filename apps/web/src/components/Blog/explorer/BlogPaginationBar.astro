@@ -1,0 +1,81 @@
+---
+import { Icon } from "astro-icon/components"
+
+interface Props {
+  initialTotalPages: number
+  class?: string
+}
+
+const { initialTotalPages = 1, class: className = "" } = Astro.props
+---
+
+<nav
+  data-pagination-bar
+  aria-label="Blog Articles Pagination"
+  class={`mt-12 flex flex-col items-center justify-between gap-4 border-t border-border/80 pt-8 sm:flex-row ${
+    initialTotalPages > 1 ? "flex" : "hidden"
+  } ${className}`}
+>
+  <!-- Page Counter -->
+  <div class="flex items-center gap-1.5 font-mono text-xs text-muted-foreground">
+    <Icon name="mdi:file-document-outline" class="size-3.5 text-primary/70" />
+    <span>PAGE</span>
+    <span data-current-page-num class="font-bold text-foreground">1</span>
+    <span>OF</span>
+    <span data-total-pages-num class="font-bold text-foreground">{initialTotalPages}</span>
+  </div>
+
+  <!-- Pagination Action Controls -->
+  <div class="flex items-center gap-2">
+    <!-- Prev Button -->
+    <button
+      type="button"
+      data-pagination-prev
+      disabled
+      aria-label="Previous Page"
+      class="inline-flex items-center gap-1 border border-border bg-background px-3 py-1.5 font-mono text-xs transition-colors cursor-not-allowed opacity-40 select-none"
+    >
+      <Icon name="mdi:chevron-left" class="size-4" />
+      <span>Prev</span>
+    </button>
+
+    <!-- Numbered Page Buttons Container -->
+    <div data-page-numbers class="flex items-center gap-1">
+      {
+        Array.from({ length: initialTotalPages }, (_, i) => i + 1).map((pageNum) => {
+          const isCurrent = pageNum === 1
+          return (
+            <button
+              type="button"
+              data-page-btn={pageNum}
+              aria-label={`Go to page ${pageNum}`}
+              aria-current={isCurrent ? "page" : undefined}
+              class={`h-8 w-8 font-mono text-xs transition-colors cursor-pointer select-none ${
+                isCurrent
+                  ? "bg-primary text-primary-foreground font-bold shadow-sm"
+                  : "border border-border bg-background text-muted-foreground hover:border-primary hover:text-primary"
+              }`}
+            >
+              {pageNum}
+            </button>
+          )
+        })
+      }
+    </div>
+
+    <!-- Next Button -->
+    <button
+      type="button"
+      data-pagination-next
+      aria-label="Next Page"
+      class={`inline-flex items-center gap-1 border border-border bg-background px-3 py-1.5 font-mono text-xs transition-colors select-none ${
+        initialTotalPages <= 1
+          ? "cursor-not-allowed opacity-40 border-border"
+          : "cursor-pointer hover:border-primary hover:text-primary"
+      }`}
+    >
+      <span>Next</span>
+      <Icon name="mdi:chevron-right" class="size-4" />
+    </button>
+  </div>
+</nav>

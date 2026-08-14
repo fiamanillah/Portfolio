@@ -1,0 +1,363 @@
+---
+import type { BlogPost } from "@/data/blogPosts"
+import BlogFilterBar from "./BlogFilterBar.astro"
+import BlogGridHeader from "./BlogGridHeader.astro"
+import BlogSkeletonGrid from "./BlogSkeletonGrid.astro"
+import BlogCard from "@/components/Blog/cards/BlogCard.astro"
+import BlogEmptyState from "./BlogEmptyState.astro"
+import BlogPaginationBar from "./BlogPaginationBar.astro"
+
+interface Props {
+  initialPosts?: BlogPost[]
+  posts?: BlogPost[]
+  categories: { name: string; count: number }[]
+  postsPerPage?: number
+}
+
+const {
+  initialPosts,
+  posts = initialPosts || [],
+  categories = [],
+  postsPerPage = 6,
+} = Astro.props
+
+const totalCount = posts.length
+const initialTotalPages = Math.max(1, Math.ceil(totalCount / postsPerPage))
+const popularCategoryNames = categories
+  .filter((c) => c.name.toLowerCase() !== "all")
+  .map((c) => c.name)
+---
+
+<div id="blog-grid-top" class="w-full" data-blog-explorer data-posts-per-page={postsPerPage}>
+  <!-- 1. Category Filter Navigation Bar -->
+  <BlogFilterBar categories={categories} activeCategory="all" />
+
+  <!-- 2. Grid Results Header with Live Counter & Category Indicator -->
+  <BlogGridHeader totalCount={totalCount} postsPerPage={postsPerPage} activeCategory="all" />
+
+  <!-- 3. Skeleton Loading State (animated shimmer during category/page transitions) -->
+  <div data-loading-container class="hidden">
+    <BlogSkeletonGrid count={postsPerPage} />
+  </div>
+
+  <!-- 4. Cards Grid Container -->
+  <div
+    data-cards-grid
+    class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3 transition-opacity duration-200"
+  >
+    {
+      posts.map((post, index) => (
+        <BlogCard post={post} isInitiallyVisible={index < postsPerPage} />
+      ))
+    }
+  </div>
+
+  <!-- 5. Rich Empty State -->
+  <BlogEmptyState popularCategories={popularCategoryNames} />
+
+  <!-- 6. Pagination Bar -->
+  <BlogPaginationBar initialTotalPages={initialTotalPages} />
+</div>
+
+<script>
+  function initBlogExplorer() {
+    const explorer = document.querySelector<HTMLElement>("[data-blog-explorer]")
+    if (!explorer) return
+
+    const postsPerPage = parseInt(explorer.dataset.postsPerPage || "6", 10)
+    const cards = Array.from(explorer.querySelectorAll<HTMLElement>("[data-blog-card]"))
+    const categoryBtns = Array.from(explorer.querySelectorAll<HTMLButtonElement>("[data-category-btn]"))
+    const journalTitle = explorer.querySelector<HTMLElement>("[data-journal-title]")
+    const activeCategoryBadge = explorer.querySelector<HTMLElement>("[data-active-category-badge]")
+    const activeCategoryText = explorer.querySelector<HTMLElement>("[data-active-category-text]")
+    const showingCount = explorer.querySelector<HTMLElement>("[data-showing-count]")
+    const cardsGrid = explorer.querySelector<HTMLElement>("[data-cards-grid]")
+    const loadingContainer = explorer.querySelector<HTMLElement>("[data-loading-container]")
+    const emptyState = explorer.querySelector<HTMLElement>("[data-empty-state]")
+    const emptyCategoryName = explorer.querySelector<HTMLElement>("[data-empty-category-name]")
+    const resetBtn = explorer.querySelector<HTMLButtonElement>("[data-reset-filter-btn]")
+    const emptyCategoryChips = Array.from(explorer.querySelectorAll<HTMLButtonElement>("[data-empty-category-chip]"))
+    const paginationBar = explorer.querySelector<HTMLElement>("[data-pagination-bar]")
+    const currentPageNum = explorer.querySelector<HTMLElement>("[data-current-page-num]")
+    const totalPagesNum = explorer.querySelector<HTMLElement>("[data-total-pages-num]")
+    const prevBtn = explorer.querySelector<HTMLButtonElement>("[data-pagination-prev]")
+    const nextBtn = explorer.querySelector<HTMLButtonElement>("[data-pagination-next]")
+    const pageNumbersContainer = explorer.querySelector<HTMLElement>("[data-page-numbers]")
+
+    // Check URL search param on load
+    const urlParams = new URLSearchParams(window.location.search)
+    const initialCategoryParam = urlParams.get("category") || "all"
+
+    let activeCategory = initialCategoryParam.toLowerCase()
+    let currentPage = 1
+    let transitionTimer: ReturnType<typeof setTimeout> | null = null
+
+    function performUpdate(targetPage = 1, shouldScroll = false) {
+      // 1. Filter matching cards
+      const matchingCards = cards.filter((card) => {
+        if (activeCategory === "all") return true
+        return (card.dataset.category || "").toLowerCase() === activeCategory
+      })
+
+      const totalCount = matchingCards.length
+      const totalPages = Math.max(1, Math.ceil(totalCount / postsPerPage))
+      currentPage = Math.max(1, Math.min(targetPage, totalPages))
+
+      const startIndex = (currentPage - 1) * postsPerPage
+      const endIndex = startIndex + postsPerPage
+
+      // 2. Show / hide cards
+      cards.forEach((card) => {
+        const isMatch =
+          activeCategory === "all" || (card.dataset.category || "").toLowerCase() === activeCategory
+
+        if (!isMatch) {
+          card.classList.add("hidden")
+          card.classList.remove("flex")
+          return
+        }
+
+        const indexInMatching = matchingCards.indexOf(card)
+        if (indexInMatching >= startIndex && indexInMatching < endIndex) {
+          card.classList.remove("hidden")
+          card.classList.add("flex")
+        } else {
+          card.classList.add("hidden")
+          card.classList.remove("flex")
+        }
+      })
+
+      // 3. Update Category button states
+      categoryBtns.forEach((btn) => {
+        const catName = (btn.dataset.categoryName || "").toLowerCase()
+        const isAll = catName === "all"
+        const isActive = catName === activeCategory || (isAll && activeCategory === "all")
+        const countSpan = btn.querySelector<HTMLElement>("[data-category-count]")
+
+        btn.setAttribute("aria-pressed", isActive ? "true" : "false")
+
+        if (isActive) {
+          btn.className =
+            "group/btn category-btn flex items-center gap-2 border px-3.5 py-1.5 font-mono text-xs transition-all duration-200 cursor-pointer select-none rounded-none active border-primary bg-primary/10 text-primary font-bold shadow-[0_0_14px_oklch(var(--primary)/20%)]"
+          if (countSpan) {
+            countSpan.className =
+              "inline-flex h-4 min-w-[1.25rem] items-center justify-center rounded-sm px-1.5 font-mono text-[10px] bg-primary text-primary-foreground font-bold"
+          }
+        } else {
+          btn.className =
+            "group/btn category-btn flex items-center gap-2 border px-3.5 py-1.5 font-mono text-xs transition-all duration-200 cursor-pointer select-none rounded-none border-border bg-background/50 text-muted-foreground hover:border-primary/40 hover:text-foreground hover:bg-background/80"
+          if (countSpan) {
+            countSpan.className =
+              "inline-flex h-4 min-w-[1.25rem] items-center justify-center rounded-sm px-1.5 font-mono text-[10px] bg-muted text-muted-foreground group-hover/btn:text-foreground group-hover/btn:bg-muted/80"
+          }
+        }
+      })
+
+      // 4. Update Header counts & title
+      if (journalTitle) {
+        journalTitle.textContent =
+          activeCategory !== "all"
+            ? `// ARTICLES JOURNAL [${activeCategory.toUpperCase()}]`
+            : "// ARTICLES JOURNAL"
+      }
+
+      if (activeCategoryText) {
+        activeCategoryText.textContent = activeCategory.toUpperCase()
+      }
+
+      if (activeCategoryBadge) {
+        if (activeCategory === "all") {
+          activeCategoryBadge.classList.remove("border-amber-500/40", "bg-amber-500/10", "text-amber-400")
+          activeCategoryBadge.classList.add("border-primary/30", "bg-primary/10", "text-primary")
+        } else {
+          activeCategoryBadge.classList.add("border-primary/30", "bg-primary/10", "text-primary")
+        }
+      }
+
+      if (showingCount) {
+        if (totalCount > 0) {
+          const from = startIndex + 1
+          const to = Math.min(endIndex, totalCount)
+          showingCount.textContent = `SHOWING ${from}-${to} OF ${totalCount} ARTICLES`
+        } else {
+          showingCount.textContent = `0 ARTICLES AVAILABLE`
+        }
+      }
+
+      // 5. Empty State Handling
+      if (totalCount === 0) {
+        if (cardsGrid) cardsGrid.classList.add("hidden")
+        if (emptyState) {
+          emptyState.classList.remove("hidden")
+          if (emptyCategoryName) {
+            emptyCategoryName.textContent = `"${activeCategory}"`
+          }
+        }
+      } else {
+        if (cardsGrid) cardsGrid.classList.remove("hidden")
+        if (emptyState) emptyState.classList.add("hidden")
+      }
+
+      // 6. Pagination UI
+      if (paginationBar) {
+        if (totalPages <= 1) {
+          paginationBar.classList.add("hidden")
+          paginationBar.classList.remove("flex")
+        } else {
+          paginationBar.classList.remove("hidden")
+          paginationBar.classList.add("flex")
+        }
+      }
+
+      if (currentPageNum) currentPageNum.textContent = String(currentPage)
+      if (totalPagesNum) totalPagesNum.textContent = String(totalPages)
+
+      // Prev / Next button states
+      if (prevBtn) {
+        if (currentPage <= 1) {
+          prevBtn.disabled = true
+          prevBtn.className =
+            "inline-flex items-center gap-1 border border-border bg-background px-3 py-1.5 font-mono text-xs transition-colors cursor-not-allowed opacity-40 select-none"
+        } else {
+          prevBtn.disabled = false
+          prevBtn.className =
+            "inline-flex items-center gap-1 border border-border bg-background px-3 py-1.5 font-mono text-xs transition-colors cursor-pointer select-none hover:border-primary hover:text-primary"
+        }
+      }
+
+      if (nextBtn) {
+        if (currentPage >= totalPages) {
+          nextBtn.disabled = true
+          nextBtn.className =
+            "inline-flex items-center gap-1 border border-border bg-background px-3 py-1.5 font-mono text-xs transition-colors cursor-not-allowed opacity-40 select-none"
+        } else {
+          nextBtn.disabled = false
+          nextBtn.className =
+            "inline-flex items-center gap-1 border border-border bg-background px-3 py-1.5 font-mono text-xs transition-colors cursor-pointer select-none hover:border-primary hover:text-primary"
+        }
+      }
+
+      // Render page numbers
+      if (pageNumbersContainer) {
+        pageNumbersContainer.innerHTML = ""
+        for (let i = 1; i <= totalPages; i++) {
+          const btn = document.createElement("button")
+          btn.type = "button"
+          btn.dataset.pageBtn = String(i)
+          btn.textContent = String(i)
+          btn.setAttribute("aria-label", `Go to page ${i}`)
+          if (i === currentPage) {
+            btn.setAttribute("aria-current", "page")
+            btn.className =
+              "h-8 w-8 font-mono text-xs transition-colors cursor-pointer select-none bg-primary text-primary-foreground font-bold shadow-sm"
+          } else {
+            btn.className =
+              "h-8 w-8 font-mono text-xs transition-colors cursor-pointer select-none border border-border bg-background text-muted-foreground hover:border-primary hover:text-primary"
+          }
+          btn.addEventListener("click", () => {
+            updateView(i, true, false)
+          })
+          pageNumbersContainer.appendChild(btn)
+        }
+      }
+
+      // Hide loading skeleton and reveal cards grid
+      if (loadingContainer) loadingContainer.classList.add("hidden")
+      if (cardsGrid && totalCount > 0) {
+        cardsGrid.classList.remove("opacity-0")
+      }
+
+      // Scroll to top of explorer grid
+      if (shouldScroll) {
+        explorer?.scrollIntoView({ behavior: "smooth", block: "start" })
+      }
+    }
+
+    function updateView(targetPage = 1, shouldScroll = false, withSkeleton = false) {
+      if (withSkeleton && loadingContainer && cardsGrid) {
+        // Show skeleton shimmer briefly for smooth perceived transition
+        if (transitionTimer) clearTimeout(transitionTimer)
+        loadingContainer.classList.remove("hidden")
+        cardsGrid.classList.add("opacity-0")
+        if (emptyState) emptyState.classList.add("hidden")
+
+        transitionTimer = setTimeout(() => {
+          performUpdate(targetPage, shouldScroll)
+        }, 120)
+      } else {
+        performUpdate(targetPage, shouldScroll)
+      }
+    }
+
+    function switchCategory(newCategory: string) {
+      activeCategory = newCategory.toLowerCase()
+      updateView(1, false, true)
+
+      // Sync with browser URL without page reload
+      const url = new URL(window.location.href)
+      if (activeCategory === "all") {
+        url.searchParams.delete("category")
+      } else {
+        url.searchParams.set("category", activeCategory)
+      }
+      window.history.replaceState({}, "", url.toString())
+    }
+
+    // Attach Category Button Click Handlers
+    categoryBtns.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const cat = (btn.dataset.categoryName || "all").toLowerCase()
+        switchCategory(cat)
+      })
+    })
+
+    // Attach Empty State Category Chips
+    emptyCategoryChips.forEach((chip) => {
+      chip.addEventListener("click", () => {
+        const cat = (chip.dataset.emptyCategoryChip || "all").toLowerCase()
+        switchCategory(cat)
+      })
+    })
+
+    // Reset Button Click Handler
+    if (resetBtn) {
+      resetBtn.addEventListener("click", () => {
+        switchCategory("all")
+      })
+    }
+
+    // Prev / Next Handlers
+    if (prevBtn) {
+      prevBtn.addEventListener("click", () => {
+        if (currentPage > 1) {
+          updateView(currentPage - 1, true, false)
+        }
+      })
+    }
+
+    if (nextBtn) {
+      nextBtn.addEventListener("click", () => {
+        updateView(currentPage + 1, true, false)
+      })
+    }
+
+    // Browser back/forward navigation sync
+    window.addEventListener("popstate", () => {
+      const currentUrlParams = new URLSearchParams(window.location.search)
+      const cat = (currentUrlParams.get("category") || "all").toLowerCase()
+      if (cat !== activeCategory) {
+        activeCategory = cat
+        updateView(1, false, false)
+      }
+    })
+
+    // Initialize with current URL category if present
+    if (activeCategory !== "all") {
+      updateView(1, false, false)
+    }
+  }
+
+  // Setup on initial load and Astro View Transitions
+  initBlogExplorer()
+  document.addEventListener("astro:page-load", initBlogExplorer)
+</script>

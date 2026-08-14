@@ -1,18 +1,25 @@
 ---
-import { Badge } from "@workspace/ui/components/badge"
-import { Button } from "@workspace/ui/components/button"
 import type { BlogPost } from "@/data/blogPosts"
 
 interface Props {
   post: BlogPost
+  isInitiallyVisible?: boolean
   class?: string
 }
 
-const { post, class: className = "" } = Astro.props
+const {
+  post,
+  isInitiallyVisible = true,
+  class: className = "",
+} = Astro.props
 ---
 
 <article
-  class={`group relative flex flex-col justify-between overflow-hidden border border-border bg-background/60 backdrop-blur-sm transition-all duration-300 hover:border-primary/40 hover:bg-background/90 hover:shadow-[0_0_0_1px_oklch(var(--primary)/20%),0_8px_32px_-8px_oklch(var(--primary)/12%)] ${className}`}
+  data-blog-card
+  data-category={post.category.toLowerCase()}
+  class={`group relative flex-col justify-between overflow-hidden border border-border bg-background/60 backdrop-blur-sm transition-all duration-300 hover:border-primary/40 hover:bg-background/90 hover:shadow-[0_0_0_1px_oklch(var(--primary)/20%),0_8px_32px_-8px_oklch(var(--primary)/12%)] ${
+    isInitiallyVisible ? "flex" : "hidden"
+  } ${className}`}
 >
   {/* Cyberpunk corner brackets */}
   <div
@@ -46,21 +53,20 @@ const { post, class: className = "" } = Astro.props
 
       {/* Category Badge on Top-Left */}
       <div class="absolute top-3 left-3 z-10">
-        <Badge
-          variant="outline"
-          class="border-primary/40 bg-background/80 font-mono text-[10px] font-semibold tracking-wider text-primary uppercase backdrop-blur-md"
+        <span
+          class="inline-flex items-center rounded-none border border-primary/40 bg-background/80 px-2 py-0.5 font-mono text-[10px] font-semibold tracking-wider text-primary uppercase backdrop-blur-md"
         >
           {post.category}
-        </Badge>
+        </span>
       </div>
 
       {/* Featured Badge if applicable */}
       {
         post.featured && (
           <div class="absolute top-3 right-3 z-10">
-            <Badge class="bg-primary text-primary-foreground font-mono text-[10px] font-bold tracking-wider uppercase shadow-sm">
+            <span class="inline-flex items-center bg-primary px-2 py-0.5 font-mono text-[10px] font-bold tracking-wider text-primary-foreground uppercase shadow-sm">
               FEATURED
-            </Badge>
+            </span>
           </div>
         )
       }
@@ -101,16 +107,15 @@ const { post, class: className = "" } = Astro.props
     <div class="mb-4 flex flex-wrap gap-1.5">
       {
         post.tags.slice(0, 3).map((tag) => (
-          <Badge
-            variant="secondary"
-            class="font-mono text-[10px] font-normal text-muted-foreground/90 transition-colors group-hover:border-primary/20"
+          <span
+            class="inline-flex items-center border border-border bg-muted/50 px-2 py-0.5 font-mono text-[10px] text-muted-foreground/90 transition-colors group-hover:border-primary/20"
           >
             #{tag}
-          </Badge>
+          </span>
         ))
       }
       {post.tags.length > 3 && (
-        <span class="font-mono text-[10px] text-muted-foreground/60 align-self-center">
+        <span class="inline-flex items-center font-mono text-[10px] text-muted-foreground/60">
           +{post.tags.length - 3}
         </span>
       )}
@@ -118,31 +123,38 @@ const { post, class: className = "" } = Astro.props
 
     <div class="relative z-20 flex items-center justify-between border-t border-border/60 pt-4">
       {/* Author avatar & info */}
-      <div class="flex items-center gap-2">
+      <div class="flex items-center gap-2.5 min-w-0">
         {post.author.avatar && (
-          <img
-            src={post.author.avatar}
-            alt={post.author.name}
-            class="h-6 w-6 rounded-full border border-border object-cover"
-          />
+          <div class="relative shrink-0">
+            <img
+              src={post.author.avatar}
+              alt={post.author.name}
+              class="h-8 w-8 rounded-full border border-primary/40 object-cover shadow-xs"
+            />
+            <span class="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border border-background bg-emerald-500 shadow-xs" />
+          </div>
         )}
-        <span class="font-mono text-xs text-muted-foreground transition-colors group-hover:text-foreground">
-          {post.author.name}
-        </span>
+        <div class="flex flex-col justify-center min-w-0 gap-0.5">
+          <span class="font-mono text-xs font-bold text-foreground leading-tight truncate transition-colors group-hover:text-primary">
+            {post.author.name}
+          </span>
+          <span class="font-mono text-[10px] text-muted-foreground leading-none truncate">
+            {post.author.role}
+          </span>
+        </div>
       </div>
 
       {/* Action button */}
-      <a href={`/blog/${post.slug}`} class="inline-block relative z-20">
-        <Button
-          variant="outline"
-          size="sm"
-          class="h-8 gap-1.5 font-mono text-xs transition-colors group-hover:border-primary group-hover:text-primary"
+      <a href={`/blog/${post.slug}`} class="inline-block relative z-20 shrink-0 ml-3">
+        <button
+          type="button"
+          class="inline-flex h-8 items-center gap-1.5 border border-border bg-background px-3 font-mono text-xs text-foreground transition-colors hover:border-primary hover:text-primary cursor-pointer select-none"
         >
-          Read
+          <span>Read</span>
           <span class="transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
             ↗
           </span>
-        </Button>
+        </button>
       </a>
     </div>
   </div>
