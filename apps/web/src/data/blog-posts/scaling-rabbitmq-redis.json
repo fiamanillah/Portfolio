@@ -4,8 +4,6 @@
   "title": "Decoupling Heavy Node.js Jobs with RabbitMQ & Redis",
   "subtitle": "Architecting high-throughput background processing pipelines for asynchronous tasks",
   "summary": "A deep dive into architecture patterns for offloading background email queues, AI processing, and webhook dispatching with guaranteed delivery, dead-letter queues, and Redis caching.",
-  "date": "AUG 2025",
-  "readTime": "12 MIN READ",
   "category": "Architecture",
   "tags": [
     "Node.js",
@@ -14,13 +12,36 @@
     "Architecture",
     "Microservices"
   ],
-  "thumbnail": "/assets/images/mickanic-cover.png",
+  "publishedAt": "2025-08-01T00:00:00.000Z",
+  "modifiedAt": "2025-08-01T00:00:00.000Z",
+  "date": "AUG 2025",
+  "readTime": "12 MIN READ",
   "featured": true,
   "views": "1.4k",
   "author": {
     "name": "Fi Amanillah",
     "role": "Full Stack & DevOps Engineer",
-    "avatar": "/fi.png"
+    "avatar": "/fi.png",
+    "twitter": "@fiamanillah",
+    "linkedin": "https://linkedin.com/in/fiamanillah",
+    "github": "https://github.com/fiamanillah"
+  },
+  "thumbnail": "/assets/images/mickanic-cover.png",
+  "seo": {
+    "metaTitle": "Decoupling Heavy Node.js Jobs with RabbitMQ & Redis | Fi Amanillah",
+    "metaDescription": "A deep dive into architecture patterns for offloading background email queues, AI processing, and webhook dispatching with guaranteed delivery, dead-letter queues, and Redis caching.",
+    "ogImage": "/assets/images/mickanic-cover.png",
+    "ogType": "article",
+    "keywords": [
+      "Node.js",
+      "RabbitMQ",
+      "Redis",
+      "Architecture",
+      "Microservices"
+    ],
+    "canonicalUrl": "https://fi.amanillah.com/blog/scaling-rabbitmq-redis",
+    "articleType": "TechArticle",
+    "noIndex": false
   },
   "keyTakeaways": [
     "Decouple intensive CPU tasks from HTTP event loops using AMQP message queues.",

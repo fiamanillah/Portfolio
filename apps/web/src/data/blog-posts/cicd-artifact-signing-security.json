@@ -4,8 +4,6 @@
   "title": "CI/CD Security: Signing Container Artifacts & Automated Scans",
   "subtitle": "Preventing supply chain attacks with Cosign, Trivy vulnerability scans, and secret detection",
   "summary": "Comprehensive DevOps security pipeline setup for signing OCI container images, detecting hardcoded secrets in pull requests, and scanning dependencies for CVE vulnerabilities.",
-  "date": "JAN 2025",
-  "readTime": "12 MIN READ",
   "category": "Security",
   "tags": [
     "Security",
@@ -14,13 +12,36 @@
     "Docker",
     "CI/CD"
   ],
-  "thumbnail": "/assets/images/project444.png",
+  "publishedAt": "2025-01-01T00:00:00.000Z",
+  "modifiedAt": "2025-01-01T00:00:00.000Z",
+  "date": "JAN 2025",
+  "readTime": "12 MIN READ",
   "featured": false,
   "views": "1.9k",
   "author": {
     "name": "Fi Amanillah",
     "role": "Full Stack & DevOps Engineer",
-    "avatar": "/fi.png"
+    "avatar": "/fi.png",
+    "twitter": "@fiamanillah",
+    "linkedin": "https://linkedin.com/in/fiamanillah",
+    "github": "https://github.com/fiamanillah"
+  },
+  "thumbnail": "/assets/images/project444.png",
+  "seo": {
+    "metaTitle": "CI/CD Security: Signing Container Artifacts & Automated Scans | Fi Amanillah",
+    "metaDescription": "Comprehensive DevOps security pipeline setup for signing OCI container images, detecting hardcoded secrets in pull requests, and scanning dependencies for CVE vulnerabilities.",
+    "ogImage": "/assets/images/project444.png",
+    "ogType": "article",
+    "keywords": [
+      "Security",
+      "DevOps",
+      "Cosign",
+      "Docker",
+      "CI/CD"
+    ],
+    "canonicalUrl": "https://fi.amanillah.com/blog/cicd-artifact-signing-security",
+    "articleType": "TechArticle",
+    "noIndex": false
   },
   "keyTakeaways": [
     "Sign container images keylessly using Sigstore Cosign and OIDC GitHub tokens.",

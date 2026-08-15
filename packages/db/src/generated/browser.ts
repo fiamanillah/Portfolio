@@ -27,3 +27,8 @@ export type ContactSubmission = Prisma.ContactSubmissionModel
  * 
  */
 export type Subscriber = Prisma.SubscriberModel
+/**
+ * Model EmailTemplate
+ * 
+ */
+export type EmailTemplate = Prisma.EmailTemplateModel

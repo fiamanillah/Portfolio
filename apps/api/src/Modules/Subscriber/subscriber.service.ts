@@ -461,7 +461,18 @@ export class SubscriberService {
   private async sendWelcomeEmail(email: string, name?: string): Promise<void> {
     const secretKey = config.plunk.secretKey;
     const recipientEmail = config.contact.recipientEmail;
-    const templateId = config.plunk.confirmationTemplateId || config.plunk.templateId;
+
+    let templateId = config.plunk.confirmationTemplateId || config.plunk.templateId;
+    try {
+      const dbTemplate = await prisma.emailTemplate.findUnique({
+        where: { slug: "subscriber-welcome" },
+      });
+      if (dbTemplate?.plunkId) {
+        templateId = dbTemplate.plunkId;
+      }
+    } catch {
+      // fallback to config
+    }
 
     // Generate the one-click unsubscribe URL
     const unsubscribeUrl = this.buildUnsubscribeUrl(email);
@@ -486,6 +497,7 @@ export class SubscriberService {
         body: emailBody,
         data: {
           name: name || "",
+          firstName: name ? name.split(" ")[0] : "there",
           email,
           unsubscribeUrl,
         },
@@ -495,7 +507,7 @@ export class SubscriberService {
         },
       };
 
-      if (templateId) {
+      if (templateId && !this.isPlaceholderKey(templateId)) {
         plunkPayload.template = templateId;
       }
 
@@ -507,7 +519,7 @@ export class SubscriberService {
         timeout: 10000,
       });
 
-      this.logger.info(`✔ Welcome email with unsubscribe link delivered to ${email} via Plunk`);
+      this.logger.info(`✔ Welcome email with unsubscribe link delivered to ${email} via Plunk (Template: ${templateId || 'N/A'})`);
     } catch (error) {
       this.logger.warn(`Failed to send welcome email to ${email}`, { error });
     }

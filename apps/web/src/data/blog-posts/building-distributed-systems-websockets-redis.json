@@ -4,8 +4,6 @@
   "title": "Building Resilient Real-Time Microservices with WebSockets & Redis Streams",
   "subtitle": "A comprehensive deep dive into horizontal scaling, event-driven streaming, and sub-10ms pub/sub synchronization.",
   "summary": "Explore the end-to-end architecture of scaling WebSocket gateways across distributed Node.js nodes using Redis Streams, consumer groups, automatic heartbeat health checks, and edge failover strategies.",
-  "date": "AUG 2025",
-  "readTime": "14 MIN READ",
   "category": "WebSockets",
   "tags": [
     "WebSockets",
@@ -15,13 +13,37 @@
     "Docker",
     "Performance"
   ],
-  "thumbnail": "/assets/images/mickanic-cover.png",
+  "publishedAt": "2025-08-01T00:00:00.000Z",
+  "modifiedAt": "2025-08-01T00:00:00.000Z",
+  "date": "AUG 2025",
+  "readTime": "14 MIN READ",
   "featured": true,
   "views": "2.8k",
   "author": {
     "name": "Fi Amanillah",
     "role": "Full Stack & DevOps Engineer",
-    "avatar": "/fi.png"
+    "avatar": "/fi.png",
+    "twitter": "@fiamanillah",
+    "linkedin": "https://linkedin.com/in/fiamanillah",
+    "github": "https://github.com/fiamanillah"
+  },
+  "thumbnail": "/assets/images/mickanic-cover.png",
+  "seo": {
+    "metaTitle": "Building Resilient Real-Time Microservices with WebSockets & Redis Streams | Fi Amanillah",
+    "metaDescription": "Explore the end-to-end architecture of scaling WebSocket gateways across distributed Node.js nodes using Redis Streams, consumer groups, automatic heartbeat health checks, and edge failover strategies.",
+    "ogImage": "/assets/images/mickanic-cover.png",
+    "ogType": "article",
+    "keywords": [
+      "WebSockets",
+      "Redis Streams",
+      "TypeScript",
+      "Microservices",
+      "Docker",
+      "Performance"
+    ],
+    "canonicalUrl": "https://fi.amanillah.com/blog/building-distributed-systems-websockets-redis",
+    "articleType": "TechArticle",
+    "noIndex": false
   },
   "keyTakeaways": [
     "Eliminate message loss during worker crashes with Redis Consumer Groups and XACK acknowledgments.",

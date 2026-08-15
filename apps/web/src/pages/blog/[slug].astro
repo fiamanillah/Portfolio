@@ -4,6 +4,7 @@ import BlogContentBody from "@/components/Blog/article/BlogContentBody.astro"
 import BlogArticleNav from "@/components/Blog/article/BlogArticleNav.astro"
 import BlogCard from "@/components/Blog/cards/BlogCard.astro"
 import NewsletterSection from "@/components/Newsletter/NewsletterSection.astro"
+import BlogSEO from "@/components/SEO/BlogSEO.astro"
 import {
   blogPostsData,
   getAdjacentBlogPosts,
@@ -28,60 +29,12 @@ const { prevPost, nextPost } = getAdjacentBlogPosts(post.slug)
 const relatedPosts = blogPostsData
   .filter((p) => p.slug !== post.slug)
   .slice(0, 2)
-
-const siteUrl = "https://fiamanillah.com"
-const postUrl = `${siteUrl}/blog/${post.slug}`
-const thumbnailUrl = `${siteUrl}${post.thumbnail}`
-
-// JSON-LD Structured Data Schema for Google Crawlers & AI Bots
-const jsonLdSchema = {
-  "@context": "https://schema.org",
-  "@type": "TechArticle",
-  "headline": post.title,
-  "description": post.summary,
-  "image": [thumbnailUrl],
-  "datePublished": "2025-08-01T00:00:00Z",
-  "author": {
-    "@type": "Person",
-    "name": post.author.name,
-    "jobTitle": post.author.role,
-  },
-  "publisher": {
-    "@type": "Person",
-    "name": "Fi Amanillah",
-  },
-  "mainEntityOfPage": {
-    "@type": "WebPage",
-    "@id": postUrl,
-  },
-  "keywords": post.tags.join(", "),
-}
 ---
 
 <MySiteLayout>
-  <!-- SEO & Crawler Head Tags Injection -->
+  <!-- SEO & Structured Data Schema Injection -->
   <Fragment slot="head">
-    <title>{post.title} | Fi Amanillah Blog</title>
-    <meta name="description" content={post.summary} />
-    <meta name="keywords" content={post.tags.join(", ")} />
-    <link rel="canonical" href={postUrl} />
-
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="article" />
-    <meta property="og:url" content={postUrl} />
-    <meta property="og:title" content={post.title} />
-    <meta property="og:description" content={post.summary} />
-    <meta property="og:image" content={thumbnailUrl} />
-
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:url" content={postUrl} />
-    <meta name="twitter:title" content={post.title} />
-    <meta name="twitter:description" content={post.summary} />
-    <meta name="twitter:image" content={thumbnailUrl} />
-
-    <!-- Structured Data Schema for Crawlers -->
-    <script type="application/ld+json" set:html={JSON.stringify(jsonLdSchema)} />
+    <BlogSEO post={post} />
   </Fragment>
 
   <!-- Top Reading Progress Bar (fixed under navbar) -->

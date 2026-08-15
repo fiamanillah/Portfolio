@@ -17,7 +17,29 @@ export interface BlogAuthor {
   name: string
   role: string
   avatar: string
+  twitter?: string
+  linkedin?: string
+  github?: string
 }
+
+export interface BlogSEOData {
+  metaTitle?: string
+  metaDescription?: string
+  ogImage?: string
+  ogType?: "article" | "website"
+  keywords?: string[]
+  canonicalUrl?: string
+  articleType?: "TechArticle" | "BlogPosting" | "Article"
+  noIndex?: boolean
+}
+
+export type BlogCategory =
+  | "Architecture"
+  | "Database"
+  | "Performance"
+  | "WebSockets"
+  | "DevOps"
+  | "Security"
 
 export interface BlogPost {
   id: string
@@ -25,18 +47,53 @@ export interface BlogPost {
   title: string
   subtitle?: string
   summary: string
+  category: BlogCategory
+  tags: string[]
+  publishedAt: string
+  modifiedAt?: string
   date: string
   readTime: string
-  category: "Architecture" | "Database" | "Performance" | "WebSockets" | "DevOps" | "Security"
-  tags: string[]
-  thumbnail: string
   featured?: boolean
   views?: string
   likesCount?: number
   commentsCount?: number
   author: BlogAuthor
+  thumbnail: string
+  seo?: BlogSEOData
   keyTakeaways?: string[]
   content: string
+}
+
+export interface BlogApiResponse<T> {
+  data: T
+  success: boolean
+  timestamp: string
+}
+
+const MONTH_MAP: Record<string, string> = {
+  JAN: "01",
+  FEB: "02",
+  MAR: "03",
+  APR: "04",
+  MAY: "05",
+  JUN: "06",
+  JUL: "07",
+  AUG: "08",
+  SEP: "09",
+  OCT: "10",
+  NOV: "11",
+  DEC: "12",
+}
+
+export function getBlogPostPublishedDate(post: BlogPost): string {
+  if (post.publishedAt) return post.publishedAt
+  const parts = post.date?.trim().split(/\s+/) || []
+  if (parts.length === 2) {
+    const month = MONTH_MAP[parts[0].toUpperCase()] || "01"
+    const year = parts[1]
+    return `${year}-${month}-01T00:00:00.000Z`
+  }
+  return new Date().toISOString()
 }
 
 const rawRegistry: Record<string, BlogPost> = {

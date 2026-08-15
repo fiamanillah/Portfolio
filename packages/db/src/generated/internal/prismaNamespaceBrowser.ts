@@ -52,7 +52,8 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   ContactSubmission: 'ContactSubmission',
-  Subscriber: 'Subscriber'
+  Subscriber: 'Subscriber',
+  EmailTemplate: 'EmailTemplate'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -96,6 +97,27 @@ export const SubscriberScalarFieldEnum = {
 } as const
 
 export type SubscriberScalarFieldEnum = (typeof SubscriberScalarFieldEnum)[keyof typeof SubscriberScalarFieldEnum]
+
+
+export const EmailTemplateScalarFieldEnum = {
+  id: 'id',
+  slug: 'slug',
+  name: 'name',
+  description: 'description',
+  subject: 'subject',
+  body: 'body',
+  from: 'from',
+  fromName: 'fromName',
+  replyTo: 'replyTo',
+  type: 'type',
+  plunkId: 'plunkId',
+  isSystem: 'isSystem',
+  syncedAt: 'syncedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EmailTemplateScalarFieldEnum = (typeof EmailTemplateScalarFieldEnum)[keyof typeof EmailTemplateScalarFieldEnum]
 
 
 export const SortOrder = {

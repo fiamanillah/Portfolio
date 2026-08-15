@@ -10,4 +10,5 @@
  */
 export type * from './models/ContactSubmission'
 export type * from './models/Subscriber'
+export type * from './models/EmailTemplate'
 export type * from './commonInputTypes'

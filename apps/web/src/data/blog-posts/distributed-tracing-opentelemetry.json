@@ -4,8 +4,6 @@
   "title": "Architecting Distributed Tracing with OpenTelemetry & Jaeger",
   "subtitle": "End-to-end trace context propagation across asynchronous microservices",
   "summary": "How to instrument Express, RabbitMQ, and Prisma with OpenTelemetry trace contexts to visualize request journeys and diagnose latency bottlenecks in complex distributed environments.",
-  "date": "FEB 2025",
-  "readTime": "11 MIN READ",
   "category": "Architecture",
   "tags": [
     "OpenTelemetry",
@@ -14,13 +12,36 @@
     "Microservices",
     "Observability"
   ],
-  "thumbnail": "/assets/images/project3.png",
+  "publishedAt": "2025-02-01T00:00:00.000Z",
+  "modifiedAt": "2025-02-01T00:00:00.000Z",
+  "date": "FEB 2025",
+  "readTime": "11 MIN READ",
   "featured": false,
   "views": "1.1k",
   "author": {
     "name": "Fi Amanillah",
     "role": "Full Stack & DevOps Engineer",
-    "avatar": "/fi.png"
+    "avatar": "/fi.png",
+    "twitter": "@fiamanillah",
+    "linkedin": "https://linkedin.com/in/fiamanillah",
+    "github": "https://github.com/fiamanillah"
+  },
+  "thumbnail": "/assets/images/project3.png",
+  "seo": {
+    "metaTitle": "Architecting Distributed Tracing with OpenTelemetry & Jaeger | Fi Amanillah",
+    "metaDescription": "How to instrument Express, RabbitMQ, and Prisma with OpenTelemetry trace contexts to visualize request journeys and diagnose latency bottlenecks in complex distributed environments.",
+    "ogImage": "/assets/images/project3.png",
+    "ogType": "article",
+    "keywords": [
+      "OpenTelemetry",
+      "Jaeger",
+      "Tracing",
+      "Microservices",
+      "Observability"
+    ],
+    "canonicalUrl": "https://fi.amanillah.com/blog/distributed-tracing-opentelemetry",
+    "articleType": "TechArticle",
+    "noIndex": false
   },
   "keyTakeaways": [
     "Propagate W3C Trace Context headers across HTTP requests and RabbitMQ AMQP message headers.",

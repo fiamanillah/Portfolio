@@ -200,7 +200,19 @@ export class ContactService {
   public async sendContactEmail(payload: { name: string; email: string; subject: string; message: string; subscribe?: boolean }): Promise<void> {
     const secretKey = config.plunk.secretKey;
     const recipientEmail = config.contact.recipientEmail;
-    const templateId = config.plunk.templateId;
+
+    // Check if a synced template exists in DB or config
+    let templateId = config.plunk.templateId;
+    try {
+      const dbTemplate = await prisma.emailTemplate.findUnique({
+        where: { slug: "contact-notification" },
+      });
+      if (dbTemplate?.plunkId) {
+        templateId = dbTemplate.plunkId;
+      }
+    } catch {
+      // fallback to config
+    }
 
     const { subject: emailSubject, html: emailBody } = renderContactNotificationEmail({
       name: payload.name,
@@ -227,6 +239,7 @@ export class ContactService {
         body: emailBody,
         data: {
           name: payload.name,
+          firstName: payload.name ? payload.name.split(" ")[0] : "there",
           email: payload.email,
           subject: payload.subject,
           message: payload.message,
@@ -234,7 +247,7 @@ export class ContactService {
         },
       };
 
-      if (templateId) {
+      if (templateId && !this.isPlaceholderKey(templateId)) {
         plunkPayload.template = templateId;
       }
 
@@ -281,9 +294,20 @@ export class ContactService {
   public async sendConfirmationEmail(payload: { name: string; email: string; subject: string; message: string; subscribe?: boolean }): Promise<void> {
     const secretKey = config.plunk.secretKey;
     const recipientEmail = config.contact.recipientEmail;
-    const confirmationTemplateId = config.plunk.confirmationTemplateId || config.plunk.templateId;
 
-    const { subject: emailSubject, html: emailBody } = renderContactConfirmationEmail({
+    let confirmationTemplateId = config.plunk.confirmationTemplateId || config.plunk.templateId;
+    try {
+      const dbTemplate = await prisma.emailTemplate.findUnique({
+        where: { slug: "contact-confirmation" },
+      });
+      if (dbTemplate?.plunkId) {
+        confirmationTemplateId = dbTemplate.plunkId;
+      }
+    } catch {
+      // fallback to config
+    }
+
+    const { subject: emailSubject, html: emailBody, listUnsubscribeHeader } = renderContactConfirmationEmail({
       name: payload.name,
       email: payload.email,
       subject: payload.subject,
@@ -307,6 +331,7 @@ export class ContactService {
         body: emailBody,
         data: {
           name: payload.name,
+          firstName: payload.name ? payload.name.split(" ")[0] : "there",
           email: payload.email,
           subject: payload.subject,
           message: payload.message,
@@ -314,8 +339,15 @@ export class ContactService {
         },
       };
 
-      if (confirmationTemplateId) {
+      if (confirmationTemplateId && !this.isPlaceholderKey(confirmationTemplateId)) {
         plunkPayload.template = confirmationTemplateId;
+      }
+
+      if (listUnsubscribeHeader) {
+        plunkPayload.headers = {
+          "List-Unsubscribe": listUnsubscribeHeader,
+          "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
+        };
       }
 
       await axios.post(`${config.plunk.apiUrl}/v1/send`, plunkPayload, {

@@ -4,9 +4,11 @@ import react from "@astrojs/react"
 import icon from "astro-icon"
 import sitemap, { ChangeFreqEnum } from "@astrojs/sitemap"
 
+const siteUrl = (process.env.PUBLIC_WEB_URL || "https://fi.amanillah.com").replace(/\/$/, "")
+
 // https://astro.build/config
 export default defineConfig({
-  site: process.env.PUBLIC_WEB_URL || "https://fiamanillah.com",
+  site: siteUrl,
   markdown: {
     shikiConfig: {
       themes: {
@@ -32,8 +34,8 @@ export default defineConfig({
       },
       serialize(item) {
         if (
-          item.url === "https://fiamanillah.com/" ||
-          item.url === "https://fiamanillah.com"
+          item.url === siteUrl ||
+          item.url === `${siteUrl}/`
         ) {
           item.priority = 1.0
           item.changefreq = ChangeFreqEnum.DAILY

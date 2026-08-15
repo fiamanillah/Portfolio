@@ -30,5 +30,8 @@
   "workspaces": [
     "apps/*",
     "packages/*"
-  ]
+  ],
+  "dependencies": {
+    "@astrojs/rss": "^4.0.19"
+  }
 }

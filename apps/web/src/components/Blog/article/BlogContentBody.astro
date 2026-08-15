@@ -25,7 +25,10 @@ const { html: renderedMarkdownHtml, headings: tocHeadings } = await renderMarkdo
       <div class="relative my-8 aspect-[16/9] w-full overflow-hidden border border-border bg-muted/30 blog-animate-in">
         <img
           src={post.thumbnail}
-          alt={post.title}
+          alt={`Cover illustration for ${post.title}`}
+          loading="eager"
+          fetchpriority="high"
+          decoding="async"
           class="h-full w-full object-cover"
         />
         <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent"></div>

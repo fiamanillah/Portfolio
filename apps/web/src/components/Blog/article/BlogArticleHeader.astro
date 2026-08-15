@@ -1,5 +1,6 @@
 ---
 import type { BlogPost } from "@/data/blogPosts"
+import { getBlogPostPublishedDate } from "@/data/blogPosts"
 import { HugeiconsIcon } from "@hugeicons/react"
 import {
   FavouriteIcon,
@@ -17,6 +18,9 @@ interface Props {
 }
 
 const { post } = Astro.props
+const publishedDateIso = getBlogPostPublishedDate(post)
+const siteUrl = (import.meta.env.PUBLIC_WEB_URL || Astro.site?.toString() || "https://fi.amanillah.com").replace(/\/$/, "")
+const articleUrl = `${siteUrl}/blog/${post.slug}`
 ---
 
 <header id="article-top" class="border-b border-border/80 pb-8 text-left">
@@ -62,25 +66,26 @@ const { post } = Astro.props
       <div class="pointer-events-none absolute right-1 bottom-1 h-2 w-2 border-r border-b border-primary/40" />
 
       {/* Left: Author Profile */}
-      <div class="flex items-center gap-3.5 min-w-0">
+      <div class="flex items-center gap-3.5 min-w-0" itemscope itemtype="https://schema.org/Person">
         <div class="relative shrink-0">
           <img
             src={post.author.avatar}
             alt={post.author.name}
             class="h-11 w-11 rounded-full border-2 border-primary/50 object-cover shadow-sm"
+            itemprop="image"
           />
           <span class="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-background bg-emerald-500 shadow-sm" />
         </div>
         <div class="flex flex-col justify-center min-w-0">
           <div class="flex items-center gap-2">
-            <span class="font-mono text-sm font-bold text-foreground truncate">
+            <span class="font-mono text-sm font-bold text-foreground truncate" itemprop="name">
               {post.author.name}
             </span>
             <span class="border border-primary/30 bg-primary/10 px-1.5 py-0.2 font-mono text-[9px] font-semibold text-primary uppercase">
               Author
             </span>
           </div>
-          <span class="font-mono text-xs text-muted-foreground truncate">
+          <span class="font-mono text-xs text-muted-foreground truncate" itemprop="jobTitle">
             {post.author.role}
           </span>
         </div>
@@ -90,10 +95,10 @@ const { post } = Astro.props
       <div class="flex flex-wrap items-center justify-between gap-3 border-t border-border/40 pt-3 lg:border-t-0 lg:justify-end lg:pt-0">
         {/* Metadata Chips Strip */}
         <div class="flex flex-wrap items-center gap-1.5 font-mono text-xs text-muted-foreground">
-          {/* Date */}
+          {/* Semantic Date Tag */}
           <div class="inline-flex items-center gap-1.5 border border-border/70 bg-muted/20 px-2 py-1" title="Publish Date">
             <HugeiconsIcon icon={Calendar03Icon} className="size-3 text-primary/70" />
-            <span class="text-[11px]">{post.date}</span>
+            <time datetime={publishedDateIso} class="text-[11px]">{post.date}</time>
           </div>
 
           {/* Read Time */}
@@ -135,16 +140,18 @@ const { post } = Astro.props
         <div class="flex items-center gap-1.5 pl-0 lg:border-l lg:border-border/60 lg:pl-3">
           <button
             type="button"
-            id="copy-link-btn"
-            title="Copy article link"
+            id="share-article-btn"
+            title="Share article"
+            data-title={post.title}
+            data-summary={post.summary}
             class="flex h-7 items-center gap-1.5 border border-border bg-background px-2.5 font-mono text-[11px] text-muted-foreground transition-colors hover:border-primary hover:text-foreground cursor-pointer"
           >
             <HugeiconsIcon icon={Link01Icon} className="size-3 text-primary" />
-            <span id="copy-text">Share</span>
+            <span id="share-btn-text">Share</span>
           </button>
 
           <a
-            href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(`https://fiamanillah.com/blog/${post.slug}`)}`}
+            href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(articleUrl)}`}
             target="_blank"
             rel="noopener noreferrer"
             title="Share on Twitter / X"
@@ -154,7 +161,7 @@ const { post } = Astro.props
           </a>
 
           <a
-            href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`https://fiamanillah.com/blog/${post.slug}`)}`}
+            href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(articleUrl)}`}
             target="_blank"
             rel="noopener noreferrer"
             title="Share on LinkedIn"
@@ -169,18 +176,42 @@ const { post } = Astro.props
 </header>
 
 <script>
-  // Copy Link Script
-  const copyBtn = document.getElementById("copy-link-btn")
-  const copyText = document.getElementById("copy-text")
+  // Smart Share Button (Web Share API with Clipboard fallback)
+  function initShareButton() {
+    const shareBtn = document.getElementById("share-article-btn")
+    const shareText = document.getElementById("share-btn-text")
 
-  if (copyBtn && copyText) {
-    copyBtn.addEventListener("click", () => {
-      navigator.clipboard.writeText(window.location.href).then(() => {
-        copyText.textContent = "Copied! ✓"
-        setTimeout(() => {
-          copyText.textContent = "Share"
-        }, 2000)
+    if (shareBtn && shareText) {
+      shareBtn.addEventListener("click", async () => {
+        const title = shareBtn.getAttribute("data-title") || document.title
+        const text = shareBtn.getAttribute("data-summary") || ""
+        const url = window.location.href
+
+        if (navigator.share && /mobile|android|iphone|ipad/i.test(navigator.userAgent)) {
+          try {
+            await navigator.share({ title, text, url })
+            return
+          } catch (err) {
+            // User cancelled or share failed, fallback to clipboard
+          }
+        }
+
+        try {
+          await navigator.clipboard.writeText(url)
+          shareText.textContent = "Link Copied! ✓"
+          shareBtn.classList.add("border-primary", "text-primary")
+          setTimeout(() => {
+            shareText.textContent = "Share"
+            shareBtn.classList.remove("border-primary", "text-primary")
+          }, 2500)
+        } catch {
+          // Fallback prompt
+          window.prompt("Copy article link:", url)
+        }
       })
-    })
+    }
   }
+
+  document.addEventListener("DOMContentLoaded", initShareButton)
+  document.addEventListener("astro:page-load", initShareButton)
 </script>

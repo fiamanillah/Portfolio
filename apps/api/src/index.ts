@@ -9,6 +9,7 @@ import { prisma } from "@workspace/db";
 import { AuthModule } from "./Modules/Auth/AuthModule";
 import { ContactModule } from "./Modules/Contact/ContactModule";
 import { SubscriberModule } from "./Modules/Subscriber/SubscriberModule";
+import { TemplateModule } from "./Modules/Template/TemplateModule";
 
 // Modules (Business Logic)
 
@@ -30,6 +31,7 @@ async function bootstrap() {
     app.registerModule(new AuthModule());
     app.registerModule(new ContactModule());
     app.registerModule(new SubscriberModule());
+    app.registerModule(new TemplateModule());
     logger.info("✔ All modules registered successfully");
 
     // 4. Spark the server!
