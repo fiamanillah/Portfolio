@@ -1,15 +1,17 @@
 import type { APIRoute } from "astro"
 
-const getRobotsTxt = (sitemapURL: URL, siteUrl: string) => `\
+const getRobotsTxt = (siteUrl: string) => `\
 User-agent: *
 Allow: /
 Disallow: /api/
 Disallow: /test/
 Disallow: /text/
+Disallow: /unsubscribe
 
 # Host and Sitemaps
 Host: ${new URL(siteUrl).host}
-Sitemap: ${sitemapURL.href}
+Sitemap: ${siteUrl}/sitemap.xml
+Sitemap: ${siteUrl}/sitemap-index.xml
 `
 
 export const GET: APIRoute = ({ site }) => {
@@ -18,10 +20,10 @@ export const GET: APIRoute = ({ site }) => {
     import.meta.env.PUBLIC_WEB_URL ||
     "https://fi.amanillah.com"
   ).replace(/\/$/, "")
-  const sitemapURL = new URL("sitemap-index.xml", siteUrl)
-  return new Response(getRobotsTxt(sitemapURL, siteUrl), {
+  return new Response(getRobotsTxt(siteUrl), {
     headers: {
       "Content-Type": "text/plain; charset=utf-8",
+      "Cache-Control": "public, max-age=3600",
     },
   })
 }

@@ -109,7 +109,24 @@ export const blogPostsRegistry: Record<string, BlogPost> = {}
 export async function getAllBlogPostsAsync(): Promise<BlogPost[]> {
   try {
     const res = await BlogApi.fetchPublicPosts({ limit: 100 })
-    return res.posts || []
+    let allPosts = res.posts || []
+    let totalPages = res.totalPages || 1
+    let currentPage = 1
+
+    while (currentPage < totalPages && currentPage < 10) {
+      currentPage++
+      const nextRes = await BlogApi.fetchPublicPosts({
+        page: currentPage,
+        limit: 100,
+      })
+      if (nextRes.posts && nextRes.posts.length > 0) {
+        allPosts = allPosts.concat(nextRes.posts)
+      } else {
+        break
+      }
+    }
+
+    return allPosts
   } catch (err) {
     console.error("Failed to fetch blog posts from API:", err)
     return []

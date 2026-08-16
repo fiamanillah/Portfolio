@@ -338,7 +338,9 @@ const popularCategoryNames = categories
             btn.className =
               "h-8 w-8 font-mono text-xs transition-colors cursor-pointer select-none border border-border bg-background text-muted-foreground hover:border-primary hover:text-primary"
           }
-          btn.addEventListener("click", () => {
+          btn.addEventListener("click", (e) => {
+            e.preventDefault()
+            e.stopPropagation()
             updateView(i, true, false)
           })
           pageNumbersContainer.appendChild(btn)
@@ -385,7 +387,8 @@ const popularCategoryNames = categories
 
     // Attach Category Button Click & Keyboard Navigation
     categoryBtns.forEach((btn, index) => {
-      btn.addEventListener("click", () => {
+      btn.addEventListener("click", (e) => {
+        e.preventDefault()
         const cat = (btn.dataset.categoryName || "all").toLowerCase()
         switchCategory(cat)
       })
@@ -468,7 +471,8 @@ const popularCategoryNames = categories
 
     // Attach Empty State Category Chips
     emptyCategoryChips.forEach((chip) => {
-      chip.addEventListener("click", () => {
+      chip.addEventListener("click", (e) => {
+        e.preventDefault()
         const cat = (chip.dataset.emptyCategoryChip || "all").toLowerCase()
         if (searchInput) {
           searchInput.value = ""
@@ -481,7 +485,8 @@ const popularCategoryNames = categories
 
     // Reset Button Click Handler
     if (resetBtn) {
-      resetBtn.addEventListener("click", () => {
+      resetBtn.addEventListener("click", (e) => {
+        e.preventDefault()
         if (searchInput) {
           searchInput.value = ""
           searchQuery = ""
@@ -493,7 +498,8 @@ const popularCategoryNames = categories
 
     // Prev / Next Handlers
     if (prevBtn) {
-      prevBtn.addEventListener("click", () => {
+      prevBtn.addEventListener("click", (e) => {
+        e.preventDefault()
         if (currentPage > 1) {
           updateView(currentPage - 1, true, false)
         }
@@ -501,10 +507,43 @@ const popularCategoryNames = categories
     }
 
     if (nextBtn) {
-      nextBtn.addEventListener("click", () => {
-        updateView(currentPage + 1, true, false)
+      nextBtn.addEventListener("click", (e) => {
+        e.preventDefault()
+        const matchingCardsCount = cards.filter((card) => {
+          const cardCat = (card.dataset.category || "").toLowerCase()
+          const cardTitle = (card.dataset.title || "").toLowerCase()
+          const cardSummary = (card.dataset.summary || "").toLowerCase()
+          const cardTags = (card.dataset.tags || "").toLowerCase()
+          const matchesCategory =
+            activeCategory === "all" || cardCat === activeCategory
+          const matchesQuery =
+            !searchQuery ||
+            cardTitle.includes(searchQuery) ||
+            cardSummary.includes(searchQuery) ||
+            cardTags.includes(searchQuery)
+          return matchesCategory && matchesQuery
+        }).length
+        const totalPages = Math.max(1, Math.ceil(matchingCardsCount / postsPerPage))
+        if (currentPage < totalPages) {
+          updateView(currentPage + 1, true, false)
+        }
       })
     }
+
+    // Event delegation on explorer for robust click handling
+    explorer.addEventListener("click", (e) => {
+      const target = e.target as HTMLElement | null
+      if (!target) return
+
+      const pageBtn = target.closest<HTMLButtonElement>("[data-page-btn]")
+      if (pageBtn) {
+        e.preventDefault()
+        const targetPage = parseInt(pageBtn.dataset.pageBtn || "1", 10)
+        if (!isNaN(targetPage) && targetPage !== currentPage) {
+          updateView(targetPage, true, false)
+        }
+      }
+    })
 
     // Browser back/forward navigation sync
     window.addEventListener("popstate", () => {
@@ -522,10 +561,8 @@ const popularCategoryNames = categories
       performUpdate(currentPage, false)
     })
 
-    // Initialize with current URL parameters
-    if (activeCategory !== "all" || searchQuery || currentPage > 1) {
-      performUpdate(currentPage, false)
-    }
+    // Initialize immediately on load
+    performUpdate(currentPage, false)
   }
 
   // Setup on initial load and Astro View Transitions

@@ -40,7 +40,10 @@ const totalTopics = new Set(posts.flatMap((p) => p.tags)).size
   <!-- Hero Header with live aggregated database metrics -->
   <BlogHeader
     totalPosts={posts.length}
-    totalCategories={Math.max(1, categories.length - 1)}
+    totalCategories={Math.max(
+      1,
+      categories.filter((c) => c.name.toLowerCase() !== "all").length
+    )}
     totalTopics={totalTopics}
   />
 

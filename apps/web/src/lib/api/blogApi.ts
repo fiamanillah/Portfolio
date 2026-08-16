@@ -223,23 +223,32 @@ export const BlogApi = {
       if (res.ok) {
         const body = await res.json()
         if (body.success && Array.isArray(body.data)) {
-          const totalPublished = body.data.reduce(
-            (acc: number, c: any) => acc + (c.count || 0),
-            0
+          const nonAllCategories = body.data
+            .filter((c: any) => c.name && c.name.toLowerCase() !== "all")
+            .map((c: any) => ({
+              name: c.name,
+              count: typeof c.count === "number" ? c.count : 0,
+              slug: c.slug,
+            }))
+          const existingAll = body.data.find(
+            (c: any) => c.name && c.name.toLowerCase() === "all"
           )
-          const list = body.data.map((c: any) => ({
-            name: c.name,
-            count: c.count || 0,
-            slug: c.slug,
-          }))
-          return [{ name: "All", count: totalPublished }, ...list]
+          const totalPublished =
+            existingAll && typeof existingAll.count === "number"
+              ? existingAll.count
+              : nonAllCategories.reduce((acc: number, c: any) => acc + c.count, 0)
+
+          return [
+            { name: "All", count: totalPublished, slug: "all" },
+            ...nonAllCategories,
+          ]
         }
       }
     } catch (err) {
       console.error("Failed to fetch public categories from API:", err)
     }
 
-    return [{ name: "All", count: 0 }]
+    return [{ name: "All", count: 0, slug: "all" }]
   },
 
   /**
