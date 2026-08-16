@@ -1942,6 +1942,89 @@ export class BlogService {
   }
 
   /**
+   * Get full aggregated reaction counts and active user reaction state
+   */
+  public async getPostReactions(
+    slug: string,
+    userId?: string,
+    ipAddress?: string
+  ) {
+    const post = await prisma.blogPost.findUnique({
+      where: { slug },
+      select: { id: true, likesCount: true },
+    })
+
+    if (!post) {
+      throw new NotFoundError(`Blog post '${slug}' not found`)
+    }
+
+    const grouped = await prisma.blogReaction.groupBy({
+      by: ["reactionType"],
+      where: { postId: post.id },
+      _count: { _all: true },
+    })
+
+    const reactionCounts: Record<string, number> = {
+      like: 0,
+      fire: 0,
+      insightful: 0,
+      fast: 0,
+      rocket: 0,
+    }
+
+    grouped.forEach((g) => {
+      reactionCounts[g.reactionType] = g._count._all
+    })
+
+    // Total positive engagements = base likes + all emoji reactions
+    const emojiReactionsSum =
+      reactionCounts.fire +
+      reactionCounts.insightful +
+      reactionCounts.fast +
+      reactionCounts.rocket
+
+    const baseLikes = Math.max(post.likesCount || 0, reactionCounts.like)
+    const totalLikes = baseLikes + emojiReactionsSum
+    const totalReactionsCount =
+      reactionCounts.like + emojiReactionsSum
+
+    // Determine current user/guest active reactions
+    const userReactions = await prisma.blogReaction.findMany({
+      where: {
+        postId: post.id,
+        OR: [
+          ...(userId ? [{ userId }] : []),
+          ...(ipAddress ? [{ userId: null, ipAddress }] : []),
+        ],
+      },
+      select: { reactionType: true },
+    })
+
+    const userReactionsMap: Record<string, boolean> = {
+      like: userReactions.some((r) => r.reactionType === "like"),
+      fire: userReactions.some((r) => r.reactionType === "fire"),
+      insightful: userReactions.some((r) => r.reactionType === "insightful"),
+      fast: userReactions.some((r) => r.reactionType === "fast"),
+      rocket: userReactions.some((r) => r.reactionType === "rocket"),
+    }
+
+    return {
+      slug,
+      likesCount: totalLikes,
+      reactionsCount: totalReactionsCount,
+      reactions: {
+        likes: totalLikes,
+        fire: reactionCounts.fire,
+        insightful: reactionCounts.insightful,
+        fast: reactionCounts.fast,
+        rocket: reactionCounts.rocket,
+      },
+      userReactions: userReactionsMap,
+      userLiked: userReactionsMap.like,
+    }
+  }
+
+  /**
    * Handle user / guest reaction to a blog post
    */
   public async reactToPost(
@@ -1959,7 +2042,9 @@ export class BlogService {
       throw new NotFoundError(`Blog post '${slug}' not found`)
     }
 
-    // If user is authenticated, handle unique toggle
+    let isReacted = true
+
+    // 1. Authenticated user reaction toggle
     if (userId) {
       const existingReaction = await prisma.blogReaction.findUnique({
         where: {
@@ -1973,43 +2058,88 @@ export class BlogService {
 
       if (existingReaction) {
         await prisma.blogReaction.delete({ where: { id: existingReaction.id } })
+        isReacted = false
         if (reactionType === "like") {
           await prisma.blogPost.update({
             where: { id: post.id },
             data: { likesCount: { decrement: 1 } },
           })
         }
-        return { reacted: false, reactionType }
+      } else {
+        await prisma.blogReaction.create({
+          data: {
+            postId: post.id,
+            userId,
+            reactionType,
+            ipAddress,
+          },
+        })
+        isReacted = true
+        if (reactionType === "like") {
+          await prisma.blogPost.update({
+            where: { id: post.id },
+            data: { likesCount: { increment: 1 } },
+          })
+        }
       }
-
-      await prisma.blogReaction.create({
-        data: {
+    } else if (ipAddress) {
+      // 2. Guest reaction toggle by IP address
+      const existingGuestReaction = await prisma.blogReaction.findFirst({
+        where: {
           postId: post.id,
-          userId,
-          reactionType,
+          userId: null,
           ipAddress,
+          reactionType,
         },
       })
 
+      if (existingGuestReaction) {
+        await prisma.blogReaction.delete({
+          where: { id: existingGuestReaction.id },
+        })
+        isReacted = false
+        if (reactionType === "like") {
+          await prisma.blogPost.update({
+            where: { id: post.id },
+            data: { likesCount: { decrement: 1 } },
+          })
+        }
+      } else {
+        await prisma.blogReaction.create({
+          data: {
+            postId: post.id,
+            userId: null,
+            reactionType,
+            ipAddress,
+          },
+        })
+        isReacted = true
+        if (reactionType === "like") {
+          await prisma.blogPost.update({
+            where: { id: post.id },
+            data: { likesCount: { increment: 1 } },
+          })
+        }
+      }
+    } else {
+      // 3. Fallback guest increment
       if (reactionType === "like") {
         await prisma.blogPost.update({
           where: { id: post.id },
           data: { likesCount: { increment: 1 } },
         })
       }
-
-      return { reacted: true, reactionType }
+      isReacted = true
     }
 
-    // Guest reaction increment
-    if (reactionType === "like") {
-      await prisma.blogPost.update({
-        where: { id: post.id },
-        data: { likesCount: { increment: 1 } },
-      })
-    }
+    // Retrieve fresh aggregated reaction stats
+    const stats = await this.getPostReactions(slug, userId, ipAddress)
 
-    return { reacted: true, reactionType }
+    return {
+      reacted: isReacted,
+      reactionType,
+      ...stats,
+    }
   }
 
   // =========================================================================

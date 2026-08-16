@@ -263,10 +263,49 @@ const relatedPosts =
     }
   }
 
+  // Real-time Likes Counter Sync
+  function initLikesSync() {
+    const mainEl = document.querySelector<HTMLElement>("main[data-post-slug]")
+    if (!mainEl) return
+    const slug = mainEl.dataset.postSlug
+    if (!slug) return
+
+    const updateLikesDisplay = () => {
+      const raw = localStorage.getItem(`portfolio_reactions_${slug}`)
+      if (raw) {
+        try {
+          const parsed = JSON.parse(raw)
+          if (typeof parsed.likes === "number") {
+            const likeSpans = document.querySelectorAll<HTMLElement>(
+              "[data-post-likes-count]"
+            )
+            likeSpans.forEach((span) => {
+              span.textContent = String(parsed.likes)
+            })
+          }
+        } catch (_) {}
+      }
+    }
+
+    // Update on custom engagement event and storage event
+    window.addEventListener("portfolio:engagement-change", (e: any) => {
+      if (!e.detail || e.detail.slug === slug) {
+        updateLikesDisplay()
+      }
+    })
+    window.addEventListener("storage", (e) => {
+      if (e.key === `portfolio_reactions_${slug}`) {
+        updateLikesDisplay()
+      }
+    })
+    updateLikesDisplay()
+  }
+
   function initAll() {
     initTopProgress()
     initBottomAnimations()
     initViewCounter()
+    initLikesSync()
   }
 
   document.addEventListener("DOMContentLoaded", initAll)

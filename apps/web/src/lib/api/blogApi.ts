@@ -345,15 +345,82 @@ export const BlogApi = {
   },
 
   /**
-   * React to blog post (e.g. like, fire, insightful, rocket)
+   * Fetch real-time aggregated reactions and user given reactions
+   */
+  async fetchPostReactions(slug: string): Promise<{
+    success: boolean
+    likesCount: number
+    reactionsCount: number
+    reactions: {
+      likes: number
+      fire: number
+      insightful: number
+      fast: number
+      rocket: number
+    }
+    userReactions: Record<string, boolean>
+    userLiked: boolean
+  } | null> {
+    try {
+      const token = getStoredAccessToken()
+      const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+      }
+      if (token) headers["Authorization"] = `Bearer ${token}`
+
+      const res = await fetch(
+        `${API_BASE_URL}/blogs/v1/public/slug/${encodeURIComponent(slug)}/reactions`,
+        {
+          headers,
+          credentials: "include",
+        }
+      )
+
+      if (res.ok) {
+        const body = await res.json()
+        if (body.success && body.data) {
+          return {
+            success: true,
+            likesCount: body.data.likesCount,
+            reactionsCount: body.data.reactionsCount,
+            reactions: body.data.reactions || {
+              likes: body.data.likesCount,
+              fire: 0,
+              insightful: 0,
+              fast: 0,
+              rocket: 0,
+            },
+            userReactions: body.data.userReactions || {},
+            userLiked: !!body.data.userLiked,
+          }
+        }
+      }
+    } catch (err) {
+      console.error(`Failed to fetch reactions for '${slug}':`, err)
+    }
+    return null
+  },
+
+  /**
+   * React to blog post (e.g. like, fire, insightful, fast, rocket)
    */
   async reactToPost(
     slug: string,
     reactionType: string = "like"
   ): Promise<{
     success: boolean
+    reacted: boolean
+    reactionType: string
     likesCount: number
     reactionsCount: number
+    reactions: {
+      likes: number
+      fire: number
+      insightful: number
+      fast: number
+      rocket: number
+    }
+    userReactions: Record<string, boolean>
     userLiked: boolean
   } | null> {
     try {
@@ -378,9 +445,19 @@ export const BlogApi = {
         if (body.success && body.data) {
           return {
             success: true,
+            reacted: body.data.reacted,
+            reactionType: body.data.reactionType,
             likesCount: body.data.likesCount,
             reactionsCount: body.data.reactionsCount,
-            userLiked: body.data.userLiked,
+            reactions: body.data.reactions || {
+              likes: body.data.likesCount,
+              fire: 0,
+              insightful: 0,
+              fast: 0,
+              rocket: 0,
+            },
+            userReactions: body.data.userReactions || {},
+            userLiked: !!body.data.userLiked,
           }
         }
       }

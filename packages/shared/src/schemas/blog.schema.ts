@@ -150,5 +150,8 @@ export const seoPreviewSchema = z.object({
 });
 
 export const reactToBlogSchema = z.object({
-  reactionType: z.enum(["like", "fire", "insightful", "rocket", "heart"]).optional().default("like"),
+  reactionType: z
+    .enum(["like", "fire", "insightful", "fast", "rocket", "heart"])
+    .optional()
+    .default("like"),
 });

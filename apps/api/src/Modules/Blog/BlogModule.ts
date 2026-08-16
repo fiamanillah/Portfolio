@@ -94,6 +94,13 @@ export class BlogModule extends BaseModule {
       controller.getPublicPostBySlug.bind(controller)
     )
 
+    // GET /blogs/v1/public/slug/:slug/reactions - Get aggregated reactions & user state
+    this.router.get(
+      "/public/slug/:slug/reactions",
+      optionalAuth,
+      controller.getPostReactions.bind(controller)
+    )
+
     // POST /blogs/v1/public/slug/:slug/react - Add reaction / like
     this.router.post(
       "/public/slug/:slug/react",

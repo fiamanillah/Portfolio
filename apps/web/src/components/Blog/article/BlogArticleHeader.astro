@@ -1,16 +1,12 @@
 ---
 import type { BlogPost } from "@/data/blogPosts"
 import { getBlogPostPublishedDate } from "@/data/blogPosts"
+import { ArticleHeaderActions } from "./ArticleHeaderActions"
 import { HugeiconsIcon } from "@hugeicons/react"
 import {
-  FavouriteIcon,
-  Comment01Icon,
-  Link01Icon,
   Calendar03Icon,
   Time02Icon,
   ViewIcon,
-  NewTwitterIcon,
-  Linkedin02Icon,
 } from "@hugeicons/core-free-icons"
 
 interface Props {
@@ -64,29 +60,12 @@ const articleUrl = `${siteUrl}/blog/${post.slug}`
     )
   }
 
-  {/* Author & Reading Metadata Station */}
-  <div class="mt-8 border-t border-border/80 pt-6">
+  {/* Author & Reading Metadata Overview Cockpit */}
+  <div class="mt-8 overflow-hidden border border-border/80 bg-card/60 backdrop-blur-md">
+    {/* Upper Section: Persona & Article Telemetry */}
     <div
-      class="relative flex flex-col gap-4 border border-border/70 bg-background/50 p-4 backdrop-blur-xs sm:p-5 lg:flex-row lg:items-center lg:justify-between"
+      class="flex flex-col gap-4 border-b border-border/50 bg-background/50 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5"
     >
-      {/* Cyberpunk corner accents */}
-      <div
-        class="pointer-events-none absolute top-1 left-1 h-2 w-2 border-t border-l border-primary/40"
-      >
-      </div>
-      <div
-        class="pointer-events-none absolute top-1 right-1 h-2 w-2 border-t border-r border-primary/40"
-      >
-      </div>
-      <div
-        class="pointer-events-none absolute bottom-1 left-1 h-2 w-2 border-b border-l border-primary/40"
-      >
-      </div>
-      <div
-        class="pointer-events-none absolute right-1 bottom-1 h-2 w-2 border-r border-b border-primary/40"
-      >
-      </div>
-
       {/* Left: Author Profile */}
       <div
         class="flex min-w-0 items-center gap-3.5"
@@ -97,14 +76,15 @@ const articleUrl = `${siteUrl}/blog/${post.slug}`
           <img
             src={post.author.avatar}
             alt={post.author.name}
-            class="h-11 w-11 rounded-full border-2 border-primary/50 object-cover shadow-sm"
+            class="h-11 w-11 rounded-full border border-primary/40 object-cover shadow-xs"
             itemprop="image"
           />
           <span
-            class="absolute -right-0.5 -bottom-0.5 h-3 w-3 rounded-full border-2 border-background bg-emerald-500 shadow-sm"
+            class="absolute -right-0.5 -bottom-0.5 h-3 w-3 rounded-full border-2 border-background bg-emerald-500 shadow-xs"
+            title="Author Active"
           ></span>
         </div>
-        <div class="flex min-w-0 flex-col justify-center">
+        <div class="flex min-w-0 flex-col">
           <div class="flex items-center gap-2">
             <span
               class="truncate font-mono text-sm font-bold text-foreground"
@@ -113,9 +93,9 @@ const articleUrl = `${siteUrl}/blog/${post.slug}`
               {post.author.name}
             </span>
             <span
-              class="py-0.2 border border-primary/30 bg-primary/10 px-1.5 font-mono text-[9px] font-semibold text-primary uppercase"
+              class="border border-primary/30 bg-primary/10 px-1.5 py-0.2 font-mono text-[9px] font-bold text-primary uppercase"
             >
-              Author
+              AUTHOR
             </span>
           </div>
           <span
@@ -127,168 +107,59 @@ const articleUrl = `${siteUrl}/blog/${post.slug}`
         </div>
       </div>
 
-      {/* Right: Metrics Badges & Social Actions */}
+      {/* Right: Reading Telemetry Specs */}
       <div
-        class="flex flex-wrap items-center justify-between gap-3 border-t border-border/40 pt-3 lg:justify-end lg:border-t-0 lg:pt-0"
+        class="flex flex-wrap items-center gap-2 font-mono text-xs text-muted-foreground"
       >
-        {/* Metadata Chips Strip */}
+        {/* Publish Date */}
         <div
-          class="flex flex-wrap items-center gap-1.5 font-mono text-xs text-muted-foreground"
+          class="inline-flex items-center gap-1.5 border border-border/70 bg-background/80 px-2.5 py-1"
+          title="Publish Date"
         >
-          {/* Semantic Date Tag */}
-          <div
-            class="inline-flex items-center gap-1.5 border border-border/70 bg-muted/20 px-2 py-1"
-            title="Publish Date"
+          <HugeiconsIcon
+            icon={Calendar03Icon}
+            className="size-3 text-primary/80"
+          />
+          <time datetime={publishedDateIso} class="text-[11px] font-medium"
+            >{post.date}</time
           >
-            <HugeiconsIcon
-              icon={Calendar03Icon}
-              className="size-3 text-primary/70"
-            />
-            <time datetime={publishedDateIso} class="text-[11px]"
-              >{post.date}</time
-            >
-          </div>
-
-          {/* Read Time */}
-          <div
-            class="inline-flex items-center gap-1.5 border border-border/70 bg-muted/20 px-2 py-1"
-            title="Estimated Read Time"
-          >
-            <HugeiconsIcon
-              icon={Time02Icon}
-              className="size-3 text-primary/70"
-            />
-            <span class="text-[11px]">{post.readTime}</span>
-          </div>
-
-          {/* Views */}
-          <div
-            class="inline-flex items-center gap-1.5 border border-border/70 bg-muted/20 px-2 py-1"
-            title="Total Views"
-          >
-            <HugeiconsIcon icon={ViewIcon} className="size-3 text-primary/70" />
-            <span data-post-views-count class="text-[11px]"
-              >{post.views || "1"} Views</span
-            >
-          </div>
-
-          {/* Likes Count */}
-          {
-            post.likesCount !== undefined && (
-              <div
-                class="inline-flex items-center gap-1.5 border border-rose-500/20 bg-rose-500/5 px-2 py-1 text-rose-400"
-                title="Likes"
-              >
-                <HugeiconsIcon
-                  icon={FavouriteIcon}
-                  className="size-3 fill-rose-400/40 text-rose-400"
-                />
-                <span class="text-[11px] font-semibold">{post.likesCount}</span>
-              </div>
-            )
-          }
-
-          {/* Comments Count */}
-          {
-            post.commentsCount !== undefined && (
-              <a
-                href="#discussion-section"
-                class="inline-flex items-center gap-1.5 border border-primary/30 bg-primary/5 px-2 py-1 text-primary transition-colors hover:border-primary hover:bg-primary/10"
-                title="Jump to Discussion"
-              >
-                <HugeiconsIcon
-                  icon={Comment01Icon}
-                  className="size-3 text-primary"
-                />
-                <span class="text-[11px] font-semibold">
-                  {post.commentsCount}
-                </span>
-              </a>
-            )
-          }
         </div>
 
-        {/* Share Buttons Group */}
+        {/* Read Time */}
         <div
-          class="flex items-center gap-1.5 pl-0 lg:border-l lg:border-border/60 lg:pl-3"
+          class="inline-flex items-center gap-1.5 border border-border/70 bg-background/80 px-2.5 py-1"
+          title="Estimated Read Time"
         >
-          <button
-            type="button"
-            id="share-article-btn"
-            title="Share article"
-            data-title={post.title}
-            data-summary={post.summary}
-            class="flex h-7 cursor-pointer items-center gap-1.5 border border-border bg-background px-2.5 font-mono text-[11px] text-muted-foreground transition-colors hover:border-primary hover:text-foreground"
-          >
-            <HugeiconsIcon icon={Link01Icon} className="size-3 text-primary" />
-            <span id="share-btn-text">Share</span>
-          </button>
+          <HugeiconsIcon
+            icon={Time02Icon}
+            className="size-3 text-primary/80"
+          />
+          <span class="text-[11px] font-medium">{post.readTime}</span>
+        </div>
 
-          <a
-            href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(articleUrl)}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            title="Share on Twitter / X"
-            class="flex h-7 w-7 cursor-pointer items-center justify-center border border-border bg-background text-muted-foreground transition-colors hover:border-primary hover:text-foreground"
+        {/* Views */}
+        <div
+          class="inline-flex items-center gap-1.5 border border-border/70 bg-background/80 px-2.5 py-1"
+          title="Total Views"
+        >
+          <HugeiconsIcon icon={ViewIcon} className="size-3 text-primary/80" />
+          <span data-post-views-count class="text-[11px] font-medium"
+            >{post.views || "1"} Views</span
           >
-            <HugeiconsIcon icon={NewTwitterIcon} className="size-3.5" />
-          </a>
-
-          <a
-            href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(articleUrl)}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            title="Share on LinkedIn"
-            class="flex h-7 w-7 cursor-pointer items-center justify-center border border-border bg-background text-muted-foreground transition-colors hover:border-primary hover:text-foreground"
-          >
-            <HugeiconsIcon icon={Linkedin02Icon} className="size-3.5" />
-          </a>
         </div>
       </div>
     </div>
+
+    {/* Lower Section: Action Station & Social Hub */}
+    <div class="bg-muted/15 px-4 py-3 sm:px-5">
+      <ArticleHeaderActions
+        client:load
+        postSlug={post.slug}
+        postTitle={post.title}
+        postSummary={post.summary}
+        initialLikes={post.likesCount || 0}
+        articleUrl={articleUrl}
+      />
+    </div>
   </div>
 </header>
-
-<script>
-  // Smart Share Button (Web Share API with Clipboard fallback)
-  function initShareButton() {
-    const shareBtn = document.getElementById("share-article-btn")
-    const shareText = document.getElementById("share-btn-text")
-
-    if (shareBtn && shareText) {
-      shareBtn.addEventListener("click", async () => {
-        const title = shareBtn.getAttribute("data-title") || document.title
-        const text = shareBtn.getAttribute("data-summary") || ""
-        const url = window.location.href
-
-        if (
-          navigator.share &&
-          /mobile|android|iphone|ipad/i.test(navigator.userAgent)
-        ) {
-          try {
-            await navigator.share({ title, text, url })
-            return
-          } catch (err) {
-            // User cancelled or share failed, fallback to clipboard
-          }
-        }
-
-        try {
-          await navigator.clipboard.writeText(url)
-          shareText.textContent = "Link Copied! ✓"
-          shareBtn.classList.add("border-primary", "text-primary")
-          setTimeout(() => {
-            shareText.textContent = "Share"
-            shareBtn.classList.remove("border-primary", "text-primary")
-          }, 2500)
-        } catch {
-          // Fallback prompt
-          window.prompt("Copy article link:", url)
-        }
-      })
-    }
-  }
-
-  document.addEventListener("DOMContentLoaded", initShareButton)
-  document.addEventListener("astro:page-load", initShareButton)
-</script>

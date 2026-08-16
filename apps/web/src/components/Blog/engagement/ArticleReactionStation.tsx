@@ -16,26 +16,58 @@ import {
 interface ArticleReactionStationProps {
   postSlug: string
   postTitle?: string
+  initialLikes?: number
 }
 
 export function ArticleReactionStation({
   postSlug,
+  initialLikes = 0,
 }: ArticleReactionStationProps) {
   const { reactions, totalCommentsCount, toggleLike, toggleReaction } =
-    usePostEngagement(postSlug)
+    usePostEngagement(postSlug, initialLikes)
 
   const [isLikingAnimation, setIsLikingAnimation] = useState(false)
+  const [animatingReactionKey, setAnimatingReactionKey] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
 
-  const handleLikeClick = () => {
+  const handleLikeClick = (e: React.MouseEvent) => {
+    e.preventDefault()
     setIsLikingAnimation(true)
     const updated = toggleLike()
     if (updated.userLiked) {
-      toast.success("Thanks for liking this post!", {
-        description: "Your reaction has been recorded.",
+      toast.success("❤️ Liked article!", {
+        description: "Your reaction has been recorded in real-time.",
+      })
+    } else {
+      toast.info("Like removed", {
+        description: "Your preference has been updated.",
       })
     }
-    setTimeout(() => setIsLikingAnimation(false), 600)
+    setTimeout(() => setIsLikingAnimation(false), 500)
+  }
+
+  const handleReactionClick = (
+    key: "fire" | "insightful" | "fast" | "rocket",
+    label: string,
+    emoji: string
+  ) => {
+    setAnimatingReactionKey(key)
+    const updated = toggleReaction(key)
+    const isActive = !!updated.userReactions?.[key]
+
+    if (isActive) {
+      toast.success(`${emoji} ${label} reaction added!`, {
+        description: "Your feedback has been recorded and synced.",
+      })
+    } else {
+      toast.info(`${label} reaction removed`, {
+        description: "Your reaction has been updated.",
+      })
+    }
+
+    setTimeout(() => {
+      setAnimatingReactionKey(null)
+    }, 500)
   }
 
   const handleShareClick = () => {
@@ -54,6 +86,8 @@ export function ArticleReactionStation({
     const el = document.getElementById("discussion-section")
     if (el) {
       el.scrollIntoView({ behavior: "smooth" })
+      const input = document.getElementById("comment-input")
+      if (input) input.focus()
     }
   }
 
@@ -61,34 +95,54 @@ export function ArticleReactionStation({
     {
       key: "fire" as const,
       label: "Fire",
+      emoji: "🔥",
       icon: FireIcon,
-      iconColor: "text-amber-500",
       count: reactions.fire || 0,
       active: !!reactions.userReactions?.fire,
+      activeClass:
+        "border-amber-500/70 bg-amber-500/15 text-amber-400 ring-1 ring-amber-500/30 shadow-[0_0_14px_rgba(245,158,11,0.25)]",
+      hoverClass: "hover:border-amber-500/50 hover:bg-amber-500/10 hover:text-amber-400",
+      iconColor: "text-amber-500",
+      badgeActiveClass: "bg-amber-500/25 text-amber-300",
     },
     {
       key: "insightful" as const,
       label: "Insightful",
+      emoji: "💡",
       icon: Idea01Icon,
-      iconColor: "text-yellow-400",
       count: reactions.insightful || 0,
       active: !!reactions.userReactions?.insightful,
+      activeClass:
+        "border-yellow-500/70 bg-yellow-500/15 text-yellow-400 ring-1 ring-yellow-500/30 shadow-[0_0_14px_rgba(234,179,8,0.25)]",
+      hoverClass: "hover:border-yellow-500/50 hover:bg-yellow-500/10 hover:text-yellow-400",
+      iconColor: "text-yellow-400",
+      badgeActiveClass: "bg-yellow-500/25 text-yellow-300",
     },
     {
       key: "fast" as const,
       label: "Ultra Fast",
+      emoji: "⚡",
       icon: FlashIcon,
-      iconColor: "text-cyan-400",
       count: reactions.fast || 0,
       active: !!reactions.userReactions?.fast,
+      activeClass:
+        "border-cyan-500/70 bg-cyan-500/15 text-cyan-400 ring-1 ring-cyan-500/30 shadow-[0_0_14px_rgba(6,182,212,0.25)]",
+      hoverClass: "hover:border-cyan-500/50 hover:bg-cyan-500/10 hover:text-cyan-400",
+      iconColor: "text-cyan-400",
+      badgeActiveClass: "bg-cyan-500/25 text-cyan-300",
     },
     {
       key: "rocket" as const,
       label: "Prod-Ready",
+      emoji: "🚀",
       icon: RocketIcon,
-      iconColor: "text-emerald-400",
       count: reactions.rocket || 0,
       active: !!reactions.userReactions?.rocket,
+      activeClass:
+        "border-emerald-500/70 bg-emerald-500/15 text-emerald-400 ring-1 ring-emerald-500/30 shadow-[0_0_14px_rgba(16,185,129,0.25)]",
+      hoverClass: "hover:border-emerald-500/50 hover:bg-emerald-500/10 hover:text-emerald-400",
+      iconColor: "text-emerald-400",
+      badgeActiveClass: "bg-emerald-500/25 text-emerald-300",
     },
   ]
 
@@ -151,7 +205,7 @@ export function ArticleReactionStation({
             onClick={handleLikeClick}
             className={`group relative inline-flex cursor-pointer items-center gap-2.5 border px-4 py-2 font-mono text-xs font-bold transition-all duration-200 select-none ${
               reactions.userLiked
-                ? "border-rose-500/60 bg-rose-500/10 text-rose-400 shadow-[0_0_20px_-3px_rgba(244,63,94,0.3)]"
+                ? "border-rose-500/60 bg-rose-500/10 text-rose-400 shadow-[0_0_20px_-3px_rgba(244,63,94,0.3)] ring-1 ring-rose-500/30"
                 : "border-border bg-background/80 text-foreground hover:border-rose-500/50 hover:bg-rose-500/5 hover:text-rose-400"
             }`}
           >
@@ -175,9 +229,9 @@ export function ArticleReactionStation({
               {reactions.userLiked ? "Liked" : "Like Article"}
             </span>
             <span
-              className={`rounded-none px-1.5 py-0.5 font-mono text-[11px] ${
+              className={`rounded-xs px-1.5 py-0.5 font-mono text-[11px] font-bold ${
                 reactions.userLiked
-                  ? "bg-rose-500/20 text-rose-300"
+                  ? "bg-rose-500/25 text-rose-300"
                   : "bg-muted text-muted-foreground group-hover:text-foreground"
               }`}
             >
@@ -189,27 +243,50 @@ export function ArticleReactionStation({
 
           {/* Reaction Chips */}
           <div className="flex flex-wrap items-center gap-2">
-            {reactionButtons.map((btn) => (
-              <button
-                key={btn.key}
-                type="button"
-                onClick={() => toggleReaction(btn.key)}
-                className={`inline-flex cursor-pointer items-center gap-1.5 border px-3 py-1.5 font-mono text-xs transition-all duration-150 ${
-                  btn.active
-                    ? "border-primary/70 bg-primary/15 text-primary shadow-[0_0_12px_-2px_oklch(var(--primary)/30%)]"
-                    : "border-border bg-background/60 text-muted-foreground hover:border-primary/40 hover:bg-primary/5 hover:text-foreground"
-                }`}
-              >
-                <HugeiconsIcon
-                  icon={btn.icon}
-                  className={`size-3.5 ${btn.active ? "text-primary" : btn.iconColor}`}
-                />
-                <span className="text-[11px]">{btn.label}</span>
-                <span className="font-mono text-[10px] opacity-70">
-                  {btn.count}
-                </span>
-              </button>
-            ))}
+            {reactionButtons.map((btn) => {
+              const isAnimating = animatingReactionKey === btn.key
+              return (
+                <button
+                  key={btn.key}
+                  type="button"
+                  onClick={() =>
+                    handleReactionClick(btn.key, btn.label, btn.emoji)
+                  }
+                  title={`${btn.active ? "Remove" : "Add"} ${btn.label} reaction`}
+                  aria-label={`${btn.label} reaction`}
+                  className={`group inline-flex cursor-pointer items-center gap-2 border px-3 py-1.5 font-mono text-xs font-semibold transition-all duration-200 select-none ${
+                    btn.active
+                      ? btn.activeClass
+                      : `border-border/80 bg-background/80 text-muted-foreground ${btn.hoverClass}`
+                  }`}
+                >
+                  <span
+                    className={`flex items-center transition-transform duration-300 ${
+                      isAnimating
+                        ? "scale-140 rotate-12"
+                        : "group-hover:scale-115"
+                    }`}
+                  >
+                    <HugeiconsIcon
+                      icon={btn.icon}
+                      className={`size-3.5 transition-colors ${
+                        btn.active ? "text-current" : btn.iconColor
+                      }`}
+                    />
+                  </span>
+                  <span className="text-[11px]">{btn.label}</span>
+                  <span
+                    className={`rounded-xs px-1.5 py-0.2 font-mono text-[10px] font-bold ${
+                      btn.active
+                        ? btn.badgeActiveClass
+                        : "bg-muted text-muted-foreground group-hover:text-foreground"
+                    }`}
+                  >
+                    {btn.count}
+                  </span>
+                </button>
+              )
+            })}
           </div>
         </div>
       </div>

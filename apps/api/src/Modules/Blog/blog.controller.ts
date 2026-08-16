@@ -607,4 +607,35 @@ export class BlogController extends BaseController {
       next(error)
     }
   }
+
+  /**
+   * GET /blogs/v1/public/slug/:slug/reactions - Get full aggregated reaction counts and user state
+   */
+  public async getPostReactions(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const slug = Array.isArray(req.params.slug)
+        ? req.params.slug[0]
+        : req.params.slug
+      const ipAddress =
+        (req.headers["x-forwarded-for"] as string) || req.socket.remoteAddress
+      const result = await this.blogService.getPostReactions(
+        slug,
+        req.user?.id,
+        ipAddress
+      )
+      this.sendResponse(
+        req,
+        res,
+        "Post reactions retrieved successfully",
+        HTTPStatusCode.OK,
+        result
+      )
+    } catch (error) {
+      next(error)
+    }
+  }
 }

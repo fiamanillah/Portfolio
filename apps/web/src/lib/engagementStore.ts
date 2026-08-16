@@ -1,4 +1,4 @@
-import { useSyncExternalStore, useCallback } from "react"
+import { useSyncExternalStore, useCallback, useEffect } from "react"
 import type { BlogComment, PostReactions, AuthUser } from "@/data/commentsData"
 import { BlogApi } from "./api/blogApi"
 import { CommentsApi, type GuestCommentPayload } from "./api/commentsApi"
@@ -32,8 +32,13 @@ const commentsSnapshotCache = new Map<
 // Reaction & Post Like Helpers
 // ----------------------------------------------------
 
-export function getStoredReactions(slug: string): PostReactions {
-  if (typeof window === "undefined") return EMPTY_REACTIONS
+export function getStoredReactions(
+  slug: string,
+  initialLikes: number = 0
+): PostReactions {
+  if (typeof window === "undefined") {
+    return { ...EMPTY_REACTIONS, likes: initialLikes }
+  }
 
   try {
     const raw = localStorage.getItem(`portfolio_reactions_${slug}`)
@@ -43,8 +48,9 @@ export function getStoredReactions(slug: string): PostReactions {
     }
 
     if (!raw) {
-      reactionsSnapshotCache.set(slug, { raw: null, parsed: EMPTY_REACTIONS })
-      return EMPTY_REACTIONS
+      const defaultState = { ...EMPTY_REACTIONS, likes: initialLikes }
+      reactionsSnapshotCache.set(slug, { raw: null, parsed: defaultState })
+      return defaultState
     }
 
     const parsed = JSON.parse(raw) as PostReactions
@@ -52,7 +58,7 @@ export function getStoredReactions(slug: string): PostReactions {
     return parsed
   } catch (e) {
     console.error("Failed to parse stored reactions:", e)
-    return EMPTY_REACTIONS
+    return { ...EMPTY_REACTIONS, likes: initialLikes }
   }
 }
 
@@ -75,25 +81,37 @@ export function saveStoredReactions(
   }
 }
 
-export function togglePostLike(slug: string): PostReactions {
-  const current = getStoredReactions(slug)
+export function togglePostLike(
+  slug: string,
+  initialLikes: number = 0
+): PostReactions {
+  const current = getStoredReactions(slug, initialLikes)
   const isLiked = !current.userLiked
   const updated: PostReactions = {
     ...current,
-    likes: isLiked ? current.likes + 1 : Math.max(0, current.likes - 1),
+    likes: isLiked
+      ? (current.likes || initialLikes) + 1
+      : Math.max(0, (current.likes || initialLikes) - 1),
     userLiked: isLiked,
+    userReactions: {
+      ...(current.userReactions || {}),
+      like: isLiked,
+    },
   }
   saveStoredReactions(slug, updated)
 
   // Persist to backend database via BlogApi
   BlogApi.reactToPost(slug, "like")
     .then((res) => {
-      if (res) {
-        const latest = getStoredReactions(slug)
+      if (res && res.reactions) {
         saveStoredReactions(slug, {
-          ...latest,
           likes: res.likesCount,
+          fire: res.reactions.fire,
+          insightful: res.reactions.insightful,
+          fast: res.reactions.fast,
+          rocket: res.reactions.rocket,
           userLiked: res.userLiked,
+          userReactions: res.userReactions,
         })
       }
     })
@@ -104,9 +122,10 @@ export function togglePostLike(slug: string): PostReactions {
 
 export function toggleEmojiReaction(
   slug: string,
-  key: "fire" | "insightful" | "fast" | "rocket"
+  key: "fire" | "insightful" | "fast" | "rocket",
+  initialLikes: number = 0
 ): PostReactions {
-  const current = getStoredReactions(slug)
+  const current = getStoredReactions(slug, initialLikes)
   const userReactions = current.userReactions || {}
   const isCurrentlyActive = !userReactions[key]
 
@@ -115,11 +134,12 @@ export function toggleEmojiReaction(
     [key]: !isCurrentlyActive,
   }
 
+  // Calculate optimistic count
+  const delta = !isCurrentlyActive ? 1 : -1
   const updated: PostReactions = {
     ...current,
-    [key]: !isCurrentlyActive
-      ? (current[key] || 0) + 1
-      : Math.max(0, (current[key] || 0) - 1),
+    [key]: Math.max(0, (current[key] || 0) + delta),
+    likes: Math.max(0, (current.likes || initialLikes) + delta),
     userReactions: updatedReactions,
   }
 
@@ -128,17 +148,42 @@ export function toggleEmojiReaction(
   // Persist to backend database via BlogApi
   BlogApi.reactToPost(slug, key)
     .then((res) => {
-      if (res) {
-        const latest = getStoredReactions(slug)
+      if (res && res.reactions) {
         saveStoredReactions(slug, {
-          ...latest,
           likes: res.likesCount,
+          fire: res.reactions.fire,
+          insightful: res.reactions.insightful,
+          fast: res.reactions.fast,
+          rocket: res.reactions.rocket,
+          userLiked: res.userLiked,
+          userReactions: res.userReactions,
         })
       }
     })
     .catch(() => {})
 
   return updated
+}
+
+export async function syncPostReactions(
+  slug: string,
+  initialLikes: number = 0
+): Promise<PostReactions> {
+  const res = await BlogApi.fetchPostReactions(slug)
+  if (res && res.reactions) {
+    const updated: PostReactions = {
+      likes: res.likesCount,
+      fire: res.reactions.fire,
+      insightful: res.reactions.insightful,
+      fast: res.reactions.fast,
+      rocket: res.reactions.rocket,
+      userLiked: res.userLiked,
+      userReactions: res.userReactions,
+    }
+    saveStoredReactions(slug, updated)
+    return updated
+  }
+  return getStoredReactions(slug, initialLikes)
 }
 
 // ----------------------------------------------------
@@ -333,7 +378,7 @@ function createEngagementSubscriber(slug: string) {
   }
 }
 
-export function usePostEngagement(slug: string) {
+export function usePostEngagement(slug: string, initialLikes: number = 0) {
   const subscribe = useCallback(
     (callback: () => void) => createEngagementSubscriber(slug)(callback),
     [slug]
@@ -341,8 +386,8 @@ export function usePostEngagement(slug: string) {
 
   const reactions = useSyncExternalStore(
     subscribe,
-    () => getStoredReactions(slug),
-    () => EMPTY_REACTIONS
+    () => getStoredReactions(slug, initialLikes),
+    () => ({ ...EMPTY_REACTIONS, likes: initialLikes })
   )
 
   const comments = useSyncExternalStore(
@@ -350,6 +395,11 @@ export function usePostEngagement(slug: string) {
     () => getStoredComments(slug),
     () => []
   )
+
+  // Fetch real-time reactions and active user state from API on mount
+  useEffect(() => {
+    syncPostReactions(slug, initialLikes).catch(() => {})
+  }, [slug, initialLikes])
 
   const totalCommentsCount = comments.reduce(
     (acc, c) => acc + 1 + (c.replies ? c.replies.length : 0),
@@ -364,9 +414,10 @@ export function usePostEngagement(slug: string) {
       saveStoredComments(slug, newComments),
     setReactions: (newReactions: PostReactions) =>
       saveStoredReactions(slug, newReactions),
-    toggleLike: () => togglePostLike(slug),
+    toggleLike: () => togglePostLike(slug, initialLikes),
     toggleReaction: (key: "fire" | "insightful" | "fast" | "rocket") =>
-      toggleEmojiReaction(slug, key),
+      toggleEmojiReaction(slug, key, initialLikes),
+    syncReactions: () => syncPostReactions(slug, initialLikes),
     addComment: (author: AuthUser | GuestCommentPayload, content: string) =>
       addComment(slug, author, content),
     addReply: (
