@@ -12,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@workspace/ui/components/select"
+import { DataTablePagination } from "@workspace/ui/components/data-table-pagination"
 import type { CommentReportDTO } from "@workspace/shared"
 import { renderStatusBadge, renderReasonBadge } from "./comment-badge-utils"
 
@@ -23,11 +24,14 @@ interface ReportedQueueTabProps {
   statusFilter: string
   reasonFilter: string
   page: number
+  pageSize: number
+  totalCount: number
   totalPages: number
   onSearchChange: (q: string) => void
   onStatusFilterChange: (s: string) => void
   onReasonFilterChange: (r: string) => void
   onPageChange: (p: number) => void
+  onPageSizeChange: (s: number) => void
   onDismissReport: (id: string) => void
   onOpenResolver: (report: CommentReportDTO, initialAction: string) => void
 }
@@ -40,11 +44,14 @@ export function ReportedQueueTab({
   statusFilter,
   reasonFilter,
   page,
+  pageSize,
+  totalCount,
   totalPages,
   onSearchChange,
   onStatusFilterChange,
   onReasonFilterChange,
   onPageChange,
+  onPageSizeChange,
   onDismissReport,
   onOpenResolver,
 }: ReportedQueueTabProps) {
@@ -244,33 +251,27 @@ export function ReportedQueueTab({
       </div>
 
       {/* Reports Pagination */}
-      {totalPages > 1 && (
-        <div className="flex items-center justify-between border-t border-border/60 pt-4">
-          <span className="font-mono text-xs text-muted-foreground">
-            Page {page} of {totalPages}
-          </span>
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => onPageChange(Math.max(1, page - 1))}
-              disabled={page <= 1 || loading}
-              className="h-8 text-xs"
-            >
-              Previous
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => onPageChange(Math.min(totalPages, page + 1))}
-              disabled={page >= totalPages || loading}
-              className="h-8 text-xs"
-            >
-              Next
-            </Button>
-          </div>
-        </div>
-      )}
+      <div className="rounded-lg border border-border/80 bg-card/60 p-2">
+        <DataTablePagination
+          table={{
+            getFilteredSelectedRowModel: () => ({ rows: [] }),
+            getState: () => ({
+              pagination: {
+                pageIndex: Math.max(0, page - 1),
+                pageSize,
+              },
+            }),
+          }}
+          pageSizeOptions={[10, 20, 50, 100]}
+          totalItemsCount={totalCount}
+          pageCount={totalPages}
+          currentPage={page}
+          pageSize={pageSize}
+          onPageChange={onPageChange}
+          onPageSizeChange={onPageSizeChange}
+        />
+      </div>
     </div>
   )
 }
+

@@ -1,15 +1,17 @@
 // apps/dashboard/src/app/(dashboard)/comments/components/comments-table-view.tsx
 import * as React from "react"
-import { Trash2 } from "lucide-react"
+import { Trash2, MessageSquare } from "lucide-react"
 import { Card } from "@workspace/ui/components/card"
 import { Button } from "@workspace/ui/components/button"
 import { Checkbox } from "@workspace/ui/components/checkbox"
 import { Avatar, AvatarFallback } from "@workspace/ui/components/avatar"
+import { Skeleton } from "@workspace/ui/components/skeleton"
 import type { CommentAdminListItemDTO, CommentStatus } from "@workspace/shared"
 import { renderStatusBadge } from "./comment-badge-utils"
 
 interface CommentsTableViewProps {
   comments: CommentAdminListItemDTO[]
+  loading?: boolean
   selectedCommentIds: string[]
   onToggleSelect: (id: string) => void
   onSelectAllPage: (checked: boolean) => void
@@ -20,6 +22,7 @@ interface CommentsTableViewProps {
 
 export function CommentsTableView({
   comments,
+  loading = false,
   selectedCommentIds,
   onToggleSelect,
   onSelectAllPage,
@@ -40,6 +43,7 @@ export function CommentsTableView({
                 <Checkbox
                   checked={isAllSelected}
                   onCheckedChange={(checked) => onSelectAllPage(!!checked)}
+                  disabled={loading || comments.length === 0}
                 />
               </th>
               <th className="p-3">Author</th>
@@ -51,74 +55,123 @@ export function CommentsTableView({
             </tr>
           </thead>
           <tbody className="divide-y divide-border/40 font-sans">
-            {comments.map((cm) => (
-              <tr key={cm.id} className="transition-colors hover:bg-muted/20">
-                <td className="p-3">
-                  <Checkbox
-                    checked={selectedCommentIds.includes(cm.id)}
-                    onCheckedChange={() => onToggleSelect(cm.id)}
-                  />
-                </td>
-                <td className="p-3 font-medium">
-                  <div className="flex items-center gap-2">
-                    <Avatar className="size-6">
-                      <AvatarFallback className="text-[10px]">
-                        {cm.author.name?.slice(0, 2).toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <span className="font-semibold">{cm.author.name}</span>
-                      {cm.author.email && (
-                        <p className="font-mono text-[10px] text-muted-foreground">
-                          {cm.author.email}
-                        </p>
-                      )}
+            {loading ? (
+              Array.from({ length: 5 }).map((_, i) => (
+                <tr key={i} className="animate-pulse">
+                  <td className="p-3">
+                    <Skeleton className="size-4 rounded" />
+                  </td>
+                  <td className="p-3">
+                    <div className="flex items-center gap-2">
+                      <Skeleton className="size-6 rounded-full" />
+                      <div className="space-y-1">
+                        <Skeleton className="h-3 w-20" />
+                        <Skeleton className="h-2 w-28" />
+                      </div>
                     </div>
-                  </div>
-                </td>
-                <td className="max-w-xs truncate p-3 text-muted-foreground">
-                  &ldquo;{cm.content}&rdquo;
-                </td>
-                <td className="max-w-[200px] truncate p-3 font-medium text-foreground">
-                  {cm.postTitle}
-                </td>
-                <td className="p-3">{renderStatusBadge(cm.status)}</td>
-                <td className="p-3 font-mono text-[11px] text-muted-foreground">
-                  {cm.likesCount}L • {cm.repliesCount}R
-                </td>
-                <td className="space-x-1 p-3 text-right">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => onInspect(cm.id)}
-                    className="h-7 text-xs"
-                  >
-                    Inspect
-                  </Button>
-                  {cm.status !== "APPROVED" && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => onUpdateStatus(cm.id, "APPROVED")}
-                      className="h-7 text-xs text-emerald-600"
-                    >
-                      Approve
-                    </Button>
-                  )}
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => onDeleteConfirm(cm.id)}
-                    className="h-7 text-xs text-destructive"
-                  >
-                    <Trash2 className="size-3" />
-                  </Button>
+                  </td>
+                  <td className="p-3">
+                    <Skeleton className="h-3 w-48" />
+                  </td>
+                  <td className="p-3">
+                    <Skeleton className="h-3 w-32" />
+                  </td>
+                  <td className="p-3">
+                    <Skeleton className="h-5 w-16 rounded-full" />
+                  </td>
+                  <td className="p-3">
+                    <Skeleton className="h-3 w-14" />
+                  </td>
+                  <td className="p-3 text-right">
+                    <Skeleton className="ml-auto h-7 w-20 rounded" />
+                  </td>
+                </tr>
+              ))
+            ) : comments.length === 0 ? (
+              <tr>
+                <td
+                  colSpan={7}
+                  className="p-12 text-center text-muted-foreground"
+                >
+                  <MessageSquare className="mx-auto mb-2 size-8 text-muted-foreground/60" />
+                  <p className="text-sm font-semibold">No comments found</p>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    Try adjusting your search query, status filters, or check
+                    back later.
+                  </p>
                 </td>
               </tr>
-            ))}
+            ) : (
+              comments.map((cm) => (
+                <tr key={cm.id} className="transition-colors hover:bg-muted/20">
+                  <td className="p-3">
+                    <Checkbox
+                      checked={selectedCommentIds.includes(cm.id)}
+                      onCheckedChange={() => onToggleSelect(cm.id)}
+                    />
+                  </td>
+                  <td className="p-3 font-medium">
+                    <div className="flex items-center gap-2">
+                      <Avatar className="size-6">
+                        <AvatarFallback className="text-[10px]">
+                          {cm.author.name?.slice(0, 2).toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <span className="font-semibold">{cm.author.name}</span>
+                        {cm.author.email && (
+                          <p className="font-mono text-[10px] text-muted-foreground">
+                            {cm.author.email}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  </td>
+                  <td className="max-w-xs truncate p-3 text-muted-foreground">
+                    &ldquo;{cm.content}&rdquo;
+                  </td>
+                  <td className="max-w-[200px] truncate p-3 font-medium text-foreground">
+                    {cm.postTitle}
+                  </td>
+                  <td className="p-3">{renderStatusBadge(cm.status)}</td>
+                  <td className="p-3 font-mono text-[11px] text-muted-foreground">
+                    {cm.likesCount}L • {cm.repliesCount}R
+                  </td>
+                  <td className="space-x-1 p-3 text-right">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => onInspect(cm.id)}
+                      className="h-7 text-xs"
+                    >
+                      Inspect
+                    </Button>
+                    {cm.status !== "APPROVED" && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => onUpdateStatus(cm.id, "APPROVED")}
+                        className="h-7 text-xs text-emerald-600"
+                      >
+                        Approve
+                      </Button>
+                    )}
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => onDeleteConfirm(cm.id)}
+                      className="h-7 text-xs text-destructive"
+                    >
+                      <Trash2 className="size-3" />
+                    </Button>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>
     </Card>
   )
 }
+

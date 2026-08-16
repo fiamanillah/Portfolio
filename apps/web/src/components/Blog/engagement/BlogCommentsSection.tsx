@@ -38,6 +38,8 @@ export function BlogCommentsSection({ postSlug }: BlogCommentsSectionProps) {
   const [authModalOpen, setAuthModalOpen] = useState(false)
   const [sortBy, setSortBy] = useState<SortOrder>("newest")
   const [page, setPage] = useState(1)
+  const [apiPage, setApiPage] = useState(1)
+  const [hasMoreApi, setHasMoreApi] = useState(false)
   const [isLoadingInitial, setIsLoadingInitial] = useState(true)
   const [isLoadingMore, setIsLoadingMore] = useState(false)
 
@@ -46,10 +48,12 @@ export function BlogCommentsSection({ postSlug }: BlogCommentsSectionProps) {
     let isMounted = true
     setIsLoadingInitial(true)
 
-    CommentsApi.getComments(postSlug, 1, 20, sortBy)
+    CommentsApi.getComments(postSlug, 1, 10, sortBy)
       .then((res) => {
         if (isMounted && res.comments) {
           setComments(res.comments)
+          setHasMoreApi(res.hasMore)
+          setApiPage(1)
         }
       })
       .catch(() => {})
@@ -88,22 +92,55 @@ export function BlogCommentsSection({ postSlug }: BlogCommentsSectionProps) {
     return sortedComments.slice(0, page * PAGE_SIZE)
   }, [sortedComments, page])
 
-  const hasMore = visibleComments.length < sortedComments.length
+  const hasMore = visibleComments.length < sortedComments.length || hasMoreApi
 
   const handleSortChange = (newSort: SortOrder) => {
     if (newSort === sortBy) return
     setSortBy(newSort)
     setPage(1)
+    setApiPage(1)
   }
 
-  const handleLoadMore = () => {
+  const handleLoadMore = async () => {
     if (isLoadingMore || !hasMore) return
-    setIsLoadingMore(true)
 
-    setTimeout(() => {
-      setPage((prev) => prev + 1)
-      setIsLoadingMore(false)
-    }, 300)
+    // If local cached list has more items, reveal next chunk
+    if (visibleComments.length < sortedComments.length) {
+      setIsLoadingMore(true)
+      setTimeout(() => {
+        setPage((prev) => prev + 1)
+        setIsLoadingMore(false)
+      }, 200)
+      return
+    }
+
+    // Otherwise, fetch next page from backend API
+    if (hasMoreApi) {
+      setIsLoadingMore(true)
+      try {
+        const nextApiPage = apiPage + 1
+        const res = await CommentsApi.getComments(
+          postSlug,
+          nextApiPage,
+          10,
+          sortBy
+        )
+        if (res.comments && res.comments.length > 0) {
+          const existingIds = new Set(comments.map((c) => c.id))
+          const newUnique = res.comments.filter((c) => !existingIds.has(c.id))
+          setComments([...comments, ...newUnique])
+          setApiPage(nextApiPage)
+          setHasMoreApi(res.hasMore)
+          setPage((prev) => prev + 1)
+        } else {
+          setHasMoreApi(false)
+        }
+      } catch (err) {
+        console.error("Failed to load next comments batch:", err)
+      } finally {
+        setIsLoadingMore(false)
+      }
+    }
   }
 
   const handleTopLevelCommentSubmit = async (

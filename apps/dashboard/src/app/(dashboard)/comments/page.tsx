@@ -35,6 +35,7 @@ import {
 import { Checkbox } from "@workspace/ui/components/checkbox"
 import { toast } from "@workspace/ui/components/sonner"
 
+import { DataTablePagination } from "@workspace/ui/components/data-table-pagination"
 import { CommentApi } from "@/lib/api"
 import type {
   CommentAdminListItemDTO,
@@ -75,11 +76,13 @@ export default function CommentsModerationPage() {
   // Comments state
   const [comments, setComments] = React.useState<CommentAdminListItemDTO[]>([])
   const [commentsPage, setCommentsPage] = React.useState(1)
+  const [commentsPageSize, setCommentsPageSize] = React.useState(10)
   const [commentsTotal, setCommentsTotal] = React.useState(0)
   const [commentsTotalPages, setCommentsTotalPages] = React.useState(1)
   const [statusFilter, setStatusFilter] = React.useState<string>("ALL")
   const [reportedOnlyFilter, setReportedOnlyFilter] = React.useState(false)
   const [searchQuery, setSearchQuery] = React.useState("")
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = React.useState("")
   const [selectedCommentIds, setSelectedCommentIds] = React.useState<string[]>(
     []
   )
@@ -88,6 +91,7 @@ export default function CommentsModerationPage() {
   // Reports state
   const [reports, setReports] = React.useState<CommentReportDTO[]>([])
   const [reportsPage, setReportsPage] = React.useState(1)
+  const [reportsPageSize, setReportsPageSize] = React.useState(10)
   const [reportsTotal, setReportsTotal] = React.useState(0)
   const [reportsTotalPages, setReportsTotalPages] = React.useState(1)
   const [reportStatusFilter, setReportStatusFilter] =
@@ -95,6 +99,8 @@ export default function CommentsModerationPage() {
   const [reportReasonFilter, setReportReasonFilter] =
     React.useState<string>("ALL")
   const [reportSearchQuery, setReportSearchQuery] = React.useState("")
+  const [debouncedReportSearchQuery, setDebouncedReportSearchQuery] =
+    React.useState("")
 
   // Dialog states
   const [inspectComment, setInspectComment] = React.useState<any | null>(null)
@@ -107,6 +113,24 @@ export default function CommentsModerationPage() {
     id: string
     type: "single" | "bulk"
   } | null>(null)
+
+  // Debounce comments search
+  React.useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearchQuery(searchQuery)
+      setCommentsPage(1)
+    }, 300)
+    return () => clearTimeout(handler)
+  }, [searchQuery])
+
+  // Debounce reports search
+  React.useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedReportSearchQuery(reportSearchQuery)
+      setReportsPage(1)
+    }, 300)
+    return () => clearTimeout(handler)
+  }, [reportSearchQuery])
 
   // Load stats
   const fetchStats = React.useCallback(async () => {
@@ -126,8 +150,8 @@ export default function CommentsModerationPage() {
     try {
       const res = await CommentApi.getComments({
         page: commentsPage,
-        limit: 15,
-        search: searchQuery || undefined,
+        limit: commentsPageSize,
+        search: debouncedSearchQuery.trim() || undefined,
         status:
           statusFilter !== "ALL" ? (statusFilter as CommentStatus) : undefined,
         reportedOnly: reportedOnlyFilter || undefined,
@@ -138,8 +162,14 @@ export default function CommentsModerationPage() {
         if (res.pagination) {
           setCommentsTotal(res.pagination.total)
           setCommentsTotalPages(
-            res.pagination.pages || res.pagination.totalPages || 1
+            res.pagination.totalPages ||
+              res.pagination.pages ||
+              Math.ceil(res.pagination.total / commentsPageSize) ||
+              1
           )
+        } else {
+          setCommentsTotal(res.data.length)
+          setCommentsTotalPages(1)
         }
       }
     } catch (err) {
@@ -148,7 +178,13 @@ export default function CommentsModerationPage() {
     } finally {
       setLoading(false)
     }
-  }, [commentsPage, searchQuery, statusFilter, reportedOnlyFilter])
+  }, [
+    commentsPage,
+    commentsPageSize,
+    debouncedSearchQuery,
+    statusFilter,
+    reportedOnlyFilter,
+  ])
 
   // Load reports
   const fetchReports = React.useCallback(async () => {
@@ -156,8 +192,8 @@ export default function CommentsModerationPage() {
     try {
       const res = await CommentApi.getReports({
         page: reportsPage,
-        limit: 15,
-        search: reportSearchQuery || undefined,
+        limit: reportsPageSize,
+        search: debouncedReportSearchQuery.trim() || undefined,
         status:
           reportStatusFilter !== "ALL"
             ? (reportStatusFilter as CommentReportStatus)
@@ -173,8 +209,14 @@ export default function CommentsModerationPage() {
         if (res.pagination) {
           setReportsTotal(res.pagination.total)
           setReportsTotalPages(
-            res.pagination.pages || res.pagination.totalPages || 1
+            res.pagination.totalPages ||
+              res.pagination.pages ||
+              Math.ceil(res.pagination.total / reportsPageSize) ||
+              1
           )
+        } else {
+          setReportsTotal(res.data.length)
+          setReportsTotalPages(1)
         }
       }
     } catch (err) {
@@ -183,7 +225,13 @@ export default function CommentsModerationPage() {
     } finally {
       setLoading(false)
     }
-  }, [reportsPage, reportSearchQuery, reportStatusFilter, reportReasonFilter])
+  }, [
+    reportsPage,
+    reportsPageSize,
+    debouncedReportSearchQuery,
+    reportStatusFilter,
+    reportReasonFilter,
+  ])
 
   // Initial loads
   React.useEffect(() => {
@@ -441,6 +489,7 @@ export default function CommentsModerationPage() {
           setActiveTab(tab)
           setStatusFilter(status)
           setReportedOnlyFilter(false)
+          setCommentsPage(1)
         }}
       />
 
@@ -507,7 +556,13 @@ export default function CommentsModerationPage() {
                 />
               </div>
 
-              <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <Select
+                value={statusFilter}
+                onValueChange={(val) => {
+                  setStatusFilter(val)
+                  setCommentsPage(1)
+                }}
+              >
                 <SelectTrigger className="h-9 w-[140px] text-xs">
                   <SelectValue placeholder="Filter status" />
                 </SelectTrigger>
@@ -523,7 +578,10 @@ export default function CommentsModerationPage() {
               <Button
                 variant={reportedOnlyFilter ? "destructive" : "outline"}
                 size="sm"
-                onClick={() => setReportedOnlyFilter(!reportedOnlyFilter)}
+                onClick={() => {
+                  setReportedOnlyFilter((prev) => !prev)
+                  setCommentsPage(1)
+                }}
                 className="h-9 gap-1.5 text-xs"
               >
                 <Flag className="size-3.5" />
@@ -626,6 +684,7 @@ export default function CommentsModerationPage() {
           ) : (
             <CommentsTableView
               comments={comments}
+              loading={loading}
               selectedCommentIds={selectedCommentIds}
               onToggleSelect={handleToggleSelectComment}
               onSelectAllPage={(checked) => {
@@ -641,35 +700,31 @@ export default function CommentsModerationPage() {
           )}
 
           {/* Comments Pagination */}
-          {commentsTotalPages > 1 && (
-            <div className="flex items-center justify-between border-t border-border/60 pt-4">
-              <span className="font-mono text-xs text-muted-foreground">
-                Page {commentsPage} of {commentsTotalPages}
-              </span>
-              <div className="flex items-center gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setCommentsPage((p) => Math.max(1, p - 1))}
-                  disabled={commentsPage <= 1 || loading}
-                  className="h-8 text-xs"
-                >
-                  Previous
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() =>
-                    setCommentsPage((p) => Math.min(commentsTotalPages, p + 1))
-                  }
-                  disabled={commentsPage >= commentsTotalPages || loading}
-                  className="h-8 text-xs"
-                >
-                  Next
-                </Button>
-              </div>
-            </div>
-          )}
+          <div className="rounded-lg border border-border/80 bg-card/60 p-2">
+            <DataTablePagination
+              table={{
+                getFilteredSelectedRowModel: () => ({
+                  rows: selectedCommentIds.map((id) => ({ id })),
+                }),
+                getState: () => ({
+                  pagination: {
+                    pageIndex: Math.max(0, commentsPage - 1),
+                    pageSize: commentsPageSize,
+                  },
+                }),
+              }}
+              pageSizeOptions={[10, 20, 50, 100]}
+              totalItemsCount={commentsTotal}
+              pageCount={commentsTotalPages}
+              currentPage={commentsPage}
+              pageSize={commentsPageSize}
+              onPageChange={(newPage) => setCommentsPage(newPage)}
+              onPageSizeChange={(newSize) => {
+                setCommentsPageSize(newSize)
+                setCommentsPage(1)
+              }}
+            />
+          </div>
         </TabsContent>
 
         {/* Tab 2: Reported Queue */}
@@ -682,11 +737,23 @@ export default function CommentsModerationPage() {
             statusFilter={reportStatusFilter}
             reasonFilter={reportReasonFilter}
             page={reportsPage}
+            pageSize={reportsPageSize}
+            totalCount={reportsTotal}
             totalPages={reportsTotalPages}
             onSearchChange={setReportSearchQuery}
-            onStatusFilterChange={setReportStatusFilter}
-            onReasonFilterChange={setReportReasonFilter}
-            onPageChange={setReportsPage}
+            onStatusFilterChange={(s) => {
+              setReportStatusFilter(s)
+              setReportsPage(1)
+            }}
+            onReasonFilterChange={(r) => {
+              setReportReasonFilter(r)
+              setReportsPage(1)
+            }}
+            onPageChange={(p) => setReportsPage(p)}
+            onPageSizeChange={(s) => {
+              setReportsPageSize(s)
+              setReportsPage(1)
+            }}
             onDismissReport={handleDismissReport}
             onOpenResolver={(rep, action) => {
               setActiveReportToResolve(rep)
