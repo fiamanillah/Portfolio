@@ -72,6 +72,16 @@ const navGroups: NavGroup[] = [
     ],
   },
   {
+    label: "Content",
+    items: [
+      {
+        title: "Blog Posts",
+        url: "/blogs",
+        icon: FileCode2,
+      },
+    ],
+  },
+  {
     label: "Audience & Access",
     items: [
       {
@@ -98,7 +108,7 @@ const navGroups: NavGroup[] = [
       {
         title: "Templates",
         url: "/templates",
-        icon: FileCode2,
+        icon: Sparkles,
       },
     ],
   },

@@ -1,0 +1,18 @@
+info:
+  name: Admin - Seed Local Posts
+  type: http
+  seq: 11
+
+http:
+  method: POST
+  url: "{{baseUrl}}/blogs/v1/admin/seed-local"
+  headers:
+    - name: Authorization
+      value: "Bearer {{authToken}}"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

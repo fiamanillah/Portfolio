@@ -1,0 +1,27 @@
+info:
+  name: Admin - Bulk Update Status
+  type: http
+  seq: 8
+
+http:
+  method: POST
+  url: "{{baseUrl}}/blogs/v1/admin/posts/bulk-status"
+  headers:
+    - name: Authorization
+      value: "Bearer {{authToken}}"
+  body:
+    type: json
+    data: |-
+      {
+        "ids": [
+          "{{postId}}"
+        ],
+        "status": "PUBLISHED"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

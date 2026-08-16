@@ -86,6 +86,8 @@ model User {
 
   otps                   OtpVerification[]
   refreshTokens          RefreshToken[]
+  posts                  BlogPost[]
+  blogReactions          BlogReaction[]
 
   @@index([email])
   @@index([username])
@@ -121,5 +123,121 @@ model RefreshToken {
   createdAt DateTime  @default(now())
 
   @@index([userId])
+}
+
+enum BlogStatus {
+  DRAFT
+  PUBLISHED
+  SCHEDULED
+  ARCHIVED
+}
+
+model BlogCategory {
+  id          String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  slug        String     @unique
+  name        String     @unique
+  description String?
+  color       String?    @default("blue")
+  icon        String?
+  order       Int        @default(0)
+  posts       BlogPost[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @default(now()) @updatedAt
+
+  @@index([slug])
+}
+
+model BlogTag {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  slug        String   @unique
+  name        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+
+  @@index([slug])
+}
+
+model BlogPost {
+  id                 String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  slug               String        @unique
+  title              String
+  subtitle           String?
+  summary            String        @db.Text
+  content            String        @db.Text
+  thumbnail          String?
+  status             BlogStatus    @default(DRAFT)
+  featured           Boolean       @default(false)
+  pinned             Boolean       @default(false)
+  readTime           String?       @default("5 MIN READ")
+  readTimeMinutes    Int           @default(5)
+  wordCount          Int           @default(0)
+  date               String?
+  publishedAt        DateTime?
+  scheduledAt        DateTime?
+  modifiedAt         DateTime?
+  views              Int           @default(0)
+  likesCount         Int           @default(0)
+  commentsCount      Int           @default(0)
+  keyTakeaways       String[]      @default([])
+  tags               String[]      @default([])
+
+  // Category Relation
+  categoryId         String?       @db.Uuid
+  category           BlogCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+
+  // Author Relations & Override Personas
+  authorId           String?       @db.Uuid
+  author             User?         @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  authorName         String?
+  authorRole         String?
+  authorAvatar       String?
+  authorTwitter      String?
+  authorLinkedin     String?
+  authorGithub       String?
+
+  // SEO & Social Media Metadata Engine
+  metaTitle          String?
+  metaDescription    String?       @db.Text
+  metaKeywords       String[]      @default([])
+  ogTitle            String?
+  ogDescription      String?       @db.Text
+  ogImage            String?
+  ogType             String        @default("article")
+  twitterCard        String        @default("summary_large_image")
+  twitterTitle       String?
+  twitterDescription String?       @db.Text
+  twitterImage       String?
+  canonicalUrl       String?
+  articleType        String        @default("TechArticle")
+  noIndex            Boolean       @default(false)
+  noFollow           Boolean       @default(false)
+  structuredData     Json?
+
+  reactions          BlogReaction[]
+
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @default(now()) @updatedAt
+
+  @@index([slug])
+  @@index([status, publishedAt])
+  @@index([categoryId])
+  @@index([featured])
+  @@index([authorId])
+  @@index([createdAt])
+}
+
+model BlogReaction {
+  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  postId       String    @db.Uuid
+  post         BlogPost  @relation(fields: [postId], references: [id], onDelete: Cascade)
+  userId       String?   @db.Uuid
+  user         User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reactionType String    @default("like")
+  ipAddress    String?
+  createdAt    DateTime  @default(now())
+
+  @@unique([postId, userId, reactionType])
+  @@index([postId, reactionType])
 }
 

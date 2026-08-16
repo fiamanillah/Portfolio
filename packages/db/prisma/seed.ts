@@ -235,11 +235,165 @@ async function main() {
     });
   }
 
-  console.log(`✅ Seeded users and subscribers successfully:
+  // 5. Seed Blog Categories
+  const categoriesData = [
+    { name: "WebSockets", slug: "websockets", description: "Real-time communication, pub/sub architectures, and bidirectional streams", color: "blue", order: 1 },
+    { name: "Architecture", slug: "architecture", description: "Distributed systems, microservices design, and high-throughput scaling", color: "emerald", order: 2 },
+    { name: "Database", slug: "database", description: "PostgreSQL, Redis, caching layers, and database query optimization", color: "amber", order: 3 },
+    { name: "Performance", slug: "performance", description: "Latency reduction, load testing, memory profiling, and edge computing", color: "purple", order: 4 },
+    { name: "DevOps", slug: "devops", description: "Docker, CI/CD automation, VPS provisioning, and cloud orchestration", color: "rose", order: 5 },
+    { name: "Security", slug: "security", description: "API security, authentication, artifact signing, and zero-trust systems", color: "cyan", order: 6 },
+  ];
+
+  const categoryMap = new Map<string, string>();
+  for (const cat of categoriesData) {
+    const categoryRecord = await prisma.blogCategory.upsert({
+      where: { slug: cat.slug },
+      update: {
+        name: cat.name,
+        description: cat.description,
+        color: cat.color,
+        order: cat.order,
+      },
+      create: cat,
+    });
+    categoryMap.set(cat.name.toLowerCase(), categoryRecord.id);
+  }
+
+  // 6. Seed Blog Posts from local JSON definitions
+  const blogFiles = [
+    "building-distributed-systems-websockets-redis.json",
+    "scaling-rabbitmq-redis.json",
+    "realtime-websockets-stripe.json",
+    "docker-vps-cicd-deployment.json",
+    "prisma-postgres-optimization.json",
+    "rest-api-security-best-practices.json",
+    "typescript-monorepo-turbo.json",
+    "distributed-tracing-opentelemetry.json",
+    "cicd-artifact-signing-security.json",
+  ];
+
+  const fs = await import("fs/promises");
+  const path = await import("path");
+  const blogPostsDir = path.resolve(__dirname, "../../../apps/web/src/data/blog-posts");
+
+  let seededPostsCount = 0;
+  for (const file of blogFiles) {
+    const filePath = path.join(blogPostsDir, file);
+    try {
+      const fileContent = await fs.readFile(filePath, "utf-8");
+      const post = JSON.parse(fileContent);
+
+      const categoryId = categoryMap.get(post.category?.toLowerCase()) || null;
+      const wordCount = post.content ? post.content.split(/\s+/).filter(Boolean).length : 0;
+      const readTimeMinutes = Math.max(1, Math.ceil(wordCount / 200));
+
+      const publishedAt = post.publishedAt ? new Date(post.publishedAt) : new Date("2025-08-01T00:00:00.000Z");
+
+      await prisma.blogPost.upsert({
+        where: { slug: post.slug },
+        update: {
+          title: post.title,
+          subtitle: post.subtitle || null,
+          summary: post.summary,
+          content: post.content,
+          thumbnail: post.thumbnail,
+          status: "PUBLISHED",
+          featured: Boolean(post.featured),
+          readTime: post.readTime || `${readTimeMinutes} MIN READ`,
+          readTimeMinutes,
+          wordCount,
+          date: post.date || "AUG 2025",
+          publishedAt,
+          modifiedAt: post.modifiedAt ? new Date(post.modifiedAt) : publishedAt,
+          views: post.views ? (parseInt(post.views.replace(/[^0-9]/g, "")) || 0) * (post.views.includes("k") ? 1000 : 1) : 1250,
+          likesCount: 42,
+          commentsCount: 3,
+          keyTakeaways: post.keyTakeaways || [],
+          tags: post.tags || [],
+          categoryId,
+          authorId: adminUser.id,
+          authorName: post.author?.name || adminUser.name,
+          authorRole: post.author?.role || adminUser.headline,
+          authorAvatar: post.author?.avatar || adminUser.avatar,
+          authorTwitter: post.author?.twitter || adminUser.twitterUrl,
+          authorLinkedin: post.author?.linkedin || adminUser.linkedinUrl,
+          authorGithub: post.author?.github || adminUser.githubUrl,
+          metaTitle: post.seo?.metaTitle || `${post.title} | Fi Amanillah`,
+          metaDescription: post.seo?.metaDescription || post.summary,
+          metaKeywords: post.seo?.keywords || post.tags || [],
+          ogTitle: post.seo?.metaTitle || post.title,
+          ogDescription: post.seo?.metaDescription || post.summary,
+          ogImage: post.seo?.ogImage || post.thumbnail,
+          ogType: post.seo?.ogType || "article",
+          canonicalUrl: post.seo?.canonicalUrl || null,
+          articleType: post.seo?.articleType || "TechArticle",
+          noIndex: Boolean(post.seo?.noIndex),
+        },
+        create: {
+          slug: post.slug,
+          title: post.title,
+          subtitle: post.subtitle || null,
+          summary: post.summary,
+          content: post.content,
+          thumbnail: post.thumbnail,
+          status: "PUBLISHED",
+          featured: Boolean(post.featured),
+          readTime: post.readTime || `${readTimeMinutes} MIN READ`,
+          readTimeMinutes,
+          wordCount,
+          date: post.date || "AUG 2025",
+          publishedAt,
+          modifiedAt: post.modifiedAt ? new Date(post.modifiedAt) : publishedAt,
+          views: post.views ? (parseInt(post.views.replace(/[^0-9]/g, "")) || 0) * (post.views.includes("k") ? 1000 : 1) : 1250,
+          likesCount: 42,
+          commentsCount: 3,
+          keyTakeaways: post.keyTakeaways || [],
+          tags: post.tags || [],
+          categoryId,
+          authorId: adminUser.id,
+          authorName: post.author?.name || adminUser.name,
+          authorRole: post.author?.role || adminUser.headline,
+          authorAvatar: post.author?.avatar || adminUser.avatar,
+          authorTwitter: post.author?.twitter || adminUser.twitterUrl,
+          authorLinkedin: post.author?.linkedin || adminUser.linkedinUrl,
+          authorGithub: post.author?.github || adminUser.githubUrl,
+          metaTitle: post.seo?.metaTitle || `${post.title} | Fi Amanillah`,
+          metaDescription: post.seo?.metaDescription || post.summary,
+          metaKeywords: post.seo?.keywords || post.tags || [],
+          ogTitle: post.seo?.metaTitle || post.title,
+          ogDescription: post.seo?.metaDescription || post.summary,
+          ogImage: post.seo?.ogImage || post.thumbnail,
+          ogType: post.seo?.ogType || "article",
+          canonicalUrl: post.seo?.canonicalUrl || null,
+          articleType: post.seo?.articleType || "TechArticle",
+          noIndex: Boolean(post.seo?.noIndex),
+        },
+      });
+
+      // Seed tags
+      for (const tag of post.tags || []) {
+        const tagSlug = tag.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        await prisma.blogTag.upsert({
+          where: { slug: tagSlug },
+          update: { name: tag },
+          create: { name: tag, slug: tagSlug },
+        });
+      }
+
+      seededPostsCount++;
+    } catch (err) {
+      console.warn(`Could not seed blog post from ${file}:`, err);
+    }
+  }
+
+  console.log(`✅ Seeded users, subscribers, and blog posts successfully:
   - Admin: ${adminUser.email} (${adminUser.role})
   - Moderator: ${alexUser.email} (${alexUser.role})
   - User: ${sarahUser.email} (${sarahUser.role})
-  - Subscribers: ${sampleSubscribers.length} records seeded
+  - Subscribers: ${sampleSubscribers.length} records
+  - Categories: ${categoriesData.length} records
+  - Blog Posts: ${seededPostsCount} posts migrated
   `);
 }
 

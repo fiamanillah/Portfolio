@@ -6,3 +6,4 @@ export * from "./contact.schema";
 export * from "./subscriber.schema";
 export * from "./template.schema";
 export * from "./comment.schema";
+export * from "./blog.schema";

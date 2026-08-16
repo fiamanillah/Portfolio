@@ -1,0 +1,28 @@
+info:
+  name: Admin - Create Category
+  type: http
+  seq: 13
+
+http:
+  method: POST
+  url: "{{baseUrl}}/blogs/v1/admin/categories"
+  headers:
+    - name: Authorization
+      value: "Bearer {{authToken}}"
+  body:
+    type: json
+    data: |-
+      {
+        "name": "Cloud Infrastructure",
+        "slug": "cloud-infrastructure",
+        "description": "AWS, GCP, edge networks, and serverless architectures",
+        "color": "indigo",
+        "order": 7
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

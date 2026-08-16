@@ -26,3 +26,13 @@ export const OtpType = {
 } as const
 
 export type OtpType = (typeof OtpType)[keyof typeof OtpType]
+
+
+export const BlogStatus = {
+  DRAFT: 'DRAFT',
+  PUBLISHED: 'PUBLISHED',
+  SCHEDULED: 'SCHEDULED',
+  ARCHIVED: 'ARCHIVED'
+} as const
+
+export type BlogStatus = (typeof BlogStatus)[keyof typeof BlogStatus]

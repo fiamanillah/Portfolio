@@ -7,3 +7,4 @@ export * from "./comments";
 export * from "./contact";
 export * from "./subscriber";
 export * from "./templates";
+export * from "./blog";

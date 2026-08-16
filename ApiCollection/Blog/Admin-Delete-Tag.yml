@@ -1,0 +1,18 @@
+info:
+  name: Admin - Delete Tag
+  type: http
+  seq: 18
+
+http:
+  method: DELETE
+  url: "{{baseUrl}}/blogs/v1/admin/tags/{{tagId}}"
+  headers:
+    - name: Authorization
+      value: "Bearer {{authToken}}"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

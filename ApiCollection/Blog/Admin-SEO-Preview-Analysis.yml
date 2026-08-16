@@ -1,0 +1,42 @@
+info:
+  name: Admin - SEO Preview & Score Analysis
+  type: http
+  seq: 10
+
+http:
+  method: POST
+  url: "{{baseUrl}}/blogs/v1/admin/posts/seo-preview"
+  headers:
+    - name: Authorization
+      value: "Bearer {{authToken}}"
+  body:
+    type: json
+    data: |-
+      {
+        "title": "Scaling Distributed Message Queues with Redis Streams & TypeScript",
+        "slug": "scaling-distributed-message-queues-redis-streams",
+        "summary": "Deep dive into designing consumer groups, message acknowledgment pipelines, and stream partitioning for high-concurrency systems.",
+        "content": "Full markdown content goes here for word count and reading time diagnostics...",
+        "thumbnail": "/assets/images/mickanic-cover.png",
+        "category": "Architecture",
+        "tags": ["Redis", "TypeScript", "Microservices", "Performance"],
+        "author": {
+          "name": "Fi Amanillah",
+          "role": "Full Stack & DevOps Engineer"
+        },
+        "seo": {
+          "metaTitle": "Scaling Distributed Message Queues with Redis Streams & TypeScript | Fi Amanillah",
+          "metaDescription": "Deep dive into designing consumer groups, message acknowledgment pipelines, and stream partitioning for high-concurrency systems.",
+          "ogImage": "/assets/images/mickanic-cover.png",
+          "ogType": "article",
+          "twitterCard": "summary_large_image",
+          "articleType": "TechArticle"
+        }
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

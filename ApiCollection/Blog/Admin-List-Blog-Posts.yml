@@ -1,0 +1,18 @@
+info:
+  name: Admin - List Blog Posts
+  type: http
+  seq: 2
+
+http:
+  method: GET
+  url: "{{baseUrl}}/blogs/v1/admin/posts?page=1&limit=10&status=PUBLISHED&sortBy=createdAt&sortOrder=desc"
+  headers:
+    - name: Authorization
+      value: "Bearer {{authToken}}"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

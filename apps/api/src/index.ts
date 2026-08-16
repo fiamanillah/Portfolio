@@ -11,6 +11,7 @@ import { UserModule } from "./Modules/User/UserModule";
 import { ContactModule } from "./Modules/Contact/ContactModule";
 import { SubscriberModule } from "./Modules/Subscriber/SubscriberModule";
 import { TemplateModule } from "./Modules/Template/TemplateModule";
+import { BlogModule } from "./Modules/Blog/BlogModule";
 
 // Modules (Business Logic)
 
@@ -34,6 +35,7 @@ async function bootstrap() {
     app.registerModule(new ContactModule());
     app.registerModule(new SubscriberModule());
     app.registerModule(new TemplateModule());
+    app.registerModule(new BlogModule());
     logger.info("✔ All modules registered successfully");
 
     // 4. Spark the server!

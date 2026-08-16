@@ -56,7 +56,11 @@ export const ModelName = {
   EmailTemplate: 'EmailTemplate',
   User: 'User',
   OtpVerification: 'OtpVerification',
-  RefreshToken: 'RefreshToken'
+  RefreshToken: 'RefreshToken',
+  BlogCategory: 'BlogCategory',
+  BlogTag: 'BlogTag',
+  BlogPost: 'BlogPost',
+  BlogReaction: 'BlogReaction'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -182,12 +186,113 @@ export const RefreshTokenScalarFieldEnum = {
 export type RefreshTokenScalarFieldEnum = (typeof RefreshTokenScalarFieldEnum)[keyof typeof RefreshTokenScalarFieldEnum]
 
 
+export const BlogCategoryScalarFieldEnum = {
+  id: 'id',
+  slug: 'slug',
+  name: 'name',
+  description: 'description',
+  color: 'color',
+  icon: 'icon',
+  order: 'order',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BlogCategoryScalarFieldEnum = (typeof BlogCategoryScalarFieldEnum)[keyof typeof BlogCategoryScalarFieldEnum]
+
+
+export const BlogTagScalarFieldEnum = {
+  id: 'id',
+  slug: 'slug',
+  name: 'name',
+  description: 'description',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BlogTagScalarFieldEnum = (typeof BlogTagScalarFieldEnum)[keyof typeof BlogTagScalarFieldEnum]
+
+
+export const BlogPostScalarFieldEnum = {
+  id: 'id',
+  slug: 'slug',
+  title: 'title',
+  subtitle: 'subtitle',
+  summary: 'summary',
+  content: 'content',
+  thumbnail: 'thumbnail',
+  status: 'status',
+  featured: 'featured',
+  pinned: 'pinned',
+  readTime: 'readTime',
+  readTimeMinutes: 'readTimeMinutes',
+  wordCount: 'wordCount',
+  date: 'date',
+  publishedAt: 'publishedAt',
+  scheduledAt: 'scheduledAt',
+  modifiedAt: 'modifiedAt',
+  views: 'views',
+  likesCount: 'likesCount',
+  commentsCount: 'commentsCount',
+  keyTakeaways: 'keyTakeaways',
+  tags: 'tags',
+  categoryId: 'categoryId',
+  authorId: 'authorId',
+  authorName: 'authorName',
+  authorRole: 'authorRole',
+  authorAvatar: 'authorAvatar',
+  authorTwitter: 'authorTwitter',
+  authorLinkedin: 'authorLinkedin',
+  authorGithub: 'authorGithub',
+  metaTitle: 'metaTitle',
+  metaDescription: 'metaDescription',
+  metaKeywords: 'metaKeywords',
+  ogTitle: 'ogTitle',
+  ogDescription: 'ogDescription',
+  ogImage: 'ogImage',
+  ogType: 'ogType',
+  twitterCard: 'twitterCard',
+  twitterTitle: 'twitterTitle',
+  twitterDescription: 'twitterDescription',
+  twitterImage: 'twitterImage',
+  canonicalUrl: 'canonicalUrl',
+  articleType: 'articleType',
+  noIndex: 'noIndex',
+  noFollow: 'noFollow',
+  structuredData: 'structuredData',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BlogPostScalarFieldEnum = (typeof BlogPostScalarFieldEnum)[keyof typeof BlogPostScalarFieldEnum]
+
+
+export const BlogReactionScalarFieldEnum = {
+  id: 'id',
+  postId: 'postId',
+  userId: 'userId',
+  reactionType: 'reactionType',
+  ipAddress: 'ipAddress',
+  createdAt: 'createdAt'
+} as const
+
+export type BlogReactionScalarFieldEnum = (typeof BlogReactionScalarFieldEnum)[keyof typeof BlogReactionScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
 } as const
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
 
 
 export const QueryMode = {
@@ -204,4 +309,13 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 

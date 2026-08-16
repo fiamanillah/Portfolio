@@ -1,0 +1,18 @@
+info:
+  name: Admin - Delete Category
+  type: http
+  seq: 15
+
+http:
+  method: DELETE
+  url: "{{baseUrl}}/blogs/v1/admin/categories/{{categoryId}}"
+  headers:
+    - name: Authorization
+      value: "Bearer {{authToken}}"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

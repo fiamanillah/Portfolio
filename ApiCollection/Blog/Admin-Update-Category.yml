@@ -1,0 +1,26 @@
+info:
+  name: Admin - Update Category
+  type: http
+  seq: 14
+
+http:
+  method: PATCH
+  url: "{{baseUrl}}/blogs/v1/admin/categories/{{categoryId}}"
+  headers:
+    - name: Authorization
+      value: "Bearer {{authToken}}"
+  body:
+    type: json
+    data: |-
+      {
+        "name": "Cloud & Edge Infrastructure",
+        "description": "Cloud orchestration, Terraform, and distributed edge runtimes",
+        "color": "sky"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

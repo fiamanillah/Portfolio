@@ -1,0 +1,26 @@
+info:
+  name: Admin - Bulk Delete
+  type: http
+  seq: 9
+
+http:
+  method: POST
+  url: "{{baseUrl}}/blogs/v1/admin/posts/bulk-delete"
+  headers:
+    - name: Authorization
+      value: "Bearer {{authToken}}"
+  body:
+    type: json
+    data: |-
+      {
+        "ids": [
+          "{{postId}}"
+        ]
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

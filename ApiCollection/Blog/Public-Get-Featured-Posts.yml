@@ -1,0 +1,15 @@
+info:
+  name: Public - Get Featured Posts
+  type: http
+  seq: 20
+
+http:
+  method: GET
+  url: "{{baseUrl}}/blogs/v1/public/featured"
+  auth: none
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

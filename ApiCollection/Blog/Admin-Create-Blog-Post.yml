@@ -1,0 +1,48 @@
+info:
+  name: Admin - Create Blog Post
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: "{{baseUrl}}/blogs/v1/admin/posts"
+  headers:
+    - name: Authorization
+      value: "Bearer {{authToken}}"
+  body:
+    type: json
+    data: |-
+      {
+        "title": "Architecting Zero-Downtime Microservices with Kubernetes and Bun",
+        "slug": "architecting-zero-downtime-microservices-kubernetes-bun",
+        "subtitle": "A practical production guide to rolling updates, canary routing, and memory optimization in Bun microservices.",
+        "summary": "Discover how to deploy and scale Bun-powered HTTP APIs across Kubernetes clusters with zero dropped TCP connections during deployment cycles.",
+        "content": "## Introduction to High-Availability Bun Clusters\n\nWhen deploying microservices in high-concurrency environments, zero-downtime rolling updates require coordinating Kubernetes readiness probes with graceful socket termination.\n\n### Graceful Termination\n\n```typescript\nprocess.on('SIGTERM', async () => {\n  console.log('Shutting down gracefully...');\n  server.stop();\n  await prisma.$disconnect();\n  process.exit(0);\n});\n```\n\n## Conclusion\n\nCombining graceful drain timeouts with Kubernetes pod disruption budgets provides 99.999% availability.",
+        "thumbnail": "/assets/images/mickanic-cover.png",
+        "status": "PUBLISHED",
+        "featured": true,
+        "categoryName": "Architecture",
+        "tags": ["Kubernetes", "Bun", "Microservices", "DevOps", "Performance"],
+        "keyTakeaways": [
+          "Configure readiness gates to avoid sending traffic before Bun binds to port.",
+          "Implement SIGTERM interceptors with 15-second drain windows.",
+          "Tune memory limits to prevent out-of-memory container kills."
+        ],
+        "seo": {
+          "metaTitle": "Architecting Zero-Downtime Microservices with Kubernetes and Bun | Fi Amanillah",
+          "metaDescription": "Discover how to deploy and scale Bun-powered HTTP APIs across Kubernetes clusters with zero dropped TCP connections during deployment cycles.",
+          "ogImage": "/assets/images/mickanic-cover.png",
+          "ogType": "article",
+          "twitterCard": "summary_large_image",
+          "articleType": "TechArticle",
+          "canonicalUrl": "https://fi.amanillah.com/blog/architecting-zero-downtime-microservices-kubernetes-bun",
+          "noIndex": false
+        }
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

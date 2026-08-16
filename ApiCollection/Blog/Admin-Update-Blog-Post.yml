@@ -1,0 +1,30 @@
+info:
+  name: Admin - Update Blog Post
+  type: http
+  seq: 5
+
+http:
+  method: PATCH
+  url: "{{baseUrl}}/blogs/v1/admin/posts/{{postId}}"
+  headers:
+    - name: Authorization
+      value: "Bearer {{authToken}}"
+  body:
+    type: json
+    data: |-
+      {
+        "status": "PUBLISHED",
+        "featured": true,
+        "pinned": true,
+        "seo": {
+          "metaTitle": "Updated Title for Google SERP | Fi Amanillah",
+          "metaDescription": "Refined summary optimized for higher click-through rates on search platforms and social sharing cards."
+        }
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

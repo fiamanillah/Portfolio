@@ -1,0 +1,26 @@
+info:
+  name: Admin - Create Tag
+  type: http
+  seq: 17
+
+http:
+  method: POST
+  url: "{{baseUrl}}/blogs/v1/admin/tags"
+  headers:
+    - name: Authorization
+      value: "Bearer {{authToken}}"
+  body:
+    type: json
+    data: |-
+      {
+        "name": "GraphQL",
+        "slug": "graphql",
+        "description": "GraphQL schema design, federation, and client caching"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

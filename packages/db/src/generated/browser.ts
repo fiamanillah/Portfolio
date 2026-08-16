@@ -47,3 +47,23 @@ export type OtpVerification = Prisma.OtpVerificationModel
  * 
  */
 export type RefreshToken = Prisma.RefreshTokenModel
+/**
+ * Model BlogCategory
+ * 
+ */
+export type BlogCategory = Prisma.BlogCategoryModel
+/**
+ * Model BlogTag
+ * 
+ */
+export type BlogTag = Prisma.BlogTagModel
+/**
+ * Model BlogPost
+ * 
+ */
+export type BlogPost = Prisma.BlogPostModel
+/**
+ * Model BlogReaction
+ * 
+ */
+export type BlogReaction = Prisma.BlogReactionModel
