@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useRef } from "react"
 import {
   Dialog,
   DialogContent,
@@ -11,11 +11,14 @@ import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"
 import { Field, FieldLabel, FieldDescription } from "@workspace/ui/components/field"
 import { AVATAR_OPTIONS } from "@/data/commentsData"
+import { AuthApi } from "@/lib/api/authApi"
 import { HugeiconsIcon } from "@hugeicons/react"
 import {
   CheckmarkBadge01Icon,
   Globe02Icon,
   Tick02Icon,
+  Upload02Icon,
+  Loading03Icon,
 } from "@hugeicons/core-free-icons"
 
 interface AvatarSelectorModalProps {
@@ -41,11 +44,50 @@ export function AvatarSelectorModal({
   const [selected, setSelected] = useState<string>(currentAvatar)
   const [customUrl, setCustomUrl] = useState<string>("")
   const [error, setError] = useState<string | null>(null)
+  const [isUploading, setIsUploading] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    if (!file.type.startsWith("image/")) {
+      setError("Please select a valid image file.")
+      return
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      setError("Image size exceeds maximum limit of 10MB.")
+      return
+    }
+
+    setIsUploading(true)
+    setError(null)
+
+    try {
+      const res = await AuthApi.uploadAvatar(file)
+      if (res.success && res.data?.avatar) {
+        setSelected(res.data.avatar)
+        setCustomUrl("")
+        onSaveAvatar(res.data.avatar)
+        onOpenChange(false)
+      } else {
+        setError(res.error || res.message || "Failed to upload avatar to cloud storage.")
+      }
+    } catch (err: any) {
+      setError(err?.message || "Failed to upload avatar.")
+    } finally {
+      setIsUploading(false)
+      if (fileInputRef.current) {
+        fileInputRef.current.value = ""
+      }
+    }
+  }
 
   const handleApply = () => {
     const target = customUrl.trim() || selected
     if (!target) {
-      setError("Please select a preset avatar or enter an image URL.")
+      setError("Please select a preset avatar, upload a file, or enter an image URL.")
       return
     }
     onSaveAvatar(target)
@@ -124,6 +166,38 @@ export function AvatarSelectorModal({
                 )
               })}
             </div>
+          </div>
+
+          {/* Direct File Upload to Cloudflare R2 / S3 */}
+          <div className="space-y-1.5">
+            <FieldLabel className="text-xs">Upload from Device</FieldLabel>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/png,image/jpeg,image/webp,image/gif,image/svg+xml"
+              className="hidden"
+              onChange={handleFileUpload}
+            />
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              disabled={isUploading}
+              onClick={() => fileInputRef.current?.click()}
+              className="w-full justify-center gap-2 border-dashed border-border/80 bg-background/50 hover:bg-accent/40 text-xs cursor-pointer h-10"
+            >
+              {isUploading ? (
+                <>
+                  <HugeiconsIcon icon={Loading03Icon} className="size-3.5 animate-spin" />
+                  Uploading to Cloud Storage...
+                </>
+              ) : (
+                <>
+                  <HugeiconsIcon icon={Upload02Icon} className="size-3.5 text-primary" />
+                  Choose Image File (JPG, PNG, WebP)
+                </>
+              )}
+            </Button>
           </div>
 
           {/* Custom URL */}

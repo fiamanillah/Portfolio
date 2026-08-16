@@ -563,6 +563,7 @@ export type BlogPostWhereInput = {
   category?: Prisma.XOR<Prisma.BlogCategoryNullableScalarRelationFilter, Prisma.BlogCategoryWhereInput> | null
   author?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   reactions?: Prisma.BlogReactionListRelationFilter
+  comments?: Prisma.CommentListRelationFilter
 }
 
 export type BlogPostOrderByWithRelationInput = {
@@ -617,6 +618,7 @@ export type BlogPostOrderByWithRelationInput = {
   category?: Prisma.BlogCategoryOrderByWithRelationInput
   author?: Prisma.UserOrderByWithRelationInput
   reactions?: Prisma.BlogReactionOrderByRelationAggregateInput
+  comments?: Prisma.CommentOrderByRelationAggregateInput
 }
 
 export type BlogPostWhereUniqueInput = Prisma.AtLeast<{
@@ -674,6 +676,7 @@ export type BlogPostWhereUniqueInput = Prisma.AtLeast<{
   category?: Prisma.XOR<Prisma.BlogCategoryNullableScalarRelationFilter, Prisma.BlogCategoryWhereInput> | null
   author?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   reactions?: Prisma.BlogReactionListRelationFilter
+  comments?: Prisma.CommentListRelationFilter
 }, "id" | "slug">
 
 export type BlogPostOrderByWithAggregationInput = {
@@ -836,6 +839,7 @@ export type BlogPostCreateInput = {
   category?: Prisma.BlogCategoryCreateNestedOneWithoutPostsInput
   author?: Prisma.UserCreateNestedOneWithoutPostsInput
   reactions?: Prisma.BlogReactionCreateNestedManyWithoutPostInput
+  comments?: Prisma.CommentCreateNestedManyWithoutPostInput
 }
 
 export type BlogPostUncheckedCreateInput = {
@@ -888,6 +892,7 @@ export type BlogPostUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   reactions?: Prisma.BlogReactionUncheckedCreateNestedManyWithoutPostInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutPostInput
 }
 
 export type BlogPostUpdateInput = {
@@ -940,6 +945,7 @@ export type BlogPostUpdateInput = {
   category?: Prisma.BlogCategoryUpdateOneWithoutPostsNestedInput
   author?: Prisma.UserUpdateOneWithoutPostsNestedInput
   reactions?: Prisma.BlogReactionUpdateManyWithoutPostNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutPostNestedInput
 }
 
 export type BlogPostUncheckedUpdateInput = {
@@ -992,6 +998,7 @@ export type BlogPostUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reactions?: Prisma.BlogReactionUncheckedUpdateManyWithoutPostNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutPostNestedInput
 }
 
 export type BlogPostCreateManyInput = {
@@ -1458,6 +1465,20 @@ export type BlogPostUpdateOneRequiredWithoutReactionsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.BlogPostUpdateToOneWithWhereWithoutReactionsInput, Prisma.BlogPostUpdateWithoutReactionsInput>, Prisma.BlogPostUncheckedUpdateWithoutReactionsInput>
 }
 
+export type BlogPostCreateNestedOneWithoutCommentsInput = {
+  create?: Prisma.XOR<Prisma.BlogPostCreateWithoutCommentsInput, Prisma.BlogPostUncheckedCreateWithoutCommentsInput>
+  connectOrCreate?: Prisma.BlogPostCreateOrConnectWithoutCommentsInput
+  connect?: Prisma.BlogPostWhereUniqueInput
+}
+
+export type BlogPostUpdateOneRequiredWithoutCommentsNestedInput = {
+  create?: Prisma.XOR<Prisma.BlogPostCreateWithoutCommentsInput, Prisma.BlogPostUncheckedCreateWithoutCommentsInput>
+  connectOrCreate?: Prisma.BlogPostCreateOrConnectWithoutCommentsInput
+  upsert?: Prisma.BlogPostUpsertWithoutCommentsInput
+  connect?: Prisma.BlogPostWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.BlogPostUpdateToOneWithWhereWithoutCommentsInput, Prisma.BlogPostUpdateWithoutCommentsInput>, Prisma.BlogPostUncheckedUpdateWithoutCommentsInput>
+}
+
 export type BlogPostCreateWithoutAuthorInput = {
   id?: string
   slug: string
@@ -1507,6 +1528,7 @@ export type BlogPostCreateWithoutAuthorInput = {
   updatedAt?: Date | string
   category?: Prisma.BlogCategoryCreateNestedOneWithoutPostsInput
   reactions?: Prisma.BlogReactionCreateNestedManyWithoutPostInput
+  comments?: Prisma.CommentCreateNestedManyWithoutPostInput
 }
 
 export type BlogPostUncheckedCreateWithoutAuthorInput = {
@@ -1558,6 +1580,7 @@ export type BlogPostUncheckedCreateWithoutAuthorInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   reactions?: Prisma.BlogReactionUncheckedCreateNestedManyWithoutPostInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutPostInput
 }
 
 export type BlogPostCreateOrConnectWithoutAuthorInput = {
@@ -1689,6 +1712,7 @@ export type BlogPostCreateWithoutCategoryInput = {
   updatedAt?: Date | string
   author?: Prisma.UserCreateNestedOneWithoutPostsInput
   reactions?: Prisma.BlogReactionCreateNestedManyWithoutPostInput
+  comments?: Prisma.CommentCreateNestedManyWithoutPostInput
 }
 
 export type BlogPostUncheckedCreateWithoutCategoryInput = {
@@ -1740,6 +1764,7 @@ export type BlogPostUncheckedCreateWithoutCategoryInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   reactions?: Prisma.BlogReactionUncheckedCreateNestedManyWithoutPostInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutPostInput
 }
 
 export type BlogPostCreateOrConnectWithoutCategoryInput = {
@@ -1817,6 +1842,7 @@ export type BlogPostCreateWithoutReactionsInput = {
   updatedAt?: Date | string
   category?: Prisma.BlogCategoryCreateNestedOneWithoutPostsInput
   author?: Prisma.UserCreateNestedOneWithoutPostsInput
+  comments?: Prisma.CommentCreateNestedManyWithoutPostInput
 }
 
 export type BlogPostUncheckedCreateWithoutReactionsInput = {
@@ -1868,6 +1894,7 @@ export type BlogPostUncheckedCreateWithoutReactionsInput = {
   structuredData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutPostInput
 }
 
 export type BlogPostCreateOrConnectWithoutReactionsInput = {
@@ -1935,6 +1962,7 @@ export type BlogPostUpdateWithoutReactionsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   category?: Prisma.BlogCategoryUpdateOneWithoutPostsNestedInput
   author?: Prisma.UserUpdateOneWithoutPostsNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutPostNestedInput
 }
 
 export type BlogPostUncheckedUpdateWithoutReactionsInput = {
@@ -1986,6 +2014,231 @@ export type BlogPostUncheckedUpdateWithoutReactionsInput = {
   structuredData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutPostNestedInput
+}
+
+export type BlogPostCreateWithoutCommentsInput = {
+  id?: string
+  slug: string
+  title: string
+  subtitle?: string | null
+  summary: string
+  content: string
+  thumbnail?: string | null
+  status?: $Enums.BlogStatus
+  featured?: boolean
+  pinned?: boolean
+  readTime?: string | null
+  readTimeMinutes?: number
+  wordCount?: number
+  date?: string | null
+  publishedAt?: Date | string | null
+  scheduledAt?: Date | string | null
+  modifiedAt?: Date | string | null
+  views?: number
+  likesCount?: number
+  commentsCount?: number
+  keyTakeaways?: Prisma.BlogPostCreatekeyTakeawaysInput | string[]
+  tags?: Prisma.BlogPostCreatetagsInput | string[]
+  authorName?: string | null
+  authorRole?: string | null
+  authorAvatar?: string | null
+  authorTwitter?: string | null
+  authorLinkedin?: string | null
+  authorGithub?: string | null
+  metaTitle?: string | null
+  metaDescription?: string | null
+  metaKeywords?: Prisma.BlogPostCreatemetaKeywordsInput | string[]
+  ogTitle?: string | null
+  ogDescription?: string | null
+  ogImage?: string | null
+  ogType?: string
+  twitterCard?: string
+  twitterTitle?: string | null
+  twitterDescription?: string | null
+  twitterImage?: string | null
+  canonicalUrl?: string | null
+  articleType?: string
+  noIndex?: boolean
+  noFollow?: boolean
+  structuredData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  category?: Prisma.BlogCategoryCreateNestedOneWithoutPostsInput
+  author?: Prisma.UserCreateNestedOneWithoutPostsInput
+  reactions?: Prisma.BlogReactionCreateNestedManyWithoutPostInput
+}
+
+export type BlogPostUncheckedCreateWithoutCommentsInput = {
+  id?: string
+  slug: string
+  title: string
+  subtitle?: string | null
+  summary: string
+  content: string
+  thumbnail?: string | null
+  status?: $Enums.BlogStatus
+  featured?: boolean
+  pinned?: boolean
+  readTime?: string | null
+  readTimeMinutes?: number
+  wordCount?: number
+  date?: string | null
+  publishedAt?: Date | string | null
+  scheduledAt?: Date | string | null
+  modifiedAt?: Date | string | null
+  views?: number
+  likesCount?: number
+  commentsCount?: number
+  keyTakeaways?: Prisma.BlogPostCreatekeyTakeawaysInput | string[]
+  tags?: Prisma.BlogPostCreatetagsInput | string[]
+  categoryId?: string | null
+  authorId?: string | null
+  authorName?: string | null
+  authorRole?: string | null
+  authorAvatar?: string | null
+  authorTwitter?: string | null
+  authorLinkedin?: string | null
+  authorGithub?: string | null
+  metaTitle?: string | null
+  metaDescription?: string | null
+  metaKeywords?: Prisma.BlogPostCreatemetaKeywordsInput | string[]
+  ogTitle?: string | null
+  ogDescription?: string | null
+  ogImage?: string | null
+  ogType?: string
+  twitterCard?: string
+  twitterTitle?: string | null
+  twitterDescription?: string | null
+  twitterImage?: string | null
+  canonicalUrl?: string | null
+  articleType?: string
+  noIndex?: boolean
+  noFollow?: boolean
+  structuredData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  reactions?: Prisma.BlogReactionUncheckedCreateNestedManyWithoutPostInput
+}
+
+export type BlogPostCreateOrConnectWithoutCommentsInput = {
+  where: Prisma.BlogPostWhereUniqueInput
+  create: Prisma.XOR<Prisma.BlogPostCreateWithoutCommentsInput, Prisma.BlogPostUncheckedCreateWithoutCommentsInput>
+}
+
+export type BlogPostUpsertWithoutCommentsInput = {
+  update: Prisma.XOR<Prisma.BlogPostUpdateWithoutCommentsInput, Prisma.BlogPostUncheckedUpdateWithoutCommentsInput>
+  create: Prisma.XOR<Prisma.BlogPostCreateWithoutCommentsInput, Prisma.BlogPostUncheckedCreateWithoutCommentsInput>
+  where?: Prisma.BlogPostWhereInput
+}
+
+export type BlogPostUpdateToOneWithWhereWithoutCommentsInput = {
+  where?: Prisma.BlogPostWhereInput
+  data: Prisma.XOR<Prisma.BlogPostUpdateWithoutCommentsInput, Prisma.BlogPostUncheckedUpdateWithoutCommentsInput>
+}
+
+export type BlogPostUpdateWithoutCommentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  subtitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  summary?: Prisma.StringFieldUpdateOperationsInput | string
+  content?: Prisma.StringFieldUpdateOperationsInput | string
+  thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumBlogStatusFieldUpdateOperationsInput | $Enums.BlogStatus
+  featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  pinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  readTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  readTimeMinutes?: Prisma.IntFieldUpdateOperationsInput | number
+  wordCount?: Prisma.IntFieldUpdateOperationsInput | number
+  date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  scheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  modifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  views?: Prisma.IntFieldUpdateOperationsInput | number
+  likesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  commentsCount?: Prisma.IntFieldUpdateOperationsInput | number
+  keyTakeaways?: Prisma.BlogPostUpdatekeyTakeawaysInput | string[]
+  tags?: Prisma.BlogPostUpdatetagsInput | string[]
+  authorName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  authorRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  authorAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  authorTwitter?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  authorLinkedin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  authorGithub?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaKeywords?: Prisma.BlogPostUpdatemetaKeywordsInput | string[]
+  ogTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ogDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ogImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ogType?: Prisma.StringFieldUpdateOperationsInput | string
+  twitterCard?: Prisma.StringFieldUpdateOperationsInput | string
+  twitterTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twitterDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twitterImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  canonicalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  articleType?: Prisma.StringFieldUpdateOperationsInput | string
+  noIndex?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  noFollow?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  structuredData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  category?: Prisma.BlogCategoryUpdateOneWithoutPostsNestedInput
+  author?: Prisma.UserUpdateOneWithoutPostsNestedInput
+  reactions?: Prisma.BlogReactionUpdateManyWithoutPostNestedInput
+}
+
+export type BlogPostUncheckedUpdateWithoutCommentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  subtitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  summary?: Prisma.StringFieldUpdateOperationsInput | string
+  content?: Prisma.StringFieldUpdateOperationsInput | string
+  thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumBlogStatusFieldUpdateOperationsInput | $Enums.BlogStatus
+  featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  pinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  readTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  readTimeMinutes?: Prisma.IntFieldUpdateOperationsInput | number
+  wordCount?: Prisma.IntFieldUpdateOperationsInput | number
+  date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  scheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  modifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  views?: Prisma.IntFieldUpdateOperationsInput | number
+  likesCount?: Prisma.IntFieldUpdateOperationsInput | number
+  commentsCount?: Prisma.IntFieldUpdateOperationsInput | number
+  keyTakeaways?: Prisma.BlogPostUpdatekeyTakeawaysInput | string[]
+  tags?: Prisma.BlogPostUpdatetagsInput | string[]
+  categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  authorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  authorName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  authorRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  authorAvatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  authorTwitter?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  authorLinkedin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  authorGithub?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaKeywords?: Prisma.BlogPostUpdatemetaKeywordsInput | string[]
+  ogTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ogDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ogImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ogType?: Prisma.StringFieldUpdateOperationsInput | string
+  twitterCard?: Prisma.StringFieldUpdateOperationsInput | string
+  twitterTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twitterDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twitterImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  canonicalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  articleType?: Prisma.StringFieldUpdateOperationsInput | string
+  noIndex?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  noFollow?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  structuredData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reactions?: Prisma.BlogReactionUncheckedUpdateManyWithoutPostNestedInput
 }
 
 export type BlogPostCreateManyAuthorInput = {
@@ -2087,6 +2340,7 @@ export type BlogPostUpdateWithoutAuthorInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   category?: Prisma.BlogCategoryUpdateOneWithoutPostsNestedInput
   reactions?: Prisma.BlogReactionUpdateManyWithoutPostNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutPostNestedInput
 }
 
 export type BlogPostUncheckedUpdateWithoutAuthorInput = {
@@ -2138,6 +2392,7 @@ export type BlogPostUncheckedUpdateWithoutAuthorInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reactions?: Prisma.BlogReactionUncheckedUpdateManyWithoutPostNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutPostNestedInput
 }
 
 export type BlogPostUncheckedUpdateManyWithoutAuthorInput = {
@@ -2289,6 +2544,7 @@ export type BlogPostUpdateWithoutCategoryInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   author?: Prisma.UserUpdateOneWithoutPostsNestedInput
   reactions?: Prisma.BlogReactionUpdateManyWithoutPostNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutPostNestedInput
 }
 
 export type BlogPostUncheckedUpdateWithoutCategoryInput = {
@@ -2340,6 +2596,7 @@ export type BlogPostUncheckedUpdateWithoutCategoryInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reactions?: Prisma.BlogReactionUncheckedUpdateManyWithoutPostNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutPostNestedInput
 }
 
 export type BlogPostUncheckedUpdateManyWithoutCategoryInput = {
@@ -2399,10 +2656,12 @@ export type BlogPostUncheckedUpdateManyWithoutCategoryInput = {
 
 export type BlogPostCountOutputType = {
   reactions: number
+  comments: number
 }
 
 export type BlogPostCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   reactions?: boolean | BlogPostCountOutputTypeCountReactionsArgs
+  comments?: boolean | BlogPostCountOutputTypeCountCommentsArgs
 }
 
 /**
@@ -2420,6 +2679,13 @@ export type BlogPostCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Ext
  */
 export type BlogPostCountOutputTypeCountReactionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.BlogReactionWhereInput
+}
+
+/**
+ * BlogPostCountOutputType without action
+ */
+export type BlogPostCountOutputTypeCountCommentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CommentWhereInput
 }
 
 
@@ -2475,6 +2741,7 @@ export type BlogPostSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   category?: boolean | Prisma.BlogPost$categoryArgs<ExtArgs>
   author?: boolean | Prisma.BlogPost$authorArgs<ExtArgs>
   reactions?: boolean | Prisma.BlogPost$reactionsArgs<ExtArgs>
+  comments?: boolean | Prisma.BlogPost$commentsArgs<ExtArgs>
   _count?: boolean | Prisma.BlogPostCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["blogPost"]>
 
@@ -2640,6 +2907,7 @@ export type BlogPostInclude<ExtArgs extends runtime.Types.Extensions.InternalArg
   category?: boolean | Prisma.BlogPost$categoryArgs<ExtArgs>
   author?: boolean | Prisma.BlogPost$authorArgs<ExtArgs>
   reactions?: boolean | Prisma.BlogPost$reactionsArgs<ExtArgs>
+  comments?: boolean | Prisma.BlogPost$commentsArgs<ExtArgs>
   _count?: boolean | Prisma.BlogPostCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type BlogPostIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2657,6 +2925,7 @@ export type $BlogPostPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     category: Prisma.$BlogCategoryPayload<ExtArgs> | null
     author: Prisma.$UserPayload<ExtArgs> | null
     reactions: Prisma.$BlogReactionPayload<ExtArgs>[]
+    comments: Prisma.$CommentPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -3104,6 +3373,7 @@ export interface Prisma__BlogPostClient<T, Null = never, ExtArgs extends runtime
   category<T extends Prisma.BlogPost$categoryArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.BlogPost$categoryArgs<ExtArgs>>): Prisma.Prisma__BlogCategoryClient<runtime.Types.Result.GetResult<Prisma.$BlogCategoryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   author<T extends Prisma.BlogPost$authorArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.BlogPost$authorArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   reactions<T extends Prisma.BlogPost$reactionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.BlogPost$reactionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BlogReactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  comments<T extends Prisma.BlogPost$commentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.BlogPost$commentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3641,6 +3911,30 @@ export type BlogPost$reactionsArgs<ExtArgs extends runtime.Types.Extensions.Inte
   take?: number
   skip?: number
   distinct?: Prisma.BlogReactionScalarFieldEnum | Prisma.BlogReactionScalarFieldEnum[]
+}
+
+/**
+ * BlogPost.comments
+ */
+export type BlogPost$commentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Comment
+   */
+  select?: Prisma.CommentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Comment
+   */
+  omit?: Prisma.CommentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CommentInclude<ExtArgs> | null
+  where?: Prisma.CommentWhereInput
+  orderBy?: Prisma.CommentOrderByWithRelationInput | Prisma.CommentOrderByWithRelationInput[]
+  cursor?: Prisma.CommentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CommentScalarFieldEnum | Prisma.CommentScalarFieldEnum[]
 }
 
 /**

@@ -331,6 +331,84 @@ export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
   _max?: Prisma.NestedJsonNullableFilter<$PrismaModel>
 }
 
+export type EnumCommentStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.CommentStatus | Prisma.EnumCommentStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.CommentStatus[] | Prisma.ListEnumCommentStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CommentStatus[] | Prisma.ListEnumCommentStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCommentStatusFilter<$PrismaModel> | $Enums.CommentStatus
+}
+
+export type EnumCommentStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.CommentStatus | Prisma.EnumCommentStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.CommentStatus[] | Prisma.ListEnumCommentStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CommentStatus[] | Prisma.ListEnumCommentStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCommentStatusWithAggregatesFilter<$PrismaModel> | $Enums.CommentStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumCommentStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumCommentStatusFilter<$PrismaModel>
+}
+
+export type EnumCommentReportReasonFilter<$PrismaModel = never> = {
+  equals?: $Enums.CommentReportReason | Prisma.EnumCommentReportReasonFieldRefInput<$PrismaModel>
+  in?: $Enums.CommentReportReason[] | Prisma.ListEnumCommentReportReasonFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CommentReportReason[] | Prisma.ListEnumCommentReportReasonFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCommentReportReasonFilter<$PrismaModel> | $Enums.CommentReportReason
+}
+
+export type EnumCommentReportStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.CommentReportStatus | Prisma.EnumCommentReportStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.CommentReportStatus[] | Prisma.ListEnumCommentReportStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CommentReportStatus[] | Prisma.ListEnumCommentReportStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCommentReportStatusFilter<$PrismaModel> | $Enums.CommentReportStatus
+}
+
+export type EnumCommentReportReasonWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.CommentReportReason | Prisma.EnumCommentReportReasonFieldRefInput<$PrismaModel>
+  in?: $Enums.CommentReportReason[] | Prisma.ListEnumCommentReportReasonFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CommentReportReason[] | Prisma.ListEnumCommentReportReasonFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCommentReportReasonWithAggregatesFilter<$PrismaModel> | $Enums.CommentReportReason
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumCommentReportReasonFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumCommentReportReasonFilter<$PrismaModel>
+}
+
+export type EnumCommentReportStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.CommentReportStatus | Prisma.EnumCommentReportStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.CommentReportStatus[] | Prisma.ListEnumCommentReportStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CommentReportStatus[] | Prisma.ListEnumCommentReportStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCommentReportStatusWithAggregatesFilter<$PrismaModel> | $Enums.CommentReportStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumCommentReportStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumCommentReportStatusFilter<$PrismaModel>
+}
+
+export type BigIntFilter<$PrismaModel = never> = {
+  equals?: bigint | number | Prisma.BigIntFieldRefInput<$PrismaModel>
+  in?: bigint[] | number[] | Prisma.ListBigIntFieldRefInput<$PrismaModel>
+  notIn?: bigint[] | number[] | Prisma.ListBigIntFieldRefInput<$PrismaModel>
+  lt?: bigint | number | Prisma.BigIntFieldRefInput<$PrismaModel>
+  lte?: bigint | number | Prisma.BigIntFieldRefInput<$PrismaModel>
+  gt?: bigint | number | Prisma.BigIntFieldRefInput<$PrismaModel>
+  gte?: bigint | number | Prisma.BigIntFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedBigIntFilter<$PrismaModel> | bigint | number
+}
+
+export type BigIntWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: bigint | number | Prisma.BigIntFieldRefInput<$PrismaModel>
+  in?: bigint[] | number[] | Prisma.ListBigIntFieldRefInput<$PrismaModel>
+  notIn?: bigint[] | number[] | Prisma.ListBigIntFieldRefInput<$PrismaModel>
+  lt?: bigint | number | Prisma.BigIntFieldRefInput<$PrismaModel>
+  lte?: bigint | number | Prisma.BigIntFieldRefInput<$PrismaModel>
+  gt?: bigint | number | Prisma.BigIntFieldRefInput<$PrismaModel>
+  gte?: bigint | number | Prisma.BigIntFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedBigIntWithAggregatesFilter<$PrismaModel> | bigint | number
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _avg?: Prisma.NestedFloatFilter<$PrismaModel>
+  _sum?: Prisma.NestedBigIntFilter<$PrismaModel>
+  _min?: Prisma.NestedBigIntFilter<$PrismaModel>
+  _max?: Prisma.NestedBigIntFilter<$PrismaModel>
+}
+
 export type NestedUuidFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -628,6 +706,84 @@ export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
   gt?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel>
   gte?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel>
   not?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel> | Prisma.JsonNullValueFilter
+}
+
+export type NestedEnumCommentStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.CommentStatus | Prisma.EnumCommentStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.CommentStatus[] | Prisma.ListEnumCommentStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CommentStatus[] | Prisma.ListEnumCommentStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCommentStatusFilter<$PrismaModel> | $Enums.CommentStatus
+}
+
+export type NestedEnumCommentStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.CommentStatus | Prisma.EnumCommentStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.CommentStatus[] | Prisma.ListEnumCommentStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CommentStatus[] | Prisma.ListEnumCommentStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCommentStatusWithAggregatesFilter<$PrismaModel> | $Enums.CommentStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumCommentStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumCommentStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumCommentReportReasonFilter<$PrismaModel = never> = {
+  equals?: $Enums.CommentReportReason | Prisma.EnumCommentReportReasonFieldRefInput<$PrismaModel>
+  in?: $Enums.CommentReportReason[] | Prisma.ListEnumCommentReportReasonFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CommentReportReason[] | Prisma.ListEnumCommentReportReasonFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCommentReportReasonFilter<$PrismaModel> | $Enums.CommentReportReason
+}
+
+export type NestedEnumCommentReportStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.CommentReportStatus | Prisma.EnumCommentReportStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.CommentReportStatus[] | Prisma.ListEnumCommentReportStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CommentReportStatus[] | Prisma.ListEnumCommentReportStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCommentReportStatusFilter<$PrismaModel> | $Enums.CommentReportStatus
+}
+
+export type NestedEnumCommentReportReasonWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.CommentReportReason | Prisma.EnumCommentReportReasonFieldRefInput<$PrismaModel>
+  in?: $Enums.CommentReportReason[] | Prisma.ListEnumCommentReportReasonFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CommentReportReason[] | Prisma.ListEnumCommentReportReasonFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCommentReportReasonWithAggregatesFilter<$PrismaModel> | $Enums.CommentReportReason
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumCommentReportReasonFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumCommentReportReasonFilter<$PrismaModel>
+}
+
+export type NestedEnumCommentReportStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.CommentReportStatus | Prisma.EnumCommentReportStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.CommentReportStatus[] | Prisma.ListEnumCommentReportStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CommentReportStatus[] | Prisma.ListEnumCommentReportStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCommentReportStatusWithAggregatesFilter<$PrismaModel> | $Enums.CommentReportStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumCommentReportStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumCommentReportStatusFilter<$PrismaModel>
+}
+
+export type NestedBigIntFilter<$PrismaModel = never> = {
+  equals?: bigint | number | Prisma.BigIntFieldRefInput<$PrismaModel>
+  in?: bigint[] | number[] | Prisma.ListBigIntFieldRefInput<$PrismaModel>
+  notIn?: bigint[] | number[] | Prisma.ListBigIntFieldRefInput<$PrismaModel>
+  lt?: bigint | number | Prisma.BigIntFieldRefInput<$PrismaModel>
+  lte?: bigint | number | Prisma.BigIntFieldRefInput<$PrismaModel>
+  gt?: bigint | number | Prisma.BigIntFieldRefInput<$PrismaModel>
+  gte?: bigint | number | Prisma.BigIntFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedBigIntFilter<$PrismaModel> | bigint | number
+}
+
+export type NestedBigIntWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: bigint | number | Prisma.BigIntFieldRefInput<$PrismaModel>
+  in?: bigint[] | number[] | Prisma.ListBigIntFieldRefInput<$PrismaModel>
+  notIn?: bigint[] | number[] | Prisma.ListBigIntFieldRefInput<$PrismaModel>
+  lt?: bigint | number | Prisma.BigIntFieldRefInput<$PrismaModel>
+  lte?: bigint | number | Prisma.BigIntFieldRefInput<$PrismaModel>
+  gt?: bigint | number | Prisma.BigIntFieldRefInput<$PrismaModel>
+  gte?: bigint | number | Prisma.BigIntFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedBigIntWithAggregatesFilter<$PrismaModel> | bigint | number
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _avg?: Prisma.NestedFloatFilter<$PrismaModel>
+  _sum?: Prisma.NestedBigIntFilter<$PrismaModel>
+  _min?: Prisma.NestedBigIntFilter<$PrismaModel>
+  _max?: Prisma.NestedBigIntFilter<$PrismaModel>
 }
 
 

@@ -17,6 +17,9 @@ import {
   Shield,
   Eye,
   EyeOff,
+  Upload,
+  Trash2,
+  Camera,
 } from "lucide-react"
 
 import {
@@ -53,6 +56,9 @@ export default function SettingsPage() {
   const [website, setWebsite] = React.useState(user?.website || "")
   const [githubUrl, setGithubUrl] = React.useState(user?.githubUrl || "")
   const [isSavingProfile, setIsSavingProfile] = React.useState(false)
+  const [isUploadingAvatar, setIsUploadingAvatar] = React.useState(false)
+  const [isDeletingAvatar, setIsDeletingAvatar] = React.useState(false)
+  const avatarInputRef = React.useRef<HTMLInputElement>(null)
 
   // Password Form State
   const [currentPassword, setCurrentPassword] = React.useState("")
@@ -71,6 +77,68 @@ export default function SettingsPage() {
       setGithubUrl(user.githubUrl || "")
     }
   }, [user])
+
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    if (!file.type.startsWith("image/")) {
+      toast.error("Invalid File", {
+        description: "Please select an image file (PNG, JPG, WebP, SVG).",
+      })
+      return
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error("File Too Large", {
+        description: "Avatar image size must be under 10MB.",
+      })
+      return
+    }
+
+    try {
+      setIsUploadingAvatar(true)
+      const res = await UserApi.uploadAvatar(file)
+      if (res.success) {
+        await refreshUser()
+        toast.success("Avatar Uploaded", {
+          description: "Profile picture uploaded to Cloudflare R2 / S3 storage.",
+        })
+      } else {
+        toast.error("Upload Failed", {
+          description: res.error || "Could not upload profile picture.",
+        })
+      }
+    } catch (err: any) {
+      toast.error("Upload Error", { description: err?.message })
+    } finally {
+      setIsUploadingAvatar(false)
+      if (avatarInputRef.current) {
+        avatarInputRef.current.value = ""
+      }
+    }
+  }
+
+  const handleRemoveAvatar = async () => {
+    try {
+      setIsDeletingAvatar(true)
+      const res = await UserApi.deleteAvatar()
+      if (res.success) {
+        await refreshUser()
+        toast.success("Avatar Removed", {
+          description: "Profile picture has been removed.",
+        })
+      } else {
+        toast.error("Removal Failed", {
+          description: res.error || "Could not remove avatar.",
+        })
+      }
+    } catch (err: any) {
+      toast.error("Error", { description: err?.message })
+    } finally {
+      setIsDeletingAvatar(false)
+    }
+  }
 
   const handleSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -191,20 +259,84 @@ export default function SettingsPage() {
           <form onSubmit={handleSaveProfile}>
             <Card className="border-border/80">
               <CardHeader>
-                <div className="flex items-center gap-3">
-                  <Avatar className="size-12 rounded-xl border border-border">
-                    <AvatarImage src={user?.avatar || undefined} alt={user?.name || "Admin"} />
-                    <AvatarFallback className="rounded-xl font-bold text-sm">
-                      {user?.name?.slice(0, 2).toUpperCase() || "AD"}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <CardTitle className="text-base font-semibold">
-                      Administrator Profile
-                    </CardTitle>
-                    <CardDescription className="text-xs">
-                      Public author credentials and metadata for your portfolio.
-                    </CardDescription>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div className="flex items-center gap-3.5">
+                    <div className="relative group shrink-0">
+                      <Avatar className="size-14 rounded-xl border-2 border-border shadow-sm">
+                        <AvatarImage src={user?.avatar || undefined} alt={user?.name || "Admin"} className="object-cover" />
+                        <AvatarFallback className="rounded-xl font-bold text-sm bg-primary/10 text-primary">
+                          {user?.name?.slice(0, 2).toUpperCase() || "AD"}
+                        </AvatarFallback>
+                      </Avatar>
+                      <button
+                        type="button"
+                        onClick={() => avatarInputRef.current?.click()}
+                        disabled={isUploadingAvatar}
+                        className="absolute -bottom-1 -right-1 flex size-5 items-center justify-center rounded-full bg-primary text-primary-foreground shadow hover:bg-primary/90 transition-transform active:scale-95"
+                        title="Upload Avatar to Cloud Storage"
+                      >
+                        {isUploadingAvatar ? (
+                          <Loader2 className="size-3 animate-spin" />
+                        ) : (
+                          <Camera className="size-3" />
+                        )}
+                      </button>
+                    </div>
+                    <div>
+                      <CardTitle className="text-base font-semibold">
+                        Administrator Profile
+                      </CardTitle>
+                      <CardDescription className="text-xs">
+                        Public author credentials & avatar stored in Cloudflare R2 / S3.
+                      </CardDescription>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <input
+                      ref={avatarInputRef}
+                      type="file"
+                      accept="image/png,image/jpeg,image/webp,image/gif,image/svg+xml"
+                      className="hidden"
+                      onChange={handleAvatarUpload}
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      disabled={isUploadingAvatar}
+                      onClick={() => avatarInputRef.current?.click()}
+                      className="h-8 gap-1.5 text-xs"
+                    >
+                      {isUploadingAvatar ? (
+                        <>
+                          <Loader2 className="size-3.5 animate-spin" />
+                          Uploading...
+                        </>
+                      ) : (
+                        <>
+                          <Upload className="size-3.5" />
+                          Upload S3 Photo
+                        </>
+                      )}
+                    </Button>
+                    {user?.avatar && (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        disabled={isDeletingAvatar}
+                        onClick={handleRemoveAvatar}
+                        className="h-8 gap-1.5 text-xs text-destructive hover:bg-destructive/10 hover:text-destructive"
+                      >
+                        {isDeletingAvatar ? (
+                          <Loader2 className="size-3.5 animate-spin" />
+                        ) : (
+                          <Trash2 className="size-3.5" />
+                        )}
+                        Remove
+                      </Button>
+                    )}
                   </div>
                 </div>
               </CardHeader>

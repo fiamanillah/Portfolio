@@ -60,7 +60,11 @@ export const ModelName = {
   BlogCategory: 'BlogCategory',
   BlogTag: 'BlogTag',
   BlogPost: 'BlogPost',
-  BlogReaction: 'BlogReaction'
+  BlogReaction: 'BlogReaction',
+  Comment: 'Comment',
+  CommentReaction: 'CommentReaction',
+  CommentReport: 'CommentReport',
+  MediaFile: 'MediaFile'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -277,6 +281,84 @@ export const BlogReactionScalarFieldEnum = {
 } as const
 
 export type BlogReactionScalarFieldEnum = (typeof BlogReactionScalarFieldEnum)[keyof typeof BlogReactionScalarFieldEnum]
+
+
+export const CommentScalarFieldEnum = {
+  id: 'id',
+  postId: 'postId',
+  authorId: 'authorId',
+  guestName: 'guestName',
+  guestEmail: 'guestEmail',
+  guestAvatar: 'guestAvatar',
+  content: 'content',
+  status: 'status',
+  isPinned: 'isPinned',
+  likesCount: 'likesCount',
+  parentId: 'parentId',
+  ipAddress: 'ipAddress',
+  userAgent: 'userAgent',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CommentScalarFieldEnum = (typeof CommentScalarFieldEnum)[keyof typeof CommentScalarFieldEnum]
+
+
+export const CommentReactionScalarFieldEnum = {
+  id: 'id',
+  commentId: 'commentId',
+  userId: 'userId',
+  reactionType: 'reactionType',
+  ipAddress: 'ipAddress',
+  createdAt: 'createdAt'
+} as const
+
+export type CommentReactionScalarFieldEnum = (typeof CommentReactionScalarFieldEnum)[keyof typeof CommentReactionScalarFieldEnum]
+
+
+export const CommentReportScalarFieldEnum = {
+  id: 'id',
+  commentId: 'commentId',
+  reporterId: 'reporterId',
+  reporterName: 'reporterName',
+  reporterEmail: 'reporterEmail',
+  reason: 'reason',
+  details: 'details',
+  status: 'status',
+  reviewedById: 'reviewedById',
+  resolutionNotes: 'resolutionNotes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CommentReportScalarFieldEnum = (typeof CommentReportScalarFieldEnum)[keyof typeof CommentReportScalarFieldEnum]
+
+
+export const MediaFileScalarFieldEnum = {
+  id: 'id',
+  key: 'key',
+  bucket: 'bucket',
+  fileName: 'fileName',
+  fileExtension: 'fileExtension',
+  mimeType: 'mimeType',
+  size: 'size',
+  url: 'url',
+  etag: 'etag',
+  source: 'source',
+  folder: 'folder',
+  entityType: 'entityType',
+  entityId: 'entityId',
+  tags: 'tags',
+  altText: 'altText',
+  caption: 'caption',
+  metadata: 'metadata',
+  isPublic: 'isPublic',
+  uploaderId: 'uploaderId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type MediaFileScalarFieldEnum = (typeof MediaFileScalarFieldEnum)[keyof typeof MediaFileScalarFieldEnum]
 
 
 export const SortOrder = {

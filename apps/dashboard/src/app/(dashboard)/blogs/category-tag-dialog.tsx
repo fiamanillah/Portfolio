@@ -61,7 +61,9 @@ export function CategoryTagDialog({
   const [isSubmittingCat, setIsSubmittingCat] = React.useState(false)
 
   // Tag Form State
+  const [editingTag, setEditingTag] = React.useState<BlogTagDTO | null>(null)
   const [tagName, setTagName] = React.useState("")
+  const [tagSlug, setTagSlug] = React.useState("")
   const [tagDesc, setTagDesc] = React.useState("")
   const [isSubmittingTag, setIsSubmittingTag] = React.useState(false)
 
@@ -72,13 +74,9 @@ export function CategoryTagDialog({
         BlogApi.getCategories(),
         BlogApi.getTags(),
       ])
-      if (catsRes.success && catsRes.data) {
-        setCategories(catsRes.data)
-      }
-      if (tagsRes.success && tagsRes.data) {
-        setTags(tagsRes.data)
-      }
-    } catch (err) {
+      if (catsRes.success && catsRes.data) setCategories(catsRes.data)
+      if (tagsRes.success && tagsRes.data) setTags(tagsRes.data)
+    } catch {
       toast.error("Failed to load categories and tags")
     } finally {
       setIsLoading(false)
@@ -124,7 +122,7 @@ export function CategoryTagDialog({
           description: catDesc.trim() || undefined,
         })
         if (res.success) {
-          toast.success(`Category '${catName}' updated successfully`)
+          toast.success(`Category '${catName}' updated`)
           handleCancelEditCategory()
           loadData()
           onUpdated?.()
@@ -168,7 +166,7 @@ export function CategoryTagDialog({
       } else {
         toast.error(res.message || "Failed to delete category")
       }
-    } catch (err) {
+    } catch {
       toast.error("Failed to delete category")
     }
   }
@@ -182,21 +180,42 @@ export function CategoryTagDialog({
 
     setIsSubmittingTag(true)
     try {
-      const res = await BlogApi.createTag({
-        name: tagName.trim(),
-        description: tagDesc.trim() || undefined,
-      })
-      if (res.success) {
-        toast.success(`Tag '${tagName}' created`)
-        setTagName("")
-        setTagDesc("")
-        loadData()
-        onUpdated?.()
+      if (editingTag) {
+        const res = await BlogApi.updateTag(editingTag.id, {
+          name: tagName.trim(),
+          slug: tagSlug.trim() || undefined,
+          description: tagDesc.trim() || undefined,
+        })
+        if (res.success) {
+          toast.success(`Tag '${tagName}' updated`)
+          setEditingTag(null)
+          setTagName("")
+          setTagSlug("")
+          setTagDesc("")
+          loadData()
+          onUpdated?.()
+        } else {
+          toast.error(res.message || "Failed to update tag")
+        }
       } else {
-        toast.error(res.message || "Failed to create tag")
+        const res = await BlogApi.createTag({
+          name: tagName.trim(),
+          slug: tagSlug.trim() || undefined,
+          description: tagDesc.trim() || undefined,
+        })
+        if (res.success) {
+          toast.success(`Tag '${tagName}' created`)
+          setTagName("")
+          setTagSlug("")
+          setTagDesc("")
+          loadData()
+          onUpdated?.()
+        } else {
+          toast.error(res.message || "Failed to create tag")
+        }
       }
     } catch (err: any) {
-      toast.error(err?.message || "Failed to create tag")
+      toast.error(err?.message || "Failed to save tag")
     } finally {
       setIsSubmittingTag(false)
     }
@@ -212,31 +231,31 @@ export function CategoryTagDialog({
       } else {
         toast.error(res.message || "Failed to delete tag")
       }
-    } catch (err) {
+    } catch {
       toast.error("Failed to delete tag")
     }
   }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
+      <DialogContent className="w-[95vw] sm:min-w-[700px] md:min-w-[800px] max-w-4xl max-h-[88vh] overflow-y-auto bg-card border border-border/80 p-6 shadow-2xl">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
+          <DialogTitle className="flex items-center gap-2 text-lg font-bold">
             <FolderTree className="h-5 w-5 text-primary" />
             Manage Categories & Tags
           </DialogTitle>
-          <DialogDescription>
+          <DialogDescription className="text-xs text-muted-foreground">
             Organize your technical blog posts with taxonomies, topics, and colored category tags.
           </DialogDescription>
         </DialogHeader>
 
         <Tabs defaultValue="categories" className="mt-2">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="categories" className="flex items-center gap-2">
+          <TabsList className="grid w-full grid-cols-2 bg-muted/60 p-1 border border-border">
+            <TabsTrigger value="categories" className="flex items-center gap-2 text-xs font-semibold">
               <FolderTree className="h-4 w-4" />
               Categories ({categories.length})
             </TabsTrigger>
-            <TabsTrigger value="tags" className="flex items-center gap-2">
+            <TabsTrigger value="tags" className="flex items-center gap-2 text-xs font-semibold">
               <TagIcon className="h-4 w-4" />
               Tags ({tags.length})
             </TabsTrigger>
@@ -245,216 +264,212 @@ export function CategoryTagDialog({
           {/* TAB 1: CATEGORIES */}
           <TabsContent value="categories" className="space-y-4 pt-3">
             {/* Create / Edit Form */}
-            <form onSubmit={handleSaveCategory} className="rounded-lg border border-border/70 bg-card p-4 space-y-3">
+            <form onSubmit={handleSaveCategory} className="rounded-xl border border-border/80 bg-background/80 p-4 space-y-3 shadow-xs">
               <div className="flex items-center justify-between">
-                <span className="text-sm font-semibold flex items-center gap-1.5">
+                <span className="text-sm font-bold flex items-center gap-1.5">
                   {editingCategory ? <Edit2 className="h-4 w-4 text-primary" /> : <Plus className="h-4 w-4 text-primary" />}
                   {editingCategory ? `Edit Category: ${editingCategory.name}` : "Create New Category"}
                 </span>
                 {editingCategory && (
-                  <Button type="button" variant="ghost" size="sm" onClick={handleCancelEditCategory}>
+                  <Button type="button" variant="ghost" size="sm" onClick={handleCancelEditCategory} className="text-xs">
                     Cancel Edit
                   </Button>
                 )}
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div className="space-y-1">
-                  <label className="text-xs font-medium text-muted-foreground">Category Name *</label>
+                  <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                    Name *
+                  </label>
                   <Input
                     placeholder="e.g. Distributed Systems"
                     value={catName}
                     onChange={(e) => {
                       setCatName(e.target.value)
                       if (!editingCategory) {
-                        setCatSlug(e.target.value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""))
+                        setCatSlug(e.target.value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g, ""))
                       }
                     }}
+                    className="text-xs h-9 bg-background border-border/90 hover:border-primary/50 focus:border-primary"
                     required
                   />
                 </div>
+
                 <div className="space-y-1">
-                  <label className="text-xs font-medium text-muted-foreground">URL Slug</label>
+                  <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                    Slug
+                  </label>
                   <Input
-                    placeholder="e.g. distributed-systems"
+                    placeholder="distributed-systems"
                     value={catSlug}
                     onChange={(e) => setCatSlug(e.target.value)}
+                    className="text-xs h-9 font-mono bg-background border-border/90 hover:border-primary/50 focus:border-primary"
                   />
                 </div>
-              </div>
 
-              {/* Color Selector */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-medium text-muted-foreground flex items-center gap-1.5">
-                  <Palette className="h-3.5 w-3.5" />
-                  Badge Color
-                </label>
-                <div className="flex flex-wrap gap-2">
-                  {COLOR_OPTIONS.map((c) => (
-                    <button
-                      key={c.value}
-                      type="button"
-                      onClick={() => setCatColor(c.value)}
-                      className={`px-2.5 py-1 text-xs rounded-full border transition-all flex items-center gap-1.5 ${c.class} ${
-                        catColor === c.value ? "ring-2 ring-primary ring-offset-1 font-semibold" : "opacity-80 hover:opacity-100"
-                      }`}
-                    >
-                      {catColor === c.value && <Check className="h-3 w-3" />}
-                      {c.name}
-                    </button>
-                  ))}
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                    Color Accent
+                  </label>
+                  <div className="flex items-center gap-1 pt-1.5">
+                    {COLOR_OPTIONS.map((c) => (
+                      <button
+                        key={c.value}
+                        type="button"
+                        onClick={() => setCatColor(c.value)}
+                        className={`h-6 w-6 rounded-full border-2 transition-transform ${
+                          catColor === c.value ? "scale-110 border-primary" : "border-transparent opacity-70 hover:opacity-100"
+                        }`}
+                        title={c.name}
+                      >
+                        <span className={`block h-full w-full rounded-full ${c.class.split(" ")[0].replace("/10", "")}`} />
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-medium text-muted-foreground">Description (Optional)</label>
-                <Textarea
-                  placeholder="Brief description of this category topic..."
+                <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  Description
+                </label>
+                <Input
+                  placeholder="Optional brief description of topics in this category..."
                   value={catDesc}
                   onChange={(e) => setCatDesc(e.target.value)}
-                  rows={2}
+                  className="text-xs h-9 bg-background border-border/90 hover:border-primary/50 focus:border-primary"
                 />
               </div>
 
               <div className="flex justify-end pt-1">
-                <Button type="submit" size="sm" disabled={isSubmittingCat}>
-                  {isSubmittingCat && <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />}
+                <Button type="submit" size="sm" disabled={isSubmittingCat || !catName.trim()} className="text-xs gap-1">
+                  {isSubmittingCat ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Check className="h-3.5 w-3.5" />}
                   {editingCategory ? "Update Category" : "Add Category"}
                 </Button>
               </div>
             </form>
 
-            {/* Categories List */}
-            <div className="space-y-2">
-              <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                Existing Categories ({categories.length})
-              </span>
-              {isLoading ? (
-                <div className="py-6 flex items-center justify-center text-muted-foreground">
-                  <Loader2 className="h-5 w-5 animate-spin mr-2" /> Loading categories...
-                </div>
-              ) : categories.length === 0 ? (
-                <div className="py-6 text-center text-sm text-muted-foreground border border-dashed rounded-lg">
-                  No categories found. Create one above!
-                </div>
-              ) : (
-                <div className="divide-y divide-border/60 rounded-lg border border-border bg-card">
-                  {categories.map((cat) => (
-                    <div key={cat.id} className="p-3 flex items-center justify-between gap-3 hover:bg-muted/40 transition-colors">
-                      <div className="flex items-center gap-2.5 min-w-0">
-                        <Badge
-                          variant="outline"
-                          className={
-                            COLOR_OPTIONS.find((c) => c.value === cat.color)?.class ||
-                            "bg-primary/10 text-primary border-primary/20"
-                          }
-                        >
-                          {cat.name}
-                        </Badge>
-                        <span className="text-xs text-muted-foreground font-mono truncate">/{cat.slug}</span>
-                        {cat.description && (
-                          <span className="text-xs text-muted-foreground/80 hidden sm:inline truncate max-w-xs">
-                            — {cat.description}
-                          </span>
-                        )}
-                      </div>
-                      <div className="flex items-center gap-2 shrink-0">
-                        <Badge variant="secondary" className="text-[11px] font-mono">
-                          {cat.postCount || 0} posts
-                        </Badge>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-7 w-7 text-muted-foreground hover:text-foreground"
-                          onClick={() => handleStartEditCategory(cat)}
-                        >
-                          <Edit2 className="h-3.5 w-3.5" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-7 w-7 text-destructive hover:bg-destructive/10"
-                          onClick={() => handleDeleteCategory(cat)}
-                        >
-                          <Trash2 className="h-3.5 w-3.5" />
-                        </Button>
-                      </div>
+            {/* List Table */}
+            <div className="rounded-xl border border-border/80 bg-background/60 overflow-hidden">
+              <div className="grid grid-cols-12 bg-muted/40 p-3 text-xs font-bold uppercase tracking-wider text-muted-foreground border-b border-border/60">
+                <div className="col-span-4">Category</div>
+                <div className="col-span-3 font-mono">Slug</div>
+                <div className="col-span-3">Description</div>
+                <div className="col-span-2 text-right">Actions</div>
+              </div>
+              <div className="divide-y divide-border/60">
+                {categories.map((cat) => (
+                  <div key={cat.id} className="grid grid-cols-12 items-center p-3 text-xs hover:bg-muted/20">
+                    <div className="col-span-4 flex items-center gap-2">
+                      <span className={`h-2.5 w-2.5 rounded-full ${COLOR_OPTIONS.find((c) => c.value === cat.color)?.class.split(" ")[0].replace("/10", "") || "bg-primary"}`} />
+                      <span className="font-semibold text-foreground">{cat.name}</span>
                     </div>
-                  ))}
-                </div>
-              )}
+                    <div className="col-span-3 font-mono text-muted-foreground truncate">{cat.slug}</div>
+                    <div className="col-span-3 text-muted-foreground truncate">{cat.description || "—"}</div>
+                    <div className="col-span-2 flex items-center justify-end gap-1">
+                      <Button variant="ghost" size="icon" onClick={() => handleStartEditCategory(cat)} className="h-7 w-7">
+                        <Edit2 className="h-3.5 w-3.5" />
+                      </Button>
+                      <Button variant="ghost" size="icon" onClick={() => handleDeleteCategory(cat)} className="h-7 w-7 text-destructive">
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </TabsContent>
 
           {/* TAB 2: TAGS */}
           <TabsContent value="tags" className="space-y-4 pt-3">
             {/* Create Tag Form */}
-            <form onSubmit={handleSaveTag} className="rounded-lg border border-border/70 bg-card p-4 space-y-3">
-              <span className="text-sm font-semibold flex items-center gap-1.5">
-                <Plus className="h-4 w-4 text-primary" /> Create New Tag
-              </span>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <form onSubmit={handleSaveTag} className="rounded-xl border border-border/80 bg-background/80 p-4 space-y-3 shadow-xs">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-bold flex items-center gap-1.5">
+                  {editingTag ? <Edit2 className="h-4 w-4 text-primary" /> : <Plus className="h-4 w-4 text-primary" />}
+                  {editingTag ? `Edit Tag: ${editingTag.name}` : "Create New Tag"}
+                </span>
+                {editingTag && (
+                  <Button type="button" variant="ghost" size="sm" onClick={() => setEditingTag(null)} className="text-xs">
+                    Cancel
+                  </Button>
+                )}
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="space-y-1">
-                  <label className="text-xs font-medium text-muted-foreground">Tag Name *</label>
+                  <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                    Tag Name *
+                  </label>
                   <Input
-                    placeholder="e.g. WebSockets, Redis, Docker"
+                    placeholder="e.g. redis"
                     value={tagName}
-                    onChange={(e) => setTagName(e.target.value)}
+                    onChange={(e) => {
+                      setTagName(e.target.value)
+                      if (!editingTag) {
+                        setTagSlug(e.target.value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g, ""))
+                      }
+                    }}
+                    className="text-xs h-9 font-mono bg-background border-border/90 hover:border-primary/50 focus:border-primary"
                     required
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs font-medium text-muted-foreground">Description (Optional)</label>
+                  <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                    Slug
+                  </label>
                   <Input
-                    placeholder="Tag description..."
-                    value={tagDesc}
-                    onChange={(e) => setTagDesc(e.target.value)}
+                    placeholder="redis"
+                    value={tagSlug}
+                    onChange={(e) => setTagSlug(e.target.value)}
+                    className="text-xs h-9 font-mono bg-background border-border/90 hover:border-primary/50 focus:border-primary"
                   />
                 </div>
               </div>
+
               <div className="flex justify-end pt-1">
-                <Button type="submit" size="sm" disabled={isSubmittingTag}>
-                  {isSubmittingTag && <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />}
-                  Add Tag
+                <Button type="submit" size="sm" disabled={isSubmittingTag || !tagName.trim()} className="text-xs gap-1">
+                  {isSubmittingTag ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Check className="h-3.5 w-3.5" />}
+                  {editingTag ? "Update Tag" : "Add Tag"}
                 </Button>
               </div>
             </form>
 
-            {/* Tags Grid / Cloud */}
-            <div className="space-y-2">
-              <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                All Tags ({tags.length})
+            {/* Tags Chip List */}
+            <div className="rounded-xl border border-border/80 bg-background/60 p-4 space-y-2">
+              <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                Registered Tags ({tags.length})
               </span>
-              {isLoading ? (
-                <div className="py-6 flex items-center justify-center text-muted-foreground">
-                  <Loader2 className="h-5 w-5 animate-spin mr-2" /> Loading tags...
-                </div>
-              ) : tags.length === 0 ? (
-                <div className="py-6 text-center text-sm text-muted-foreground border border-dashed rounded-lg">
-                  No tags created yet.
-                </div>
-              ) : (
-                <div className="flex flex-wrap gap-2 p-3 rounded-lg border border-border bg-card max-h-60 overflow-y-auto">
-                  {tags.map((t) => (
-                    <div
-                      key={t.id}
-                      className="group flex items-center gap-1.5 pl-2.5 pr-1 py-1 rounded-md bg-secondary text-secondary-foreground text-xs border border-border"
+              <div className="flex flex-wrap gap-2 pt-2">
+                {tags.map((tag) => (
+                  <Badge
+                    key={tag.id}
+                    variant="secondary"
+                    className="text-xs font-mono pl-2.5 pr-1 py-1 flex items-center gap-1.5 bg-muted/80 hover:bg-muted text-foreground border border-border"
+                  >
+                    <span>#{tag.name}</span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setEditingTag(tag)
+                        setTagName(tag.name)
+                        setTagSlug(tag.slug)
+                      }}
+                      className="hover:text-primary p-0.5"
                     >
-                      <TagIcon className="h-3 w-3 text-muted-foreground" />
-                      <span>{t.name}</span>
-                      <span className="text-[10px] font-mono text-muted-foreground">({t.postCount || 0})</span>
-                      <button
-                        type="button"
-                        onClick={() => handleDeleteTag(t)}
-                        className="h-4 w-4 flex items-center justify-center text-muted-foreground hover:text-destructive opacity-50 group-hover:opacity-100 transition-opacity ml-1"
-                        title={`Delete ${t.name}`}
-                      >
-                        ×
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
+                      <Edit2 className="h-2.5 w-2.5" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteTag(tag)}
+                      className="hover:text-destructive p-0.5"
+                    >
+                      <Trash2 className="h-2.5 w-2.5" />
+                    </button>
+                  </Badge>
+                ))}
+              </div>
             </div>
           </TabsContent>
         </Tabs>

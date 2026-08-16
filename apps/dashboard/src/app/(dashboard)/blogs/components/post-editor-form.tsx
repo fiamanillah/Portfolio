@@ -2,16 +2,7 @@
 
 import * as React from "react"
 import { useRouter } from "next/navigation"
-import {
-  FileText,
-  Search,
-  Calendar,
-  Image as ImageIcon,
-  User,
-  BadgeAlert,
-} from "lucide-react"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@workspace/ui/components/tabs"
-import { Badge } from "@workspace/ui/components/badge"
+import { Tabs, TabsContent } from "@workspace/ui/components/tabs"
 import { toast } from "@workspace/ui/components/sonner"
 import type {
   BlogPostDTO,
@@ -26,12 +17,30 @@ import type {
 import { BlogApi } from "@/lib/api"
 import { useAuth } from "@/providers/auth-provider"
 
-import { EditorHeader } from "./editor-header"
-import { ContentTab } from "./content-tab"
-import { SeoTab } from "./seo-tab"
-import { PublishingTab } from "./publishing-tab"
-import { MediaTab } from "./media-tab"
-import { AuthorTab } from "./author-tab"
+// Editor Subcomponents
+import { EditorHeader } from "./editor/editor-header"
+import { EditorTabsNav } from "./editor/editor-tabs-nav"
+import { TitleSlugSection } from "./editor/content/title-slug-section"
+import { CategoryTagSection } from "./editor/content/category-tag-section"
+import { KeyTakeawaysSection } from "./editor/content/key-takeaways-section"
+import { MarkdownEditor } from "./editor/content/markdown-editor"
+
+import { MetaTagsSection } from "./editor/seo/meta-tags-section"
+import { CrawlerDirectivesSection } from "./editor/seo/crawler-directives-section"
+import { SeoDiagnosticsCard } from "./editor/seo/seo-diagnostics-card"
+import { SerpPreview } from "./editor/seo/serp-preview"
+import { SocialSharePreview } from "./editor/seo/social-share-preview"
+
+import { CoverImageSection } from "./editor/media/cover-image-section"
+import { SocialImagesSection } from "./editor/media/social-images-section"
+
+import { PublicationStatusSection } from "./editor/publishing/publication-status-section"
+import { ReadingTimeSection } from "./editor/publishing/reading-time-section"
+import { VisibilityTogglesSection } from "./editor/publishing/visibility-toggles-section"
+
+import { AuthorProfileSection } from "./editor/author/author-profile-section"
+import { AuthorSocialLinksSection } from "./editor/author/author-social-links-section"
+import { FrontendArticlePreview } from "./preview/frontend-article-preview"
 
 interface PostEditorFormProps {
   initialPost?: BlogPostDTO | null
@@ -39,6 +48,7 @@ interface PostEditorFormProps {
   tags: BlogTagDTO[]
   isEdit?: boolean
   onSuccessRedirect?: string
+  onOpenTaxonomyManager?: () => void
 }
 
 export function PostEditorForm({
@@ -47,6 +57,7 @@ export function PostEditorForm({
   tags: availableTags,
   isEdit = false,
   onSuccessRedirect = "/blogs",
+  onOpenTaxonomyManager,
 }: PostEditorFormProps) {
   const router = useRouter()
   const { user } = useAuth()
@@ -58,7 +69,7 @@ export function PostEditorForm({
   const [summary, setSummary] = React.useState(initialPost?.summary || "")
   const [content, setContent] = React.useState(
     initialPost?.content ||
-      "## Introduction\n\nWrite your technical article here...\n\n```typescript\nconsole.log('Hello World');\n```\n\n## Conclusion\n\nKey takeaways here."
+      "## Introduction\n\nWrite your technical article here with code snippets, diagrams, and explanations...\n\n```typescript\nconsole.log('Production ready architecture');\n```\n\n> [!NOTE]\n> Real-time streaming enables microsecond state sync.\n\n## Conclusion\n\nSummary of takeaways."
   )
   const [categoryId, setCategoryId] = React.useState<string>(initialPost?.categoryId || "none")
   const [categoryName, setCategoryName] = React.useState(initialPost?.category?.name || "")
@@ -136,7 +147,109 @@ export function PostEditorForm({
     return `${mins} MIN READ`
   }, [wordCount])
 
-  // Real-time SEO Diagnostic Preview
+  // Draft Post Object for Live Website Simulation
+  const previewPostData: BlogPostDTO = React.useMemo(() => {
+    return {
+      id: initialPost?.id || "draft-preview",
+      title: title || "Untitled Technical Guide",
+      subtitle: subtitle || undefined,
+      slug: slug || "untitled-technical-guide",
+      summary: summary || "Technical guide overview.",
+      content: content || "",
+      thumbnail: thumbnail || "/assets/images/mickanic-cover.png",
+      category: categoryName
+        ? {
+            id: categoryId,
+            name: categoryName,
+            slug: categoryName.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
+            color: "blue",
+            order: 0,
+          }
+        : null,
+      categoryId: categoryId === "none" ? undefined : categoryId,
+      tags: selectedTags,
+      keyTakeaways: keyTakeaways.filter((k) => k.trim()),
+      status,
+      featured,
+      pinned,
+      date: dateDisplay || "Aug 2026",
+      publishedAt: publishedAt || new Date().toISOString(),
+      scheduledAt: scheduledAt || undefined,
+      readTime: readTimeOverride || calculatedReadTime,
+      readTimeMinutes: Math.max(1, Math.ceil(wordCount / 200)),
+      wordCount: wordCount,
+      author: {
+        name: authorName || "Fi Amanillah",
+        role: authorRole || "Full Stack & DevOps Engineer",
+        avatar: authorAvatar || "/fi.png",
+        twitter: authorTwitter || "@fiamanillah",
+        linkedin: authorLinkedin || "",
+        github: authorGithub || "",
+      },
+      views: initialPost?.views || 1420,
+      likesCount: initialPost?.likesCount || 68,
+      commentsCount: initialPost?.commentsCount || 12,
+      seo: {
+        metaTitle: metaTitle || undefined,
+        metaDescription: metaDescription || undefined,
+        metaKeywords: selectedTags,
+        canonicalUrl: canonicalUrl || undefined,
+        articleType,
+        noIndex,
+        noFollow,
+        ogTitle: ogTitle || undefined,
+        ogDescription: ogDescription || undefined,
+        ogImage: ogImage || undefined,
+        twitterCard,
+        twitterTitle: twitterTitle || undefined,
+        twitterDescription: twitterDescription || undefined,
+        twitterImage: twitterImage || undefined,
+      },
+      createdAt: initialPost?.createdAt || new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    }
+  }, [
+    initialPost,
+    title,
+    subtitle,
+    slug,
+    summary,
+    content,
+    thumbnail,
+    categoryId,
+    categoryName,
+    selectedTags,
+    keyTakeaways,
+    status,
+    featured,
+    pinned,
+    dateDisplay,
+    publishedAt,
+    scheduledAt,
+    readTimeOverride,
+    calculatedReadTime,
+    authorName,
+    authorRole,
+    authorAvatar,
+    authorTwitter,
+    authorLinkedin,
+    authorGithub,
+    metaTitle,
+    metaDescription,
+    canonicalUrl,
+    articleType,
+    noIndex,
+    noFollow,
+    ogTitle,
+    ogDescription,
+    ogImage,
+    twitterCard,
+    twitterTitle,
+    twitterDescription,
+    twitterImage,
+  ])
+
+  // Real-time SEO Diagnostic Preview Generation
   React.useEffect(() => {
     if (!title.trim() && !summary.trim()) return
 
@@ -298,12 +411,7 @@ export function PostEditorForm({
   }
 
   const handlePreviewNavigate = () => {
-    if (initialPost?.id) {
-      router.push(`/blogs/${initialPost.id}/preview`)
-    } else {
-      setActiveTab("seo")
-      toast.info("Showing live SERP and social card simulation below")
-    }
+    setActiveTab("preview")
   }
 
   return (
@@ -320,61 +428,21 @@ export function PostEditorForm({
         discardHref="/blogs"
       />
 
-      {/* Main Tabs Container */}
+      {/* Main Multi-tab Editor Box */}
       <div className="rounded-xl border border-border/80 bg-card overflow-hidden shadow-xs">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <div className="px-6 border-b border-border/80 bg-muted/20">
-            <TabsList className="bg-transparent h-12 p-0 gap-4">
-              <TabsTrigger
-                value="content"
-                className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none px-2 font-medium text-xs md:text-sm"
-              >
-                <FileText className="h-4 w-4 mr-2" /> 1. Content & Editor
-              </TabsTrigger>
-              <TabsTrigger
-                value="seo"
-                className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none px-2 font-medium text-xs md:text-sm"
-              >
-                <Search className="h-4 w-4 mr-2" /> 2. SEO & Previews
-                {seoAnalysis && (
-                  <Badge
-                    variant="outline"
-                    className={`ml-2 text-[10px] h-4 px-1.5 ${
-                      seoAnalysis.score >= 90
-                        ? "text-emerald-500 border-emerald-500/30"
-                        : seoAnalysis.score >= 75
-                        ? "text-amber-500 border-amber-500/30"
-                        : "text-rose-500 border-rose-500/30"
-                    }`}
-                  >
-                    {seoAnalysis.score}
-                  </Badge>
-                )}
-              </TabsTrigger>
-              <TabsTrigger
-                value="publishing"
-                className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none px-2 font-medium text-xs md:text-sm"
-              >
-                <Calendar className="h-4 w-4 mr-2" /> 3. Publishing & Schedule
-              </TabsTrigger>
-              <TabsTrigger
-                value="media"
-                className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none px-2 font-medium text-xs md:text-sm"
-              >
-                <ImageIcon className="h-4 w-4 mr-2" /> 4. Media & Hero
-              </TabsTrigger>
-              <TabsTrigger
-                value="author"
-                className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none px-2 font-medium text-xs md:text-sm"
-              >
-                <User className="h-4 w-4 mr-2" /> 5. Author Persona
-              </TabsTrigger>
-            </TabsList>
-          </div>
+          {/* Navigation Bar */}
+          <EditorTabsNav
+            seoAnalysis={seoAnalysis}
+            hasCoverImage={Boolean(thumbnail)}
+            hasRequiredContent={Boolean(title && summary && content)}
+          />
 
+          {/* Content Bodies */}
           <div className="p-6 md:p-8">
-            <TabsContent value="content" className="m-0 focus-visible:outline-hidden">
-              <ContentTab
+            {/* TAB 1: Content & Editor */}
+            <TabsContent value="content" className="m-0 focus-visible:outline-hidden space-y-6">
+              <TitleSlugSection
                 title={title}
                 setTitle={setTitle}
                 subtitle={subtitle}
@@ -383,31 +451,51 @@ export function PostEditorForm({
                 setSlug={setSlug}
                 summary={summary}
                 setSummary={setSummary}
-                content={content}
-                setContent={setContent}
+              />
+
+              <CategoryTagSection
                 categoryId={categoryId}
                 setCategoryId={setCategoryId}
                 categoryName={categoryName}
                 setCategoryName={setCategoryName}
                 categories={categories}
-                keyTakeaways={keyTakeaways}
-                setKeyTakeaways={setKeyTakeaways}
                 selectedTags={selectedTags}
                 setSelectedTags={setSelectedTags}
-                wordCount={wordCount}
-                readTime={calculatedReadTime}
+                availableTags={availableTags}
+                onOpenTaxonomyManager={onOpenTaxonomyManager}
               />
+
+              <KeyTakeawaysSection
+                keyTakeaways={keyTakeaways}
+                setKeyTakeaways={setKeyTakeaways}
+              />
+
+              <div className="space-y-2 pt-4 border-t border-border/80">
+                <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                  Article Markdown Body *
+                </label>
+                <MarkdownEditor
+                  value={content}
+                  onChange={setContent}
+                  wordCount={wordCount}
+                  readTime={calculatedReadTime}
+                />
+              </div>
             </TabsContent>
 
-            <TabsContent value="seo" className="m-0 focus-visible:outline-hidden">
-              <SeoTab
+            {/* TAB 2: SEO & Previews */}
+            <TabsContent value="seo" className="m-0 focus-visible:outline-hidden space-y-6">
+              <MetaTagsSection
                 title={title}
                 summary={summary}
-                slug={slug}
                 metaTitle={metaTitle}
                 setMetaTitle={setMetaTitle}
                 metaDescription={metaDescription}
                 setMetaDescription={setMetaDescription}
+              />
+
+              <CrawlerDirectivesSection
+                slug={slug}
                 canonicalUrl={canonicalUrl}
                 setCanonicalUrl={setCanonicalUrl}
                 articleType={articleType}
@@ -416,12 +504,26 @@ export function PostEditorForm({
                 setNoIndex={setNoIndex}
                 noFollow={noFollow}
                 setNoFollow={setNoFollow}
-                seoAnalysis={seoAnalysis}
               />
+
+              <SeoDiagnosticsCard seoAnalysis={seoAnalysis} />
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-4 border-t border-border">
+                <SerpPreview
+                  desktop={seoAnalysis?.previews.googleSearchDesktop}
+                  mobile={seoAnalysis?.previews.googleSearchMobile}
+                  slug={slug}
+                />
+                <SocialSharePreview
+                  twitter={seoAnalysis?.previews.twitterCard}
+                  og={seoAnalysis?.previews.openGraph}
+                />
+              </div>
             </TabsContent>
 
-            <TabsContent value="publishing" className="m-0 focus-visible:outline-hidden">
-              <PublishingTab
+            {/* TAB 3: Publishing & Schedule */}
+            <TabsContent value="publishing" className="m-0 focus-visible:outline-hidden space-y-6">
+              <PublicationStatusSection
                 status={status}
                 setStatus={setStatus}
                 publishedAt={publishedAt}
@@ -430,9 +532,16 @@ export function PostEditorForm({
                 setScheduledAt={setScheduledAt}
                 dateDisplay={dateDisplay}
                 setDateDisplay={setDateDisplay}
+              />
+
+              <ReadingTimeSection
                 readTimeOverride={readTimeOverride}
                 setReadTimeOverride={setReadTimeOverride}
                 calculatedReadTime={calculatedReadTime}
+                wordCount={wordCount}
+              />
+
+              <VisibilityTogglesSection
                 featured={featured}
                 setFeatured={setFeatured}
                 pinned={pinned}
@@ -440,10 +549,15 @@ export function PostEditorForm({
               />
             </TabsContent>
 
-            <TabsContent value="media" className="m-0 focus-visible:outline-hidden">
-              <MediaTab
+            {/* TAB 4: Media & Hero */}
+            <TabsContent value="media" className="m-0 focus-visible:outline-hidden space-y-6">
+              <CoverImageSection
                 thumbnail={thumbnail}
                 setThumbnail={setThumbnail}
+              />
+
+              <SocialImagesSection
+                coverImage={thumbnail}
                 ogImage={ogImage}
                 setOgImage={setOgImage}
                 twitterImage={twitterImage}
@@ -451,8 +565,9 @@ export function PostEditorForm({
               />
             </TabsContent>
 
-            <TabsContent value="author" className="m-0 focus-visible:outline-hidden">
-              <AuthorTab
+            {/* TAB 5: Author Persona */}
+            <TabsContent value="author" className="m-0 focus-visible:outline-hidden space-y-6">
+              <AuthorProfileSection
                 authorName={authorName}
                 setAuthorName={setAuthorName}
                 authorRole={authorRole}
@@ -460,12 +575,30 @@ export function PostEditorForm({
                 authorAvatar={authorAvatar}
                 setAuthorAvatar={setAuthorAvatar}
                 authorTwitter={authorTwitter}
+              />
+
+              <AuthorSocialLinksSection
+                authorTwitter={authorTwitter}
                 setAuthorTwitter={setAuthorTwitter}
                 authorLinkedin={authorLinkedin}
                 setAuthorLinkedin={setAuthorLinkedin}
                 authorGithub={authorGithub}
                 setAuthorGithub={setAuthorGithub}
               />
+            </TabsContent>
+
+            {/* TAB 6: LIVE WEBSITE PREVIEW */}
+            <TabsContent value="preview" className="m-0 focus-visible:outline-hidden space-y-4">
+              <div className="flex items-center justify-between p-3 rounded-lg border border-border/80 bg-muted/20">
+                <span className="text-xs font-mono text-muted-foreground">
+                  // REAL-TIME RENDERING SIMULATION AS VIEWED ON HTTPS://FI.AMANILLAH.COM/BLOG/{slug || "SLUG"}
+                </span>
+                <span className="text-xs font-semibold text-emerald-500 flex items-center gap-1.5">
+                  <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" /> Live Frontend Sync
+                </span>
+              </div>
+
+              <FrontendArticlePreview post={previewPostData} />
             </TabsContent>
           </div>
         </Tabs>

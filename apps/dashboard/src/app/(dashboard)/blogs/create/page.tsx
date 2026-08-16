@@ -5,13 +5,16 @@ import { Loader2 } from "lucide-react"
 import type { BlogCategoryDTO, BlogTagDTO } from "@workspace/shared"
 import { BlogApi } from "@/lib/api"
 import { PostEditorForm } from "../components/post-editor-form"
+import { CategoryTagDialog } from "../category-tag-dialog"
 
 export default function CreateBlogPostPage() {
   const [categories, setCategories] = React.useState<BlogCategoryDTO[]>([])
   const [tags, setTags] = React.useState<BlogTagDTO[]>([])
   const [isLoading, setIsLoading] = React.useState(true)
+  const [isTaxonomyOpen, setIsTaxonomyOpen] = React.useState(false)
 
-  React.useEffect(() => {
+  const loadMetadata = React.useCallback(() => {
+    setIsLoading(true)
     Promise.all([BlogApi.getCategories(), BlogApi.getTags()])
       .then(([catsRes, tagsRes]) => {
         if (catsRes.success && catsRes.data) setCategories(catsRes.data)
@@ -19,6 +22,10 @@ export default function CreateBlogPostPage() {
       })
       .finally(() => setIsLoading(false))
   }, [])
+
+  React.useEffect(() => {
+    loadMetadata()
+  }, [loadMetadata])
 
   if (isLoading) {
     return (
@@ -36,6 +43,13 @@ export default function CreateBlogPostPage() {
         tags={tags}
         isEdit={false}
         onSuccessRedirect="/blogs"
+        onOpenTaxonomyManager={() => setIsTaxonomyOpen(true)}
+      />
+
+      <CategoryTagDialog
+        open={isTaxonomyOpen}
+        onOpenChange={setIsTaxonomyOpen}
+        onUpdated={loadMetadata}
       />
     </div>
   )

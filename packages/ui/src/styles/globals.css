@@ -632,6 +632,93 @@ html.dark .shiki span {
   line-height: 1.6;
 }
 
+/* Images & Figures in Markdown */
+.markdown-content figure,
+.blog-image-figure {
+  margin: 2rem 0;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  border: 1px solid oklch(var(--border) / 80%);
+  background: oklch(var(--card) / 60%);
+  box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.1);
+}
+
+.markdown-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+  display: block;
+  margin: 1.5rem auto;
+  border: 1px solid oklch(var(--border) / 70%);
+}
+
+.markdown-content figure img,
+.blog-image-figure img {
+  margin: 0;
+  border-radius: 0;
+  border: none;
+  width: 100%;
+  max-height: 580px;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.markdown-content figure:hover img,
+.blog-image-figure:hover img {
+  transform: scale(1.008);
+}
+
+.markdown-content figcaption,
+.blog-image-figure figcaption {
+  padding: 0.625rem 1rem;
+  text-align: center;
+  font-family: ui-monospace, monospace;
+  font-size: 0.75rem;
+  color: oklch(var(--muted-foreground));
+  background: oklch(var(--muted) / 30%);
+  border-top: 1px solid oklch(var(--border) / 60%);
+}
+
+/* Links in Markdown */
+.markdown-content a:not([class*="heading-anchor"]):not([class*="btn"]) {
+  color: oklch(var(--primary));
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  font-weight: 500;
+  transition: color 0.15s ease, opacity 0.15s ease;
+}
+
+.markdown-content a:not([class*="heading-anchor"]):not([class*="btn"]):hover {
+  opacity: 0.8;
+}
+
+/* Horizontal Rule */
+.markdown-content hr {
+  margin: 2.5rem 0;
+  border: none;
+  border-top: 1px dashed oklch(var(--border));
+  opacity: 0.6;
+}
+
+/* Kbd & Highlight */
+.markdown-content kbd {
+  font-family: ui-monospace, monospace;
+  font-size: 0.75em;
+  padding: 0.15em 0.4em;
+  border-radius: 0.25rem;
+  border: 1px solid oklch(var(--border));
+  background: oklch(var(--muted));
+  color: oklch(var(--foreground));
+  box-shadow: 0 1px 0 oklch(var(--border));
+}
+
+.markdown-content mark {
+  background-color: oklch(var(--primary) / 20%);
+  color: oklch(var(--foreground));
+  padding: 0.1em 0.3em;
+  border-radius: 0.2rem;
+}
+
 /* Custom Cyberpunk Scrollbar Utility */
 .custom-scrollbar::-webkit-scrollbar {
   width: 5px;

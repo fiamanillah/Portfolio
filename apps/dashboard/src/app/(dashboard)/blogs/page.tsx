@@ -4,20 +4,10 @@ import * as React from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import {
-  BookOpen,
   Plus,
-  Search,
-  RefreshCw,
-  LayoutGrid,
-  List,
-  Eye,
-  ThumbsUp,
-  FileText,
   FolderTree,
   CloudDownload,
   Loader2,
-  Calendar,
-  ArrowUpDown,
 } from "lucide-react"
 
 import type {
@@ -30,20 +20,13 @@ import type {
 import { BlogApi } from "@/lib/api"
 import { Badge } from "@workspace/ui/components/badge"
 import { Button } from "@workspace/ui/components/button"
-import { Card } from "@workspace/ui/components/card"
-import { Input } from "@workspace/ui/components/input"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@workspace/ui/components/select"
 import { toast } from "@workspace/ui/components/sonner"
 
 import { getBlogColumns } from "./columns"
 import { BlogsDataTable } from "./data-table"
-import { BlogCard } from "./blog-card"
+import { BlogStatsOverview } from "./components/list/blog-stats-overview"
+import { BlogToolbar } from "./components/list/blog-toolbar"
+import { BlogGridView } from "./components/list/blog-grid-view"
 import { CategoryTagDialog } from "./category-tag-dialog"
 import { DeletePostDialog } from "./delete-post-dialog"
 
@@ -72,7 +55,7 @@ export default function BlogsPage() {
   const [categoryFilter, setCategoryFilter] = React.useState<string>("all")
   const [statusFilter, setStatusFilter] = React.useState<string>("all")
   const [featuredFilter, setFeaturedFilter] = React.useState<string>("all")
-  const [sortBy, setSortBy] = React.useState<"createdAt" | "updatedAt" | "publishedAt" | "views" | "likesCount" | "title">("createdAt")
+  const [sortBy, setSortBy] = React.useState<string>("createdAt")
   const [sortOrder, setSortOrder] = React.useState<"asc" | "desc">("desc")
   const [viewMode, setViewMode] = React.useState<"table" | "grid">("table")
 
@@ -100,7 +83,7 @@ export default function BlogsPage() {
         category: categoryFilter !== "all" ? categoryFilter : undefined,
         status: statusFilter !== "all" ? (statusFilter as BlogStatus) : undefined,
         featured: featuredFilter === "featured" ? true : undefined,
-        sortBy,
+        sortBy: sortBy as any,
         sortOrder,
       })
 
@@ -112,7 +95,7 @@ export default function BlogsPage() {
       } else {
         toast.error(res.message || "Failed to load blog posts")
       }
-    } catch (err) {
+    } catch {
       toast.error("Failed to fetch blog posts")
     } finally {
       setIsLoading(false)
@@ -143,7 +126,7 @@ export default function BlogsPage() {
     loadPosts()
   }, [loadPosts])
 
-  // Navigation Handlers
+  // Handlers
   const handleOpenEdit = (postItem: BlogPostListItemDTO) => {
     router.push(`/blogs/${postItem.id}/edit`)
   }
@@ -162,7 +145,7 @@ export default function BlogsPage() {
       } else {
         toast.error(res.message || "Failed to duplicate post")
       }
-    } catch (err) {
+    } catch {
       toast.error("Failed to duplicate post")
     }
   }
@@ -177,7 +160,7 @@ export default function BlogsPage() {
       } else {
         toast.error(res.message || "Failed to update status")
       }
-    } catch (err) {
+    } catch {
       toast.error("Failed to update status")
     }
   }
@@ -220,7 +203,7 @@ export default function BlogsPage() {
           toast.error(res.message || "Failed to delete post")
         }
       }
-    } catch (err) {
+    } catch {
       toast.error("Failed to complete delete request")
     } finally {
       setIsDeleting(false)
@@ -237,7 +220,7 @@ export default function BlogsPage() {
       } else {
         toast.error(res.message || "Failed to bulk update status")
       }
-    } catch (err) {
+    } catch {
       toast.error("Failed to update posts")
     }
   }
@@ -253,7 +236,7 @@ export default function BlogsPage() {
       } else {
         toast.error(res.message || "Failed to sync local posts")
       }
-    } catch (err) {
+    } catch {
       toast.error("Failed to sync local posts")
     } finally {
       setIsSyncing(false)
@@ -324,207 +307,46 @@ export default function BlogsPage() {
       </div>
 
       {/* KPI Overview Metrics Bar */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-        <Card className="border-border/80 bg-card p-3.5 shadow-xs space-y-1">
-          <div className="flex items-center justify-between text-muted-foreground">
-            <span className="text-xs font-semibold uppercase tracking-wider">Total Posts</span>
-            <FileText className="h-4 w-4 text-primary" />
-          </div>
-          <div className="text-2xl font-bold text-foreground font-mono">
-            {stats.totalPosts}
-          </div>
-        </Card>
-
-        <Card className="border-border/80 bg-card p-3.5 shadow-xs space-y-1">
-          <div className="flex items-center justify-between text-muted-foreground">
-            <span className="text-xs font-semibold uppercase tracking-wider">Published</span>
-            <span className="h-2 w-2 rounded-full bg-emerald-500" />
-          </div>
-          <div className="text-2xl font-bold text-emerald-500 font-mono">
-            {stats.publishedPosts}
-          </div>
-        </Card>
-
-        <Card className="border-border/80 bg-card p-3.5 shadow-xs space-y-1">
-          <div className="flex items-center justify-between text-muted-foreground">
-            <span className="text-xs font-semibold uppercase tracking-wider">Drafts</span>
-            <span className="h-2 w-2 rounded-full bg-amber-500" />
-          </div>
-          <div className="text-2xl font-bold text-amber-500 font-mono">
-            {stats.draftPosts}
-          </div>
-        </Card>
-
-        <Card className="border-border/80 bg-card p-3.5 shadow-xs space-y-1">
-          <div className="flex items-center justify-between text-muted-foreground">
-            <span className="text-xs font-semibold uppercase tracking-wider">Scheduled</span>
-            <Calendar className="h-4 w-4 text-blue-500" />
-          </div>
-          <div className="text-2xl font-bold text-blue-500 font-mono">
-            {stats.scheduledPosts}
-          </div>
-        </Card>
-
-        <Card className="border-border/80 bg-card p-3.5 shadow-xs space-y-1">
-          <div className="flex items-center justify-between text-muted-foreground">
-            <span className="text-xs font-semibold uppercase tracking-wider">Total Views</span>
-            <Eye className="h-4 w-4 text-purple-500" />
-          </div>
-          <div className="text-2xl font-bold text-foreground font-mono">
-            {stats.totalViews > 999 ? `${(stats.totalViews / 1000).toFixed(1)}k` : stats.totalViews}
-          </div>
-        </Card>
-
-        <Card className="border-border/80 bg-card p-3.5 shadow-xs space-y-1">
-          <div className="flex items-center justify-between text-muted-foreground">
-            <span className="text-xs font-semibold uppercase tracking-wider">Total Likes</span>
-            <ThumbsUp className="h-4 w-4 text-rose-500" />
-          </div>
-          <div className="text-2xl font-bold text-foreground font-mono">
-            {stats.totalLikes}
-          </div>
-        </Card>
-      </div>
+      <BlogStatsOverview stats={stats} />
 
       {/* Filter & Search Toolbar */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 p-3.5 rounded-xl border border-border/80 bg-card shadow-xs">
-        <div className="flex flex-1 flex-wrap items-center gap-2.5">
-          {/* Search Input */}
-          <div className="relative flex-1 min-w-[200px] max-w-sm">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search title, summary, slug..."
-              value={searchQuery}
-              onChange={(e) => {
-                setSearchQuery(e.target.value)
-                setCurrentPage(1)
-              }}
-              className="pl-9 h-9 text-xs"
-            />
-          </div>
-
-          {/* Category Filter */}
-          <Select
-            value={categoryFilter}
-            onValueChange={(val) => {
-              setCategoryFilter(val)
-              setCurrentPage(1)
-            }}
-          >
-            <SelectTrigger className="h-9 w-36 text-xs">
-              <SelectValue placeholder="Category" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Categories</SelectItem>
-              {categories.map((c) => (
-                <SelectItem key={c.id} value={c.name}>
-                  {c.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          {/* Status Filter */}
-          <Select
-            value={statusFilter}
-            onValueChange={(val) => {
-              setStatusFilter(val)
-              setCurrentPage(1)
-            }}
-          >
-            <SelectTrigger className="h-9 w-32 text-xs">
-              <SelectValue placeholder="Status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Statuses</SelectItem>
-              <SelectItem value="PUBLISHED">Published</SelectItem>
-              <SelectItem value="DRAFT">Drafts</SelectItem>
-              <SelectItem value="SCHEDULED">Scheduled</SelectItem>
-              <SelectItem value="ARCHIVED">Archived</SelectItem>
-            </SelectContent>
-          </Select>
-
-          {/* Featured Filter */}
-          <Select
-            value={featuredFilter}
-            onValueChange={(val) => {
-              setFeaturedFilter(val)
-              setCurrentPage(1)
-            }}
-          >
-            <SelectTrigger className="h-9 w-32 text-xs">
-              <SelectValue placeholder="Featured" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Posts</SelectItem>
-              <SelectItem value="featured">Featured Only</SelectItem>
-            </SelectContent>
-          </Select>
-
-          {/* Sort By */}
-          <Select
-            value={`${sortBy}:${sortOrder}`}
-            onValueChange={(val) => {
-              const [field, order] = val.split(":")
-              setSortBy(field as "createdAt" | "updatedAt" | "publishedAt" | "views" | "likesCount" | "title")
-              setSortOrder(order as "asc" | "desc")
-              setCurrentPage(1)
-            }}
-          >
-            <SelectTrigger className="h-9 w-40 text-xs font-medium">
-              <ArrowUpDown className="h-3 w-3 mr-1 text-muted-foreground" />
-              <SelectValue placeholder="Sort by" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="createdAt:desc">Newest Created</SelectItem>
-              <SelectItem value="createdAt:asc">Oldest Created</SelectItem>
-              <SelectItem value="publishedAt:desc">Recently Published</SelectItem>
-              <SelectItem value="views:desc">Most Views</SelectItem>
-              <SelectItem value="likesCount:desc">Most Likes</SelectItem>
-              <SelectItem value="title:asc">Title (A-Z)</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div className="flex items-center gap-2 shrink-0">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-9 w-9 text-muted-foreground hover:text-foreground"
-            onClick={() => {
-              loadPosts()
-              loadStatsAndTaxonomies()
-            }}
-            title="Refresh"
-          >
-            <RefreshCw className={`h-4 w-4 ${isLoading ? "animate-spin" : ""}`} />
-          </Button>
-
-          {/* View Mode Switcher */}
-          <div className="flex items-center bg-muted/60 rounded-lg p-0.5 border border-border">
-            <Button
-              type="button"
-              variant={viewMode === "table" ? "secondary" : "ghost"}
-              size="icon"
-              className="h-8 w-8"
-              onClick={() => setViewMode("table")}
-              title="Table View"
-            >
-              <List className="h-4 w-4" />
-            </Button>
-            <Button
-              type="button"
-              variant={viewMode === "grid" ? "secondary" : "ghost"}
-              size="icon"
-              className="h-8 w-8"
-              onClick={() => setViewMode("grid")}
-              title="Grid View"
-            >
-              <LayoutGrid className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
-      </div>
+      <BlogToolbar
+        searchQuery={searchQuery}
+        onSearchChange={(q) => {
+          setSearchQuery(q)
+          setCurrentPage(1)
+        }}
+        categoryFilter={categoryFilter}
+        onCategoryFilterChange={(c) => {
+          setCategoryFilter(c)
+          setCurrentPage(1)
+        }}
+        statusFilter={statusFilter}
+        onStatusFilterChange={(s) => {
+          setStatusFilter(s)
+          setCurrentPage(1)
+        }}
+        featuredFilter={featuredFilter}
+        onFeaturedFilterChange={(f) => {
+          setFeaturedFilter(f)
+          setCurrentPage(1)
+        }}
+        sortBy={sortBy}
+        sortOrder={sortOrder}
+        onSortChange={(sb, so) => {
+          setSortBy(sb)
+          setSortOrder(so)
+          setCurrentPage(1)
+        }}
+        viewMode={viewMode}
+        onViewModeChange={setViewMode}
+        categories={categories}
+        isLoading={isLoading}
+        onRefresh={() => {
+          loadPosts()
+          loadStatsAndTaxonomies()
+        }}
+      />
 
       {/* Main Content View (Table or Grid) */}
       {viewMode === "table" ? (
@@ -541,42 +363,15 @@ export default function BlogsPage() {
           onBulkDelete={handlePromptBulkDelete}
         />
       ) : (
-        <div className="space-y-6">
-          {isLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {Array.from({ length: 6 }).map((_, i) => (
-                <Card key={i} className="h-80 animate-pulse bg-muted/40" />
-              ))}
-            </div>
-          ) : posts.length === 0 ? (
-            <div className="p-12 text-center border border-dashed rounded-xl bg-card text-muted-foreground space-y-3">
-              <BookOpen className="h-10 w-10 mx-auto text-muted-foreground/60" />
-              <div className="text-base font-semibold text-foreground">No blog posts found</div>
-              <p className="text-xs max-w-sm mx-auto">
-                No articles match the current filter or search criteria.
-              </p>
-              <Button size="sm" asChild>
-                <Link href="/blogs/create">
-                  <Plus className="h-4 w-4 mr-1" /> Create First Post
-                </Link>
-              </Button>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-              {posts.map((post) => (
-                <BlogCard
-                  key={post.id}
-                  post={post}
-                  onEdit={handleOpenEdit}
-                  onPreview={handleOpenPreview}
-                  onDuplicate={handleDuplicate}
-                  onDelete={handlePromptDelete}
-                  onStatusChange={handleStatusChange}
-                />
-              ))}
-            </div>
-          )}
-        </div>
+        <BlogGridView
+          posts={posts}
+          isLoading={isLoading}
+          onEdit={handleOpenEdit}
+          onPreview={handleOpenPreview}
+          onDuplicate={handleDuplicate}
+          onDelete={handlePromptDelete}
+          onStatusChange={handleStatusChange}
+        />
       )}
 
       {/* Taxonomy Manager Modal (Categories & Tags) */}

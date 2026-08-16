@@ -152,6 +152,58 @@ export async function updateSubscriptionStatus(subscribed: boolean): Promise<{
   }
 }
 
+export async function uploadProfileAvatar(file: File): Promise<{
+  success: boolean;
+  user?: AuthUser;
+  error?: string;
+}> {
+  const current = getSimpleProfileState();
+  if (!current.profile) {
+    return { success: false, error: "You must be signed in to upload an avatar." };
+  }
+
+  try {
+    const res = await AuthApi.uploadAvatar(file);
+    if (res.success && res.data) {
+      const updatedState: SimpleUserProfileState = {
+        ...current,
+        profile: res.data,
+      };
+      saveSimpleProfileState(updatedState);
+      return { success: true, user: res.data };
+    }
+    return { success: false, error: res.error || res.message || "Failed to upload avatar." };
+  } catch (err: any) {
+    return { success: false, error: err?.message || "Failed to upload avatar." };
+  }
+}
+
+export async function removeProfileAvatar(): Promise<{
+  success: boolean;
+  user?: AuthUser;
+  error?: string;
+}> {
+  const current = getSimpleProfileState();
+  if (!current.profile) {
+    return { success: false, error: "You must be signed in to remove your avatar." };
+  }
+
+  try {
+    const res = await AuthApi.deleteAvatar();
+    if (res.success && res.data) {
+      const updatedState: SimpleUserProfileState = {
+        ...current,
+        profile: res.data,
+      };
+      saveSimpleProfileState(updatedState);
+      return { success: true, user: res.data };
+    }
+    return { success: false, error: res.error || res.message || "Failed to remove avatar." };
+  } catch (err: any) {
+    return { success: false, error: err?.message || "Failed to remove avatar." };
+  }
+}
+
 export async function deleteUserProfile(): Promise<{
   success: boolean;
   error?: string;
@@ -209,6 +261,8 @@ export function useProfileState() {
     profile: activeState.profile,
     subscribedToNewsletter: activeState.subscribedToNewsletter,
     updateProfile: updateProfileInfo,
+    uploadAvatar: uploadProfileAvatar,
+    removeAvatar: removeProfileAvatar,
     updateSubscription: updateSubscriptionStatus,
     deleteAccount: deleteUserProfile,
   };

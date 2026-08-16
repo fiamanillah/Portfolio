@@ -1,0 +1,10 @@
+info:
+  name: Delete Profile Avatar (S3/R2)
+  type: http
+  seq: 10
+
+delete:
+  url: "{{baseUrl}}/users/v1/profile/avatar"
+  headers:
+    - name: Authorization
+      value: "Bearer {{token}}"

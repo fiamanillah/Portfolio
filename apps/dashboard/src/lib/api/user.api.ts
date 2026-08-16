@@ -75,4 +75,26 @@ export const UserApi = {
       method: "DELETE",
     });
   },
+
+  /**
+   * 7. Upload profile avatar to Cloudflare R2 / S3
+   */
+  async uploadAvatar(file: File) {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    return await request<AuthUser>("/users/v1/profile/avatar", {
+      method: "POST",
+      body: formData,
+    });
+  },
+
+  /**
+   * 8. Remove profile avatar
+   */
+  async deleteAvatar() {
+    return await request<AuthUser>("/users/v1/profile/avatar", {
+      method: "DELETE",
+    });
+  },
 };

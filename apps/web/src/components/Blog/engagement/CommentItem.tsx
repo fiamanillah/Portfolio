@@ -2,6 +2,7 @@ import { useState } from "react"
 import type { BlogComment, AuthUser } from "@/data/commentsData"
 import { useAuthSession } from "@/lib/authStore"
 import { CommentComposer } from "./CommentComposer"
+import { ReportCommentModal } from "./ReportCommentModal"
 import { HugeiconsIcon } from "@hugeicons/react"
 import {
   ArrowTurnBackwardIcon,
@@ -10,6 +11,7 @@ import {
   ArrowDown01Icon,
   ArrowUp01Icon,
   Loading03Icon,
+  AlertCircleIcon,
 } from "@hugeicons/core-free-icons"
 
 interface CommentItemProps {
@@ -112,6 +114,7 @@ export function CommentItem({
   const [isRepliesExpanded, setIsRepliesExpanded] = useState(true)
   const [replyPage, setReplyPage] = useState(1)
   const [isLoadingMoreReplies, setIsLoadingMoreReplies] = useState(false)
+  const [showReportModal, setShowReportModal] = useState(false)
 
   const isAuthorSelf = user?.id === comment.author.id || user?.username === comment.author.username
   const isPostAuthor = comment.author.badge === "Author" || comment.author.username === "fiamanillah"
@@ -129,7 +132,6 @@ export function CommentItem({
     onReply(comment.parentId || comment.id, user, content)
     setShowReplyBox(false)
     setIsRepliesExpanded(true)
-    // Make sure new reply is within visible range
     setReplyPage(Math.ceil((totalReplies.length + 1) / REPLIES_PAGE_SIZE))
   }
 
@@ -137,7 +139,6 @@ export function CommentItem({
     if (isLoadingMoreReplies || !hasMoreReplies) return
     setIsLoadingMoreReplies(true)
 
-    // Simulate async reply fetch
     setTimeout(() => {
       setReplyPage((prev) => prev + 1)
       setIsLoadingMoreReplies(false)
@@ -233,7 +234,7 @@ export function CommentItem({
                 <span className="text-[11px]">{comment.likes || 0}</span>
               </button>
 
-              {/* Reply Button (Only allowed on top-level comments) */}
+              {/* Reply Button */}
               {!isChild && (
                 <button
                   type="button"
@@ -244,6 +245,17 @@ export function CommentItem({
                   <span>{showReplyBox ? "Cancel" : "Reply"}</span>
                 </button>
               )}
+
+              {/* Report Button */}
+              <button
+                type="button"
+                onClick={() => setShowReportModal(true)}
+                className="inline-flex items-center gap-1 font-mono text-[11px] text-muted-foreground hover:text-rose-400 transition-colors cursor-pointer"
+                title="Report this comment to moderation team"
+              >
+                <HugeiconsIcon icon={AlertCircleIcon} className="size-3 text-muted-foreground/80 hover:text-rose-400" />
+                <span>Report</span>
+              </button>
             </div>
 
             {/* Expand / Collapse Replies Toggle */}
@@ -282,7 +294,7 @@ export function CommentItem({
         </div>
       )}
 
-      {/* Nested Replies List with Expand/Collapse and Show More Pagination */}
+      {/* Nested Replies */}
       {hasReplies && isRepliesExpanded && (
         <div className="space-y-3 pl-4 sm:pl-8 border-l-2 border-border/80 ml-4 sm:ml-6 mt-3 transition-all duration-200">
           {visibleReplies.map((reply) => (
@@ -326,8 +338,15 @@ export function CommentItem({
           )}
         </div>
       )}
+
+      {/* Report Modal */}
+      <ReportCommentModal
+        commentId={comment.id}
+        isOpen={showReportModal}
+        userName={user?.name}
+        userEmail={user?.email}
+        onClose={() => setShowReportModal(false)}
+      />
     </div>
   )
 }
-
-

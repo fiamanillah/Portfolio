@@ -1,0 +1,18 @@
+info:
+  name: Get Media File by ID
+  type: http
+  seq: 6
+
+http:
+  method: GET
+  url: "{{baseUrl}}/media/v1/files/{{mediaId}}"
+  headers:
+    - name: Authorization
+      value: "Bearer {{authToken}}"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

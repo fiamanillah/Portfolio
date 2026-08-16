@@ -91,3 +91,23 @@ export type BlogPost = Prisma.BlogPostModel
  * 
  */
 export type BlogReaction = Prisma.BlogReactionModel
+/**
+ * Model Comment
+ * 
+ */
+export type Comment = Prisma.CommentModel
+/**
+ * Model CommentReaction
+ * 
+ */
+export type CommentReaction = Prisma.CommentReactionModel
+/**
+ * Model CommentReport
+ * 
+ */
+export type CommentReport = Prisma.CommentReportModel
+/**
+ * Model MediaFile
+ * 
+ */
+export type MediaFile = Prisma.MediaFileModel

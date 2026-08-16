@@ -5,6 +5,7 @@ import { config } from "./core/config";
 
 // Providers (Infrastructure)
 import { PrismaProvider } from "./providers/PrismaProvider";
+import { R2StorageProvider } from "./providers/R2StorageProvider";
 import { prisma } from "@workspace/db";
 import { AuthModule } from "./Modules/Auth/AuthModule";
 import { UserModule } from "./Modules/User/UserModule";
@@ -12,6 +13,8 @@ import { ContactModule } from "./Modules/Contact/ContactModule";
 import { SubscriberModule } from "./Modules/Subscriber/SubscriberModule";
 import { TemplateModule } from "./Modules/Template/TemplateModule";
 import { BlogModule } from "./Modules/Blog/BlogModule";
+import { CommentModule } from "./Modules/Comment/CommentModule";
+import { MediaModule } from "./Modules/Media/MediaModule";
 
 // Modules (Business Logic)
 
@@ -27,6 +30,7 @@ async function bootstrap() {
     // 2. Register Infrastructure Providers
     logger.info("⚙ Registering infrastructure...");
     app.getContext().registerProvider("prisma", new PrismaProvider(prisma));
+    app.getContext().registerProvider("storage", new R2StorageProvider());
 
     // 3. Register Application Modules
     logger.info("⚙ Registering modules...");
@@ -36,6 +40,8 @@ async function bootstrap() {
     app.registerModule(new SubscriberModule());
     app.registerModule(new TemplateModule());
     app.registerModule(new BlogModule());
+    app.registerModule(new CommentModule());
+    app.registerModule(new MediaModule());
     logger.info("✔ All modules registered successfully");
 
     // 4. Spark the server!

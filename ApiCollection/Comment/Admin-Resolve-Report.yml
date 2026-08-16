@@ -1,0 +1,28 @@
+info:
+  name: Admin - Resolve Report
+  type: http
+  seq: 9
+
+http:
+  method: PATCH
+  url: "{{baseUrl}}/comments/v1/admin/reports/{{reportId}}"
+  headers:
+    - name: Content-Type
+      value: application/json
+    - name: Authorization
+      value: "Bearer {{authToken}}"
+  body:
+    type: json
+    data: |-
+      {
+        "status": "ACTION_TAKEN",
+        "action": "DELETE_COMMENT",
+        "resolutionNotes": "Comment violates anti-harassment guidelines. Offending message removed."
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

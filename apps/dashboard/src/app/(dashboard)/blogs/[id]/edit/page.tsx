@@ -7,6 +7,7 @@ import { Button } from "@workspace/ui/components/button"
 import type { BlogPostDTO, BlogCategoryDTO, BlogTagDTO } from "@workspace/shared"
 import { BlogApi } from "@/lib/api"
 import { PostEditorForm } from "../../components/post-editor-form"
+import { CategoryTagDialog } from "../../category-tag-dialog"
 
 export default function EditBlogPostPage() {
   const params = useParams()
@@ -18,8 +19,9 @@ export default function EditBlogPostPage() {
   const [tags, setTags] = React.useState<BlogTagDTO[]>([])
   const [isLoading, setIsLoading] = React.useState(true)
   const [error, setError] = React.useState<string | null>(null)
+  const [isTaxonomyOpen, setIsTaxonomyOpen] = React.useState(false)
 
-  React.useEffect(() => {
+  const loadData = React.useCallback(() => {
     if (!id) return
 
     setIsLoading(true)
@@ -43,6 +45,10 @@ export default function EditBlogPostPage() {
       })
       .finally(() => setIsLoading(false))
   }, [id])
+
+  React.useEffect(() => {
+    loadData()
+  }, [loadData])
 
   if (isLoading) {
     return (
@@ -76,6 +82,13 @@ export default function EditBlogPostPage() {
         tags={tags}
         isEdit={true}
         onSuccessRedirect="/blogs"
+        onOpenTaxonomyManager={() => setIsTaxonomyOpen(true)}
+      />
+
+      <CategoryTagDialog
+        open={isTaxonomyOpen}
+        onOpenChange={setIsTaxonomyOpen}
+        onUpdated={loadData}
       />
     </div>
   )

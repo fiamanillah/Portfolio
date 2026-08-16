@@ -11,6 +11,7 @@ import type {
   CreateBlogCategoryDTO,
   UpdateBlogCategoryDTO,
   CreateBlogTagDTO,
+  UpdateBlogTagDTO,
   ListBlogPostsQueryDTO,
   BulkBlogStatusDTO,
   BulkBlogDeleteDTO,
@@ -196,7 +197,17 @@ export const BlogApi = {
   },
 
   /**
-   * 18. Delete tag
+   * 18. Update tag
+   */
+  async updateTag(id: string, payload: UpdateBlogTagDTO) {
+    return await request<BlogTagDTO>(`/blogs/v1/admin/tags/${id}`, {
+      method: "PATCH",
+      body: JSON.stringify(payload),
+    });
+  },
+
+  /**
+   * 19. Delete tag
    */
   async deleteTag(id: string) {
     return await request<{ id: string }>(`/blogs/v1/admin/tags/${id}`, {

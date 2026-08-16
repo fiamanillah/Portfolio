@@ -88,6 +88,11 @@ model User {
   refreshTokens          RefreshToken[]
   posts                  BlogPost[]
   blogReactions          BlogReaction[]
+  comments               Comment[]
+  commentReactions       CommentReaction[]
+  commentReports         CommentReport[]   @relation("ReportedByUser")
+  reviewedReports        CommentReport[]   @relation("ReviewedByUser")
+  uploadedMedia          MediaFile[]
 
   @@index([email])
   @@index([username])
@@ -215,6 +220,7 @@ model BlogPost {
   structuredData     Json?
 
   reactions          BlogReaction[]
+  comments           Comment[]
 
   createdAt          DateTime      @default(now())
   updatedAt          DateTime      @default(now()) @updatedAt
@@ -239,5 +245,139 @@ model BlogReaction {
 
   @@unique([postId, userId, reactionType])
   @@index([postId, reactionType])
+}
+
+enum CommentStatus {
+  APPROVED
+  PENDING
+  SPAM
+  REJECTED
+}
+
+enum CommentReportReason {
+  SPAM
+  HARASSMENT
+  HATE_SPEECH
+  INAPPROPRIATE
+  MISINFORMATION
+  OTHER
+}
+
+enum CommentReportStatus {
+  PENDING
+  REVIEWED
+  DISMISSED
+  ACTION_TAKEN
+}
+
+model Comment {
+  id           String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  postId       String             @db.Uuid
+  post         BlogPost           @relation(fields: [postId], references: [id], onDelete: Cascade)
+  authorId     String?            @db.Uuid
+  author       User?              @relation(fields: [authorId], references: [id], onDelete: SetNull)
+
+  // Guest / fallback metadata
+  guestName    String?
+  guestEmail   String?
+  guestAvatar  String?
+
+  content      String             @db.Text
+  status       CommentStatus      @default(APPROVED)
+  isPinned     Boolean            @default(false)
+  likesCount   Int                @default(0)
+
+  // Nested self-relation for threaded replies
+  parentId     String?            @db.Uuid
+  parent       Comment?           @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies      Comment[]          @relation("CommentReplies")
+
+  reactions    CommentReaction[]
+  reports      CommentReport[]
+
+  ipAddress    String?
+  userAgent    String?
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @default(now()) @updatedAt
+
+  @@index([postId, status, createdAt])
+  @@index([parentId])
+  @@index([authorId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model CommentReaction {
+  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  commentId    String    @db.Uuid
+  comment      Comment   @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  userId       String?   @db.Uuid
+  user         User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reactionType String    @default("like")
+  ipAddress    String?
+  createdAt    DateTime  @default(now())
+
+  @@unique([commentId, userId, reactionType])
+  @@index([commentId, reactionType])
+}
+
+model CommentReport {
+  id              String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  commentId       String              @db.Uuid
+  comment         Comment             @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  reporterId      String?             @db.Uuid
+  reporter        User?               @relation("ReportedByUser", fields: [reporterId], references: [id], onDelete: SetNull)
+  reporterName    String?
+  reporterEmail   String?
+
+  reason          CommentReportReason @default(INAPPROPRIATE)
+  details         String?             @db.Text
+  status          CommentReportStatus @default(PENDING)
+
+  reviewedById    String?             @db.Uuid
+  reviewedBy      User?               @relation("ReviewedByUser", fields: [reviewedById], references: [id], onDelete: SetNull)
+  resolutionNotes String?             @db.Text
+
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @default(now()) @updatedAt
+
+  @@index([commentId])
+  @@index([status])
+  @@index([reporterId])
+  @@index([reviewedById])
+  @@index([createdAt])
+}
+
+model MediaFile {
+  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  key            String    @unique
+  bucket         String
+  fileName       String
+  fileExtension  String?
+  mimeType       String
+  size           BigInt
+  url            String
+  etag           String?
+  source         String    @default("API")
+  folder         String    @default("general")
+  entityType     String?
+  entityId       String?   @db.Uuid
+  tags           String[]  @default([])
+  altText        String?
+  caption        String?
+  metadata       Json?
+  isPublic       Boolean   @default(true)
+  uploaderId     String?   @db.Uuid
+  uploader       User?     @relation(fields: [uploaderId], references: [id], onDelete: SetNull)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @default(now()) @updatedAt
+
+  @@index([folder])
+  @@index([source])
+  @@index([mimeType])
+  @@index([entityType, entityId])
+  @@index([uploaderId])
+  @@index([createdAt])
 }
 

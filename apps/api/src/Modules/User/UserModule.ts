@@ -1,9 +1,10 @@
-// src/Modules/User/UserModule.ts
+import multer from "multer";
 import { BaseModule } from "@/core/BaseModule";
 import { AppLogger } from "@workspace/logger";
 import { Role } from "@workspace/db";
 import { UserService } from "./user.service";
 import { UserController } from "./user.controller";
+import { StorageService } from "@/services/StorageService";
 import { validateRequest } from "@/middleware/validation";
 import { authenticate, requireRole } from "@/middleware/auth";
 import {
@@ -24,7 +25,14 @@ export class UserModule extends BaseModule {
 
   protected async setupUseCases(): Promise<void> {
     const prisma = this.context.getService("prisma");
-    this.registerService("UserService", new UserService(prisma));
+    let storageClient;
+    try {
+      storageClient = this.context.getService("storage");
+    } catch {
+      // Fallback if not registered
+    }
+    const storage = new StorageService(storageClient);
+    this.registerService("UserService", new UserService(prisma, storage));
   }
 
   protected async setupControllers(): Promise<void> {
@@ -34,6 +42,13 @@ export class UserModule extends BaseModule {
 
   protected async setupRoutes(): Promise<void> {
     const controller = this.getController<UserController>("UserController");
+
+    const upload = multer({
+      storage: multer.memoryStorage(),
+      limits: {
+        fileSize: 10485760, // 10MB
+      },
+    });
 
     // ── Self Profile & Security Endpoints ─────────────────────────────────────
 
@@ -50,6 +65,21 @@ export class UserModule extends BaseModule {
       authenticate,
       validateRequest(updateProfileSchema),
       controller.updateProfile.bind(controller)
+    );
+
+    // POST /users/v1/profile/avatar - Upload avatar to Cloudflare R2 / S3
+    this.router.post(
+      "/profile/avatar",
+      authenticate,
+      upload.single("file"),
+      controller.uploadAvatar.bind(controller)
+    );
+
+    // DELETE /users/v1/profile/avatar - Delete profile avatar
+    this.router.delete(
+      "/profile/avatar",
+      authenticate,
+      controller.deleteAvatar.bind(controller)
     );
 
     // PATCH /users/v1/change-password

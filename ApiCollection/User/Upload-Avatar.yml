@@ -1,0 +1,16 @@
+info:
+  name: Upload Profile Avatar (S3/R2)
+  type: http
+  seq: 9
+
+post:
+  url: "{{baseUrl}}/users/v1/profile/avatar"
+  headers:
+    - name: Authorization
+      value: "Bearer {{token}}"
+  body:
+    type: multipart-form
+    data:
+      - name: file
+        type: file
+        value: ""

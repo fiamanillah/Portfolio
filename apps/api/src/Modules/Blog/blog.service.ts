@@ -22,11 +22,17 @@ import {
   PublicBlogQueryDTO,
   SeoPreviewDTO,
 } from "./BlogDTO";
+import { StorageService } from "@/services/StorageService";
 import fs from "fs/promises";
 import path from "path";
 
 export class BlogService {
   private logger = new AppLogger("BlogService");
+
+  constructor(
+    private readonly db: typeof prisma = prisma,
+    private readonly storage: StorageService = new StorageService()
+  ) {}
 
   // =========================================================================
   // UTILITY & TEXT COMPUTATION HELPERS
@@ -723,30 +729,63 @@ export class BlogService {
   }
 
   /**
-   * Delete a blog post by ID
+   * Delete a blog post by ID & clean up unreferenced thumbnail and media assets from R2/S3
    */
   public async delete(id: string): Promise<void> {
-    const post = await prisma.blogPost.findUnique({
+    const post = await this.db.blogPost.findUnique({
       where: { id },
-      select: { id: true, title: true },
+      select: { id: true, title: true, thumbnail: true },
     });
 
     if (!post) {
       throw new NotFoundError(`Blog post with ID '${id}' not found`);
     }
 
-    await prisma.blogPost.delete({
+    // 1. Clean up thumbnail if not used by another blog post
+    if (post.thumbnail) {
+      const thumbnailKey = this.storage.extractKeyFromUrl(post.thumbnail);
+      if (thumbnailKey) {
+        const otherWithThumb = await this.db.blogPost.count({
+          where: { thumbnail: post.thumbnail, id: { not: id } },
+        });
+        if (otherWithThumb === 0) {
+          try {
+            await this.storage.deleteObject(thumbnailKey);
+            await this.db.mediaFile.deleteMany({ where: { key: thumbnailKey } });
+            this.logger.info(`✔ Deleted orphaned post thumbnail from R2: ${thumbnailKey}`);
+          } catch (err: any) {
+            this.logger.warn(`Could not delete post thumbnail from storage: ${err.message}`);
+          }
+        }
+      }
+    }
+
+    // 2. Clean up any media files tied specifically to this post
+    const postMedia = await this.db.mediaFile.findMany({
+      where: { entityType: "BlogPost", entityId: id },
+    });
+    if (postMedia.length > 0) {
+      const keys = postMedia.map((m) => m.key).filter(Boolean);
+      try {
+        await this.storage.deleteObjects(keys);
+        await this.db.mediaFile.deleteMany({ where: { key: { in: keys } } });
+      } catch (err: any) {
+        this.logger.warn(`Could not delete post media assets from storage: ${err.message}`);
+      }
+    }
+
+    await this.db.blogPost.delete({
       where: { id },
     });
 
-    this.logger.info(`Blog post deleted: '${post.title}' (ID: ${id})`);
+    this.logger.info(`✔ Blog post deleted: '${post.title}' (ID: ${id})`);
   }
 
   /**
    * Duplicate an existing blog post into a new draft copy
    */
   public async duplicate(id: string, user?: AuthenticatedUserPayload): Promise<BlogPostDTO> {
-    const post = await prisma.blogPost.findUnique({
+    const post = await this.db.blogPost.findUnique({
       where: { id },
     });
 
@@ -757,7 +796,7 @@ export class BlogService {
     const newSlug = await this.ensureUniqueSlug(`${post.slug}-copy`);
     const newTitle = `${post.title} (Copy)`;
 
-    const duplicated = await prisma.blogPost.create({
+    const duplicated = await this.db.blogPost.create({
       data: {
         slug: newSlug,
         title: newTitle,
@@ -765,17 +804,6 @@ export class BlogService {
         summary: post.summary,
         content: post.content,
         thumbnail: post.thumbnail,
-        status: "DRAFT",
-        featured: false,
-        pinned: false,
-        readTime: post.readTime,
-        readTimeMinutes: post.readTimeMinutes,
-        wordCount: post.wordCount,
-        date: this.formatDisplayDate(new Date()),
-        publishedAt: null,
-        scheduledAt: null,
-        views: 0,
-        likesCount: 0,
         commentsCount: 0,
         keyTakeaways: post.keyTakeaways,
         tags: post.tags,
@@ -842,14 +870,52 @@ export class BlogService {
   }
 
   /**
-   * Bulk delete multiple posts
+   * Bulk delete multiple posts & purge unreferenced media assets
    */
   public async bulkDelete(ids: string[]): Promise<{ count: number }> {
-    const result = await prisma.blogPost.deleteMany({
+    const posts = await this.db.blogPost.findMany({
+      where: { id: { in: ids } },
+      select: { id: true, thumbnail: true },
+    });
+
+    const keysToDelete: string[] = [];
+    for (const post of posts) {
+      if (post.thumbnail) {
+        const key = this.storage.extractKeyFromUrl(post.thumbnail);
+        if (key) {
+          const count = await this.db.blogPost.count({
+            where: { thumbnail: post.thumbnail, id: { notIn: ids } },
+          });
+          if (count === 0 && !keysToDelete.includes(key)) {
+            keysToDelete.push(key);
+          }
+        }
+      }
+    }
+
+    const postMedia = await this.db.mediaFile.findMany({
+      where: { entityType: "BlogPost", entityId: { in: ids } },
+    });
+    for (const m of postMedia) {
+      if (m.key && !keysToDelete.includes(m.key)) {
+        keysToDelete.push(m.key);
+      }
+    }
+
+    if (keysToDelete.length > 0) {
+      try {
+        await this.storage.deleteObjects(keysToDelete);
+        await this.db.mediaFile.deleteMany({ where: { key: { in: keysToDelete } } });
+      } catch (err: any) {
+        this.logger.warn(`Could not bulk delete media assets: ${err.message}`);
+      }
+    }
+
+    const result = await this.db.blogPost.deleteMany({
       where: { id: { in: ids } },
     });
 
-    this.logger.info(`Bulk deleted ${result.count} posts`);
+    this.logger.info(`Bulk deleted ${result.count} posts and cleaned associated storage`);
     return { count: result.count };
   }
 

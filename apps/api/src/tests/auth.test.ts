@@ -1,12 +1,21 @@
-// src/tests/auth.test.ts
 import { describe, it, expect, beforeAll, afterAll } from "bun:test";
 import { prisma, Role, OtpType } from "@workspace/db";
 import { AuthServices } from "../Modules/Auth/auth.service";
 import { UserService } from "../Modules/User/user.service";
+import { StorageService } from "../services/StorageService";
+import { S3Client } from "@aws-sdk/client-s3";
 
 describe("Authentication & RBAC System Integration Tests", () => {
+  const mockS3 = new S3Client({
+    region: "auto",
+    endpoint: "https://example.r2.cloudflarestorage.com",
+    credentials: { accessKeyId: "mockKey", secretAccessKey: "mockSecret" },
+  });
+  mockS3.send = (async () => ({ ETag: '"test-avatar-etag"', $metadata: { httpStatusCode: 200 } })) as any;
+  const mockStorage = new StorageService(mockS3, "portfolio-assets", "https://assets.fi.amanillah.com");
+
   const authService = new AuthServices(prisma);
-  const userService = new UserService(prisma);
+  const userService = new UserService(prisma, mockStorage);
 
   const testEmail = `test_${Date.now()}@example.com`;
   const testPassword = "SuperSecurePassword123!";
@@ -211,6 +220,75 @@ describe("Authentication & RBAC System Integration Tests", () => {
     });
     expect(promoted.role).toBe(Role.MODERATOR);
     expect(promoted.badge).toBe("Community Moderator");
+  });
+
+  it("11b. should upload profile avatar to Cloudflare R2 / S3 and update user record", async () => {
+    const mockFile: Express.Multer.File = {
+      fieldname: "file",
+      originalname: "avatar-profile-pic.png",
+      encoding: "7bit",
+      mimetype: "image/png",
+      size: 1024,
+      buffer: Buffer.from("mock-png-data"),
+      destination: "",
+      filename: "",
+      path: "",
+      stream: null as any,
+    };
+
+    const updatedUser = await userService.uploadAvatar(testUserId, mockFile);
+    expect(updatedUser.avatar).not.toBeNull();
+    expect(updatedUser.avatar).toContain("/avatars/");
+    expect(updatedUser.avatar).toContain(".png");
+
+    const dbUser = await prisma.user.findUnique({
+      where: { id: testUserId },
+    });
+    expect(dbUser?.avatar).toBe(updatedUser.avatar);
+
+    const mediaCount = await prisma.mediaFile.count({
+      where: { entityType: "User", entityId: testUserId, folder: "avatars" },
+    });
+    expect(mediaCount).toBe(1);
+
+    // Upload a replacement avatar to verify old avatar is deleted
+    const replacementFile: Express.Multer.File = {
+      fieldname: "file",
+      originalname: "new-avatar-replacement.png",
+      encoding: "7bit",
+      mimetype: "image/png",
+      size: 2048,
+      buffer: Buffer.from("mock-png-data-v2"),
+      destination: "",
+      filename: "",
+      path: "",
+      stream: null as any,
+    };
+
+    const replacedUser = await userService.uploadAvatar(testUserId, replacementFile);
+    expect(replacedUser.avatar).not.toBe(updatedUser.avatar);
+    expect(replacedUser.avatar).toContain("new-avatar-replacement");
+
+    // Must still be exactly 1 avatar stored for this user (old was deleted)
+    const newMediaCount = await prisma.mediaFile.count({
+      where: { entityType: "User", entityId: testUserId, folder: "avatars" },
+    });
+    expect(newMediaCount).toBe(1);
+  });
+
+  it("11c. should remove profile avatar and purge storage record", async () => {
+    const updatedUser = await userService.deleteAvatar(testUserId);
+    expect(updatedUser.avatar).toBeNull();
+
+    const dbUser = await prisma.user.findUnique({
+      where: { id: testUserId },
+    });
+    expect(dbUser?.avatar).toBeNull();
+
+    const remainingAvatars = await prisma.mediaFile.count({
+      where: { entityType: "User", entityId: testUserId, folder: "avatars" },
+    });
+    expect(remainingAvatars).toBe(0);
   });
 
   it("12. should allow user to delete their own account", async () => {

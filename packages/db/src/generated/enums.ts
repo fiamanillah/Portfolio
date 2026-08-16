@@ -36,3 +36,35 @@ export const BlogStatus = {
 } as const
 
 export type BlogStatus = (typeof BlogStatus)[keyof typeof BlogStatus]
+
+
+export const CommentStatus = {
+  APPROVED: 'APPROVED',
+  PENDING: 'PENDING',
+  SPAM: 'SPAM',
+  REJECTED: 'REJECTED'
+} as const
+
+export type CommentStatus = (typeof CommentStatus)[keyof typeof CommentStatus]
+
+
+export const CommentReportReason = {
+  SPAM: 'SPAM',
+  HARASSMENT: 'HARASSMENT',
+  HATE_SPEECH: 'HATE_SPEECH',
+  INAPPROPRIATE: 'INAPPROPRIATE',
+  MISINFORMATION: 'MISINFORMATION',
+  OTHER: 'OTHER'
+} as const
+
+export type CommentReportReason = (typeof CommentReportReason)[keyof typeof CommentReportReason]
+
+
+export const CommentReportStatus = {
+  PENDING: 'PENDING',
+  REVIEWED: 'REVIEWED',
+  DISMISSED: 'DISMISSED',
+  ACTION_TAKEN: 'ACTION_TAKEN'
+} as const
+
+export type CommentReportStatus = (typeof CommentReportStatus)[keyof typeof CommentReportStatus]

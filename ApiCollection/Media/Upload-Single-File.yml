@@ -1,0 +1,39 @@
+info:
+  name: Upload Single File
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: "{{baseUrl}}/media/v1/upload"
+  headers:
+    - name: Authorization
+      value: "Bearer {{authToken}}"
+  body:
+    type: multipartForm
+    data:
+      - name: file
+        type: file
+        value: []
+      - name: folder
+        type: text
+        value: "blogs"
+      - name: source
+        type: text
+        value: "BLOG_EDITOR"
+      - name: tags
+        type: text
+        value: "featured,cover,architecture"
+      - name: altText
+        type: text
+        value: "Architecture diagram overview"
+      - name: isPublic
+        type: text
+        value: "true"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

@@ -1,9 +1,7 @@
 import { PrismaClient } from "@workspace/db";
-// import { Redis } from "ioredis";
-// import Stripe from "stripe";
+import { S3Client } from "@aws-sdk/client-s3";
 
 export interface ServiceMap {
   prisma: PrismaClient;
-  // redis: Redis;
-  // stripe: Stripe;
+  storage: S3Client;
 }

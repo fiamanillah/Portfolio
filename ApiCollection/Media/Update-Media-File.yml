@@ -1,0 +1,28 @@
+info:
+  name: Update Media File
+  type: http
+  seq: 7
+
+http:
+  method: PATCH
+  url: "{{baseUrl}}/media/v1/files/{{mediaId}}"
+  headers:
+    - name: Authorization
+      value: "Bearer {{authToken}}"
+  body:
+    type: json
+    data: |-
+      {
+        "altText": "Updated alt text for accessibility",
+        "caption": "Updated media caption",
+        "tags": ["featured", "engineering", "cloudflare-r2"],
+        "folder": "blogs",
+        "isPublic": true
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

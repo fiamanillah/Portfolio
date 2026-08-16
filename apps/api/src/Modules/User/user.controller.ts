@@ -38,6 +38,30 @@ export class UserController extends BaseController {
   }
 
   /**
+   * POST /users/v1/profile/avatar
+   */
+  public async uploadAvatar(req: Request, res: Response) {
+    const userId = req.user!.id;
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: "No image file provided. Please upload an image file (PNG, JPG, WebP, GIF, SVG).",
+      });
+    }
+    const profile = await this.userService.uploadAvatar(userId, req.file);
+    return this.sendResponse(req, res, "Profile avatar updated successfully", 200, profile);
+  }
+
+  /**
+   * DELETE /users/v1/profile/avatar
+   */
+  public async deleteAvatar(req: Request, res: Response) {
+    const userId = req.user!.id;
+    const profile = await this.userService.deleteAvatar(userId);
+    return this.sendResponse(req, res, "Profile avatar removed successfully", 200, profile);
+  }
+
+  /**
    * PATCH /users/v1/change-password
    */
   public async changePassword(req: Request, res: Response) {

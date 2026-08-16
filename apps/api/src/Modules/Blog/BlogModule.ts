@@ -6,6 +6,7 @@ import { authenticate, optionalAuth, requireRole } from "@/middleware/auth";
 import { Role } from "@workspace/db";
 import { BlogService } from "./blog.service";
 import { BlogController } from "./blog.controller";
+import { StorageService } from "@/services/StorageService";
 import {
   createBlogPostSchema,
   updateBlogPostSchema,
@@ -29,7 +30,15 @@ export class BlogModule extends BaseModule {
   protected logger = new AppLogger("BlogModule");
 
   protected async setupUseCases(): Promise<void> {
-    const blogService = new BlogService();
+    const prisma = this.context.getService("prisma");
+    let storageClient;
+    try {
+      storageClient = this.context.getService("storage");
+    } catch {
+      // Fallback
+    }
+    const storage = new StorageService(storageClient);
+    const blogService = new BlogService(prisma, storage);
     this.registerService("BlogService", blogService);
   }
 

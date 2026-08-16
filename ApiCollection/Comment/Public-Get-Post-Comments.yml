@@ -1,0 +1,15 @@
+info:
+  name: Public - Get Post Comments
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: "{{baseUrl}}/comments/v1/public/post/scaling-rabbitmq-redis?page=1&limit=10&sortBy=newest"
+  auth: none
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

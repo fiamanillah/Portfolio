@@ -1,0 +1,28 @@
+info:
+  name: Confirm Presigned Upload
+  type: http
+  seq: 4
+
+http:
+  method: POST
+  url: "{{baseUrl}}/media/v1/confirm-presigned"
+  headers:
+    - name: Authorization
+      value: "Bearer {{authToken}}"
+  body:
+    type: json
+    data: |-
+      {
+        "id": "{{mediaId}}",
+        "key": "blogs/2026/08/large-video-demo-a1b2c3d4.mp4",
+        "size": 15728640,
+        "etag": "etag-hash-value",
+        "altText": "Verified demo video"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

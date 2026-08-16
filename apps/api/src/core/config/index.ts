@@ -73,6 +73,28 @@ export const config = {
     level: process.env.LOG_LEVEL || "info",
     path: process.env.LOG_FILE_PATH || "logs/app.log",
   },
+  storage: {
+    provider: (process.env.STORAGE_PROVIDER || "r2") as "r2" | "s3",
+    endpoint:
+      process.env.R2_ENDPOINT ||
+      (process.env.R2_ACCOUNT_ID
+        ? `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`
+        : undefined),
+    accountId: process.env.R2_ACCOUNT_ID || "",
+    region: process.env.R2_REGION || "auto",
+    accessKeyId: process.env.R2_ACCESS_KEY_ID || "",
+    secretAccessKey: process.env.R2_SECRET_ACCESS_KEY || "",
+    bucket: process.env.R2_BUCKET_NAME || "portfolio-assets",
+    publicDomain: process.env.R2_PUBLIC_DOMAIN || "",
+    maxFileSize: parseInt(process.env.STORAGE_MAX_FILE_SIZE || "52428800"), // 50MB
+    defaultPresignedExpiresIn: parseInt(
+      process.env.STORAGE_PRESIGNED_EXPIRES_IN || "900",
+    ), // 15 minutes
+    allowedMimeTypes: (process.env.STORAGE_ALLOWED_MIME_TYPES || "")
+      .split(",")
+      .map((t) => t.trim())
+      .filter(Boolean),
+  },
 };
 
 export default config;

@@ -1,0 +1,28 @@
+info:
+  name: Public - Create Comment
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: "{{baseUrl}}/comments/v1/public/post/scaling-rabbitmq-redis"
+  headers:
+    - name: Content-Type
+      value: application/json
+    - name: Authorization
+      value: "Bearer {{authToken}}"
+  body:
+    type: json
+    data: |-
+      {
+        "slug": "scaling-rabbitmq-redis",
+        "content": "Incredible breakdown of queue durability vs persistence! What happens during heavy failovers?",
+        "parentId": null
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

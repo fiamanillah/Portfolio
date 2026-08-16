@@ -222,3 +222,2635 @@
   "timestamp": "2026-08-16 06:16:47.981",
   "userId": "51817a8b-16ac-4337-a0bc-da4a35033dc3"
 }
+{
+  "bucket": "portfolio-test-bucket",
+  "context": "StorageService",
+  "level": "debug",
+  "message": "Uploading file buffer to S3/R2 [avatars/2026/08/avatar-be663327.webp]",
+  "mimeType": "image/webp",
+  "size": 18,
+  "timestamp": "2026-08-16 08:58:16.996"
+}
+{
+  "context": "StorageService",
+  "level": "info",
+  "message": "✔ File uploaded successfully to R2/S3: avatars/2026/08/avatar-be663327.webp",
+  "size": "18 B",
+  "timestamp": "2026-08-16 08:58:16.998",
+  "url": "https://assets.fi.amanillah.com/avatars/2026/08/avatar-be663327.webp"
+}
+{
+  "context": "StorageService",
+  "expiresInSeconds": 600,
+  "level": "info",
+  "message": "Generated presigned PUT upload URL for key: podcasts/2026/08/podcast-episode-1-e26b3eb3.mp3",
+  "mimeType": "audio/mpeg",
+  "timestamp": "2026-08-16 08:58:17.011"
+}
+{
+  "context": "MediaService",
+  "fileName": "portfolio-hero.webp",
+  "folder": "test-storage-blogs",
+  "level": "info",
+  "message": "Processing single file upload",
+  "mimeType": "image/webp",
+  "size": 2048,
+  "source": "BLOG_EDITOR",
+  "timestamp": "2026-08-16 08:58:17.012",
+  "uploaderId": "f022c260-98f0-46dd-9bce-ec868a05e8ac"
+}
+{
+  "bucket": "portfolio-test-bucket",
+  "context": "StorageService",
+  "level": "debug",
+  "message": "Uploading file buffer to S3/R2 [test-storage-blogs/2026/08/portfolio-hero-a800dc5c.webp]",
+  "mimeType": "image/webp",
+  "size": 22,
+  "timestamp": "2026-08-16 08:58:17.012"
+}
+{
+  "context": "StorageService",
+  "level": "info",
+  "message": "✔ File uploaded successfully to R2/S3: test-storage-blogs/2026/08/portfolio-hero-a800dc5c.webp",
+  "size": "22 B",
+  "timestamp": "2026-08-16 08:58:17.012",
+  "url": "https://assets.fi.amanillah.com/test-storage-blogs/2026/08/portfolio-hero-a800dc5c.webp"
+}
+{
+  "context": "MediaService",
+  "id": "f12fc17c-7a97-47c0-8d21-fecb8cafc931",
+  "key": "test-storage-blogs/2026/08/portfolio-hero-a800dc5c.webp",
+  "level": "info",
+  "message": "✔ Media file saved to database",
+  "timestamp": "2026-08-16 08:58:17.028"
+}
+{
+  "context": "MediaService",
+  "id": "f12fc17c-7a97-47c0-8d21-fecb8cafc931",
+  "level": "info",
+  "message": "✔ Media file updated",
+  "timestamp": "2026-08-16 08:58:17.059"
+}
+{
+  "context": "StorageService",
+  "expiresInSeconds": 900,
+  "level": "info",
+  "message": "Generated presigned PUT upload URL for key: test-storage-direct/2026/08/direct-client-upload-0b9fd6ac.png",
+  "mimeType": "image/png",
+  "timestamp": "2026-08-16 08:58:17.061"
+}
+{
+  "context": "MediaService",
+  "id": "c6c122af-5cd9-4cc4-98df-4e46e691614d",
+  "key": "test-storage-direct/2026/08/direct-client-upload-0b9fd6ac.png",
+  "level": "info",
+  "message": "Confirming presigned upload",
+  "timestamp": "2026-08-16 08:58:17.069"
+}
+{
+  "context": "MediaService",
+  "id": "c6c122af-5cd9-4cc4-98df-4e46e691614d",
+  "level": "info",
+  "message": "✔ Presigned upload confirmed and verified",
+  "timestamp": "2026-08-16 08:58:17.079"
+}
+{
+  "context": "StorageService",
+  "level": "debug",
+  "message": "Deleting object from R2/S3 [test-storage-blogs/2026/08/portfolio-hero-a800dc5c.webp]",
+  "timestamp": "2026-08-16 08:58:17.092"
+}
+{
+  "context": "StorageService",
+  "level": "info",
+  "message": "✔ Deleted object from R2/S3: test-storage-blogs/2026/08/portfolio-hero-a800dc5c.webp",
+  "timestamp": "2026-08-16 08:58:17.092"
+}
+{
+  "context": "MediaService",
+  "id": "f12fc17c-7a97-47c0-8d21-fecb8cafc931",
+  "key": "test-storage-blogs/2026/08/portfolio-hero-a800dc5c.webp",
+  "level": "info",
+  "message": "✔ Media asset permanently deleted",
+  "timestamp": "2026-08-16 08:58:17.097"
+}
+{
+  "context": "MediaService",
+  "fileName": "bulk-a.png",
+  "folder": "test-storage-bulk",
+  "level": "info",
+  "message": "Processing single file upload",
+  "mimeType": "image/png",
+  "size": 100,
+  "source": "API",
+  "timestamp": "2026-08-16 08:58:17.098"
+}
+{
+  "bucket": "portfolio-test-bucket",
+  "context": "StorageService",
+  "level": "debug",
+  "message": "Uploading file buffer to S3/R2 [test-storage-bulk/2026/08/bulk-a-a03436fe.png]",
+  "mimeType": "image/png",
+  "size": 1,
+  "timestamp": "2026-08-16 08:58:17.099"
+}
+{
+  "context": "StorageService",
+  "level": "info",
+  "message": "✔ File uploaded successfully to R2/S3: test-storage-bulk/2026/08/bulk-a-a03436fe.png",
+  "size": "1 B",
+  "timestamp": "2026-08-16 08:58:17.099",
+  "url": "https://assets.fi.amanillah.com/test-storage-bulk/2026/08/bulk-a-a03436fe.png"
+}
+{
+  "context": "MediaService",
+  "id": "f09dc9f2-0b16-417c-b71b-fe8c808cc738",
+  "key": "test-storage-bulk/2026/08/bulk-a-a03436fe.png",
+  "level": "info",
+  "message": "✔ Media file saved to database",
+  "timestamp": "2026-08-16 08:58:17.108"
+}
+{
+  "context": "MediaService",
+  "fileName": "bulk-b.png",
+  "folder": "test-storage-bulk",
+  "level": "info",
+  "message": "Processing single file upload",
+  "mimeType": "image/png",
+  "size": 100,
+  "source": "API",
+  "timestamp": "2026-08-16 08:58:17.108"
+}
+{
+  "bucket": "portfolio-test-bucket",
+  "context": "StorageService",
+  "level": "debug",
+  "message": "Uploading file buffer to S3/R2 [test-storage-bulk/2026/08/bulk-b-f220ead8.png]",
+  "mimeType": "image/png",
+  "size": 1,
+  "timestamp": "2026-08-16 08:58:17.108"
+}
+{
+  "context": "StorageService",
+  "level": "info",
+  "message": "✔ File uploaded successfully to R2/S3: test-storage-bulk/2026/08/bulk-b-f220ead8.png",
+  "size": "1 B",
+  "timestamp": "2026-08-16 08:58:17.108",
+  "url": "https://assets.fi.amanillah.com/test-storage-bulk/2026/08/bulk-b-f220ead8.png"
+}
+{
+  "context": "MediaService",
+  "id": "24fc6a86-2a72-4c41-9066-98e95a144947",
+  "key": "test-storage-bulk/2026/08/bulk-b-f220ead8.png",
+  "level": "info",
+  "message": "✔ Media file saved to database",
+  "timestamp": "2026-08-16 08:58:17.115"
+}
+{
+  "context": "StorageService",
+  "level": "info",
+  "message": "Bulk deleting 2 objects from R2/S3",
+  "timestamp": "2026-08-16 08:58:17.119"
+}
+{
+  "context": "MediaService",
+  "level": "info",
+  "message": "✔ Bulk deleted 2 media assets",
+  "timestamp": "2026-08-16 08:58:17.124"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786870697203@example.com",
+  "level": "info",
+  "message": "Initiating registration flow",
+  "name": "Test Engineer",
+  "timestamp": "2026-08-16 08:58:17.205"
+}
+{
+  "context": "PlunkVerifyService",
+  "level": "info",
+  "message": "✔ Plunk email verification passed for test_1786870697203@example.com",
+  "timestamp": "2026-08-16 08:58:17.943"
+}
+{
+  "context": "PlunkTemplateService",
+  "level": "info",
+  "message": "✔ Email dispatched to test_1786870697203@example.com via Plunk (Template: Direct Body)",
+  "timestamp": "2026-08-16 08:58:18.206"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786870697203@example.com",
+  "level": "info",
+  "message": "✔ Registration OTP dispatched via email",
+  "timestamp": "2026-08-16 08:58:18.206"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786870697203@example.com",
+  "level": "info",
+  "message": "Verifying registration OTP",
+  "timestamp": "2026-08-16 08:58:18.209"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786870697203@example.com",
+  "level": "info",
+  "message": "Verifying registration OTP",
+  "timestamp": "2026-08-16 08:58:18.225"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786870697203@example.com",
+  "level": "info",
+  "message": "✔ User synced to Subscriber model",
+  "timestamp": "2026-08-16 08:58:18.242"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786870697203@example.com",
+  "level": "info",
+  "message": "✔ User registration and activation completed",
+  "timestamp": "2026-08-16 08:58:18.249",
+  "userId": "6748c942-ca1a-4519-bd51-66da103ce418"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786870697203@example.com",
+  "level": "info",
+  "message": "User sign-in attempt",
+  "timestamp": "2026-08-16 08:58:18.251"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786870697203@example.com",
+  "level": "info",
+  "message": "✔ User signed in successfully",
+  "timestamp": "2026-08-16 08:58:18.308",
+  "userId": "6748c942-ca1a-4519-bd51-66da103ce418"
+}
+{
+  "context": "AuthServices",
+  "level": "info",
+  "message": "1-Click Demo Login initiated",
+  "timestamp": "2026-08-16 08:58:18.309",
+  "userId": "user-fi"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "Updating user profile",
+  "timestamp": "2026-08-16 08:58:18.320",
+  "userId": "6748c942-ca1a-4519-bd51-66da103ce418"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "✔ User profile updated successfully",
+  "timestamp": "2026-08-16 08:58:18.332",
+  "userId": "6748c942-ca1a-4519-bd51-66da103ce418"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "Updating subscription status",
+  "subscribed": false,
+  "timestamp": "2026-08-16 08:58:18.333",
+  "userId": "6748c942-ca1a-4519-bd51-66da103ce418"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "Updating subscription status",
+  "subscribed": true,
+  "timestamp": "2026-08-16 08:58:18.344",
+  "userId": "6748c942-ca1a-4519-bd51-66da103ce418"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "Password change requested",
+  "timestamp": "2026-08-16 08:58:18.354",
+  "userId": "6748c942-ca1a-4519-bd51-66da103ce418"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "✔ User password changed successfully",
+  "timestamp": "2026-08-16 08:58:18.462",
+  "userId": "6748c942-ca1a-4519-bd51-66da103ce418"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786870697203@example.com",
+  "level": "info",
+  "message": "User sign-in attempt",
+  "timestamp": "2026-08-16 08:58:18.463"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786870697203@example.com",
+  "level": "info",
+  "message": "✔ User signed in successfully",
+  "timestamp": "2026-08-16 08:58:18.532",
+  "userId": "6748c942-ca1a-4519-bd51-66da103ce418"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786870697203@example.com",
+  "level": "info",
+  "message": "Password reset requested",
+  "timestamp": "2026-08-16 08:58:18.533"
+}
+{
+  "context": "PlunkTemplateService",
+  "level": "info",
+  "message": "✔ Email dispatched to test_1786870697203@example.com via Plunk (Template: Direct Body)",
+  "timestamp": "2026-08-16 08:58:18.760"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786870697203@example.com",
+  "level": "info",
+  "message": "✔ Password reset OTP dispatched via email",
+  "timestamp": "2026-08-16 08:58:18.760"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786870697203@example.com",
+  "level": "info",
+  "message": "Verifying password reset OTP",
+  "timestamp": "2026-08-16 08:58:18.762"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786870697203@example.com",
+  "level": "info",
+  "message": "Executing password reset",
+  "timestamp": "2026-08-16 08:58:18.766"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786870697203@example.com",
+  "level": "info",
+  "message": "✔ Password reset successful",
+  "timestamp": "2026-08-16 08:58:18.839",
+  "userId": "6748c942-ca1a-4519-bd51-66da103ce418"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786870697203@example.com",
+  "level": "info",
+  "message": "User sign-in attempt",
+  "timestamp": "2026-08-16 08:58:18.839"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786870697203@example.com",
+  "level": "info",
+  "message": "✔ User signed in successfully",
+  "timestamp": "2026-08-16 08:58:18.897",
+  "userId": "6748c942-ca1a-4519-bd51-66da103ce418"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "Admin modifying user role",
+  "newRole": "MODERATOR",
+  "targetUserId": "6748c942-ca1a-4519-bd51-66da103ce418",
+  "timestamp": "2026-08-16 08:58:18.913"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "✔ User role updated by admin",
+  "newRole": "MODERATOR",
+  "targetUserId": "6748c942-ca1a-4519-bd51-66da103ce418",
+  "timestamp": "2026-08-16 08:58:18.919"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "Account deletion requested",
+  "timestamp": "2026-08-16 08:58:18.919",
+  "userId": "6748c942-ca1a-4519-bd51-66da103ce418"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "✔ User account erased",
+  "timestamp": "2026-08-16 08:58:18.930",
+  "userId": "6748c942-ca1a-4519-bd51-66da103ce418"
+}
+{
+  "bucket": "portfolio-test-bucket",
+  "context": "StorageService",
+  "level": "debug",
+  "message": "Uploading file buffer to S3/R2 [avatars/2026/08/avatar-12532fbb.webp]",
+  "mimeType": "image/webp",
+  "size": 18,
+  "timestamp": "2026-08-16 09:17:18.196"
+}
+{
+  "context": "StorageService",
+  "level": "info",
+  "message": "✔ File uploaded successfully to R2/S3: avatars/2026/08/avatar-12532fbb.webp",
+  "size": "18 B",
+  "timestamp": "2026-08-16 09:17:18.198",
+  "url": "https://assets.fi.amanillah.com/avatars/2026/08/avatar-12532fbb.webp"
+}
+{
+  "context": "StorageService",
+  "expiresInSeconds": 600,
+  "level": "info",
+  "message": "Generated presigned PUT upload URL for key: podcasts/2026/08/podcast-episode-1-b9ff6e24.mp3",
+  "mimeType": "audio/mpeg",
+  "timestamp": "2026-08-16 09:17:18.211"
+}
+{
+  "context": "MediaService",
+  "fileName": "portfolio-hero.webp",
+  "folder": "test-storage-blogs",
+  "level": "info",
+  "message": "Processing single file upload",
+  "mimeType": "image/webp",
+  "size": 2048,
+  "source": "BLOG_EDITOR",
+  "timestamp": "2026-08-16 09:17:18.212",
+  "uploaderId": "0dbbac3c-6af8-4827-8111-19c238b75701"
+}
+{
+  "bucket": "portfolio-test-bucket",
+  "context": "StorageService",
+  "level": "debug",
+  "message": "Uploading file buffer to S3/R2 [test-storage-blogs/2026/08/portfolio-hero-c80d6381.webp]",
+  "mimeType": "image/webp",
+  "size": 22,
+  "timestamp": "2026-08-16 09:17:18.212"
+}
+{
+  "context": "StorageService",
+  "level": "info",
+  "message": "✔ File uploaded successfully to R2/S3: test-storage-blogs/2026/08/portfolio-hero-c80d6381.webp",
+  "size": "22 B",
+  "timestamp": "2026-08-16 09:17:18.212",
+  "url": "https://assets.fi.amanillah.com/test-storage-blogs/2026/08/portfolio-hero-c80d6381.webp"
+}
+{
+  "context": "MediaService",
+  "id": "a282ba89-d3a9-4d86-93b8-cceca27a575f",
+  "key": "test-storage-blogs/2026/08/portfolio-hero-c80d6381.webp",
+  "level": "info",
+  "message": "✔ Media file saved to database",
+  "timestamp": "2026-08-16 09:17:18.227"
+}
+{
+  "context": "MediaService",
+  "id": "a282ba89-d3a9-4d86-93b8-cceca27a575f",
+  "level": "info",
+  "message": "✔ Media file updated",
+  "timestamp": "2026-08-16 09:17:18.263"
+}
+{
+  "context": "StorageService",
+  "expiresInSeconds": 900,
+  "level": "info",
+  "message": "Generated presigned PUT upload URL for key: test-storage-direct/2026/08/direct-client-upload-7cf05194.png",
+  "mimeType": "image/png",
+  "timestamp": "2026-08-16 09:17:18.265"
+}
+{
+  "context": "MediaService",
+  "id": "aaa37774-7acb-4627-aa47-560d73a617d0",
+  "key": "test-storage-direct/2026/08/direct-client-upload-7cf05194.png",
+  "level": "info",
+  "message": "Confirming presigned upload",
+  "timestamp": "2026-08-16 09:17:18.273"
+}
+{
+  "context": "MediaService",
+  "id": "aaa37774-7acb-4627-aa47-560d73a617d0",
+  "level": "info",
+  "message": "✔ Presigned upload confirmed and verified",
+  "timestamp": "2026-08-16 09:17:18.283"
+}
+{
+  "context": "StorageService",
+  "level": "debug",
+  "message": "Deleting object from R2/S3 [test-storage-blogs/2026/08/portfolio-hero-c80d6381.webp]",
+  "timestamp": "2026-08-16 09:17:18.297"
+}
+{
+  "context": "StorageService",
+  "level": "info",
+  "message": "✔ Deleted object from R2/S3: test-storage-blogs/2026/08/portfolio-hero-c80d6381.webp",
+  "timestamp": "2026-08-16 09:17:18.297"
+}
+{
+  "context": "MediaService",
+  "id": "a282ba89-d3a9-4d86-93b8-cceca27a575f",
+  "key": "test-storage-blogs/2026/08/portfolio-hero-c80d6381.webp",
+  "level": "info",
+  "message": "✔ Media asset permanently deleted",
+  "timestamp": "2026-08-16 09:17:18.302"
+}
+{
+  "context": "MediaService",
+  "fileName": "bulk-a.png",
+  "folder": "test-storage-bulk",
+  "level": "info",
+  "message": "Processing single file upload",
+  "mimeType": "image/png",
+  "size": 100,
+  "source": "API",
+  "timestamp": "2026-08-16 09:17:18.303"
+}
+{
+  "bucket": "portfolio-test-bucket",
+  "context": "StorageService",
+  "level": "debug",
+  "message": "Uploading file buffer to S3/R2 [test-storage-bulk/2026/08/bulk-a-04370924.png]",
+  "mimeType": "image/png",
+  "size": 1,
+  "timestamp": "2026-08-16 09:17:18.304"
+}
+{
+  "context": "StorageService",
+  "level": "info",
+  "message": "✔ File uploaded successfully to R2/S3: test-storage-bulk/2026/08/bulk-a-04370924.png",
+  "size": "1 B",
+  "timestamp": "2026-08-16 09:17:18.304",
+  "url": "https://assets.fi.amanillah.com/test-storage-bulk/2026/08/bulk-a-04370924.png"
+}
+{
+  "context": "MediaService",
+  "id": "b2021152-1d25-4901-9246-1f914805aa07",
+  "key": "test-storage-bulk/2026/08/bulk-a-04370924.png",
+  "level": "info",
+  "message": "✔ Media file saved to database",
+  "timestamp": "2026-08-16 09:17:18.314"
+}
+{
+  "context": "MediaService",
+  "fileName": "bulk-b.png",
+  "folder": "test-storage-bulk",
+  "level": "info",
+  "message": "Processing single file upload",
+  "mimeType": "image/png",
+  "size": 100,
+  "source": "API",
+  "timestamp": "2026-08-16 09:17:18.314"
+}
+{
+  "bucket": "portfolio-test-bucket",
+  "context": "StorageService",
+  "level": "debug",
+  "message": "Uploading file buffer to S3/R2 [test-storage-bulk/2026/08/bulk-b-7e0f78ba.png]",
+  "mimeType": "image/png",
+  "size": 1,
+  "timestamp": "2026-08-16 09:17:18.314"
+}
+{
+  "context": "StorageService",
+  "level": "info",
+  "message": "✔ File uploaded successfully to R2/S3: test-storage-bulk/2026/08/bulk-b-7e0f78ba.png",
+  "size": "1 B",
+  "timestamp": "2026-08-16 09:17:18.314",
+  "url": "https://assets.fi.amanillah.com/test-storage-bulk/2026/08/bulk-b-7e0f78ba.png"
+}
+{
+  "context": "MediaService",
+  "id": "fdf66cde-b9b8-40f2-8471-613cdaa46b97",
+  "key": "test-storage-bulk/2026/08/bulk-b-7e0f78ba.png",
+  "level": "info",
+  "message": "✔ Media file saved to database",
+  "timestamp": "2026-08-16 09:17:18.320"
+}
+{
+  "context": "StorageService",
+  "level": "info",
+  "message": "Bulk deleting 2 objects from R2/S3",
+  "timestamp": "2026-08-16 09:17:18.326"
+}
+{
+  "context": "MediaService",
+  "level": "info",
+  "message": "✔ Bulk deleted 2 media assets",
+  "timestamp": "2026-08-16 09:17:18.332"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786871838412@example.com",
+  "level": "info",
+  "message": "Initiating registration flow",
+  "name": "Test Engineer",
+  "timestamp": "2026-08-16 09:17:18.414"
+}
+{
+  "context": "PlunkVerifyService",
+  "level": "info",
+  "message": "✔ Plunk email verification passed for test_1786871838412@example.com",
+  "timestamp": "2026-08-16 09:17:18.935"
+}
+{
+  "context": "PlunkTemplateService",
+  "level": "info",
+  "message": "✔ Email dispatched to test_1786871838412@example.com via Plunk (Template: Direct Body)",
+  "timestamp": "2026-08-16 09:17:19.211"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786871838412@example.com",
+  "level": "info",
+  "message": "✔ Registration OTP dispatched via email",
+  "timestamp": "2026-08-16 09:17:19.211"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786871838412@example.com",
+  "level": "info",
+  "message": "Verifying registration OTP",
+  "timestamp": "2026-08-16 09:17:19.214"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786871838412@example.com",
+  "level": "info",
+  "message": "Verifying registration OTP",
+  "timestamp": "2026-08-16 09:17:19.231"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786871838412@example.com",
+  "level": "info",
+  "message": "✔ User synced to Subscriber model",
+  "timestamp": "2026-08-16 09:17:19.249"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786871838412@example.com",
+  "level": "info",
+  "message": "✔ User registration and activation completed",
+  "timestamp": "2026-08-16 09:17:19.256",
+  "userId": "d9201d55-89b1-44ee-967e-e57e14a6782d"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786871838412@example.com",
+  "level": "info",
+  "message": "User sign-in attempt",
+  "timestamp": "2026-08-16 09:17:19.258"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786871838412@example.com",
+  "level": "info",
+  "message": "✔ User signed in successfully",
+  "timestamp": "2026-08-16 09:17:19.317",
+  "userId": "d9201d55-89b1-44ee-967e-e57e14a6782d"
+}
+{
+  "context": "AuthServices",
+  "level": "info",
+  "message": "1-Click Demo Login initiated",
+  "timestamp": "2026-08-16 09:17:19.318",
+  "userId": "user-fi"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "Updating user profile",
+  "timestamp": "2026-08-16 09:17:19.329",
+  "userId": "d9201d55-89b1-44ee-967e-e57e14a6782d"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "✔ User profile updated successfully",
+  "timestamp": "2026-08-16 09:17:19.340",
+  "userId": "d9201d55-89b1-44ee-967e-e57e14a6782d"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "Updating subscription status",
+  "subscribed": false,
+  "timestamp": "2026-08-16 09:17:19.341",
+  "userId": "d9201d55-89b1-44ee-967e-e57e14a6782d"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "Updating subscription status",
+  "subscribed": true,
+  "timestamp": "2026-08-16 09:17:19.353",
+  "userId": "d9201d55-89b1-44ee-967e-e57e14a6782d"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "Password change requested",
+  "timestamp": "2026-08-16 09:17:19.364",
+  "userId": "d9201d55-89b1-44ee-967e-e57e14a6782d"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "✔ User password changed successfully",
+  "timestamp": "2026-08-16 09:17:19.470",
+  "userId": "d9201d55-89b1-44ee-967e-e57e14a6782d"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786871838412@example.com",
+  "level": "info",
+  "message": "User sign-in attempt",
+  "timestamp": "2026-08-16 09:17:19.470"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786871838412@example.com",
+  "level": "info",
+  "message": "✔ User signed in successfully",
+  "timestamp": "2026-08-16 09:17:19.530",
+  "userId": "d9201d55-89b1-44ee-967e-e57e14a6782d"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786871838412@example.com",
+  "level": "info",
+  "message": "Password reset requested",
+  "timestamp": "2026-08-16 09:17:19.531"
+}
+{
+  "context": "PlunkTemplateService",
+  "level": "info",
+  "message": "✔ Email dispatched to test_1786871838412@example.com via Plunk (Template: Direct Body)",
+  "timestamp": "2026-08-16 09:17:19.718"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786871838412@example.com",
+  "level": "info",
+  "message": "✔ Password reset OTP dispatched via email",
+  "timestamp": "2026-08-16 09:17:19.719"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786871838412@example.com",
+  "level": "info",
+  "message": "Verifying password reset OTP",
+  "timestamp": "2026-08-16 09:17:19.722"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786871838412@example.com",
+  "level": "info",
+  "message": "Executing password reset",
+  "timestamp": "2026-08-16 09:17:19.725"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786871838412@example.com",
+  "level": "info",
+  "message": "✔ Password reset successful",
+  "timestamp": "2026-08-16 09:17:19.799",
+  "userId": "d9201d55-89b1-44ee-967e-e57e14a6782d"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786871838412@example.com",
+  "level": "info",
+  "message": "User sign-in attempt",
+  "timestamp": "2026-08-16 09:17:19.800"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786871838412@example.com",
+  "level": "info",
+  "message": "✔ User signed in successfully",
+  "timestamp": "2026-08-16 09:17:19.858",
+  "userId": "d9201d55-89b1-44ee-967e-e57e14a6782d"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "Admin modifying user role",
+  "newRole": "MODERATOR",
+  "targetUserId": "d9201d55-89b1-44ee-967e-e57e14a6782d",
+  "timestamp": "2026-08-16 09:17:19.873"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "✔ User role updated by admin",
+  "newRole": "MODERATOR",
+  "targetUserId": "d9201d55-89b1-44ee-967e-e57e14a6782d",
+  "timestamp": "2026-08-16 09:17:19.880"
+}
+{
+  "context": "UserService",
+  "fileName": "avatar-profile-pic.png",
+  "level": "info",
+  "message": "Uploading profile avatar to S3/R2",
+  "size": 1024,
+  "timestamp": "2026-08-16 09:17:19.881",
+  "userId": "d9201d55-89b1-44ee-967e-e57e14a6782d"
+}
+{
+  "bucket": "portfolio-assets",
+  "context": "StorageService",
+  "level": "debug",
+  "message": "Uploading file buffer to S3/R2 [avatars/2026/08/avatar-profile-pic-9aa8d7cf.png]",
+  "mimeType": "image/png",
+  "size": 13,
+  "timestamp": "2026-08-16 09:17:19.882"
+}
+{
+  "context": "StorageService",
+  "level": "info",
+  "message": "✔ File uploaded successfully to R2/S3: avatars/2026/08/avatar-profile-pic-9aa8d7cf.png",
+  "size": "13 B",
+  "timestamp": "2026-08-16 09:17:19.882",
+  "url": "https://assets.fi.amanillah.com/avatars/2026/08/avatar-profile-pic-9aa8d7cf.png"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "✔ User avatar uploaded and updated successfully",
+  "timestamp": "2026-08-16 09:17:19.896",
+  "url": "https://assets.fi.amanillah.com/avatars/2026/08/avatar-profile-pic-9aa8d7cf.png",
+  "userId": "d9201d55-89b1-44ee-967e-e57e14a6782d"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "Removing profile avatar",
+  "timestamp": "2026-08-16 09:17:19.899",
+  "userId": "d9201d55-89b1-44ee-967e-e57e14a6782d"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "✔ User avatar removed successfully",
+  "timestamp": "2026-08-16 09:17:19.907",
+  "userId": "d9201d55-89b1-44ee-967e-e57e14a6782d"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "Account deletion requested",
+  "timestamp": "2026-08-16 09:17:19.908",
+  "userId": "d9201d55-89b1-44ee-967e-e57e14a6782d"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "✔ User account erased",
+  "timestamp": "2026-08-16 09:17:19.921",
+  "userId": "d9201d55-89b1-44ee-967e-e57e14a6782d"
+}
+{
+  "bucket": "portfolio-test-bucket",
+  "context": "StorageService",
+  "level": "debug",
+  "message": "Uploading file buffer to S3/R2 [avatars/2026/08/avatar-4aa0e6a2.webp]",
+  "mimeType": "image/webp",
+  "size": 18,
+  "timestamp": "2026-08-16 09:42:19.661"
+}
+{
+  "context": "StorageService",
+  "level": "info",
+  "message": "✔ File uploaded successfully to R2/S3: avatars/2026/08/avatar-4aa0e6a2.webp",
+  "size": "18 B",
+  "timestamp": "2026-08-16 09:42:19.663",
+  "url": "https://assets.fi.amanillah.com/avatars/2026/08/avatar-4aa0e6a2.webp"
+}
+{
+  "context": "StorageService",
+  "expiresInSeconds": 600,
+  "level": "info",
+  "message": "Generated presigned PUT upload URL for key: podcasts/2026/08/podcast-episode-1-40355d48.mp3",
+  "mimeType": "audio/mpeg",
+  "timestamp": "2026-08-16 09:42:19.676"
+}
+{
+  "context": "MediaService",
+  "fileName": "portfolio-hero.webp",
+  "folder": "test-storage-blogs",
+  "level": "info",
+  "message": "Processing single file upload",
+  "mimeType": "image/webp",
+  "size": 2048,
+  "source": "BLOG_EDITOR",
+  "timestamp": "2026-08-16 09:42:19.677",
+  "uploaderId": "fafdb69b-9ab1-4b9f-a45f-58037eca39e9"
+}
+{
+  "bucket": "portfolio-test-bucket",
+  "context": "StorageService",
+  "level": "debug",
+  "message": "Uploading file buffer to S3/R2 [test-storage-blogs/2026/08/portfolio-hero-c3a65630.webp]",
+  "mimeType": "image/webp",
+  "size": 22,
+  "timestamp": "2026-08-16 09:42:19.678"
+}
+{
+  "context": "StorageService",
+  "level": "info",
+  "message": "✔ File uploaded successfully to R2/S3: test-storage-blogs/2026/08/portfolio-hero-c3a65630.webp",
+  "size": "22 B",
+  "timestamp": "2026-08-16 09:42:19.678",
+  "url": "https://assets.fi.amanillah.com/test-storage-blogs/2026/08/portfolio-hero-c3a65630.webp"
+}
+{
+  "context": "MediaService",
+  "id": "2c5213c3-af7c-4e3d-8069-10e2292a9b08",
+  "key": "test-storage-blogs/2026/08/portfolio-hero-c3a65630.webp",
+  "level": "info",
+  "message": "✔ Media file saved to database",
+  "timestamp": "2026-08-16 09:42:19.691"
+}
+{
+  "context": "MediaService",
+  "id": "2c5213c3-af7c-4e3d-8069-10e2292a9b08",
+  "level": "info",
+  "message": "✔ Media file updated",
+  "timestamp": "2026-08-16 09:42:19.715"
+}
+{
+  "context": "StorageService",
+  "expiresInSeconds": 900,
+  "level": "info",
+  "message": "Generated presigned PUT upload URL for key: test-storage-direct/2026/08/direct-client-upload-c004f230.png",
+  "mimeType": "image/png",
+  "timestamp": "2026-08-16 09:42:19.718"
+}
+{
+  "context": "MediaService",
+  "id": "56338bb5-210e-4ebe-a4f5-24d41946a739",
+  "key": "test-storage-direct/2026/08/direct-client-upload-c004f230.png",
+  "level": "info",
+  "message": "Confirming presigned upload",
+  "timestamp": "2026-08-16 09:42:19.723"
+}
+{
+  "context": "MediaService",
+  "id": "56338bb5-210e-4ebe-a4f5-24d41946a739",
+  "level": "info",
+  "message": "✔ Presigned upload confirmed and verified",
+  "timestamp": "2026-08-16 09:42:19.728"
+}
+{
+  "context": "StorageService",
+  "level": "debug",
+  "message": "Deleting object from R2/S3 [test-storage-blogs/2026/08/portfolio-hero-c3a65630.webp]",
+  "timestamp": "2026-08-16 09:42:19.743"
+}
+{
+  "context": "StorageService",
+  "level": "info",
+  "message": "✔ Deleted object from R2/S3: test-storage-blogs/2026/08/portfolio-hero-c3a65630.webp",
+  "timestamp": "2026-08-16 09:42:19.743"
+}
+{
+  "context": "MediaService",
+  "id": "2c5213c3-af7c-4e3d-8069-10e2292a9b08",
+  "key": "test-storage-blogs/2026/08/portfolio-hero-c3a65630.webp",
+  "level": "info",
+  "message": "✔ Media asset permanently deleted",
+  "timestamp": "2026-08-16 09:42:19.746"
+}
+{
+  "context": "MediaService",
+  "fileName": "bulk-a.png",
+  "folder": "test-storage-bulk",
+  "level": "info",
+  "message": "Processing single file upload",
+  "mimeType": "image/png",
+  "size": 100,
+  "source": "API",
+  "timestamp": "2026-08-16 09:42:19.747"
+}
+{
+  "bucket": "portfolio-test-bucket",
+  "context": "StorageService",
+  "level": "debug",
+  "message": "Uploading file buffer to S3/R2 [test-storage-bulk/2026/08/bulk-a-dec02cb8.png]",
+  "mimeType": "image/png",
+  "size": 1,
+  "timestamp": "2026-08-16 09:42:19.747"
+}
+{
+  "context": "StorageService",
+  "level": "info",
+  "message": "✔ File uploaded successfully to R2/S3: test-storage-bulk/2026/08/bulk-a-dec02cb8.png",
+  "size": "1 B",
+  "timestamp": "2026-08-16 09:42:19.747",
+  "url": "https://assets.fi.amanillah.com/test-storage-bulk/2026/08/bulk-a-dec02cb8.png"
+}
+{
+  "context": "MediaService",
+  "id": "18978e57-2903-4e19-a947-e2aeb861aeb1",
+  "key": "test-storage-bulk/2026/08/bulk-a-dec02cb8.png",
+  "level": "info",
+  "message": "✔ Media file saved to database",
+  "timestamp": "2026-08-16 09:42:19.755"
+}
+{
+  "context": "MediaService",
+  "fileName": "bulk-b.png",
+  "folder": "test-storage-bulk",
+  "level": "info",
+  "message": "Processing single file upload",
+  "mimeType": "image/png",
+  "size": 100,
+  "source": "API",
+  "timestamp": "2026-08-16 09:42:19.755"
+}
+{
+  "bucket": "portfolio-test-bucket",
+  "context": "StorageService",
+  "level": "debug",
+  "message": "Uploading file buffer to S3/R2 [test-storage-bulk/2026/08/bulk-b-9ba483a9.png]",
+  "mimeType": "image/png",
+  "size": 1,
+  "timestamp": "2026-08-16 09:42:19.755"
+}
+{
+  "context": "StorageService",
+  "level": "info",
+  "message": "✔ File uploaded successfully to R2/S3: test-storage-bulk/2026/08/bulk-b-9ba483a9.png",
+  "size": "1 B",
+  "timestamp": "2026-08-16 09:42:19.756",
+  "url": "https://assets.fi.amanillah.com/test-storage-bulk/2026/08/bulk-b-9ba483a9.png"
+}
+{
+  "context": "MediaService",
+  "id": "ed90fe05-6c3b-41d5-b9ef-e4e6f32e5be1",
+  "key": "test-storage-bulk/2026/08/bulk-b-9ba483a9.png",
+  "level": "info",
+  "message": "✔ Media file saved to database",
+  "timestamp": "2026-08-16 09:42:19.759"
+}
+{
+  "context": "StorageService",
+  "level": "info",
+  "message": "Bulk deleting 2 objects from R2/S3",
+  "timestamp": "2026-08-16 09:42:19.761"
+}
+{
+  "context": "MediaService",
+  "level": "info",
+  "message": "✔ Bulk deleted 2 media assets",
+  "timestamp": "2026-08-16 09:42:19.762"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786873339832@example.com",
+  "level": "info",
+  "message": "Initiating registration flow",
+  "name": "Test Engineer",
+  "timestamp": "2026-08-16 09:42:19.833"
+}
+{
+  "context": "PlunkVerifyService",
+  "level": "info",
+  "message": "✔ Plunk email verification passed for test_1786873339832@example.com",
+  "timestamp": "2026-08-16 09:42:20.621"
+}
+{
+  "context": "PlunkTemplateService",
+  "level": "info",
+  "message": "✔ Email dispatched to test_1786873339832@example.com via Plunk (Template: Direct Body)",
+  "timestamp": "2026-08-16 09:42:20.925"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786873339832@example.com",
+  "level": "info",
+  "message": "✔ Registration OTP dispatched via email",
+  "timestamp": "2026-08-16 09:42:20.925"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786873339832@example.com",
+  "level": "info",
+  "message": "Verifying registration OTP",
+  "timestamp": "2026-08-16 09:42:20.928"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786873339832@example.com",
+  "level": "info",
+  "message": "Verifying registration OTP",
+  "timestamp": "2026-08-16 09:42:20.935"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786873339832@example.com",
+  "level": "info",
+  "message": "✔ User synced to Subscriber model",
+  "timestamp": "2026-08-16 09:42:20.946"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786873339832@example.com",
+  "level": "info",
+  "message": "✔ User registration and activation completed",
+  "timestamp": "2026-08-16 09:42:20.951",
+  "userId": "b7c86e41-db9b-42d0-bd11-242935db762a"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786873339832@example.com",
+  "level": "info",
+  "message": "User sign-in attempt",
+  "timestamp": "2026-08-16 09:42:20.953"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786873339832@example.com",
+  "level": "info",
+  "message": "✔ User signed in successfully",
+  "timestamp": "2026-08-16 09:42:21.009",
+  "userId": "b7c86e41-db9b-42d0-bd11-242935db762a"
+}
+{
+  "context": "AuthServices",
+  "level": "info",
+  "message": "1-Click Demo Login initiated",
+  "timestamp": "2026-08-16 09:42:21.009",
+  "userId": "user-fi"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "Updating user profile",
+  "timestamp": "2026-08-16 09:42:21.015",
+  "userId": "b7c86e41-db9b-42d0-bd11-242935db762a"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "✔ User profile updated successfully",
+  "timestamp": "2026-08-16 09:42:21.023",
+  "userId": "b7c86e41-db9b-42d0-bd11-242935db762a"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "Updating subscription status",
+  "subscribed": false,
+  "timestamp": "2026-08-16 09:42:21.023",
+  "userId": "b7c86e41-db9b-42d0-bd11-242935db762a"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "Updating subscription status",
+  "subscribed": true,
+  "timestamp": "2026-08-16 09:42:21.029",
+  "userId": "b7c86e41-db9b-42d0-bd11-242935db762a"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "Password change requested",
+  "timestamp": "2026-08-16 09:42:21.033",
+  "userId": "b7c86e41-db9b-42d0-bd11-242935db762a"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "✔ User password changed successfully",
+  "timestamp": "2026-08-16 09:42:21.157",
+  "userId": "b7c86e41-db9b-42d0-bd11-242935db762a"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786873339832@example.com",
+  "level": "info",
+  "message": "User sign-in attempt",
+  "timestamp": "2026-08-16 09:42:21.158"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786873339832@example.com",
+  "level": "info",
+  "message": "✔ User signed in successfully",
+  "timestamp": "2026-08-16 09:42:21.209",
+  "userId": "b7c86e41-db9b-42d0-bd11-242935db762a"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786873339832@example.com",
+  "level": "info",
+  "message": "Password reset requested",
+  "timestamp": "2026-08-16 09:42:21.210"
+}
+{
+  "context": "PlunkTemplateService",
+  "level": "info",
+  "message": "✔ Email dispatched to test_1786873339832@example.com via Plunk (Template: Direct Body)",
+  "timestamp": "2026-08-16 09:42:21.434"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786873339832@example.com",
+  "level": "info",
+  "message": "✔ Password reset OTP dispatched via email",
+  "timestamp": "2026-08-16 09:42:21.435"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786873339832@example.com",
+  "level": "info",
+  "message": "Verifying password reset OTP",
+  "timestamp": "2026-08-16 09:42:21.437"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786873339832@example.com",
+  "level": "info",
+  "message": "Executing password reset",
+  "timestamp": "2026-08-16 09:42:21.439"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786873339832@example.com",
+  "level": "info",
+  "message": "✔ Password reset successful",
+  "timestamp": "2026-08-16 09:42:21.507",
+  "userId": "b7c86e41-db9b-42d0-bd11-242935db762a"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786873339832@example.com",
+  "level": "info",
+  "message": "User sign-in attempt",
+  "timestamp": "2026-08-16 09:42:21.508"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786873339832@example.com",
+  "level": "info",
+  "message": "✔ User signed in successfully",
+  "timestamp": "2026-08-16 09:42:21.558",
+  "userId": "b7c86e41-db9b-42d0-bd11-242935db762a"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "Admin modifying user role",
+  "newRole": "MODERATOR",
+  "targetUserId": "b7c86e41-db9b-42d0-bd11-242935db762a",
+  "timestamp": "2026-08-16 09:42:21.571"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "✔ User role updated by admin",
+  "newRole": "MODERATOR",
+  "targetUserId": "b7c86e41-db9b-42d0-bd11-242935db762a",
+  "timestamp": "2026-08-16 09:42:21.578"
+}
+{
+  "context": "UserService",
+  "fileName": "avatar-profile-pic.png",
+  "level": "info",
+  "message": "Uploading profile avatar to S3/R2",
+  "size": 1024,
+  "timestamp": "2026-08-16 09:42:21.579",
+  "userId": "b7c86e41-db9b-42d0-bd11-242935db762a"
+}
+{
+  "bucket": "portfolio-assets",
+  "context": "StorageService",
+  "level": "debug",
+  "message": "Uploading file buffer to S3/R2 [avatars/2026/08/avatar-profile-pic-13a3c9a5.png]",
+  "mimeType": "image/png",
+  "size": 13,
+  "timestamp": "2026-08-16 09:42:21.580"
+}
+{
+  "context": "StorageService",
+  "level": "info",
+  "message": "✔ File uploaded successfully to R2/S3: avatars/2026/08/avatar-profile-pic-13a3c9a5.png",
+  "size": "13 B",
+  "timestamp": "2026-08-16 09:42:21.580",
+  "url": "https://assets.fi.amanillah.com/avatars/2026/08/avatar-profile-pic-13a3c9a5.png"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "✔ User avatar uploaded and updated successfully",
+  "timestamp": "2026-08-16 09:42:21.588",
+  "url": "https://assets.fi.amanillah.com/avatars/2026/08/avatar-profile-pic-13a3c9a5.png",
+  "userId": "b7c86e41-db9b-42d0-bd11-242935db762a"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "Removing profile avatar",
+  "timestamp": "2026-08-16 09:42:21.593",
+  "userId": "b7c86e41-db9b-42d0-bd11-242935db762a"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "✔ User avatar removed successfully",
+  "timestamp": "2026-08-16 09:42:21.597",
+  "userId": "b7c86e41-db9b-42d0-bd11-242935db762a"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "Account deletion requested",
+  "timestamp": "2026-08-16 09:42:21.598",
+  "userId": "b7c86e41-db9b-42d0-bd11-242935db762a"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "✔ User account erased",
+  "timestamp": "2026-08-16 09:42:21.604",
+  "userId": "b7c86e41-db9b-42d0-bd11-242935db762a"
+}
+{
+  "bucket": "portfolio-test-bucket",
+  "context": "StorageService",
+  "level": "debug",
+  "message": "Uploading file buffer to S3/R2 [avatars/2026/08/avatar-e9b14c58.webp]",
+  "mimeType": "image/webp",
+  "size": 18,
+  "timestamp": "2026-08-16 09:51:16.279"
+}
+{
+  "context": "StorageService",
+  "level": "info",
+  "message": "✔ File uploaded successfully to R2/S3: avatars/2026/08/avatar-e9b14c58.webp",
+  "size": "18 B",
+  "timestamp": "2026-08-16 09:51:16.282",
+  "url": "https://assets.fi.amanillah.com/avatars/2026/08/avatar-e9b14c58.webp"
+}
+{
+  "context": "StorageService",
+  "expiresInSeconds": 600,
+  "level": "info",
+  "message": "Generated presigned PUT upload URL for key: podcasts/2026/08/podcast-episode-1-65efc8fd.mp3",
+  "mimeType": "audio/mpeg",
+  "timestamp": "2026-08-16 09:51:16.293"
+}
+{
+  "context": "MediaService",
+  "fileName": "portfolio-hero.webp",
+  "folder": "test-storage-blogs",
+  "level": "info",
+  "message": "Processing single file upload",
+  "mimeType": "image/webp",
+  "size": 2048,
+  "source": "BLOG_EDITOR",
+  "timestamp": "2026-08-16 09:51:16.294",
+  "uploaderId": "5e2c275b-7358-47ff-bd73-5903994459f2"
+}
+{
+  "bucket": "portfolio-test-bucket",
+  "context": "StorageService",
+  "level": "debug",
+  "message": "Uploading file buffer to S3/R2 [test-storage-blogs/2026/08/portfolio-hero-1e3d5081.webp]",
+  "mimeType": "image/webp",
+  "size": 22,
+  "timestamp": "2026-08-16 09:51:16.301"
+}
+{
+  "context": "StorageService",
+  "level": "info",
+  "message": "✔ File uploaded successfully to R2/S3: test-storage-blogs/2026/08/portfolio-hero-1e3d5081.webp",
+  "size": "22 B",
+  "timestamp": "2026-08-16 09:51:16.301",
+  "url": "https://assets.fi.amanillah.com/test-storage-blogs/2026/08/portfolio-hero-1e3d5081.webp"
+}
+{
+  "context": "MediaService",
+  "id": "a4b7db85-6a99-434d-9235-787ef8ff4b01",
+  "key": "test-storage-blogs/2026/08/portfolio-hero-1e3d5081.webp",
+  "level": "info",
+  "message": "✔ Media file saved to database",
+  "timestamp": "2026-08-16 09:51:16.312"
+}
+{
+  "context": "MediaService",
+  "id": "a4b7db85-6a99-434d-9235-787ef8ff4b01",
+  "level": "info",
+  "message": "✔ Media file updated",
+  "timestamp": "2026-08-16 09:51:16.341"
+}
+{
+  "context": "StorageService",
+  "expiresInSeconds": 900,
+  "level": "info",
+  "message": "Generated presigned PUT upload URL for key: test-storage-direct/2026/08/direct-client-upload-43f1ef41.png",
+  "mimeType": "image/png",
+  "timestamp": "2026-08-16 09:51:16.344"
+}
+{
+  "context": "MediaService",
+  "id": "5ec670a3-f490-4ec5-b111-5d26cdee70c6",
+  "key": "test-storage-direct/2026/08/direct-client-upload-43f1ef41.png",
+  "level": "info",
+  "message": "Confirming presigned upload",
+  "timestamp": "2026-08-16 09:51:16.349"
+}
+{
+  "context": "MediaService",
+  "id": "5ec670a3-f490-4ec5-b111-5d26cdee70c6",
+  "level": "info",
+  "message": "✔ Presigned upload confirmed and verified",
+  "timestamp": "2026-08-16 09:51:16.371"
+}
+{
+  "context": "StorageService",
+  "level": "debug",
+  "message": "Deleting object from R2/S3 [test-storage-blogs/2026/08/portfolio-hero-1e3d5081.webp]",
+  "timestamp": "2026-08-16 09:51:16.387"
+}
+{
+  "context": "StorageService",
+  "level": "info",
+  "message": "✔ Deleted object from R2/S3: test-storage-blogs/2026/08/portfolio-hero-1e3d5081.webp",
+  "timestamp": "2026-08-16 09:51:16.388"
+}
+{
+  "context": "MediaService",
+  "id": "a4b7db85-6a99-434d-9235-787ef8ff4b01",
+  "key": "test-storage-blogs/2026/08/portfolio-hero-1e3d5081.webp",
+  "level": "info",
+  "message": "✔ Media asset permanently deleted",
+  "timestamp": "2026-08-16 09:51:16.390"
+}
+{
+  "context": "MediaService",
+  "fileName": "bulk-a.png",
+  "folder": "test-storage-bulk",
+  "level": "info",
+  "message": "Processing single file upload",
+  "mimeType": "image/png",
+  "size": 100,
+  "source": "API",
+  "timestamp": "2026-08-16 09:51:16.392"
+}
+{
+  "bucket": "portfolio-test-bucket",
+  "context": "StorageService",
+  "level": "debug",
+  "message": "Uploading file buffer to S3/R2 [test-storage-bulk/2026/08/bulk-a-37bdb35c.png]",
+  "mimeType": "image/png",
+  "size": 1,
+  "timestamp": "2026-08-16 09:51:16.394"
+}
+{
+  "context": "StorageService",
+  "level": "info",
+  "message": "✔ File uploaded successfully to R2/S3: test-storage-bulk/2026/08/bulk-a-37bdb35c.png",
+  "size": "1 B",
+  "timestamp": "2026-08-16 09:51:16.394",
+  "url": "https://assets.fi.amanillah.com/test-storage-bulk/2026/08/bulk-a-37bdb35c.png"
+}
+{
+  "context": "MediaService",
+  "id": "9e070b1f-4f18-4d0c-9d64-d39cecbb1f5d",
+  "key": "test-storage-bulk/2026/08/bulk-a-37bdb35c.png",
+  "level": "info",
+  "message": "✔ Media file saved to database",
+  "timestamp": "2026-08-16 09:51:16.398"
+}
+{
+  "context": "MediaService",
+  "fileName": "bulk-b.png",
+  "folder": "test-storage-bulk",
+  "level": "info",
+  "message": "Processing single file upload",
+  "mimeType": "image/png",
+  "size": 100,
+  "source": "API",
+  "timestamp": "2026-08-16 09:51:16.398"
+}
+{
+  "bucket": "portfolio-test-bucket",
+  "context": "StorageService",
+  "level": "debug",
+  "message": "Uploading file buffer to S3/R2 [test-storage-bulk/2026/08/bulk-b-ee0a354f.png]",
+  "mimeType": "image/png",
+  "size": 1,
+  "timestamp": "2026-08-16 09:51:16.399"
+}
+{
+  "context": "StorageService",
+  "level": "info",
+  "message": "✔ File uploaded successfully to R2/S3: test-storage-bulk/2026/08/bulk-b-ee0a354f.png",
+  "size": "1 B",
+  "timestamp": "2026-08-16 09:51:16.399",
+  "url": "https://assets.fi.amanillah.com/test-storage-bulk/2026/08/bulk-b-ee0a354f.png"
+}
+{
+  "context": "MediaService",
+  "id": "92020b98-8bb4-4053-9c60-42bd23ebe43f",
+  "key": "test-storage-bulk/2026/08/bulk-b-ee0a354f.png",
+  "level": "info",
+  "message": "✔ Media file saved to database",
+  "timestamp": "2026-08-16 09:51:16.405"
+}
+{
+  "context": "StorageService",
+  "level": "info",
+  "message": "Bulk deleting 2 objects from R2/S3",
+  "timestamp": "2026-08-16 09:51:16.407"
+}
+{
+  "context": "MediaService",
+  "level": "info",
+  "message": "✔ Bulk deleted 2 media assets",
+  "timestamp": "2026-08-16 09:51:16.409"
+}
+{
+  "context": "MediaService",
+  "fileName": "dedup-test.png",
+  "folder": "test-storage-dedup",
+  "level": "info",
+  "message": "Processing single file upload",
+  "mimeType": "image/png",
+  "size": 45,
+  "source": "API",
+  "timestamp": "2026-08-16 09:51:16.410",
+  "uploaderId": "5e2c275b-7358-47ff-bd73-5903994459f2"
+}
+{
+  "bucket": "portfolio-test-bucket",
+  "context": "StorageService",
+  "level": "debug",
+  "message": "Uploading file buffer to S3/R2 [test-storage-dedup/2026/08/dedup-test-3d33e291.png]",
+  "mimeType": "image/png",
+  "size": 45,
+  "timestamp": "2026-08-16 09:51:16.411"
+}
+{
+  "context": "StorageService",
+  "level": "info",
+  "message": "✔ File uploaded successfully to R2/S3: test-storage-dedup/2026/08/dedup-test-3d33e291.png",
+  "size": "45 B",
+  "timestamp": "2026-08-16 09:51:16.411",
+  "url": "https://assets.fi.amanillah.com/test-storage-dedup/2026/08/dedup-test-3d33e291.png"
+}
+{
+  "context": "MediaService",
+  "id": "07503617-8703-4d92-9b8e-c4b8f456319a",
+  "key": "test-storage-dedup/2026/08/dedup-test-3d33e291.png",
+  "level": "info",
+  "message": "✔ Media file saved to database",
+  "timestamp": "2026-08-16 09:51:16.414"
+}
+{
+  "context": "MediaService",
+  "fileName": "dedup-test.png",
+  "folder": "test-storage-dedup",
+  "level": "info",
+  "message": "Processing single file upload",
+  "mimeType": "image/png",
+  "size": 45,
+  "source": "API",
+  "timestamp": "2026-08-16 09:51:16.415",
+  "uploaderId": "5e2c275b-7358-47ff-bd73-5903994459f2"
+}
+{
+  "bucket": "portfolio-test-bucket",
+  "context": "StorageService",
+  "level": "debug",
+  "message": "Uploading file buffer to S3/R2 [test-storage-dedup/2026/08/dedup-test-79168733.png]",
+  "mimeType": "image/png",
+  "size": 45,
+  "timestamp": "2026-08-16 09:51:16.416"
+}
+{
+  "context": "StorageService",
+  "level": "info",
+  "message": "✔ File uploaded successfully to R2/S3: test-storage-dedup/2026/08/dedup-test-79168733.png",
+  "size": "45 B",
+  "timestamp": "2026-08-16 09:51:16.416",
+  "url": "https://assets.fi.amanillah.com/test-storage-dedup/2026/08/dedup-test-79168733.png"
+}
+{
+  "context": "MediaService",
+  "id": "05ee1c8e-bcba-4489-b4ac-01c44b3829bc",
+  "key": "test-storage-dedup/2026/08/dedup-test-79168733.png",
+  "level": "info",
+  "message": "✔ Media file saved to database",
+  "timestamp": "2026-08-16 09:51:16.421"
+}
+{
+  "context": "MediaService",
+  "dryRun": false,
+  "level": "info",
+  "message": "Starting orphaned media cleanup job",
+  "olderThanDays": 0,
+  "thresholdDate": "2026-08-16T09:51:16.425Z",
+  "timestamp": "2026-08-16 09:51:16.425",
+  "type": "avatars"
+}
+{
+  "context": "MediaService",
+  "count": 8,
+  "dryRun": false,
+  "level": "info",
+  "message": "Orphan scan completed: found 8 orphaned file(s) totaling 262.33 KB",
+  "timestamp": "2026-08-16 09:51:16.430"
+}
+{
+  "context": "StorageService",
+  "level": "info",
+  "message": "Bulk deleting 8 objects from R2/S3",
+  "timestamp": "2026-08-16 09:51:16.430"
+}
+{
+  "context": "MediaService",
+  "level": "info",
+  "message": "✔ Successfully purged 8 orphaned files from storage and database.",
+  "timestamp": "2026-08-16 09:51:16.432"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786873876513@example.com",
+  "level": "info",
+  "message": "Initiating registration flow",
+  "name": "Test Engineer",
+  "timestamp": "2026-08-16 09:51:16.515"
+}
+{
+  "context": "PlunkVerifyService",
+  "level": "info",
+  "message": "✔ Plunk email verification passed for test_1786873876513@example.com",
+  "timestamp": "2026-08-16 09:51:17.205"
+}
+{
+  "context": "PlunkTemplateService",
+  "level": "info",
+  "message": "✔ Email dispatched to test_1786873876513@example.com via Plunk (Template: Direct Body)",
+  "timestamp": "2026-08-16 09:51:17.454"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786873876513@example.com",
+  "level": "info",
+  "message": "✔ Registration OTP dispatched via email",
+  "timestamp": "2026-08-16 09:51:17.454"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786873876513@example.com",
+  "level": "info",
+  "message": "Verifying registration OTP",
+  "timestamp": "2026-08-16 09:51:17.456"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786873876513@example.com",
+  "level": "info",
+  "message": "Verifying registration OTP",
+  "timestamp": "2026-08-16 09:51:17.470"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786873876513@example.com",
+  "level": "info",
+  "message": "✔ User synced to Subscriber model",
+  "timestamp": "2026-08-16 09:51:17.483"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786873876513@example.com",
+  "level": "info",
+  "message": "✔ User registration and activation completed",
+  "timestamp": "2026-08-16 09:51:17.490",
+  "userId": "f8b06d5a-ad58-4973-b54c-f6fb8679196a"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786873876513@example.com",
+  "level": "info",
+  "message": "User sign-in attempt",
+  "timestamp": "2026-08-16 09:51:17.492"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786873876513@example.com",
+  "level": "info",
+  "message": "✔ User signed in successfully",
+  "timestamp": "2026-08-16 09:51:17.544",
+  "userId": "f8b06d5a-ad58-4973-b54c-f6fb8679196a"
+}
+{
+  "context": "AuthServices",
+  "level": "info",
+  "message": "1-Click Demo Login initiated",
+  "timestamp": "2026-08-16 09:51:17.545",
+  "userId": "user-fi"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "Updating user profile",
+  "timestamp": "2026-08-16 09:51:17.552",
+  "userId": "f8b06d5a-ad58-4973-b54c-f6fb8679196a"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "✔ User profile updated successfully",
+  "timestamp": "2026-08-16 09:51:17.561",
+  "userId": "f8b06d5a-ad58-4973-b54c-f6fb8679196a"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "Updating subscription status",
+  "subscribed": false,
+  "timestamp": "2026-08-16 09:51:17.562",
+  "userId": "f8b06d5a-ad58-4973-b54c-f6fb8679196a"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "Updating subscription status",
+  "subscribed": true,
+  "timestamp": "2026-08-16 09:51:17.568",
+  "userId": "f8b06d5a-ad58-4973-b54c-f6fb8679196a"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "Password change requested",
+  "timestamp": "2026-08-16 09:51:17.572",
+  "userId": "f8b06d5a-ad58-4973-b54c-f6fb8679196a"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "✔ User password changed successfully",
+  "timestamp": "2026-08-16 09:51:17.675",
+  "userId": "f8b06d5a-ad58-4973-b54c-f6fb8679196a"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786873876513@example.com",
+  "level": "info",
+  "message": "User sign-in attempt",
+  "timestamp": "2026-08-16 09:51:17.675"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786873876513@example.com",
+  "level": "info",
+  "message": "✔ User signed in successfully",
+  "timestamp": "2026-08-16 09:51:17.729",
+  "userId": "f8b06d5a-ad58-4973-b54c-f6fb8679196a"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786873876513@example.com",
+  "level": "info",
+  "message": "Password reset requested",
+  "timestamp": "2026-08-16 09:51:17.729"
+}
+{
+  "context": "PlunkTemplateService",
+  "level": "info",
+  "message": "✔ Email dispatched to test_1786873876513@example.com via Plunk (Template: Direct Body)",
+  "timestamp": "2026-08-16 09:51:17.918"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786873876513@example.com",
+  "level": "info",
+  "message": "✔ Password reset OTP dispatched via email",
+  "timestamp": "2026-08-16 09:51:17.918"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786873876513@example.com",
+  "level": "info",
+  "message": "Verifying password reset OTP",
+  "timestamp": "2026-08-16 09:51:17.920"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786873876513@example.com",
+  "level": "info",
+  "message": "Executing password reset",
+  "timestamp": "2026-08-16 09:51:17.922"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786873876513@example.com",
+  "level": "info",
+  "message": "✔ Password reset successful",
+  "timestamp": "2026-08-16 09:51:17.984",
+  "userId": "f8b06d5a-ad58-4973-b54c-f6fb8679196a"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786873876513@example.com",
+  "level": "info",
+  "message": "User sign-in attempt",
+  "timestamp": "2026-08-16 09:51:17.985"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786873876513@example.com",
+  "level": "info",
+  "message": "✔ User signed in successfully",
+  "timestamp": "2026-08-16 09:51:18.037",
+  "userId": "f8b06d5a-ad58-4973-b54c-f6fb8679196a"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "Admin modifying user role",
+  "newRole": "MODERATOR",
+  "targetUserId": "f8b06d5a-ad58-4973-b54c-f6fb8679196a",
+  "timestamp": "2026-08-16 09:51:18.048"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "✔ User role updated by admin",
+  "newRole": "MODERATOR",
+  "targetUserId": "f8b06d5a-ad58-4973-b54c-f6fb8679196a",
+  "timestamp": "2026-08-16 09:51:18.052"
+}
+{
+  "context": "UserService",
+  "fileName": "avatar-profile-pic.png",
+  "level": "info",
+  "message": "Uploading profile avatar to S3/R2",
+  "size": 1024,
+  "timestamp": "2026-08-16 09:51:18.053",
+  "userId": "f8b06d5a-ad58-4973-b54c-f6fb8679196a"
+}
+{
+  "bucket": "portfolio-assets",
+  "context": "StorageService",
+  "level": "debug",
+  "message": "Uploading file buffer to S3/R2 [avatars/2026/08/avatar-profile-pic-ce54ab27.png]",
+  "mimeType": "image/png",
+  "size": 13,
+  "timestamp": "2026-08-16 09:51:18.056"
+}
+{
+  "context": "StorageService",
+  "level": "info",
+  "message": "✔ File uploaded successfully to R2/S3: avatars/2026/08/avatar-profile-pic-ce54ab27.png",
+  "size": "13 B",
+  "timestamp": "2026-08-16 09:51:18.056",
+  "url": "https://assets.fi.amanillah.com/avatars/2026/08/avatar-profile-pic-ce54ab27.png"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "✔ User avatar uploaded, old avatar purged, updated successfully",
+  "timestamp": "2026-08-16 09:51:18.064",
+  "url": "https://assets.fi.amanillah.com/avatars/2026/08/avatar-profile-pic-ce54ab27.png",
+  "userId": "f8b06d5a-ad58-4973-b54c-f6fb8679196a"
+}
+{
+  "context": "UserService",
+  "fileName": "new-avatar-replacement.png",
+  "level": "info",
+  "message": "Uploading profile avatar to S3/R2",
+  "size": 2048,
+  "timestamp": "2026-08-16 09:51:18.066",
+  "userId": "f8b06d5a-ad58-4973-b54c-f6fb8679196a"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "Cleaning up 1 previous avatar file(s) from S3/R2 storage",
+  "oldKeys": [
+    "avatars/2026/08/avatar-profile-pic-ce54ab27.png"
+  ],
+  "timestamp": "2026-08-16 09:51:18.071",
+  "userId": "f8b06d5a-ad58-4973-b54c-f6fb8679196a"
+}
+{
+  "context": "StorageService",
+  "level": "info",
+  "message": "Bulk deleting 1 objects from R2/S3",
+  "timestamp": "2026-08-16 09:51:18.071"
+}
+{
+  "bucket": "portfolio-assets",
+  "context": "StorageService",
+  "level": "debug",
+  "message": "Uploading file buffer to S3/R2 [avatars/2026/08/new-avatar-replacement-a43e916b.png]",
+  "mimeType": "image/png",
+  "size": 16,
+  "timestamp": "2026-08-16 09:51:18.073"
+}
+{
+  "context": "StorageService",
+  "level": "info",
+  "message": "✔ File uploaded successfully to R2/S3: avatars/2026/08/new-avatar-replacement-a43e916b.png",
+  "size": "16 B",
+  "timestamp": "2026-08-16 09:51:18.073",
+  "url": "https://assets.fi.amanillah.com/avatars/2026/08/new-avatar-replacement-a43e916b.png"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "✔ User avatar uploaded, old avatar purged, updated successfully",
+  "timestamp": "2026-08-16 09:51:18.077",
+  "url": "https://assets.fi.amanillah.com/avatars/2026/08/new-avatar-replacement-a43e916b.png",
+  "userId": "f8b06d5a-ad58-4973-b54c-f6fb8679196a"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "Removing profile avatar",
+  "timestamp": "2026-08-16 09:51:18.079",
+  "userId": "f8b06d5a-ad58-4973-b54c-f6fb8679196a"
+}
+{
+  "context": "UserService",
+  "keysToDelete": [
+    "avatars/2026/08/new-avatar-replacement-a43e916b.png"
+  ],
+  "level": "info",
+  "message": "Purging 1 avatar object(s) from S3/R2 storage",
+  "timestamp": "2026-08-16 09:51:18.080",
+  "userId": "f8b06d5a-ad58-4973-b54c-f6fb8679196a"
+}
+{
+  "context": "StorageService",
+  "level": "info",
+  "message": "Bulk deleting 1 objects from R2/S3",
+  "timestamp": "2026-08-16 09:51:18.080"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "✔ User avatar removed and storage freed successfully",
+  "timestamp": "2026-08-16 09:51:18.087",
+  "userId": "f8b06d5a-ad58-4973-b54c-f6fb8679196a"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "Account deletion requested",
+  "timestamp": "2026-08-16 09:51:18.089",
+  "userId": "f8b06d5a-ad58-4973-b54c-f6fb8679196a"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "✔ User account and storage assets erased",
+  "timestamp": "2026-08-16 09:51:18.094",
+  "userId": "f8b06d5a-ad58-4973-b54c-f6fb8679196a"
+}
+{
+  "bucket": "portfolio-test-bucket",
+  "context": "StorageService",
+  "level": "debug",
+  "message": "Uploading file buffer to S3/R2 [avatars/2026/08/avatar-efe84caa.webp]",
+  "mimeType": "image/webp",
+  "size": 18,
+  "timestamp": "2026-08-16 09:51:44.438"
+}
+{
+  "context": "StorageService",
+  "level": "info",
+  "message": "✔ File uploaded successfully to R2/S3: avatars/2026/08/avatar-efe84caa.webp",
+  "size": "18 B",
+  "timestamp": "2026-08-16 09:51:44.440",
+  "url": "https://assets.fi.amanillah.com/avatars/2026/08/avatar-efe84caa.webp"
+}
+{
+  "context": "StorageService",
+  "expiresInSeconds": 600,
+  "level": "info",
+  "message": "Generated presigned PUT upload URL for key: podcasts/2026/08/podcast-episode-1-1387b23f.mp3",
+  "mimeType": "audio/mpeg",
+  "timestamp": "2026-08-16 09:51:44.453"
+}
+{
+  "context": "MediaService",
+  "fileName": "portfolio-hero.webp",
+  "folder": "test-storage-blogs",
+  "level": "info",
+  "message": "Processing single file upload",
+  "mimeType": "image/webp",
+  "size": 2048,
+  "source": "BLOG_EDITOR",
+  "timestamp": "2026-08-16 09:51:44.454",
+  "uploaderId": "5284ecda-0a85-4d5b-88bd-b40c6843c17e"
+}
+{
+  "bucket": "portfolio-test-bucket",
+  "context": "StorageService",
+  "level": "debug",
+  "message": "Uploading file buffer to S3/R2 [test-storage-blogs/2026/08/portfolio-hero-d60f30dd.webp]",
+  "mimeType": "image/webp",
+  "size": 22,
+  "timestamp": "2026-08-16 09:51:44.461"
+}
+{
+  "context": "StorageService",
+  "level": "info",
+  "message": "✔ File uploaded successfully to R2/S3: test-storage-blogs/2026/08/portfolio-hero-d60f30dd.webp",
+  "size": "22 B",
+  "timestamp": "2026-08-16 09:51:44.461",
+  "url": "https://assets.fi.amanillah.com/test-storage-blogs/2026/08/portfolio-hero-d60f30dd.webp"
+}
+{
+  "context": "MediaService",
+  "id": "93a0897d-7e39-4f20-aad7-11a274161275",
+  "key": "test-storage-blogs/2026/08/portfolio-hero-d60f30dd.webp",
+  "level": "info",
+  "message": "✔ Media file saved to database",
+  "timestamp": "2026-08-16 09:51:44.470"
+}
+{
+  "context": "MediaService",
+  "id": "93a0897d-7e39-4f20-aad7-11a274161275",
+  "level": "info",
+  "message": "✔ Media file updated",
+  "timestamp": "2026-08-16 09:51:44.498"
+}
+{
+  "context": "StorageService",
+  "expiresInSeconds": 900,
+  "level": "info",
+  "message": "Generated presigned PUT upload URL for key: test-storage-direct/2026/08/direct-client-upload-edcd591b.png",
+  "mimeType": "image/png",
+  "timestamp": "2026-08-16 09:51:44.501"
+}
+{
+  "context": "MediaService",
+  "id": "70f94cf0-77db-41c0-a6f5-a860bb5d00c2",
+  "key": "test-storage-direct/2026/08/direct-client-upload-edcd591b.png",
+  "level": "info",
+  "message": "Confirming presigned upload",
+  "timestamp": "2026-08-16 09:51:44.506"
+}
+{
+  "context": "MediaService",
+  "id": "70f94cf0-77db-41c0-a6f5-a860bb5d00c2",
+  "level": "info",
+  "message": "✔ Presigned upload confirmed and verified",
+  "timestamp": "2026-08-16 09:51:44.513"
+}
+{
+  "context": "StorageService",
+  "level": "debug",
+  "message": "Deleting object from R2/S3 [test-storage-blogs/2026/08/portfolio-hero-d60f30dd.webp]",
+  "timestamp": "2026-08-16 09:51:44.529"
+}
+{
+  "context": "StorageService",
+  "level": "info",
+  "message": "✔ Deleted object from R2/S3: test-storage-blogs/2026/08/portfolio-hero-d60f30dd.webp",
+  "timestamp": "2026-08-16 09:51:44.529"
+}
+{
+  "context": "MediaService",
+  "id": "93a0897d-7e39-4f20-aad7-11a274161275",
+  "key": "test-storage-blogs/2026/08/portfolio-hero-d60f30dd.webp",
+  "level": "info",
+  "message": "✔ Media asset permanently deleted",
+  "timestamp": "2026-08-16 09:51:44.532"
+}
+{
+  "context": "MediaService",
+  "fileName": "bulk-a.png",
+  "folder": "test-storage-bulk",
+  "level": "info",
+  "message": "Processing single file upload",
+  "mimeType": "image/png",
+  "size": 100,
+  "source": "API",
+  "timestamp": "2026-08-16 09:51:44.534"
+}
+{
+  "bucket": "portfolio-test-bucket",
+  "context": "StorageService",
+  "level": "debug",
+  "message": "Uploading file buffer to S3/R2 [test-storage-bulk/2026/08/bulk-a-60187651.png]",
+  "mimeType": "image/png",
+  "size": 1,
+  "timestamp": "2026-08-16 09:51:44.536"
+}
+{
+  "context": "StorageService",
+  "level": "info",
+  "message": "✔ File uploaded successfully to R2/S3: test-storage-bulk/2026/08/bulk-a-60187651.png",
+  "size": "1 B",
+  "timestamp": "2026-08-16 09:51:44.537",
+  "url": "https://assets.fi.amanillah.com/test-storage-bulk/2026/08/bulk-a-60187651.png"
+}
+{
+  "context": "MediaService",
+  "id": "ca814a9c-87ba-402c-83e4-256bbcdc39b2",
+  "key": "test-storage-bulk/2026/08/bulk-a-60187651.png",
+  "level": "info",
+  "message": "✔ Media file saved to database",
+  "timestamp": "2026-08-16 09:51:44.542"
+}
+{
+  "context": "MediaService",
+  "fileName": "bulk-b.png",
+  "folder": "test-storage-bulk",
+  "level": "info",
+  "message": "Processing single file upload",
+  "mimeType": "image/png",
+  "size": 100,
+  "source": "API",
+  "timestamp": "2026-08-16 09:51:44.542"
+}
+{
+  "bucket": "portfolio-test-bucket",
+  "context": "StorageService",
+  "level": "debug",
+  "message": "Uploading file buffer to S3/R2 [test-storage-bulk/2026/08/bulk-b-b70cfe2a.png]",
+  "mimeType": "image/png",
+  "size": 1,
+  "timestamp": "2026-08-16 09:51:44.545"
+}
+{
+  "context": "StorageService",
+  "level": "info",
+  "message": "✔ File uploaded successfully to R2/S3: test-storage-bulk/2026/08/bulk-b-b70cfe2a.png",
+  "size": "1 B",
+  "timestamp": "2026-08-16 09:51:44.546",
+  "url": "https://assets.fi.amanillah.com/test-storage-bulk/2026/08/bulk-b-b70cfe2a.png"
+}
+{
+  "context": "MediaService",
+  "id": "8692d13b-1cb2-4660-b595-3ba25caa8282",
+  "key": "test-storage-bulk/2026/08/bulk-b-b70cfe2a.png",
+  "level": "info",
+  "message": "✔ Media file saved to database",
+  "timestamp": "2026-08-16 09:51:44.549"
+}
+{
+  "context": "StorageService",
+  "level": "info",
+  "message": "Bulk deleting 2 objects from R2/S3",
+  "timestamp": "2026-08-16 09:51:44.551"
+}
+{
+  "context": "MediaService",
+  "level": "info",
+  "message": "✔ Bulk deleted 2 media assets",
+  "timestamp": "2026-08-16 09:51:44.554"
+}
+{
+  "context": "MediaService",
+  "fileName": "dedup-test.png",
+  "folder": "test-storage-dedup",
+  "level": "info",
+  "message": "Processing single file upload",
+  "mimeType": "image/png",
+  "size": 45,
+  "source": "API",
+  "timestamp": "2026-08-16 09:51:44.554",
+  "uploaderId": "5284ecda-0a85-4d5b-88bd-b40c6843c17e"
+}
+{
+  "bucket": "portfolio-test-bucket",
+  "context": "StorageService",
+  "level": "debug",
+  "message": "Uploading file buffer to S3/R2 [test-storage-dedup/2026/08/dedup-test-361bc1ab.png]",
+  "mimeType": "image/png",
+  "size": 45,
+  "timestamp": "2026-08-16 09:51:44.555"
+}
+{
+  "context": "StorageService",
+  "level": "info",
+  "message": "✔ File uploaded successfully to R2/S3: test-storage-dedup/2026/08/dedup-test-361bc1ab.png",
+  "size": "45 B",
+  "timestamp": "2026-08-16 09:51:44.555",
+  "url": "https://assets.fi.amanillah.com/test-storage-dedup/2026/08/dedup-test-361bc1ab.png"
+}
+{
+  "context": "MediaService",
+  "id": "e14f4382-2032-4040-9fd8-7e984650b69e",
+  "key": "test-storage-dedup/2026/08/dedup-test-361bc1ab.png",
+  "level": "info",
+  "message": "✔ Media file saved to database",
+  "timestamp": "2026-08-16 09:51:44.561"
+}
+{
+  "context": "MediaService",
+  "fileName": "dedup-test.png",
+  "folder": "test-storage-dedup",
+  "level": "info",
+  "message": "Processing single file upload",
+  "mimeType": "image/png",
+  "size": 45,
+  "source": "API",
+  "timestamp": "2026-08-16 09:51:44.561",
+  "uploaderId": "5284ecda-0a85-4d5b-88bd-b40c6843c17e"
+}
+{
+  "bucket": "portfolio-test-bucket",
+  "context": "StorageService",
+  "level": "debug",
+  "message": "Uploading file buffer to S3/R2 [test-storage-dedup/2026/08/dedup-test-ade7ca4c.png]",
+  "mimeType": "image/png",
+  "size": 45,
+  "timestamp": "2026-08-16 09:51:44.562"
+}
+{
+  "context": "StorageService",
+  "level": "info",
+  "message": "✔ File uploaded successfully to R2/S3: test-storage-dedup/2026/08/dedup-test-ade7ca4c.png",
+  "size": "45 B",
+  "timestamp": "2026-08-16 09:51:44.562",
+  "url": "https://assets.fi.amanillah.com/test-storage-dedup/2026/08/dedup-test-ade7ca4c.png"
+}
+{
+  "context": "MediaService",
+  "id": "fa43c2da-809e-45a3-9047-34a7bf87e2da",
+  "key": "test-storage-dedup/2026/08/dedup-test-ade7ca4c.png",
+  "level": "info",
+  "message": "✔ Media file saved to database",
+  "timestamp": "2026-08-16 09:51:44.564"
+}
+{
+  "context": "MediaService",
+  "dryRun": false,
+  "level": "info",
+  "message": "Starting orphaned media cleanup job",
+  "olderThanDays": 0,
+  "thresholdDate": "2026-08-16T09:51:44.568Z",
+  "timestamp": "2026-08-16 09:51:44.568",
+  "type": "avatars"
+}
+{
+  "context": "MediaService",
+  "count": 1,
+  "dryRun": false,
+  "level": "info",
+  "message": "Orphan scan completed: found 1 orphaned file(s) totaling 512 B",
+  "timestamp": "2026-08-16 09:51:44.573"
+}
+{
+  "context": "StorageService",
+  "level": "info",
+  "message": "Bulk deleting 1 objects from R2/S3",
+  "timestamp": "2026-08-16 09:51:44.574"
+}
+{
+  "context": "MediaService",
+  "level": "info",
+  "message": "✔ Successfully purged 1 orphaned files from storage and database.",
+  "timestamp": "2026-08-16 09:51:44.578"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786873904659@example.com",
+  "level": "info",
+  "message": "Initiating registration flow",
+  "name": "Test Engineer",
+  "timestamp": "2026-08-16 09:51:44.661"
+}
+{
+  "context": "PlunkVerifyService",
+  "level": "info",
+  "message": "✔ Plunk email verification passed for test_1786873904659@example.com",
+  "timestamp": "2026-08-16 09:51:45.220"
+}
+{
+  "context": "PlunkTemplateService",
+  "level": "info",
+  "message": "✔ Email dispatched to test_1786873904659@example.com via Plunk (Template: Direct Body)",
+  "timestamp": "2026-08-16 09:51:45.474"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786873904659@example.com",
+  "level": "info",
+  "message": "✔ Registration OTP dispatched via email",
+  "timestamp": "2026-08-16 09:51:45.474"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786873904659@example.com",
+  "level": "info",
+  "message": "Verifying registration OTP",
+  "timestamp": "2026-08-16 09:51:45.477"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786873904659@example.com",
+  "level": "info",
+  "message": "Verifying registration OTP",
+  "timestamp": "2026-08-16 09:51:45.492"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786873904659@example.com",
+  "level": "info",
+  "message": "✔ User synced to Subscriber model",
+  "timestamp": "2026-08-16 09:51:45.502"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786873904659@example.com",
+  "level": "info",
+  "message": "✔ User registration and activation completed",
+  "timestamp": "2026-08-16 09:51:45.509",
+  "userId": "5c317412-995e-459b-a06b-5b4221d6aeab"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786873904659@example.com",
+  "level": "info",
+  "message": "User sign-in attempt",
+  "timestamp": "2026-08-16 09:51:45.512"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786873904659@example.com",
+  "level": "info",
+  "message": "✔ User signed in successfully",
+  "timestamp": "2026-08-16 09:51:45.567",
+  "userId": "5c317412-995e-459b-a06b-5b4221d6aeab"
+}
+{
+  "context": "AuthServices",
+  "level": "info",
+  "message": "1-Click Demo Login initiated",
+  "timestamp": "2026-08-16 09:51:45.568",
+  "userId": "user-fi"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "Updating user profile",
+  "timestamp": "2026-08-16 09:51:45.573",
+  "userId": "5c317412-995e-459b-a06b-5b4221d6aeab"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "✔ User profile updated successfully",
+  "timestamp": "2026-08-16 09:51:45.578",
+  "userId": "5c317412-995e-459b-a06b-5b4221d6aeab"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "Updating subscription status",
+  "subscribed": false,
+  "timestamp": "2026-08-16 09:51:45.579",
+  "userId": "5c317412-995e-459b-a06b-5b4221d6aeab"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "Updating subscription status",
+  "subscribed": true,
+  "timestamp": "2026-08-16 09:51:45.586",
+  "userId": "5c317412-995e-459b-a06b-5b4221d6aeab"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "Password change requested",
+  "timestamp": "2026-08-16 09:51:45.589",
+  "userId": "5c317412-995e-459b-a06b-5b4221d6aeab"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "✔ User password changed successfully",
+  "timestamp": "2026-08-16 09:51:45.690",
+  "userId": "5c317412-995e-459b-a06b-5b4221d6aeab"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786873904659@example.com",
+  "level": "info",
+  "message": "User sign-in attempt",
+  "timestamp": "2026-08-16 09:51:45.690"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786873904659@example.com",
+  "level": "info",
+  "message": "✔ User signed in successfully",
+  "timestamp": "2026-08-16 09:51:45.740",
+  "userId": "5c317412-995e-459b-a06b-5b4221d6aeab"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786873904659@example.com",
+  "level": "info",
+  "message": "Password reset requested",
+  "timestamp": "2026-08-16 09:51:45.741"
+}
+{
+  "context": "PlunkTemplateService",
+  "level": "info",
+  "message": "✔ Email dispatched to test_1786873904659@example.com via Plunk (Template: Direct Body)",
+  "timestamp": "2026-08-16 09:51:45.918"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786873904659@example.com",
+  "level": "info",
+  "message": "✔ Password reset OTP dispatched via email",
+  "timestamp": "2026-08-16 09:51:45.918"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786873904659@example.com",
+  "level": "info",
+  "message": "Verifying password reset OTP",
+  "timestamp": "2026-08-16 09:51:45.922"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786873904659@example.com",
+  "level": "info",
+  "message": "Executing password reset",
+  "timestamp": "2026-08-16 09:51:45.924"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786873904659@example.com",
+  "level": "info",
+  "message": "✔ Password reset successful",
+  "timestamp": "2026-08-16 09:51:45.988",
+  "userId": "5c317412-995e-459b-a06b-5b4221d6aeab"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786873904659@example.com",
+  "level": "info",
+  "message": "User sign-in attempt",
+  "timestamp": "2026-08-16 09:51:45.988"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786873904659@example.com",
+  "level": "info",
+  "message": "✔ User signed in successfully",
+  "timestamp": "2026-08-16 09:51:46.042",
+  "userId": "5c317412-995e-459b-a06b-5b4221d6aeab"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "Admin modifying user role",
+  "newRole": "MODERATOR",
+  "targetUserId": "5c317412-995e-459b-a06b-5b4221d6aeab",
+  "timestamp": "2026-08-16 09:51:46.053"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "✔ User role updated by admin",
+  "newRole": "MODERATOR",
+  "targetUserId": "5c317412-995e-459b-a06b-5b4221d6aeab",
+  "timestamp": "2026-08-16 09:51:46.059"
+}
+{
+  "context": "UserService",
+  "fileName": "avatar-profile-pic.png",
+  "level": "info",
+  "message": "Uploading profile avatar to S3/R2",
+  "size": 1024,
+  "timestamp": "2026-08-16 09:51:46.060",
+  "userId": "5c317412-995e-459b-a06b-5b4221d6aeab"
+}
+{
+  "bucket": "portfolio-assets",
+  "context": "StorageService",
+  "level": "debug",
+  "message": "Uploading file buffer to S3/R2 [avatars/2026/08/avatar-profile-pic-6fe694d1.png]",
+  "mimeType": "image/png",
+  "size": 13,
+  "timestamp": "2026-08-16 09:51:46.067"
+}
+{
+  "context": "StorageService",
+  "level": "info",
+  "message": "✔ File uploaded successfully to R2/S3: avatars/2026/08/avatar-profile-pic-6fe694d1.png",
+  "size": "13 B",
+  "timestamp": "2026-08-16 09:51:46.068",
+  "url": "https://assets.fi.amanillah.com/avatars/2026/08/avatar-profile-pic-6fe694d1.png"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "✔ User avatar uploaded, old avatar purged, updated successfully",
+  "timestamp": "2026-08-16 09:51:46.079",
+  "url": "https://assets.fi.amanillah.com/avatars/2026/08/avatar-profile-pic-6fe694d1.png",
+  "userId": "5c317412-995e-459b-a06b-5b4221d6aeab"
+}
+{
+  "context": "UserService",
+  "fileName": "new-avatar-replacement.png",
+  "level": "info",
+  "message": "Uploading profile avatar to S3/R2",
+  "size": 2048,
+  "timestamp": "2026-08-16 09:51:46.081",
+  "userId": "5c317412-995e-459b-a06b-5b4221d6aeab"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "Cleaning up 1 previous avatar file(s) from S3/R2 storage",
+  "oldKeys": [
+    "avatars/2026/08/avatar-profile-pic-6fe694d1.png"
+  ],
+  "timestamp": "2026-08-16 09:51:46.084",
+  "userId": "5c317412-995e-459b-a06b-5b4221d6aeab"
+}
+{
+  "context": "StorageService",
+  "level": "info",
+  "message": "Bulk deleting 1 objects from R2/S3",
+  "timestamp": "2026-08-16 09:51:46.085"
+}
+{
+  "bucket": "portfolio-assets",
+  "context": "StorageService",
+  "level": "debug",
+  "message": "Uploading file buffer to S3/R2 [avatars/2026/08/new-avatar-replacement-bf5bc896.png]",
+  "mimeType": "image/png",
+  "size": 16,
+  "timestamp": "2026-08-16 09:51:46.090"
+}
+{
+  "context": "StorageService",
+  "level": "info",
+  "message": "✔ File uploaded successfully to R2/S3: avatars/2026/08/new-avatar-replacement-bf5bc896.png",
+  "size": "16 B",
+  "timestamp": "2026-08-16 09:51:46.090",
+  "url": "https://assets.fi.amanillah.com/avatars/2026/08/new-avatar-replacement-bf5bc896.png"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "✔ User avatar uploaded, old avatar purged, updated successfully",
+  "timestamp": "2026-08-16 09:51:46.096",
+  "url": "https://assets.fi.amanillah.com/avatars/2026/08/new-avatar-replacement-bf5bc896.png",
+  "userId": "5c317412-995e-459b-a06b-5b4221d6aeab"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "Removing profile avatar",
+  "timestamp": "2026-08-16 09:51:46.100",
+  "userId": "5c317412-995e-459b-a06b-5b4221d6aeab"
+}
+{
+  "context": "UserService",
+  "keysToDelete": [
+    "avatars/2026/08/new-avatar-replacement-bf5bc896.png"
+  ],
+  "level": "info",
+  "message": "Purging 1 avatar object(s) from S3/R2 storage",
+  "timestamp": "2026-08-16 09:51:46.102",
+  "userId": "5c317412-995e-459b-a06b-5b4221d6aeab"
+}
+{
+  "context": "StorageService",
+  "level": "info",
+  "message": "Bulk deleting 1 objects from R2/S3",
+  "timestamp": "2026-08-16 09:51:46.102"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "✔ User avatar removed and storage freed successfully",
+  "timestamp": "2026-08-16 09:51:46.111",
+  "userId": "5c317412-995e-459b-a06b-5b4221d6aeab"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "Account deletion requested",
+  "timestamp": "2026-08-16 09:51:46.114",
+  "userId": "5c317412-995e-459b-a06b-5b4221d6aeab"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "✔ User account and storage assets erased",
+  "timestamp": "2026-08-16 09:51:46.124",
+  "userId": "5c317412-995e-459b-a06b-5b4221d6aeab"
+}

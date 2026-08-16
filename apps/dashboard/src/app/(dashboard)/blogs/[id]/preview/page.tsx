@@ -5,30 +5,23 @@ import Link from "next/link"
 import { useParams, useRouter } from "next/navigation"
 import {
   Eye,
-  Calendar,
-  Clock,
-  User,
-  Share2,
-  ExternalLink,
-  Sparkles,
   Search,
   Code2,
-  CheckCircle2,
-  ThumbsUp,
-  MessageSquare,
   ArrowLeft,
   Edit2,
   Loader2,
   AlertCircle,
+  ExternalLink,
+  Copy,
+  Check,
 } from "lucide-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@workspace/ui/components/tabs"
-import { Badge } from "@workspace/ui/components/badge"
 import { Button } from "@workspace/ui/components/button"
-import { Avatar, AvatarFallback, AvatarImage } from "@workspace/ui/components/avatar"
 import { toast } from "@workspace/ui/components/sonner"
 import type { BlogPostDTO, SeoAnalysisResult } from "@workspace/shared"
 import { BlogApi } from "@/lib/api"
 import { SeoPreviewCard } from "../../components/seo-preview-card"
+import { FrontendArticlePreview } from "../../components/preview/frontend-article-preview"
 
 export default function BlogPreviewPage() {
   const params = useParams()
@@ -39,6 +32,7 @@ export default function BlogPreviewPage() {
   const [seoResult, setSeoResult] = React.useState<SeoAnalysisResult | null>(null)
   const [isLoading, setIsLoading] = React.useState(true)
   const [error, setError] = React.useState<string | null>(null)
+  const [isCopiedJsonLd, setIsCopiedJsonLd] = React.useState(false)
 
   React.useEffect(() => {
     if (!id) return
@@ -79,7 +73,7 @@ export default function BlogPreviewPage() {
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center gap-3 text-muted-foreground">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        <span className="text-sm font-medium">Generating preview & SEO diagnostics...</span>
+        <span className="text-sm font-medium">Generating live preview & SEO diagnostics...</span>
       </div>
     )
   }
@@ -99,19 +93,22 @@ export default function BlogPreviewPage() {
     )
   }
 
-  const authorName = post.author?.name || "Fi Amanillah"
-  const authorRole = post.author?.role || "Full Stack & DevOps Engineer"
-  const authorAvatar = post.author?.avatar || "/fi.png"
-  const publishedDate = post.date || (post.publishedAt ? new Date(post.publishedAt).toLocaleDateString() : "Draft")
-
   const copyPublicLink = () => {
     const url = `https://fi.amanillah.com/blog/${post.slug}`
     navigator.clipboard.writeText(url)
     toast.success("Public link copied to clipboard!")
   }
 
+  const copyJsonLd = () => {
+    if (!seoResult?.previews.jsonLd) return
+    navigator.clipboard.writeText(JSON.stringify(seoResult.previews.jsonLd, null, 2))
+    setIsCopiedJsonLd(true)
+    toast.success("Schema.org JSON-LD copied to clipboard!")
+    setTimeout(() => setIsCopiedJsonLd(false), 2000)
+  }
+
   return (
-    <div className="max-w-5xl mx-auto space-y-6">
+    <div className="max-w-7xl mx-auto space-y-6">
       {/* Top Navigation Bar */}
       <div className="flex flex-wrap items-center justify-between gap-4 p-4 rounded-xl border border-border/80 bg-card shadow-xs">
         <div className="flex items-center gap-3">
@@ -125,7 +122,7 @@ export default function BlogPreviewPage() {
               <Link href="/blogs" className="hover:underline">
                 Blogs
               </Link>{" "}
-              / Live Preview
+              / Live Article Preview
             </span>
             <h1 className="text-base md:text-lg font-bold text-foreground line-clamp-1">
               {post.title}
@@ -165,7 +162,7 @@ export default function BlogPreviewPage() {
                 value="article"
                 className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none px-2 font-medium text-xs md:text-sm"
               >
-                <Eye className="h-4 w-4 mr-2" /> Article Reader View
+                <Eye className="h-4 w-4 mr-2" /> Live Website Article View
               </TabsTrigger>
               <TabsTrigger
                 value="seo"
@@ -182,121 +179,9 @@ export default function BlogPreviewPage() {
             </TabsList>
           </div>
 
-          {/* TAB 1: ARTICLE READER VIEW */}
-          <TabsContent value="article" className="p-6 md:p-8 space-y-6 m-0">
-            {/* Header info */}
-            <div className="space-y-3">
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <div className="flex items-center gap-2">
-                  <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">
-                    {post.category?.name || "Uncategorized"}
-                  </Badge>
-                  <Badge
-                    variant={post.status === "PUBLISHED" ? "default" : "secondary"}
-                    className="capitalize text-xs"
-                  >
-                    {post.status.toLowerCase()}
-                  </Badge>
-                  {post.featured && (
-                    <Badge
-                      variant="outline"
-                      className="bg-amber-500/10 text-amber-500 border-amber-500/20 flex items-center gap-1"
-                    >
-                      <Sparkles className="h-3 w-3" /> Featured
-                    </Badge>
-                  )}
-                </div>
-                <div className="flex items-center gap-3 text-xs text-muted-foreground font-mono">
-                  <span className="flex items-center gap-1">
-                    <Clock className="h-3.5 w-3.5" /> {post.readTime}
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <Calendar className="h-3.5 w-3.5" /> {publishedDate}
-                  </span>
-                </div>
-              </div>
-
-              <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-foreground leading-tight">
-                {post.title}
-              </h1>
-              {post.subtitle && (
-                <p className="text-base text-muted-foreground leading-relaxed">
-                  {post.subtitle}
-                </p>
-              )}
-            </div>
-
-            {/* Thumbnail */}
-            {post.thumbnail && (
-              <div className="rounded-xl overflow-hidden border border-border aspect-[21/9] bg-muted/40 relative max-h-80">
-                <img
-                  src={post.thumbnail}
-                  alt={post.title}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            )}
-
-            {/* Author Bar */}
-            <div className="flex items-center justify-between p-4 rounded-xl border border-border/70 bg-muted/20">
-              <div className="flex items-center gap-3">
-                <Avatar className="h-11 w-11 border border-border">
-                  <AvatarImage src={authorAvatar} alt={authorName} />
-                  <AvatarFallback>{authorName.slice(0, 2).toUpperCase()}</AvatarFallback>
-                </Avatar>
-                <div>
-                  <div className="font-semibold text-sm text-foreground">{authorName}</div>
-                  <div className="text-xs text-muted-foreground">{authorRole}</div>
-                </div>
-              </div>
-              <div className="flex items-center gap-4 text-xs text-muted-foreground font-mono">
-                <span className="flex items-center gap-1">
-                  <ThumbsUp className="h-3.5 w-3.5" /> {post.likesCount} likes
-                </span>
-                <span className="flex items-center gap-1">
-                  <MessageSquare className="h-3.5 w-3.5" /> {post.commentsCount} comments
-                </span>
-              </div>
-            </div>
-
-            {/* Key Takeaways */}
-            {post.keyTakeaways && post.keyTakeaways.length > 0 && (
-              <div className="p-5 rounded-xl border border-primary/20 bg-primary/5 space-y-3">
-                <span className="text-xs font-bold uppercase tracking-wider text-primary flex items-center gap-1.5">
-                  <Sparkles className="h-3.5 w-3.5" /> Key Architectural Takeaways
-                </span>
-                <ul className="space-y-2 text-sm text-foreground/90">
-                  {post.keyTakeaways.map((takeaway, idx) => (
-                    <li key={idx} className="flex items-start gap-2.5">
-                      <CheckCircle2 className="h-4 w-4 text-primary shrink-0 mt-0.5" />
-                      <span>{takeaway}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
-            {/* Summary Box */}
-            <div className="p-4 rounded-xl bg-muted/40 border border-border/70 text-sm italic text-foreground/90 leading-relaxed">
-              "{post.summary}"
-            </div>
-
-            {/* Markdown Body */}
-            <div className="space-y-4 text-sm leading-relaxed border-t border-border pt-6 whitespace-pre-wrap font-sans text-foreground/95">
-              {post.content}
-            </div>
-
-            {/* Tags Footer */}
-            {post.tags && post.tags.length > 0 && (
-              <div className="flex flex-wrap items-center gap-2 pt-6 border-t border-border">
-                <span className="text-xs font-semibold text-muted-foreground">Topics:</span>
-                {post.tags.map((tag) => (
-                  <Badge key={tag} variant="secondary" className="text-xs font-mono">
-                    #{tag}
-                  </Badge>
-                ))}
-              </div>
-            )}
+          {/* TAB 1: ARTICLE READER VIEW (Exact Website Replica) */}
+          <TabsContent value="article" className="p-4 sm:p-6 lg:p-8 m-0">
+            <FrontendArticlePreview post={post} />
           </TabsContent>
 
           {/* TAB 2: SEO & SERP PREVIEWS */}
@@ -306,14 +191,32 @@ export default function BlogPreviewPage() {
 
           {/* TAB 3: SCHEMA.ORG JSON-LD */}
           <TabsContent value="jsonld" className="p-6 md:p-8 space-y-3 m-0">
-            <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-              Generated Schema.org Graph ({post.seo?.articleType || "TechArticle"})
-            </span>
-            <div className="p-4 rounded-xl border border-border bg-[#0d1117] text-[#e6edf3] font-mono text-xs overflow-x-auto max-h-96">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                Generated Schema.org Graph ({post.seo?.articleType || "TechArticle"})
+              </span>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={copyJsonLd}
+                className="h-7 text-xs gap-1.5"
+              >
+                {isCopiedJsonLd ? (
+                  <>
+                    <Check className="h-3.5 w-3.5 text-emerald-500" /> Copied!
+                  </>
+                ) : (
+                  <>
+                    <Copy className="h-3.5 w-3.5" /> Copy JSON-LD
+                  </>
+                )}
+              </Button>
+            </div>
+            <div className="p-4 rounded-xl border border-border bg-[#0d1117] text-[#e6edf3] font-mono text-xs overflow-x-auto max-h-96 leading-relaxed">
               <pre>
                 {seoResult?.previews.jsonLd
                   ? JSON.stringify(seoResult.previews.jsonLd, null, 2)
-                  : "// Generating structured data..."}
+                  : "// Generating structured data graph..."}
               </pre>
             </div>
           </TabsContent>

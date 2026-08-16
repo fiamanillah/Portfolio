@@ -1,0 +1,27 @@
+info:
+  name: Public - Report Comment
+  type: http
+  seq: 4
+
+http:
+  method: POST
+  url: "{{baseUrl}}/comments/v1/public/{{commentId}}/report"
+  headers:
+    - name: Content-Type
+      value: application/json
+    - name: Authorization
+      value: "Bearer {{authToken}}"
+  body:
+    type: json
+    data: |-
+      {
+        "reason": "SPAM",
+        "details": "This message contains unsolicited promotional links and marketing spam."
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

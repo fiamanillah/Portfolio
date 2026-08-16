@@ -48,7 +48,7 @@ async function request<T>(
 ): Promise<{ success: boolean; data?: T; message?: string; error?: string }> {
   const token = getStoredAccessToken();
   const headers: Record<string, string> = {
-    "Content-Type": "application/json",
+    ...(options.body instanceof FormData ? {} : { "Content-Type": "application/json" }),
     ...(options.headers as Record<string, string>),
   };
 
@@ -262,7 +262,29 @@ export const AuthApi = {
   },
 
   /**
-   * 14. Sign Out
+   * 14. Upload Profile Avatar directly to Cloudflare R2 / S3
+   */
+  async uploadAvatar(file: File) {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    return await request<AuthUser>("/users/v1/profile/avatar", {
+      method: "POST",
+      body: formData,
+    });
+  },
+
+  /**
+   * 15. Remove Profile Avatar
+   */
+  async deleteAvatar() {
+    return await request<AuthUser>("/users/v1/profile/avatar", {
+      method: "DELETE",
+    });
+  },
+
+  /**
+   * 16. Sign Out
    */
   async logout() {
     await request("/auth/v1/logout", {

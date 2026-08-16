@@ -36,17 +36,17 @@ export function DeletePostDialog({
 
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogContent className="sm:max-w-[480px]">
+      <AlertDialogContent className="w-[95vw] sm:min-w-[480px] md:min-w-[540px] max-w-lg bg-card border border-border/80 p-6 shadow-xl">
         <AlertDialogHeader>
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-destructive/10 text-destructive">
               <AlertTriangle className="h-5 w-5" />
             </div>
             <div>
-              <AlertDialogTitle>
+              <AlertDialogTitle className="text-base font-bold">
                 {isBulk ? `Delete ${bulkCount} Blog Posts?` : "Delete Blog Post?"}
               </AlertDialogTitle>
-              <AlertDialogDescription className="mt-1">
+              <AlertDialogDescription className="mt-1 text-xs text-muted-foreground">
                 {isBulk ? (
                   <span>
                     Are you sure you want to permanently delete these{" "}
@@ -64,19 +64,24 @@ export function DeletePostDialog({
             </div>
           </div>
         </AlertDialogHeader>
-        <AlertDialogFooter className="mt-4 gap-2 sm:gap-0">
-          <AlertDialogCancel disabled={isProcessing}>Cancel</AlertDialogCancel>
-          <Button
-            variant="destructive"
-            disabled={isProcessing}
-            onClick={async (e) => {
+
+        <AlertDialogFooter className="mt-4 gap-2">
+          <AlertDialogCancel disabled={isProcessing} className="text-xs h-8">
+            Cancel
+          </AlertDialogCancel>
+          <AlertDialogAction
+            onClick={(e) => {
               e.preventDefault()
-              await onConfirm()
+              onConfirm()
             }}
+            disabled={isProcessing}
+            className="bg-destructive text-destructive-foreground hover:bg-destructive/90 text-xs h-8 gap-1.5"
           >
-            {isProcessing && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            {isBulk ? "Delete Selected Posts" : "Delete Post"}
-          </Button>
+            {isProcessing ? (
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            ) : null}
+            {isBulk ? `Delete ${bulkCount} Posts` : "Delete Post"}
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

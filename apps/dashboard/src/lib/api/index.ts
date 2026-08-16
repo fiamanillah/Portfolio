@@ -6,3 +6,5 @@ export * from "./user.api";
 export * from "./subscriber.api";
 export * from "./template.api";
 export * from "./blog.api";
+export * from "./media.api";
+export * from "./comment.api";

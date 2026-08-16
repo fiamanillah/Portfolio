@@ -15,11 +15,15 @@ import {
   AdminUserQueryDTO,
 } from "./UserDTO";
 import { SanitizedUser } from "../Auth/auth.service";
+import { StorageService } from "@/services/StorageService";
 
 export class UserService {
   private logger = new AppLogger("UserService");
 
-  constructor(private readonly db: typeof prisma = prisma) {}
+  constructor(
+    private readonly db: typeof prisma = prisma,
+    private readonly storage: StorageService = new StorageService()
+  ) {}
 
   public sanitizeUser(user: User): SanitizedUser {
     return {
@@ -118,6 +122,184 @@ export class UserService {
   }
 
   /**
+   * 2b. UPLOAD & SET PROFILE AVATAR (Cloudflare R2 / S3):
+   */
+  public async uploadAvatar(userId: string, file: Express.Multer.File): Promise<SanitizedUser> {
+    if (!file || !file.buffer) {
+      throw new BadRequestError("Please select an image file to upload as your avatar.");
+    }
+
+    if (!file.mimetype.startsWith("image/")) {
+      throw new BadRequestError("Avatar must be an image file (e.g. JPEG, PNG, WebP, GIF, SVG).");
+    }
+
+    this.logger.info("Uploading profile avatar to S3/R2", {
+      userId,
+      fileName: file.originalname,
+      size: file.size,
+    });
+
+    const user = await this.db.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new NotFoundError("User account not found.");
+    }
+
+    // 1. Find and delete previous avatar files from Cloudflare R2 / S3 to enforce single-avatar-per-user limit
+    const previousAvatars = await this.db.mediaFile.findMany({
+      where: {
+        OR: [
+          { source: "USER_AVATAR", entityType: "User", entityId: userId },
+          { uploaderId: userId, folder: "avatars" },
+        ],
+      },
+    });
+
+    const oldKeys = previousAvatars.map((a) => a.key).filter(Boolean);
+    if (user.avatar) {
+      const extractedKey = this.storage.extractKeyFromUrl(user.avatar);
+      if (extractedKey && !oldKeys.includes(extractedKey)) {
+        oldKeys.push(extractedKey);
+      }
+    }
+
+    if (oldKeys.length > 0) {
+      this.logger.info(`Cleaning up ${oldKeys.length} previous avatar file(s) from S3/R2 storage`, {
+        userId,
+        oldKeys,
+      });
+      try {
+        await this.storage.deleteObjects(oldKeys);
+      } catch (err: any) {
+        this.logger.warn(`Failed to delete old avatar files from storage: ${err.message}`);
+      }
+      await this.db.mediaFile.deleteMany({
+        where: { key: { in: oldKeys } },
+      });
+    }
+
+    // 2. Upload new avatar buffer to S3 / Cloudflare R2 under avatars/ folder
+    const uploadResult = await this.storage.uploadBuffer({
+      buffer: file.buffer,
+      fileName: file.originalname || "avatar.webp",
+      mimeType: file.mimetype,
+      folder: "avatars",
+      tags: ["avatar", "profile-picture"],
+      metadata: {
+        source: "USER_AVATAR",
+        entityType: "User",
+        entityId: userId,
+        uploaderId: userId,
+      },
+      isPublic: true,
+    });
+
+    // 3. Save single active tracking record in MediaFile table
+    await this.db.mediaFile.create({
+      data: {
+        key: uploadResult.key,
+        bucket: uploadResult.bucket,
+        fileName: file.originalname || "avatar.webp",
+        fileExtension: uploadResult.key.split(".").pop() || null,
+        mimeType: uploadResult.mimeType,
+        size: BigInt(uploadResult.size),
+        url: uploadResult.url,
+        etag: uploadResult.etag,
+        source: "USER_AVATAR",
+        folder: "avatars",
+        entityType: "User",
+        entityId: userId,
+        tags: ["avatar", "profile-picture"],
+        isPublic: true,
+        uploaderId: userId,
+      },
+    });
+
+    // 4. Update User.avatar with the active public URL
+    const updated = await this.db.user.update({
+      where: { id: userId },
+      data: { avatar: uploadResult.url },
+    });
+
+    // 5. Sync author avatar on published blog posts
+    await this.db.blogPost.updateMany({
+      where: { authorId: userId },
+      data: { authorAvatar: uploadResult.url },
+    });
+
+    this.logger.info("✔ User avatar uploaded, old avatar purged, updated successfully", {
+      userId,
+      url: uploadResult.url,
+    });
+    return this.sanitizeUser(updated);
+  }
+
+  /**
+   * 2c. DELETE / REMOVE PROFILE AVATAR:
+   * Removes avatar URL and permanently purges the object from Cloudflare R2 / S3 storage.
+   */
+  public async deleteAvatar(userId: string): Promise<SanitizedUser> {
+    this.logger.info("Removing profile avatar", { userId });
+
+    const user = await this.db.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new NotFoundError("User account not found.");
+    }
+
+    // Find and delete avatar files from Cloudflare R2 / S3
+    const avatarFiles = await this.db.mediaFile.findMany({
+      where: {
+        OR: [
+          { source: "USER_AVATAR", entityType: "User", entityId: userId },
+          { uploaderId: userId, folder: "avatars" },
+        ],
+      },
+    });
+
+    const keysToDelete = avatarFiles.map((a) => a.key).filter(Boolean);
+    if (user.avatar) {
+      const extractedKey = this.storage.extractKeyFromUrl(user.avatar);
+      if (extractedKey && !keysToDelete.includes(extractedKey)) {
+        keysToDelete.push(extractedKey);
+      }
+    }
+
+    if (keysToDelete.length > 0) {
+      this.logger.info(`Purging ${keysToDelete.length} avatar object(s) from S3/R2 storage`, {
+        userId,
+        keysToDelete,
+      });
+      try {
+        await this.storage.deleteObjects(keysToDelete);
+      } catch (err: any) {
+        this.logger.warn(`Failed to delete avatar files from storage: ${err.message}`);
+      }
+      await this.db.mediaFile.deleteMany({
+        where: { key: { in: keysToDelete } },
+      });
+    }
+
+    const updated = await this.db.user.update({
+      where: { id: userId },
+      data: { avatar: null },
+    });
+
+    // Sync blog posts
+    await this.db.blogPost.updateMany({
+      where: { authorId: userId },
+      data: { authorAvatar: null },
+    });
+
+    this.logger.info("✔ User avatar removed and storage freed successfully", { userId });
+    return this.sanitizeUser(updated);
+  }
+
+  /**
    * 3. CHANGE PASSWORD:
    */
   public async changePassword(userId: string, dto: ChangePasswordDTO) {
@@ -208,18 +390,48 @@ export class UserService {
       throw new NotFoundError("User not found.");
     }
 
-    // Mark email as unsubscribed
+    // 1. Purge all user avatar and media files from Cloudflare R2 / S3 storage
+    const userFiles = await this.db.mediaFile.findMany({
+      where: {
+        OR: [{ uploaderId: userId }, { entityId: userId }],
+      },
+    });
+
+    const keysToDelete = userFiles.map((f) => f.key).filter(Boolean);
+    if (user.avatar) {
+      const extractedKey = this.storage.extractKeyFromUrl(user.avatar);
+      if (extractedKey && !keysToDelete.includes(extractedKey)) {
+        keysToDelete.push(extractedKey);
+      }
+    }
+
+    if (keysToDelete.length > 0) {
+      this.logger.info(`Purging ${keysToDelete.length} storage asset(s) for deleted account`, {
+        userId,
+        keysToDelete,
+      });
+      try {
+        await this.storage.deleteObjects(keysToDelete);
+      } catch (err: any) {
+        this.logger.warn(`Failed to delete user media assets from storage: ${err.message}`);
+      }
+      await this.db.mediaFile.deleteMany({
+        where: { key: { in: keysToDelete } },
+      });
+    }
+
+    // 2. Mark email as unsubscribed
     await this.db.subscriber.updateMany({
       where: { email: user.email },
       data: { status: "unsubscribed" },
     });
 
-    // Delete user
+    // 3. Delete user record
     await this.db.user.delete({
       where: { id: userId },
     });
 
-    this.logger.info("✔ User account erased", { userId });
+    this.logger.info("✔ User account and storage assets erased", { userId });
     return { success: true, message: "Your account has been deleted permanently." };
   }
 
@@ -341,11 +553,41 @@ export class UserService {
       throw new NotFoundError("Target user not found.");
     }
 
+    // 1. Purge all media files and avatar from Cloudflare R2 / S3 storage
+    const targetFiles = await this.db.mediaFile.findMany({
+      where: {
+        OR: [{ uploaderId: targetUserId }, { entityId: targetUserId }],
+      },
+    });
+
+    const keysToDelete = targetFiles.map((f) => f.key).filter(Boolean);
+    if (target.avatar) {
+      const extractedKey = this.storage.extractKeyFromUrl(target.avatar);
+      if (extractedKey && !keysToDelete.includes(extractedKey)) {
+        keysToDelete.push(extractedKey);
+      }
+    }
+
+    if (keysToDelete.length > 0) {
+      this.logger.info(`Purging ${keysToDelete.length} storage asset(s) for deleted user`, {
+        targetUserId,
+        keysToDelete,
+      });
+      try {
+        await this.storage.deleteObjects(keysToDelete);
+      } catch (err: any) {
+        this.logger.warn(`Failed to delete target user media assets: ${err.message}`);
+      }
+      await this.db.mediaFile.deleteMany({
+        where: { key: { in: keysToDelete } },
+      });
+    }
+
     await this.db.user.delete({
       where: { id: targetUserId },
     });
 
-    this.logger.info("✔ User deleted by administrator", { targetUserId });
+    this.logger.info("✔ User deleted and storage cleaned by administrator", { targetUserId });
     return { success: true, message: `User account "${target.email}" deleted successfully.` };
   }
 }
