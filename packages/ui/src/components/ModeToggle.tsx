@@ -1,3 +1,5 @@
+"use client"
+
 import React from "react"
 import {
   DropdownMenu,
@@ -24,8 +26,6 @@ export function ModeToggle() {
     }
     return "theme-light" // Fallback for server-side rendering
   })
-
-  // The first useEffect has been completely removed!
 
   // 2. This effect safely updates the DOM whenever the user changes the theme state.
   React.useEffect(() => {

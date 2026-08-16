@@ -1,4 +1,6 @@
-import { useTheme } from "next-themes"
+"use client"
+
+import * as React from "react"
 import { Toaster as Sonner, toast, type ToasterProps } from "sonner"
 import { HugeiconsIcon } from "@hugeicons/react"
 import {
@@ -10,7 +12,24 @@ import {
 } from "@hugeicons/core-free-icons"
 
 const Toaster = ({ ...props }: ToasterProps) => {
-  const { theme = "system" } = useTheme()
+  const [theme, setTheme] = React.useState<"light" | "dark" | "system">("system")
+
+  React.useEffect(() => {
+    const updateTheme = () => {
+      const isDark = document.documentElement.classList.contains("dark")
+      setTheme(isDark ? "dark" : "light")
+    }
+
+    updateTheme()
+
+    const observer = new MutationObserver(updateTheme)
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    })
+
+    return () => observer.disconnect()
+  }, [])
 
   return (
     <Sonner

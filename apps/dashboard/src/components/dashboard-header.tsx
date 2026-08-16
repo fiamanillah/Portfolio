@@ -3,7 +3,7 @@
 import * as React from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Bell, Search, Terminal } from "lucide-react"
+import { Bell, Search, Terminal, Shield } from "lucide-react"
 
 import { SidebarTrigger } from "@workspace/ui/components/sidebar"
 import { Separator } from "@workspace/ui/components/separator"
@@ -18,9 +18,11 @@ import {
 import { ModeToggle } from "@workspace/ui/components/ModeToggle"
 import { Button } from "@workspace/ui/components/button"
 import { Badge } from "@workspace/ui/components/badge"
+import { useAuth } from "@/providers/auth-provider"
 
 const routeTitles: Record<string, string> = {
   "/": "Overview",
+  "/users": "Users & Roles",
   "/subscribers": "Subscribers",
   "/templates": "Templates",
   "/comments": "Comments",
@@ -29,6 +31,7 @@ const routeTitles: Record<string, string> = {
 
 export function DashboardHeader() {
   const pathname = usePathname()
+  const { user } = useAuth()
   const currentTitle = routeTitles[pathname] || pathname.replace("/", "").charAt(0).toUpperCase() + pathname.slice(2)
 
   return (
@@ -61,26 +64,10 @@ export function DashboardHeader() {
       </div>
 
       <div className="flex items-center gap-2">
-        <Button
-          variant="outline"
-          size="sm"
-          className="hidden md:flex h-8 items-center gap-2 px-3 text-xs text-muted-foreground"
-        >
-          <Search className="size-3.5" />
-          <span>Quick search...</span>
-          <kbd className="pointer-events-none rounded bg-muted px-1.5 font-mono text-[10px] text-muted-foreground border">
-            ⌘K
-          </kbd>
-        </Button>
-
-        <Button variant="ghost" size="icon" className="relative size-8">
-          <Bell className="size-4" />
-          <span className="absolute right-1 top-1 flex size-2">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75"></span>
-            <span className="relative inline-flex size-2 rounded-full bg-primary"></span>
-          </span>
-          <span className="sr-only">Notifications</span>
-        </Button>
+        <div className="hidden lg:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 border border-primary/20 text-[11px] font-medium text-primary">
+          <Shield className="size-3" />
+          <span>Super Admin: {user?.name || "Fi Amanillah"}</span>
+        </div>
 
         <div className="hidden sm:flex items-center gap-1 border-l border-border pl-2">
           <Badge variant="secondary" className="h-6 gap-1 px-2 font-mono text-[11px]">

@@ -8,7 +8,15 @@ import {
   Key,
   Save,
   ShieldCheck,
+  ShieldAlert,
   User,
+  Lock,
+  Loader2,
+  Sparkles,
+  ExternalLink,
+  Shield,
+  Eye,
+  EyeOff,
 } from "lucide-react"
 
 import {
@@ -29,41 +37,136 @@ import {
   TabsList,
   TabsTrigger,
 } from "@workspace/ui/components/tabs"
+import { useAuth } from "@/providers/auth-provider"
+import { UserApi, getStoredAccessToken } from "@/lib/api"
+import { toast } from "@workspace/ui/components/sonner"
+import { Avatar, AvatarFallback, AvatarImage } from "@workspace/ui/components/avatar"
 
 export default function SettingsPage() {
-  const [saved, setSaved] = React.useState(false)
+  const { user, refreshUser } = useAuth()
 
-  const handleSave = () => {
-    setSaved(true)
-    setTimeout(() => setSaved(false), 2000)
+  // Profile Form State
+  const [name, setName] = React.useState(user?.name || "")
+  const [bio, setBio] = React.useState(user?.bio || "")
+  const [headline, setHeadline] = React.useState(user?.headline || "")
+  const [location, setLocation] = React.useState(user?.location || "")
+  const [website, setWebsite] = React.useState(user?.website || "")
+  const [githubUrl, setGithubUrl] = React.useState(user?.githubUrl || "")
+  const [isSavingProfile, setIsSavingProfile] = React.useState(false)
+
+  // Password Form State
+  const [currentPassword, setCurrentPassword] = React.useState("")
+  const [newPassword, setNewPassword] = React.useState("")
+  const [confirmPassword, setConfirmPassword] = React.useState("")
+  const [showPassword, setShowPassword] = React.useState(false)
+  const [isChangingPassword, setIsChangingPassword] = React.useState(false)
+
+  React.useEffect(() => {
+    if (user) {
+      setName(user.name || "")
+      setBio(user.bio || "")
+      setHeadline(user.headline || "")
+      setLocation(user.location || "")
+      setWebsite(user.website || "")
+      setGithubUrl(user.githubUrl || "")
+    }
+  }, [user])
+
+  const handleSaveProfile = async (e: React.FormEvent) => {
+    e.preventDefault()
+    try {
+      setIsSavingProfile(true)
+      const res = await UserApi.updateProfile({
+        name,
+        bio,
+        headline,
+        location,
+        website,
+        githubUrl,
+      })
+
+      if (res.success) {
+        await refreshUser()
+        toast.success("Profile Updated", {
+          description: "Your administrator details have been saved.",
+        })
+      } else {
+        toast.error("Update Failed", {
+          description: res.error || "Could not save profile changes.",
+        })
+      }
+    } catch (err: any) {
+      toast.error("Error", { description: err?.message })
+    } finally {
+      setIsSavingProfile(false)
+    }
   }
+
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    if (!currentPassword || !newPassword) {
+      toast.error("Missing fields", {
+        description: "Please enter both your current and new password.",
+      })
+      return
+    }
+
+    if (newPassword.length < 8) {
+      toast.error("Weak password", {
+        description: "New password must be at least 8 characters.",
+      })
+      return
+    }
+
+    if (newPassword !== confirmPassword) {
+      toast.error("Mismatch", {
+        description: "New password and confirmation do not match.",
+      })
+      return
+    }
+
+    try {
+      setIsChangingPassword(true)
+      const res = await UserApi.changePassword(currentPassword, newPassword)
+
+      if (res.success) {
+        toast.success("Password Changed", {
+          description: "Your administrator password has been updated.",
+        })
+        setCurrentPassword("")
+        setNewPassword("")
+        setConfirmPassword("")
+      } else {
+        toast.error("Password update failed", {
+          description: res.error || "Incorrect current password.",
+        })
+      }
+    } catch (err: any) {
+      toast.error("Error changing password", { description: err?.message })
+    } finally {
+      setIsChangingPassword(false)
+    }
+  }
+
+  const token = getStoredAccessToken()
 
   return (
     <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight md:text-3xl">
-            Platform Settings
-          </h1>
+          <div className="flex items-center gap-2">
+            <h1 className="text-2xl font-bold tracking-tight md:text-3xl">
+              Platform & Security Settings
+            </h1>
+            <Badge variant="outline" className="font-mono text-xs text-primary border-primary/30">
+              Super Admin
+            </Badge>
+          </div>
           <p className="text-sm text-muted-foreground mt-1">
-            Configure administrative preferences, notification webhooks, security policies, and integrations.
+            Manage your administrator credentials, encryption keys, RBAC session telemetry, and platform configurations.
           </p>
-        </div>
-        <div className="flex items-center gap-2">
-          <Button size="sm" onClick={handleSave}>
-            {saved ? (
-              <>
-                <Check className="size-4 mr-1.5 text-primary" />
-                Saved Changes
-              </>
-            ) : (
-              <>
-                <Save className="size-4 mr-1.5" />
-                Save Settings
-              </>
-            )}
-          </Button>
         </div>
       </div>
 
@@ -71,146 +174,281 @@ export default function SettingsPage() {
         <TabsList className="bg-muted/60 p-1">
           <TabsTrigger value="general" className="gap-2 text-xs">
             <User className="size-3.5" />
-            General & Profile
+            Admin Profile
           </TabsTrigger>
-          <TabsTrigger value="notifications" className="gap-2 text-xs">
-            <Bell className="size-3.5" />
-            Notifications
+          <TabsTrigger value="security" className="gap-2 text-xs">
+            <Lock className="size-3.5" />
+            Security & Password
           </TabsTrigger>
-          <TabsTrigger value="api" className="gap-2 text-xs">
-            <Key className="size-3.5" />
-            API & Security
+          <TabsTrigger value="session" className="gap-2 text-xs">
+            <ShieldCheck className="size-3.5" />
+            Session Telemetry
           </TabsTrigger>
         </TabsList>
 
         {/* General Tab */}
         <TabsContent value="general" className="space-y-6">
-          <Card className="border-border/80">
-            <CardHeader>
-              <CardTitle className="text-base font-semibold">Admin Profile</CardTitle>
-              <CardDescription>
-                Publicly displayed author credentials for portfolio and newsletter emails.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-2">
-                  <label className="text-xs font-medium text-foreground">Display Name</label>
-                  <Input defaultValue="Admin Developer" className="h-9 text-xs" />
+          <form onSubmit={handleSaveProfile}>
+            <Card className="border-border/80">
+              <CardHeader>
+                <div className="flex items-center gap-3">
+                  <Avatar className="size-12 rounded-xl border border-border">
+                    <AvatarImage src={user?.avatar || undefined} alt={user?.name || "Admin"} />
+                    <AvatarFallback className="rounded-xl font-bold text-sm">
+                      {user?.name?.slice(0, 2).toUpperCase() || "AD"}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <CardTitle className="text-base font-semibold">
+                      Administrator Profile
+                    </CardTitle>
+                    <CardDescription className="text-xs">
+                      Public author credentials and metadata for your portfolio.
+                    </CardDescription>
+                  </div>
                 </div>
-                <div className="space-y-2">
-                  <label className="text-xs font-medium text-foreground">Admin Email</label>
-                  <Input defaultValue="admin@portfolio.dev" className="h-9 text-xs font-mono" />
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <label className="text-xs font-medium text-foreground">
+                      Display Name
+                    </label>
+                    <Input
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      className="h-9 text-xs"
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs font-medium text-foreground">
+                      Admin Email (System Bound)
+                    </label>
+                    <Input
+                      value={user?.email || "fi@amanillah.dev"}
+                      disabled
+                      className="h-9 text-xs font-mono bg-muted/40"
+                    />
+                  </div>
                 </div>
-              </div>
 
-              <div className="space-y-2">
-                <label className="text-xs font-medium text-foreground">Public Bio</label>
-                <Input
-                  defaultValue="Full-stack engineer crafting high-throughput distributed architectures and modern web apps."
-                  className="h-9 text-xs"
-                />
-              </div>
-            </CardContent>
-          </Card>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <label className="text-xs font-medium text-foreground">
+                      Headline / Title
+                    </label>
+                    <Input
+                      value={headline}
+                      onChange={(e) => setHeadline(e.target.value)}
+                      placeholder="Author & Lead Architect"
+                      className="h-9 text-xs"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs font-medium text-foreground">
+                      Location
+                    </label>
+                    <Input
+                      value={location}
+                      onChange={(e) => setLocation(e.target.value)}
+                      placeholder="Singapore / Remote"
+                      className="h-9 text-xs"
+                    />
+                  </div>
+                </div>
 
-          <Card className="border-border/80">
-            <CardHeader>
-              <CardTitle className="text-base font-semibold">Site Configuration</CardTitle>
-              <CardDescription>
-                Base domain and production URLs for CORS and email links.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
-                  <label className="text-xs font-medium text-foreground">Public Website URL</label>
-                  <Input defaultValue="https://portfolio.dev" className="h-9 text-xs font-mono" />
+                  <label className="text-xs font-medium text-foreground">
+                    Public Bio
+                  </label>
+                  <Input
+                    value={bio}
+                    onChange={(e) => setBio(e.target.value)}
+                    placeholder="Full Stack & DevOps Engineer building distributed systems."
+                    className="h-9 text-xs"
+                  />
                 </div>
-                <div className="space-y-2">
-                  <label className="text-xs font-medium text-foreground">API Gateway Endpoint</label>
-                  <Input defaultValue="https://api.portfolio.dev" className="h-9 text-xs font-mono" />
+
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <label className="text-xs font-medium text-foreground">
+                      Website URL
+                    </label>
+                    <Input
+                      value={website}
+                      onChange={(e) => setWebsite(e.target.value)}
+                      placeholder="https://amanillah.dev"
+                      className="h-9 text-xs font-mono"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs font-medium text-foreground">
+                      GitHub URL
+                    </label>
+                    <Input
+                      value={githubUrl}
+                      onChange={(e) => setGithubUrl(e.target.value)}
+                      placeholder="https://github.com/fiamanillah"
+                      className="h-9 text-xs font-mono"
+                    />
+                  </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+              <CardFooter className="flex justify-end border-t border-border/60 py-3">
+                <Button type="submit" size="sm" disabled={isSavingProfile}>
+                  {isSavingProfile ? (
+                    <>
+                      <Loader2 className="size-3.5 mr-1.5 animate-spin" />
+                      Saving...
+                    </>
+                  ) : (
+                    <>
+                      <Save className="size-3.5 mr-1.5" />
+                      Save Profile Changes
+                    </>
+                  )}
+                </Button>
+              </CardFooter>
+            </Card>
+          </form>
         </TabsContent>
 
-        {/* Notifications Tab */}
-        <TabsContent value="notifications" className="space-y-6">
-          <Card className="border-border/80">
-            <CardHeader>
-              <CardTitle className="text-base font-semibold">Dispatch Preferences</CardTitle>
-              <CardDescription>
-                Configure automated alerts when events occur on your portfolio.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="flex items-center justify-between">
-                <div className="space-y-0.5">
-                  <div className="text-sm font-medium">New Subscriber Alert</div>
-                  <div className="text-xs text-muted-foreground">
-                    Receive email notifications immediately when someone subscribes.
+        {/* Security & Password Tab */}
+        <TabsContent value="security" className="space-y-6">
+          <form onSubmit={handleChangePassword}>
+            <Card className="border-border/80">
+              <CardHeader>
+                <CardTitle className="text-base font-semibold flex items-center gap-2">
+                  <Lock className="size-4 text-primary" />
+                  <span>Change Administrator Password</span>
+                </CardTitle>
+                <CardDescription className="text-xs">
+                  Ensure your Super Admin account is protected with a strong, distinct password.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4 max-w-lg">
+                <div className="space-y-2">
+                  <label className="text-xs font-medium text-foreground">
+                    Current Password
+                  </label>
+                  <div className="relative">
+                    <Input
+                      type={showPassword ? "text" : "password"}
+                      placeholder="Enter current password"
+                      value={currentPassword}
+                      onChange={(e) => setCurrentPassword(e.target.value)}
+                      className="h-9 text-xs pr-9"
+                      required
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                    >
+                      {showPassword ? <EyeOff className="size-3.5" /> : <Eye className="size-3.5" />}
+                    </button>
                   </div>
                 </div>
-                <Switch defaultChecked />
-              </div>
 
-              <div className="flex items-center justify-between">
-                <div className="space-y-0.5">
-                  <div className="text-sm font-medium">Pending Comments Moderation</div>
-                  <div className="text-xs text-muted-foreground">
-                    Get pinged whenever a new discussion comment awaits approval.
-                  </div>
+                <div className="space-y-2">
+                  <label className="text-xs font-medium text-foreground">
+                    New Password
+                  </label>
+                  <Input
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Min 8 characters"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    className="h-9 text-xs"
+                    required
+                  />
                 </div>
-                <Switch defaultChecked />
-              </div>
 
-              <div className="flex items-center justify-between">
-                <div className="space-y-0.5">
-                  <div className="text-sm font-medium">Weekly Telemetry Digest</div>
-                  <div className="text-xs text-muted-foreground">
-                    Receive weekly summary metrics regarding traffic and audience growth.
-                  </div>
+                <div className="space-y-2">
+                  <label className="text-xs font-medium text-foreground">
+                    Confirm New Password
+                  </label>
+                  <Input
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Re-enter new password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    className="h-9 text-xs"
+                    required
+                  />
                 </div>
-                <Switch />
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+              <CardFooter className="flex justify-end border-t border-border/60 py-3">
+                <Button type="submit" size="sm" disabled={isChangingPassword}>
+                  {isChangingPassword ? (
+                    <>
+                      <Loader2 className="size-3.5 mr-1.5 animate-spin" />
+                      Updating Password...
+                    </>
+                  ) : (
+                    <>
+                      <Key className="size-3.5 mr-1.5" />
+                      Update Password
+                    </>
+                  )}
+                </Button>
+              </CardFooter>
+            </Card>
+          </form>
         </TabsContent>
 
-        {/* API & Security Tab */}
-        <TabsContent value="api" className="space-y-6">
+        {/* Session Telemetry Tab */}
+        <TabsContent value="session" className="space-y-6">
           <Card className="border-border/80">
             <CardHeader>
-              <CardTitle className="text-base font-semibold">API Credentials</CardTitle>
-              <CardDescription>
-                Bearer tokens and keys used to communicate with the `@workspace/api` backend service.
+              <CardTitle className="text-base font-semibold flex items-center gap-2">
+                <ShieldCheck className="size-4 text-emerald-500" />
+                <span>Active Cryptographic Session</span>
+              </CardTitle>
+              <CardDescription className="text-xs">
+                Inspect your verified JWT tokens and active access control credentials.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
+              <div className="grid gap-4 sm:grid-cols-3">
+                <div className="p-3 rounded-xl border border-border/70 bg-muted/20 space-y-1">
+                  <span className="text-[11px] text-muted-foreground">User ID</span>
+                  <p className="font-mono text-xs font-semibold truncate">{user?.id || "—"}</p>
+                </div>
+                <div className="p-3 rounded-xl border border-border/70 bg-muted/20 space-y-1">
+                  <span className="text-[11px] text-muted-foreground">Assigned Role</span>
+                  <div className="flex items-center gap-1.5">
+                    <Badge variant="default" className="text-[10px] font-mono">
+                      {user?.role || "ADMIN"}
+                    </Badge>
+                    <span className="text-[11px] text-emerald-500 font-medium">Verified</span>
+                  </div>
+                </div>
+                <div className="p-3 rounded-xl border border-border/70 bg-muted/20 space-y-1">
+                  <span className="text-[11px] text-muted-foreground">Email Status</span>
+                  <p className="text-xs font-semibold text-emerald-500 flex items-center gap-1">
+                    <Check className="size-3.5" />
+                    Verified ({user?.email})
+                  </p>
+                </div>
+              </div>
+
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <label className="text-xs font-medium text-foreground">Admin Secret Token</label>
-                  <Badge variant="outline" className="text-[10px] font-mono">
-                    Active
+                  <label className="text-xs font-medium text-foreground">
+                    Active JWT Bearer Token (Masked)
+                  </label>
+                  <Badge variant="outline" className="text-[10px] font-mono text-primary">
+                    Valid Session
                   </Badge>
                 </div>
                 <Input
                   type="password"
-                  defaultValue="sk_live_99839482938472918374928"
-                  className="h-9 text-xs font-mono"
+                  value={token || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."}
+                  className="h-9 text-xs font-mono bg-muted/40"
                   readOnly
                 />
-              </div>
-
-              <div className="flex items-center gap-2 pt-2">
-                <Button variant="outline" size="sm" className="text-xs">
-                  Rotate API Secret
-                </Button>
-                <Button variant="ghost" size="sm" className="text-xs">
-                  View API Documentation
-                </Button>
               </div>
             </CardContent>
           </Card>

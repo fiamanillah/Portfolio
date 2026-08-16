@@ -1,0 +1,224 @@
+{
+  "context": "AuthServices",
+  "email": "test_1786861005402@example.com",
+  "level": "info",
+  "message": "Initiating registration flow",
+  "name": "Test Engineer",
+  "timestamp": "2026-08-16 06:16:45.469"
+}
+{
+  "context": "PlunkVerifyService",
+  "level": "info",
+  "message": "✔ Plunk email verification passed for test_1786861005402@example.com",
+  "timestamp": "2026-08-16 06:16:47.006"
+}
+{
+  "context": "PlunkTemplateService",
+  "level": "info",
+  "message": "✔ Email dispatched to test_1786861005402@example.com via Plunk (Template: Direct Body)",
+  "timestamp": "2026-08-16 06:16:47.281"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786861005402@example.com",
+  "level": "info",
+  "message": "✔ Registration OTP dispatched via email",
+  "timestamp": "2026-08-16 06:16:47.282"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786861005402@example.com",
+  "level": "info",
+  "message": "Verifying registration OTP",
+  "timestamp": "2026-08-16 06:16:47.286"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786861005402@example.com",
+  "level": "info",
+  "message": "Verifying registration OTP",
+  "timestamp": "2026-08-16 06:16:47.304"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786861005402@example.com",
+  "level": "info",
+  "message": "✔ User synced to Subscriber model",
+  "timestamp": "2026-08-16 06:16:47.325"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786861005402@example.com",
+  "level": "info",
+  "message": "✔ User registration and activation completed",
+  "timestamp": "2026-08-16 06:16:47.332",
+  "userId": "51817a8b-16ac-4337-a0bc-da4a35033dc3"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786861005402@example.com",
+  "level": "info",
+  "message": "User sign-in attempt",
+  "timestamp": "2026-08-16 06:16:47.335"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786861005402@example.com",
+  "level": "info",
+  "message": "✔ User signed in successfully",
+  "timestamp": "2026-08-16 06:16:47.392",
+  "userId": "51817a8b-16ac-4337-a0bc-da4a35033dc3"
+}
+{
+  "context": "AuthServices",
+  "level": "info",
+  "message": "1-Click Demo Login initiated",
+  "timestamp": "2026-08-16 06:16:47.393",
+  "userId": "user-fi"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "Updating user profile",
+  "timestamp": "2026-08-16 06:16:47.405",
+  "userId": "51817a8b-16ac-4337-a0bc-da4a35033dc3"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "✔ User profile updated successfully",
+  "timestamp": "2026-08-16 06:16:47.420",
+  "userId": "51817a8b-16ac-4337-a0bc-da4a35033dc3"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "Updating subscription status",
+  "subscribed": false,
+  "timestamp": "2026-08-16 06:16:47.420",
+  "userId": "51817a8b-16ac-4337-a0bc-da4a35033dc3"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "Updating subscription status",
+  "subscribed": true,
+  "timestamp": "2026-08-16 06:16:47.435",
+  "userId": "51817a8b-16ac-4337-a0bc-da4a35033dc3"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "Password change requested",
+  "timestamp": "2026-08-16 06:16:47.446",
+  "userId": "51817a8b-16ac-4337-a0bc-da4a35033dc3"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "✔ User password changed successfully",
+  "timestamp": "2026-08-16 06:16:47.557",
+  "userId": "51817a8b-16ac-4337-a0bc-da4a35033dc3"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786861005402@example.com",
+  "level": "info",
+  "message": "User sign-in attempt",
+  "timestamp": "2026-08-16 06:16:47.558"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786861005402@example.com",
+  "level": "info",
+  "message": "✔ User signed in successfully",
+  "timestamp": "2026-08-16 06:16:47.618",
+  "userId": "51817a8b-16ac-4337-a0bc-da4a35033dc3"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786861005402@example.com",
+  "level": "info",
+  "message": "Password reset requested",
+  "timestamp": "2026-08-16 06:16:47.619"
+}
+{
+  "context": "PlunkTemplateService",
+  "level": "info",
+  "message": "✔ Email dispatched to test_1786861005402@example.com via Plunk (Template: Direct Body)",
+  "timestamp": "2026-08-16 06:16:47.807"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786861005402@example.com",
+  "level": "info",
+  "message": "✔ Password reset OTP dispatched via email",
+  "timestamp": "2026-08-16 06:16:47.808"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786861005402@example.com",
+  "level": "info",
+  "message": "Verifying password reset OTP",
+  "timestamp": "2026-08-16 06:16:47.811"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786861005402@example.com",
+  "level": "info",
+  "message": "Executing password reset",
+  "timestamp": "2026-08-16 06:16:47.813"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786861005402@example.com",
+  "level": "info",
+  "message": "✔ Password reset successful",
+  "timestamp": "2026-08-16 06:16:47.892",
+  "userId": "51817a8b-16ac-4337-a0bc-da4a35033dc3"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786861005402@example.com",
+  "level": "info",
+  "message": "User sign-in attempt",
+  "timestamp": "2026-08-16 06:16:47.892"
+}
+{
+  "context": "AuthServices",
+  "email": "test_1786861005402@example.com",
+  "level": "info",
+  "message": "✔ User signed in successfully",
+  "timestamp": "2026-08-16 06:16:47.949",
+  "userId": "51817a8b-16ac-4337-a0bc-da4a35033dc3"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "Admin modifying user role",
+  "newRole": "MODERATOR",
+  "targetUserId": "51817a8b-16ac-4337-a0bc-da4a35033dc3",
+  "timestamp": "2026-08-16 06:16:47.963"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "✔ User role updated by admin",
+  "newRole": "MODERATOR",
+  "targetUserId": "51817a8b-16ac-4337-a0bc-da4a35033dc3",
+  "timestamp": "2026-08-16 06:16:47.969"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "Account deletion requested",
+  "timestamp": "2026-08-16 06:16:47.970",
+  "userId": "51817a8b-16ac-4337-a0bc-da4a35033dc3"
+}
+{
+  "context": "UserService",
+  "level": "info",
+  "message": "✔ User account erased",
+  "timestamp": "2026-08-16 06:16:47.981",
+  "userId": "51817a8b-16ac-4337-a0bc-da4a35033dc3"
+}
