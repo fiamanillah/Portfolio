@@ -1,12 +1,7 @@
 "use client"
 
 import * as React from "react"
-import {
-  FolderInput,
-  Trash2,
-  AlertTriangle,
-  Loader2,
-} from "lucide-react"
+import { FolderInput, Trash2, AlertTriangle, Loader2 } from "lucide-react"
 import type { MediaFolderStat, MediaFileDTO } from "@workspace/shared"
 import { MediaApi } from "@/lib/api"
 import {
@@ -60,7 +55,13 @@ export function BulkMoveFolderDialog({
   const [isSubmitting, setIsSubmitting] = React.useState(false)
 
   const folderOptions = React.useMemo(() => {
-    const set = new Set(["general", "blogs", "avatars", "templates", "documents"])
+    const set = new Set([
+      "general",
+      "blogs",
+      "avatars",
+      "templates",
+      "documents",
+    ])
     existingFolders.forEach((f) => {
       if (f.folder) set.add(f.folder)
     })
@@ -69,7 +70,10 @@ export function BulkMoveFolderDialog({
 
   const handleMove = async () => {
     const targetFolder = isCustom
-      ? customFolder.trim().toLowerCase().replace(/[^a-z0-9_-]/g, "-") || "general"
+      ? customFolder
+          .trim()
+          .toLowerCase()
+          .replace(/[^a-z0-9_-]/g, "-") || "general"
       : selectedFolder
 
     setIsSubmitting(true)
@@ -80,7 +84,9 @@ export function BulkMoveFolderDialog({
       })
 
       if (res.success) {
-        toast.success(`Moved ${res.data?.count || selectedIds.length} asset(s) to "${targetFolder}"`)
+        toast.success(
+          `Moved ${res.data?.count || selectedIds.length} asset(s) to "${targetFolder}"`
+        )
         onSuccess()
         onOpenChange(false)
       } else {
@@ -111,8 +117,11 @@ export function BulkMoveFolderDialog({
             <Label className="text-xs font-semibold">Choose Folder</Label>
             {!isCustom ? (
               <div className="flex items-center gap-2">
-                <Select value={selectedFolder} onValueChange={setSelectedFolder}>
-                  <SelectTrigger className="h-9 text-xs bg-card">
+                <Select
+                  value={selectedFolder}
+                  onValueChange={setSelectedFolder}
+                >
+                  <SelectTrigger className="h-9 bg-card text-xs">
                     <SelectValue placeholder="Select target folder" />
                   </SelectTrigger>
                   <SelectContent className="text-xs">
@@ -128,7 +137,7 @@ export function BulkMoveFolderDialog({
                   variant="outline"
                   size="sm"
                   onClick={() => setIsCustom(true)}
-                  className="h-9 text-xs shrink-0"
+                  className="h-9 shrink-0 text-xs"
                 >
                   + New
                 </Button>
@@ -139,7 +148,7 @@ export function BulkMoveFolderDialog({
                   placeholder="New folder name..."
                   value={customFolder}
                   onChange={(e) => setCustomFolder(e.target.value)}
-                  className="h-9 text-xs bg-card"
+                  className="h-9 bg-card text-xs"
                 />
                 <Button
                   type="button"
@@ -149,7 +158,7 @@ export function BulkMoveFolderDialog({
                     setIsCustom(false)
                     setCustomFolder("")
                   }}
-                  className="h-9 text-xs text-muted-foreground hover:text-foreground shrink-0"
+                  className="h-9 shrink-0 text-xs text-muted-foreground hover:text-foreground"
                 >
                   Cancel
                 </Button>
@@ -174,7 +183,7 @@ export function BulkMoveFolderDialog({
             size="sm"
             onClick={handleMove}
             disabled={isSubmitting || (isCustom && !customFolder.trim())}
-            className="text-xs gap-1.5 bg-primary hover:bg-primary/90 text-primary-foreground shadow-xs"
+            className="gap-1.5 bg-primary text-xs text-primary-foreground shadow-xs hover:bg-primary/90"
           >
             {isSubmitting ? (
               <>
@@ -227,7 +236,9 @@ export function DeleteMediaDialog({
       } else if (selectedIds.length > 0) {
         const res = await MediaApi.bulkDelete({ ids: selectedIds })
         if (res.success) {
-          toast.success(`Deleted ${res.data?.count || selectedIds.length} asset(s).`)
+          toast.success(
+            `Deleted ${res.data?.count || selectedIds.length} asset(s).`
+          )
           onSuccess()
           onOpenChange(false)
         } else {
@@ -249,9 +260,10 @@ export function DeleteMediaDialog({
             <AlertTriangle className="size-5" />
             {title}
           </AlertDialogTitle>
-          <AlertDialogDescription className="text-xs text-muted-foreground leading-relaxed">
-            This action is permanent and cannot be undone. The file(s) will be permanently deleted from
-            Cloudflare R2 storage and the database. Any links pointing to these assets will break.
+          <AlertDialogDescription className="text-xs leading-relaxed text-muted-foreground">
+            This action is permanent and cannot be undone. The file(s) will be
+            permanently deleted from Cloudflare R2 storage and the database. Any
+            links pointing to these assets will break.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter className="pt-3">
@@ -264,7 +276,7 @@ export function DeleteMediaDialog({
               handleDelete()
             }}
             disabled={isDeleting}
-            className="bg-destructive text-destructive-foreground hover:bg-destructive/90 text-xs gap-1.5"
+            className="text-destructive-foreground gap-1.5 bg-destructive text-xs hover:bg-destructive/90"
           >
             {isDeleting ? (
               <>

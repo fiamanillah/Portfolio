@@ -28,7 +28,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@workspace/ui/components/dropdown-menu"
-import { Avatar, AvatarFallback, AvatarImage } from "@workspace/ui/components/avatar"
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@workspace/ui/components/avatar"
 import { DataTableColumnHeader } from "@workspace/ui/components/data-table-column-header"
 import { toast } from "@workspace/ui/components/sonner"
 import { type UsersTableFeatures } from "./data-table-features"
@@ -72,13 +76,23 @@ export function getUserColumns(
     columnHelper.display({
       id: "select",
       header: ({ table }) => {
-        const isAllSelected = typeof table.getIsAllPageRowsSelected === "function" ? table.getIsAllPageRowsSelected() : false
-        const isSomeSelected = typeof table.getIsSomePageRowsSelected === "function" ? table.getIsSomePageRowsSelected() : false
+        const isAllSelected =
+          typeof table.getIsAllPageRowsSelected === "function"
+            ? table.getIsAllPageRowsSelected()
+            : false
+        const isSomeSelected =
+          typeof table.getIsSomePageRowsSelected === "function"
+            ? table.getIsSomePageRowsSelected()
+            : false
 
         return (
           <Checkbox
-            checked={isAllSelected || (isSomeSelected ? "indeterminate" : false)}
-            onCheckedChange={(value) => table.toggleAllPageRowsSelected?.(!!value)}
+            checked={
+              isAllSelected || (isSomeSelected ? "indeterminate" : false)
+            }
+            onCheckedChange={(value) =>
+              table.toggleAllPageRowsSelected?.(!!value)
+            }
             aria-label="Select all users on page"
             className="translate-y-[2px]"
           />
@@ -86,7 +100,11 @@ export function getUserColumns(
       },
       cell: ({ row }) => (
         <Checkbox
-          checked={typeof row.getIsSelected === "function" ? row.getIsSelected() : false}
+          checked={
+            typeof row.getIsSelected === "function"
+              ? row.getIsSelected()
+              : false
+          }
           onCheckedChange={(value) => row.toggleSelected?.(!!value)}
           aria-label={`Select ${row.original.name}`}
           className="translate-y-[2px]"
@@ -111,16 +129,16 @@ export function getUserColumns(
                 {u.name.slice(0, 2).toUpperCase()}
               </AvatarFallback>
             </Avatar>
-            <div className="grid leading-tight min-w-0">
-              <div className="flex items-center gap-1.5 font-medium text-xs truncate">
+            <div className="grid min-w-0 leading-tight">
+              <div className="flex items-center gap-1.5 truncate text-xs font-medium">
                 <span className="truncate">{u.name}</span>
                 {isCurrent && (
-                  <Badge variant="secondary" className="text-[9px] px-1 h-4">
+                  <Badge variant="secondary" className="h-4 px-1 text-[9px]">
                     You
                   </Badge>
                 )}
               </div>
-              <div className="flex items-center gap-1 text-[11px] text-muted-foreground font-mono mt-0.5">
+              <div className="mt-0.5 flex items-center gap-1 font-mono text-[11px] text-muted-foreground">
                 <span className="truncate">@{u.username}</span>
                 <button
                   type="button"
@@ -129,7 +147,7 @@ export function getUserColumns(
                     navigator.clipboard.writeText(`@${u.username}`)
                     toast.success("Username copied")
                   }}
-                  className="text-muted-foreground/60 hover:text-foreground p-0.5"
+                  className="p-0.5 text-muted-foreground/60 hover:text-foreground"
                   title="Copy username"
                 >
                   <Copy className="size-3" />
@@ -148,7 +166,7 @@ export function getUserColumns(
         const u = row.original
 
         return (
-          <div className="grid leading-tight text-xs">
+          <div className="grid text-xs leading-tight">
             <div className="flex items-center gap-1 font-mono text-[11px]">
               <span className="truncate">{u.email}</span>
               <button
@@ -158,21 +176,21 @@ export function getUserColumns(
                   navigator.clipboard.writeText(u.email)
                   toast.success("Email copied to clipboard")
                 }}
-                className="text-muted-foreground/60 hover:text-foreground p-0.5"
+                className="p-0.5 text-muted-foreground/60 hover:text-foreground"
                 title="Copy email"
               >
                 <Copy className="size-3" />
               </button>
             </div>
-            <div className="flex items-center gap-1 mt-0.5">
+            <div className="mt-0.5 flex items-center gap-1">
               {u.isEmailVerified ? (
-                <span className="flex items-center text-[10px] text-emerald-600 dark:text-emerald-400 font-medium">
-                  <CheckCircle2 className="size-2.5 mr-0.5" />
+                <span className="flex items-center text-[10px] font-medium text-emerald-600 dark:text-emerald-400">
+                  <CheckCircle2 className="mr-0.5 size-2.5" />
                   Verified
                 </span>
               ) : (
-                <span className="flex items-center text-[10px] text-amber-600 dark:text-amber-400 font-medium">
-                  <Clock className="size-2.5 mr-0.5" />
+                <span className="flex items-center text-[10px] font-medium text-amber-600 dark:text-amber-400">
+                  <Clock className="mr-0.5 size-2.5" />
                   Unverified
                 </span>
               )}
@@ -192,7 +210,7 @@ export function getUserColumns(
           return (
             <Badge
               variant="default"
-              className="bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 font-mono text-[10px] uppercase gap-1 px-2 py-0.5"
+              className="gap-1 border border-emerald-500/30 bg-emerald-500/15 px-2 py-0.5 font-mono text-[10px] text-emerald-600 uppercase dark:text-emerald-400"
             >
               <ShieldCheck className="size-3" />
               Admin
@@ -204,7 +222,7 @@ export function getUserColumns(
           return (
             <Badge
               variant="secondary"
-              className="bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30 font-mono text-[10px] uppercase gap-1 px-2 py-0.5"
+              className="gap-1 border border-amber-500/30 bg-amber-500/15 px-2 py-0.5 font-mono text-[10px] text-amber-600 uppercase dark:text-amber-400"
             >
               <ShieldAlert className="size-3" />
               Moderator
@@ -216,7 +234,7 @@ export function getUserColumns(
           return (
             <Badge
               variant="outline"
-              className="bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/30 font-mono text-[10px] uppercase gap-1 px-2 py-0.5"
+              className="gap-1 border border-indigo-500/30 bg-indigo-500/10 px-2 py-0.5 font-mono text-[10px] text-indigo-600 uppercase dark:text-indigo-400"
             >
               <Pencil className="size-3" />
               Author
@@ -227,7 +245,7 @@ export function getUserColumns(
         return (
           <Badge
             variant="outline"
-            className="font-mono text-[10px] uppercase gap-1 px-2 py-0.5 text-muted-foreground"
+            className="gap-1 px-2 py-0.5 font-mono text-[10px] text-muted-foreground uppercase"
           >
             <UserCheck className="size-3" />
             User
@@ -242,9 +260,11 @@ export function getUserColumns(
       cell: ({ row }) => {
         const date = row.original.createdAt
         return (
-          <div className="grid leading-tight text-xs">
-            <span className="font-medium text-foreground">{formatFullDate(date)}</span>
-            <span className="text-[10px] text-muted-foreground mt-0.5">
+          <div className="grid text-xs leading-tight">
+            <span className="font-medium text-foreground">
+              {formatFullDate(date)}
+            </span>
+            <span className="mt-0.5 text-[10px] text-muted-foreground">
               {formatRelativeTime(date)}
             </span>
           </div>
@@ -253,13 +273,13 @@ export function getUserColumns(
     }),
     columnHelper.display({
       id: "actions",
-      header: () => <div className="text-right pr-2">Actions</div>,
+      header: () => <div className="pr-2 text-right">Actions</div>,
       cell: ({ row }) => {
         const u = row.original
         const isCurrent = u.id === actions.currentUserId
 
         return (
-          <div className="text-right pr-2">
+          <div className="pr-2 text-right">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="size-8">
@@ -275,7 +295,7 @@ export function getUserColumns(
 
                 <DropdownMenuItem
                   onClick={() => actions.onViewDetails(u)}
-                  className="text-xs gap-2"
+                  className="gap-2 text-xs"
                 >
                   <ExternalLink className="size-3.5 text-primary" />
                   View Account Details
@@ -283,7 +303,7 @@ export function getUserColumns(
 
                 <DropdownMenuItem
                   onClick={() => actions.onChangeRole(u)}
-                  className="text-xs gap-2"
+                  className="gap-2 text-xs"
                 >
                   <Shield className="size-3.5 text-primary" />
                   Modify Role & Access
@@ -294,7 +314,7 @@ export function getUserColumns(
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
                       onClick={() => actions.onDeleteUser(u)}
-                      className="text-xs gap-2 text-destructive focus:bg-destructive/10 focus:text-destructive"
+                      className="gap-2 text-xs text-destructive focus:bg-destructive/10 focus:text-destructive"
                     >
                       <Trash2 className="size-3.5" />
                       Delete Account

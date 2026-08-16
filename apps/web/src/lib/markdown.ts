@@ -203,7 +203,10 @@ function escapeHtml(str: string): string {
  * e.g., > [!NOTE] or > [!TIP] or > [!WARNING] or > [!IMPORTANT] or > [!CAUTION]
  */
 function processCallouts(html: string): string {
-  const alertTypes: Record<string, { label: string; icon: string; classModifier: string }> = {
+  const alertTypes: Record<
+    string,
+    { label: string; icon: string; classModifier: string }
+  > = {
     NOTE: {
       label: "NOTE",
       icon: `<svg class="h-4 w-4 text-sky-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>`,
@@ -212,32 +215,39 @@ function processCallouts(html: string): string {
     TIP: {
       label: "TIP",
       icon: `<svg class="h-4 w-4 text-emerald-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4"/><path d="m4.93 4.93 2.83 2.83"/><path d="M2 12h4"/><path d="m4.93 19.07 2.83-2.83"/><path d="M12 22v-4"/><path d="m19.07 19.07-2.83-2.83"/><path d="M22 12h-4"/><path d="m19.07 4.93-2.83 2.83"/><circle cx="12" cy="12" r="4"/></svg>`,
-      classModifier: "alert-tip border-emerald-500/30 bg-emerald-500/5 text-emerald-200",
+      classModifier:
+        "alert-tip border-emerald-500/30 bg-emerald-500/5 text-emerald-200",
     },
     IMPORTANT: {
       label: "IMPORTANT",
       icon: `<svg class="h-4 w-4 text-violet-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`,
-      classModifier: "alert-important border-violet-500/30 bg-violet-500/5 text-violet-200",
+      classModifier:
+        "alert-important border-violet-500/30 bg-violet-500/5 text-violet-200",
     },
     WARNING: {
       label: "WARNING",
       icon: `<svg class="h-4 w-4 text-amber-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`,
-      classModifier: "alert-warning border-amber-500/30 bg-amber-500/5 text-amber-200",
+      classModifier:
+        "alert-warning border-amber-500/30 bg-amber-500/5 text-amber-200",
     },
     CAUTION: {
       label: "CAUTION",
       icon: `<svg class="h-4 w-4 text-rose-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`,
-      classModifier: "alert-caution border-rose-500/30 bg-rose-500/5 text-rose-200",
+      classModifier:
+        "alert-caution border-rose-500/30 bg-rose-500/5 text-rose-200",
     },
   }
 
   // Regex to match blockquotes containing [!TYPE]
-  const blockquoteRegex = /<blockquote>\s*<p>\s*\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*(?:<br\s*\/?>)?([\s\S]*?)<\/p>\s*([\s\S]*?)<\/blockquote>/gi
+  const blockquoteRegex =
+    /<blockquote>\s*<p>\s*\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*(?:<br\s*\/?>)?([\s\S]*?)<\/p>\s*([\s\S]*?)<\/blockquote>/gi
 
   return html.replace(blockquoteRegex, (_match, type, firstLine, rest) => {
     const upperType = type.toUpperCase()
     const config = alertTypes[upperType] || alertTypes.NOTE
-    const fullBody = (firstLine.trim() + (rest ? `\n${rest.trim()}` : "")).trim()
+    const fullBody = (
+      firstLine.trim() + (rest ? `\n${rest.trim()}` : "")
+    ).trim()
 
     return `
       <div class="my-6 relative overflow-hidden rounded-md border p-4 sm:p-5 backdrop-blur-sm ${config.classModifier}">
@@ -320,7 +330,9 @@ function processTables(html: string): string {
 /**
  * Main Markdown Rendering Function
  */
-export async function renderMarkdown(content: string): Promise<MarkdownRenderResult> {
+export async function renderMarkdown(
+  content: string
+): Promise<MarkdownRenderResult> {
   if (!content) {
     return { html: "", headings: [] }
   }
@@ -370,7 +382,8 @@ export async function renderMarkdown(content: string): Promise<MarkdownRenderRes
 
         const tag = `h${depth}`
         const cls = headingClasses[depth] || headingClasses[2]
-        const isSection = depth === 2 || depth === 3 ? 'data-article-section=""' : ""
+        const isSection =
+          depth === 2 || depth === 3 ? 'data-article-section=""' : ""
 
         // Heading with anchor icon on hover
         return `
@@ -413,10 +426,16 @@ export async function renderMarkdown(content: string): Promise<MarkdownRenderRes
         const parts = rawLang.trim().split(/\s+/)
         const langSpec = parts[0] || "plaintext"
         const titleMatch = rawLang.match(/title=["']([^"']+)["']/)
-        const title = titleMatch ? titleMatch[1] : parts.length > 1 && !parts[1].startsWith("title=") ? parts[1] : ""
+        const title = titleMatch
+          ? titleMatch[1]
+          : parts.length > 1 && !parts[1].startsWith("title=")
+            ? parts[1]
+            : ""
 
-        const normalizedLang = languageMap[langSpec.toLowerCase()] || "plaintext"
-        const displayBadge = displayLabels[normalizedLang] || langSpec.toUpperCase() || "CODE"
+        const normalizedLang =
+          languageMap[langSpec.toLowerCase()] || "plaintext"
+        const displayBadge =
+          displayLabels[normalizedLang] || langSpec.toUpperCase() || "CODE"
 
         let highlightedCode = ""
         try {

@@ -24,7 +24,7 @@ function FieldLegend({
       data-slot="field-legend"
       className={cn(
         variant === "legend"
-          ? "font-mono text-xs font-semibold text-foreground uppercase tracking-wider"
+          ? "font-mono text-xs font-semibold tracking-wider text-foreground uppercase"
           : "font-mono text-xs font-medium text-foreground",
         className
       )}
@@ -91,7 +91,7 @@ function FieldLabel({
     <Label
       data-slot="field-label"
       className={cn(
-        "font-mono text-xs font-medium text-foreground group-data-[invalid]/field:text-destructive cursor-pointer select-none",
+        "cursor-pointer font-mono text-xs font-medium text-foreground select-none group-data-[invalid]/field:text-destructive",
         className
       )}
       {...props}
@@ -112,14 +112,14 @@ function FieldTitle({ className, ...props }: React.ComponentProps<"div">) {
   )
 }
 
-function FieldDescription({
-  className,
-  ...props
-}: React.ComponentProps<"p">) {
+function FieldDescription({ className, ...props }: React.ComponentProps<"p">) {
   return (
     <p
       data-slot="field-description"
-      className={cn("font-mono text-[10px] text-muted-foreground leading-normal", className)}
+      className={cn(
+        "font-mono text-[10px] leading-normal text-muted-foreground",
+        className
+      )}
       {...props}
     />
   )
@@ -133,14 +133,17 @@ function FieldSeparator({
   return (
     <div
       data-slot="field-separator"
-      className={cn("relative my-2 flex items-center justify-center text-center", className)}
+      className={cn(
+        "relative my-2 flex items-center justify-center text-center",
+        className
+      )}
       {...props}
     >
       <div className="absolute inset-0 flex items-center">
         <span className="w-full border-t border-border/60" />
       </div>
       {children && (
-        <span className="relative bg-background px-2 font-mono text-[10px] uppercase text-muted-foreground">
+        <span className="relative bg-background px-2 font-mono text-[10px] text-muted-foreground uppercase">
           {children}
         </span>
       )}
@@ -175,7 +178,7 @@ function FieldError({
       data-slot="field-error"
       role="alert"
       className={cn(
-        "font-mono text-[11px] font-medium text-destructive animate-in fade-in-50 duration-150 flex flex-col gap-0.5 mt-0.5",
+        "mt-0.5 flex animate-in flex-col gap-0.5 font-mono text-[11px] font-medium text-destructive duration-150 fade-in-50",
         className
       )}
       {...props}

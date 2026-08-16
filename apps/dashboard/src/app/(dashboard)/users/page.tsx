@@ -40,7 +40,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@workspace/ui/components/dialog"
-import { Avatar, AvatarFallback, AvatarImage } from "@workspace/ui/components/avatar"
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@workspace/ui/components/avatar"
 import { toast } from "@workspace/ui/components/sonner"
 import { getUserColumns } from "./columns"
 import { UsersDataTable } from "./data-table"
@@ -121,7 +125,8 @@ export default function UsersManagementPage() {
         }
       } else {
         toast.error("Failed to load user list", {
-          description: res.error || "Please ensure the backend API is connected.",
+          description:
+            res.error || "Please ensure the backend API is connected.",
         })
       }
     } catch (err: any) {
@@ -245,12 +250,16 @@ export default function UsersManagementPage() {
             <h1 className="text-2xl font-bold tracking-tight md:text-3xl">
               User & Role Management
             </h1>
-            <Badge variant="outline" className="font-mono text-xs text-primary border-primary/30">
+            <Badge
+              variant="outline"
+              className="border-primary/30 font-mono text-xs text-primary"
+            >
               RBAC Control
             </Badge>
           </div>
-          <p className="text-sm text-muted-foreground mt-1">
-            Super Administrator console to inspect users, assign roles (Admin, Moderator, Author, User), and manage platform access.
+          <p className="mt-1 text-sm text-muted-foreground">
+            Super Administrator console to inspect users, assign roles (Admin,
+            Moderator, Author, User), and manage platform access.
           </p>
         </div>
 
@@ -262,7 +271,9 @@ export default function UsersManagementPage() {
             disabled={isLoading}
             className="gap-1.5 text-xs"
           >
-            <RefreshCw className={`size-3.5 ${isLoading ? "animate-spin" : ""}`} />
+            <RefreshCw
+              className={`size-3.5 ${isLoading ? "animate-spin" : ""}`}
+            />
             Refresh
           </Button>
         </div>
@@ -271,7 +282,7 @@ export default function UsersManagementPage() {
       {/* KPI Stat Cards */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Card className="border-border/80 bg-card/60">
-          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
               Total Accounts
             </CardTitle>
@@ -281,12 +292,14 @@ export default function UsersManagementPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.total}</div>
-            <p className="text-xs text-muted-foreground mt-0.5">Registered platform accounts</p>
+            <p className="mt-0.5 text-xs text-muted-foreground">
+              Registered platform accounts
+            </p>
           </CardContent>
         </Card>
 
         <Card className="border-border/80 bg-card/60">
-          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
               Super Admins
             </CardTitle>
@@ -298,12 +311,14 @@ export default function UsersManagementPage() {
             <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
               {stats.admins}
             </div>
-            <p className="text-xs text-muted-foreground mt-0.5">Full console authorization</p>
+            <p className="mt-0.5 text-xs text-muted-foreground">
+              Full console authorization
+            </p>
           </CardContent>
         </Card>
 
         <Card className="border-border/80 bg-card/60">
-          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
               Moderators
             </CardTitle>
@@ -315,12 +330,14 @@ export default function UsersManagementPage() {
             <div className="text-2xl font-bold text-amber-600 dark:text-amber-400">
               {stats.moderators}
             </div>
-            <p className="text-xs text-muted-foreground mt-0.5">Content & comments stewards</p>
+            <p className="mt-0.5 text-xs text-muted-foreground">
+              Content & comments stewards
+            </p>
           </CardContent>
         </Card>
 
         <Card className="border-border/80 bg-card/60">
-          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
               Members & Authors
             </CardTitle>
@@ -332,7 +349,9 @@ export default function UsersManagementPage() {
             <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
               {stats.users + stats.authors}
             </div>
-            <p className="text-xs text-muted-foreground mt-0.5">Community & contributors</p>
+            <p className="mt-0.5 text-xs text-muted-foreground">
+              Community & contributors
+            </p>
           </CardContent>
         </Card>
       </div>
@@ -346,7 +365,8 @@ export default function UsersManagementPage() {
                 Platform Users & Roles
               </CardTitle>
               <CardDescription className="text-xs">
-                Real-time RBAC list with granular privilege management and sorting.
+                Real-time RBAC list with granular privilege management and
+                sorting.
               </CardDescription>
             </div>
           </div>
@@ -375,14 +395,16 @@ export default function UsersManagementPage() {
       <Dialog open={isRoleDialogOpen} onOpenChange={setIsRoleDialogOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle className="text-base flex items-center gap-2">
+            <DialogTitle className="flex items-center gap-2 text-base">
               <Shield className="size-4 text-primary" />
               <span>Modify User Role & Privileges</span>
             </DialogTitle>
             <DialogDescription className="text-xs">
               Assign a new role to{" "}
-              <span className="font-semibold text-foreground">{targetUser?.name}</span> (
-              {targetUser?.email}).
+              <span className="font-semibold text-foreground">
+                {targetUser?.name}
+              </span>{" "}
+              ({targetUser?.email}).
             </DialogDescription>
           </DialogHeader>
 
@@ -394,41 +416,47 @@ export default function UsersManagementPage() {
                   key={role}
                   type="button"
                   onClick={() => setRoleToAssign(role)}
-                  className={`flex items-center justify-between p-3 rounded-xl border transition-all text-left ${
+                  className={`flex items-center justify-between rounded-xl border p-3 text-left transition-all ${
                     roleToAssign === role
                       ? "border-primary bg-primary/10 text-foreground"
                       : "border-border/80 bg-background/50 hover:bg-muted"
                   }`}
                 >
                   <div className="space-y-0.5">
-                    <div className="font-medium text-xs uppercase flex items-center gap-1.5">
+                    <div className="flex items-center gap-1.5 text-xs font-medium uppercase">
                       <span>{role}</span>
                       {role === "ADMIN" && (
-                        <Badge variant="default" className="text-[9px] h-4">
+                        <Badge variant="default" className="h-4 text-[9px]">
                           Full Access
                         </Badge>
                       )}
                       {role === "MODERATOR" && (
-                        <Badge variant="secondary" className="text-[9px] h-4">
+                        <Badge variant="secondary" className="h-4 text-[9px]">
                           Moderation
                         </Badge>
                       )}
                     </div>
                     <p className="text-[11px] text-muted-foreground">
-                      {role === "ADMIN" && "Full administrative power over users, templates, comments, and settings."}
-                      {role === "MODERATOR" && "Can moderate comments and view published resources."}
-                      {role === "AUTHOR" && "Can write articles and manage their own portfolio entries."}
-                      {role === "USER" && "Standard member with subscription and interaction rights."}
+                      {role === "ADMIN" &&
+                        "Full administrative power over users, templates, comments, and settings."}
+                      {role === "MODERATOR" &&
+                        "Can moderate comments and view published resources."}
+                      {role === "AUTHOR" &&
+                        "Can write articles and manage their own portfolio entries."}
+                      {role === "USER" &&
+                        "Standard member with subscription and interaction rights."}
                     </p>
                   </div>
                   <div
-                    className={`size-4 rounded-full border flex items-center justify-center ${
+                    className={`flex size-4 items-center justify-center rounded-full border ${
                       roleToAssign === role
                         ? "border-primary bg-primary text-primary-foreground"
                         : "border-muted-foreground/40"
                     }`}
                   >
-                    {roleToAssign === role && <div className="size-1.5 rounded-full bg-white" />}
+                    {roleToAssign === role && (
+                      <div className="size-1.5 rounded-full bg-white" />
+                    )}
                   </div>
                 </button>
               ))}
@@ -459,65 +487,87 @@ export default function UsersManagementPage() {
       <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle className="text-base flex items-center gap-2">
+            <DialogTitle className="flex items-center gap-2 text-base">
               <User className="size-4 text-primary" />
               <span>User Profile Overview</span>
             </DialogTitle>
             <DialogDescription className="text-xs">
               Complete account metadata for{" "}
-              <span className="font-semibold text-foreground">{targetUser?.name}</span>.
+              <span className="font-semibold text-foreground">
+                {targetUser?.name}
+              </span>
+              .
             </DialogDescription>
           </DialogHeader>
 
           {targetUser && (
             <div className="space-y-4 py-2 text-xs">
-              <div className="rounded-xl border border-border/80 bg-muted/40 p-4 space-y-3">
+              <div className="space-y-3 rounded-xl border border-border/80 bg-muted/40 p-4">
                 <div className="flex items-center gap-3">
                   <Avatar className="size-12 rounded-xl border border-border bg-muted">
-                    <AvatarImage src={targetUser.avatar || undefined} alt={targetUser.name} />
+                    <AvatarImage
+                      src={targetUser.avatar || undefined}
+                      alt={targetUser.name}
+                    />
                     <AvatarFallback className="text-sm font-bold">
                       {targetUser.name.slice(0, 2).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
                   <div className="grid">
-                    <span className="font-bold text-sm text-foreground">{targetUser.name}</span>
-                    <span className="text-xs text-muted-foreground font-mono">
+                    <span className="text-sm font-bold text-foreground">
+                      {targetUser.name}
+                    </span>
+                    <span className="font-mono text-xs text-muted-foreground">
                       @{targetUser.username}
                     </span>
-                    <span className="text-[11px] text-muted-foreground font-mono mt-0.5">
+                    <span className="mt-0.5 font-mono text-[11px] text-muted-foreground">
                       {targetUser.email}
                     </span>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-2 pt-2 border-t border-border/60 text-muted-foreground">
+                <div className="grid grid-cols-2 gap-2 border-t border-border/60 pt-2 text-muted-foreground">
                   <div>
-                    <span className="text-[10px] uppercase font-semibold text-foreground/70">
+                    <span className="text-[10px] font-semibold text-foreground/70 uppercase">
                       Assigned Role
                     </span>
-                    <p className="font-mono uppercase font-medium text-foreground">
+                    <p className="font-mono font-medium text-foreground uppercase">
                       {targetUser.role}
                     </p>
                   </div>
                   <div>
-                    <span className="text-[10px] uppercase font-semibold text-foreground/70">
+                    <span className="text-[10px] font-semibold text-foreground/70 uppercase">
                       Email Verification
                     </span>
-                    <p className={targetUser.isEmailVerified ? "text-emerald-600" : "text-amber-600"}>
+                    <p
+                      className={
+                        targetUser.isEmailVerified
+                          ? "text-emerald-600"
+                          : "text-amber-600"
+                      }
+                    >
                       {targetUser.isEmailVerified ? "Verified" : "Unverified"}
                     </p>
                   </div>
                   <div>
-                    <span className="text-[10px] uppercase font-semibold text-foreground/70">
+                    <span className="text-[10px] font-semibold text-foreground/70 uppercase">
                       Created Date
                     </span>
-                    <p>{targetUser.createdAt ? new Date(targetUser.createdAt).toLocaleDateString() : "—"}</p>
+                    <p>
+                      {targetUser.createdAt
+                        ? new Date(targetUser.createdAt).toLocaleDateString()
+                        : "—"}
+                    </p>
                   </div>
                   <div>
-                    <span className="text-[10px] uppercase font-semibold text-foreground/70">
+                    <span className="text-[10px] font-semibold text-foreground/70 uppercase">
                       Newsletter
                     </span>
-                    <p>{targetUser.subscribedToNewsletter ? "Subscribed" : "Opted Out"}</p>
+                    <p>
+                      {targetUser.subscribedToNewsletter
+                        ? "Subscribed"
+                        : "Opted Out"}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -541,14 +591,16 @@ export default function UsersManagementPage() {
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle className="text-base flex items-center gap-2 text-destructive">
+            <DialogTitle className="flex items-center gap-2 text-base text-destructive">
               <Trash2 className="size-4" />
               <span>Confirm User Account Deletion</span>
             </DialogTitle>
             <DialogDescription className="text-xs">
               Are you sure you want to delete user account{" "}
-              <span className="font-semibold text-foreground">{targetUser?.email}</span>?
-              This action is permanent and cannot be undone.
+              <span className="font-semibold text-foreground">
+                {targetUser?.email}
+              </span>
+              ? This action is permanent and cannot be undone.
             </DialogDescription>
           </DialogHeader>
 

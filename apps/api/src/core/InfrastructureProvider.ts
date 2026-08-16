@@ -1,12 +1,12 @@
 export interface InfrastructureProvider<T = any> {
-  name: string;
+  name: string
 
   /** Returns the actual underlying client (e.g., PrismaClient, Redis) */
-  getClient(): T;
+  getClient(): T
 
   /** Called when the server boots. Open sockets or validate API keys here. */
-  connect(): Promise<void>;
+  connect(): Promise<void>
 
   /** Called during graceful shutdown. Close sockets here. */
-  disconnect(): Promise<void>;
+  disconnect(): Promise<void>
 }

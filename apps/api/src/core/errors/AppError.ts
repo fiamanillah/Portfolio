@@ -1,32 +1,32 @@
 // src/core/errors/AppError.ts
-import { HTTPStatusCode } from "@/types/HTTPStatusCode";
-import { config } from "../config";
+import { HTTPStatusCode } from "@/types/HTTPStatusCode"
+import { config } from "../config"
 
 // 1. Define the parameters object
 export interface AppErrorArgs {
-  statusCode: HTTPStatusCode;
-  message: string;
-  code?: string;
-  details?: unknown;
-  isOperational?: boolean;
+  statusCode: HTTPStatusCode
+  message: string
+  code?: string
+  details?: unknown
+  isOperational?: boolean
 }
 
 export class AppError extends Error {
-  public readonly statusCode: HTTPStatusCode;
-  public readonly code: string;
-  public readonly isOperational: boolean;
-  public readonly details?: unknown;
+  public readonly statusCode: HTTPStatusCode
+  public readonly code: string
+  public readonly isOperational: boolean
+  public readonly details?: unknown
 
   // 2. Constructor now takes a single configuration object
   constructor(args: AppErrorArgs) {
-    super(args.message);
-    this.name = this.constructor.name;
-    this.statusCode = args.statusCode;
-    this.code = args.code || "APP_ERROR";
-    this.isOperational = args.isOperational ?? true;
-    this.details = args.details;
+    super(args.message)
+    this.name = this.constructor.name
+    this.statusCode = args.statusCode
+    this.code = args.code || "APP_ERROR"
+    this.isOperational = args.isOperational ?? true
+    this.details = args.details
 
-    Error.captureStackTrace?.(this, this.constructor);
+    Error.captureStackTrace?.(this, this.constructor)
   }
 
   toJSON() {
@@ -39,7 +39,7 @@ export class AppError extends Error {
       ...(config.server.env === "development" && this.details
         ? { details: this.details }
         : {}),
-    };
+    }
   }
 }
 
@@ -52,7 +52,7 @@ export class ValidationError extends AppError {
       message,
       code: "VALIDATION_ERROR",
       details,
-    });
+    })
   }
 }
 
@@ -63,7 +63,7 @@ export class NotFoundError extends AppError {
       message: `${resource} not found`,
       code: "NOT_FOUND",
       details,
-    });
+    })
   }
 }
 
@@ -74,7 +74,7 @@ export class AuthenticationError extends AppError {
       message,
       code: "AUTHENTICATION_ERROR",
       details,
-    });
+    })
   }
 }
 
@@ -85,7 +85,7 @@ export class AuthorizationError extends AppError {
       message,
       code: "AUTHORIZATION_ERROR",
       details,
-    });
+    })
   }
 }
 
@@ -96,7 +96,7 @@ export class ConflictError extends AppError {
       message,
       code: "CONFLICT_ERROR",
       details,
-    });
+    })
   }
 }
 
@@ -107,7 +107,7 @@ export class RateLimitError extends AppError {
       message,
       code: "RATE_LIMIT_ERROR",
       details,
-    });
+    })
   }
 }
 
@@ -118,7 +118,7 @@ export class PayloadTooLargeError extends AppError {
       message,
       code: "PAYLOAD_TOO_LARGE",
       details,
-    });
+    })
   }
 }
 
@@ -130,7 +130,7 @@ export class DatabaseError extends AppError {
       code: "DATABASE_ERROR",
       details,
       isOperational: false, // Critical DB errors are often non-operational
-    });
+    })
   }
 }
 
@@ -141,7 +141,7 @@ export class ExternalServiceError extends AppError {
       message,
       code: "EXTERNAL_SERVICE_ERROR",
       details,
-    });
+    })
   }
 }
 
@@ -152,7 +152,7 @@ export class TimeoutError extends AppError {
       message,
       code: "TIMEOUT_ERROR",
       details,
-    });
+    })
   }
 }
 
@@ -163,6 +163,6 @@ export class BadRequestError extends AppError {
       message,
       code: "BAD_REQUEST_ERROR",
       details,
-    });
+    })
   }
 }

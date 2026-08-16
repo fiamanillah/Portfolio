@@ -33,10 +33,10 @@ const { prevPost, nextPost } = Astro.props
           </div>
 
           <div class="min-w-0 flex-1">
-            <span class="font-mono text-[10px] uppercase tracking-widest text-muted-foreground group-hover:text-primary transition-colors">
+            <span class="font-mono text-[10px] tracking-widest text-muted-foreground uppercase transition-colors group-hover:text-primary">
               ← PREVIOUS ARTICLE
             </span>
-            <h4 class="truncate font-bold text-sm text-foreground transition-colors group-hover:text-primary">
+            <h4 class="truncate text-sm font-bold text-foreground transition-colors group-hover:text-primary">
               {prevPost.title}
             </h4>
             <span class="font-mono text-[10px] text-muted-foreground">
@@ -52,16 +52,16 @@ const { prevPost, nextPost } = Astro.props
       {nextPost && (
         <a
           href={`/blog/${nextPost.slug}`}
-          class="group relative flex items-center justify-between gap-4 border border-border bg-background/60 p-4 transition-all duration-200 hover:border-primary/40 hover:bg-background/90 text-right"
+          class="group relative flex items-center justify-between gap-4 border border-border bg-background/60 p-4 text-right transition-all duration-200 hover:border-primary/40 hover:bg-background/90"
         >
           <div class="pointer-events-none absolute top-1.5 right-1.5 h-2.5 w-2.5 border-t border-r border-border transition-colors group-hover:border-primary" />
-          <div class="pointer-events-none absolute left-1.5 bottom-1.5 h-2.5 w-2.5 border-l border-b border-border transition-colors group-hover:border-primary" />
+          <div class="pointer-events-none absolute bottom-1.5 left-1.5 h-2.5 w-2.5 border-b border-l border-border transition-colors group-hover:border-primary" />
 
           <div class="min-w-0 flex-1">
-            <span class="font-mono text-[10px] uppercase tracking-widest text-muted-foreground group-hover:text-primary transition-colors">
+            <span class="font-mono text-[10px] tracking-widest text-muted-foreground uppercase transition-colors group-hover:text-primary">
               NEXT ARTICLE →
             </span>
-            <h4 class="truncate font-bold text-sm text-foreground transition-colors group-hover:text-primary">
+            <h4 class="truncate text-sm font-bold text-foreground transition-colors group-hover:text-primary">
               {nextPost.title}
             </h4>
             <span class="font-mono text-[10px] text-muted-foreground">

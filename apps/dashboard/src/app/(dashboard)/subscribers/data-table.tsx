@@ -61,7 +61,10 @@ interface DataTableProps {
   onStatusFilterChange?: (status: string) => void
   sourceFilter?: string
   onSourceFilterChange?: (source: string) => void
-  onBulkStatusChange?: (selectedIds: string[], status: "subscribed" | "unsubscribed" | "pending") => void
+  onBulkStatusChange?: (
+    selectedIds: string[],
+    status: "subscribed" | "unsubscribed" | "pending"
+  ) => void
   onBulkDelete?: (selectedIds: string[]) => void
   onAddNew?: () => void
   onRefresh?: () => void
@@ -87,11 +90,21 @@ export function SubscribersDataTable({
   onBulkDelete,
   onAddNew,
   onRefresh,
-  availableSources = ["hero_section", "blog_post", "newsletter_modal", "admin_portal", "api_docs"],
+  availableSources = [
+    "hero_section",
+    "blog_post",
+    "newsletter_modal",
+    "admin_portal",
+    "api_docs",
+  ],
 }: DataTableProps) {
   const [sorting, setSorting] = React.useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
-  const [columnVisibility, setColumnVisibility] = React.useState<Record<string, boolean>>({})
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    []
+  )
+  const [columnVisibility, setColumnVisibility] = React.useState<
+    Record<string, boolean>
+  >({})
   const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({})
 
   const [pagination, setPagination] = React.useState({
@@ -156,7 +169,8 @@ export function SubscribersDataTable({
     onSourceFilterChange?.("ALL")
   }
 
-  const isFiltered = searchQuery !== "" || statusFilter !== "ALL" || sourceFilter !== "ALL"
+  const isFiltered =
+    searchQuery !== "" || statusFilter !== "ALL" || sourceFilter !== "ALL"
 
   return (
     <div className="space-y-4">
@@ -166,18 +180,18 @@ export function SubscribersDataTable({
         <div className="flex flex-1 flex-wrap items-center gap-2">
           {/* Search Box */}
           <div className="relative w-full sm:w-64">
-            <Search className="absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />
+            <Search className="absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-muted-foreground" />
             <Input
               placeholder="Search email, name, source..."
               value={searchQuery}
               onChange={(e) => onSearchChange?.(e.target.value)}
-              className="pl-8 h-8 text-xs bg-background/80"
+              className="h-8 bg-background/80 pl-8 text-xs"
             />
             {searchQuery && (
               <button
                 type="button"
                 onClick={() => onSearchChange?.("")}
-                className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground p-0.5"
+                className="absolute top-1/2 right-2 -translate-y-1/2 p-0.5 text-muted-foreground hover:text-foreground"
               >
                 <X className="size-3" />
               </button>
@@ -185,7 +199,7 @@ export function SubscribersDataTable({
           </div>
 
           {/* Status Tabs */}
-          <div className="flex items-center gap-1 bg-muted/50 p-0.5 rounded-lg border border-border/80 text-xs">
+          <div className="flex items-center gap-1 rounded-lg border border-border/80 bg-muted/50 p-0.5 text-xs">
             {[
               { label: "All", value: "ALL" },
               { label: "Subscribed", value: "subscribed" },
@@ -196,7 +210,7 @@ export function SubscribersDataTable({
                 key={tab.value}
                 type="button"
                 onClick={() => onStatusFilterChange?.(tab.value)}
-                className={`px-2.5 py-1 text-[11px] rounded-md font-medium transition-all ${
+                className={`rounded-md px-2.5 py-1 text-[11px] font-medium transition-all ${
                   statusFilter === tab.value
                     ? "bg-primary text-primary-foreground shadow-xs"
                     : "text-muted-foreground hover:text-foreground"
@@ -210,7 +224,11 @@ export function SubscribersDataTable({
           {/* Source Filter Dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm" className="h-8 gap-1.5 text-xs">
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-8 gap-1.5 text-xs"
+              >
                 <Filter className="size-3 text-muted-foreground" />
                 <span>
                   {sourceFilter === "ALL"
@@ -220,23 +238,29 @@ export function SubscribersDataTable({
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" className="w-48">
-              <DropdownMenuLabel className="text-xs">Filter by Channel</DropdownMenuLabel>
+              <DropdownMenuLabel className="text-xs">
+                Filter by Channel
+              </DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 onClick={() => onSourceFilterChange?.("ALL")}
-                className="text-xs justify-between"
+                className="justify-between text-xs"
               >
                 <span>All Sources</span>
-                {sourceFilter === "ALL" && <Check className="size-3.5 text-primary" />}
+                {sourceFilter === "ALL" && (
+                  <Check className="size-3.5 text-primary" />
+                )}
               </DropdownMenuItem>
               {availableSources.map((src) => (
                 <DropdownMenuItem
                   key={src}
                   onClick={() => onSourceFilterChange?.(src)}
-                  className="text-xs justify-between capitalize"
+                  className="justify-between text-xs capitalize"
                 >
                   <span>{src.replace(/_/g, " ")}</span>
-                  {sourceFilter === src && <Check className="size-3.5 text-primary" />}
+                  {sourceFilter === src && (
+                    <Check className="size-3.5 text-primary" />
+                  )}
                 </DropdownMenuItem>
               ))}
             </DropdownMenuContent>
@@ -266,7 +290,9 @@ export function SubscribersDataTable({
               disabled={isLoading}
               className="h-8 gap-1.5 text-xs"
             >
-              <RefreshCw className={`size-3.5 ${isLoading ? "animate-spin" : ""}`} />
+              <RefreshCw
+                className={`size-3.5 ${isLoading ? "animate-spin" : ""}`}
+              />
               <span className="hidden sm:inline">Refresh</span>
             </Button>
           )}
@@ -276,9 +302,12 @@ export function SubscribersDataTable({
 
       {/* Bulk Actions Floating Banner */}
       {selectedCount > 0 && (
-        <div className="flex flex-wrap items-center justify-between gap-2 p-2.5 px-4 rounded-xl bg-primary/10 border border-primary/20 text-xs animate-in fade-in slide-in-from-top-1">
+        <div className="flex animate-in flex-wrap items-center justify-between gap-2 rounded-xl border border-primary/20 bg-primary/10 p-2.5 px-4 text-xs fade-in slide-in-from-top-1">
           <div className="flex items-center gap-2">
-            <Badge variant="default" className="text-[11px] font-mono px-2 py-0.5">
+            <Badge
+              variant="default"
+              className="px-2 py-0.5 font-mono text-[11px]"
+            >
               {selectedCount} selected
             </Badge>
             <span className="text-muted-foreground">
@@ -291,7 +320,7 @@ export function SubscribersDataTable({
               variant="outline"
               size="sm"
               onClick={() => onBulkStatusChange?.(selectedIds, "subscribed")}
-              className="h-7 text-xs gap-1 border-emerald-500/30 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10"
+              className="h-7 gap-1 border-emerald-500/30 text-xs text-emerald-600 hover:bg-emerald-500/10 dark:text-emerald-400"
             >
               <UserCheck className="size-3" />
               Mark Subscribed
@@ -301,7 +330,7 @@ export function SubscribersDataTable({
               variant="outline"
               size="sm"
               onClick={() => onBulkStatusChange?.(selectedIds, "unsubscribed")}
-              className="h-7 text-xs gap-1 border-amber-500/30 text-amber-600 dark:text-amber-400 hover:bg-amber-500/10"
+              className="h-7 gap-1 border-amber-500/30 text-xs text-amber-600 hover:bg-amber-500/10 dark:text-amber-400"
             >
               <UserX className="size-3" />
               Mark Unsubscribed
@@ -311,7 +340,7 @@ export function SubscribersDataTable({
               variant="destructive"
               size="sm"
               onClick={() => onBulkDelete?.(selectedIds)}
-              className="h-7 text-xs gap-1"
+              className="h-7 gap-1 text-xs"
             >
               <Trash2 className="size-3" />
               Delete ({selectedCount})
@@ -330,14 +359,20 @@ export function SubscribersDataTable({
       )}
 
       {/* Main Table Structure */}
-      <div className="rounded-xl border border-border/80 overflow-hidden bg-card/60">
+      <div className="overflow-hidden rounded-xl border border-border/80 bg-card/60">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className="bg-muted/40 hover:bg-muted/40">
+              <TableRow
+                key={headerGroup.id}
+                className="bg-muted/40 hover:bg-muted/40"
+              >
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id} className="h-10 text-xs font-semibold">
+                    <TableHead
+                      key={header.id}
+                      className="h-10 text-xs font-semibold"
+                    >
                       {header.isPlaceholder ? null : (
                         <table.FlexRender header={header} />
                       )}
@@ -351,13 +386,13 @@ export function SubscribersDataTable({
             {isLoading ? (
               Array.from({ length: Math.min(pageSize, 6) }).map((_, index) => (
                 <TableRow key={`skeleton-sub-${index}`}>
-                  <TableCell className="pl-4 w-10">
+                  <TableCell className="w-10 pl-4">
                     <Skeleton className="size-4 rounded" />
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-3">
-                      <Skeleton className="size-8 rounded-full shrink-0" />
-                      <div className="space-y-1.5 min-w-0 flex-1">
+                      <Skeleton className="size-8 shrink-0 rounded-full" />
+                      <div className="min-w-0 flex-1 space-y-1.5">
                         <Skeleton className="h-3.5 w-28 max-w-full" />
                         <Skeleton className="h-3 w-40 max-w-full" />
                       </div>
@@ -376,18 +411,25 @@ export function SubscribersDataTable({
                     </div>
                   </TableCell>
                   <TableCell className="pr-4 text-right">
-                    <Skeleton className="size-8 rounded-md ml-auto" />
+                    <Skeleton className="ml-auto size-8 rounded-md" />
                   </TableCell>
                 </TableRow>
               ))
             ) : table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => {
-                const isSelected = typeof row.getIsSelected === "function" ? row.getIsSelected() : false
+                const isSelected =
+                  typeof row.getIsSelected === "function"
+                    ? row.getIsSelected()
+                    : false
                 return (
                   <TableRow
                     key={row.id}
                     data-state={isSelected && "selected"}
-                    className={isSelected ? "bg-primary/5 hover:bg-primary/10" : "hover:bg-muted/50"}
+                    className={
+                      isSelected
+                        ? "bg-primary/5 hover:bg-primary/10"
+                        : "hover:bg-muted/50"
+                    }
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell key={cell.id} className="py-2.5 text-xs">
@@ -399,15 +441,18 @@ export function SubscribersDataTable({
               })
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length} className="h-40 text-center">
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-40 text-center"
+                >
                   <div className="flex flex-col items-center justify-center gap-2 text-muted-foreground">
                     <div className="flex size-10 items-center justify-center rounded-full bg-muted">
                       <Layers className="size-5 text-muted-foreground/80" />
                     </div>
-                    <div className="font-medium text-foreground text-sm">
+                    <div className="text-sm font-medium text-foreground">
                       No subscribers found
                     </div>
-                    <p className="text-xs max-w-sm">
+                    <p className="max-w-sm text-xs">
                       {isFiltered
                         ? "No subscribers match your search or filter parameters. Try clearing your filters."
                         : "There are no subscribers in your audience database yet."}
@@ -423,7 +468,11 @@ export function SubscribersDataTable({
                       </Button>
                     ) : (
                       onAddNew && (
-                        <Button size="sm" onClick={onAddNew} className="mt-2 text-xs gap-1.5">
+                        <Button
+                          size="sm"
+                          onClick={onAddNew}
+                          className="mt-2 gap-1.5 text-xs"
+                        >
                           <Plus className="size-3.5" />
                           Add First Subscriber
                         </Button>

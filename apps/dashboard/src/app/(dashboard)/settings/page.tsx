@@ -43,7 +43,11 @@ import {
 import { useAuth } from "@/providers/auth-provider"
 import { UserApi, getStoredAccessToken } from "@/lib/api"
 import { toast } from "@workspace/ui/components/sonner"
-import { Avatar, AvatarFallback, AvatarImage } from "@workspace/ui/components/avatar"
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@workspace/ui/components/avatar"
 
 export default function SettingsPage() {
   const { user, refreshUser } = useAuth()
@@ -102,7 +106,8 @@ export default function SettingsPage() {
       if (res.success) {
         await refreshUser()
         toast.success("Avatar Uploaded", {
-          description: "Profile picture uploaded to Cloudflare R2 / S3 storage.",
+          description:
+            "Profile picture uploaded to Cloudflare R2 / S3 storage.",
         })
       } else {
         toast.error("Upload Failed", {
@@ -228,12 +233,16 @@ export default function SettingsPage() {
             <h1 className="text-2xl font-bold tracking-tight md:text-3xl">
               Platform & Security Settings
             </h1>
-            <Badge variant="outline" className="font-mono text-xs text-primary border-primary/30">
+            <Badge
+              variant="outline"
+              className="border-primary/30 font-mono text-xs text-primary"
+            >
               Super Admin
             </Badge>
           </div>
-          <p className="text-sm text-muted-foreground mt-1">
-            Manage your administrator credentials, encryption keys, RBAC session telemetry, and platform configurations.
+          <p className="mt-1 text-sm text-muted-foreground">
+            Manage your administrator credentials, encryption keys, RBAC session
+            telemetry, and platform configurations.
           </p>
         </div>
       </div>
@@ -259,12 +268,16 @@ export default function SettingsPage() {
           <form onSubmit={handleSaveProfile}>
             <Card className="border-border/80">
               <CardHeader>
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
                   <div className="flex items-center gap-3.5">
-                    <div className="relative group shrink-0">
+                    <div className="group relative shrink-0">
                       <Avatar className="size-14 rounded-xl border-2 border-border shadow-sm">
-                        <AvatarImage src={user?.avatar || undefined} alt={user?.name || "Admin"} className="object-cover" />
-                        <AvatarFallback className="rounded-xl font-bold text-sm bg-primary/10 text-primary">
+                        <AvatarImage
+                          src={user?.avatar || undefined}
+                          alt={user?.name || "Admin"}
+                          className="object-cover"
+                        />
+                        <AvatarFallback className="rounded-xl bg-primary/10 text-sm font-bold text-primary">
                           {user?.name?.slice(0, 2).toUpperCase() || "AD"}
                         </AvatarFallback>
                       </Avatar>
@@ -272,7 +285,7 @@ export default function SettingsPage() {
                         type="button"
                         onClick={() => avatarInputRef.current?.click()}
                         disabled={isUploadingAvatar}
-                        className="absolute -bottom-1 -right-1 flex size-5 items-center justify-center rounded-full bg-primary text-primary-foreground shadow hover:bg-primary/90 transition-transform active:scale-95"
+                        className="absolute -right-1 -bottom-1 flex size-5 items-center justify-center rounded-full bg-primary text-primary-foreground shadow transition-transform hover:bg-primary/90 active:scale-95"
                         title="Upload Avatar to Cloud Storage"
                       >
                         {isUploadingAvatar ? (
@@ -287,7 +300,8 @@ export default function SettingsPage() {
                         Administrator Profile
                       </CardTitle>
                       <CardDescription className="text-xs">
-                        Public author credentials & avatar stored in Cloudflare R2 / S3.
+                        Public author credentials & avatar stored in Cloudflare
+                        R2 / S3.
                       </CardDescription>
                     </div>
                   </div>
@@ -360,7 +374,7 @@ export default function SettingsPage() {
                     <Input
                       value={user?.email || "fi@amanillah.dev"}
                       disabled
-                      className="h-9 text-xs font-mono bg-muted/40"
+                      className="h-9 bg-muted/40 font-mono text-xs"
                     />
                   </div>
                 </div>
@@ -411,7 +425,7 @@ export default function SettingsPage() {
                       value={website}
                       onChange={(e) => setWebsite(e.target.value)}
                       placeholder="https://amanillah.dev"
-                      className="h-9 text-xs font-mono"
+                      className="h-9 font-mono text-xs"
                     />
                   </div>
                   <div className="space-y-2">
@@ -422,7 +436,7 @@ export default function SettingsPage() {
                       value={githubUrl}
                       onChange={(e) => setGithubUrl(e.target.value)}
                       placeholder="https://github.com/fiamanillah"
-                      className="h-9 text-xs font-mono"
+                      className="h-9 font-mono text-xs"
                     />
                   </div>
                 </div>
@@ -431,12 +445,12 @@ export default function SettingsPage() {
                 <Button type="submit" size="sm" disabled={isSavingProfile}>
                   {isSavingProfile ? (
                     <>
-                      <Loader2 className="size-3.5 mr-1.5 animate-spin" />
+                      <Loader2 className="mr-1.5 size-3.5 animate-spin" />
                       Saving...
                     </>
                   ) : (
                     <>
-                      <Save className="size-3.5 mr-1.5" />
+                      <Save className="mr-1.5 size-3.5" />
                       Save Profile Changes
                     </>
                   )}
@@ -451,15 +465,16 @@ export default function SettingsPage() {
           <form onSubmit={handleChangePassword}>
             <Card className="border-border/80">
               <CardHeader>
-                <CardTitle className="text-base font-semibold flex items-center gap-2">
+                <CardTitle className="flex items-center gap-2 text-base font-semibold">
                   <Lock className="size-4 text-primary" />
                   <span>Change Administrator Password</span>
                 </CardTitle>
                 <CardDescription className="text-xs">
-                  Ensure your Super Admin account is protected with a strong, distinct password.
+                  Ensure your Super Admin account is protected with a strong,
+                  distinct password.
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4 max-w-lg">
+              <CardContent className="max-w-lg space-y-4">
                 <div className="space-y-2">
                   <label className="text-xs font-medium text-foreground">
                     Current Password
@@ -470,15 +485,19 @@ export default function SettingsPage() {
                       placeholder="Enter current password"
                       value={currentPassword}
                       onChange={(e) => setCurrentPassword(e.target.value)}
-                      className="h-9 text-xs pr-9"
+                      className="h-9 pr-9 text-xs"
                       required
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                      className="absolute top-1/2 right-3 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                     >
-                      {showPassword ? <EyeOff className="size-3.5" /> : <Eye className="size-3.5" />}
+                      {showPassword ? (
+                        <EyeOff className="size-3.5" />
+                      ) : (
+                        <Eye className="size-3.5" />
+                      )}
                     </button>
                   </div>
                 </div>
@@ -515,12 +534,12 @@ export default function SettingsPage() {
                 <Button type="submit" size="sm" disabled={isChangingPassword}>
                   {isChangingPassword ? (
                     <>
-                      <Loader2 className="size-3.5 mr-1.5 animate-spin" />
+                      <Loader2 className="mr-1.5 size-3.5 animate-spin" />
                       Updating Password...
                     </>
                   ) : (
                     <>
-                      <Key className="size-3.5 mr-1.5" />
+                      <Key className="mr-1.5 size-3.5" />
                       Update Password
                     </>
                   )}
@@ -534,32 +553,43 @@ export default function SettingsPage() {
         <TabsContent value="session" className="space-y-6">
           <Card className="border-border/80">
             <CardHeader>
-              <CardTitle className="text-base font-semibold flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 text-base font-semibold">
                 <ShieldCheck className="size-4 text-emerald-500" />
                 <span>Active Cryptographic Session</span>
               </CardTitle>
               <CardDescription className="text-xs">
-                Inspect your verified JWT tokens and active access control credentials.
+                Inspect your verified JWT tokens and active access control
+                credentials.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid gap-4 sm:grid-cols-3">
-                <div className="p-3 rounded-xl border border-border/70 bg-muted/20 space-y-1">
-                  <span className="text-[11px] text-muted-foreground">User ID</span>
-                  <p className="font-mono text-xs font-semibold truncate">{user?.id || "—"}</p>
+                <div className="space-y-1 rounded-xl border border-border/70 bg-muted/20 p-3">
+                  <span className="text-[11px] text-muted-foreground">
+                    User ID
+                  </span>
+                  <p className="truncate font-mono text-xs font-semibold">
+                    {user?.id || "—"}
+                  </p>
                 </div>
-                <div className="p-3 rounded-xl border border-border/70 bg-muted/20 space-y-1">
-                  <span className="text-[11px] text-muted-foreground">Assigned Role</span>
+                <div className="space-y-1 rounded-xl border border-border/70 bg-muted/20 p-3">
+                  <span className="text-[11px] text-muted-foreground">
+                    Assigned Role
+                  </span>
                   <div className="flex items-center gap-1.5">
-                    <Badge variant="default" className="text-[10px] font-mono">
+                    <Badge variant="default" className="font-mono text-[10px]">
                       {user?.role || "ADMIN"}
                     </Badge>
-                    <span className="text-[11px] text-emerald-500 font-medium">Verified</span>
+                    <span className="text-[11px] font-medium text-emerald-500">
+                      Verified
+                    </span>
                   </div>
                 </div>
-                <div className="p-3 rounded-xl border border-border/70 bg-muted/20 space-y-1">
-                  <span className="text-[11px] text-muted-foreground">Email Status</span>
-                  <p className="text-xs font-semibold text-emerald-500 flex items-center gap-1">
+                <div className="space-y-1 rounded-xl border border-border/70 bg-muted/20 p-3">
+                  <span className="text-[11px] text-muted-foreground">
+                    Email Status
+                  </span>
+                  <p className="flex items-center gap-1 text-xs font-semibold text-emerald-500">
                     <Check className="size-3.5" />
                     Verified ({user?.email})
                   </p>
@@ -571,14 +601,17 @@ export default function SettingsPage() {
                   <label className="text-xs font-medium text-foreground">
                     Active JWT Bearer Token (Masked)
                   </label>
-                  <Badge variant="outline" className="text-[10px] font-mono text-primary">
+                  <Badge
+                    variant="outline"
+                    className="font-mono text-[10px] text-primary"
+                  >
                     Valid Session
                   </Badge>
                 </div>
                 <Input
                   type="password"
                   value={token || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."}
-                  className="h-9 text-xs font-mono bg-muted/40"
+                  className="h-9 bg-muted/40 font-mono text-xs"
                   readOnly
                 />
               </div>

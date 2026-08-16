@@ -15,7 +15,12 @@ import {
   Copy,
   Check,
 } from "lucide-react"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@workspace/ui/components/tabs"
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@workspace/ui/components/tabs"
 import { Button } from "@workspace/ui/components/button"
 import { toast } from "@workspace/ui/components/sonner"
 import type { BlogPostDTO, SeoAnalysisResult } from "@workspace/shared"
@@ -26,10 +31,17 @@ import { FrontendArticlePreview } from "../../components/preview/frontend-articl
 export default function BlogPreviewPage() {
   const params = useParams()
   const router = useRouter()
-  const id = typeof params.id === "string" ? params.id : Array.isArray(params.id) ? params.id[0] : ""
+  const id =
+    typeof params.id === "string"
+      ? params.id
+      : Array.isArray(params.id)
+        ? params.id[0]
+        : ""
 
   const [post, setPost] = React.useState<BlogPostDTO | null>(null)
-  const [seoResult, setSeoResult] = React.useState<SeoAnalysisResult | null>(null)
+  const [seoResult, setSeoResult] = React.useState<SeoAnalysisResult | null>(
+    null
+  )
   const [isLoading, setIsLoading] = React.useState(true)
   const [error, setError] = React.useState<string | null>(null)
   const [isCopiedJsonLd, setIsCopiedJsonLd] = React.useState(false)
@@ -71,23 +83,33 @@ export default function BlogPreviewPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-[60vh] flex flex-col items-center justify-center gap-3 text-muted-foreground">
+      <div className="flex min-h-[60vh] flex-col items-center justify-center gap-3 text-muted-foreground">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        <span className="text-sm font-medium">Generating live preview & SEO diagnostics...</span>
+        <span className="text-sm font-medium">
+          Generating live preview & SEO diagnostics...
+        </span>
       </div>
     )
   }
 
   if (error || !post) {
     return (
-      <div className="max-w-md mx-auto my-12 p-6 rounded-xl border border-destructive/30 bg-destructive/5 text-center space-y-4">
-        <AlertCircle className="h-10 w-10 text-destructive mx-auto" />
+      <div className="mx-auto my-12 max-w-md space-y-4 rounded-xl border border-destructive/30 bg-destructive/5 p-6 text-center">
+        <AlertCircle className="mx-auto h-10 w-10 text-destructive" />
         <div className="space-y-1">
-          <h2 className="text-base font-bold text-foreground">Error Loading Preview</h2>
-          <p className="text-xs text-muted-foreground">{error || "Blog post not found"}</p>
+          <h2 className="text-base font-bold text-foreground">
+            Error Loading Preview
+          </h2>
+          <p className="text-xs text-muted-foreground">
+            {error || "Blog post not found"}
+          </p>
         </div>
-        <Button variant="outline" size="sm" onClick={() => router.push("/blogs")}>
-          <ArrowLeft className="h-3.5 w-3.5 mr-1" /> Back to Blog Posts
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => router.push("/blogs")}
+        >
+          <ArrowLeft className="mr-1 h-3.5 w-3.5" /> Back to Blog Posts
         </Button>
       </div>
     )
@@ -101,16 +123,18 @@ export default function BlogPreviewPage() {
 
   const copyJsonLd = () => {
     if (!seoResult?.previews.jsonLd) return
-    navigator.clipboard.writeText(JSON.stringify(seoResult.previews.jsonLd, null, 2))
+    navigator.clipboard.writeText(
+      JSON.stringify(seoResult.previews.jsonLd, null, 2)
+    )
     setIsCopiedJsonLd(true)
     toast.success("Schema.org JSON-LD copied to clipboard!")
     setTimeout(() => setIsCopiedJsonLd(false), 2000)
   }
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
+    <div className="mx-auto max-w-7xl space-y-6">
       {/* Top Navigation Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-4 p-4 rounded-xl border border-border/80 bg-card shadow-xs">
+      <div className="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-border/80 bg-card p-4 shadow-xs">
         <div className="flex items-center gap-3">
           <Button variant="ghost" size="icon" asChild className="h-9 w-9">
             <Link href="/blogs">
@@ -118,13 +142,13 @@ export default function BlogPreviewPage() {
             </Link>
           </Button>
           <div>
-            <span className="text-xs text-muted-foreground font-mono">
+            <span className="font-mono text-xs text-muted-foreground">
               <Link href="/blogs" className="hover:underline">
                 Blogs
               </Link>{" "}
               / Live Article Preview
             </span>
-            <h1 className="text-base md:text-lg font-bold text-foreground line-clamp-1">
+            <h1 className="line-clamp-1 text-base font-bold text-foreground md:text-lg">
               {post.title}
             </h1>
           </div>
@@ -135,7 +159,7 @@ export default function BlogPreviewPage() {
             variant="outline"
             size="sm"
             onClick={copyPublicLink}
-            className="text-xs font-medium gap-1.5"
+            className="gap-1.5 text-xs font-medium"
           >
             <ExternalLink className="h-3.5 w-3.5" />
             Copy Public URL
@@ -143,7 +167,7 @@ export default function BlogPreviewPage() {
           <Button
             size="sm"
             asChild
-            className="text-xs font-medium gap-1.5 shadow-xs"
+            className="gap-1.5 text-xs font-medium shadow-xs"
           >
             <Link href={`/blogs/${post.id}/edit`}>
               <Edit2 className="h-3.5 w-3.5" />
@@ -154,52 +178,53 @@ export default function BlogPreviewPage() {
       </div>
 
       {/* Main Preview Container */}
-      <div className="rounded-xl border border-border/80 bg-card overflow-hidden shadow-xs">
+      <div className="overflow-hidden rounded-xl border border-border/80 bg-card shadow-xs">
         <Tabs defaultValue="article" className="w-full">
-          <div className="px-6 border-b border-border/80 bg-muted/20">
-            <TabsList className="bg-transparent h-12 p-0 gap-4">
+          <div className="border-b border-border/80 bg-muted/20 px-6">
+            <TabsList className="h-12 gap-4 bg-transparent p-0">
               <TabsTrigger
                 value="article"
-                className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none px-2 font-medium text-xs md:text-sm"
+                className="rounded-none px-2 text-xs font-medium data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none md:text-sm"
               >
-                <Eye className="h-4 w-4 mr-2" /> Live Website Article View
+                <Eye className="mr-2 h-4 w-4" /> Live Website Article View
               </TabsTrigger>
               <TabsTrigger
                 value="seo"
-                className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none px-2 font-medium text-xs md:text-sm"
+                className="rounded-none px-2 text-xs font-medium data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none md:text-sm"
               >
-                <Search className="h-4 w-4 mr-2" /> Search & Social Previews
+                <Search className="mr-2 h-4 w-4" /> Search & Social Previews
               </TabsTrigger>
               <TabsTrigger
                 value="jsonld"
-                className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none px-2 font-medium text-xs md:text-sm"
+                className="rounded-none px-2 text-xs font-medium data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none md:text-sm"
               >
-                <Code2 className="h-4 w-4 mr-2" /> Schema.org JSON-LD
+                <Code2 className="mr-2 h-4 w-4" /> Schema.org JSON-LD
               </TabsTrigger>
             </TabsList>
           </div>
 
           {/* TAB 1: ARTICLE READER VIEW (Exact Website Replica) */}
-          <TabsContent value="article" className="p-4 sm:p-6 lg:p-8 m-0">
+          <TabsContent value="article" className="m-0 p-4 sm:p-6 lg:p-8">
             <FrontendArticlePreview post={post} />
           </TabsContent>
 
           {/* TAB 2: SEO & SERP PREVIEWS */}
-          <TabsContent value="seo" className="p-6 md:p-8 space-y-6 m-0">
+          <TabsContent value="seo" className="m-0 space-y-6 p-6 md:p-8">
             <SeoPreviewCard seoAnalysis={seoResult} slug={post.slug} />
           </TabsContent>
 
           {/* TAB 3: SCHEMA.ORG JSON-LD */}
-          <TabsContent value="jsonld" className="p-6 md:p-8 space-y-3 m-0">
+          <TabsContent value="jsonld" className="m-0 space-y-3 p-6 md:p-8">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                Generated Schema.org Graph ({post.seo?.articleType || "TechArticle"})
+              <span className="text-xs font-bold tracking-wider text-muted-foreground uppercase">
+                Generated Schema.org Graph (
+                {post.seo?.articleType || "TechArticle"})
               </span>
               <Button
                 variant="outline"
                 size="sm"
                 onClick={copyJsonLd}
-                className="h-7 text-xs gap-1.5"
+                className="h-7 gap-1.5 text-xs"
               >
                 {isCopiedJsonLd ? (
                   <>
@@ -212,7 +237,7 @@ export default function BlogPreviewPage() {
                 )}
               </Button>
             </div>
-            <div className="p-4 rounded-xl border border-border bg-[#0d1117] text-[#e6edf3] font-mono text-xs overflow-x-auto max-h-96 leading-relaxed">
+            <div className="max-h-96 overflow-x-auto rounded-xl border border-border bg-[#0d1117] p-4 font-mono text-xs leading-relaxed text-[#e6edf3]">
               <pre>
                 {seoResult?.previews.jsonLd
                   ? JSON.stringify(seoResult.previews.jsonLd, null, 2)

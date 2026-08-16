@@ -30,7 +30,12 @@ import {
 } from "@workspace/ui/components/dialog"
 import { Input } from "@workspace/ui/components/input"
 import { Label } from "@workspace/ui/components/label"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@workspace/ui/components/tabs"
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@workspace/ui/components/tabs"
 import { Textarea } from "@workspace/ui/components/textarea"
 import { toast } from "@workspace/ui/components/sonner"
 
@@ -143,7 +148,9 @@ export function TemplatePreviewDialog({
     try {
       parsedData = JSON.parse(sampleDataJson)
     } catch {
-      toast.error("Invalid JSON sample data. Please correct it before sending test email.")
+      toast.error(
+        "Invalid JSON sample data. Please correct it before sending test email."
+      )
       return
     }
 
@@ -193,17 +200,17 @@ export function TemplatePreviewDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className={`flex flex-col p-0 overflow-hidden border-border/80 bg-background/95 backdrop-blur-md transition-all duration-300 ${
+        className={`flex flex-col overflow-hidden border-border/80 bg-background/95 p-0 backdrop-blur-md transition-all duration-300 ${
           isFullScreen
-            ? "w-screen h-screen max-w-none rounded-none"
-            : "w-[96vw] max-w-[1400px] h-[92vh] max-h-[92vh] rounded-xl sm:max-w-[96vw] lg:max-w-[1400px]"
+            ? "h-screen w-screen max-w-none rounded-none"
+            : "h-[92vh] max-h-[92vh] w-[96vw] max-w-[1400px] rounded-xl sm:max-w-[96vw] lg:max-w-[1400px]"
         }`}
       >
         {/* Modal Header */}
-        <DialogHeader className="p-5 pb-3 border-b border-border/60 bg-muted/20">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <DialogHeader className="border-b border-border/60 bg-muted/20 p-5 pb-3">
+          <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
             <div className="flex items-center gap-2.5">
-              <div className="flex size-9 items-center justify-center rounded-lg bg-blue-500/10 text-blue-400 border border-blue-500/20">
+              <div className="flex size-9 items-center justify-center rounded-lg border border-blue-500/20 bg-blue-500/10 text-blue-400">
                 <Eye className="size-5" />
               </div>
               <div>
@@ -213,16 +220,17 @@ export function TemplatePreviewDialog({
                   </DialogTitle>
                   <Badge
                     variant="outline"
-                    className={`text-[10px] ${template.isSystem
-                      ? "border-blue-500/30 bg-blue-500/10 text-blue-400"
-                      : "border-emerald-500/30 bg-emerald-500/10 text-emerald-400"
-                      }`}
+                    className={`text-[10px] ${
+                      template.isSystem
+                        ? "border-blue-500/30 bg-blue-500/10 text-blue-400"
+                        : "border-emerald-500/30 bg-emerald-500/10 text-emerald-400"
+                    }`}
                   >
                     {template.isSystem ? "Codebase" : "Custom"}
                   </Badge>
                 </div>
-                <div className="flex items-center gap-2 mt-0.5">
-                  <code className="text-xs font-mono text-muted-foreground">
+                <div className="mt-0.5 flex items-center gap-2">
+                  <code className="font-mono text-xs text-muted-foreground">
                     {template.slug}
                   </code>
                 </div>
@@ -273,7 +281,7 @@ export function TemplatePreviewDialog({
                     onOpenChange(false)
                     onOpenEdit(template)
                   }}
-                  className="h-8 gap-1.5 text-xs bg-background/80"
+                  className="h-8 gap-1.5 bg-background/80 text-xs"
                 >
                   <Pencil className="size-3.5 text-amber-400" />
                   Edit
@@ -299,39 +307,39 @@ export function TemplatePreviewDialog({
           </div>
 
           {/* Rendered Subject Line Bar */}
-          <div className="mt-3 p-2.5 rounded-lg border border-border/60 bg-card/80 flex items-center justify-between gap-2 text-xs">
-            <div className="flex items-center gap-2 min-w-0">
-              <span className="font-semibold text-muted-foreground shrink-0">
+          <div className="mt-3 flex items-center justify-between gap-2 rounded-lg border border-border/60 bg-card/80 p-2.5 text-xs">
+            <div className="flex min-w-0 items-center gap-2">
+              <span className="shrink-0 font-semibold text-muted-foreground">
                 Subject:
               </span>
-              <span className="font-medium text-foreground truncate">
+              <span className="truncate font-medium text-foreground">
                 {renderedSubject || template.subject}
               </span>
             </div>
             {isRendering && (
-              <RefreshCw className="size-3.5 animate-spin text-primary shrink-0" />
+              <RefreshCw className="size-3.5 shrink-0 animate-spin text-primary" />
             )}
           </div>
         </DialogHeader>
 
         {/* Main Content Area */}
-        <div className="flex-1 flex flex-col overflow-hidden">
+        <div className="flex flex-1 flex-col overflow-hidden">
           <Tabs
             value={activeTab}
             onValueChange={setActiveTab}
-            className="flex-1 flex flex-col overflow-hidden"
+            className="flex flex-1 flex-col overflow-hidden"
           >
-            <div className="flex items-center justify-between px-6 py-2 border-b border-border/50 bg-muted/10">
+            <div className="flex items-center justify-between border-b border-border/50 bg-muted/10 px-6 py-2">
               <TabsList className="h-8 bg-muted/60">
-                <TabsTrigger value="visual" className="text-xs h-7 gap-1.5">
+                <TabsTrigger value="visual" className="h-7 gap-1.5 text-xs">
                   <Eye className="size-3.5" />
                   Rendered Preview
                 </TabsTrigger>
-                <TabsTrigger value="raw" className="text-xs h-7 gap-1.5">
+                <TabsTrigger value="raw" className="h-7 gap-1.5 text-xs">
                   <Code className="size-3.5" />
                   Raw HTML
                 </TabsTrigger>
-                <TabsTrigger value="context" className="text-xs h-7 gap-1.5">
+                <TabsTrigger value="context" className="h-7 gap-1.5 text-xs">
                   <Sparkles className="size-3.5" />
                   Test Data (JSON)
                 </TabsTrigger>
@@ -344,7 +352,7 @@ export function TemplatePreviewDialog({
                     variant="outline"
                     size="sm"
                     onClick={copyHtml}
-                    className="h-7 text-xs gap-1"
+                    className="h-7 gap-1 text-xs"
                   >
                     <Copy className="size-3" />
                     Copy HTML
@@ -356,19 +364,19 @@ export function TemplatePreviewDialog({
             {/* Visual Render Tab (iframe sandbox) */}
             <TabsContent
               value="visual"
-              className="flex-1 m-0 overflow-y-auto bg-zinc-950 p-4 md:p-8 flex items-start justify-center"
+              className="m-0 flex flex-1 items-start justify-center overflow-y-auto bg-zinc-950 p-4 md:p-8"
             >
               <div
-                className={`w-full ${getDeviceWidth()} transition-all duration-300 rounded-xl overflow-hidden shadow-2xl border border-zinc-800 bg-zinc-900`}
+                className={`w-full ${getDeviceWidth()} overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900 shadow-2xl transition-all duration-300`}
               >
                 {/* Browser Bezel Frame */}
-                <div className="px-4 py-2 bg-zinc-900 border-b border-zinc-800 flex items-center justify-between">
+                <div className="flex items-center justify-between border-b border-zinc-800 bg-zinc-900 px-4 py-2">
                   <div className="flex items-center gap-1.5">
                     <div className="size-2.5 rounded-full bg-red-500/80" />
                     <div className="size-2.5 rounded-full bg-yellow-500/80" />
                     <div className="size-2.5 rounded-full bg-green-500/80" />
                   </div>
-                  <div className="text-[10px] font-mono text-zinc-400 bg-zinc-950 px-3 py-0.5 rounded border border-zinc-800">
+                  <div className="rounded border border-zinc-800 bg-zinc-950 px-3 py-0.5 font-mono text-[10px] text-zinc-400">
                     {deviceMode === "desktop"
                       ? "Desktop View (Wide Canvas)"
                       : deviceMode === "tablet"
@@ -382,7 +390,7 @@ export function TemplatePreviewDialog({
                 <iframe
                   srcDoc={renderedBody}
                   title="Template Preview"
-                  className="w-full min-h-[560px] h-[65vh] bg-zinc-950 border-0"
+                  className="h-[65vh] min-h-[560px] w-full border-0 bg-zinc-950"
                   sandbox="allow-same-origin"
                 />
               </div>
@@ -391,9 +399,9 @@ export function TemplatePreviewDialog({
             {/* Raw HTML Code Tab */}
             <TabsContent
               value="raw"
-              className="flex-1 m-0 overflow-y-auto p-4 bg-zinc-950"
+              className="m-0 flex-1 overflow-y-auto bg-zinc-950 p-4"
             >
-              <pre className="font-mono text-xs text-zinc-200 whitespace-pre-wrap break-all leading-relaxed p-4 rounded-lg bg-zinc-900/80 border border-zinc-800">
+              <pre className="rounded-lg border border-zinc-800 bg-zinc-900/80 p-4 font-mono text-xs leading-relaxed break-all whitespace-pre-wrap text-zinc-200">
                 {renderedBody}
               </pre>
             </TabsContent>
@@ -401,49 +409,50 @@ export function TemplatePreviewDialog({
             {/* Test Context Data Tab (Editable JSON) */}
             <TabsContent
               value="context"
-              className="flex-1 m-0 overflow-y-auto p-6 space-y-4"
+              className="m-0 flex-1 space-y-4 overflow-y-auto p-6"
             >
-              <div className="space-y-1.5 max-w-3xl mx-auto">
+              <div className="mx-auto max-w-3xl space-y-1.5">
                 <Label htmlFor="sample-json" className="text-xs font-semibold">
                   Test Variables (JSON Format)
                 </Label>
                 <p className="text-xs text-muted-foreground">
-                  Modify the test payload below to see how this template dynamically evaluates variables in real time.
+                  Modify the test payload below to see how this template
+                  dynamically evaluates variables in real time.
                 </p>
                 <Textarea
                   id="sample-json"
                   value={sampleDataJson}
                   onChange={(e) => handleJsonChange(e.target.value)}
-                  className="font-mono text-xs min-h-[350px] bg-zinc-950 text-emerald-400 border-zinc-800 p-4 leading-relaxed"
+                  className="min-h-[350px] border-zinc-800 bg-zinc-950 p-4 font-mono text-xs leading-relaxed text-emerald-400"
                 />
               </div>
             </TabsContent>
           </Tabs>
 
           {renderError && (
-            <div className="p-2 bg-destructive/10 border-t border-destructive/30 text-destructive text-xs px-6">
+            <div className="border-t border-destructive/30 bg-destructive/10 p-2 px-6 text-xs text-destructive">
               Render Note: {renderError}
             </div>
           )}
         </div>
 
         {/* Footer: Live Test Email Dispatcher */}
-        <DialogFooter className="p-4 border-t border-border/60 bg-muted/20 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <DialogFooter className="flex flex-col items-center justify-between gap-3 border-t border-border/60 bg-muted/20 p-4 sm:flex-row">
           <form
             onSubmit={handleSendTestEmail}
-            className="flex items-center gap-2 w-full sm:w-auto flex-1 max-w-md"
+            className="flex w-full max-w-md flex-1 items-center gap-2 sm:w-auto"
           >
             <Input
               type="email"
               placeholder="Enter email to receive test copy..."
               value={testRecipient}
               onChange={(e) => setTestRecipient(e.target.value)}
-              className="h-8 text-xs bg-background/80"
+              className="h-8 bg-background/80 text-xs"
             />
             <Button
               type="submit"
               size="sm"
-              className="h-8 text-xs gap-1.5 shrink-0 bg-primary text-primary-foreground font-semibold"
+              className="h-8 shrink-0 gap-1.5 bg-primary text-xs font-semibold text-primary-foreground"
               disabled={isSendingTest || !testRecipient}
             >
               {isSendingTest ? (
@@ -460,7 +469,7 @@ export function TemplatePreviewDialog({
             variant="ghost"
             size="sm"
             onClick={() => onOpenChange(false)}
-            className="text-xs self-end sm:self-center"
+            className="self-end text-xs sm:self-center"
           >
             Close Preview
           </Button>

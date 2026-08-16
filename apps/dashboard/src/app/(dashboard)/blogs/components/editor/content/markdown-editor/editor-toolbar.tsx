@@ -80,12 +80,12 @@ export function EditorToolbar({
       {/* Left: View Mode Switches & Format Group */}
       <div className="flex flex-wrap items-center gap-1.5">
         {/* View Mode Toggle */}
-        <div className="flex items-center bg-muted/60 rounded-lg p-0.5 border border-border mr-1">
+        <div className="mr-1 flex items-center rounded-lg border border-border bg-muted/60 p-0.5">
           <Button
             type="button"
             variant={mode === "write" ? "secondary" : "ghost"}
             size="sm"
-            className="h-7 text-xs px-2.5 gap-1.5"
+            className="h-7 gap-1.5 px-2.5 text-xs"
             onClick={() => onModeChange("write")}
             title="Write Mode"
           >
@@ -95,7 +95,7 @@ export function EditorToolbar({
             type="button"
             variant={mode === "split" ? "secondary" : "ghost"}
             size="sm"
-            className="h-7 text-xs px-2.5 gap-1.5 hidden md:inline-flex"
+            className="hidden h-7 gap-1.5 px-2.5 text-xs md:inline-flex"
             onClick={() => onModeChange("split")}
             title="Split Side-by-Side View"
           >
@@ -105,7 +105,7 @@ export function EditorToolbar({
             type="button"
             variant={mode === "preview" ? "secondary" : "ghost"}
             size="sm"
-            className="h-7 text-xs px-2.5 gap-1.5"
+            className="h-7 gap-1.5 px-2.5 text-xs"
             onClick={() => onModeChange("preview")}
             title="Rendered HTML Preview"
           >
@@ -118,24 +118,37 @@ export function EditorToolbar({
             {/* Heading Dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="h-7 px-2 text-xs font-semibold gap-1">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-7 gap-1 px-2 text-xs font-semibold"
+                >
                   Heading <ChevronDown className="h-3 w-3 opacity-60" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" className="w-40 text-xs">
-                <DropdownMenuItem onClick={() => onInsertSnippet("## ")} className="gap-2">
+                <DropdownMenuItem
+                  onClick={() => onInsertSnippet("## ")}
+                  className="gap-2"
+                >
                   <Heading2 className="h-4 w-4" /> Heading 2 (Section)
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => onInsertSnippet("### ")} className="gap-2">
+                <DropdownMenuItem
+                  onClick={() => onInsertSnippet("### ")}
+                  className="gap-2"
+                >
                   <Heading3 className="h-4 w-4" /> Heading 3 (Subsection)
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => onInsertSnippet("#### ")} className="gap-2">
+                <DropdownMenuItem
+                  onClick={() => onInsertSnippet("#### ")}
+                  className="gap-2"
+                >
                   <Heading4 className="h-4 w-4" /> Heading 4 (Small)
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
 
-            <div className="h-4 w-px bg-border mx-0.5" />
+            <div className="mx-0.5 h-4 w-px bg-border" />
 
             {/* Inline Formatting */}
             <Button
@@ -179,23 +192,32 @@ export function EditorToolbar({
               <Code className="h-3.5 w-3.5" />
             </Button>
 
-            <div className="h-4 w-px bg-border mx-0.5" />
+            <div className="mx-0.5 h-4 w-px bg-border" />
 
             {/* Code Block Dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="h-7 px-2 text-xs font-mono font-semibold gap-1">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-7 gap-1 px-2 font-mono text-xs font-semibold"
+                >
                   {"{ }"} Code <ChevronDown className="h-3 w-3 opacity-60" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="w-48 text-xs max-h-64 overflow-y-auto">
-                <DropdownMenuLabel className="text-[10px] uppercase font-mono text-muted-foreground">
+              <DropdownMenuContent
+                align="start"
+                className="max-h-64 w-48 overflow-y-auto text-xs"
+              >
+                <DropdownMenuLabel className="font-mono text-[10px] text-muted-foreground uppercase">
                   Select Language Block
                 </DropdownMenuLabel>
                 {CODE_LANGUAGES.map((item) => (
                   <DropdownMenuItem
                     key={item.lang}
-                    onClick={() => onInsertSnippet(`\`\`\`${item.lang}\n`, "\n```")}
+                    onClick={() =>
+                      onInsertSnippet(`\`\`\`${item.lang}\n`, "\n```")
+                    }
                     className="font-mono text-xs"
                   >
                     {item.label}
@@ -207,12 +229,17 @@ export function EditorToolbar({
             {/* Alert Callouts Dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="h-7 px-2 text-xs font-medium gap-1 text-primary">
-                  <Sparkles className="h-3 w-3" /> Callout <ChevronDown className="h-3 w-3 opacity-60" />
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-7 gap-1 px-2 text-xs font-medium text-primary"
+                >
+                  <Sparkles className="h-3 w-3" /> Callout{" "}
+                  <ChevronDown className="h-3 w-3 opacity-60" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" className="w-48 text-xs">
-                <DropdownMenuLabel className="text-[10px] uppercase font-mono text-muted-foreground">
+                <DropdownMenuLabel className="font-mono text-[10px] text-muted-foreground uppercase">
                   GitHub Alert Callouts
                 </DropdownMenuLabel>
                 <DropdownMenuItem
@@ -248,7 +275,7 @@ export function EditorToolbar({
               </DropdownMenuContent>
             </DropdownMenu>
 
-            <div className="h-4 w-px bg-border mx-0.5" />
+            <div className="mx-0.5 h-4 w-px bg-border" />
 
             {/* Lists & Quotes */}
             <Button
@@ -292,14 +319,14 @@ export function EditorToolbar({
               <Quote className="h-3.5 w-3.5" />
             </Button>
 
-            <div className="h-4 w-px bg-border mx-0.5" />
+            <div className="mx-0.5 h-4 w-px bg-border" />
 
             {/* Media, Links & Tables */}
             <Button
               type="button"
               variant="ghost"
               size="sm"
-              className="h-7 px-2 text-xs gap-1.5 text-primary hover:bg-primary/10"
+              className="h-7 gap-1.5 px-2 text-xs text-primary hover:bg-primary/10"
               onClick={onOpenImageDialog}
               title="Insert Photo / Diagram"
             >
@@ -340,10 +367,10 @@ export function EditorToolbar({
       </div>
 
       {/* Right: Live Word Count & Reading Time Meter */}
-      <div className="flex items-center gap-3 text-xs font-mono text-muted-foreground shrink-0">
+      <div className="flex shrink-0 items-center gap-3 font-mono text-xs text-muted-foreground">
         <span className="font-semibold text-foreground">{wordCount} words</span>
         <span>•</span>
-        <span className="text-primary font-medium">{readTime}</span>
+        <span className="font-medium text-primary">{readTime}</span>
       </div>
     </div>
   )

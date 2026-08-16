@@ -66,15 +66,21 @@ export function ProfileContainer() {
   ]
 
   return (
-    <div className="py-8 sm:py-12 space-y-6 max-w-3xl mx-auto px-4 sm:px-6">
+    <div className="mx-auto max-w-3xl space-y-6 px-4 py-8 sm:px-6 sm:py-12">
       {/* Breadcrumb */}
-      <nav aria-label="Breadcrumbs" className="flex items-center gap-1.5 font-mono text-xs text-muted-foreground">
-        <a href="/" className="hover:text-foreground flex items-center gap-1 transition-colors">
+      <nav
+        aria-label="Breadcrumbs"
+        className="flex items-center gap-1.5 font-mono text-xs text-muted-foreground"
+      >
+        <a
+          href="/"
+          className="flex items-center gap-1 transition-colors hover:text-foreground"
+        >
           <HugeiconsIcon icon={Home01Icon} className="size-3.5" />
           <span>Home</span>
         </a>
         <HugeiconsIcon icon={ArrowRight01Icon} className="size-3 text-border" />
-        <span className="text-foreground font-semibold">Account Profile</span>
+        <span className="font-semibold text-foreground">Account Profile</span>
       </nav>
 
       {/* Guest Banner */}
@@ -94,10 +100,10 @@ export function ProfileContainer() {
                   key={tab.id}
                   type="button"
                   onClick={() => handleTabChange(tab.id)}
-                  className={`relative flex items-center gap-2 px-3.5 py-2 font-mono text-xs font-semibold transition-all cursor-pointer ${
+                  className={`relative flex cursor-pointer items-center gap-2 px-3.5 py-2 font-mono text-xs font-semibold transition-all ${
                     isActive
-                      ? "bg-background text-primary border border-border shadow-xs font-bold"
-                      : "text-muted-foreground hover:text-foreground border border-transparent"
+                      ? "border border-border bg-background font-bold text-primary shadow-xs"
+                      : "border border-transparent text-muted-foreground hover:text-foreground"
                   }`}
                 >
                   <HugeiconsIcon icon={tab.icon} className="size-3.5" />
@@ -109,9 +115,7 @@ export function ProfileContainer() {
 
           {/* Tab Content */}
           <div className="pt-1">
-            {activeTab === "info" && (
-              <ProfileInfoCard user={effectiveUser} />
-            )}
+            {activeTab === "info" && <ProfileInfoCard user={effectiveUser} />}
 
             {activeTab === "security" && (
               <PasswordSecurityCard user={effectiveUser} />

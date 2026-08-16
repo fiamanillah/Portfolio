@@ -2,7 +2,6 @@
 
 import React, { useEffect, useRef } from "react"
 
-
 interface TextScrambleProps {
   texts: string[]
   speed?: number

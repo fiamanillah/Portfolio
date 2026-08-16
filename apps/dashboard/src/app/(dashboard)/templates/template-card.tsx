@@ -104,16 +104,16 @@ export function TemplateCard({
   }
 
   return (
-    <Card className="flex flex-col justify-between border-border/80 bg-card/70 backdrop-blur-sm shadow-sm transition-all duration-200 hover:border-primary/40 hover:shadow-md group">
+    <Card className="group flex flex-col justify-between border-border/80 bg-card/70 shadow-sm backdrop-blur-sm transition-all duration-200 hover:border-primary/40 hover:shadow-md">
       <CardHeader className="space-y-3 pb-3">
         {/* Header Top Row: Icon, Title, Badges, Options Dropdown */}
         <div className="flex items-start justify-between gap-3">
-          <div className="flex items-start gap-3 min-w-0">
+          <div className="flex min-w-0 items-start gap-3">
             <div
               className={`flex size-10 shrink-0 items-center justify-center rounded-xl transition-transform group-hover:scale-105 ${
                 template.isSystem
-                  ? "bg-blue-500/10 text-blue-400 border border-blue-500/20"
-                  : "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
+                  ? "border border-blue-500/20 bg-blue-500/10 text-blue-400"
+                  : "border border-emerald-500/20 bg-emerald-500/10 text-emerald-400"
               }`}
             >
               {template.isSystem ? (
@@ -125,18 +125,18 @@ export function TemplateCard({
 
             <div className="min-w-0">
               <div className="flex items-center gap-2">
-                <CardTitle className="text-base font-semibold truncate text-foreground">
+                <CardTitle className="truncate text-base font-semibold text-foreground">
                   {template.name}
                 </CardTitle>
               </div>
-              <div className="flex items-center gap-1.5 mt-0.5">
-                <code className="text-xs font-mono text-muted-foreground truncate">
+              <div className="mt-0.5 flex items-center gap-1.5">
+                <code className="truncate font-mono text-xs text-muted-foreground">
                   {template.slug}
                 </code>
                 <button
                   type="button"
                   onClick={copySlug}
-                  className="text-muted-foreground/60 hover:text-foreground transition-colors p-0.5 rounded"
+                  className="rounded p-0.5 text-muted-foreground/60 transition-colors hover:text-foreground"
                   title="Copy slug"
                 >
                   <Copy className="size-3" />
@@ -145,7 +145,7 @@ export function TemplateCard({
             </div>
           </div>
 
-          <div className="flex items-center gap-1.5 shrink-0">
+          <div className="flex shrink-0 items-center gap-1.5">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -163,35 +163,35 @@ export function TemplateCard({
                 </DropdownMenuLabel>
                 <DropdownMenuItem
                   onClick={() => onPreview(template)}
-                  className="text-xs gap-2 cursor-pointer"
+                  className="cursor-pointer gap-2 text-xs"
                 >
                   <Eye className="size-3.5 text-blue-400" />
                   Live Preview
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={() => onEdit(template)}
-                  className="text-xs gap-2 cursor-pointer"
+                  className="cursor-pointer gap-2 text-xs"
                 >
                   <Pencil className="size-3.5 text-amber-400" />
                   Edit Template
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={() => onSendTest(template)}
-                  className="text-xs gap-2 cursor-pointer"
+                  className="cursor-pointer gap-2 text-xs"
                 >
                   <Send className="size-3.5 text-purple-400" />
                   Send Test Email
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={() => onSyncSingle(template)}
-                  className="text-xs gap-2 cursor-pointer"
+                  className="cursor-pointer gap-2 text-xs"
                 >
                   <Cloud className="size-3.5 text-emerald-400" />
                   Sync to Plunk
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={() => onDuplicate(template)}
-                  className="text-xs gap-2 cursor-pointer"
+                  className="cursor-pointer gap-2 text-xs"
                 >
                   <Copy className="size-3.5 text-sky-400" />
                   Duplicate
@@ -202,7 +202,7 @@ export function TemplateCard({
                 {template.isSystem ? (
                   <DropdownMenuItem
                     onClick={() => onResetDefault(template)}
-                    className="text-xs gap-2 cursor-pointer text-amber-400 focus:text-amber-400"
+                    className="cursor-pointer gap-2 text-xs text-amber-400 focus:text-amber-400"
                   >
                     <RotateCcw className="size-3.5" />
                     Reset to Codebase Default
@@ -210,7 +210,7 @@ export function TemplateCard({
                 ) : (
                   <DropdownMenuItem
                     onClick={() => onDelete(template)}
-                    className="text-xs gap-2 cursor-pointer text-destructive focus:text-destructive"
+                    className="cursor-pointer gap-2 text-xs text-destructive focus:text-destructive"
                   >
                     <Trash2 className="size-3.5" />
                     Delete Template
@@ -226,7 +226,7 @@ export function TemplateCard({
           {template.isSystem ? (
             <Badge
               variant="outline"
-              className="border-blue-500/30 bg-blue-500/10 text-blue-400 font-medium text-[11px] gap-1 px-2 py-0.5"
+              className="gap-1 border-blue-500/30 bg-blue-500/10 px-2 py-0.5 text-[11px] font-medium text-blue-400"
             >
               <Code2 className="size-3" />
               Codebase
@@ -234,7 +234,7 @@ export function TemplateCard({
           ) : (
             <Badge
               variant="outline"
-              className="border-emerald-500/30 bg-emerald-500/10 text-emerald-400 font-medium text-[11px] gap-1 px-2 py-0.5"
+              className="gap-1 border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 text-[11px] font-medium text-emerald-400"
             >
               <Sparkles className="size-3" />
               Custom Made
@@ -243,25 +243,25 @@ export function TemplateCard({
 
           <Badge
             variant="outline"
-            className={`font-medium text-[11px] px-2 py-0.5 ${
+            className={`px-2 py-0.5 text-[11px] font-medium ${
               template.type === "TRANSACTIONAL"
                 ? "border-amber-500/30 bg-amber-500/10 text-amber-400"
                 : template.type === "MARKETING"
-                ? "border-purple-500/30 bg-purple-500/10 text-purple-400"
-                : "border-sky-500/30 bg-sky-500/10 text-sky-400"
+                  ? "border-purple-500/30 bg-purple-500/10 text-purple-400"
+                  : "border-sky-500/30 bg-sky-500/10 text-sky-400"
             }`}
           >
             {template.type === "TRANSACTIONAL"
               ? "Transactional"
               : template.type === "MARKETING"
-              ? "Marketing"
-              : "Headless"}
+                ? "Marketing"
+                : "Headless"}
           </Badge>
 
           {template.plunkId ? (
             <Badge
               variant="outline"
-              className="border-emerald-500/30 bg-emerald-500/10 text-emerald-400 font-medium text-[11px] gap-1 px-2 py-0.5 ml-auto"
+              className="ml-auto gap-1 border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 text-[11px] font-medium text-emerald-400"
             >
               <CheckCircle2 className="size-3" />
               Plunk Synced
@@ -269,7 +269,7 @@ export function TemplateCard({
           ) : (
             <Badge
               variant="outline"
-              className="border-zinc-700 bg-zinc-800/40 text-muted-foreground font-medium text-[11px] gap-1 px-2 py-0.5 ml-auto"
+              className="ml-auto gap-1 border-zinc-700 bg-zinc-800/40 px-2 py-0.5 text-[11px] font-medium text-muted-foreground"
             >
               <CloudOff className="size-3" />
               Local Only
@@ -279,17 +279,17 @@ export function TemplateCard({
 
         {/* Subject preview */}
         <div className="rounded-md border border-border/60 bg-muted/30 p-2.5">
-          <div className="text-[11px] font-semibold text-muted-foreground flex items-center gap-1 mb-1">
+          <div className="mb-1 flex items-center gap-1 text-[11px] font-semibold text-muted-foreground">
             <Mail className="size-3" />
             <span>Subject Line</span>
           </div>
-          <p className="text-xs font-medium text-foreground line-clamp-1">
+          <p className="line-clamp-1 text-xs font-medium text-foreground">
             {template.subject}
           </p>
         </div>
 
         {template.description && (
-          <CardDescription className="text-xs line-clamp-2 pt-0.5">
+          <CardDescription className="line-clamp-2 pt-0.5 text-xs">
             {template.description}
           </CardDescription>
         )}
@@ -297,7 +297,7 @@ export function TemplateCard({
 
       <CardContent className="space-y-3 pt-0">
         {/* Dynamic Variable Chips */}
-        <div className="rounded-lg border border-border/50 bg-muted/20 p-2.5 space-y-1.5">
+        <div className="space-y-1.5 rounded-lg border border-border/50 bg-muted/20 p-2.5">
           <div className="flex items-center justify-between text-[11px] font-semibold text-muted-foreground">
             <span className="flex items-center gap-1">
               <FileCode2 className="size-3" />
@@ -307,13 +307,13 @@ export function TemplateCard({
               click token to copy
             </span>
           </div>
-          <div className="flex flex-wrap gap-1 max-h-16 overflow-y-auto">
+          <div className="flex max-h-16 flex-wrap gap-1 overflow-y-auto">
             {variables.slice(0, 6).map((v) => (
               <Badge
                 key={v}
                 variant="outline"
                 onClick={(e) => copyVariable(v, e)}
-                className="font-mono text-[10px] bg-background/80 hover:bg-primary/10 hover:border-primary/40 cursor-pointer transition-colors"
+                className="cursor-pointer bg-background/80 font-mono text-[10px] transition-colors hover:border-primary/40 hover:bg-primary/10"
                 title={`Click to copy {{ ${v} }}`}
               >
                 {`{{ ${v} }}`}
@@ -322,7 +322,7 @@ export function TemplateCard({
             {variables.length > 6 && (
               <Badge
                 variant="secondary"
-                className="text-[10px] text-muted-foreground font-mono"
+                className="font-mono text-[10px] text-muted-foreground"
               >
                 +{variables.length - 6} more
               </Badge>
@@ -331,7 +331,7 @@ export function TemplateCard({
         </div>
       </CardContent>
 
-      <CardFooter className="flex items-center justify-between border-t border-border/60 pt-3 pb-3 text-xs text-muted-foreground bg-muted/10">
+      <CardFooter className="flex items-center justify-between border-t border-border/60 bg-muted/10 pt-3 pb-3 text-xs text-muted-foreground">
         <span className="text-[11px]">
           Updated {formatRelativeTime(template.updatedAt)}
         </span>
@@ -339,7 +339,7 @@ export function TemplateCard({
           <Button
             variant="ghost"
             size="sm"
-            className="h-7 gap-1 text-xs px-2.5 text-muted-foreground hover:text-foreground hover:bg-muted"
+            className="h-7 gap-1 px-2.5 text-xs text-muted-foreground hover:bg-muted hover:text-foreground"
             onClick={() => onPreview(template)}
           >
             <Eye className="size-3.5 text-blue-400" />
@@ -348,7 +348,7 @@ export function TemplateCard({
           <Button
             variant="outline"
             size="sm"
-            className="h-7 gap-1 text-xs px-2.5 bg-background/80"
+            className="h-7 gap-1 bg-background/80 px-2.5 text-xs"
             onClick={() => onEdit(template)}
           >
             <Pencil className="size-3.5 text-amber-400" />

@@ -37,7 +37,8 @@ export function MarkdownEditor({
     const selectedText = value.substring(start, end)
 
     const replacement = `${prefix}${selectedText}${suffix}`
-    const newValue = value.substring(0, start) + replacement + value.substring(end)
+    const newValue =
+      value.substring(0, start) + replacement + value.substring(end)
 
     onChange(newValue)
 
@@ -61,7 +62,7 @@ export function MarkdownEditor({
   }
 
   return (
-    <div className="rounded-xl border border-border/80 bg-card overflow-hidden shadow-xs space-y-0">
+    <div className="space-y-0 overflow-hidden rounded-xl border border-border/80 bg-card shadow-xs">
       {/* Editor Toolbar */}
       <EditorToolbar
         mode={viewMode}
@@ -75,7 +76,7 @@ export function MarkdownEditor({
       />
 
       {/* Editor Main Canvas */}
-      <div className="p-4 md:p-5 bg-card/60">
+      <div className="bg-card/60 p-4 md:p-5">
         {viewMode === "write" && (
           <textarea
             ref={textareaRef}
@@ -83,19 +84,19 @@ export function MarkdownEditor({
             onChange={(e) => onChange(e.target.value)}
             rows={18}
             placeholder="Write article in GitHub-flavored markdown with ```code, > [!NOTE], and ![images]..."
-            className="w-full bg-background border border-border/90 rounded-lg p-4 font-mono text-sm leading-relaxed text-foreground placeholder:text-muted-foreground/60 resize-y outline-hidden hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary/20 shadow-xs transition-colors"
+            className="w-full resize-y rounded-lg border border-border/90 bg-background p-4 font-mono text-sm leading-relaxed text-foreground shadow-xs outline-hidden transition-colors placeholder:text-muted-foreground/60 hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary/20"
           />
         )}
 
         {viewMode === "split" && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             <textarea
               ref={textareaRef}
               value={value}
               onChange={(e) => onChange(e.target.value)}
               rows={20}
               placeholder="Write article in GitHub-flavored markdown..."
-              className="w-full bg-background border border-border/90 rounded-lg p-4 font-mono text-sm leading-relaxed text-foreground placeholder:text-muted-foreground/60 resize-none outline-hidden hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary/20 shadow-xs transition-colors"
+              className="w-full resize-none rounded-lg border border-border/90 bg-background p-4 font-mono text-sm leading-relaxed text-foreground shadow-xs outline-hidden transition-colors placeholder:text-muted-foreground/60 hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary/20"
             />
             <MarkdownPreview content={value} className="max-h-[500px]" />
           </div>

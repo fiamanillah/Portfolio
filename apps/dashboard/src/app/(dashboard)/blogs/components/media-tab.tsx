@@ -46,17 +46,19 @@ export function MediaTab({
       {/* Cover / Thumbnail */}
       <div className="space-y-2.5">
         <div className="flex items-center justify-between">
-          <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-            <ImageIcon className="h-3.5 w-3.5 text-primary" /> Primary Cover / Thumbnail Image
+          <label className="flex items-center gap-1.5 text-xs font-semibold tracking-wider text-muted-foreground uppercase">
+            <ImageIcon className="h-3.5 w-3.5 text-primary" /> Primary Cover /
+            Thumbnail Image
           </label>
           <Button
             type="button"
             variant="outline"
             size="sm"
             onClick={() => setPickerTarget("thumbnail")}
-            className="h-7 text-xs gap-1.5"
+            className="h-7 gap-1.5 text-xs"
           >
-            <FolderOpen className="size-3.5 text-primary" /> Browse Media Library
+            <FolderOpen className="size-3.5 text-primary" /> Browse Media
+            Library
           </Button>
         </div>
 
@@ -73,7 +75,7 @@ export function MediaTab({
               variant="ghost"
               size="icon"
               onClick={() => setThumbnail("")}
-              className="size-8 text-muted-foreground hover:text-destructive shrink-0"
+              className="size-8 shrink-0 text-muted-foreground hover:text-destructive"
               title="Clear cover"
             >
               <X className="size-3.5" />
@@ -82,19 +84,19 @@ export function MediaTab({
         </div>
 
         {thumbnail ? (
-          <div className="rounded-xl overflow-hidden border border-border aspect-[21/9] bg-muted/40 max-h-72 relative mt-2 group">
+          <div className="group relative mt-2 aspect-[21/9] max-h-72 overflow-hidden rounded-xl border border-border bg-muted/40">
             <img
               src={thumbnail}
               alt="Cover preview"
-              className="w-full h-full object-cover"
+              className="h-full w-full object-cover"
             />
-            <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="absolute top-2 right-2 opacity-0 transition-opacity group-hover:opacity-100">
               <Button
                 type="button"
                 variant="secondary"
                 size="sm"
                 onClick={() => setPickerTarget("thumbnail")}
-                className="h-7 text-xs bg-background/90 backdrop-blur-xs shadow-xs"
+                className="h-7 bg-background/90 text-xs shadow-xs backdrop-blur-xs"
               >
                 Change Image
               </Button>
@@ -103,19 +105,20 @@ export function MediaTab({
         ) : (
           <div
             onClick={() => setPickerTarget("thumbnail")}
-            className="rounded-xl border border-dashed border-border/80 hover:border-primary p-8 text-center text-xs text-muted-foreground bg-muted/10 hover:bg-muted/20 cursor-pointer transition-colors"
+            className="cursor-pointer rounded-xl border border-dashed border-border/80 bg-muted/10 p-8 text-center text-xs text-muted-foreground transition-colors hover:border-primary hover:bg-muted/20"
           >
-            <ImageIcon className="size-8 mx-auto mb-2 text-muted-foreground/60" />
-            No cover image set. Click to choose from Media Library or type an image URL above.
+            <ImageIcon className="mx-auto mb-2 size-8 text-muted-foreground/60" />
+            No cover image set. Click to choose from Media Library or type an
+            image URL above.
           </div>
         )}
       </div>
 
       {/* Social Overrides */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-border">
+      <div className="grid grid-cols-1 gap-4 border-t border-border pt-4 md:grid-cols-2">
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            <label className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
               Custom OpenGraph Share Image (Optional)
             </label>
             <Button
@@ -123,7 +126,7 @@ export function MediaTab({
               variant="ghost"
               size="sm"
               onClick={() => setPickerTarget("og")}
-              className="h-6 text-[11px] px-1.5"
+              className="h-6 px-1.5 text-[11px]"
             >
               Library
             </Button>
@@ -135,11 +138,11 @@ export function MediaTab({
             className="bg-card text-xs"
           />
           {ogImage && (
-            <div className="rounded-lg overflow-hidden border aspect-[1.91/1] max-h-36">
+            <div className="aspect-[1.91/1] max-h-36 overflow-hidden rounded-lg border">
               <img
                 src={ogImage}
                 alt="OG Preview"
-                className="w-full h-full object-cover"
+                className="h-full w-full object-cover"
               />
             </div>
           )}
@@ -147,7 +150,7 @@ export function MediaTab({
 
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            <label className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
               Custom Twitter Card Image (Optional)
             </label>
             <Button
@@ -155,7 +158,7 @@ export function MediaTab({
               variant="ghost"
               size="sm"
               onClick={() => setPickerTarget("twitter")}
-              className="h-6 text-[11px] px-1.5"
+              className="h-6 px-1.5 text-[11px]"
             >
               Library
             </Button>
@@ -167,11 +170,11 @@ export function MediaTab({
             className="bg-card text-xs"
           />
           {twitterImage && (
-            <div className="rounded-lg overflow-hidden border aspect-[1.91/1] max-h-36">
+            <div className="aspect-[1.91/1] max-h-36 overflow-hidden rounded-lg border">
               <img
                 src={twitterImage}
                 alt="Twitter Preview"
-                className="w-full h-full object-cover"
+                className="h-full w-full object-cover"
               />
             </div>
           )}
@@ -191,8 +194,8 @@ export function MediaTab({
           pickerTarget === "thumbnail"
             ? "Select Post Cover Image"
             : pickerTarget === "og"
-            ? "Select OpenGraph Image"
-            : "Select Twitter Card Image"
+              ? "Select OpenGraph Image"
+              : "Select Twitter Card Image"
         }
         buttonText="Set as Post Image"
       />

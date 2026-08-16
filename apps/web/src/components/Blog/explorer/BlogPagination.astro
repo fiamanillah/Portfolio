@@ -45,7 +45,7 @@ const pages = Array.from({ length: totalPages }, (_, i) => i + 1)
           <a href={buildPageUrl(currentPage - 1)}>
             <button
               type="button"
-              class="inline-flex items-center border border-border bg-background px-3 py-1.5 font-mono text-xs transition-colors hover:border-primary hover:text-primary cursor-pointer select-none"
+              class="inline-flex cursor-pointer items-center border border-border bg-background px-3 py-1.5 font-mono text-xs transition-colors select-none hover:border-primary hover:text-primary"
             >
               ← Prev
             </button>
@@ -54,7 +54,7 @@ const pages = Array.from({ length: totalPages }, (_, i) => i + 1)
           <button
             type="button"
             disabled
-            class="inline-flex items-center border border-border bg-background px-3 py-1.5 font-mono text-xs opacity-40 cursor-not-allowed select-none"
+            class="inline-flex cursor-not-allowed items-center border border-border bg-background px-3 py-1.5 font-mono text-xs opacity-40 select-none"
           >
             ← Prev
           </button>
@@ -68,9 +68,9 @@ const pages = Array.from({ length: totalPages }, (_, i) => i + 1)
               <a href={buildPageUrl(p)}>
                 <button
                   type="button"
-                  class={`h-8 w-8 font-mono text-xs transition-colors cursor-pointer select-none ${
+                  class={`h-8 w-8 cursor-pointer font-mono text-xs transition-colors select-none ${
                     isCurrent
-                      ? "bg-primary text-primary-foreground font-bold shadow-sm"
+                      ? "bg-primary font-bold text-primary-foreground shadow-sm"
                       : "border border-border bg-background text-muted-foreground hover:border-primary hover:text-primary"
                   }`}
                 >
@@ -86,7 +86,7 @@ const pages = Array.from({ length: totalPages }, (_, i) => i + 1)
           <a href={buildPageUrl(currentPage + 1)}>
             <button
               type="button"
-              class="inline-flex items-center border border-border bg-background px-3 py-1.5 font-mono text-xs transition-colors hover:border-primary hover:text-primary cursor-pointer select-none"
+              class="inline-flex cursor-pointer items-center border border-border bg-background px-3 py-1.5 font-mono text-xs transition-colors select-none hover:border-primary hover:text-primary"
             >
               Next →
             </button>
@@ -95,7 +95,7 @@ const pages = Array.from({ length: totalPages }, (_, i) => i + 1)
           <button
             type="button"
             disabled
-            class="inline-flex items-center border border-border bg-background px-3 py-1.5 font-mono text-xs opacity-40 cursor-not-allowed select-none"
+            class="inline-flex cursor-not-allowed items-center border border-border bg-background px-3 py-1.5 font-mono text-xs opacity-40 select-none"
           >
             Next →
           </button>

@@ -2,7 +2,14 @@
 
 import * as React from "react"
 import Link from "next/link"
-import { ArrowLeft, Eye, Save, Loader2, FileText, CheckCircle2 } from "lucide-react"
+import {
+  ArrowLeft,
+  Eye,
+  Save,
+  Loader2,
+  FileText,
+  CheckCircle2,
+} from "lucide-react"
 import { Button } from "@workspace/ui/components/button"
 import { Badge } from "@workspace/ui/components/badge"
 import {
@@ -36,7 +43,7 @@ export function EditorHeader({
   discardHref = "/blogs",
 }: EditorHeaderProps) {
   return (
-    <div className="sticky top-0 z-30 flex flex-wrap items-center justify-between gap-4 p-4 rounded-xl border border-border/80 bg-background/95 backdrop-blur-md shadow-xs">
+    <div className="sticky top-0 z-30 flex flex-wrap items-center justify-between gap-4 rounded-xl border border-border/80 bg-background/95 p-4 shadow-xs backdrop-blur-md">
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="icon" asChild className="h-9 w-9">
           <Link href={discardHref}>
@@ -45,7 +52,7 @@ export function EditorHeader({
         </Button>
         <div>
           <div className="flex items-center gap-2">
-            <span className="text-xs text-muted-foreground font-mono">
+            <span className="font-mono text-xs text-muted-foreground">
               <Link href="/blogs" className="hover:underline">
                 Blogs
               </Link>{" "}
@@ -53,20 +60,24 @@ export function EditorHeader({
             </span>
             <Badge
               variant={status === "PUBLISHED" ? "default" : "secondary"}
-              className="text-[10px] h-4 px-1.5 capitalize font-medium"
+              className="h-4 px-1.5 text-[10px] font-medium capitalize"
             >
               {status.toLowerCase()}
             </Badge>
           </div>
-          <h1 className="text-lg font-bold text-foreground line-clamp-1">
-            {title.trim() || (isEdit ? "Edit Article" : "Untitled Technical Article")}
+          <h1 className="line-clamp-1 text-lg font-bold text-foreground">
+            {title.trim() ||
+              (isEdit ? "Edit Article" : "Untitled Technical Article")}
           </h1>
         </div>
       </div>
 
       <div className="flex items-center gap-2.5">
-        <Select value={status} onValueChange={(val) => onStatusChange(val as BlogStatus)}>
-          <SelectTrigger className="h-9 w-36 font-medium text-xs">
+        <Select
+          value={status}
+          onValueChange={(val) => onStatusChange(val as BlogStatus)}
+        >
+          <SelectTrigger className="h-9 w-36 text-xs font-medium">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>

@@ -17,7 +17,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@workspace/ui/components/dialog"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@workspace/ui/components/tabs"
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@workspace/ui/components/tabs"
 import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"
 import { MediaPickerModal } from "@/app/(dashboard)/media/components/media-picker-modal"
@@ -36,7 +41,9 @@ export function ImageInsertDialog({
   onOpenChange,
   onInsert,
 }: ImageInsertDialogProps) {
-  const [activeTab, setActiveTab] = React.useState<"media" | "upload" | "url">("media")
+  const [activeTab, setActiveTab] = React.useState<"media" | "upload" | "url">(
+    "media"
+  )
   const [imageUrl, setImageUrl] = React.useState("")
   const [altText, setAltText] = React.useState("")
   const [caption, setCaption] = React.useState("")
@@ -108,46 +115,47 @@ export function ImageInsertDialog({
   return (
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="w-[95vw] sm:min-w-[620px] md:min-w-[700px] max-w-2xl bg-card border border-border/80 p-0 overflow-hidden shadow-xl gap-0">
-          <DialogHeader className="px-6 py-4 border-b border-border/80 bg-muted/20">
-            <DialogTitle className="text-base font-bold flex items-center gap-2">
+        <DialogContent className="w-[95vw] max-w-2xl gap-0 overflow-hidden border border-border/80 bg-card p-0 shadow-xl sm:min-w-[620px] md:min-w-[700px]">
+          <DialogHeader className="border-b border-border/80 bg-muted/20 px-6 py-4">
+            <DialogTitle className="flex items-center gap-2 text-base font-bold">
               <ImageIcon className="h-5 w-5 text-primary" />
               Insert Article Image / Diagram
             </DialogTitle>
             <DialogDescription className="text-xs text-muted-foreground">
-              Select an asset from your Media Library, upload a new diagram, or specify an external URL.
+              Select an asset from your Media Library, upload a new diagram, or
+              specify an external URL.
             </DialogDescription>
           </DialogHeader>
 
           <Tabs
             value={activeTab}
             onValueChange={(v) => setActiveTab(v as any)}
-            className="w-full flex flex-col"
+            className="flex w-full flex-col"
           >
-            <div className="px-6 border-b border-border/80 bg-muted/10">
-              <TabsList className="bg-transparent h-10 p-0 gap-4">
+            <div className="border-b border-border/80 bg-muted/10 px-6">
+              <TabsList className="h-10 gap-4 bg-transparent p-0">
                 <TabsTrigger
                   value="media"
-                  className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none px-2 font-medium text-xs gap-1.5"
+                  className="gap-1.5 rounded-none px-2 text-xs font-medium data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none"
                 >
                   <FolderOpen className="h-3.5 w-3.5" /> Media Library
                 </TabsTrigger>
                 <TabsTrigger
                   value="upload"
-                  className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none px-2 font-medium text-xs gap-1.5"
+                  className="gap-1.5 rounded-none px-2 text-xs font-medium data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none"
                 >
                   <UploadCloud className="h-3.5 w-3.5" /> Direct Upload
                 </TabsTrigger>
                 <TabsTrigger
                   value="url"
-                  className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none px-2 font-medium text-xs gap-1.5"
+                  className="gap-1.5 rounded-none px-2 text-xs font-medium data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none"
                 >
                   <LinkIcon className="h-3.5 w-3.5" /> Web / Asset URL
                 </TabsTrigger>
               </TabsList>
             </div>
 
-            <div className="p-6 space-y-4">
+            <div className="space-y-4 p-6">
               {/* TAB 1: Media Library */}
               <TabsContent value="media" className="m-0 space-y-3">
                 <div className="flex items-center gap-3">
@@ -155,18 +163,25 @@ export function ImageInsertDialog({
                     type="button"
                     variant="outline"
                     onClick={() => setIsPickerOpen(true)}
-                    className="h-10 text-xs font-semibold gap-2 bg-background border-border/90 hover:border-primary/50"
+                    className="h-10 gap-2 border-border/90 bg-background text-xs font-semibold hover:border-primary/50"
                   >
-                    <FolderOpen className="h-4 w-4 text-primary" /> Browse Cloudflare R2 Media
+                    <FolderOpen className="h-4 w-4 text-primary" /> Browse
+                    Cloudflare R2 Media
                   </Button>
                   <span className="text-xs text-muted-foreground">
-                    {imageUrl ? "✓ Image selected from library" : "Choose from existing uploaded assets"}
+                    {imageUrl
+                      ? "✓ Image selected from library"
+                      : "Choose from existing uploaded assets"}
                   </span>
                 </div>
 
                 {imageUrl && (
-                  <div className="relative rounded-lg overflow-hidden border border-border/80 bg-muted/40 aspect-[21/9] max-h-48">
-                    <img src={imageUrl} alt="Selected preview" className="w-full h-full object-cover" />
+                  <div className="relative aspect-[21/9] max-h-48 overflow-hidden rounded-lg border border-border/80 bg-muted/40">
+                    <img
+                      src={imageUrl}
+                      alt="Selected preview"
+                      className="h-full w-full object-cover"
+                    />
                   </div>
                 )}
               </TabsContent>
@@ -182,78 +197,88 @@ export function ImageInsertDialog({
                 />
                 <div
                   onClick={() => fileInputRef.current?.click()}
-                  className="rounded-xl border-2 border-dashed border-border/90 hover:border-primary/70 p-8 text-center text-xs text-muted-foreground bg-background/50 hover:bg-background/80 cursor-pointer transition-colors space-y-2 shadow-xs"
+                  className="cursor-pointer space-y-2 rounded-xl border-2 border-dashed border-border/90 bg-background/50 p-8 text-center text-xs text-muted-foreground shadow-xs transition-colors hover:border-primary/70 hover:bg-background/80"
                 >
                   {isUploading ? (
                     <div className="flex flex-col items-center gap-2">
                       <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                      <span className="font-semibold text-foreground">Uploading image to R2 storage...</span>
+                      <span className="font-semibold text-foreground">
+                        Uploading image to R2 storage...
+                      </span>
                     </div>
                   ) : (
                     <>
-                      <UploadCloud className="h-8 w-8 mx-auto text-primary" />
-                      <div className="font-semibold text-foreground">Click to browse or drag file here</div>
-                      <p className="text-[11px] text-muted-foreground">Supports PNG, JPG, WebP, SVG up to 10MB</p>
+                      <UploadCloud className="mx-auto h-8 w-8 text-primary" />
+                      <div className="font-semibold text-foreground">
+                        Click to browse or drag file here
+                      </div>
+                      <p className="text-[11px] text-muted-foreground">
+                        Supports PNG, JPG, WebP, SVG up to 10MB
+                      </p>
                     </>
                   )}
                 </div>
 
                 {imageUrl && (
-                  <div className="relative rounded-lg overflow-hidden border border-border/80 bg-muted/40 aspect-[21/9] max-h-48">
-                    <img src={imageUrl} alt="Upload preview" className="w-full h-full object-cover" />
+                  <div className="relative aspect-[21/9] max-h-48 overflow-hidden rounded-lg border border-border/80 bg-muted/40">
+                    <img
+                      src={imageUrl}
+                      alt="Upload preview"
+                      className="h-full w-full object-cover"
+                    />
                   </div>
                 )}
               </TabsContent>
 
               {/* TAB 3: Direct URL */}
               <TabsContent value="url" className="m-0 space-y-2">
-                <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                <label className="text-xs font-bold tracking-wider text-muted-foreground uppercase">
                   Image Source URL *
                 </label>
                 <Input
                   placeholder="https://images.unsplash.com/... or /assets/images/..."
                   value={imageUrl}
                   onChange={(e) => setImageUrl(e.target.value)}
-                  className="text-xs font-mono h-9 bg-background border-border/90 hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary/20 shadow-xs"
+                  className="h-9 border-border/90 bg-background font-mono text-xs shadow-xs hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary/20"
                 />
               </TabsContent>
 
               {/* Metadata Fields */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2 border-t border-border/80">
+              <div className="grid grid-cols-1 gap-3 border-t border-border/80 pt-2 md:grid-cols-2">
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                  <label className="text-xs font-bold tracking-wider text-muted-foreground uppercase">
                     Alt Text (Accessibility & SEO)
                   </label>
                   <Input
                     placeholder="e.g. WebSocket connection cluster topology diagram"
                     value={altText}
                     onChange={(e) => setAltText(e.target.value)}
-                    className="text-xs h-9 bg-background border-border/90 hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary/20 shadow-xs"
+                    className="h-9 border-border/90 bg-background text-xs shadow-xs hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary/20"
                   />
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                  <label className="text-xs font-bold tracking-wider text-muted-foreground uppercase">
                     Figcaption Caption (Optional)
                   </label>
                   <Input
                     placeholder="e.g. Figure 1: Horizontal scaling architecture"
                     value={caption}
                     onChange={(e) => setCaption(e.target.value)}
-                    className="text-xs h-9 bg-background border-border/90 hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary/20 shadow-xs"
+                    className="h-9 border-border/90 bg-background text-xs shadow-xs hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary/20"
                   />
                 </div>
               </div>
             </div>
           </Tabs>
 
-          <DialogFooter className="px-6 py-3 border-t border-border/80 bg-muted/20 flex items-center justify-between">
+          <DialogFooter className="flex items-center justify-between border-t border-border/80 bg-muted/20 px-6 py-3">
             <Button
               type="button"
               variant="outline"
               size="sm"
               onClick={() => onOpenChange(false)}
-              className="text-xs h-8 bg-background"
+              className="h-8 bg-background text-xs"
             >
               Cancel
             </Button>
@@ -262,7 +287,7 @@ export function ImageInsertDialog({
               size="sm"
               onClick={handleConfirm}
               disabled={!imageUrl.trim() || isUploading}
-              className="text-xs h-8 gap-1.5 shadow-xs"
+              className="h-8 gap-1.5 text-xs shadow-xs"
             >
               <Check className="h-3.5 w-3.5" /> Insert into Markdown
             </Button>

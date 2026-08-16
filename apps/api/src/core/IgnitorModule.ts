@@ -1,8 +1,8 @@
-import { Context } from './Context';
+import { Context } from "./Context"
 
 export interface IgnitorModule {
-    name: string;
-    dependencies?: string[];
-    initialize(context: Context): Promise<void>;
-    onShutdown?(): Promise<void>;
+  name: string
+  dependencies?: string[]
+  initialize(context: Context): Promise<void>
+  onShutdown?(): Promise<void>
 }

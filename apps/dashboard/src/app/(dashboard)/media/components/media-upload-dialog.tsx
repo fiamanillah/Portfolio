@@ -66,7 +66,8 @@ export function MediaUploadDialog({
 }: MediaUploadDialogProps) {
   const [dragOver, setDragOver] = React.useState(false)
   const [uploadQueue, setUploadQueue] = React.useState<UploadFileItem[]>([])
-  const [selectedFolder, setSelectedFolder] = React.useState<string>(defaultFolder)
+  const [selectedFolder, setSelectedFolder] =
+    React.useState<string>(defaultFolder)
   const [customFolder, setCustomFolder] = React.useState<string>("")
   const [isCustomFolder, setIsCustomFolder] = React.useState(false)
   const [tags, setTags] = React.useState<string[]>([])
@@ -153,7 +154,10 @@ export function MediaUploadDialog({
     setIsUploading(true)
 
     const targetFolder = isCustomFolder
-      ? customFolder.trim().toLowerCase().replace(/[^a-z0-9_-]/g, "-") || "general"
+      ? customFolder
+          .trim()
+          .toLowerCase()
+          .replace(/[^a-z0-9_-]/g, "-") || "general"
       : selectedFolder
 
     const completedFiles: MediaFileDTO[] = []
@@ -164,7 +168,9 @@ export function MediaUploadDialog({
       if (item.status === "success") continue
 
       setUploadQueue((prev) =>
-        prev.map((it) => (it.id === item.id ? { ...it, status: "uploading", progress: 20 } : it))
+        prev.map((it) =>
+          it.id === item.id ? { ...it, status: "uploading", progress: 20 } : it
+        )
       )
 
       try {
@@ -175,18 +181,27 @@ export function MediaUploadDialog({
           source: "MEDIA_LIBRARY",
           onProgress: (percent) => {
             setUploadQueue((prev) =>
-              prev.map((it) => (it.id === item.id ? { ...it, progress: percent } : it))
+              prev.map((it) =>
+                it.id === item.id ? { ...it, progress: percent } : it
+              )
             )
           },
         })
 
         if (res.success && res.data) {
-          const uploadedResult = Array.isArray(res.data) ? res.data[0] : res.data
+          const uploadedResult = Array.isArray(res.data)
+            ? res.data[0]
+            : res.data
           completedFiles.push(uploadedResult)
           setUploadQueue((prev) =>
             prev.map((it) =>
               it.id === item.id
-                ? { ...it, status: "success", progress: 100, uploadedData: uploadedResult }
+                ? {
+                    ...it,
+                    status: "success",
+                    progress: 100,
+                    uploadedData: uploadedResult,
+                  }
                 : it
             )
           )
@@ -195,7 +210,11 @@ export function MediaUploadDialog({
           setUploadQueue((prev) =>
             prev.map((it) =>
               it.id === item.id
-                ? { ...it, status: "error", error: res.error || "Upload failed" }
+                ? {
+                    ...it,
+                    status: "error",
+                    error: res.error || "Upload failed",
+                  }
                 : it
             )
           )
@@ -205,7 +224,11 @@ export function MediaUploadDialog({
         setUploadQueue((prev) =>
           prev.map((it) =>
             it.id === item.id
-              ? { ...it, status: "error", error: err.message || "Upload failed" }
+              ? {
+                  ...it,
+                  status: "error",
+                  error: err.message || "Upload failed",
+                }
               : it
           )
         )
@@ -230,7 +253,13 @@ export function MediaUploadDialog({
   }
 
   const folderOptions = React.useMemo(() => {
-    const list = new Set(["general", "blogs", "avatars", "templates", "documents"])
+    const list = new Set([
+      "general",
+      "blogs",
+      "avatars",
+      "templates",
+      "documents",
+    ])
     existingFolders.forEach((f) => {
       if (f.folder) list.add(f.folder)
     })
@@ -239,28 +268,29 @@ export function MediaUploadDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[90vh] flex flex-col p-6 gap-5 overflow-hidden">
+      <DialogContent className="flex max-h-[90vh] max-w-2xl flex-col gap-5 overflow-hidden p-6">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-lg">
             <UploadCloud className="size-5 text-primary" />
             Upload Media Assets
           </DialogTitle>
           <DialogDescription className="text-xs text-muted-foreground">
-            Drag and drop images, videos, audio, or documents to upload to Cloudflare R2 storage.
+            Drag and drop images, videos, audio, or documents to upload to
+            Cloudflare R2 storage.
           </DialogDescription>
         </DialogHeader>
 
-        <div className="flex-1 overflow-y-auto space-y-4 pr-1">
+        <div className="flex-1 space-y-4 overflow-y-auto pr-1">
           {/* Dropzone Area */}
           <div
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
             onClick={() => fileInputRef.current?.click()}
-            className={`group relative flex flex-col items-center justify-center p-8 rounded-xl border-2 border-dashed transition-all duration-200 cursor-pointer text-center ${
+            className={`group relative flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed p-8 text-center transition-all duration-200 ${
               dragOver
-                ? "border-primary bg-primary/10 scale-[0.99]"
-                : "border-border/80 hover:border-primary/60 bg-muted/10 hover:bg-muted/20"
+                ? "scale-[0.99] border-primary bg-primary/10"
+                : "border-border/80 bg-muted/10 hover:border-primary/60 hover:bg-muted/20"
             }`}
           >
             <input
@@ -273,34 +303,42 @@ export function MediaUploadDialog({
                 if (fileInputRef.current) fileInputRef.current.value = ""
               }}
             />
-            <div className="size-12 rounded-full bg-primary/10 text-primary flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+            <div className="mb-3 flex size-12 items-center justify-center rounded-full bg-primary/10 text-primary transition-transform group-hover:scale-110">
               <UploadCloud className="size-6" />
             </div>
             <p className="text-sm font-semibold text-foreground">
               Drop files here or click to browse
             </p>
-            <p className="text-xs text-muted-foreground mt-1">
-              Supports Images, Video, Audio, PDFs & Documents (Max 50MB per file)
+            <p className="mt-1 text-xs text-muted-foreground">
+              Supports Images, Video, Audio, PDFs & Documents (Max 50MB per
+              file)
             </p>
           </div>
 
           {/* Upload Configuration Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 rounded-xl border border-border/80 bg-card/60">
+          <div className="grid grid-cols-1 gap-4 rounded-xl border border-border/80 bg-card/60 p-4 md:grid-cols-2">
             {/* Target Folder Selector */}
             <div className="space-y-1.5">
-              <Label className="text-xs font-semibold flex items-center gap-1.5">
+              <Label className="flex items-center gap-1.5 text-xs font-semibold">
                 <FolderPlus className="size-3.5 text-primary" />
                 Target Folder
               </Label>
               {!isCustomFolder ? (
                 <div className="flex items-center gap-2">
-                  <Select value={selectedFolder} onValueChange={setSelectedFolder}>
-                    <SelectTrigger className="h-8 text-xs bg-background">
+                  <Select
+                    value={selectedFolder}
+                    onValueChange={setSelectedFolder}
+                  >
+                    <SelectTrigger className="h-8 bg-background text-xs">
                       <SelectValue placeholder="Select folder" />
                     </SelectTrigger>
                     <SelectContent className="text-xs">
                       {folderOptions.map((folder) => (
-                        <SelectItem key={folder} value={folder} className="capitalize">
+                        <SelectItem
+                          key={folder}
+                          value={folder}
+                          className="capitalize"
+                        >
                           {folder}
                         </SelectItem>
                       ))}
@@ -311,7 +349,7 @@ export function MediaUploadDialog({
                     variant="outline"
                     size="sm"
                     onClick={() => setIsCustomFolder(true)}
-                    className="h-8 text-xs shrink-0"
+                    className="h-8 shrink-0 text-xs"
                     title="Create custom folder"
                   >
                     + New
@@ -323,7 +361,7 @@ export function MediaUploadDialog({
                     placeholder="e.g. portfolio-2026"
                     value={customFolder}
                     onChange={(e) => setCustomFolder(e.target.value)}
-                    className="h-8 text-xs bg-background"
+                    className="h-8 bg-background text-xs"
                   />
                   <Button
                     type="button"
@@ -333,7 +371,7 @@ export function MediaUploadDialog({
                       setIsCustomFolder(false)
                       setCustomFolder("")
                     }}
-                    className="h-8 text-xs text-muted-foreground hover:text-foreground shrink-0"
+                    className="h-8 shrink-0 text-xs text-muted-foreground hover:text-foreground"
                   >
                     Cancel
                   </Button>
@@ -343,7 +381,7 @@ export function MediaUploadDialog({
 
             {/* Visibility Toggle */}
             <div className="space-y-1.5">
-              <Label className="text-xs font-semibold flex items-center gap-1.5">
+              <Label className="flex items-center gap-1.5 text-xs font-semibold">
                 {isPublic ? (
                   <Globe className="size-3.5 text-emerald-500" />
                 ) : (
@@ -351,8 +389,8 @@ export function MediaUploadDialog({
                 )}
                 Access Visibility
               </Label>
-              <div className="flex items-center justify-between h-8 px-3 rounded-lg border border-border/80 bg-background text-xs">
-                <span className="text-xs text-muted-foreground font-medium">
+              <div className="flex h-8 items-center justify-between rounded-lg border border-border/80 bg-background px-3 text-xs">
+                <span className="text-xs font-medium text-muted-foreground">
                   {isPublic ? "Public (CDN Enabled)" : "Protected / Private"}
                 </span>
                 <Switch checked={isPublic} onCheckedChange={setIsPublic} />
@@ -361,11 +399,11 @@ export function MediaUploadDialog({
 
             {/* Tags Input (Span 2 columns) */}
             <div className="space-y-1.5 md:col-span-2">
-              <Label className="text-xs font-semibold flex items-center gap-1.5">
+              <Label className="flex items-center gap-1.5 text-xs font-semibold">
                 <Tag className="size-3.5 text-primary" />
                 Asset Tags (Optional)
               </Label>
-              <div className="flex flex-wrap items-center gap-1.5 p-1.5 min-h-[36px] rounded-lg border border-border/80 bg-background">
+              <div className="flex min-h-[36px] flex-wrap items-center gap-1.5 rounded-lg border border-border/80 bg-background p-1.5">
                 {tags.map((tag) => (
                   <Badge
                     key={tag}
@@ -384,11 +422,15 @@ export function MediaUploadDialog({
                 ))}
                 <input
                   type="text"
-                  placeholder={tags.length === 0 ? "Type a tag and press Enter..." : "Add more..."}
+                  placeholder={
+                    tags.length === 0
+                      ? "Type a tag and press Enter..."
+                      : "Add more..."
+                  }
                   value={tagInput}
                   onChange={(e) => setTagInput(e.target.value)}
                   onKeyDown={handleAddTag}
-                  className="flex-1 min-w-[140px] bg-transparent text-xs outline-hidden px-1 placeholder:text-muted-foreground"
+                  className="min-w-[140px] flex-1 bg-transparent px-1 text-xs outline-hidden placeholder:text-muted-foreground"
                 />
               </div>
             </div>
@@ -397,7 +439,7 @@ export function MediaUploadDialog({
           {/* Upload Queue List */}
           {uploadQueue.length > 0 && (
             <div className="space-y-2">
-              <div className="flex items-center justify-between text-xs font-semibold text-muted-foreground px-1">
+              <div className="flex items-center justify-between px-1 text-xs font-semibold text-muted-foreground">
                 <span>Selected Files ({uploadQueue.length})</span>
                 <Button
                   variant="ghost"
@@ -410,28 +452,30 @@ export function MediaUploadDialog({
                 </Button>
               </div>
 
-              <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
+              <div className="max-h-48 space-y-2 overflow-y-auto pr-1">
                 {uploadQueue.map((item) => (
                   <div
                     key={item.id}
-                    className="flex items-center gap-3 p-2.5 rounded-lg border border-border/80 bg-card text-xs"
+                    className="flex items-center gap-3 rounded-lg border border-border/80 bg-card p-2.5 text-xs"
                   >
-                    <div className="size-10 rounded-md overflow-hidden bg-muted/40 shrink-0 border border-border/50 flex items-center justify-center">
+                    <div className="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-md border border-border/50 bg-muted/40">
                       {item.previewUrl ? (
                         <img
                           src={item.previewUrl}
                           alt={item.file.name}
-                          className="w-full h-full object-cover"
+                          className="h-full w-full object-cover"
                         />
                       ) : (
                         <File className="size-5 text-muted-foreground" />
                       )}
                     </div>
 
-                    <div className="flex-1 min-w-0 space-y-1">
+                    <div className="min-w-0 flex-1 space-y-1">
                       <div className="flex items-center justify-between">
-                        <span className="font-medium truncate max-w-xs">{item.file.name}</span>
-                        <span className="text-[11px] font-mono text-muted-foreground shrink-0">
+                        <span className="max-w-xs truncate font-medium">
+                          {item.file.name}
+                        </span>
+                        <span className="shrink-0 font-mono text-[11px] text-muted-foreground">
                           {(item.file.size / 1024 / 1024).toFixed(2)} MB
                         </span>
                       </div>
@@ -441,18 +485,18 @@ export function MediaUploadDialog({
                       )}
 
                       {item.status === "error" && (
-                        <p className="text-[11px] text-destructive flex items-center gap-1">
+                        <p className="flex items-center gap-1 text-[11px] text-destructive">
                           <AlertCircle className="size-3 shrink-0" />
                           {item.error || "Upload failed"}
                         </p>
                       )}
                     </div>
 
-                    <div className="flex items-center gap-1 shrink-0">
+                    <div className="flex shrink-0 items-center gap-1">
                       {item.status === "success" ? (
                         <CheckCircle2 className="size-4 text-emerald-500" />
                       ) : item.status === "uploading" ? (
-                        <Loader2 className="size-4 text-primary animate-spin" />
+                        <Loader2 className="size-4 animate-spin text-primary" />
                       ) : (
                         <Button
                           variant="ghost"
@@ -472,7 +516,7 @@ export function MediaUploadDialog({
           )}
         </div>
 
-        <DialogFooter className="border-t border-border pt-3 sm:justify-between items-center">
+        <DialogFooter className="items-center border-t border-border pt-3 sm:justify-between">
           <span className="text-xs text-muted-foreground">
             {uploadQueue.length > 0
               ? `${uploadQueue.length} file${uploadQueue.length > 1 ? "s" : ""} queued`
@@ -494,7 +538,7 @@ export function MediaUploadDialog({
               size="sm"
               onClick={handleStartUpload}
               disabled={uploadQueue.length === 0 || isUploading}
-              className="text-xs gap-1.5 bg-primary hover:bg-primary/90 text-primary-foreground shadow-xs"
+              className="gap-1.5 bg-primary text-xs text-primary-foreground shadow-xs hover:bg-primary/90"
             >
               {isUploading ? (
                 <>

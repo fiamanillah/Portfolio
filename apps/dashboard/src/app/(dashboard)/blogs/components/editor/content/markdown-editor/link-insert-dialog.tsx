@@ -47,39 +47,40 @@ export function LinkInsertDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-[95vw] sm:min-w-[480px] md:min-w-[540px] max-w-lg bg-card border border-border/80 p-0 overflow-hidden shadow-xl gap-0">
-        <DialogHeader className="px-6 py-4 border-b border-border/80 bg-muted/20">
-          <DialogTitle className="text-base font-bold flex items-center gap-2">
+      <DialogContent className="w-[95vw] max-w-lg gap-0 overflow-hidden border border-border/80 bg-card p-0 shadow-xl sm:min-w-[480px] md:min-w-[540px]">
+        <DialogHeader className="border-b border-border/80 bg-muted/20 px-6 py-4">
+          <DialogTitle className="flex items-center gap-2 text-base font-bold">
             <LinkIcon className="h-5 w-5 text-primary" />
             Insert Hyperlink
           </DialogTitle>
           <DialogDescription className="text-xs text-muted-foreground">
-            Create an inline markdown hyperlink to an internal page or external resource.
+            Create an inline markdown hyperlink to an internal page or external
+            resource.
           </DialogDescription>
         </DialogHeader>
 
-        <div className="p-6 space-y-4">
+        <div className="space-y-4 p-6">
           <div className="space-y-1.5">
-            <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+            <label className="text-xs font-bold tracking-wider text-muted-foreground uppercase">
               Anchor Text (Display Label)
             </label>
             <Input
               placeholder="e.g. Read the Redis documentation"
               value={anchor}
               onChange={(e) => setAnchor(e.target.value)}
-              className="text-xs h-9 bg-background border-border/90 hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary/20 shadow-xs"
+              className="h-9 border-border/90 bg-background text-xs shadow-xs hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary/20"
             />
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+            <label className="text-xs font-bold tracking-wider text-muted-foreground uppercase">
               Destination URL *
             </label>
             <Input
               placeholder="https://redis.io/docs/ or /blog/another-post"
               value={url}
               onChange={(e) => setUrl(e.target.value)}
-              className="text-xs font-mono h-9 bg-background border-border/90 hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary/20 shadow-xs"
+              className="h-9 border-border/90 bg-background font-mono text-xs shadow-xs hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary/20"
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   e.preventDefault()
@@ -90,13 +91,13 @@ export function LinkInsertDialog({
           </div>
         </div>
 
-        <DialogFooter className="px-6 py-3 border-t border-border/80 bg-muted/20 flex items-center justify-between">
+        <DialogFooter className="flex items-center justify-between border-t border-border/80 bg-muted/20 px-6 py-3">
           <Button
             type="button"
             variant="outline"
             size="sm"
             onClick={() => onOpenChange(false)}
-            className="text-xs h-8 bg-background"
+            className="h-8 bg-background text-xs"
           >
             Cancel
           </Button>
@@ -105,7 +106,7 @@ export function LinkInsertDialog({
             size="sm"
             onClick={handleConfirm}
             disabled={!url.trim()}
-            className="text-xs h-8 gap-1.5 shadow-xs"
+            className="h-8 gap-1.5 text-xs shadow-xs"
           >
             <Check className="h-3.5 w-3.5" /> Insert Link
           </Button>

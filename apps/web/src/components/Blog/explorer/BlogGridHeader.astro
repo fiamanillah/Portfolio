@@ -24,12 +24,18 @@ const initialTo = Math.min(postsPerPage, totalCount)
   <!-- Left Side: Section Monospace Title & Category Indicator -->
   <div class="flex flex-wrap items-center gap-3">
     <div class="flex items-center gap-2">
-      <span class="inline-block h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.7)] animate-pulse" />
+      <span
+        class="inline-block h-2 w-2 animate-pulse rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.7)]"
+      ></span>
       <h2
         data-journal-title
         class="font-mono text-xs font-bold tracking-widest text-foreground uppercase"
       >
-        {activeCategory !== "all" ? `// ARTICLES JOURNAL [${activeCategory.toUpperCase()}]` : "// ARTICLES JOURNAL"}
+        {
+          activeCategory !== "all"
+            ? `// ARTICLES JOURNAL [${activeCategory.toUpperCase()}]`
+            : "// ARTICLES JOURNAL"
+        }
       </h2>
     </div>
 
@@ -44,9 +50,16 @@ const initialTo = Math.min(postsPerPage, totalCount)
 
   <!-- Right Side: Live Count Summary -->
   <div class="flex items-center gap-2 font-mono text-xs text-muted-foreground">
-    <Icon name="mdi:newspaper-variant-outline" class="size-3.5 text-primary/70" />
+    <Icon
+      name="mdi:newspaper-variant-outline"
+      class="size-3.5 text-primary/70"
+    />
     <span data-showing-count>
-      {totalCount > 0 ? `SHOWING 1-${initialTo} OF ${totalCount} ARTICLES` : "0 ARTICLES AVAILABLE"}
+      {
+        totalCount > 0
+          ? `SHOWING 1-${initialTo} OF ${totalCount} ARTICLES`
+          : "0 ARTICLES AVAILABLE"
+      }
     </span>
   </div>
 </div>

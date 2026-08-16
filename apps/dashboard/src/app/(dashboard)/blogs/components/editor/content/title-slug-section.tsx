@@ -46,10 +46,10 @@ export function TitleSlugSection({
       {/* Title */}
       <div className="space-y-1.5">
         <div className="flex items-center justify-between">
-          <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+          <label className="text-xs font-bold tracking-wider text-muted-foreground uppercase">
             Article Title *
           </label>
-          <span className="text-[11px] font-mono text-muted-foreground">
+          <span className="font-mono text-[11px] text-muted-foreground">
             {title.length} characters
           </span>
         </div>
@@ -57,28 +57,28 @@ export function TitleSlugSection({
           placeholder="e.g. Building High-Concurrency WebSocket Gateways in TypeScript"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="text-base sm:text-lg font-bold h-11 bg-background border-border/90 hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary/20 shadow-xs"
+          className="h-11 border-border/90 bg-background text-base font-bold shadow-xs hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary/20 sm:text-lg"
           required
         />
       </div>
 
       {/* Subtitle */}
       <div className="space-y-1.5">
-        <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+        <label className="text-xs font-bold tracking-wider text-muted-foreground uppercase">
           Subtitle / Lead Hook (Optional)
         </label>
         <Input
           placeholder="e.g. Architectural breakdown of distributed event buses and horizontal scaling"
           value={subtitle}
           onChange={(e) => setSubtitle(e.target.value)}
-          className="text-sm h-9 bg-background border-border/90 hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary/20 shadow-xs"
+          className="h-9 border-border/90 bg-background text-sm shadow-xs hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary/20"
         />
       </div>
 
       {/* URL Slug */}
       <div className="space-y-1.5">
         <div className="flex items-center justify-between">
-          <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+          <label className="flex items-center gap-1.5 text-xs font-bold tracking-wider text-muted-foreground uppercase">
             <LinkIcon className="h-3.5 w-3.5 text-primary" /> URL Slug *
           </label>
           <Button
@@ -86,13 +86,13 @@ export function TitleSlugSection({
             variant="ghost"
             size="sm"
             onClick={generateSlug}
-            className="h-6 text-[11px] px-2 text-primary hover:text-primary hover:bg-primary/10 gap-1 font-mono"
+            className="h-6 gap-1 px-2 font-mono text-[11px] text-primary hover:bg-primary/10 hover:text-primary"
           >
             <Sparkles className="h-3 w-3" /> Auto-generate
           </Button>
         </div>
-        <div className="flex items-center rounded-lg border border-border/90 bg-background hover:border-primary/50 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary/20 shadow-xs px-3 py-1">
-          <span className="text-xs text-muted-foreground/70 font-mono select-none">
+        <div className="flex items-center rounded-lg border border-border/90 bg-background px-3 py-1 shadow-xs focus-within:border-primary focus-within:ring-1 focus-within:ring-primary/20 hover:border-primary/50">
+          <span className="font-mono text-xs text-muted-foreground/70 select-none">
             fi.amanillah.com/blog/
           </span>
           <input
@@ -106,7 +106,7 @@ export function TitleSlugSection({
                   .replace(/--+/g, "-")
               )
             }
-            className="flex-1 bg-transparent border-0 outline-none text-xs font-mono text-foreground px-1 py-1"
+            className="flex-1 border-0 bg-transparent px-1 py-1 font-mono text-xs text-foreground outline-none"
           />
         </div>
       </div>
@@ -114,12 +114,14 @@ export function TitleSlugSection({
       {/* Summary Excerpt */}
       <div className="space-y-1.5">
         <div className="flex items-center justify-between">
-          <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+          <label className="text-xs font-bold tracking-wider text-muted-foreground uppercase">
             Summary Excerpt *
           </label>
           <span
-            className={`text-[11px] font-mono ${
-              summary.length > 200 ? "text-amber-500 font-semibold" : "text-muted-foreground"
+            className={`font-mono text-[11px] ${
+              summary.length > 200
+                ? "font-semibold text-amber-500"
+                : "text-muted-foreground"
             }`}
           >
             {summary.length}/200 chars
@@ -130,7 +132,7 @@ export function TitleSlugSection({
           value={summary}
           onChange={(e) => setSummary(e.target.value)}
           rows={3}
-          className="text-xs leading-relaxed bg-background border-border/90 hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary/20 shadow-xs"
+          className="border-border/90 bg-background text-xs leading-relaxed shadow-xs hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary/20"
           required
         />
       </div>

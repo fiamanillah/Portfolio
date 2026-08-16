@@ -1,32 +1,36 @@
 // src/Modules/Contact/ContactModule.ts
-import rateLimit from "express-rate-limit";
-import { BaseModule } from "@/core/BaseModule";
-import { AppLogger } from "@workspace/logger";
-import { config } from "@/core/config";
-import { validateRequest } from "@/middleware/validation";
-import { ContactService } from "./contact.service";
-import { ContactController } from "./contact.controller";
-import { contactSubmissionSchema } from "./ContactDTO";
+import rateLimit from "express-rate-limit"
+import { BaseModule } from "@/core/BaseModule"
+import { AppLogger } from "@workspace/logger"
+import { config } from "@/core/config"
+import { validateRequest } from "@/middleware/validation"
+import { ContactService } from "./contact.service"
+import { ContactController } from "./contact.controller"
+import { contactSubmissionSchema } from "./ContactDTO"
 
 export class ContactModule extends BaseModule {
-  public name: string = "ContactModule";
-  public version: string = "1.0.0";
-  public basePath: string = "/contact/v1/";
-  public dependencies?: string[] | undefined;
+  public name: string = "ContactModule"
+  public version: string = "1.0.0"
+  public basePath: string = "/contact/v1/"
+  public dependencies?: string[] | undefined
 
-  protected logger = new AppLogger("ContactModule");
+  protected logger = new AppLogger("ContactModule")
 
   protected async setupUseCases(): Promise<void> {
-    this.registerService("ContactService", new ContactService());
+    this.registerService("ContactService", new ContactService())
   }
 
   protected async setupControllers(): Promise<void> {
-    const contactService = this.getService<ContactService>("ContactService");
-    this.registerController("ContactController", new ContactController(contactService));
+    const contactService = this.getService<ContactService>("ContactService")
+    this.registerController(
+      "ContactController",
+      new ContactController(contactService)
+    )
   }
 
   protected async setupRoutes(): Promise<void> {
-    const controller = this.getController<ContactController>("ContactController");
+    const controller =
+      this.getController<ContactController>("ContactController")
 
     // Rate Limiter: Limit requests per IP (Default: 5 submissions per hour per IP)
     const contactLimiter = rateLimit({
@@ -36,10 +40,11 @@ export class ContactModule extends BaseModule {
       legacyHeaders: false,
       message: {
         success: false,
-        message: "Submission limit reached. You have sent 5 emails recently, please try again in an hour.",
+        message:
+          "Submission limit reached. You have sent 5 emails recently, please try again in an hour.",
         code: "RATE_LIMIT_EXCEEDED",
       },
-    });
+    })
 
     // POST /contact/v1/send
     this.router.post(
@@ -47,8 +52,8 @@ export class ContactModule extends BaseModule {
       contactLimiter,
       validateRequest(contactSubmissionSchema),
       controller.submitContactForm.bind(controller)
-    );
+    )
 
-    this.logger.info("✔ Contact routes configured: POST /contact/v1/send");
+    this.logger.info("✔ Contact routes configured: POST /contact/v1/send")
   }
 }

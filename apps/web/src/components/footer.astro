@@ -54,15 +54,28 @@ const footerLinks = [
           Fi Amanillah
         </a>
         <p class="text-sm leading-relaxed text-muted-foreground">
-          Full-Stack Developer building scalable MERN stack, Nest.js, and Next.js applications.
+          Full-Stack Developer building scalable MERN stack, Nest.js, and
+          Next.js applications.
         </p>
         <!-- Social Links -->
         <div class="flex items-center gap-3">
           {
             [
-              { href: "https://github.com/fiamanillah", label: "GitHub", icon: GithubIcon },
-              { href: "https://www.linkedin.com/in/fi-amanillah/", label: "LinkedIn", icon: Linkedin02Icon },
-              { href: "https://www.facebook.com/fiamanillah.b2", label: "Facebook", icon: Facebook02Icon },
+              {
+                href: "https://github.com/fiamanillah",
+                label: "GitHub",
+                icon: GithubIcon,
+              },
+              {
+                href: "https://www.linkedin.com/in/fi-amanillah/",
+                label: "LinkedIn",
+                icon: Linkedin02Icon,
+              },
+              {
+                href: "https://www.facebook.com/fiamanillah.b2",
+                label: "Facebook",
+                icon: Facebook02Icon,
+              },
             ].map(({ href, label, icon }) => (
               <a
                 href={href}

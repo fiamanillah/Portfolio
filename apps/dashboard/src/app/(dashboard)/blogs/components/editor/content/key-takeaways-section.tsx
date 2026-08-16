@@ -33,12 +33,13 @@ export function KeyTakeawaysSection({
   }
 
   return (
-    <div className="space-y-3 pt-4 border-t border-border/80">
+    <div className="space-y-3 border-t border-border/80 pt-4">
       <div className="flex items-center justify-between">
-        <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-          <Sparkles className="h-3.5 w-3.5 text-primary" /> Key Takeaways & Architecture Highlights
+        <label className="flex items-center gap-1.5 text-xs font-bold tracking-wider text-muted-foreground uppercase">
+          <Sparkles className="h-3.5 w-3.5 text-primary" /> Key Takeaways &
+          Architecture Highlights
         </label>
-        <span className="text-[11px] font-mono text-muted-foreground">
+        <span className="font-mono text-[11px] text-muted-foreground">
           {keyTakeaways.length} bullets
         </span>
       </div>
@@ -46,13 +47,13 @@ export function KeyTakeawaysSection({
       <div className="space-y-2">
         {keyTakeaways.map((item, index) => (
           <div key={index} className="flex items-center gap-2">
-            <span className="text-primary font-mono text-xs font-bold w-4 text-center shrink-0">
+            <span className="w-4 shrink-0 text-center font-mono text-xs font-bold text-primary">
               ⚡
             </span>
             <Input
               value={item}
               onChange={(e) => handleUpdate(index, e.target.value)}
-              className="text-xs h-9 bg-background border-border/90 hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary/20 shadow-xs"
+              className="h-9 border-border/90 bg-background text-xs shadow-xs hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary/20"
               placeholder="Key architectural takeaway..."
             />
             <Button
@@ -60,7 +61,7 @@ export function KeyTakeawaysSection({
               variant="ghost"
               size="icon"
               onClick={() => handleDelete(index)}
-              className="h-9 w-9 text-muted-foreground hover:text-destructive shrink-0"
+              className="h-9 w-9 shrink-0 text-muted-foreground hover:text-destructive"
             >
               <Trash2 className="h-4 w-4" />
             </Button>
@@ -79,7 +80,7 @@ export function KeyTakeawaysSection({
                 handleAdd()
               }
             }}
-            className="text-xs h-9 bg-background border-border/90 hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary/20 shadow-xs"
+            className="h-9 border-border/90 bg-background text-xs shadow-xs hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary/20"
           />
           <Button
             type="button"
@@ -87,7 +88,7 @@ export function KeyTakeawaysSection({
             size="sm"
             onClick={handleAdd}
             disabled={!newTakeaway.trim()}
-            className="h-9 px-3 text-xs gap-1 shrink-0"
+            className="h-9 shrink-0 gap-1 px-3 text-xs"
           >
             <Plus className="h-3.5 w-3.5" /> Add
           </Button>

@@ -1,19 +1,23 @@
 // apps/dashboard/src/app/(dashboard)/comments/components/comments-feed-view.tsx
-import * as React from "react";
-import { MessageSquare } from "lucide-react";
-import { Card } from "@workspace/ui/components/card";
-import type { CommentAdminListItemDTO, CommentStatus } from "@workspace/shared";
-import { CommentCardItem } from "./comment-card-item";
+import * as React from "react"
+import { MessageSquare } from "lucide-react"
+import { Card } from "@workspace/ui/components/card"
+import type { CommentAdminListItemDTO, CommentStatus } from "@workspace/shared"
+import { CommentCardItem } from "./comment-card-item"
 
 interface CommentsFeedViewProps {
-  comments: CommentAdminListItemDTO[];
-  loading: boolean;
-  selectedCommentIds: string[];
-  actionLoading: boolean;
-  onToggleSelect: (id: string) => void;
-  onInspect: (id: string) => void;
-  onUpdateStatus: (id: string, status: CommentStatus, isPinned?: boolean) => void;
-  onDeleteConfirm: (id: string) => void;
+  comments: CommentAdminListItemDTO[]
+  loading: boolean
+  selectedCommentIds: string[]
+  actionLoading: boolean
+  onToggleSelect: (id: string) => void
+  onInspect: (id: string) => void
+  onUpdateStatus: (
+    id: string,
+    status: CommentStatus,
+    isPinned?: boolean
+  ) => void
+  onDeleteConfirm: (id: string) => void
 }
 
 export function CommentsFeedView({
@@ -30,10 +34,10 @@ export function CommentsFeedView({
     return (
       <div className="space-y-3">
         {[1, 2, 3].map((i) => (
-          <Card key={i} className="animate-pulse p-6 bg-card/40">
+          <Card key={i} className="animate-pulse bg-card/40 p-6">
             <div className="flex gap-4">
               <div className="size-10 rounded-full bg-muted/60" />
-              <div className="space-y-2 flex-1">
+              <div className="flex-1 space-y-2">
                 <div className="h-4 w-40 bg-muted/60" />
                 <div className="h-3 w-full bg-muted/40" />
               </div>
@@ -41,19 +45,20 @@ export function CommentsFeedView({
           </Card>
         ))}
       </div>
-    );
+    )
   }
 
   if (comments.length === 0) {
     return (
-      <Card className="p-12 text-center border-dashed">
-        <MessageSquare className="size-10 text-muted-foreground mx-auto mb-3" />
-        <h3 className="font-semibold text-base">No comments found</h3>
-        <p className="text-xs text-muted-foreground mt-1 max-w-sm mx-auto">
-          Try adjusting your search query, status filters, or check back when readers leave new remarks.
+      <Card className="border-dashed p-12 text-center">
+        <MessageSquare className="mx-auto mb-3 size-10 text-muted-foreground" />
+        <h3 className="text-base font-semibold">No comments found</h3>
+        <p className="mx-auto mt-1 max-w-sm text-xs text-muted-foreground">
+          Try adjusting your search query, status filters, or check back when
+          readers leave new remarks.
         </p>
       </Card>
-    );
+    )
   }
 
   return (
@@ -71,5 +76,5 @@ export function CommentsFeedView({
         />
       ))}
     </div>
-  );
+  )
 }

@@ -11,7 +11,10 @@ const { content, class: className = "" } = Astro.props
 const { html } = await renderMarkdown(content)
 ---
 
-<div class={`markdown-content max-w-3xl space-y-6 text-foreground/90 leading-relaxed text-base ${className}`} set:html={html} />
+<div
+  class={`markdown-content max-w-3xl space-y-6 text-foreground/90 leading-relaxed text-base ${className}`}
+  set:html={html}
+/>
 
 <script>
   function initMarkdownInteractions() {

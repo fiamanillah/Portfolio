@@ -38,14 +38,14 @@ export function DeleteTemplateDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-[96vw] sm:w-[90vw] sm:max-w-md border-border/80 bg-background/95 backdrop-blur-md">
+      <DialogContent className="w-[96vw] border-border/80 bg-background/95 backdrop-blur-md sm:w-[90vw] sm:max-w-md">
         <DialogHeader>
           <div className="flex items-center gap-2.5">
             <div
               className={`flex size-9 items-center justify-center rounded-lg ${
                 isSystem
-                  ? "bg-blue-500/10 text-blue-400 border border-blue-500/20"
-                  : "bg-destructive/10 text-destructive border border-destructive/20"
+                  ? "border border-blue-500/20 bg-blue-500/10 text-blue-400"
+                  : "border border-destructive/20 bg-destructive/10 text-destructive"
               }`}
             >
               {isSystem ? (
@@ -56,9 +56,11 @@ export function DeleteTemplateDialog({
             </div>
             <div>
               <DialogTitle className="text-base font-bold">
-                {isSystem ? "Codebase Template Protected" : "Delete Email Template"}
+                {isSystem
+                  ? "Codebase Template Protected"
+                  : "Delete Email Template"}
               </DialogTitle>
-              <DialogDescription className="text-xs text-muted-foreground mt-0.5">
+              <DialogDescription className="mt-0.5 text-xs text-muted-foreground">
                 {isSystem
                   ? "System email templates cannot be deleted from the dashboard."
                   : "Are you sure you want to permanently delete this template?"}
@@ -68,9 +70,9 @@ export function DeleteTemplateDialog({
         </DialogHeader>
 
         <div className="space-y-4 py-2">
-          <div className="p-3.5 rounded-lg border border-border/60 bg-muted/20 space-y-1.5">
+          <div className="space-y-1.5 rounded-lg border border-border/60 bg-muted/20 p-3.5">
             <div className="flex items-center justify-between">
-              <span className="font-semibold text-sm text-foreground">
+              <span className="text-sm font-semibold text-foreground">
                 {template.name}
               </span>
               <Badge
@@ -84,37 +86,43 @@ export function DeleteTemplateDialog({
                 {isSystem ? "Codebase (System)" : "Custom Made"}
               </Badge>
             </div>
-            <code className="text-xs font-mono text-muted-foreground block">
+            <code className="block font-mono text-xs text-muted-foreground">
               slug: {template.slug}
             </code>
           </div>
 
           {isSystem ? (
-            <div className="p-3.5 rounded-lg border border-blue-500/30 bg-blue-500/5 text-xs text-blue-200 space-y-2">
+            <div className="space-y-2 rounded-lg border border-blue-500/30 bg-blue-500/5 p-3.5 text-xs text-blue-200">
               <p className="font-semibold text-blue-300">
                 Why is this template protected?
               </p>
-              <p className="text-blue-200/80 leading-relaxed">
-                This template is required by core application features (such as user email verification, password reset, or contact forms). Deleting it would cause backend errors during auth or contact flows.
+              <p className="leading-relaxed text-blue-200/80">
+                This template is required by core application features (such as
+                user email verification, password reset, or contact forms).
+                Deleting it would cause backend errors during auth or contact
+                flows.
               </p>
-              <p className="text-blue-200/80 leading-relaxed">
-                If you made customizations that you wish to remove, you can reset it to the original codebase default layout.
+              <p className="leading-relaxed text-blue-200/80">
+                If you made customizations that you wish to remove, you can
+                reset it to the original codebase default layout.
               </p>
             </div>
           ) : (
-            <div className="p-3.5 rounded-lg border border-destructive/30 bg-destructive/5 text-xs text-destructive space-y-1">
+            <div className="space-y-1 rounded-lg border border-destructive/30 bg-destructive/5 p-3.5 text-xs text-destructive">
               <div className="flex items-center gap-1.5 font-semibold">
                 <AlertTriangle className="size-4 shrink-0" />
                 <span>This action cannot be undone</span>
               </div>
-              <p className="text-destructive/80 leading-relaxed">
-                This template will be removed from your database and deleted from Plunk. Any automations referring to this template slug will stop working.
+              <p className="leading-relaxed text-destructive/80">
+                This template will be removed from your database and deleted
+                from Plunk. Any automations referring to this template slug will
+                stop working.
               </p>
             </div>
           )}
         </div>
 
-        <DialogFooter className="pt-2 flex items-center justify-between sm:justify-between">
+        <DialogFooter className="flex items-center justify-between pt-2 sm:justify-between">
           <Button
             type="button"
             variant="ghost"
@@ -135,7 +143,7 @@ export function DeleteTemplateDialog({
                   onOpenChange(false)
                   onResetDefault(template)
                 }}
-                className="text-xs gap-1.5 bg-amber-500 text-black hover:bg-amber-400 font-semibold"
+                className="gap-1.5 bg-amber-500 text-xs font-semibold text-black hover:bg-amber-400"
               >
                 <RotateCcw className="size-3.5" />
                 Reset to Codebase Default
@@ -150,7 +158,7 @@ export function DeleteTemplateDialog({
                 const success = await onConfirmDelete(template)
                 if (success) onOpenChange(false)
               }}
-              className="text-xs gap-1.5 font-semibold"
+              className="gap-1.5 text-xs font-semibold"
               disabled={isProcessing}
             >
               {isProcessing ? "Deleting..." : "Delete Template"}

@@ -49,15 +49,21 @@ export function MediaDataTable({
   onSelectionChange,
 }: MediaDataTableProps) {
   const [sorting, setSorting] = React.useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
-  const [columnVisibility, setColumnVisibility] = React.useState<Record<string, boolean>>({})
-  const [rowSelection, setRowSelection] = React.useState<RowSelectionState>(() => {
-    const initial: RowSelectionState = {}
-    selectedIds.forEach((id) => {
-      initial[id] = true
-    })
-    return initial
-  })
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    []
+  )
+  const [columnVisibility, setColumnVisibility] = React.useState<
+    Record<string, boolean>
+  >({})
+  const [rowSelection, setRowSelection] = React.useState<RowSelectionState>(
+    () => {
+      const initial: RowSelectionState = {}
+      selectedIds.forEach((id) => {
+        initial[id] = true
+      })
+      return initial
+    }
+  )
 
   // Sync external selectedIds when modified from elsewhere
   React.useEffect(() => {
@@ -101,7 +107,8 @@ export function MediaDataTable({
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: (updater) => {
-      const next = typeof updater === "function" ? updater(rowSelection) : updater
+      const next =
+        typeof updater === "function" ? updater(rowSelection) : updater
       setRowSelection(next)
       if (onSelectionChange) {
         const ids = Object.keys(next).filter((k) => next[k])
@@ -134,14 +141,21 @@ export function MediaDataTable({
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className="bg-muted/40 hover:bg-muted/40">
+              <TableRow
+                key={headerGroup.id}
+                className="bg-muted/40 hover:bg-muted/40"
+              >
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id} colSpan={header.colSpan} className="text-xs font-semibold">
+                  <TableHead
+                    key={header.id}
+                    colSpan={header.colSpan}
+                    className="text-xs font-semibold"
+                  >
                     {header.isPlaceholder
                       ? null
                       : header.column.columnDef.header instanceof Function
-                      ? header.column.columnDef.header(header.getContext())
-                      : (header.column.columnDef.header as React.ReactNode)}
+                        ? header.column.columnDef.header(header.getContext())
+                        : (header.column.columnDef.header as React.ReactNode)}
                   </TableHead>
                 ))}
               </TableRow>
@@ -149,21 +163,23 @@ export function MediaDataTable({
           </TableHeader>
           <TableBody>
             {isLoading ? (
-              Array.from({ length: pageSize > 10 ? 10 : pageSize }).map((_, i) => (
-                <TableRow key={i}>
-                  {columns.map((_, colIdx) => (
-                    <TableCell key={colIdx} className="py-3">
-                      <Skeleton className="h-4 w-full max-w-[120px]" />
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
+              Array.from({ length: pageSize > 10 ? 10 : pageSize }).map(
+                (_, i) => (
+                  <TableRow key={i}>
+                    {columns.map((_, colIdx) => (
+                      <TableCell key={colIdx} className="py-3">
+                        <Skeleton className="h-4 w-full max-w-[120px]" />
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                )
+              )
             ) : table.getRowModel().rows.length > 0 ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  className="hover:bg-muted/30 transition-colors"
+                  className="transition-colors hover:bg-muted/30"
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id} className="py-2.5">
@@ -176,7 +192,10 @@ export function MediaDataTable({
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length} className="h-32 text-center text-xs text-muted-foreground">
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-32 text-center text-xs text-muted-foreground"
+                >
                   No media files found matching the criteria.
                 </TableCell>
               </TableRow>

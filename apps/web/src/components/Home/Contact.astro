@@ -228,9 +228,18 @@ import { Icon } from "astro-icon/components"
       <!-- Form -->
       <form id="contact-form" class="flex flex-col gap-5">
         <!-- Honeypot Field (The Silent Trap: hidden visually and from screen readers) -->
-        <div aria-hidden="true" style="display:none; position:absolute; left:-9999px; opacity:0; pointer-events:none;">
+        <div
+          aria-hidden="true"
+          style="display:none; position:absolute; left:-9999px; opacity:0; pointer-events:none;"
+        >
           <label for="contact-hp">Leave this field empty</label>
-          <input type="text" id="contact-hp" name="hp_field" tabindex="-1" autocomplete="off" />
+          <input
+            type="text"
+            id="contact-hp"
+            name="hp_field"
+            tabindex="-1"
+            autocomplete="off"
+          />
         </div>
 
         <!-- Name + Email row -->
@@ -313,19 +322,22 @@ import { Icon } from "astro-icon/components"
             type="checkbox"
             id="contact-subscribe"
             name="subscribe"
-            class="h-4 w-4 shrink-0 rounded-none border border-border bg-background/60 text-primary accent-primary cursor-pointer focus:ring-0 focus:ring-offset-0"
+            class="h-4 w-4 shrink-0 cursor-pointer rounded-none border border-border bg-background/60 text-primary accent-primary focus:ring-0 focus:ring-offset-0"
             checked
           />
           <label
             for="contact-subscribe"
-            class="font-mono text-xs text-muted-foreground/90 cursor-pointer select-none"
+            class="cursor-pointer font-mono text-xs text-muted-foreground/90 select-none"
           >
-            Subscribe to newsletter & project updates <span class="text-xs text-muted-foreground/60">(optional)</span>
+            Subscribe to newsletter & project updates <span
+              class="text-xs text-muted-foreground/60">(optional)</span
+            >
           </label>
         </div>
 
         <!-- Cloudflare Turnstile Container -->
-        <div id="turnstile-container" class="flex justify-center empty:hidden"></div>
+        <div id="turnstile-container" class="flex justify-center empty:hidden">
+        </div>
 
         <!-- Status Message Banner -->
         <div
@@ -410,9 +422,15 @@ import { Icon } from "astro-icon/components"
 <script>
   let turnstileWidgetId: string | null = null
 
-  function showStatus(message: string, isError: boolean, suggestedEmail?: string) {
+  function showStatus(
+    message: string,
+    isError: boolean,
+    suggestedEmail?: string
+  ) {
     const statusDiv = document.getElementById("contact-status")
-    const emailInput = document.getElementById("contact-email") as HTMLInputElement | null
+    const emailInput = document.getElementById(
+      "contact-email"
+    ) as HTMLInputElement | null
     if (!statusDiv) return
 
     statusDiv.classList.remove(
@@ -476,10 +494,13 @@ import { Icon } from "astro-icon/components"
     const render = () => {
       if ((window as any).turnstile && turnstileWidgetId === null) {
         try {
-          turnstileWidgetId = (window as any).turnstile.render("#turnstile-container", {
-            sitekey: turnstileKey,
-            theme: "dark",
-          })
+          turnstileWidgetId = (window as any).turnstile.render(
+            "#turnstile-container",
+            {
+              sitekey: turnstileKey,
+              theme: "dark",
+            }
+          )
         } catch (err) {
           console.warn("Turnstile render error:", err)
         }
@@ -491,7 +512,9 @@ import { Icon } from "astro-icon/components"
       return
     }
 
-    let script = document.getElementById("cf-turnstile-script") as HTMLScriptElement | null
+    let script = document.getElementById(
+      "cf-turnstile-script"
+    ) as HTMLScriptElement | null
     if (!script) {
       script = document.createElement("script")
       script.id = "cf-turnstile-script"
@@ -504,8 +527,12 @@ import { Icon } from "astro-icon/components"
   }
 
   function setupContactForm() {
-    const form = document.getElementById("contact-form") as HTMLFormElement | null
-    const submitBtn = document.getElementById("contact-submit") as HTMLButtonElement | null
+    const form = document.getElementById(
+      "contact-form"
+    ) as HTMLFormElement | null
+    const submitBtn = document.getElementById(
+      "contact-submit"
+    ) as HTMLButtonElement | null
     const submitText = document.getElementById("contact-submit-text")
 
     if (!form || !submitBtn || !submitText) return
@@ -516,10 +543,16 @@ import { Icon } from "astro-icon/components"
     // Attach lazy Turnstile listeners to all form inputs
     const inputs = form.querySelectorAll("input, textarea")
     inputs.forEach((input) => {
-      input.addEventListener("focus", initContactTurnstileOnDemand, { once: true })
-      input.addEventListener("click", initContactTurnstileOnDemand, { once: true })
+      input.addEventListener("focus", initContactTurnstileOnDemand, {
+        once: true,
+      })
+      input.addEventListener("click", initContactTurnstileOnDemand, {
+        once: true,
+      })
     })
-    form.addEventListener("mouseenter", initContactTurnstileOnDemand, { once: true })
+    form.addEventListener("mouseenter", initContactTurnstileOnDemand, {
+      once: true,
+    })
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault()
@@ -532,12 +565,17 @@ import { Icon } from "astro-icon/components"
       const subject = (formData.get("subject") as string)?.trim()
       const message = (formData.get("message") as string)?.trim()
       const hp_field = (formData.get("hp_field") as string) || ""
-      const subscribeInput = document.getElementById("contact-subscribe") as HTMLInputElement | null
-      const subscribe = subscribeInput ? subscribeInput.checked : Boolean(formData.get("subscribe"))
+      const subscribeInput = document.getElementById(
+        "contact-subscribe"
+      ) as HTMLInputElement | null
+      const subscribe = subscribeInput
+        ? subscribeInput.checked
+        : Boolean(formData.get("subscribe"))
 
       let captchaToken = ""
       if ((window as any).turnstile && turnstileWidgetId) {
-        captchaToken = (window as any).turnstile.getResponse(turnstileWidgetId) || ""
+        captchaToken =
+          (window as any).turnstile.getResponse(turnstileWidgetId) || ""
       }
 
       const originalHTML = submitText.innerHTML
@@ -575,11 +613,14 @@ import { Icon } from "astro-icon/components"
           submitBtn.classList.remove("bg-primary", "border-primary")
           submitBtn.classList.add("bg-emerald-600", "border-emerald-600")
 
-          showStatus(data.message || "Thank you! Your message has been delivered.", false)
+          showStatus(
+            data.message || "Thank you! Your message has been delivered.",
+            false
+          )
           form.reset()
 
           if ((window as any).turnstile && turnstileWidgetId) {
-            (window as any).turnstile.reset(turnstileWidgetId)
+            ;(window as any).turnstile.reset(turnstileWidgetId)
           }
 
           setTimeout(() => {
@@ -590,20 +631,29 @@ import { Icon } from "astro-icon/components"
           }, 4000)
         } else {
           // Handle specific backend error codes/responses
-          const errorMessage = data.message || data.error?.message || "Failed to send message. Please try again."
-          const suggestedEmail = data.data?.suggestedEmail || data.details?.suggestedEmail || data.error?.details?.suggestedEmail
+          const errorMessage =
+            data.message ||
+            data.error?.message ||
+            "Failed to send message. Please try again."
+          const suggestedEmail =
+            data.data?.suggestedEmail ||
+            data.details?.suggestedEmail ||
+            data.error?.details?.suggestedEmail
           showStatus(errorMessage, true, suggestedEmail)
 
           submitText.innerHTML = originalHTML
           submitBtn.disabled = false
 
           if ((window as any).turnstile && turnstileWidgetId) {
-            (window as any).turnstile.reset(turnstileWidgetId)
+            ;(window as any).turnstile.reset(turnstileWidgetId)
           }
         }
       } catch (error) {
         console.error("Contact form error:", error)
-        showStatus("Network error occurred. Please check your connection or send an email directly to fi@amanillah.com", true)
+        showStatus(
+          "Network error occurred. Please check your connection or send an email directly to fi@amanillah.com",
+          true
+        )
         submitText.innerHTML = originalHTML
         submitBtn.disabled = false
       }
@@ -617,4 +667,3 @@ import { Icon } from "astro-icon/components"
     setupContactForm()
   }
 </script>
-

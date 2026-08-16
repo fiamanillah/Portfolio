@@ -32,14 +32,19 @@ export function ThemeProvider({
   storageKey = "ui-theme",
 }: ThemeProviderProps) {
   const [theme, setThemeState] = React.useState<Theme>(defaultTheme)
-  const [resolvedTheme, setResolvedTheme] = React.useState<"dark" | "light">("dark")
+  const [resolvedTheme, setResolvedTheme] = React.useState<"dark" | "light">(
+    "dark"
+  )
   const [mounted, setMounted] = React.useState(false)
 
   // 1. Initial read from localStorage on mount
   React.useEffect(() => {
     try {
       const stored = localStorage.getItem(storageKey) as Theme | null
-      if (stored && (stored === "dark" || stored === "light" || stored === "system")) {
+      if (
+        stored &&
+        (stored === "dark" || stored === "light" || stored === "system")
+      ) {
         setThemeState(stored)
       } else {
         setThemeState(defaultTheme)

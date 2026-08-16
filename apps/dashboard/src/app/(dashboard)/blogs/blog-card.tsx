@@ -54,11 +54,30 @@ const CATEGORY_COLORS: Record<string, string> = {
   security: "bg-cyan-500/10 text-cyan-500 border-cyan-500/20",
 }
 
-const STATUS_VARIANTS: Record<BlogStatus, { label: string; class: string; dot: string }> = {
-  PUBLISHED: { label: "Published", class: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20", dot: "bg-emerald-500" },
-  DRAFT: { label: "Draft", class: "bg-amber-500/10 text-amber-500 border-amber-500/20", dot: "bg-amber-500" },
-  SCHEDULED: { label: "Scheduled", class: "bg-blue-500/10 text-blue-500 border-blue-500/20", dot: "bg-blue-500" },
-  ARCHIVED: { label: "Archived", class: "bg-zinc-500/10 text-zinc-500 border-zinc-500/20", dot: "bg-zinc-500" },
+const STATUS_VARIANTS: Record<
+  BlogStatus,
+  { label: string; class: string; dot: string }
+> = {
+  PUBLISHED: {
+    label: "Published",
+    class: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20",
+    dot: "bg-emerald-500",
+  },
+  DRAFT: {
+    label: "Draft",
+    class: "bg-amber-500/10 text-amber-500 border-amber-500/20",
+    dot: "bg-amber-500",
+  },
+  SCHEDULED: {
+    label: "Scheduled",
+    class: "bg-blue-500/10 text-blue-500 border-blue-500/20",
+    dot: "bg-blue-500",
+  },
+  ARCHIVED: {
+    label: "Archived",
+    class: "bg-zinc-500/10 text-zinc-500 border-zinc-500/20",
+    dot: "bg-zinc-500",
+  },
 }
 
 export function BlogCard({
@@ -71,7 +90,8 @@ export function BlogCard({
 }: BlogCardProps) {
   const statusConfig = STATUS_VARIANTS[post.status] || STATUS_VARIANTS.DRAFT
   const catColor = post.category?.slug
-    ? CATEGORY_COLORS[post.category.slug.toLowerCase()] || "bg-primary/10 text-primary border-primary/20"
+    ? CATEGORY_COLORS[post.category.slug.toLowerCase()] ||
+      "bg-primary/10 text-primary border-primary/20"
     : "bg-primary/10 text-primary border-primary/20"
 
   const copyShareableLink = () => {
@@ -80,20 +100,24 @@ export function BlogCard({
     toast.success("Public article link copied!")
   }
 
-  const dateStr = post.date || (post.publishedAt ? new Date(post.publishedAt).toLocaleDateString() : "Draft")
+  const dateStr =
+    post.date ||
+    (post.publishedAt
+      ? new Date(post.publishedAt).toLocaleDateString()
+      : "Draft")
 
   return (
-    <Card className="group overflow-hidden border-border/80 bg-card hover:border-primary/40 transition-all duration-200 flex flex-col justify-between shadow-xs hover:shadow-md">
+    <Card className="group flex flex-col justify-between overflow-hidden border-border/80 bg-card shadow-xs transition-all duration-200 hover:border-primary/40 hover:shadow-md">
       {/* Thumbnail Header */}
-      <div className="relative aspect-[16/9] w-full overflow-hidden bg-muted/40 border-b border-border/60">
+      <div className="relative aspect-[16/9] w-full overflow-hidden border-b border-border/60 bg-muted/40">
         {post.thumbnail ? (
           <img
             src={post.thumbnail}
             alt={post.title}
-            className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
+            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
         ) : (
-          <div className="h-full w-full flex items-center justify-center text-xs font-mono text-muted-foreground bg-muted/20">
+          <div className="flex h-full w-full items-center justify-center bg-muted/20 font-mono text-xs text-muted-foreground">
             No cover image
           </div>
         )}
@@ -101,19 +125,28 @@ export function BlogCard({
         {/* Floating Badges */}
         <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5">
           {post.category && (
-            <Badge variant="outline" className={`backdrop-blur-md font-medium text-[11px] ${catColor}`}>
+            <Badge
+              variant="outline"
+              className={`text-[11px] font-medium backdrop-blur-md ${catColor}`}
+            >
               {post.category.name}
             </Badge>
           )}
           {post.featured && (
-            <Badge variant="outline" className="bg-amber-500/90 text-white border-amber-500 text-[10px] shadow-xs">
-              <Sparkles className="h-2.5 w-2.5 mr-0.5" /> Featured
+            <Badge
+              variant="outline"
+              className="border-amber-500 bg-amber-500/90 text-[10px] text-white shadow-xs"
+            >
+              <Sparkles className="mr-0.5 h-2.5 w-2.5" /> Featured
             </Badge>
           )}
         </div>
 
         <div className="absolute top-2.5 right-2.5">
-          <Badge variant="outline" className={`backdrop-blur-md text-[11px] font-medium gap-1 ${statusConfig.class}`}>
+          <Badge
+            variant="outline"
+            className={`gap-1 text-[11px] font-medium backdrop-blur-md ${statusConfig.class}`}
+          >
             <span className={`h-1.5 w-1.5 rounded-full ${statusConfig.dot}`} />
             {statusConfig.label}
           </Badge>
@@ -121,14 +154,14 @@ export function BlogCard({
       </div>
 
       {/* Body Content */}
-      <CardHeader className="p-4 space-y-1.5 pb-2">
+      <CardHeader className="space-y-1.5 p-4 pb-2">
         <h3
           onClick={() => onEdit(post)}
-          className="font-bold text-base leading-snug line-clamp-2 hover:text-primary cursor-pointer transition-colors"
+          className="line-clamp-2 cursor-pointer text-base leading-snug font-bold transition-colors hover:text-primary"
         >
           {post.title}
         </h3>
-        <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
+        <p className="line-clamp-2 text-xs leading-relaxed text-muted-foreground">
           {post.summary}
         </p>
       </CardHeader>
@@ -140,13 +173,13 @@ export function BlogCard({
             {post.tags.slice(0, 3).map((tag) => (
               <span
                 key={tag}
-                className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-muted/80 text-muted-foreground"
+                className="rounded bg-muted/80 px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground"
               >
                 #{tag}
               </span>
             ))}
             {post.tags.length > 3 && (
-              <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-muted/60 text-muted-foreground">
+              <span className="rounded bg-muted/60 px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">
                 +{post.tags.length - 3}
               </span>
             )}
@@ -155,10 +188,13 @@ export function BlogCard({
       </CardContent>
 
       {/* Footer Metrics & Actions */}
-      <CardFooter className="p-4 pt-3 mt-2 border-t border-border/60 flex items-center justify-between text-xs text-muted-foreground font-mono bg-muted/10">
+      <CardFooter className="mt-2 flex items-center justify-between border-t border-border/60 bg-muted/10 p-4 pt-3 font-mono text-xs text-muted-foreground">
         <div className="flex items-center gap-3">
           <span className="flex items-center gap-1" title="Views">
-            <Eye className="h-3.5 w-3.5" /> {post.views > 999 ? `${(post.views / 1000).toFixed(1)}k` : post.views}
+            <Eye className="h-3.5 w-3.5" />{" "}
+            {post.views > 999
+              ? `${(post.views / 1000).toFixed(1)}k`
+              : post.views}
           </span>
           <span className="flex items-center gap-1" title="Likes">
             <ThumbsUp className="h-3.5 w-3.5" /> {post.likesCount}
@@ -202,10 +238,15 @@ export function BlogCard({
                 <ExternalLink className="mr-2 h-4 w-4" /> Copy Link
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuLabel className="text-[10px] text-muted-foreground">Status</DropdownMenuLabel>
+              <DropdownMenuLabel className="text-[10px] text-muted-foreground">
+                Status
+              </DropdownMenuLabel>
               {post.status !== "PUBLISHED" && (
-                <DropdownMenuItem onClick={() => onStatusChange(post, "PUBLISHED")}>
-                  <CheckCircle className="mr-2 h-4 w-4 text-emerald-500" /> Publish
+                <DropdownMenuItem
+                  onClick={() => onStatusChange(post, "PUBLISHED")}
+                >
+                  <CheckCircle className="mr-2 h-4 w-4 text-emerald-500" />{" "}
+                  Publish
                 </DropdownMenuItem>
               )}
               {post.status !== "DRAFT" && (
@@ -214,12 +255,17 @@ export function BlogCard({
                 </DropdownMenuItem>
               )}
               {post.status !== "ARCHIVED" && (
-                <DropdownMenuItem onClick={() => onStatusChange(post, "ARCHIVED")}>
+                <DropdownMenuItem
+                  onClick={() => onStatusChange(post, "ARCHIVED")}
+                >
                   <Archive className="mr-2 h-4 w-4 text-zinc-500" /> Archive
                 </DropdownMenuItem>
               )}
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => onDelete(post)} className="text-destructive">
+              <DropdownMenuItem
+                onClick={() => onDelete(post)}
+                className="text-destructive"
+              >
                 <Trash2 className="mr-2 h-4 w-4" /> Delete
               </DropdownMenuItem>
             </DropdownMenuContent>

@@ -1,7 +1,10 @@
 ---
 import BlogArticleHeader from "@/components/Blog/article/BlogArticleHeader.astro"
 import BlogTableOfContents from "@/components/Blog/article/BlogTableOfContents.astro"
-import { ArticleReactionStation, BlogCommentsSection } from "@/components/Blog/engagement"
+import {
+  ArticleReactionStation,
+  BlogCommentsSection,
+} from "@/components/Blog/engagement"
 import { renderMarkdown } from "@/lib/markdown"
 import type { BlogPost } from "@/data/blogPosts"
 
@@ -11,18 +14,24 @@ interface Props {
 
 const { post } = Astro.props
 
-const { html: renderedMarkdownHtml, headings: tocHeadings } = await renderMarkdown(post.content || "")
+const { html: renderedMarkdownHtml, headings: tocHeadings } =
+  await renderMarkdown(post.content || "")
 ---
 
-<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8" style="scroll-behavior: smooth;">
+<div
+  class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8"
+  style="scroll-behavior: smooth;"
+>
   <div class="grid grid-cols-1 gap-10 lg:grid-cols-12">
     {/* Main Article Reading Column (8 cols lg) */}
-    <article class="lg:col-span-8 min-w-0">
+    <article class="min-w-0 lg:col-span-8">
       {/* Article Header — full article-column width */}
       <BlogArticleHeader post={post} />
 
       {/* Main Cover Artwork — full article-column width */}
-      <div class="relative my-8 aspect-[16/9] w-full overflow-hidden border border-border bg-muted/30 blog-animate-in">
+      <div
+        class="blog-animate-in relative my-8 aspect-[16/9] w-full overflow-hidden border border-border bg-muted/30"
+      >
         <img
           src={post.thumbnail}
           alt={`Cover illustration for ${post.title}`}
@@ -31,92 +40,140 @@ const { html: renderedMarkdownHtml, headings: tocHeadings } = await renderMarkdo
           decoding="async"
           class="h-full w-full object-cover"
         />
-        <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent"></div>
-        <div class="absolute bottom-3 left-4 font-mono text-xs text-muted-foreground">
+        <div
+          class="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent"
+        >
+        </div>
+        <div
+          class="absolute bottom-3 left-4 font-mono text-xs text-muted-foreground"
+        >
           // COVER IMAGE: {post.title}
         </div>
       </div>
 
       {/* Key Takeaways Callout Box — full article-column width */}
-      {post.keyTakeaways && post.keyTakeaways.length > 0 && (
-        <div class="relative my-8 overflow-hidden border border-primary/30 bg-primary/5 p-6 backdrop-blur-sm blog-animate-in">
-          <div class="pointer-events-none absolute top-2 left-2 z-10 h-3 w-3 border-t border-l border-primary" />
-          <div class="pointer-events-none absolute top-2 right-2 z-10 h-3 w-3 border-t border-r border-primary" />
-          <div class="pointer-events-none absolute bottom-2 left-2 z-10 h-3 w-3 border-b border-l border-primary" />
-          <div class="pointer-events-none absolute right-2 bottom-2 z-10 h-3 w-3 border-r border-b border-primary" />
+      {
+        post.keyTakeaways && post.keyTakeaways.length > 0 && (
+          <div class="blog-animate-in relative my-8 overflow-hidden border border-primary/30 bg-primary/5 p-6 backdrop-blur-sm">
+            <div class="pointer-events-none absolute top-2 left-2 z-10 h-3 w-3 border-t border-l border-primary" />
+            <div class="pointer-events-none absolute top-2 right-2 z-10 h-3 w-3 border-t border-r border-primary" />
+            <div class="pointer-events-none absolute bottom-2 left-2 z-10 h-3 w-3 border-b border-l border-primary" />
+            <div class="pointer-events-none absolute right-2 bottom-2 z-10 h-3 w-3 border-r border-b border-primary" />
 
-          <h3 class="font-mono text-xs font-bold tracking-widest text-primary uppercase">
-            // KEY TAKEAWAYS & ARCHITECTURE HIGHLIGHTS
-          </h3>
-          <ul class="mt-3 space-y-2 text-sm text-foreground/90 leading-relaxed">
-            {post.keyTakeaways.map((item) => (
-              <li class="flex items-start gap-2.5">
-                <span class="mt-0.5 text-primary">⚡</span>
-                <span>{item}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+            <h3 class="font-mono text-xs font-bold tracking-widest text-primary uppercase">
+              // KEY TAKEAWAYS & ARCHITECTURE HIGHLIGHTS
+            </h3>
+            <ul class="mt-3 space-y-2 text-sm leading-relaxed text-foreground/90">
+              {post.keyTakeaways.map((item) => (
+                <li class="flex items-start gap-2.5">
+                  <span class="mt-0.5 text-primary">⚡</span>
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )
+      }
 
       {/* Main Reading Content (Markdown Rendered) */}
       <div
-        class="markdown-content max-w-3xl space-y-6 text-foreground/90 leading-relaxed text-base blog-animate-in"
+        class="markdown-content blog-animate-in max-w-3xl space-y-6 text-base leading-relaxed text-foreground/90"
         set:html={renderedMarkdownHtml}
       />
 
       {/* Decorative divider between content and meta */}
       <div class="my-12 flex items-center gap-4">
-        <div class="h-px flex-1 bg-gradient-to-r from-transparent via-border to-transparent"></div>
-        <span class="font-mono text-[10px] tracking-widest text-muted-foreground/50 uppercase">END OF ARTICLE</span>
-        <div class="h-px flex-1 bg-gradient-to-r from-transparent via-border to-transparent"></div>
+        <div
+          class="h-px flex-1 bg-gradient-to-r from-transparent via-border to-transparent"
+        >
+        </div>
+        <span
+          class="font-mono text-[10px] tracking-widest text-muted-foreground/50 uppercase"
+          >END OF ARTICLE</span
+        >
+        <div
+          class="h-px flex-1 bg-gradient-to-r from-transparent via-border to-transparent"
+        >
+        </div>
       </div>
 
       {/* Article Tags — full article-column width */}
-      <div class="border-t border-border/60 pt-6 flex flex-wrap items-center gap-2 blog-animate-in">
+      <div
+        class="blog-animate-in flex flex-wrap items-center gap-2 border-t border-border/60 pt-6"
+      >
         <span class="font-mono text-xs text-muted-foreground">TAGS:</span>
-        {post.tags.map((tag) => (
-          <span class="inline-flex items-center border border-border bg-muted/60 px-2.5 py-0.5 font-mono text-xs text-muted-foreground">
-            #{tag}
-          </span>
-        ))}
+        {
+          post.tags.map((tag) => (
+            <span class="inline-flex items-center border border-border bg-muted/60 px-2.5 py-0.5 font-mono text-xs text-muted-foreground">
+              #{tag}
+            </span>
+          ))
+        }
       </div>
 
       {/* Article Reaction & Like Station */}
       <div class="blog-animate-in">
-        <ArticleReactionStation client:load postSlug={post.slug} postTitle={post.title} />
+        <ArticleReactionStation
+          client:load
+          postSlug={post.slug}
+          postTitle={post.title}
+        />
       </div>
 
       {/* Author Bio Card — full article-column width */}
-      <div class="relative mt-8 overflow-hidden border border-border/80 bg-background/80 p-6 sm:p-7 backdrop-blur-md blog-animate-in">
+      <div
+        class="blog-animate-in relative mt-8 overflow-hidden border border-border/80 bg-background/80 p-6 backdrop-blur-md sm:p-7"
+      >
         {/* Cyberpunk corner brackets */}
-        <div class="pointer-events-none absolute top-2 left-2 h-3.5 w-3.5 border-t-[1.5px] border-l-[1.5px] border-primary/40" />
-        <div class="pointer-events-none absolute top-2 right-2 h-3.5 w-3.5 border-t-[1.5px] border-r-[1.5px] border-primary/40" />
-        <div class="pointer-events-none absolute bottom-2 left-2 h-3.5 w-3.5 border-b-[1.5px] border-l-[1.5px] border-primary/40" />
-        <div class="pointer-events-none absolute right-2 bottom-2 h-3.5 w-3.5 border-r-[1.5px] border-b-[1.5px] border-primary/40" />
+        <div
+          class="pointer-events-none absolute top-2 left-2 h-3.5 w-3.5 border-t-[1.5px] border-l-[1.5px] border-primary/40"
+        >
+        </div>
+        <div
+          class="pointer-events-none absolute top-2 right-2 h-3.5 w-3.5 border-t-[1.5px] border-r-[1.5px] border-primary/40"
+        >
+        </div>
+        <div
+          class="pointer-events-none absolute bottom-2 left-2 h-3.5 w-3.5 border-b-[1.5px] border-l-[1.5px] border-primary/40"
+        >
+        </div>
+        <div
+          class="pointer-events-none absolute right-2 bottom-2 h-3.5 w-3.5 border-r-[1.5px] border-b-[1.5px] border-primary/40"
+        >
+        </div>
 
-        <div class="flex flex-col sm:flex-row items-center sm:items-start gap-5">
+        <div
+          class="flex flex-col items-center gap-5 sm:flex-row sm:items-start"
+        >
           <div class="relative shrink-0">
             <img
               src={post.author.avatar}
               alt={post.author.name}
               class="h-16 w-16 rounded-full border-2 border-primary/50 object-cover shadow-md"
             />
-            <span class="absolute bottom-0 right-0 h-4 w-4 rounded-full border-2 border-background bg-emerald-500 shadow-sm" />
+            <span
+              class="absolute right-0 bottom-0 h-4 w-4 rounded-full border-2 border-background bg-emerald-500 shadow-sm"
+            ></span>
           </div>
 
-          <div class="text-center sm:text-left space-y-1">
-            <span class="inline-block font-mono text-[10px] font-semibold text-primary uppercase tracking-wider">
+          <div class="space-y-1 text-center sm:text-left">
+            <span
+              class="inline-block font-mono text-[10px] font-semibold tracking-wider text-primary uppercase"
+            >
               [ AUTHOR // LEAD_ARCHITECT ]
             </span>
-            <h4 class="font-mono text-base font-bold text-foreground leading-tight">
+            <h4
+              class="font-mono text-base leading-tight font-bold text-foreground"
+            >
               {post.author.name}
             </h4>
-            <p class="font-mono text-xs text-muted-foreground leading-none">
+            <p class="font-mono text-xs leading-none text-muted-foreground">
               {post.author.role}
             </p>
-            <p class="text-xs text-muted-foreground/90 leading-relaxed pt-2">
-              Full Stack Engineer specializing in TypeScript backend architecture, event-driven microservices with RabbitMQ & Redis, Prisma ORM tuning, and cloud VPS deployments.
+            <p class="pt-2 text-xs leading-relaxed text-muted-foreground/90">
+              Full Stack Engineer specializing in TypeScript backend
+              architecture, event-driven microservices with RabbitMQ & Redis,
+              Prisma ORM tuning, and cloud VPS deployments.
             </p>
           </div>
         </div>
@@ -124,12 +181,16 @@ const { html: renderedMarkdownHtml, headings: tocHeadings } = await renderMarkdo
 
       {/* Discussion & Comments Hub */}
       <div class="blog-animate-in">
-        <BlogCommentsSection client:load postSlug={post.slug} postTitle={post.title} />
+        <BlogCommentsSection
+          client:load
+          postSlug={post.slug}
+          postTitle={post.title}
+        />
       </div>
     </article>
 
     {/* Right Sidebar Column: Sticky Table of Contents (4 cols lg) */}
-    <aside class="lg:col-span-4 min-w-0 h-full">
+    <aside class="h-full min-w-0 lg:col-span-4">
       <BlogTableOfContents headings={tocHeadings} />
     </aside>
   </div>

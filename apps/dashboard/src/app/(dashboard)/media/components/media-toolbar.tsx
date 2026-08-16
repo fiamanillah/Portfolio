@@ -37,7 +37,10 @@ interface MediaToolbarProps {
   onFolderFilterChange: (val: string) => void
   sortBy: "createdAt" | "size" | "fileName" | "updatedAt"
   sortOrder: "asc" | "desc"
-  onSortChange: (sortBy: "createdAt" | "size" | "fileName" | "updatedAt", sortOrder: "asc" | "desc") => void
+  onSortChange: (
+    sortBy: "createdAt" | "size" | "fileName" | "updatedAt",
+    sortOrder: "asc" | "desc"
+  ) => void
   viewMode: "grid" | "table"
   onViewModeChange: (mode: "grid" | "table") => void
   folders: MediaFolderStat[]
@@ -60,9 +63,7 @@ export function MediaToolbar({
   totalFiltered,
 }: MediaToolbarProps) {
   const isFiltered =
-    searchQuery.trim() !== "" ||
-    typeFilter !== "all" ||
-    folderFilter !== "all"
+    searchQuery.trim() !== "" || typeFilter !== "all" || folderFilter !== "all"
 
   const handleResetFilters = () => {
     onSearchChange("")
@@ -72,7 +73,13 @@ export function MediaToolbar({
 
   // Preset known folders merged with dynamic folders
   const allFolderNames = React.useMemo(() => {
-    const set = new Set(["general", "blogs", "avatars", "templates", "documents"])
+    const set = new Set([
+      "general",
+      "blogs",
+      "avatars",
+      "templates",
+      "documents",
+    ])
     folders.forEach((f) => {
       if (f.folder) set.add(f.folder)
     })
@@ -94,18 +101,18 @@ export function MediaToolbar({
         {/* Left Side: Search & Primary Filters */}
         <div className="flex flex-1 flex-wrap items-center gap-2.5">
           {/* Search Bar */}
-          <div className="relative min-w-[220px] flex-1 max-w-sm">
-            <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+          <div className="relative max-w-sm min-w-[220px] flex-1">
+            <Search className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               placeholder="Search file name, alt text, or tags..."
               value={searchQuery}
               onChange={(e) => onSearchChange(e.target.value)}
-              className="h-9 pl-9 pr-8 text-xs bg-card"
+              className="h-9 bg-card pr-8 pl-9 text-xs"
             />
             {searchQuery && (
               <button
                 onClick={() => onSearchChange("")}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                className="absolute top-1/2 right-2.5 -translate-y-1/2 text-muted-foreground hover:text-foreground"
               >
                 <X className="size-3.5" />
               </button>
@@ -114,9 +121,9 @@ export function MediaToolbar({
 
           {/* Media Type Filter */}
           <Select value={typeFilter} onValueChange={onTypeFilterChange}>
-            <SelectTrigger className="h-9 w-[150px] text-xs bg-card">
+            <SelectTrigger className="h-9 w-[150px] bg-card text-xs">
               <div className="flex items-center gap-1.5 truncate">
-                <Filter className="size-3.5 text-muted-foreground shrink-0" />
+                <Filter className="size-3.5 shrink-0 text-muted-foreground" />
                 <SelectValue placeholder="All Types" />
               </div>
             </SelectTrigger>
@@ -132,9 +139,9 @@ export function MediaToolbar({
 
           {/* Folder Filter */}
           <Select value={folderFilter} onValueChange={onFolderFilterChange}>
-            <SelectTrigger className="h-9 w-[150px] text-xs bg-card">
+            <SelectTrigger className="h-9 w-[150px] bg-card text-xs">
               <div className="flex items-center gap-1.5 truncate">
-                <FolderOpen className="size-3.5 text-muted-foreground shrink-0" />
+                <FolderOpen className="size-3.5 shrink-0 text-muted-foreground" />
                 <SelectValue placeholder="All Folders" />
               </div>
             </SelectTrigger>
@@ -154,9 +161,9 @@ export function MediaToolbar({
 
           {/* Sort Selector */}
           <Select value={sortValue} onValueChange={handleSortSelect}>
-            <SelectTrigger className="h-9 w-[160px] text-xs bg-card">
+            <SelectTrigger className="h-9 w-[160px] bg-card text-xs">
               <div className="flex items-center gap-1.5 truncate">
-                <ArrowUpDown className="size-3.5 text-muted-foreground shrink-0" />
+                <ArrowUpDown className="size-3.5 shrink-0 text-muted-foreground" />
                 <SelectValue placeholder="Sort by" />
               </div>
             </SelectTrigger>
@@ -176,7 +183,7 @@ export function MediaToolbar({
               variant="ghost"
               size="sm"
               onClick={handleResetFilters}
-              className="h-9 px-2 text-xs text-muted-foreground hover:text-foreground gap-1"
+              className="h-9 gap-1 px-2 text-xs text-muted-foreground hover:text-foreground"
             >
               <X className="size-3.5" />
               Reset
@@ -186,7 +193,7 @@ export function MediaToolbar({
 
         {/* Right Side: View Mode Toggles & Result Count */}
         <div className="flex items-center justify-between gap-3 lg:justify-end">
-          <span className="text-xs text-muted-foreground font-mono">
+          <span className="font-mono text-xs text-muted-foreground">
             {totalFiltered} {totalFiltered === 1 ? "asset" : "assets"} found
           </span>
 

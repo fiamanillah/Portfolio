@@ -25,9 +25,7 @@ export function ProfileSectionCard({
       id={id}
       className={cn(
         "rounded-lg border bg-card/80 backdrop-blur-sm transition-colors",
-        danger
-          ? "border-destructive/30"
-          : "border-border",
+        danger ? "border-destructive/30" : "border-border",
         className
       )}
     >
@@ -43,13 +41,15 @@ export function ProfileSectionCard({
             {title}
           </h2>
           {description && (
-            <p className="text-xs text-muted-foreground leading-relaxed">
+            <p className="text-xs leading-relaxed text-muted-foreground">
               {description}
             </p>
           )}
         </div>
 
-        {headerAction && <div className="shrink-0 pt-1 sm:pt-0">{headerAction}</div>}
+        {headerAction && (
+          <div className="shrink-0 pt-1 sm:pt-0">{headerAction}</div>
+        )}
       </div>
 
       {/* Card Body */}

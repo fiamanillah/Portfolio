@@ -51,16 +51,16 @@ export function BlogToolbar({
   onRefresh,
 }: BlogToolbarProps) {
   return (
-    <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 p-3.5 rounded-xl border border-border/80 bg-card shadow-xs">
+    <div className="flex flex-col justify-between gap-3 rounded-xl border border-border/80 bg-card p-3.5 shadow-xs lg:flex-row lg:items-center">
       <div className="flex flex-1 flex-wrap items-center gap-2.5">
         {/* Search Input */}
-        <div className="relative flex-1 min-w-[200px] max-w-sm">
-          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+        <div className="relative max-w-sm min-w-[200px] flex-1">
+          <Search className="absolute top-2.5 left-2.5 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Search title, summary, slug..."
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="pl-9 h-9 text-xs"
+            className="h-9 pl-9 text-xs"
           />
         </div>
 
@@ -113,7 +113,7 @@ export function BlogToolbar({
           }}
         >
           <SelectTrigger className="h-9 w-40 text-xs font-medium">
-            <ArrowUpDown className="h-3 w-3 mr-1 text-muted-foreground" />
+            <ArrowUpDown className="mr-1 h-3 w-3 text-muted-foreground" />
             <SelectValue placeholder="Sort by" />
           </SelectTrigger>
           <SelectContent>
@@ -127,7 +127,7 @@ export function BlogToolbar({
         </Select>
       </div>
 
-      <div className="flex items-center gap-2 shrink-0">
+      <div className="flex shrink-0 items-center gap-2">
         <Button
           variant="ghost"
           size="icon"
@@ -139,7 +139,7 @@ export function BlogToolbar({
         </Button>
 
         {/* View Mode Switcher */}
-        <div className="flex items-center bg-muted/60 rounded-lg p-0.5 border border-border">
+        <div className="flex items-center rounded-lg border border-border bg-muted/60 p-0.5">
           <Button
             type="button"
             variant={viewMode === "table" ? "secondary" : "ghost"}

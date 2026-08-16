@@ -8,14 +8,7 @@ import {
   type RowSelectionState,
   type SortingState,
 } from "@tanstack/react-table"
-import {
-  CheckCircle,
-  FileEdit,
-  Archive,
-  Trash2,
-  X,
-  Layers,
-} from "lucide-react"
+import { CheckCircle, FileEdit, Archive, Trash2, X, Layers } from "lucide-react"
 
 import type { BlogPostListItemDTO, BlogStatus } from "@workspace/shared"
 import { Button } from "@workspace/ui/components/button"
@@ -58,8 +51,12 @@ export function BlogsDataTable({
   onBulkDelete,
 }: BlogsDataTableProps) {
   const [sorting, setSorting] = React.useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
-  const [columnVisibility, setColumnVisibility] = React.useState<Record<string, boolean>>({})
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    []
+  )
+  const [columnVisibility, setColumnVisibility] = React.useState<
+    Record<string, boolean>
+  >({})
   const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({})
 
   const [pagination, setPagination] = React.useState({
@@ -111,7 +108,9 @@ export function BlogsDataTable({
 
   const selectedRows = table.getSelectedRowModel?.()?.rows || []
   const selectedCount = selectedRows.length
-  const selectedIds = selectedRows.map((r: any) => r.original?.id).filter(Boolean) as string[]
+  const selectedIds = selectedRows
+    .map((r: any) => r.original?.id)
+    .filter(Boolean) as string[]
 
   const clearSelection = () => {
     table.resetRowSelection?.()
@@ -121,11 +120,12 @@ export function BlogsDataTable({
     <div className="space-y-4">
       {/* Batch Action Toolbar */}
       {selectedCount > 0 && (
-        <div className="flex flex-wrap items-center justify-between gap-3 p-3 rounded-xl border border-primary/30 bg-primary/5 text-sm animate-in fade-in-50 duration-200">
+        <div className="flex animate-in flex-wrap items-center justify-between gap-3 rounded-xl border border-primary/30 bg-primary/5 p-3 text-sm duration-200 fade-in-50">
           <div className="flex items-center gap-2">
-            <span className="font-semibold text-foreground flex items-center gap-1.5">
+            <span className="flex items-center gap-1.5 font-semibold text-foreground">
               <Layers className="h-4 w-4 text-primary" />
-              {selectedCount} {selectedCount === 1 ? "article" : "articles"} selected
+              {selectedCount} {selectedCount === 1 ? "article" : "articles"}{" "}
+              selected
             </span>
             <Button
               variant="ghost"
@@ -133,7 +133,7 @@ export function BlogsDataTable({
               className="h-7 px-2 text-xs text-muted-foreground hover:text-foreground"
               onClick={clearSelection}
             >
-              <X className="h-3 w-3 mr-1" /> Clear
+              <X className="mr-1 h-3 w-3" /> Clear
             </Button>
           </div>
 
@@ -141,7 +141,7 @@ export function BlogsDataTable({
             <Button
               variant="outline"
               size="sm"
-              className="h-8 text-xs font-medium text-emerald-600 border-emerald-600/30 hover:bg-emerald-600/10"
+              className="h-8 border-emerald-600/30 text-xs font-medium text-emerald-600 hover:bg-emerald-600/10"
               onClick={() => {
                 onBulkStatusChange?.(selectedIds, "PUBLISHED")
                 clearSelection()
@@ -152,7 +152,7 @@ export function BlogsDataTable({
             <Button
               variant="outline"
               size="sm"
-              className="h-8 text-xs font-medium text-amber-600 border-amber-600/30 hover:bg-amber-600/10"
+              className="h-8 border-amber-600/30 text-xs font-medium text-amber-600 hover:bg-amber-600/10"
               onClick={() => {
                 onBulkStatusChange?.(selectedIds, "DRAFT")
                 clearSelection()
@@ -163,7 +163,7 @@ export function BlogsDataTable({
             <Button
               variant="outline"
               size="sm"
-              className="h-8 text-xs font-medium text-zinc-600 border-zinc-600/30 hover:bg-zinc-600/10"
+              className="h-8 border-zinc-600/30 text-xs font-medium text-zinc-600 hover:bg-zinc-600/10"
               onClick={() => {
                 onBulkStatusChange?.(selectedIds, "ARCHIVED")
                 clearSelection()
@@ -187,19 +187,22 @@ export function BlogsDataTable({
       )}
 
       {/* Main Table Container */}
-      <div className="rounded-xl border border-border/80 bg-card overflow-hidden shadow-xs">
+      <div className="overflow-hidden rounded-xl border border-border/80 bg-card shadow-xs">
         <Table>
           <TableHeader className="bg-muted/40">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id} className="hover:bg-transparent">
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id} className="h-10 text-xs font-semibold uppercase tracking-wider">
+                    <TableHead
+                      key={header.id}
+                      className="h-10 text-xs font-semibold tracking-wider uppercase"
+                    >
                       {header.isPlaceholder
                         ? null
                         : header.column.columnDef.header instanceof Function
-                        ? header.column.columnDef.header(header.getContext())
-                        : header.column.columnDef.header}
+                          ? header.column.columnDef.header(header.getContext())
+                          : header.column.columnDef.header}
                     </TableHead>
                   )
                 })}
@@ -210,11 +213,14 @@ export function BlogsDataTable({
             {isLoading ? (
               Array.from({ length: 5 }).map((_, i) => (
                 <TableRow key={i}>
-                  <TableCell colSpan={columns.length} className="h-16 text-center">
+                  <TableCell
+                    colSpan={columns.length}
+                    className="h-16 text-center"
+                  >
                     <div className="flex items-center space-x-4">
                       <Skeleton className="h-4 w-4" />
                       <Skeleton className="h-10 w-14 rounded-md" />
-                      <div className="space-y-2 flex-1">
+                      <div className="flex-1 space-y-2">
                         <Skeleton className="h-4 w-3/4" />
                         <Skeleton className="h-3 w-1/2" />
                       </div>
@@ -227,7 +233,7 @@ export function BlogsDataTable({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  className="hover:bg-muted/30 transition-colors"
+                  className="transition-colors hover:bg-muted/30"
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id} className="py-2.5">
@@ -242,7 +248,7 @@ export function BlogsDataTable({
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-32 text-center text-muted-foreground text-sm"
+                  className="h-32 text-center text-sm text-muted-foreground"
                 >
                   No blog posts found matching your criteria.
                 </TableCell>

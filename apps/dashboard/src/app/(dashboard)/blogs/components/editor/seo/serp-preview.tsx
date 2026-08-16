@@ -22,30 +22,33 @@ export function SerpPreview({
 
   const currentPreview = device === "desktop" ? desktop : mobile
 
-  const displayTitle = currentPreview?.title || "Technical Guide Title | Fi Amanillah"
+  const displayTitle =
+    currentPreview?.title || "Technical Guide Title | Fi Amanillah"
   const displaySnippet =
     currentPreview?.description ||
     "A production engineering breakdown of distributed system architecture and performance optimization."
-  const displayUrl = currentPreview?.url || `${siteUrl}/blog/${slug || "article-slug"}`
+  const displayUrl =
+    currentPreview?.url || `${siteUrl}/blog/${slug || "article-slug"}`
 
   return (
-    <div className="space-y-3 p-4 rounded-xl border border-border/80 bg-card">
+    <div className="space-y-3 rounded-xl border border-border/80 bg-card p-4">
       <div className="flex items-center justify-between">
         <div className="space-y-0.5">
-          <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-            <Globe className="h-3.5 w-3.5 text-primary" /> Google SERP Snippet Simulation
+          <span className="flex items-center gap-1.5 text-xs font-bold tracking-wider text-muted-foreground uppercase">
+            <Globe className="h-3.5 w-3.5 text-primary" /> Google SERP Snippet
+            Simulation
           </span>
           <p className="text-[11px] text-muted-foreground">
             How your article appears in Google search engine result pages.
           </p>
         </div>
 
-        <div className="flex items-center bg-muted/60 rounded-lg p-0.5 border border-border">
+        <div className="flex items-center rounded-lg border border-border bg-muted/60 p-0.5">
           <Button
             type="button"
             variant={device === "desktop" ? "secondary" : "ghost"}
             size="sm"
-            className="h-6 text-[11px] px-2 gap-1"
+            className="h-6 gap-1 px-2 text-[11px]"
             onClick={() => setDevice("desktop")}
           >
             <Monitor className="h-3 w-3" /> Desktop
@@ -54,7 +57,7 @@ export function SerpPreview({
             type="button"
             variant={device === "mobile" ? "secondary" : "ghost"}
             size="sm"
-            className="h-6 text-[11px] px-2 gap-1"
+            className="h-6 gap-1 px-2 text-[11px]"
             onClick={() => setDevice("mobile")}
           >
             <Smartphone className="h-3 w-3" /> Mobile
@@ -64,32 +67,32 @@ export function SerpPreview({
 
       {/* Google Result Card Simulation */}
       <div
-        className={`p-4 rounded-lg border bg-white dark:bg-[#202124] text-[#4d5156] dark:text-[#bdc1c6] space-y-1.5 font-sans ${
-          device === "mobile" ? "max-w-sm mx-auto" : "w-full"
+        className={`space-y-1.5 rounded-lg border bg-white p-4 font-sans text-[#4d5156] dark:bg-[#202124] dark:text-[#bdc1c6] ${
+          device === "mobile" ? "mx-auto max-w-sm" : "w-full"
         }`}
       >
         {/* Favicon + Site Brand */}
         <div className="flex items-center gap-2 text-xs">
-          <div className="h-4 w-4 rounded-full bg-emerald-500 flex items-center justify-center text-[10px] text-white font-bold">
+          <div className="flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500 text-[10px] font-bold text-white">
             F
           </div>
           <div className="flex flex-col leading-tight">
             <span className="text-[12px] font-medium text-[#202124] dark:text-[#dadce0]">
               Fi Amanillah
             </span>
-            <span className="text-[11px] text-[#4d5156] dark:text-[#bdc1c6] truncate">
+            <span className="truncate text-[11px] text-[#4d5156] dark:text-[#bdc1c6]">
               {displayUrl}
             </span>
           </div>
         </div>
 
         {/* Title */}
-        <h3 className="text-base sm:text-lg font-medium text-[#1a0dab] dark:text-[#8ab4f8] hover:underline cursor-pointer leading-snug line-clamp-2">
+        <h3 className="line-clamp-2 cursor-pointer text-base leading-snug font-medium text-[#1a0dab] hover:underline sm:text-lg dark:text-[#8ab4f8]">
           {displayTitle}
         </h3>
 
         {/* Snippet */}
-        <p className="text-xs sm:text-sm text-[#4d5156] dark:text-[#bdc1c6] leading-relaxed line-clamp-2">
+        <p className="line-clamp-2 text-xs leading-relaxed text-[#4d5156] sm:text-sm dark:text-[#bdc1c6]">
           {displaySnippet}
         </p>
       </div>

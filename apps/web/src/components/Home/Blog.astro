@@ -1,10 +1,11 @@
 ---
 import { Button } from "@workspace/ui/components/button"
 import BlogCard from "@/components/Blog/cards/BlogCard.astro"
-import { blogPostsData as blogPosts } from "@/data/blogPosts"
+import { getAllBlogPostsAsync } from "@/data/blogPosts"
 
-// Select recent blog posts for home page showcase (e.g. 3 posts)
-const recentPosts = blogPosts.slice(0, 3)
+// Fetch published blog posts from DB / API for home page showcase (3 most recent)
+const allPosts = await getAllBlogPostsAsync()
+const recentPosts = allPosts.slice(0, 3)
 ---
 
 <section id="blog" class="relative z-10 mx-auto py-16">
@@ -18,16 +19,14 @@ const recentPosts = blogPosts.slice(0, 3)
     </div>
 
     <div class="relative z-10 py-6">
-      <p class="section-label mb-3">
-        Articles & Technical Insights
-      </p>
+      <p class="section-label mb-3">Articles & Technical Insights</p>
 
       <h2 class="section-title text-foreground">
         Recent <span class="text-primary">/</span> Blog Posts
       </h2>
 
       <!-- Accent bar -->
-      <div class="accent-bar mx-auto mb-4 mt-4 w-60"></div>
+      <div class="accent-bar mx-auto mt-4 mb-4 w-60"></div>
     </div>
   </div>
 
@@ -46,7 +45,10 @@ const recentPosts = blogPosts.slice(0, 3)
           className="border-primary/40 font-mono text-xs tracking-wider text-primary transition-all duration-200 hover:bg-primary/10 hover:shadow-[0_0_16px_rgba(var(--primary-rgb),0.2)]"
         >
           Explore All Articles
-          <span class="ml-1.5 transition-transform duration-200 hover:translate-x-0.5">↗</span>
+          <span
+            class="ml-1.5 transition-transform duration-200 hover:translate-x-0.5"
+            >↗</span
+          >
         </Button>
       </a>
     </div>

@@ -1,22 +1,22 @@
-import dotenv from "dotenv";
+import dotenv from "dotenv"
 
 // Load environment variables
-const result = dotenv.config();
+const result = dotenv.config()
 
 // Handle .env loading errors
 if (result.error) {
   if (result.error.message.includes("ENOENT")) {
     if (process.env.NODE_ENV !== "production") {
       throw new Error(
-        "⚠️  .env file not found. Please create one based on .env.example",
-      );
+        "⚠️  .env file not found. Please create one based on .env.example"
+      )
     } else {
       console.warn(
-        "⚠️  .env file not found. Using provided environment variables.",
-      );
+        "⚠️  .env file not found. Using provided environment variables."
+      )
     }
   } else {
-    throw new Error(`Failed to load .env file: ${result.error.message}`);
+    throw new Error(`Failed to load .env file: ${result.error.message}`)
   }
 }
 
@@ -55,8 +55,11 @@ export const config = {
   plunk: {
     secretKey: process.env.PLUNK_SECRET_KEY || "",
     apiUrl: process.env.PLUNK_API_URL || "https://next-api.useplunk.com",
-    templateId: process.env.PLUNK_TEMPLATE_ID || "bd6771fd-935f-48b8-92f1-3c9ff8368a6b",
-    confirmationTemplateId: process.env.PLUNK_CONFIRMATION_TEMPLATE_ID || "bd6771fd-935f-48b8-92f1-3c9ff8368a6b",
+    templateId:
+      process.env.PLUNK_TEMPLATE_ID || "bd6771fd-935f-48b8-92f1-3c9ff8368a6b",
+    confirmationTemplateId:
+      process.env.PLUNK_CONFIRMATION_TEMPLATE_ID ||
+      "bd6771fd-935f-48b8-92f1-3c9ff8368a6b",
   },
   turnstile: {
     secretKey: process.env.TURNSTILE_SECRET_KEY || "",
@@ -66,7 +69,9 @@ export const config = {
   },
   contact: {
     recipientEmail: process.env.CONTACT_RECIPIENT_EMAIL || "fi@amanillah.com",
-    rateLimitWindowMs: parseInt(process.env.CONTACT_RATE_LIMIT_WINDOW_MS || "3600000"), // 1 hour
+    rateLimitWindowMs: parseInt(
+      process.env.CONTACT_RATE_LIMIT_WINDOW_MS || "3600000"
+    ), // 1 hour
     rateLimitMax: parseInt(process.env.CONTACT_RATE_LIMIT_MAX || "5"), // 5 requests / IP / hour
   },
   logging: {
@@ -88,13 +93,13 @@ export const config = {
     publicDomain: process.env.R2_PUBLIC_DOMAIN || "",
     maxFileSize: parseInt(process.env.STORAGE_MAX_FILE_SIZE || "52428800"), // 50MB
     defaultPresignedExpiresIn: parseInt(
-      process.env.STORAGE_PRESIGNED_EXPIRES_IN || "900",
+      process.env.STORAGE_PRESIGNED_EXPIRES_IN || "900"
     ), // 15 minutes
     allowedMimeTypes: (process.env.STORAGE_ALLOWED_MIME_TYPES || "")
       .split(",")
       .map((t) => t.trim())
       .filter(Boolean),
   },
-};
+}
 
-export default config;
+export default config

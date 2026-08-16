@@ -1,29 +1,34 @@
 // src/Modules/Subscriber/subscriber.service.ts
-import axios from "axios";
-import crypto from "crypto";
-import { config } from "@/core/config";
-import { AppLogger } from "@workspace/logger";
-import { AppError, BadRequestError, ExternalServiceError, NotFoundError } from "@/core/errors/AppError";
-import { prisma } from "@workspace/db";
-import { renderSubscriptionConfirmationEmail } from "@/templates/emails/subscriptionConfirmation";
-import { PlunkVerifyService } from "@/services/PlunkVerifyService";
+import axios from "axios"
+import crypto from "crypto"
+import { config } from "@/core/config"
+import { AppLogger } from "@workspace/logger"
+import {
+  AppError,
+  BadRequestError,
+  ExternalServiceError,
+  NotFoundError,
+} from "@/core/errors/AppError"
+import { prisma } from "@workspace/db"
+import { renderSubscriptionConfirmationEmail } from "@/templates/emails/subscriptionConfirmation"
+import { PlunkVerifyService } from "@/services/PlunkVerifyService"
 
 export interface SubscriberPayload {
-  email: string;
-  name?: string;
-  source?: string;
-  captchaToken?: string;
-  hp_field?: string;
+  email: string
+  name?: string
+  source?: string
+  captchaToken?: string
+  hp_field?: string
 }
 
 export class SubscriberService {
-  private logger = new AppLogger("SubscriberService");
+  private logger = new AppLogger("SubscriberService")
 
   /**
    * Helper to check if an API secret key is missing or is a placeholder/example key
    */
   private isPlaceholderKey(key?: string): boolean {
-    return PlunkVerifyService.isPlaceholderKey(key);
+    return PlunkVerifyService.isPlaceholderKey(key)
   }
 
   // ── Unsubscribe Token Helpers ──────────────────────────────────────────────
@@ -33,11 +38,14 @@ export class SubscriberService {
    * Format: base64url(<email>:<hmac-sha256>)
    */
   public generateUnsubscribeToken(email: string): string {
-    const secret = config.security.jwt.secret || "portfolio-unsub-secret";
-    const normalizedEmail = email.trim().toLowerCase();
-    const hmac = crypto.createHmac("sha256", secret).update(normalizedEmail).digest("hex");
-    const payload = `${normalizedEmail}:${hmac}`;
-    return Buffer.from(payload).toString("base64url");
+    const secret = config.security.jwt.secret || "portfolio-unsub-secret"
+    const normalizedEmail = email.trim().toLowerCase()
+    const hmac = crypto
+      .createHmac("sha256", secret)
+      .update(normalizedEmail)
+      .digest("hex")
+    const payload = `${normalizedEmail}:${hmac}`
+    return Buffer.from(payload).toString("base64url")
   }
 
   /**
@@ -46,24 +54,32 @@ export class SubscriberService {
    */
   public verifyUnsubscribeToken(token: string): string {
     try {
-      const decoded = Buffer.from(token, "base64url").toString("utf-8");
-      const colonIdx = decoded.lastIndexOf(":");
-      if (colonIdx === -1) throw new Error("Malformed token");
+      const decoded = Buffer.from(token, "base64url").toString("utf-8")
+      const colonIdx = decoded.lastIndexOf(":")
+      if (colonIdx === -1) throw new Error("Malformed token")
 
-      const email = decoded.substring(0, colonIdx);
-      const providedHmac = decoded.substring(colonIdx + 1);
+      const email = decoded.substring(0, colonIdx)
+      const providedHmac = decoded.substring(colonIdx + 1)
 
-      const secret = config.security.jwt.secret || "portfolio-unsub-secret";
-      const expectedHmac = crypto.createHmac("sha256", secret).update(email).digest("hex");
+      const secret = config.security.jwt.secret || "portfolio-unsub-secret"
+      const expectedHmac = crypto
+        .createHmac("sha256", secret)
+        .update(email)
+        .digest("hex")
 
       // Constant-time comparison to prevent timing attacks
-      if (!crypto.timingSafeEqual(Buffer.from(providedHmac, "hex"), Buffer.from(expectedHmac, "hex"))) {
-        throw new Error("HMAC mismatch");
+      if (
+        !crypto.timingSafeEqual(
+          Buffer.from(providedHmac, "hex"),
+          Buffer.from(expectedHmac, "hex")
+        )
+      ) {
+        throw new Error("HMAC mismatch")
       }
 
-      return email;
+      return email
     } catch {
-      throw new BadRequestError("Invalid or expired unsubscribe link.");
+      throw new BadRequestError("Invalid or expired unsubscribe link.")
     }
   }
 
@@ -71,8 +87,8 @@ export class SubscriberService {
    * Generates the full unsubscribe URL for embedding in emails.
    */
   public buildUnsubscribeUrl(email: string): string {
-    const token = this.generateUnsubscribeToken(email);
-    return `${config.site.webUrl}/unsubscribe?token=${token}`;
+    const token = this.generateUnsubscribeToken(email)
+    return `${config.site.webUrl}/unsubscribe?token=${token}`
   }
 
   // ── Stage 2: Honeypot ──────────────────────────────────────────────────────
@@ -82,10 +98,10 @@ export class SubscriberService {
    */
   public isHoneypotTriggered(hp_field?: string): boolean {
     if (hp_field && hp_field.trim().length > 0) {
-      this.logger.warn("⚡ Honeypot trap triggered on subscriber form by bot");
-      return true;
+      this.logger.warn("⚡ Honeypot trap triggered on subscriber form by bot")
+      return true
     }
-    return false;
+    return false
   }
 
   // ── Stage 3: Turnstile ────────────────────────────────────────────────────
@@ -93,17 +109,24 @@ export class SubscriberService {
   /**
    * Stage 3: Cloudflare Turnstile CAPTCHA token verification
    */
-  public async verifyTurnstileToken(token?: string, clientIp?: string): Promise<boolean> {
-    const secretKey = config.turnstile.secretKey;
+  public async verifyTurnstileToken(
+    token?: string,
+    clientIp?: string
+  ): Promise<boolean> {
+    const secretKey = config.turnstile.secretKey
 
     if (this.isPlaceholderKey(secretKey)) {
-      this.logger.warn("⚠️ TURNSTILE_SECRET_KEY missing or placeholder/test key. Bypassing Turnstile verification in dev/demo mode.");
-      return true;
+      this.logger.warn(
+        "⚠️ TURNSTILE_SECRET_KEY missing or placeholder/test key. Bypassing Turnstile verification in dev/demo mode."
+      )
+      return true
     }
 
     if (!token) {
-      this.logger.warn("CAPTCHA token missing from subscriber submission payload");
-      return false;
+      this.logger.warn(
+        "CAPTCHA token missing from subscriber submission payload"
+      )
+      return false
     }
 
     try {
@@ -120,19 +143,27 @@ export class SubscriberService {
           },
           timeout: 5000,
         }
-      );
+      )
 
-      const data = response.data;
+      const data = response.data
       if (!data.success) {
-        this.logger.warn("Cloudflare Turnstile token verification failed", { errorCodes: data["error-codes"] });
-        return false;
+        this.logger.warn("Cloudflare Turnstile token verification failed", {
+          errorCodes: data["error-codes"],
+        })
+        return false
       }
 
-      this.logger.info("✔ Cloudflare Turnstile verification successful for subscriber");
-      return true;
+      this.logger.info(
+        "✔ Cloudflare Turnstile verification successful for subscriber"
+      )
+      return true
     } catch (error) {
-      this.logger.error("Error connecting to Cloudflare Turnstile API", { error });
-      throw new ExternalServiceError("Failed to verify security token with Cloudflare");
+      this.logger.error("Error connecting to Cloudflare Turnstile API", {
+        error,
+      })
+      throw new ExternalServiceError(
+        "Failed to verify security token with Cloudflare"
+      )
     }
   }
 
@@ -142,21 +173,21 @@ export class SubscriberService {
    * Stage 4a: Data Hygiene & Input Sanitization
    */
   public sanitizeInput(text?: string): string {
-    if (!text) return "";
+    if (!text) return ""
     return text
       .replace(/</g, "&lt;")
       .replace(/>/g, "&gt;")
       .replace(/"/g, "&quot;")
       .replace(/'/g, "&#x27;")
       .replace(/\//g, "&#x2F;")
-      .trim();
+      .trim()
   }
 
   /**
    * Stage 4b: Plunk Email Verification (Disposable check, typo check, MX records check)
    */
   public async verifyEmailWithPlunk(email: string): Promise<void> {
-    await PlunkVerifyService.verifyEmail(email);
+    await PlunkVerifyService.verifyEmail(email)
   }
 
   // ── Core CRUD Operations ───────────────────────────────────────────────────
@@ -164,26 +195,37 @@ export class SubscriberService {
   /**
    * CREATE / SUBSCRIBE: Upsert subscriber in PostgreSQL DB & sync with Plunk
    */
-  public async subscribe(payload: { email: string; name?: string; source?: string }): Promise<any> {
-    const cleanEmail = payload.email.trim().toLowerCase();
-    const cleanName = this.sanitizeInput(payload.name);
-    const cleanSource = this.sanitizeInput(payload.source || "hero_section");
+  public async subscribe(payload: {
+    email: string
+    name?: string
+    source?: string
+  }): Promise<any> {
+    const cleanEmail = payload.email.trim().toLowerCase()
+    const cleanName = this.sanitizeInput(payload.name)
+    const cleanSource = this.sanitizeInput(payload.source || "hero_section")
 
     // Check if subscriber is already subscribed in DB
-    const existing = await prisma.subscriber.findUnique({ where: { email: cleanEmail } });
+    const existing = await prisma.subscriber.findUnique({
+      where: { email: cleanEmail },
+    })
     if (existing && existing.status === "subscribed") {
-      this.logger.info(`ℹ️ Subscriber ${cleanEmail} is already subscribed.`);
+      this.logger.info(`ℹ️ Subscriber ${cleanEmail} is already subscribed.`)
       // Sync Plunk to guarantee Plunk alignment
-      await this.syncSubscriberToPlunk(cleanEmail, cleanName || existing.name || "", true, cleanSource);
+      await this.syncSubscriberToPlunk(
+        cleanEmail,
+        cleanName || existing.name || "",
+        true,
+        cleanSource
+      )
       return {
         subscriber: existing,
         alreadySubscribed: true,
         message: "You are already subscribed to the newsletter!",
-      };
+      }
     }
 
     // 1. Verify email validity
-    await this.verifyEmailWithPlunk(cleanEmail);
+    await this.verifyEmailWithPlunk(cleanEmail)
 
     // 2. Persist subscriber in PostgreSQL database
     const subscriber = await prisma.subscriber.upsert({
@@ -200,31 +242,33 @@ export class SubscriberService {
         status: "subscribed",
         source: cleanSource,
       },
-    });
+    })
 
-    this.logger.info(`✔ Subscriber record persisted in DB for ${cleanEmail}`);
+    this.logger.info(`✔ Subscriber record persisted in DB for ${cleanEmail}`)
 
     // 3. Sync subscriber to Plunk subscriber list (/v1/contacts API)
-    await this.syncSubscriberToPlunk(cleanEmail, cleanName, true, cleanSource);
+    await this.syncSubscriberToPlunk(cleanEmail, cleanName, true, cleanSource)
 
     // 4. Send welcome confirmation email with unsubscribe link
-    await this.sendWelcomeEmail(cleanEmail, cleanName);
+    await this.sendWelcomeEmail(cleanEmail, cleanName)
 
     return {
       subscriber,
       alreadySubscribed: false,
       message: "Thank you for subscribing! Check your inbox for confirmation.",
-    };
+    }
   }
 
   /**
    * UNSUBSCRIBE: Update status to unsubscribed in DB & sync with Plunk
    */
   public async unsubscribe(email: string): Promise<any> {
-    const cleanEmail = email.trim().toLowerCase();
+    const cleanEmail = email.trim().toLowerCase()
 
-    const existing = await prisma.subscriber.findUnique({ where: { email: cleanEmail } });
-    const wasAlreadyUnsubscribed = existing?.status === "unsubscribed";
+    const existing = await prisma.subscriber.findUnique({
+      where: { email: cleanEmail },
+    })
+    const wasAlreadyUnsubscribed = existing?.status === "unsubscribed"
 
     const subscriber = await prisma.subscriber.upsert({
       where: { email: cleanEmail },
@@ -238,12 +282,14 @@ export class SubscriberService {
         status: "unsubscribed",
         source: "unsubscribe",
       },
-    });
+    })
 
-    this.logger.info(`✔ Subscriber ${cleanEmail} marked unsubscribed in PostgreSQL DB`);
+    this.logger.info(
+      `✔ Subscriber ${cleanEmail} marked unsubscribed in PostgreSQL DB`
+    )
 
     // Sync unsubscribe state with Plunk (POST /v1/contacts with subscribed: false)
-    await this.syncSubscriberToPlunk(cleanEmail, subscriber.name || "", false);
+    await this.syncSubscriberToPlunk(cleanEmail, subscriber.name || "", false)
 
     return {
       subscriber,
@@ -251,101 +297,120 @@ export class SubscriberService {
       message: wasAlreadyUnsubscribed
         ? "You are already unsubscribed from the newsletter."
         : "You have been successfully unsubscribed.",
-    };
+    }
   }
 
   /**
    * UNSUBSCRIBE BY TOKEN: Verify the token, then mark as unsubscribed
    */
-  public async unsubscribeByToken(token: string): Promise<{ email: string; alreadyUnsubscribed: boolean; message: string }> {
-    const email = this.verifyUnsubscribeToken(token);
-    const result = await this.unsubscribe(email);
-    this.logger.info(`✔ Subscriber ${email} unsubscribed via signed token link`);
+  public async unsubscribeByToken(
+    token: string
+  ): Promise<{ email: string; alreadyUnsubscribed: boolean; message: string }> {
+    const email = this.verifyUnsubscribeToken(token)
+    const result = await this.unsubscribe(email)
+    this.logger.info(`✔ Subscriber ${email} unsubscribed via signed token link`)
     return {
       email,
       alreadyUnsubscribed: result.alreadyUnsubscribed,
       message: result.message,
-    };
+    }
   }
 
   /**
    * CHANGE SUBSCRIPTION EMAIL: Unsubscribes old email in DB & Plunk, and subscribes new email in DB & Plunk.
    */
   public async changeSubscriptionEmail(payload: {
-    oldEmail?: string;
-    token?: string;
-    newEmail: string;
+    oldEmail?: string
+    token?: string
+    newEmail: string
   }): Promise<{ oldEmail: string; newEmail: string }> {
-    let cleanOldEmail = payload.oldEmail ? payload.oldEmail.trim().toLowerCase() : "";
+    let cleanOldEmail = payload.oldEmail
+      ? payload.oldEmail.trim().toLowerCase()
+      : ""
 
     if (payload.token) {
       try {
-        cleanOldEmail = this.verifyUnsubscribeToken(payload.token);
+        cleanOldEmail = this.verifyUnsubscribeToken(payload.token)
       } catch (err) {
-        if (!cleanOldEmail) throw err;
+        if (!cleanOldEmail) throw err
       }
     }
 
     if (!cleanOldEmail) {
-      throw new BadRequestError("Previous email address or valid token is required to change subscription email.");
+      throw new BadRequestError(
+        "Previous email address or valid token is required to change subscription email."
+      )
     }
 
-    const cleanNewEmail = payload.newEmail.trim().toLowerCase();
+    const cleanNewEmail = payload.newEmail.trim().toLowerCase()
     if (cleanOldEmail === cleanNewEmail) {
-      throw new BadRequestError("New email address must be different from current email address.");
+      throw new BadRequestError(
+        "New email address must be different from current email address."
+      )
     }
 
     // 1. Unsubscribe old email in PostgreSQL DB & Plunk
-    await this.unsubscribe(cleanOldEmail);
+    await this.unsubscribe(cleanOldEmail)
 
     // 2. Subscribe new email in PostgreSQL DB & Plunk (verifies email, upserts in DB, syncs Plunk, sends welcome email)
     await this.subscribe({
       email: cleanNewEmail,
       source: `email_change_from_${cleanOldEmail}`,
-    });
+    })
 
-    this.logger.info(`✔ Subscription email successfully changed from ${cleanOldEmail} to ${cleanNewEmail}`);
-    return { oldEmail: cleanOldEmail, newEmail: cleanNewEmail };
+    this.logger.info(
+      `✔ Subscription email successfully changed from ${cleanOldEmail} to ${cleanNewEmail}`
+    )
+    return { oldEmail: cleanOldEmail, newEmail: cleanNewEmail }
   }
 
   /**
    * READ ALL: Get paginated, searched, filtered, and sorted list of subscribers with aggregate stats
    */
   public async getAllSubscribers(query?: {
-    page?: number;
-    limit?: number;
-    search?: string;
-    status?: string;
-    source?: string;
-    sortBy?: string;
-    sortOrder?: "asc" | "desc";
+    page?: number
+    limit?: number
+    search?: string
+    status?: string
+    source?: string
+    sortBy?: string
+    sortOrder?: "asc" | "desc"
   }): Promise<{ data: any[]; pagination: any; stats?: any }> {
-    const page = Math.max(1, Number(query?.page) || 1);
-    const limit = Math.min(200, Math.max(1, Number(query?.limit) || 20));
-    const skip = (page - 1) * limit;
+    const page = Math.max(1, Number(query?.page) || 1)
+    const limit = Math.min(200, Math.max(1, Number(query?.limit) || 20))
+    const skip = (page - 1) * limit
 
-    const where: any = {};
+    const where: any = {}
 
     if (query?.search && query.search.trim()) {
-      const search = query.search.trim();
+      const search = query.search.trim()
       where.OR = [
         { email: { contains: search, mode: "insensitive" } },
         { name: { contains: search, mode: "insensitive" } },
         { source: { contains: search, mode: "insensitive" } },
-      ];
+      ]
     }
 
     if (query?.status && query.status !== "ALL") {
-      where.status = query.status;
+      where.status = query.status
     }
 
     if (query?.source && query.source !== "ALL" && query.source.trim()) {
-      where.source = { contains: query.source.trim(), mode: "insensitive" };
+      where.source = { contains: query.source.trim(), mode: "insensitive" }
     }
 
-    const allowedSortFields = ["subscribedAt", "updatedAt", "email", "name", "status", "source"];
-    const sortField = allowedSortFields.includes(query?.sortBy || "") ? (query?.sortBy as string) : "subscribedAt";
-    const sortDirection = query?.sortOrder === "asc" ? "asc" : "desc";
+    const allowedSortFields = [
+      "subscribedAt",
+      "updatedAt",
+      "email",
+      "name",
+      "status",
+      "source",
+    ]
+    const sortField = allowedSortFields.includes(query?.sortBy || "")
+      ? (query?.sortBy as string)
+      : "subscribedAt"
+    const sortDirection = query?.sortOrder === "asc" ? "asc" : "desc"
 
     const [total, data, stats] = await Promise.all([
       prisma.subscriber.count({ where }),
@@ -356,7 +421,7 @@ export class SubscriberService {
         orderBy: { [sortField]: sortDirection },
       }),
       this.getSubscriberStats(),
-    ]);
+    ])
 
     return {
       data,
@@ -367,36 +432,38 @@ export class SubscriberService {
         totalPages: Math.ceil(total / limit) || 1,
       },
       stats,
-    };
+    }
   }
 
   /**
    * GET STATS: Aggregated metrics for subscriber dashboard
    */
   public async getSubscriberStats(): Promise<{
-    total: number;
-    subscribed: number;
-    unsubscribed: number;
-    pending: number;
-    recentSubscribers7d: number;
-    confirmationRate: number;
+    total: number
+    subscribed: number
+    unsubscribed: number
+    pending: number
+    recentSubscribers7d: number
+    confirmationRate: number
   }> {
-    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
 
-    const [total, subscribed, unsubscribed, pending, recentSubscribers7d] = await Promise.all([
-      prisma.subscriber.count(),
-      prisma.subscriber.count({ where: { status: "subscribed" } }),
-      prisma.subscriber.count({ where: { status: "unsubscribed" } }),
-      prisma.subscriber.count({ where: { status: "pending" } }),
-      prisma.subscriber.count({
-        where: {
-          status: "subscribed",
-          subscribedAt: { gte: sevenDaysAgo },
-        },
-      }),
-    ]);
+    const [total, subscribed, unsubscribed, pending, recentSubscribers7d] =
+      await Promise.all([
+        prisma.subscriber.count(),
+        prisma.subscriber.count({ where: { status: "subscribed" } }),
+        prisma.subscriber.count({ where: { status: "unsubscribed" } }),
+        prisma.subscriber.count({ where: { status: "pending" } }),
+        prisma.subscriber.count({
+          where: {
+            status: "subscribed",
+            subscribedAt: { gte: sevenDaysAgo },
+          },
+        }),
+      ])
 
-    const confirmationRate = total > 0 ? Math.round((subscribed / total) * 1000) / 10 : 100;
+    const confirmationRate =
+      total > 0 ? Math.round((subscribed / total) * 1000) / 10 : 100
 
     return {
       total,
@@ -405,27 +472,31 @@ export class SubscriberService {
       pending,
       recentSubscribers7d,
       confirmationRate,
-    };
+    }
   }
 
   /**
    * ADMIN CREATE: Manually add subscriber from Admin Dashboard
    */
   public async adminCreateSubscriber(payload: {
-    email: string;
-    name?: string;
-    status?: string;
-    source?: string;
-    sendWelcomeEmail?: boolean;
+    email: string
+    name?: string
+    status?: string
+    source?: string
+    sendWelcomeEmail?: boolean
   }): Promise<any> {
-    const cleanEmail = payload.email.trim().toLowerCase();
-    const cleanName = this.sanitizeInput(payload.name);
-    const status = payload.status || "subscribed";
-    const source = this.sanitizeInput(payload.source || "admin_portal");
+    const cleanEmail = payload.email.trim().toLowerCase()
+    const cleanName = this.sanitizeInput(payload.name)
+    const status = payload.status || "subscribed"
+    const source = this.sanitizeInput(payload.source || "admin_portal")
 
-    const existing = await prisma.subscriber.findUnique({ where: { email: cleanEmail } });
+    const existing = await prisma.subscriber.findUnique({
+      where: { email: cleanEmail },
+    })
     if (existing) {
-      throw new BadRequestError(`Subscriber with email '${cleanEmail}' already exists in database.`);
+      throw new BadRequestError(
+        `Subscriber with email '${cleanEmail}' already exists in database.`
+      )
     }
 
     const created = await prisma.subscriber.create({
@@ -437,49 +508,65 @@ export class SubscriberService {
         subscribedAt: new Date(),
         updatedAt: new Date(),
       },
-    });
+    })
 
-    this.logger.info(`✔ Admin created subscriber ${cleanEmail} (status: ${status})`);
+    this.logger.info(
+      `✔ Admin created subscriber ${cleanEmail} (status: ${status})`
+    )
 
     // Sync to Plunk
-    await this.syncSubscriberToPlunk(cleanEmail, cleanName, status === "subscribed", source);
+    await this.syncSubscriberToPlunk(
+      cleanEmail,
+      cleanName,
+      status === "subscribed",
+      source
+    )
 
     // Optional welcome email
     if (payload.sendWelcomeEmail) {
-      await this.sendWelcomeEmail(cleanEmail, cleanName || undefined);
+      await this.sendWelcomeEmail(cleanEmail, cleanName || undefined)
     }
 
-    return created;
+    return created
   }
 
   /**
    * READ ONE: Get single subscriber by ID
    */
   public async getSubscriberById(id: string): Promise<any> {
-    const subscriber = await prisma.subscriber.findUnique({ where: { id } });
+    const subscriber = await prisma.subscriber.findUnique({ where: { id } })
     if (!subscriber) {
-      throw new NotFoundError(`Subscriber with ID ${id} not found`);
+      throw new NotFoundError(`Subscriber with ID ${id} not found`)
     }
-    return subscriber;
+    return subscriber
   }
 
   /**
    * UPDATE: Update subscriber profile & sync with Plunk
    */
-  public async updateSubscriber(id: string, data: { name?: string; status?: string; source?: string }): Promise<any> {
-    const existing = await this.getSubscriberById(id);
+  public async updateSubscriber(
+    id: string,
+    data: { name?: string; status?: string; source?: string }
+  ): Promise<any> {
+    const existing = await this.getSubscriberById(id)
 
     const updated = await prisma.subscriber.update({
       where: { id },
       data: {
-        name: data.name !== undefined ? this.sanitizeInput(data.name) : existing.name,
+        name:
+          data.name !== undefined
+            ? this.sanitizeInput(data.name)
+            : existing.name,
         status: data.status !== undefined ? data.status : existing.status,
-        source: data.source !== undefined ? this.sanitizeInput(data.source) : existing.source,
+        source:
+          data.source !== undefined
+            ? this.sanitizeInput(data.source)
+            : existing.source,
         updatedAt: new Date(),
       },
-    });
+    })
 
-    this.logger.info(`✔ Subscriber ${existing.email} updated in DB`);
+    this.logger.info(`✔ Subscriber ${existing.email} updated in DB`)
 
     // Sync updated state to Plunk
     await this.syncSubscriberToPlunk(
@@ -487,35 +574,38 @@ export class SubscriberService {
       updated.name || "",
       updated.status === "subscribed",
       updated.source
-    );
+    )
 
-    return updated;
+    return updated
   }
 
   /**
    * DELETE: Delete subscriber from DB & sync deletion/unsubscribe to Plunk
    */
   public async deleteSubscriber(id: string): Promise<void> {
-    const existing = await this.getSubscriberById(id);
+    const existing = await this.getSubscriberById(id)
 
-    await prisma.subscriber.delete({ where: { id } });
-    this.logger.info(`✔ Subscriber ${existing.email} deleted from DB`);
+    await prisma.subscriber.delete({ where: { id } })
+    this.logger.info(`✔ Subscriber ${existing.email} deleted from DB`)
 
     // Sync unsubscribe/delete to Plunk
-    await this.syncSubscriberToPlunk(existing.email, existing.name || "", false);
+    await this.syncSubscriberToPlunk(existing.email, existing.name || "", false)
   }
 
   /**
    * BULK UPDATE STATUS: Update status for multiple subscribers
    */
-  public async bulkUpdateStatus(subscriberIds: string[], status: string): Promise<{ count: number }> {
+  public async bulkUpdateStatus(
+    subscriberIds: string[],
+    status: string
+  ): Promise<{ count: number }> {
     const validSubscribers = await prisma.subscriber.findMany({
       where: { id: { in: subscriberIds } },
       select: { id: true, email: true, name: true, source: true },
-    });
+    })
 
     if (validSubscribers.length === 0) {
-      return { count: 0 };
+      return { count: 0 }
     }
 
     await prisma.subscriber.updateMany({
@@ -524,40 +614,51 @@ export class SubscriberService {
         status,
         updatedAt: new Date(),
       },
-    });
+    })
 
-    this.logger.info(`✔ Bulk updated ${validSubscribers.length} subscribers to status '${status}'`);
+    this.logger.info(
+      `✔ Bulk updated ${validSubscribers.length} subscribers to status '${status}'`
+    )
 
     // Sync with Plunk in background
     Promise.all(
       validSubscribers.map((sub) =>
-        this.syncSubscriberToPlunk(sub.email, sub.name || "", status === "subscribed", sub.source)
+        this.syncSubscriberToPlunk(
+          sub.email,
+          sub.name || "",
+          status === "subscribed",
+          sub.source
+        )
       )
     ).catch((err) => {
-      this.logger.warn("Plunk bulk sync error:", { err });
-    });
+      this.logger.warn("Plunk bulk sync error:", { err })
+    })
 
-    return { count: validSubscribers.length };
+    return { count: validSubscribers.length }
   }
 
   /**
    * BULK DELETE: Delete multiple subscribers by IDs
    */
-  public async bulkDeleteSubscribers(subscriberIds: string[]): Promise<{ count: number }> {
+  public async bulkDeleteSubscribers(
+    subscriberIds: string[]
+  ): Promise<{ count: number }> {
     const validSubscribers = await prisma.subscriber.findMany({
       where: { id: { in: subscriberIds } },
       select: { id: true, email: true, name: true },
-    });
+    })
 
     if (validSubscribers.length === 0) {
-      return { count: 0 };
+      return { count: 0 }
     }
 
     await prisma.subscriber.deleteMany({
       where: { id: { in: subscriberIds } },
-    });
+    })
 
-    this.logger.info(`✔ Bulk deleted ${validSubscribers.length} subscribers from DB`);
+    this.logger.info(
+      `✔ Bulk deleted ${validSubscribers.length} subscribers from DB`
+    )
 
     // Sync deletion to Plunk
     Promise.all(
@@ -565,61 +666,72 @@ export class SubscriberService {
         this.syncSubscriberToPlunk(sub.email, sub.name || "", false)
       )
     ).catch((err) => {
-      this.logger.warn("Plunk bulk delete sync error:", { err });
-    });
+      this.logger.warn("Plunk bulk delete sync error:", { err })
+    })
 
-    return { count: validSubscribers.length };
+    return { count: validSubscribers.length }
   }
 
   /**
    * RESEND WELCOME EMAIL: Re-trigger welcome email to subscriber
    */
   public async resendWelcomeEmail(id: string): Promise<any> {
-    const subscriber = await this.getSubscriberById(id);
-    await this.sendWelcomeEmail(subscriber.email, subscriber.name || undefined);
-    return { email: subscriber.email, message: `Welcome email resent to ${subscriber.email}` };
+    const subscriber = await this.getSubscriberById(id)
+    await this.sendWelcomeEmail(subscriber.email, subscriber.name || undefined)
+    return {
+      email: subscriber.email,
+      message: `Welcome email resent to ${subscriber.email}`,
+    }
   }
 
   /**
    * EXPORT SUBSCRIBERS: Fetch all filtered subscribers for CSV export
    */
   public async exportSubscribers(query?: {
-    search?: string;
-    status?: string;
-    source?: string;
-    sortBy?: string;
-    sortOrder?: "asc" | "desc";
+    search?: string
+    status?: string
+    source?: string
+    sortBy?: string
+    sortOrder?: "asc" | "desc"
   }): Promise<any[]> {
-    const where: any = {};
+    const where: any = {}
 
     if (query?.search && query.search.trim()) {
-      const search = query.search.trim();
+      const search = query.search.trim()
       where.OR = [
         { email: { contains: search, mode: "insensitive" } },
         { name: { contains: search, mode: "insensitive" } },
         { source: { contains: search, mode: "insensitive" } },
-      ];
+      ]
     }
 
     if (query?.status && query.status !== "ALL") {
-      where.status = query.status;
+      where.status = query.status
     }
 
     if (query?.source && query.source !== "ALL" && query.source.trim()) {
-      where.source = { contains: query.source.trim(), mode: "insensitive" };
+      where.source = { contains: query.source.trim(), mode: "insensitive" }
     }
 
-    const allowedSortFields = ["subscribedAt", "updatedAt", "email", "name", "status", "source"];
-    const sortField = allowedSortFields.includes(query?.sortBy || "") ? (query?.sortBy as string) : "subscribedAt";
-    const sortDirection = query?.sortOrder === "asc" ? "asc" : "desc";
+    const allowedSortFields = [
+      "subscribedAt",
+      "updatedAt",
+      "email",
+      "name",
+      "status",
+      "source",
+    ]
+    const sortField = allowedSortFields.includes(query?.sortBy || "")
+      ? (query?.sortBy as string)
+      : "subscribedAt"
+    const sortDirection = query?.sortOrder === "asc" ? "asc" : "desc"
 
     return await prisma.subscriber.findMany({
       where,
       orderBy: { [sortField]: sortDirection },
       take: 10000,
-    });
+    })
   }
-
 
   // ── Plunk Sync & Email Dispatch ───────────────────────────────────────────
 
@@ -627,19 +739,26 @@ export class SubscriberService {
    * Helper: Sync subscriber to Plunk contacts API per Plunk Contacts documentation
    * POST /v1/contacts upserts the contact with subscribed: true or subscribed: false
    */
-  public async syncSubscriberToPlunk(email: string, name?: string, subscribed: boolean = true, source?: string): Promise<void> {
-    const secretKey = config.plunk.secretKey;
+  public async syncSubscriberToPlunk(
+    email: string,
+    name?: string,
+    subscribed: boolean = true,
+    source?: string
+  ): Promise<void> {
+    const secretKey = config.plunk.secretKey
 
     if (this.isPlaceholderKey(secretKey)) {
-      this.logger.info(`ℹ️ [SIMULATED PLUNK SYNC] Subscriber ${email} set to subscribed=${subscribed}`);
-      return;
+      this.logger.info(
+        `ℹ️ [SIMULATED PLUNK SYNC] Subscriber ${email} set to subscribed=${subscribed}`
+      )
+      return
     }
 
-    const cleanEmail = email.trim().toLowerCase();
+    const cleanEmail = email.trim().toLowerCase()
     const headers = {
       Authorization: `Bearer ${secretKey}`,
       "Content-Type": "application/json",
-    };
+    }
 
     try {
       // Step 1: POST /contacts to upsert the contact and retrieve its Plunk ID
@@ -654,18 +773,18 @@ export class SubscriberService {
           },
         },
         { headers, timeout: 5000 }
-      );
+      )
 
-      const contactData = upsertResponse.data;
-      const contactId = contactData?.id;
-      const isUpdate = contactData?._meta?.isUpdate === true;
+      const contactData = upsertResponse.data
+      const contactId = contactData?.id
+      const isUpdate = contactData?._meta?.isUpdate === true
 
       this.logger.info(`✔ Plunk POST /contacts response for ${cleanEmail}`, {
         id: contactId,
         isNew: contactData?._meta?.isNew,
         isUpdate,
         status: upsertResponse.status,
-      });
+      })
 
       // Step 2: For existing contacts, POST upsert may not update the `subscribed` field.
       // Use PATCH /contacts/:id to explicitly set the subscription state.
@@ -674,19 +793,31 @@ export class SubscriberService {
           `${config.plunk.apiUrl}/contacts/${contactId}`,
           { subscribed },
           { headers, timeout: 5000 }
-        );
+        )
 
-        this.logger.info(`✔ Plunk PATCH /contacts/${contactId} — subscribed set to ${subscribed}`, {
-          data: patchResponse.data,
-        });
+        this.logger.info(
+          `✔ Plunk PATCH /contacts/${contactId} — subscribed set to ${subscribed}`,
+          {
+            data: patchResponse.data,
+          }
+        )
       }
 
-      this.logger.info(`✔ Synced subscriber ${cleanEmail} to Plunk (subscribed: ${subscribed})`);
+      this.logger.info(
+        `✔ Synced subscriber ${cleanEmail} to Plunk (subscribed: ${subscribed})`
+      )
     } catch (error) {
       const errorDetails = axios.isAxiosError(error)
-        ? { status: error.response?.status, data: error.response?.data, url: error.config?.url }
-        : error;
-      this.logger.error(`❌ Failed to sync subscriber ${cleanEmail} to Plunk contacts API`, { error: errorDetails });
+        ? {
+            status: error.response?.status,
+            data: error.response?.data,
+            url: error.config?.url,
+          }
+        : error
+      this.logger.error(
+        `❌ Failed to sync subscriber ${cleanEmail} to Plunk contacts API`,
+        { error: errorDetails }
+      )
     }
   }
 
@@ -695,34 +826,41 @@ export class SubscriberService {
    * Includes a signed unsubscribe URL in the email body and List-Unsubscribe header.
    */
   private async sendWelcomeEmail(email: string, name?: string): Promise<void> {
-    const secretKey = config.plunk.secretKey;
-    const recipientEmail = config.contact.recipientEmail;
+    const secretKey = config.plunk.secretKey
+    const recipientEmail = config.contact.recipientEmail
 
-    let templateId = config.plunk.confirmationTemplateId || config.plunk.templateId;
+    let templateId =
+      config.plunk.confirmationTemplateId || config.plunk.templateId
     try {
       const dbTemplate = await prisma.emailTemplate.findUnique({
         where: { slug: "subscriber-welcome" },
-      });
+      })
       if (dbTemplate?.plunkId) {
-        templateId = dbTemplate.plunkId;
+        templateId = dbTemplate.plunkId
       }
     } catch {
       // fallback to config
     }
 
     // Generate the one-click unsubscribe URL
-    const unsubscribeUrl = this.buildUnsubscribeUrl(email);
+    const unsubscribeUrl = this.buildUnsubscribeUrl(email)
 
-    const { subject: emailSubject, html: emailBody, listUnsubscribeHeader } = renderSubscriptionConfirmationEmail({
+    const {
+      subject: emailSubject,
+      html: emailBody,
+      listUnsubscribeHeader,
+    } = renderSubscriptionConfirmationEmail({
       email,
       name,
       source: "newsletter_subscription",
       unsubscribeUrl,
-    });
+    })
 
     if (this.isPlaceholderKey(secretKey)) {
-      this.logger.info(`ℹ️ [SIMULATED WELCOME EMAIL] Sent welcome email to ${email} | Unsubscribe: ${unsubscribeUrl}`);
-      return;
+      this.logger.info(
+        `ℹ️ [SIMULATED WELCOME EMAIL] Sent welcome email to ${email} | Unsubscribe: ${unsubscribeUrl}`
+      )
+      return
     }
 
     try {
@@ -741,10 +879,10 @@ export class SubscriberService {
           "List-Unsubscribe": listUnsubscribeHeader,
           "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
         },
-      };
+      }
 
       if (templateId && !this.isPlaceholderKey(templateId)) {
-        plunkPayload.template = templateId;
+        plunkPayload.template = templateId
       }
 
       await axios.post(`${config.plunk.apiUrl}/v1/send`, plunkPayload, {
@@ -753,11 +891,13 @@ export class SubscriberService {
           "Content-Type": "application/json",
         },
         timeout: 10000,
-      });
+      })
 
-      this.logger.info(`✔ Welcome email with unsubscribe link delivered to ${email} via Plunk (Template: ${templateId || 'N/A'})`);
+      this.logger.info(
+        `✔ Welcome email with unsubscribe link delivered to ${email} via Plunk (Template: ${templateId || "N/A"})`
+      )
     } catch (error) {
-      this.logger.warn(`Failed to send welcome email to ${email}`, { error });
+      this.logger.warn(`Failed to send welcome email to ${email}`, { error })
     }
   }
 }

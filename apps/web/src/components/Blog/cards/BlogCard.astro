@@ -1,5 +1,6 @@
 ---
 import type { BlogPost } from "@/data/blogPosts"
+import { formatViewsCount } from "@/data/blogPosts"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { FavouriteIcon, Comment01Icon } from "@hugeicons/core-free-icons"
 
@@ -9,16 +10,15 @@ interface Props {
   class?: string
 }
 
-const {
-  post,
-  isInitiallyVisible = true,
-  class: className = "",
-} = Astro.props
+const { post, isInitiallyVisible = true, class: className = "" } = Astro.props
 ---
 
 <article
   data-blog-card
   data-category={post.category.toLowerCase()}
+  data-title={post.title.toLowerCase()}
+  data-summary={(post.summary || "").toLowerCase()}
+  data-tags={(post.tags || []).join(",").toLowerCase()}
   class={`group relative flex-col justify-between overflow-hidden border border-border bg-background/60 backdrop-blur-sm transition-all duration-300 hover:border-primary/40 hover:bg-background/90 hover:shadow-[0_0_0_1px_oklch(var(--primary)/20%),0_8px_32px_-8px_oklch(var(--primary)/12%)] ${
     isInitiallyVisible ? "flex" : "hidden"
   } ${className}`}
@@ -43,7 +43,9 @@ const {
 
   <div>
     {/* Card Thumbnail Container */}
-    <div class="relative aspect-[16/9] w-full overflow-hidden border-b border-border/80 bg-muted/40">
+    <div
+      class="relative aspect-[16/9] w-full overflow-hidden border-b border-border/80 bg-muted/40"
+    >
       <img
         src={post.thumbnail}
         alt={post.title}
@@ -51,7 +53,10 @@ const {
         loading="lazy"
       />
       {/* Vignette Overlay */}
-      <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent"></div>
+      <div
+        class="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent"
+      >
+      </div>
 
       {/* Category Badge on Top-Left */}
       <div class="absolute top-3 left-3 z-10">
@@ -77,38 +82,51 @@ const {
     {/* Content Container */}
     <div class="p-6">
       {/* Date & Read Time Metadata */}
-      <div class="flex flex-wrap items-center gap-2 font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
+      <div
+        class="flex flex-wrap items-center gap-2 font-mono text-[11px] tracking-widest text-muted-foreground uppercase"
+      >
         <span>{post.date}</span>
         <span class="text-primary/60">•</span>
         <span>{post.readTime}</span>
-        {post.views && (
-          <>
-            <span class="text-primary/60">•</span>
-            <span>{post.views} VIEWS</span>
-          </>
-        )}
-        {post.likesCount !== undefined && (
-          <>
-            <span class="text-primary/60">•</span>
-            <span class="inline-flex items-center gap-1 text-rose-400">
-              <HugeiconsIcon icon={FavouriteIcon} className="size-3 fill-rose-400/40 text-rose-400" />
-              <span>{post.likesCount}</span>
-            </span>
-          </>
-        )}
-        {post.commentsCount !== undefined && (
-          <>
-            <span class="text-primary/60">•</span>
-            <span class="inline-flex items-center gap-1 text-primary">
-              <HugeiconsIcon icon={Comment01Icon} className="size-3" />
-              <span>{post.commentsCount}</span>
-            </span>
-          </>
-        )}
+        {
+          post.views && (
+            <>
+              <span class="text-primary/60">•</span>
+              <span>{formatViewsCount(post.views)} VIEWS</span>
+            </>
+          )
+        }
+        {
+          post.likesCount !== undefined && (
+            <>
+              <span class="text-primary/60">•</span>
+              <span class="inline-flex items-center gap-1 text-rose-400">
+                <HugeiconsIcon
+                  icon={FavouriteIcon}
+                  className="size-3 fill-rose-400/40 text-rose-400"
+                />
+                <span>{post.likesCount}</span>
+              </span>
+            </>
+          )
+        }
+        {
+          post.commentsCount !== undefined && (
+            <>
+              <span class="text-primary/60">•</span>
+              <span class="inline-flex items-center gap-1 text-primary">
+                <HugeiconsIcon icon={Comment01Icon} className="size-3" />
+                <span>{post.commentsCount}</span>
+              </span>
+            </>
+          )
+        }
       </div>
 
       {/* Title */}
-      <h3 class="mt-3 text-lg font-bold tracking-tight text-foreground transition-colors duration-200 group-hover:text-primary line-clamp-2">
+      <h3
+        class="mt-3 line-clamp-2 text-lg font-bold tracking-tight text-foreground transition-colors duration-200 group-hover:text-primary"
+      >
         <a href={`/blog/${post.slug}`} class="focus:outline-none">
           <span class="absolute inset-0 z-10" aria-hidden="true"></span>
           {post.title}
@@ -116,7 +134,9 @@ const {
       </h3>
 
       {/* Summary */}
-      <p class="mt-2.5 text-sm leading-relaxed text-muted-foreground line-clamp-3">
+      <p
+        class="mt-2.5 line-clamp-3 text-sm leading-relaxed text-muted-foreground"
+      >
         {post.summary}
       </p>
     </div>
@@ -126,52 +146,67 @@ const {
   <div class="p-6 pt-0">
     <div class="mb-4 flex flex-wrap gap-1.5">
       {
-        post.tags.slice(0, 3).map((tag) => (
-          <span
-            class="inline-flex items-center border border-border bg-muted/50 px-2 py-0.5 font-mono text-[10px] text-muted-foreground/90 transition-colors group-hover:border-primary/20"
-          >
-            #{tag}
-          </span>
-        ))
+        post.tags
+          .slice(0, 3)
+          .map((tag) => (
+            <span class="inline-flex items-center border border-border bg-muted/50 px-2 py-0.5 font-mono text-[10px] text-muted-foreground/90 transition-colors group-hover:border-primary/20">
+              #{tag}
+            </span>
+          ))
       }
-      {post.tags.length > 3 && (
-        <span class="inline-flex items-center font-mono text-[10px] text-muted-foreground/60">
-          +{post.tags.length - 3}
-        </span>
-      )}
+      {
+        post.tags.length > 3 && (
+          <span class="inline-flex items-center font-mono text-[10px] text-muted-foreground/60">
+            +{post.tags.length - 3}
+          </span>
+        )
+      }
     </div>
 
-    <div class="relative z-20 flex items-center justify-between border-t border-border/60 pt-4">
+    <div
+      class="relative z-20 flex items-center justify-between border-t border-border/60 pt-4"
+    >
       {/* Author avatar & info */}
-      <div class="flex items-center gap-2.5 min-w-0">
-        {post.author.avatar && (
-          <div class="relative shrink-0">
-            <img
-              src={post.author.avatar}
-              alt={post.author.name}
-              class="h-8 w-8 rounded-full border border-primary/40 object-cover shadow-xs"
-            />
-            <span class="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border border-background bg-emerald-500 shadow-xs" />
-          </div>
-        )}
-        <div class="flex flex-col justify-center min-w-0 gap-0.5">
-          <span class="font-mono text-xs font-bold text-foreground leading-tight truncate transition-colors group-hover:text-primary">
+      <div class="flex min-w-0 items-center gap-2.5">
+        {
+          post.author.avatar && (
+            <div class="relative shrink-0">
+              <img
+                src={post.author.avatar}
+                alt={post.author.name}
+                class="h-8 w-8 rounded-full border border-primary/40 object-cover shadow-xs"
+              />
+              <span class="absolute -right-0.5 -bottom-0.5 h-2.5 w-2.5 rounded-full border border-background bg-emerald-500 shadow-xs" />
+            </div>
+          )
+        }
+        <div class="flex min-w-0 flex-col justify-center gap-0.5">
+          <span
+            class="truncate font-mono text-xs leading-tight font-bold text-foreground transition-colors group-hover:text-primary"
+          >
             {post.author.name}
           </span>
-          <span class="font-mono text-[10px] text-muted-foreground leading-none truncate">
+          <span
+            class="truncate font-mono text-[10px] leading-none text-muted-foreground"
+          >
             {post.author.role}
           </span>
         </div>
       </div>
 
       {/* Action button */}
-      <a href={`/blog/${post.slug}`} class="inline-block relative z-20 shrink-0 ml-3">
+      <a
+        href={`/blog/${post.slug}`}
+        class="relative z-20 ml-3 inline-block shrink-0"
+      >
         <button
           type="button"
-          class="inline-flex h-8 items-center gap-1.5 border border-border bg-background px-3 font-mono text-xs text-foreground transition-colors hover:border-primary hover:text-primary cursor-pointer select-none"
+          class="inline-flex h-8 cursor-pointer items-center gap-1.5 border border-border bg-background px-3 font-mono text-xs text-foreground transition-colors select-none hover:border-primary hover:text-primary"
         >
           <span>Read</span>
-          <span class="transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
+          <span
+            class="transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+          >
             ↗
           </span>
         </button>

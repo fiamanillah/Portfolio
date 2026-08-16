@@ -23,7 +23,9 @@ export function SocialImagesSection({
   twitterImage,
   setTwitterImage,
 }: SocialImagesSectionProps) {
-  const [pickerTarget, setPickerTarget] = React.useState<"og" | "twitter" | null>(null)
+  const [pickerTarget, setPickerTarget] = React.useState<
+    "og" | "twitter" | null
+  >(null)
 
   const handleMediaSelect = (selected: MediaFileDTO | MediaFileDTO[]) => {
     const file = Array.isArray(selected) ? selected[0] : selected
@@ -39,13 +41,14 @@ export function SocialImagesSection({
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6 border-t border-border/80">
+    <div className="grid grid-cols-1 gap-6 border-t border-border/80 pt-6 md:grid-cols-2">
       {/* OpenGraph Image */}
-      <div className="space-y-3 p-4 rounded-xl border border-border/80 bg-background/60">
+      <div className="space-y-3 rounded-xl border border-border/80 bg-background/60 p-4">
         <div className="flex items-center justify-between">
           <div className="space-y-0.5">
-            <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-              <Share2 className="h-3.5 w-3.5 text-primary" /> OpenGraph Social Image
+            <label className="flex items-center gap-1.5 text-xs font-bold tracking-wider text-muted-foreground uppercase">
+              <Share2 className="h-3.5 w-3.5 text-primary" /> OpenGraph Social
+              Image
             </label>
             <p className="text-[11px] text-muted-foreground">
               LinkedIn & Facebook link preview banner (1200×630px).
@@ -61,7 +64,7 @@ export function SocialImagesSection({
                   setOgImage(coverImage)
                   toast.success("Copied from cover image")
                 }}
-                className="h-6 text-[10px] px-1.5 text-primary hover:bg-primary/10"
+                className="h-6 px-1.5 text-[10px] text-primary hover:bg-primary/10"
               >
                 Use Cover
               </Button>
@@ -71,7 +74,7 @@ export function SocialImagesSection({
               variant="outline"
               size="sm"
               onClick={() => setPickerTarget("og")}
-              className="h-6 text-[10px] px-2 gap-1 bg-background"
+              className="h-6 gap-1 bg-background px-2 text-[10px]"
             >
               <FolderOpen className="h-3 w-3" /> Library
             </Button>
@@ -83,7 +86,7 @@ export function SocialImagesSection({
             placeholder="Defaults to cover thumbnail..."
             value={ogImage}
             onChange={(e) => setOgImage(e.target.value)}
-            className="text-xs font-mono h-8 bg-background border-border/90 hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary/20 shadow-xs"
+            className="h-8 border-border/90 bg-background font-mono text-xs shadow-xs hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary/20"
           />
           {ogImage && (
             <Button
@@ -91,7 +94,7 @@ export function SocialImagesSection({
               variant="ghost"
               size="icon"
               onClick={() => setOgImage("")}
-              className="h-8 w-8 text-muted-foreground hover:text-destructive shrink-0"
+              className="h-8 w-8 shrink-0 text-muted-foreground hover:text-destructive"
             >
               <X className="h-3.5 w-3.5" />
             </Button>
@@ -99,22 +102,27 @@ export function SocialImagesSection({
         </div>
 
         {ogImage ? (
-          <div className="rounded-lg overflow-hidden border aspect-[1.91/1] max-h-36 bg-muted/30">
-            <img src={ogImage} alt="OG Preview" className="w-full h-full object-cover" />
+          <div className="aspect-[1.91/1] max-h-36 overflow-hidden rounded-lg border bg-muted/30">
+            <img
+              src={ogImage}
+              alt="OG Preview"
+              className="h-full w-full object-cover"
+            />
           </div>
         ) : (
-          <div className="p-4 rounded-lg border border-dashed text-center text-[11px] text-muted-foreground bg-muted/10">
+          <div className="rounded-lg border border-dashed bg-muted/10 p-4 text-center text-[11px] text-muted-foreground">
             Will inherit primary cover artwork
           </div>
         )}
       </div>
 
       {/* Twitter Image */}
-      <div className="space-y-3 p-4 rounded-xl border border-border/80 bg-background/60">
+      <div className="space-y-3 rounded-xl border border-border/80 bg-background/60 p-4">
         <div className="flex items-center justify-between">
           <div className="space-y-0.5">
-            <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-              <Share2 className="h-3.5 w-3.5 text-sky-400" /> Twitter / X Card Image
+            <label className="flex items-center gap-1.5 text-xs font-bold tracking-wider text-muted-foreground uppercase">
+              <Share2 className="h-3.5 w-3.5 text-sky-400" /> Twitter / X Card
+              Image
             </label>
             <p className="text-[11px] text-muted-foreground">
               Large summary card preview for X posts.
@@ -130,7 +138,7 @@ export function SocialImagesSection({
                   setTwitterImage(ogImage || coverImage)
                   toast.success("Copied from OG/Cover")
                 }}
-                className="h-6 text-[10px] px-1.5 text-primary hover:bg-primary/10"
+                className="h-6 px-1.5 text-[10px] text-primary hover:bg-primary/10"
               >
                 Use OG / Cover
               </Button>
@@ -140,7 +148,7 @@ export function SocialImagesSection({
               variant="outline"
               size="sm"
               onClick={() => setPickerTarget("twitter")}
-              className="h-6 text-[10px] px-2 gap-1 bg-background"
+              className="h-6 gap-1 bg-background px-2 text-[10px]"
             >
               <FolderOpen className="h-3 w-3" /> Library
             </Button>
@@ -152,7 +160,7 @@ export function SocialImagesSection({
             placeholder="Defaults to OG or cover thumbnail..."
             value={twitterImage}
             onChange={(e) => setTwitterImage(e.target.value)}
-            className="text-xs font-mono h-8 bg-background border-border/90 hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary/20 shadow-xs"
+            className="h-8 border-border/90 bg-background font-mono text-xs shadow-xs hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary/20"
           />
           {twitterImage && (
             <Button
@@ -160,7 +168,7 @@ export function SocialImagesSection({
               variant="ghost"
               size="icon"
               onClick={() => setTwitterImage("")}
-              className="h-8 w-8 text-muted-foreground hover:text-destructive shrink-0"
+              className="h-8 w-8 shrink-0 text-muted-foreground hover:text-destructive"
             >
               <X className="h-3.5 w-3.5" />
             </Button>
@@ -168,11 +176,15 @@ export function SocialImagesSection({
         </div>
 
         {twitterImage ? (
-          <div className="rounded-lg overflow-hidden border aspect-[2/1] max-h-36 bg-muted/30">
-            <img src={twitterImage} alt="Twitter Preview" className="w-full h-full object-cover" />
+          <div className="aspect-[2/1] max-h-36 overflow-hidden rounded-lg border bg-muted/30">
+            <img
+              src={twitterImage}
+              alt="Twitter Preview"
+              className="h-full w-full object-cover"
+            />
           </div>
         ) : (
-          <div className="p-4 rounded-lg border border-dashed text-center text-[11px] text-muted-foreground bg-muted/10">
+          <div className="rounded-lg border border-dashed bg-muted/10 p-4 text-center text-[11px] text-muted-foreground">
             Will inherit OpenGraph or cover artwork
           </div>
         )}

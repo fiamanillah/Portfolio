@@ -42,21 +42,31 @@ export function ResetOtpStep({
   return (
     <form onSubmit={onSubmit} noValidate className="space-y-4">
       {/* Information Banner */}
-      <div className="rounded-none border border-primary/30 bg-primary/5 p-3.5 flex items-start gap-3">
-        <HugeiconsIcon icon={Mail02Icon} className="size-4 text-primary shrink-0 mt-0.5" />
-        <div className="space-y-0.5 min-w-0 flex-1">
+      <div className="flex items-start gap-3 rounded-none border border-primary/30 bg-primary/5 p-3.5">
+        <HugeiconsIcon
+          icon={Mail02Icon}
+          className="mt-0.5 size-4 shrink-0 text-primary"
+        />
+        <div className="min-w-0 flex-1 space-y-0.5">
           <p className="font-mono text-xs font-semibold text-foreground">
             Password Recovery Code Sent
           </p>
-          <p className="font-mono text-[11px] text-muted-foreground break-words leading-relaxed">
-            Please check your inbox at <span className="text-primary font-bold">{email || "your email"}</span> for the recovery OTP.
+          <p className="font-mono text-[11px] leading-relaxed break-words text-muted-foreground">
+            Please check your inbox at{" "}
+            <span className="font-bold text-primary">
+              {email || "your email"}
+            </span>{" "}
+            for the recovery OTP.
           </p>
         </div>
       </div>
 
       {/* OTP Code Input */}
       <Field data-invalid={!!error} className="space-y-2">
-        <FieldLabel htmlFor="reset-otp-input" className="font-mono text-xs font-semibold text-foreground block">
+        <FieldLabel
+          htmlFor="reset-otp-input"
+          className="block font-mono text-xs font-semibold text-foreground"
+        >
           Enter 6-Digit Verification Code
         </FieldLabel>
         <div className="flex justify-center py-1">
@@ -84,21 +94,19 @@ export function ResetOtpStep({
       </Field>
 
       {/* Resend Link */}
-      <div className="flex items-center justify-between font-mono text-xs pt-1">
-        <span className="text-muted-foreground">
-          Didn't receive code?
-        </span>
+      <div className="flex items-center justify-between pt-1 font-mono text-xs">
+        <span className="text-muted-foreground">Didn't receive code?</span>
         <button
           type="button"
           disabled={resendCountdown > 0 || isResending}
           onClick={onResend}
-          className="text-primary font-semibold hover:underline cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="cursor-pointer font-semibold text-primary transition-colors hover:underline disabled:cursor-not-allowed disabled:opacity-50"
         >
           {resendCountdown > 0
             ? `Resend in ${resendCountdown}s`
             : isResending
-            ? "Sending..."
-            : "Resend Code"}
+              ? "Sending..."
+              : "Resend Code"}
         </button>
       </div>
 
@@ -106,11 +114,14 @@ export function ResetOtpStep({
       <Button
         type="submit"
         disabled={otpCode.length < 6 || isVerifying}
-        className="w-full rounded-none font-mono text-xs font-bold uppercase tracking-wider bg-primary text-primary-foreground hover:bg-primary/90 transition-colors cursor-pointer h-10 shadow-sm flex items-center justify-center gap-2"
+        className="flex h-10 w-full cursor-pointer items-center justify-center gap-2 rounded-none bg-primary font-mono text-xs font-bold tracking-wider text-primary-foreground uppercase shadow-sm transition-colors hover:bg-primary/90"
       >
         {isVerifying ? (
           <>
-            <HugeiconsIcon icon={Loading03Icon} className="size-4 animate-spin" />
+            <HugeiconsIcon
+              icon={Loading03Icon}
+              className="size-4 animate-spin"
+            />
             <span>Validating Code...</span>
           </>
         ) : (

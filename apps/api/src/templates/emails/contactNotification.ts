@@ -1,12 +1,12 @@
 // src/templates/emails/contactNotification.ts
-import { renderEmailLayout } from "./baseLayout";
+import { renderEmailLayout } from "./baseLayout"
 
 export interface ContactNotificationOptions {
-  name: string;
-  email: string;
-  subject?: string;
-  message: string;
-  subscribed?: boolean;
+  name: string
+  email: string
+  subject?: string
+  message: string
+  subscribed?: boolean
 }
 
 /**
@@ -57,30 +57,36 @@ export function getContactNotificationLiquidBody(): string {
         Reply to {{ name }} →
       </a>
     </div>
-  `.trim();
+  `.trim()
 
   const { html } = renderEmailLayout({
     badgeLabel: "New Contact Message",
     title: "New Contact Message",
     subtitle: "Submission received from portfolio contact form",
     contentHtml,
-    previewText: "New message from {{ name }} ({{ email }}): {{ subject | default: '(No Subject)' }}",
+    previewText:
+      "New message from {{ name }} ({{ email }}): {{ subject | default: '(No Subject)' }}",
     showUnsubscribe: false,
-  });
+  })
 
-  return html;
+  return html
 }
 
 /**
  * Renders the Admin Notification Email with concrete runtime values.
  */
-export function renderContactNotificationEmail(options: ContactNotificationOptions): {
-  subject: string;
-  html: string;
+export function renderContactNotificationEmail(
+  options: ContactNotificationOptions
+): {
+  subject: string
+  html: string
 } {
-  const { name, email, subject: userSubject, message, subscribed } = options;
-  const safeSubject = userSubject && userSubject.trim().length > 0 ? userSubject.trim() : "No Subject";
-  const emailSubject = `[Portfolio Contact] ${safeSubject} — from ${name}`;
+  const { name, email, subject: userSubject, message, subscribed } = options
+  const safeSubject =
+    userSubject && userSubject.trim().length > 0
+      ? userSubject.trim()
+      : "No Subject"
+  const emailSubject = `[Portfolio Contact] ${safeSubject} — from ${name}`
 
   const contentHtml = `
     <!-- Contact Info Card -->
@@ -101,8 +107,8 @@ export function renderContactNotificationEmail(options: ContactNotificationOptio
       <tr>
         <td style="padding: 14px 18px; font-size: 13px;">
           <strong style="color: #94a3b8; display: inline-block; width: 80px;">Newsletter:</strong>
-          <span style="color: ${subscribed ? '#10b981' : '#64748b'}; font-weight: ${subscribed ? '600' : '400'};">
-            ${subscribed ? 'Yes, Opted In' : 'No'}
+          <span style="color: ${subscribed ? "#10b981" : "#64748b"}; font-weight: ${subscribed ? "600" : "400"};">
+            ${subscribed ? "Yes, Opted In" : "No"}
           </span>
         </td>
       </tr>
@@ -120,11 +126,11 @@ export function renderContactNotificationEmail(options: ContactNotificationOptio
 
     <!-- Direct Reply Action -->
     <div style="margin-top: 24px; padding-top: 18px; border-top: 1px solid #1e293b; text-align: left;">
-      <a href="mailto:${email}?subject=${encodeURIComponent('Re: ' + safeSubject)}" style="display: inline-block; background-color: #06b6d4; color: #090d16; font-size: 13px; font-weight: 600; padding: 10px 20px; border-radius: 6px; text-decoration: none;">
+      <a href="mailto:${email}?subject=${encodeURIComponent("Re: " + safeSubject)}" style="display: inline-block; background-color: #06b6d4; color: #090d16; font-size: 13px; font-weight: 600; padding: 10px 20px; border-radius: 6px; text-decoration: none;">
         Reply to ${name} →
       </a>
     </div>
-  `.trim();
+  `.trim()
 
   const { html } = renderEmailLayout({
     badgeLabel: "New Contact Message",
@@ -133,7 +139,7 @@ export function renderContactNotificationEmail(options: ContactNotificationOptio
     contentHtml,
     previewText: `New portfolio contact message from ${name} (${email}): ${safeSubject}`,
     showUnsubscribe: false,
-  });
+  })
 
-  return { subject: emailSubject, html };
+  return { subject: emailSubject, html }
 }

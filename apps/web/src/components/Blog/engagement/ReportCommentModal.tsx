@@ -1,15 +1,15 @@
 // apps/web/src/components/Blog/engagement/ReportCommentModal.tsx
-import React, { useState } from "react";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { AlertCircleIcon, Tick02Icon } from "@hugeicons/core-free-icons";
-import { CommentsApi } from "@/lib/api/commentsApi";
+import React, { useState } from "react"
+import { HugeiconsIcon } from "@hugeicons/react"
+import { AlertCircleIcon, Tick02Icon } from "@hugeicons/core-free-icons"
+import { CommentsApi } from "@/lib/api/commentsApi"
 
 interface ReportCommentModalProps {
-  commentId: string;
-  isOpen: boolean;
-  userName?: string;
-  userEmail?: string;
-  onClose: () => void;
+  commentId: string
+  isOpen: boolean
+  userName?: string
+  userEmail?: string
+  onClose: () => void
 }
 
 export function ReportCommentModal({
@@ -19,16 +19,18 @@ export function ReportCommentModal({
   userEmail,
   onClose,
 }: ReportCommentModalProps) {
-  const [reportReason, setReportReason] = useState<string>("INAPPROPRIATE");
-  const [reportDetails, setReportDetails] = useState("");
-  const [isReporting, setIsReporting] = useState(false);
-  const [reportSuccessMessage, setReportSuccessMessage] = useState<string | null>(null);
+  const [reportReason, setReportReason] = useState<string>("INAPPROPRIATE")
+  const [reportDetails, setReportDetails] = useState("")
+  const [isReporting, setIsReporting] = useState(false)
+  const [reportSuccessMessage, setReportSuccessMessage] = useState<
+    string | null
+  >(null)
 
-  if (!isOpen) return null;
+  if (!isOpen) return null
 
   const handleReportSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsReporting(true);
+    e.preventDefault()
+    setIsReporting(true)
     try {
       const res = await CommentsApi.reportComment(
         commentId,
@@ -36,30 +38,33 @@ export function ReportCommentModal({
         reportDetails,
         userName,
         userEmail
-      );
-      setReportSuccessMessage(res.message || "Thank you for reporting.");
+      )
+      setReportSuccessMessage(res.message || "Thank you for reporting.")
       setTimeout(() => {
-        onClose();
-        setReportSuccessMessage(null);
-        setReportDetails("");
-      }, 2000);
+        onClose()
+        setReportSuccessMessage(null)
+        setReportDetails("")
+      }, 2000)
     } catch {
-      setReportSuccessMessage("Thank you. Report received.");
+      setReportSuccessMessage("Thank you. Report received.")
       setTimeout(() => {
-        onClose();
-        setReportSuccessMessage(null);
-      }, 2000);
+        onClose()
+        setReportSuccessMessage(null)
+      }, 2000)
     } finally {
-      setIsReporting(false);
+      setIsReporting(false)
     }
-  };
+  }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-xs p-4">
-      <div className="w-full max-w-md border border-border bg-background p-5 shadow-2xl relative">
-        <div className="flex items-center justify-between border-b border-border pb-3 mb-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-xs">
+      <div className="relative w-full max-w-md border border-border bg-background p-5 shadow-2xl">
+        <div className="mb-4 flex items-center justify-between border-b border-border pb-3">
           <div className="flex items-center gap-2">
-            <HugeiconsIcon icon={AlertCircleIcon} className="size-4 text-rose-500" />
+            <HugeiconsIcon
+              icon={AlertCircleIcon}
+              className="size-4 text-rose-500"
+            />
             <h3 className="font-mono text-sm font-bold text-foreground">
               Report Inappropriate Comment
             </h3>
@@ -67,18 +72,18 @@ export function ReportCommentModal({
           <button
             type="button"
             onClick={onClose}
-            className="font-mono text-xs text-muted-foreground hover:text-foreground cursor-pointer"
+            className="cursor-pointer font-mono text-xs text-muted-foreground hover:text-foreground"
           >
             [ESC]
           </button>
         </div>
 
         {reportSuccessMessage ? (
-          <div className="py-6 text-center space-y-2">
-            <div className="inline-flex size-10 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/30">
+          <div className="space-y-2 py-6 text-center">
+            <div className="inline-flex size-10 items-center justify-center rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-500">
               <HugeiconsIcon icon={Tick02Icon} className="size-5" />
             </div>
-            <p className="font-mono text-xs text-foreground font-semibold">
+            <p className="font-mono text-xs font-semibold text-foreground">
               {reportSuccessMessage}
             </p>
           </div>
@@ -93,11 +98,21 @@ export function ReportCommentModal({
                 onChange={(e) => setReportReason(e.target.value)}
                 className="w-full border border-border bg-muted/30 px-3 py-2 font-mono text-xs text-foreground focus:border-primary focus:outline-none"
               >
-                <option value="INAPPROPRIATE">Inappropriate or offensive content</option>
-                <option value="SPAM">Spam, advertising, or self-promotion</option>
-                <option value="HARASSMENT">Harassment or abusive behavior</option>
-                <option value="HATE_SPEECH">Hate speech or discrimination</option>
-                <option value="MISINFORMATION">Misinformation or false claims</option>
+                <option value="INAPPROPRIATE">
+                  Inappropriate or offensive content
+                </option>
+                <option value="SPAM">
+                  Spam, advertising, or self-promotion
+                </option>
+                <option value="HARASSMENT">
+                  Harassment or abusive behavior
+                </option>
+                <option value="HATE_SPEECH">
+                  Hate speech or discrimination
+                </option>
+                <option value="MISINFORMATION">
+                  Misinformation or false claims
+                </option>
                 <option value="OTHER">Other issue</option>
               </select>
             </div>
@@ -115,18 +130,18 @@ export function ReportCommentModal({
               />
             </div>
 
-            <div className="flex items-center justify-end gap-2 pt-2 border-t border-border/40">
+            <div className="flex items-center justify-end gap-2 border-t border-border/40 pt-2">
               <button
                 type="button"
                 onClick={onClose}
-                className="px-3 py-1.5 font-mono text-xs text-muted-foreground hover:text-foreground cursor-pointer"
+                className="cursor-pointer px-3 py-1.5 font-mono text-xs text-muted-foreground hover:text-foreground"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={isReporting}
-                className="border border-rose-500/40 bg-rose-500/15 px-4 py-1.5 font-mono text-xs font-semibold text-rose-500 hover:bg-rose-500/25 transition-colors cursor-pointer disabled:opacity-50"
+                className="cursor-pointer border border-rose-500/40 bg-rose-500/15 px-4 py-1.5 font-mono text-xs font-semibold text-rose-500 transition-colors hover:bg-rose-500/25 disabled:opacity-50"
               >
                 {isReporting ? "Submitting..." : "Submit Report"}
               </button>
@@ -135,5 +150,5 @@ export function ReportCommentModal({
         )}
       </div>
     </div>
-  );
+  )
 }

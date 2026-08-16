@@ -21,8 +21,7 @@ export interface ColumnLike {
   toggleVisibility?: (value: boolean) => void
 }
 
-export interface DataTableColumnHeaderProps
-  extends React.HTMLAttributes<HTMLDivElement> {
+export interface DataTableColumnHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   column: ColumnLike
   title: string
 }
@@ -32,14 +31,17 @@ export function DataTableColumnHeader({
   title,
   className,
 }: DataTableColumnHeaderProps) {
-  const canSort = typeof column?.getCanSort === "function" ? column.getCanSort() : false
+  const canSort =
+    typeof column?.getCanSort === "function" ? column.getCanSort() : false
 
   if (!canSort) {
     return <div className={cn("text-xs font-semibold", className)}>{title}</div>
   }
 
-  const isSorted = typeof column?.getIsSorted === "function" ? column.getIsSorted() : false
-  const canHide = typeof column?.getCanHide === "function" ? column.getCanHide() : false
+  const isSorted =
+    typeof column?.getIsSorted === "function" ? column.getIsSorted() : false
+  const canHide =
+    typeof column?.getCanHide === "function" ? column.getCanHide() : false
 
   return (
     <div className={cn("flex items-center space-x-2", className)}>
@@ -48,7 +50,7 @@ export function DataTableColumnHeader({
           <Button
             variant="ghost"
             size="sm"
-            className="-ml-3 h-8 data-[state=open]:bg-accent text-xs font-medium"
+            className="-ml-3 h-8 text-xs font-medium data-[state=open]:bg-accent"
           >
             <span>{title}</span>
             {isSorted === "desc" ? (
@@ -63,14 +65,14 @@ export function DataTableColumnHeader({
         <DropdownMenuContent align="start">
           <DropdownMenuItem
             onClick={() => column.toggleSorting?.(false)}
-            className="text-xs gap-2"
+            className="gap-2 text-xs"
           >
             <ArrowUp className="size-3.5 text-muted-foreground/70" />
             Asc
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => column.toggleSorting?.(true)}
-            className="text-xs gap-2"
+            className="gap-2 text-xs"
           >
             <ArrowDown className="size-3.5 text-muted-foreground/70" />
             Desc
@@ -80,7 +82,7 @@ export function DataTableColumnHeader({
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 onClick={() => column.toggleVisibility?.(false)}
-                className="text-xs gap-2"
+                className="gap-2 text-xs"
               >
                 <EyeOff className="size-3.5 text-muted-foreground/70" />
                 Hide column

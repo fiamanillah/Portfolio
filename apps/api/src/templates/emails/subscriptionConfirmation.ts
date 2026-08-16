@@ -1,12 +1,12 @@
 // src/templates/emails/subscriptionConfirmation.ts
-import { renderEmailLayout } from "./baseLayout";
+import { renderEmailLayout } from "./baseLayout"
 
 export interface SubscriptionConfirmationOptions {
-  email: string;
-  name?: string;
-  source?: string;
-  unsubscribeUrl?: string;
-  manageUrl?: string;
+  email: string
+  name?: string
+  source?: string
+  unsubscribeUrl?: string
+  manageUrl?: string
 }
 
 /**
@@ -48,33 +48,36 @@ export function getSubscriptionConfirmationLiquidBody(): string {
         <strong style="color: #f8fafc;">Fi Amanillah</strong>
       </p>
     </div>
-  `.trim();
+  `.trim()
 
   const { html } = renderEmailLayout({
     badgeLabel: "Welcome",
     title: "You're subscribed to updates",
     subtitle: "Architecture deep-dives, systems design & open-source releases",
     contentHtml,
-    previewText: "Hi {{ name | default: 'there' }} — welcome to Fi Amanillah's engineering newsletter.",
+    previewText:
+      "Hi {{ name | default: 'there' }} — welcome to Fi Amanillah's engineering newsletter.",
     unsubscribeUrl: "{{ unsubscribeUrl }}",
     manageUrl: "{{ manageUrl }}",
     showUnsubscribe: true,
-  });
+  })
 
-  return html;
+  return html
 }
 
 /**
  * Renders the Welcome / Subscription Confirmation Email with concrete values.
  */
-export function renderSubscriptionConfirmationEmail(options: SubscriptionConfirmationOptions): {
-  subject: string;
-  html: string;
-  listUnsubscribeHeader: string;
+export function renderSubscriptionConfirmationEmail(
+  options: SubscriptionConfirmationOptions
+): {
+  subject: string
+  html: string
+  listUnsubscribeHeader: string
 } {
-  const { email, name, unsubscribeUrl, manageUrl } = options;
-  const displayName = name && name.trim().length > 0 ? name.trim() : "there";
-  const emailSubject = `You're subscribed — Fi Amanillah`;
+  const { email, name, unsubscribeUrl, manageUrl } = options
+  const displayName = name && name.trim().length > 0 ? name.trim() : "there"
+  const emailSubject = `You're subscribed — Fi Amanillah`
 
   const contentHtml = `
     <p style="margin: 0 0 16px 0; font-size: 15px; color: #f1f5f9;">
@@ -111,7 +114,7 @@ export function renderSubscriptionConfirmationEmail(options: SubscriptionConfirm
         <strong style="color: #f8fafc;">Fi Amanillah</strong>
       </p>
     </div>
-  `.trim();
+  `.trim()
 
   const { html, listUnsubscribeHeader } = renderEmailLayout({
     badgeLabel: "Welcome",
@@ -122,7 +125,7 @@ export function renderSubscriptionConfirmationEmail(options: SubscriptionConfirm
     unsubscribeUrl,
     manageUrl,
     showUnsubscribe: true,
-  });
+  })
 
-  return { subject: emailSubject, html, listUnsubscribeHeader };
+  return { subject: emailSubject, html, listUnsubscribeHeader }
 }

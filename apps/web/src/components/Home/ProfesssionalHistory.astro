@@ -1,5 +1,4 @@
 ---
-
 const experiences = [
   {
     year: "2025",
@@ -44,7 +43,8 @@ const experiences = [
 
 const totalYears = 1
 const totalCompanies = experiences.length
-const totalTech = [...new Set(experiences.flatMap((e) => e.technologies))].length
+const totalTech = [...new Set(experiences.flatMap((e) => e.technologies))]
+  .length
 ---
 
 <section
@@ -117,9 +117,15 @@ const totalTech = [...new Set(experiences.flatMap((e) => e.technologies))].lengt
     <!-- Timeline Grid -->
     <div class="flex w-full border-b border-border bg-card">
       <!-- Vertical Label -->
-      <div class="group relative hidden w-16 shrink-0 border-r border-border md:block">
-        <div class="sticky top-0 flex h-screen max-h-screen items-center justify-center">
-          <h3 class="inline-block origin-center -rotate-90 whitespace-nowrap font-mono text-xl font-bold tracking-widest text-muted-foreground/20 uppercase transition-colors duration-400 group-hover:text-primary/15">
+      <div
+        class="group relative hidden w-16 shrink-0 border-r border-border md:block"
+      >
+        <div
+          class="sticky top-0 flex h-screen max-h-screen items-center justify-center"
+        >
+          <h3
+            class="inline-block origin-center -rotate-90 font-mono text-xl font-bold tracking-widest whitespace-nowrap text-muted-foreground/20 uppercase transition-colors duration-400 group-hover:text-primary/15"
+          >
             TRACK_RECORD
           </h3>
         </div>
@@ -130,12 +136,13 @@ const totalTech = [...new Set(experiences.flatMap((e) => e.technologies))].lengt
         <div class="relative z-10 flex flex-col">
           {
             experiences.map((exp, index) => (
-              <article class={`group relative flex flex-col border-border bg-background/50 backdrop-blur-sm transition-all duration-400 hover:bg-primary/5 md:flex-row ${index !== experiences.length - 1 ? 'border-b' : ''}`}>
-
-                <!-- Left Column: Year, Company, Meta -->
+              <article
+                class={`group relative flex flex-col border-border bg-background/50 backdrop-blur-sm transition-all duration-400 hover:bg-primary/5 md:flex-row ${index !== experiences.length - 1 ? "border-b" : ""}`}
+              >
+                {/* Left Column: Year, Company, Meta */}
                 <div class="flex w-full flex-row items-start justify-between border-b border-border p-5 md:w-[22%] md:flex-col md:border-r md:border-b-0 md:p-6">
                   <div class="flex flex-col gap-1">
-                    <!-- Year -->
+                    {/* Year */}
                     <span class="text-[2.25rem] font-black tracking-tighter text-foreground transition-colors duration-400 group-hover:text-primary md:text-[2.75rem]">
                       {exp.year}
                     </span>
@@ -145,7 +152,7 @@ const totalTech = [...new Set(experiences.flatMap((e) => e.technologies))].lengt
                     </p>
                   </div>
 
-                  <!-- Location & Type Badge -->
+                  {/* Location & Type Badge */}
                   <div class="flex flex-col gap-2 md:mt-auto md:pt-6">
                     <div class="flex items-center gap-1.5">
                       <span class="h-1.5 w-1.5 border border-primary/50" />
@@ -159,23 +166,23 @@ const totalTech = [...new Set(experiences.flatMap((e) => e.technologies))].lengt
                   </div>
                 </div>
 
-                <!-- Right Column: Content -->
+                {/* Right Column: Content */}
                 <div class="flex w-full flex-col gap-6 p-5 md:w-[78%] md:p-8">
-                  <!-- Company & Role -->
+                  {/* Company & Role */}
                   <div class="flex flex-col gap-2">
                     <div class="inline-block w-fit border border-border bg-card px-3 py-1 font-mono text-xs font-bold tracking-[0.12em] text-foreground uppercase transition-colors duration-400 group-hover:border-primary/40 group-hover:text-primary">
                       {exp.company}
                     </div>
                     <h3 class="text-xl font-black tracking-tight text-foreground uppercase transition-colors duration-400 group-hover:text-foreground/90 md:text-2xl lg:text-3xl">
-                      {exp.title.join(' ')}
+                      {exp.title.join(" ")}
                     </h3>
                   </div>
 
-                  <!-- Description + Highlights -->
+                  {/* Description + Highlights */}
                   <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
                     <div class="flex flex-col gap-4">
                       <div class="relative pl-4">
-                        <div class="absolute bottom-0 left-0 top-1 w-px bg-primary/30 transition-colors duration-400 group-hover:bg-primary" />
+                        <div class="absolute top-1 bottom-0 left-0 w-px bg-primary/30 transition-colors duration-400 group-hover:bg-primary" />
                         <p class="text-sm leading-relaxed text-muted-foreground">
                           {exp.description}
                         </p>
@@ -194,7 +201,7 @@ const totalTech = [...new Set(experiences.flatMap((e) => e.technologies))].lengt
                         ))}
                       </ul>
 
-                      <!-- Stats row -->
+                      {/* Stats row */}
                       <div class="flex flex-wrap gap-4 border-t border-border pt-4">
                         {exp.stats.map((stat) => (
                           <div class="flex flex-col gap-0.5">
@@ -210,7 +217,7 @@ const totalTech = [...new Set(experiences.flatMap((e) => e.technologies))].lengt
                     </div>
 
                     <div class="flex flex-col gap-6">
-                      <!-- Tech Stack -->
+                      {/* Tech Stack */}
                       <div class="flex flex-col gap-3">
                         <h5 class="font-mono text-xs font-bold tracking-[0.12em] text-foreground uppercase">
                           // TECH_STACK
@@ -224,7 +231,7 @@ const totalTech = [...new Set(experiences.flatMap((e) => e.technologies))].lengt
                         </div>
                       </div>
 
-                      <!-- Key Takeaway -->
+                      {/* Key Takeaway */}
                       <div class="border-l-[1.5px] border-border pl-4 transition-colors duration-400 group-hover:border-primary/40">
                         <h5 class="mb-2 font-mono text-xs font-bold tracking-[0.12em] text-primary uppercase">
                           [ KEY_TAKEAWAY ]
@@ -242,7 +249,5 @@ const totalTech = [...new Set(experiences.flatMap((e) => e.technologies))].lengt
         </div>
       </div>
     </div>
-
-
   </div>
 </section>

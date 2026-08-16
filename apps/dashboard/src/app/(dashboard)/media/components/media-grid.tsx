@@ -60,7 +60,7 @@ export function MediaGrid({
           {Array.from({ length: pageSize }).map((_, i) => (
             <Card key={i} className="overflow-hidden border-border/80 p-0">
               <Skeleton className="aspect-[4/3] w-full" />
-              <div className="p-3 space-y-2">
+              <div className="space-y-2 p-3">
                 <Skeleton className="h-3 w-3/4" />
                 <Skeleton className="h-2.5 w-1/2" />
               </div>
@@ -73,15 +73,22 @@ export function MediaGrid({
 
   if (files.length === 0) {
     return (
-      <Card className="flex flex-col items-center justify-center p-12 text-center border-dashed border-border/80 bg-muted/5">
-        <div className="size-16 rounded-full bg-primary/10 text-primary flex items-center justify-center mb-4">
+      <Card className="flex flex-col items-center justify-center border-dashed border-border/80 bg-muted/5 p-12 text-center">
+        <div className="mb-4 flex size-16 items-center justify-center rounded-full bg-primary/10 text-primary">
           <UploadCloud className="size-8" />
         </div>
-        <h3 className="text-base font-semibold text-foreground">No media assets found</h3>
-        <p className="text-xs text-muted-foreground mt-1 max-w-sm">
-          No files match your current search and filter criteria, or your media library is empty.
+        <h3 className="text-base font-semibold text-foreground">
+          No media assets found
+        </h3>
+        <p className="mt-1 max-w-sm text-xs text-muted-foreground">
+          No files match your current search and filter criteria, or your media
+          library is empty.
         </p>
-        <Button onClick={onUploadClick} size="sm" className="mt-4 gap-2 text-xs">
+        <Button
+          onClick={onUploadClick}
+          size="sm"
+          className="mt-4 gap-2 text-xs"
+        >
           <UploadCloud className="size-3.5" /> Upload Media Files
         </Button>
       </Card>
@@ -105,7 +112,7 @@ export function MediaGrid({
       </div>
 
       {/* Grid Pagination Footer */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between py-2 border-t border-border/60">
+      <div className="flex flex-col gap-3 border-t border-border/60 py-2 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
           <span>Rows per page</span>
           <Select
@@ -148,7 +155,7 @@ export function MediaGrid({
           >
             <ChevronLeft className="size-3.5" />
           </Button>
-          <span className="text-xs font-mono px-2 text-muted-foreground">
+          <span className="px-2 font-mono text-xs text-muted-foreground">
             Page {currentPage} of {totalPages}
           </span>
           <Button

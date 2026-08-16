@@ -37,60 +37,73 @@ export function CrawlerDirectivesSection({
   setNoFollow,
 }: CrawlerDirectivesSectionProps) {
   return (
-    <div className="space-y-4 pt-4 border-t border-border/80">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className="space-y-4 border-t border-border/80 pt-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         {/* Canonical URL */}
         <div className="space-y-1.5">
-          <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+          <label className="flex items-center gap-1.5 text-xs font-bold tracking-wider text-muted-foreground uppercase">
             <Globe className="h-3.5 w-3.5 text-primary" /> Canonical URL
           </label>
           <Input
             placeholder={`https://fi.amanillah.com/blog/${slug || "post-slug"}`}
             value={canonicalUrl}
             onChange={(e) => setCanonicalUrl(e.target.value)}
-            className="font-mono text-xs h-9 bg-background border-border/90 hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary/20 shadow-xs"
+            className="h-9 border-border/90 bg-background font-mono text-xs shadow-xs hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary/20"
           />
         </div>
 
         {/* Schema.org Type */}
         <div className="space-y-1.5">
-          <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-            <Code2 className="h-3.5 w-3.5 text-primary" /> Schema.org Article Type
+          <label className="flex items-center gap-1.5 text-xs font-bold tracking-wider text-muted-foreground uppercase">
+            <Code2 className="h-3.5 w-3.5 text-primary" /> Schema.org Article
+            Type
           </label>
           <Select
             value={articleType}
             onValueChange={(val) => setArticleType(val as BlogArticleType)}
           >
-            <SelectTrigger className="text-xs h-9 bg-background border-border/90 hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary/20 shadow-xs">
+            <SelectTrigger className="h-9 border-border/90 bg-background text-xs shadow-xs hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary/20">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="TechArticle">TechArticle (Recommended for Technical Guides)</SelectItem>
-              <SelectItem value="BlogPosting">BlogPosting (Standard Blog Article)</SelectItem>
-              <SelectItem value="Article">Article (General Editorial)</SelectItem>
+              <SelectItem value="TechArticle">
+                TechArticle (Recommended for Technical Guides)
+              </SelectItem>
+              <SelectItem value="BlogPosting">
+                BlogPosting (Standard Blog Article)
+              </SelectItem>
+              <SelectItem value="Article">
+                Article (General Editorial)
+              </SelectItem>
             </SelectContent>
           </Select>
         </div>
       </div>
 
       {/* Crawler Switches */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
-        <div className="flex items-center justify-between p-3.5 rounded-lg border border-border/80 bg-background/80 hover:bg-background transition-colors">
+      <div className="grid grid-cols-1 gap-4 pt-1 sm:grid-cols-2">
+        <div className="flex items-center justify-between rounded-lg border border-border/80 bg-background/80 p-3.5 transition-colors hover:bg-background">
           <div className="space-y-0.5">
-            <div className="text-xs font-bold text-foreground flex items-center gap-1.5">
-              <Shield className="h-3.5 w-3.5 text-muted-foreground" /> Robots NoIndex
+            <div className="flex items-center gap-1.5 text-xs font-bold text-foreground">
+              <Shield className="h-3.5 w-3.5 text-muted-foreground" /> Robots
+              NoIndex
             </div>
-            <div className="text-[11px] text-muted-foreground">Block search engines from indexing this URL</div>
+            <div className="text-[11px] text-muted-foreground">
+              Block search engines from indexing this URL
+            </div>
           </div>
           <Switch checked={noIndex} onCheckedChange={setNoIndex} />
         </div>
 
-        <div className="flex items-center justify-between p-3.5 rounded-lg border border-border/80 bg-background/80 hover:bg-background transition-colors">
+        <div className="flex items-center justify-between rounded-lg border border-border/80 bg-background/80 p-3.5 transition-colors hover:bg-background">
           <div className="space-y-0.5">
-            <div className="text-xs font-bold text-foreground flex items-center gap-1.5">
-              <Shield className="h-3.5 w-3.5 text-muted-foreground" /> Robots NoFollow
+            <div className="flex items-center gap-1.5 text-xs font-bold text-foreground">
+              <Shield className="h-3.5 w-3.5 text-muted-foreground" /> Robots
+              NoFollow
             </div>
-            <div className="text-[11px] text-muted-foreground">Tell crawlers not to follow hyperlinks on this page</div>
+            <div className="text-[11px] text-muted-foreground">
+              Tell crawlers not to follow hyperlinks on this page
+            </div>
           </div>
           <Switch checked={noFollow} onCheckedChange={setNoFollow} />
         </div>

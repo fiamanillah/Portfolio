@@ -206,27 +206,31 @@ export function CreateTemplateDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-[96vw] sm:w-[94vw] sm:max-w-5xl lg:max-w-6xl xl:max-w-[1300px] max-h-[90vh] flex flex-col p-0 overflow-hidden border-border/80 bg-background/95 backdrop-blur-md">
-        <DialogHeader className="p-6 pb-4 border-b border-border/60 bg-muted/20">
+      <DialogContent className="flex max-h-[90vh] w-[96vw] flex-col overflow-hidden border-border/80 bg-background/95 p-0 backdrop-blur-md sm:w-[94vw] sm:max-w-5xl lg:max-w-6xl xl:max-w-[1300px]">
+        <DialogHeader className="border-b border-border/60 bg-muted/20 p-6 pb-4">
           <div className="flex items-center gap-2.5">
-            <div className="flex size-9 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+            <div className="flex size-9 items-center justify-center rounded-lg border border-emerald-500/20 bg-emerald-500/10 text-emerald-400">
               <Plus className="size-5" />
             </div>
             <div>
               <DialogTitle className="text-lg font-bold">
                 Create Email Template
               </DialogTitle>
-              <DialogDescription className="text-xs text-muted-foreground mt-0.5">
-                Design a custom transactional, marketing, or headless email template with LiquidJS interpolation.
+              <DialogDescription className="mt-0.5 text-xs text-muted-foreground">
+                Design a custom transactional, marketing, or headless email
+                template with LiquidJS interpolation.
               </DialogDescription>
             </div>
           </div>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="flex-1 flex flex-col overflow-hidden">
-          <div className="flex-1 overflow-y-auto p-6 space-y-6">
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-1 flex-col overflow-hidden"
+        >
+          <div className="flex-1 space-y-6 overflow-y-auto p-6">
             {/* Top Grid: Name, Slug, Type */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
               <div className="space-y-1.5 md:col-span-1">
                 <Label htmlFor="create-name" className="text-xs font-semibold">
                   Template Name <span className="text-destructive">*</span>
@@ -253,7 +257,7 @@ export function CreateTemplateDialog({
                     setSlug(e.target.value)
                   }}
                   placeholder="e.g. monthly-tech-digest"
-                  className="h-9 text-xs font-mono"
+                  className="h-9 font-mono text-xs"
                 />
               </div>
 
@@ -286,7 +290,10 @@ export function CreateTemplateDialog({
             {/* Subject Line & Description */}
             <div className="space-y-4">
               <div className="space-y-1.5">
-                <Label htmlFor="create-subject" className="text-xs font-semibold">
+                <Label
+                  htmlFor="create-subject"
+                  className="text-xs font-semibold"
+                >
                   Subject Line <span className="text-destructive">*</span>
                 </Label>
                 <Input
@@ -299,12 +306,16 @@ export function CreateTemplateDialog({
                 />
                 <p className="text-[11px] text-muted-foreground">
                   You can use dynamic Liquid variables inside subject lines like{" "}
-                  <code className="text-primary font-mono">{`{{ name }}`}</code>.
+                  <code className="font-mono text-primary">{`{{ name }}`}</code>
+                  .
                 </p>
               </div>
 
               <div className="space-y-1.5">
-                <Label htmlFor="create-description" className="text-xs font-semibold">
+                <Label
+                  htmlFor="create-description"
+                  className="text-xs font-semibold"
+                >
                   Description
                 </Label>
                 <Input
@@ -318,7 +329,7 @@ export function CreateTemplateDialog({
             </div>
 
             {/* Sender Settings Accordion */}
-            <div className="rounded-lg border border-border/70 bg-muted/20 p-4 space-y-3">
+            <div className="space-y-3 rounded-lg border border-border/70 bg-muted/20 p-4">
               <div className="flex items-center justify-between text-xs font-semibold text-foreground">
                 <span className="flex items-center gap-1.5">
                   <Send className="size-3.5 text-muted-foreground" />
@@ -328,9 +339,12 @@ export function CreateTemplateDialog({
                   Optional (defaults to environment settings)
                 </span>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
                 <div className="space-y-1">
-                  <Label htmlFor="create-from-name" className="text-[11px] text-muted-foreground">
+                  <Label
+                    htmlFor="create-from-name"
+                    className="text-[11px] text-muted-foreground"
+                  >
                     Sender Name
                   </Label>
                   <Input
@@ -338,11 +352,14 @@ export function CreateTemplateDialog({
                     value={fromName}
                     onChange={(e) => setFromName(e.target.value)}
                     placeholder="Fi Amanillah"
-                    className="h-8 text-xs bg-background/80"
+                    className="h-8 bg-background/80 text-xs"
                   />
                 </div>
                 <div className="space-y-1">
-                  <Label htmlFor="create-from-email" className="text-[11px] text-muted-foreground">
+                  <Label
+                    htmlFor="create-from-email"
+                    className="text-[11px] text-muted-foreground"
+                  >
                     From Email
                   </Label>
                   <Input
@@ -351,11 +368,14 @@ export function CreateTemplateDialog({
                     value={fromEmail}
                     onChange={(e) => setFromEmail(e.target.value)}
                     placeholder="hello@amanillah.com"
-                    className="h-8 text-xs bg-background/80"
+                    className="h-8 bg-background/80 text-xs"
                   />
                 </div>
                 <div className="space-y-1">
-                  <Label htmlFor="create-reply-to" className="text-[11px] text-muted-foreground">
+                  <Label
+                    htmlFor="create-reply-to"
+                    className="text-[11px] text-muted-foreground"
+                  >
                     Reply-To Email
                   </Label>
                   <Input
@@ -364,7 +384,7 @@ export function CreateTemplateDialog({
                     value={replyTo}
                     onChange={(e) => setReplyTo(e.target.value)}
                     placeholder="fi@amanillah.com"
-                    className="h-8 text-xs bg-background/80"
+                    className="h-8 bg-background/80 text-xs"
                   />
                 </div>
               </div>
@@ -372,21 +392,27 @@ export function CreateTemplateDialog({
 
             {/* HTML / Liquid Body Editor */}
             <div className="space-y-2">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                <Label htmlFor="create-body" className="text-xs font-semibold flex items-center gap-1.5">
+              <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
+                <Label
+                  htmlFor="create-body"
+                  className="flex items-center gap-1.5 text-xs font-semibold"
+                >
                   <Code2 className="size-4 text-primary" />
-                  HTML Body & Liquid Engine Template <span className="text-destructive">*</span>
+                  HTML Body & Liquid Engine Template{" "}
+                  <span className="text-destructive">*</span>
                 </Label>
 
                 {/* Variable inserter pills */}
-                <div className="flex items-center gap-1 flex-wrap">
-                  <span className="text-[10px] text-muted-foreground mr-1">Insert Variable:</span>
+                <div className="flex flex-wrap items-center gap-1">
+                  <span className="mr-1 text-[10px] text-muted-foreground">
+                    Insert Variable:
+                  </span>
                   {COMMON_VARIABLES.slice(0, 6).map((token) => (
                     <button
                       key={token}
                       type="button"
                       onClick={() => insertVariable(token)}
-                      className="px-1.5 py-0.5 rounded bg-muted/60 hover:bg-primary/20 hover:text-primary text-[10px] font-mono border border-border/50 transition-colors"
+                      className="rounded border border-border/50 bg-muted/60 px-1.5 py-0.5 font-mono text-[10px] transition-colors hover:bg-primary/20 hover:text-primary"
                     >
                       +{token}
                     </button>
@@ -400,24 +426,30 @@ export function CreateTemplateDialog({
                 value={body}
                 onChange={(e) => setBody(e.target.value)}
                 placeholder="Enter valid HTML template with Liquid tags..."
-                className="font-mono text-xs min-h-[260px] bg-zinc-950 text-zinc-100 border-zinc-800 p-3 leading-relaxed selection:bg-primary/30"
+                className="min-h-[260px] border-zinc-800 bg-zinc-950 p-3 font-mono text-xs leading-relaxed text-zinc-100 selection:bg-primary/30"
                 required
               />
 
-              <div className="flex items-center justify-between text-[11px] text-muted-foreground px-1">
-                <span>Supports standard HTML5 and LiquidJS interpolation tags</span>
+              <div className="flex items-center justify-between px-1 text-[11px] text-muted-foreground">
+                <span>
+                  Supports standard HTML5 and LiquidJS interpolation tags
+                </span>
                 <span>{body.length} characters</span>
               </div>
             </div>
 
             {/* Plunk Sync Switch */}
-            <div className="flex items-center justify-between p-3 rounded-lg border border-border/60 bg-muted/20">
+            <div className="flex items-center justify-between rounded-lg border border-border/60 bg-muted/20 p-3">
               <div className="space-y-0.5">
-                <Label htmlFor="sync-toggle" className="text-xs font-semibold cursor-pointer">
+                <Label
+                  htmlFor="sync-toggle"
+                  className="cursor-pointer text-xs font-semibold"
+                >
                   Sync to Plunk Cloud immediately
                 </Label>
                 <p className="text-[11px] text-muted-foreground">
-                  Synchronize this template with Plunk API upon saving so campaigns can trigger it immediately.
+                  Synchronize this template with Plunk API upon saving so
+                  campaigns can trigger it immediately.
                 </p>
               </div>
               <Switch
@@ -428,7 +460,7 @@ export function CreateTemplateDialog({
             </div>
           </div>
 
-          <DialogFooter className="p-4 border-t border-border/60 bg-muted/20 flex items-center justify-between sm:justify-between">
+          <DialogFooter className="flex items-center justify-between border-t border-border/60 bg-muted/20 p-4 sm:justify-between">
             <Button
               type="button"
               variant="ghost"
@@ -443,7 +475,7 @@ export function CreateTemplateDialog({
             <Button
               type="submit"
               size="sm"
-              className="text-xs gap-1.5 bg-primary text-primary-foreground font-semibold"
+              className="gap-1.5 bg-primary text-xs font-semibold text-primary-foreground"
               disabled={isProcessing}
             >
               {isProcessing ? (

@@ -73,13 +73,22 @@ import { TextScramble } from "@workspace/ui/components/text-scramble"
       <div class="w-full max-w-md">
         <form id="hero-subscribe-form" class="space-y-2">
           <!-- Honeypot trap field (silent bot protection) -->
-          <div aria-hidden="true" style="display:none; position:absolute; left:-9999px; opacity:0; pointer-events:none;">
+          <div
+            aria-hidden="true"
+            style="display:none; position:absolute; left:-9999px; opacity:0; pointer-events:none;"
+          >
             <label for="hero-hp">Leave empty</label>
-            <input type="text" id="hero-hp" name="hp_field" tabindex="-1" autocomplete="off" />
+            <input
+              type="text"
+              id="hero-hp"
+              name="hp_field"
+              tabindex="-1"
+              autocomplete="off"
+            />
           </div>
 
           <InputGroup
-            className="h-12 sm:h-14 border-2 border-border bg-foreground text-sm! sm:text-base! md:text-lg! font-medium text-background"
+            className="h-12 border-2 border-border bg-foreground text-sm! font-medium text-background sm:h-14 sm:text-base! md:text-lg!"
           >
             <InputGroupInput
               type="email"
@@ -92,7 +101,7 @@ import { TextScramble } from "@workspace/ui/components/text-scramble"
               <InputGroupButton
                 type="submit"
                 id="hero-submit-btn"
-                className="h-8 sm:h-10 px-3 sm:px-4 cursor-pointer"
+                className="h-8 cursor-pointer px-3 sm:h-10 sm:px-4"
                 variant={"default"}
               >
                 <span id="hero-submit-text">Connect</span>
@@ -101,7 +110,11 @@ import { TextScramble } from "@workspace/ui/components/text-scramble"
           </InputGroup>
 
           <!-- Cloudflare Turnstile Container -->
-          <div id="hero-turnstile-container" class="flex justify-start empty:hidden py-1"></div>
+          <div
+            id="hero-turnstile-container"
+            class="flex justify-start py-1 empty:hidden"
+          >
+          </div>
 
           <!-- Interactive Status Alert Banner -->
           <div
@@ -184,7 +197,9 @@ import { TextScramble } from "@workspace/ui/components/text-scramble"
     </div>
 
     <!-- Right Side: Details About Me -->
-    <div class="flex flex-col items-start lg:items-end justify-center space-y-10">
+    <div
+      class="flex flex-col items-start justify-center space-y-10 lg:items-end"
+    >
       <!-- Identity Details (Minimalist List) -->
       <div class="flex w-full max-w-md flex-col gap-4 pt-4">
         <div
@@ -239,7 +254,7 @@ import { TextScramble } from "@workspace/ui/components/text-scramble"
 
       <!-- SSH Connection -->
       <div class="w-full max-w-md space-y-3.5">
-        <div class="flex items-center justify-start lg:justify-end gap-3">
+        <div class="flex items-center justify-start gap-3 lg:justify-end">
           <div class="h-px w-12 bg-border"></div>
           <span
             class="font-mono text-xs tracking-[0.1em] whitespace-nowrap text-muted-foreground uppercase"
@@ -247,7 +262,9 @@ import { TextScramble } from "@workspace/ui/components/text-scramble"
           >
         </div>
 
-        <p class="text-left lg:text-right text-xs leading-relaxed text-muted-foreground">
+        <p
+          class="text-left text-xs leading-relaxed text-muted-foreground lg:text-right"
+        >
           Access my interactive retro terminal CV directly from your command
           line:
         </p>
@@ -315,14 +332,14 @@ import { TextScramble } from "@workspace/ui/components/text-scramble"
 
       <!-- Tech Stack (Floating Badges) -->
       <div class="w-full max-w-md space-y-4">
-        <div class="flex items-center justify-start lg:justify-end gap-3">
+        <div class="flex items-center justify-start gap-3 lg:justify-end">
           <div class="h-px w-12 bg-border"></div>
           <span
             class="font-mono text-xs tracking-[0.1em] whitespace-nowrap text-muted-foreground uppercase"
             >Tech Stack</span
           >
         </div>
-        <div class="flex flex-wrap justify-start lg:justify-end gap-2.5">
+        <div class="flex flex-wrap justify-start gap-2.5 lg:justify-end">
           {
             [
               { name: "React", color: "#61DAFB" },
@@ -366,7 +383,7 @@ import { TextScramble } from "@workspace/ui/components/text-scramble"
     <img
       src="/fi.png"
       alt="Hero Image"
-      class="absolute bottom-0 left-1/2 w-[70%] -translate-x-1/2 object-contain opacity-25 sm:opacity-50 lg:opacity-80 grayscale transition-opacity duration-700 hover:opacity-10 sm:hover:opacity-20 lg:hover:opacity-30 sm:w-[50%]"
+      class="absolute bottom-0 left-1/2 w-[70%] -translate-x-1/2 object-contain opacity-25 grayscale transition-opacity duration-700 hover:opacity-10 sm:w-[50%] sm:opacity-50 sm:hover:opacity-20 lg:opacity-80 lg:hover:opacity-30"
     />
     <div
       class="absolute inset-0 bg-linear-to-t from-background via-background/0 to-transparent"
@@ -451,10 +468,13 @@ import { TextScramble } from "@workspace/ui/components/text-scramble"
     const render = () => {
       if ((window as any).turnstile && heroTurnstileWidgetId === null) {
         try {
-          heroTurnstileWidgetId = (window as any).turnstile.render("#hero-turnstile-container", {
-            sitekey: turnstileKey,
-            theme: "dark",
-          })
+          heroTurnstileWidgetId = (window as any).turnstile.render(
+            "#hero-turnstile-container",
+            {
+              sitekey: turnstileKey,
+              theme: "dark",
+            }
+          )
         } catch (err) {
           console.warn("Hero Turnstile render error:", err)
         }
@@ -466,7 +486,9 @@ import { TextScramble } from "@workspace/ui/components/text-scramble"
       return
     }
 
-    let script = document.getElementById("cf-turnstile-script") as HTMLScriptElement | null
+    let script = document.getElementById(
+      "cf-turnstile-script"
+    ) as HTMLScriptElement | null
     if (!script) {
       script = document.createElement("script")
       script.id = "cf-turnstile-script"
@@ -479,11 +501,17 @@ import { TextScramble } from "@workspace/ui/components/text-scramble"
   }
 
   function setupHeroSubscription() {
-    const form = document.getElementById("hero-subscribe-form") as HTMLFormElement | null
-    const submitBtn = document.getElementById("hero-submit-btn") as HTMLButtonElement | null
+    const form = document.getElementById(
+      "hero-subscribe-form"
+    ) as HTMLFormElement | null
+    const submitBtn = document.getElementById(
+      "hero-submit-btn"
+    ) as HTMLButtonElement | null
     const submitText = document.getElementById("hero-submit-text")
     const statusDiv = document.getElementById("hero-status")
-    const emailInput = document.getElementById("hero-email") as HTMLInputElement | null
+    const emailInput = document.getElementById(
+      "hero-email"
+    ) as HTMLInputElement | null
 
     if (!form || !submitBtn || !submitText) return
 
@@ -491,9 +519,15 @@ import { TextScramble } from "@workspace/ui/components/text-scramble"
     form.dataset.bound = "true"
 
     // Lazy load Turnstile on interaction
-    emailInput?.addEventListener("focus", initHeroTurnstileOnDemand, { once: true })
-    emailInput?.addEventListener("click", initHeroTurnstileOnDemand, { once: true })
-    form.addEventListener("mouseenter", initHeroTurnstileOnDemand, { once: true })
+    emailInput?.addEventListener("focus", initHeroTurnstileOnDemand, {
+      once: true,
+    })
+    emailInput?.addEventListener("click", initHeroTurnstileOnDemand, {
+      once: true,
+    })
+    form.addEventListener("mouseenter", initHeroTurnstileOnDemand, {
+      once: true,
+    })
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault()
@@ -512,7 +546,8 @@ import { TextScramble } from "@workspace/ui/components/text-scramble"
 
       let captchaToken = ""
       if ((window as any).turnstile && heroTurnstileWidgetId !== null) {
-        captchaToken = (window as any).turnstile.getResponse(heroTurnstileWidgetId) || ""
+        captchaToken =
+          (window as any).turnstile.getResponse(heroTurnstileWidgetId) || ""
       }
 
       const originalText = submitText.textContent
@@ -541,14 +576,23 @@ import { TextScramble } from "@workspace/ui/components/text-scramble"
           const isAlready = data.data?.alreadySubscribed || false
           submitText.textContent = isAlready ? "Subscribed!" : "Connected!"
           if (statusDiv) {
-            statusDiv.classList.remove("hidden", "bg-destructive/10", "border-destructive/30", "text-destructive")
-            statusDiv.classList.add("bg-emerald-500/10", "border-emerald-500/30", "text-emerald-400")
+            statusDiv.classList.remove(
+              "hidden",
+              "bg-destructive/10",
+              "border-destructive/30",
+              "text-destructive"
+            )
+            statusDiv.classList.add(
+              "bg-emerald-500/10",
+              "border-emerald-500/30",
+              "text-emerald-400"
+            )
             statusDiv.textContent = data.message || "Thank you for subscribing!"
           }
           form.reset()
 
           if ((window as any).turnstile && heroTurnstileWidgetId !== null) {
-            (window as any).turnstile.reset(heroTurnstileWidgetId)
+            ;(window as any).turnstile.reset(heroTurnstileWidgetId)
           }
 
           setTimeout(() => {
@@ -556,12 +600,27 @@ import { TextScramble } from "@workspace/ui/components/text-scramble"
             submitBtn.disabled = false
           }, 4000)
         } else {
-          const errorMessage = data.message || data.error?.message || "Failed to subscribe. Please try again."
-          const suggestedEmail = data.data?.suggestedEmail || data.details?.suggestedEmail || data.error?.details?.suggestedEmail
+          const errorMessage =
+            data.message ||
+            data.error?.message ||
+            "Failed to subscribe. Please try again."
+          const suggestedEmail =
+            data.data?.suggestedEmail ||
+            data.details?.suggestedEmail ||
+            data.error?.details?.suggestedEmail
 
           if (statusDiv) {
-            statusDiv.classList.remove("hidden", "bg-emerald-500/10", "border-emerald-500/30", "text-emerald-400")
-            statusDiv.classList.add("bg-destructive/10", "border-destructive/30", "text-destructive")
+            statusDiv.classList.remove(
+              "hidden",
+              "bg-emerald-500/10",
+              "border-emerald-500/30",
+              "text-emerald-400"
+            )
+            statusDiv.classList.add(
+              "bg-destructive/10",
+              "border-destructive/30",
+              "text-destructive"
+            )
 
             if (suggestedEmail) {
               statusDiv.innerHTML = `
@@ -586,7 +645,7 @@ import { TextScramble } from "@workspace/ui/components/text-scramble"
           }
 
           if ((window as any).turnstile && heroTurnstileWidgetId !== null) {
-            (window as any).turnstile.reset(heroTurnstileWidgetId)
+            ;(window as any).turnstile.reset(heroTurnstileWidgetId)
           }
 
           submitText.textContent = originalText
@@ -595,8 +654,17 @@ import { TextScramble } from "@workspace/ui/components/text-scramble"
       } catch (err) {
         console.error("Hero subscription error:", err)
         if (statusDiv) {
-          statusDiv.classList.remove("hidden", "bg-emerald-500/10", "border-emerald-500/30", "text-emerald-400")
-          statusDiv.classList.add("bg-destructive/10", "border-destructive/30", "text-destructive")
+          statusDiv.classList.remove(
+            "hidden",
+            "bg-emerald-500/10",
+            "border-emerald-500/30",
+            "text-emerald-400"
+          )
+          statusDiv.classList.add(
+            "bg-destructive/10",
+            "border-destructive/30",
+            "text-destructive"
+          )
           statusDiv.textContent = "Network error. Please try again."
         }
         submitText.textContent = originalText

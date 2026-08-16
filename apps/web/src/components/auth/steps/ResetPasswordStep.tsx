@@ -56,12 +56,12 @@ export function ResetPasswordStep({
                 }
               }}
               aria-invalid={!!errors.newPassword}
-              className="rounded-none font-mono text-xs border-border bg-background/50 pl-8 focus:border-primary"
+              className="rounded-none border-border bg-background/50 pl-8 font-mono text-xs focus:border-primary"
               required
             />
             <HugeiconsIcon
               icon={LockPasswordIcon}
-              className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground"
+              className="absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-muted-foreground"
             />
           </div>
           <FieldDescription>Must be at least 8 characters.</FieldDescription>
@@ -83,12 +83,12 @@ export function ResetPasswordStep({
                 }
               }}
               aria-invalid={!!errors.confirmPassword}
-              className="rounded-none font-mono text-xs border-border bg-background/50 pl-8 focus:border-primary"
+              className="rounded-none border-border bg-background/50 pl-8 font-mono text-xs focus:border-primary"
               required
             />
             <HugeiconsIcon
               icon={LockPasswordIcon}
-              className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground"
+              className="absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-muted-foreground"
             />
           </div>
           <FieldError errors={errors.confirmPassword} />
@@ -98,11 +98,14 @@ export function ResetPasswordStep({
       <Button
         type="submit"
         disabled={isSubmitting}
-        className="w-full rounded-none font-mono text-xs font-bold uppercase tracking-wider bg-primary text-primary-foreground hover:bg-primary/90 transition-colors cursor-pointer h-10 shadow-sm flex items-center justify-center gap-2"
+        className="flex h-10 w-full cursor-pointer items-center justify-center gap-2 rounded-none bg-primary font-mono text-xs font-bold tracking-wider text-primary-foreground uppercase shadow-sm transition-colors hover:bg-primary/90"
       >
         {isSubmitting ? (
           <>
-            <HugeiconsIcon icon={Loading03Icon} className="size-4 animate-spin" />
+            <HugeiconsIcon
+              icon={Loading03Icon}
+              className="size-4 animate-spin"
+            />
             <span>Updating Password...</span>
           </>
         ) : (

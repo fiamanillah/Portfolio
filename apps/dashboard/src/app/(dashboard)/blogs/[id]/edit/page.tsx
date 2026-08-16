@@ -4,7 +4,11 @@ import * as React from "react"
 import { useParams, useRouter } from "next/navigation"
 import { Loader2, AlertCircle, ArrowLeft } from "lucide-react"
 import { Button } from "@workspace/ui/components/button"
-import type { BlogPostDTO, BlogCategoryDTO, BlogTagDTO } from "@workspace/shared"
+import type {
+  BlogPostDTO,
+  BlogCategoryDTO,
+  BlogTagDTO,
+} from "@workspace/shared"
 import { BlogApi } from "@/lib/api"
 import { PostEditorForm } from "../../components/post-editor-form"
 import { CategoryTagDialog } from "../../category-tag-dialog"
@@ -12,7 +16,12 @@ import { CategoryTagDialog } from "../../category-tag-dialog"
 export default function EditBlogPostPage() {
   const params = useParams()
   const router = useRouter()
-  const id = typeof params.id === "string" ? params.id : Array.isArray(params.id) ? params.id[0] : ""
+  const id =
+    typeof params.id === "string"
+      ? params.id
+      : Array.isArray(params.id)
+        ? params.id[0]
+        : ""
 
   const [post, setPost] = React.useState<BlogPostDTO | null>(null)
   const [categories, setCategories] = React.useState<BlogCategoryDTO[]>([])
@@ -52,7 +61,7 @@ export default function EditBlogPostPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-[60vh] flex flex-col items-center justify-center gap-3 text-muted-foreground">
+      <div className="flex min-h-[60vh] flex-col items-center justify-center gap-3 text-muted-foreground">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
         <span className="text-sm font-medium">Loading post details...</span>
       </div>
@@ -61,21 +70,29 @@ export default function EditBlogPostPage() {
 
   if (error || !post) {
     return (
-      <div className="max-w-md mx-auto my-12 p-6 rounded-xl border border-destructive/30 bg-destructive/5 text-center space-y-4">
-        <AlertCircle className="h-10 w-10 text-destructive mx-auto" />
+      <div className="mx-auto my-12 max-w-md space-y-4 rounded-xl border border-destructive/30 bg-destructive/5 p-6 text-center">
+        <AlertCircle className="mx-auto h-10 w-10 text-destructive" />
         <div className="space-y-1">
-          <h2 className="text-base font-bold text-foreground">Error Loading Post</h2>
-          <p className="text-xs text-muted-foreground">{error || "Blog post not found"}</p>
+          <h2 className="text-base font-bold text-foreground">
+            Error Loading Post
+          </h2>
+          <p className="text-xs text-muted-foreground">
+            {error || "Blog post not found"}
+          </p>
         </div>
-        <Button variant="outline" size="sm" onClick={() => router.push("/blogs")}>
-          <ArrowLeft className="h-3.5 w-3.5 mr-1" /> Back to Blog Posts
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => router.push("/blogs")}
+        >
+          <ArrowLeft className="mr-1 h-3.5 w-3.5" /> Back to Blog Posts
         </Button>
       </div>
     )
   }
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6">
+    <div className="mx-auto max-w-5xl space-y-6">
       <PostEditorForm
         initialPost={post}
         categories={categories}

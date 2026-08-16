@@ -1,11 +1,7 @@
 import { useSyncExternalStore, useCallback } from "react"
-import {
-  DEFAULT_COMMENTS_REGISTRY,
-  DEFAULT_REACTIONS_REGISTRY,
-  type BlogComment,
-  type PostReactions,
-  type AuthUser,
-} from "@/data/commentsData"
+import type { BlogComment, PostReactions, AuthUser } from "@/data/commentsData"
+import { BlogApi } from "./api/blogApi"
+import { CommentsApi, type GuestCommentPayload } from "./api/commentsApi"
 
 const ENGAGEMENT_EVENT_NAME = "portfolio:engagement-change"
 
@@ -14,24 +10,30 @@ interface EngagementChangeEventDetail {
   type: "like" | "reaction" | "comment" | "comment_like"
 }
 
+const EMPTY_REACTIONS: PostReactions = {
+  likes: 0,
+  fire: 0,
+  insightful: 0,
+  fast: 0,
+  rocket: 0,
+}
+
 // In-memory cache for stable snapshots
-const reactionsSnapshotCache = new Map<string, { raw: string | null; parsed: PostReactions }>()
-const commentsSnapshotCache = new Map<string, { raw: string | null; parsed: BlogComment[] }>()
+const reactionsSnapshotCache = new Map<
+  string,
+  { raw: string | null; parsed: PostReactions }
+>()
+const commentsSnapshotCache = new Map<
+  string,
+  { raw: string | null; parsed: BlogComment[] }
+>()
 
 // ----------------------------------------------------
 // Reaction & Post Like Helpers
 // ----------------------------------------------------
 
 export function getStoredReactions(slug: string): PostReactions {
-  const defaultReactions = DEFAULT_REACTIONS_REGISTRY[slug] || {
-    likes: 42,
-    fire: 12,
-    insightful: 18,
-    fast: 8,
-    rocket: 15,
-  }
-
-  if (typeof window === "undefined") return defaultReactions
+  if (typeof window === "undefined") return EMPTY_REACTIONS
 
   try {
     const raw = localStorage.getItem(`portfolio_reactions_${slug}`)
@@ -41,8 +43,8 @@ export function getStoredReactions(slug: string): PostReactions {
     }
 
     if (!raw) {
-      reactionsSnapshotCache.set(slug, { raw: null, parsed: defaultReactions })
-      return defaultReactions
+      reactionsSnapshotCache.set(slug, { raw: null, parsed: EMPTY_REACTIONS })
+      return EMPTY_REACTIONS
     }
 
     const parsed = JSON.parse(raw) as PostReactions
@@ -50,11 +52,14 @@ export function getStoredReactions(slug: string): PostReactions {
     return parsed
   } catch (e) {
     console.error("Failed to parse stored reactions:", e)
-    return defaultReactions
+    return EMPTY_REACTIONS
   }
 }
 
-export function saveStoredReactions(slug: string, reactions: PostReactions): void {
+export function saveStoredReactions(
+  slug: string,
+  reactions: PostReactions
+): void {
   if (typeof window === "undefined") return
   try {
     const raw = JSON.stringify(reactions)
@@ -79,6 +84,21 @@ export function togglePostLike(slug: string): PostReactions {
     userLiked: isLiked,
   }
   saveStoredReactions(slug, updated)
+
+  // Persist to backend database via BlogApi
+  BlogApi.reactToPost(slug, "like")
+    .then((res) => {
+      if (res) {
+        const latest = getStoredReactions(slug)
+        saveStoredReactions(slug, {
+          ...latest,
+          likes: res.likesCount,
+          userLiked: res.userLiked,
+        })
+      }
+    })
+    .catch(() => {})
+
   return updated
 }
 
@@ -88,7 +108,7 @@ export function toggleEmojiReaction(
 ): PostReactions {
   const current = getStoredReactions(slug)
   const userReactions = current.userReactions || {}
-  const isCurrentlyActive = !!userReactions[key]
+  const isCurrentlyActive = !userReactions[key]
 
   const updatedReactions = {
     ...userReactions,
@@ -104,6 +124,20 @@ export function toggleEmojiReaction(
   }
 
   saveStoredReactions(slug, updated)
+
+  // Persist to backend database via BlogApi
+  BlogApi.reactToPost(slug, key)
+    .then((res) => {
+      if (res) {
+        const latest = getStoredReactions(slug)
+        saveStoredReactions(slug, {
+          ...latest,
+          likes: res.likesCount,
+        })
+      }
+    })
+    .catch(() => {})
+
   return updated
 }
 
@@ -112,9 +146,7 @@ export function toggleEmojiReaction(
 // ----------------------------------------------------
 
 export function getStoredComments(slug: string): BlogComment[] {
-  const defaultComments = DEFAULT_COMMENTS_REGISTRY[slug] || []
-
-  if (typeof window === "undefined") return defaultComments
+  if (typeof window === "undefined") return []
 
   try {
     const raw = localStorage.getItem(`portfolio_comments_${slug}`)
@@ -124,8 +156,8 @@ export function getStoredComments(slug: string): BlogComment[] {
     }
 
     if (!raw) {
-      commentsSnapshotCache.set(slug, { raw: null, parsed: defaultComments })
-      return defaultComments
+      commentsSnapshotCache.set(slug, { raw: null, parsed: [] })
+      return []
     }
 
     const parsed = JSON.parse(raw) as BlogComment[]
@@ -133,11 +165,14 @@ export function getStoredComments(slug: string): BlogComment[] {
     return parsed
   } catch (e) {
     console.error("Failed to parse stored comments:", e)
-    return defaultComments
+    return []
   }
 }
 
-export function saveStoredComments(slug: string, comments: BlogComment[]): void {
+export function saveStoredComments(
+  slug: string,
+  comments: BlogComment[]
+): void {
   if (typeof window === "undefined") return
   try {
     const raw = JSON.stringify(comments)
@@ -153,74 +188,58 @@ export function saveStoredComments(slug: string, comments: BlogComment[]): void 
   }
 }
 
-export function addComment(
+export async function addComment(
   slug: string,
-  author: AuthUser,
+  author: AuthUser | GuestCommentPayload,
   content: string
-): BlogComment {
+): Promise<BlogComment> {
+  const newComment = await CommentsApi.addComment(slug, author, content)
   const current = getStoredComments(slug)
-  const newComment: BlogComment = {
-    id: `comment-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
-    postSlug: slug,
-    author,
-    content,
-    createdAt: new Date().toISOString(),
-    likes: 0,
-    isLiked: false,
-    replies: [],
-  }
+  const existingIndex = current.findIndex((c) => c.id === newComment.id)
+  const updated =
+    existingIndex >= 0
+      ? current.map((c) => (c.id === newComment.id ? newComment : c))
+      : [newComment, ...current]
 
-  const updated = [newComment, ...current]
   saveStoredComments(slug, updated)
   return newComment
 }
 
-export function addReply(
+export async function addReply(
   slug: string,
   parentId: string,
-  author: AuthUser,
+  author: AuthUser | GuestCommentPayload,
   content: string
-): BlogComment | null {
+): Promise<BlogComment> {
+  const newReply = await CommentsApi.addReply(slug, parentId, author, content)
   const current = getStoredComments(slug)
-  let createdReply: BlogComment | null = null
-
-  const newReply: BlogComment = {
-    id: `reply-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
-    postSlug: slug,
-    parentId,
-    author,
-    content,
-    createdAt: new Date().toISOString(),
-    likes: 0,
-    isLiked: false,
-  }
 
   const updated = current.map((comment) => {
     if (comment.id === parentId) {
-      createdReply = newReply
+      const replies = comment.replies || []
+      const exists = replies.some((r) => r.id === newReply.id)
       return {
         ...comment,
-        replies: [...(comment.replies || []), newReply],
+        replies: exists
+          ? replies.map((r) => (r.id === newReply.id ? newReply : r))
+          : [...replies, newReply],
       }
     }
     return comment
   })
 
-  if (createdReply) {
-    saveStoredComments(slug, updated)
-  }
-  return createdReply
+  saveStoredComments(slug, updated)
+  return newReply
 }
 
-export function toggleCommentLike(
+export async function toggleCommentLike(
   slug: string,
   commentId: string,
   parentId?: string | null
-): void {
+): Promise<void> {
+  // Optimistic local update
   const current = getStoredComments(slug)
-
   const updated = current.map((comment) => {
-    // If it's a top-level comment
     if (comment.id === commentId) {
       const isLiked = !comment.isLiked
       return {
@@ -229,8 +248,6 @@ export function toggleCommentLike(
         likes: isLiked ? comment.likes + 1 : Math.max(0, comment.likes - 1),
       }
     }
-
-    // If it's inside replies
     if (parentId && comment.id === parentId && comment.replies) {
       const updatedReplies = comment.replies.map((reply) => {
         if (reply.id === commentId) {
@@ -245,20 +262,22 @@ export function toggleCommentLike(
       })
       return { ...comment, replies: updatedReplies }
     }
-
     return comment
   })
 
   saveStoredComments(slug, updated)
+
+  // Persist to backend database via CommentsApi
+  CommentsApi.toggleLike(slug, commentId, parentId).catch(() => {})
 }
 
-export function deleteComment(
+export async function deleteComment(
   slug: string,
   commentId: string,
   parentId?: string | null
-): void {
+): Promise<void> {
+  // Optimistic delete
   const current = getStoredComments(slug)
-
   let updated: BlogComment[]
   if (parentId) {
     updated = current.map((comment) => {
@@ -275,6 +294,9 @@ export function deleteComment(
   }
 
   saveStoredComments(slug, updated)
+
+  // Call API
+  CommentsApi.deleteComment(slug, commentId, parentId).catch(() => {})
 }
 
 // ----------------------------------------------------
@@ -320,13 +342,13 @@ export function usePostEngagement(slug: string) {
   const reactions = useSyncExternalStore(
     subscribe,
     () => getStoredReactions(slug),
-    () => DEFAULT_REACTIONS_REGISTRY[slug] || { likes: 42, fire: 12, insightful: 18, fast: 8, rocket: 15 }
+    () => EMPTY_REACTIONS
   )
 
   const comments = useSyncExternalStore(
     subscribe,
     () => getStoredComments(slug),
-    () => DEFAULT_COMMENTS_REGISTRY[slug] || []
+    () => []
   )
 
   const totalCommentsCount = comments.reduce(
@@ -338,13 +360,20 @@ export function usePostEngagement(slug: string) {
     reactions,
     comments,
     totalCommentsCount,
+    setComments: (newComments: BlogComment[]) =>
+      saveStoredComments(slug, newComments),
+    setReactions: (newReactions: PostReactions) =>
+      saveStoredReactions(slug, newReactions),
     toggleLike: () => togglePostLike(slug),
     toggleReaction: (key: "fire" | "insightful" | "fast" | "rocket") =>
       toggleEmojiReaction(slug, key),
-    addComment: (author: AuthUser, content: string) =>
+    addComment: (author: AuthUser | GuestCommentPayload, content: string) =>
       addComment(slug, author, content),
-    addReply: (parentId: string, author: AuthUser, content: string) =>
-      addReply(slug, parentId, author, content),
+    addReply: (
+      parentId: string,
+      author: AuthUser | GuestCommentPayload,
+      content: string
+    ) => addReply(slug, parentId, author, content),
     toggleCommentLike: (commentId: string, parentId?: string | null) =>
       toggleCommentLike(slug, commentId, parentId),
     deleteComment: (commentId: string, parentId?: string | null) =>

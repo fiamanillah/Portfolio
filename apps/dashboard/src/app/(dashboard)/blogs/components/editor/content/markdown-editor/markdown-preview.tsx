@@ -9,7 +9,10 @@ interface MarkdownPreviewProps {
 }
 
 function processAlertCallouts(html: string): string {
-  const alertTypes: Record<string, { label: string; classModifier: string; icon: string }> = {
+  const alertTypes: Record<
+    string,
+    { label: string; classModifier: string; icon: string }
+  > = {
     NOTE: {
       label: "NOTE",
       icon: `<svg class="h-4 w-4 text-sky-400 shrink-0 inline-block mr-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>`,
@@ -37,12 +40,15 @@ function processAlertCallouts(html: string): string {
     },
   }
 
-  const blockquoteRegex = /<blockquote>\s*<p>\s*\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*(?:<br\s*\/?>)?([\s\S]*?)<\/p>\s*([\s\S]*?)<\/blockquote>/gi
+  const blockquoteRegex =
+    /<blockquote>\s*<p>\s*\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*(?:<br\s*\/?>)?([\s\S]*?)<\/p>\s*([\s\S]*?)<\/blockquote>/gi
 
   return html.replace(blockquoteRegex, (_match, type, firstLine, rest) => {
     const upperType = type.toUpperCase()
     const config = alertTypes[upperType] || alertTypes.NOTE
-    const fullBody = (firstLine.trim() + (rest ? `\n${rest.trim()}` : "")).trim()
+    const fullBody = (
+      firstLine.trim() + (rest ? `\n${rest.trim()}` : "")
+    ).trim()
 
     return `
       <div class="my-6 relative overflow-hidden rounded-md border p-4 sm:p-5 backdrop-blur-sm ${config.classModifier}">
@@ -64,9 +70,11 @@ function processAlertCallouts(html: string): string {
 }
 
 function processMarkdownImages(html: string): string {
-  return html.replace(/<p><img\s+src="([^"]+)"\s+alt="([^"]*)"(?:\s+title="([^"]*)")?\s*\/?>\s*<\/p>/gi, (_match, src, alt, title) => {
-    const caption = title || (alt && alt !== src ? alt : "")
-    return `
+  return html.replace(
+    /<p><img\s+src="([^"]+)"\s+alt="([^"]*)"(?:\s+title="([^"]*)")?\s*\/?>\s*<\/p>/gi,
+    (_match, src, alt, title) => {
+      const caption = title || (alt && alt !== src ? alt : "")
+      return `
       <figure class="blog-image-figure my-8 overflow-hidden rounded-md border border-border/80 bg-card/60 shadow-md">
         <div class="relative overflow-hidden">
           <img
@@ -87,7 +95,8 @@ function processMarkdownImages(html: string): string {
         }
       </figure>
     `
-  })
+    }
+  )
 }
 
 function processMarkdownTables(html: string): string {
@@ -98,9 +107,11 @@ function processMarkdownTables(html: string): string {
 }
 
 function processCodeBlocks(html: string): string {
-  return html.replace(/<pre><code class="language-([^"]+)">([\s\S]*?)<\/code><\/pre>/gi, (_match, lang, code) => {
-    const displayLang = lang.toUpperCase()
-    return `
+  return html.replace(
+    /<pre><code class="language-([^"]+)">([\s\S]*?)<\/code><\/pre>/gi,
+    (_match, lang, code) => {
+      const displayLang = lang.toUpperCase()
+      return `
       <div class="code-block-container relative my-6 overflow-hidden rounded-md border border-border/80 shadow-lg bg-[#0d1117]">
         <div class="code-header flex items-center justify-between border-b border-border/40 bg-muted/20 px-4 py-2 text-xs font-mono select-none">
           <div class="flex items-center gap-2">
@@ -118,10 +129,14 @@ function processCodeBlocks(html: string): string {
         <pre class="p-4 overflow-x-auto text-[13px] font-mono leading-relaxed text-[#e6edf3]"><code>${code}</code></pre>
       </div>
     `
-  })
+    }
+  )
 }
 
-export function MarkdownPreview({ content, className = "" }: MarkdownPreviewProps) {
+export function MarkdownPreview({
+  content,
+  className = "",
+}: MarkdownPreviewProps) {
   const renderedHtml = React.useMemo(() => {
     if (!content.trim()) return ""
     try {
@@ -142,15 +157,18 @@ export function MarkdownPreview({ content, className = "" }: MarkdownPreviewProp
 
   if (!content.trim()) {
     return (
-      <div className={`p-8 text-center rounded-xl border border-dashed border-border bg-muted/10 text-xs text-muted-foreground italic ${className}`}>
-        No article content written yet. Switch to Write mode or type in the editor...
+      <div
+        className={`rounded-xl border border-dashed border-border bg-muted/10 p-8 text-center text-xs text-muted-foreground italic ${className}`}
+      >
+        No article content written yet. Switch to Write mode or type in the
+        editor...
       </div>
     )
   }
 
   return (
     <div
-      className={`markdown-content p-6 md:p-8 rounded-xl border border-border/80 bg-background leading-relaxed text-base overflow-y-auto max-h-[700px] shadow-xs ${className}`}
+      className={`markdown-content max-h-[700px] overflow-y-auto rounded-xl border border-border/80 bg-background p-6 text-base leading-relaxed shadow-xs md:p-8 ${className}`}
       dangerouslySetInnerHTML={{ __html: renderedHtml }}
     />
   )

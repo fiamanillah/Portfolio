@@ -85,36 +85,38 @@ export function SendTestDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-[96vw] sm:w-[90vw] sm:max-w-lg border-border/80 bg-background/95 backdrop-blur-md">
+      <DialogContent className="w-[96vw] border-border/80 bg-background/95 backdrop-blur-md sm:w-[90vw] sm:max-w-lg">
         <DialogHeader>
           <div className="flex items-center gap-2.5">
-            <div className="flex size-9 items-center justify-center rounded-lg bg-purple-500/10 text-purple-400 border border-purple-500/20">
+            <div className="flex size-9 items-center justify-center rounded-lg border border-purple-500/20 bg-purple-500/10 text-purple-400">
               <Send className="size-5" />
             </div>
             <div>
               <DialogTitle className="text-base font-bold">
                 Send Test Email
               </DialogTitle>
-              <DialogDescription className="text-xs text-muted-foreground mt-0.5">
-                Dispatch a rendered preview to verify formatting in email clients.
+              <DialogDescription className="mt-0.5 text-xs text-muted-foreground">
+                Dispatch a rendered preview to verify formatting in email
+                clients.
               </DialogDescription>
             </div>
           </div>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4 pt-2">
-          <div className="p-3 rounded-lg border border-border/60 bg-muted/20 space-y-1">
+          <div className="space-y-1 rounded-lg border border-border/60 bg-muted/20 p-3">
             <div className="text-xs font-semibold text-foreground">
               {template.name}
             </div>
-            <code className="text-[11px] font-mono text-muted-foreground block">
+            <code className="block font-mono text-[11px] text-muted-foreground">
               {template.slug}
             </code>
           </div>
 
           <div className="space-y-1.5">
             <Label htmlFor="test-recipient" className="text-xs font-semibold">
-              Recipient Email Address <span className="text-destructive">*</span>
+              Recipient Email Address{" "}
+              <span className="text-destructive">*</span>
             </Label>
             <Input
               id="test-recipient"
@@ -135,7 +137,7 @@ export function SendTestDialog({
               id="test-json-data"
               value={customDataJson}
               onChange={(e) => setCustomDataJson(e.target.value)}
-              className="font-mono text-xs min-h-[140px] bg-zinc-950 text-zinc-100 border-zinc-800 p-2.5"
+              className="min-h-[140px] border-zinc-800 bg-zinc-950 p-2.5 font-mono text-xs text-zinc-100"
             />
           </div>
 
@@ -153,7 +155,7 @@ export function SendTestDialog({
             <Button
               type="submit"
               size="sm"
-              className="text-xs gap-1.5 bg-primary text-primary-foreground font-semibold"
+              className="gap-1.5 bg-primary text-xs font-semibold text-primary-foreground"
               disabled={isProcessing || !recipient}
             >
               {isProcessing ? (

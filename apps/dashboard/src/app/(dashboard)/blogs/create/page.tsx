@@ -29,7 +29,7 @@ export default function CreateBlogPostPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-[60vh] flex flex-col items-center justify-center gap-3 text-muted-foreground">
+      <div className="flex min-h-[60vh] flex-col items-center justify-center gap-3 text-muted-foreground">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
         <span className="text-sm font-medium">Initializing post editor...</span>
       </div>
@@ -37,7 +37,7 @@ export default function CreateBlogPostPage() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6">
+    <div className="mx-auto max-w-5xl space-y-6">
       <PostEditorForm
         categories={categories}
         tags={tags}

@@ -1,4 +1,4 @@
-import { Request } from "express";
+import { Request } from "express"
 
 // TBody, TQuery, and TParams default to 'any' so it doesn't break existing untyped routes
 export interface ValidatedRequest<
@@ -6,7 +6,7 @@ export interface ValidatedRequest<
   TQuery = any,
   TParams = any,
 > extends Request {
-  validatedBody: TBody;
-  validatedQuery: TQuery;
-  validatedParams: TParams;
+  validatedBody: TBody
+  validatedQuery: TQuery
+  validatedParams: TParams
 }

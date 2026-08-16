@@ -1,7 +1,12 @@
 import { useState, useRef, type FormEvent } from "react"
 import { Button } from "@workspace/ui/components/button"
+import { Input } from "@workspace/ui/components/input"
 import { Textarea } from "@workspace/ui/components/textarea"
-import { Field, FieldError, FieldDescription } from "@workspace/ui/components/field"
+import {
+  Field,
+  FieldError,
+  FieldDescription,
+} from "@workspace/ui/components/field"
 import { useAuthSession } from "@/lib/authStore"
 import { toast } from "@workspace/ui/components/sonner"
 import { HugeiconsIcon } from "@hugeicons/react"
@@ -11,11 +16,13 @@ import {
   QuoteDownIcon,
   ArrowTurnBackwardIcon,
   Loading03Icon,
+  UserIcon,
 } from "@hugeicons/core-free-icons"
+import type { GuestCommentPayload } from "@/lib/api/commentsApi"
 
 interface CommentComposerProps {
   postSlug?: string
-  onSubmit: (content: string) => void
+  onSubmit: (content: string, guestInfo?: GuestCommentPayload) => void
   onOpenAuth: () => void
   isReply?: boolean
   replyToName?: string
@@ -33,16 +40,16 @@ export function CommentComposer({
 }: CommentComposerProps) {
   const { user, isAuthenticated, logout } = useAuthSession()
   const [content, setContent] = useState("")
+  const [guestMode, setGuestMode] = useState(false)
+  const [guestName, setGuestName] = useState("")
+  const [guestEmail, setGuestEmail] = useState("")
   const [composerError, setComposerError] = useState<string | null>(null)
+  const [guestNameError, setGuestNameError] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
-    if (!isAuthenticated || !user) {
-      onOpenAuth()
-      return
-    }
 
     const trimmed = content.trim()
     if (!trimmed) {
@@ -54,14 +61,36 @@ export function CommentComposer({
       return
     }
 
+    if (!isAuthenticated && !user) {
+      if (!guestMode) {
+        onOpenAuth()
+        return
+      }
+
+      if (!guestName.trim()) {
+        setGuestNameError("Please enter your name to post as guest")
+        return
+      }
+      setGuestNameError(null)
+    }
+
     setComposerError(null)
     setIsSubmitting(true)
     try {
-      onSubmit(trimmed)
+      if (isAuthenticated && user) {
+        await onSubmit(trimmed)
+      } else {
+        await onSubmit(trimmed, {
+          guestName: guestName.trim(),
+          guestEmail: guestEmail.trim() || undefined,
+        })
+      }
       setContent("")
       toast.success(isReply ? "Reply posted!" : "Comment published!", {
         description: "Your perspective has been added to the discussion.",
       })
+    } catch {
+      toast.error("Failed to post comment. Please try again.")
     } finally {
       setIsSubmitting(false)
     }
@@ -83,55 +112,62 @@ export function CommentComposer({
     setTimeout(() => {
       el.focus()
       const cursorTarget =
-        selected.length > 0
-          ? start + replacement.length
-          : start + prefix.length
+        selected.length > 0 ? start + replacement.length : start + prefix.length
       el.setSelectionRange(cursorTarget, cursorTarget + (selected ? 0 : 4))
     }, 0)
   }
 
-  // Guest Prompt Callout
-  if (!isAuthenticated) {
+  // If not logged in and not in guest mode, show quick action prompt
+  if (!isAuthenticated && !guestMode) {
     return (
-      <div className="relative border border-border/80 bg-background/50 p-4 sm:p-5 backdrop-blur-xs">
+      <div className="relative border border-border/80 bg-background/50 p-4 backdrop-blur-xs sm:p-5">
         {/* Cyberpunk corner accents */}
         <div className="pointer-events-none absolute top-2 left-2 h-3 w-3 border-t border-l border-primary" />
         <div className="pointer-events-none absolute top-2 right-2 h-3 w-3 border-t border-r border-primary" />
         <div className="pointer-events-none absolute bottom-2 left-2 h-3 w-3 border-b border-l border-primary" />
         <div className="pointer-events-none absolute right-2 bottom-2 h-3 w-3 border-r border-b border-primary" />
 
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
           <div className="space-y-1">
-            <span className="font-mono text-[10px] font-semibold text-primary uppercase tracking-wider block">
-              // AUTHENTICATION_REQUIRED
+            <span className="block font-mono text-[10px] font-semibold tracking-wider text-primary uppercase">
+              // JOIN_DISCUSSION
             </span>
             <h4 className="font-mono text-sm font-bold text-foreground">
               {isReply
-                ? `Sign in to reply to ${replyToName || "this comment"}`
-                : "Join the technical discussion"}
+                ? `Reply to @${replyToName || "this comment"}`
+                : "Share your architectural insights & feedback"}
             </h4>
-            <p className="text-xs text-muted-foreground max-w-lg leading-relaxed">
-              Authenticate via 1-click test profiles, email, or GitHub to share architecture insights, report benchmarks, or ask questions.
+            <p className="max-w-lg text-xs leading-relaxed text-muted-foreground">
+              Sign in with your account or continue as a guest reader to post
+              questions and architectural perspectives.
             </p>
           </div>
 
-          <div className="flex items-center gap-2 shrink-0">
+          <div className="flex shrink-0 flex-wrap items-center gap-2">
             {isReply && onCancelReply && (
               <button
                 type="button"
                 onClick={onCancelReply}
-                className="font-mono text-xs text-muted-foreground hover:text-foreground px-3 py-1.5 border border-border bg-background cursor-pointer"
+                className="cursor-pointer border border-border bg-background px-3 py-1.5 font-mono text-xs text-muted-foreground hover:text-foreground"
               >
                 Cancel
               </button>
             )}
+            <button
+              type="button"
+              onClick={() => setGuestMode(true)}
+              className="inline-flex cursor-pointer items-center gap-1.5 border border-border bg-background px-3 py-1.5 font-mono text-xs text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground"
+            >
+              <HugeiconsIcon icon={UserIcon} className="size-3.5" />
+              <span>Comment as Guest</span>
+            </button>
             <Button
               type="button"
               onClick={onOpenAuth}
-              className="rounded-none font-mono text-xs font-bold uppercase tracking-wider bg-primary text-primary-foreground hover:bg-primary/90 cursor-pointer shadow-md"
+              className="cursor-pointer rounded-none bg-primary font-mono text-xs font-bold tracking-wider text-primary-foreground uppercase shadow-md hover:bg-primary/90"
             >
-              <HugeiconsIcon icon={Login01Icon} className="size-3.5 mr-1" />
-              <span>Sign In to Comment</span>
+              <HugeiconsIcon icon={Login01Icon} className="mr-1 size-3.5" />
+              <span>Sign In</span>
             </Button>
           </div>
         </div>
@@ -139,65 +175,130 @@ export function CommentComposer({
     )
   }
 
-  // Authenticated Composer Form with shadcn Field Component
+  // Active Composer (Authenticated User OR Guest Mode)
   return (
     <form onSubmit={handleSubmit} noValidate className="space-y-3">
-      {/* Active User Header */}
-      <div className="flex items-center justify-between border-b border-border/50 pb-2.5">
-        <div className="flex items-center gap-2.5">
-          <img
-            src={user?.avatar}
-            alt={user?.name}
-            className="size-7 rounded-full border border-primary/40 object-cover"
-          />
-          <div className="flex items-center gap-2">
-            <span className="font-mono text-xs font-bold text-foreground">
-              {user?.name}
-            </span>
-            {user?.badge && (
-              <span className="border border-primary/40 bg-primary/10 px-1.5 py-0.2 font-mono text-[9px] font-semibold text-primary uppercase">
-                {user?.badge}
+      {/* Header Bar */}
+      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border/50 pb-2.5">
+        {isAuthenticated && user ? (
+          <div className="flex items-center gap-2.5">
+            <img
+              src={user.avatar || "/fi.png"}
+              alt={user.name}
+              className="size-7 rounded-full border border-primary/40 object-cover"
+            />
+            <div className="flex items-center gap-2">
+              <span className="font-mono text-xs font-bold text-foreground">
+                {user.name}
               </span>
-            )}
-            <span className="font-mono text-[10px] text-muted-foreground hidden sm:inline">
-              (@{user?.username})
-            </span>
+              {user.badge && (
+                <span className="py-0.2 border border-primary/40 bg-primary/10 px-1.5 font-mono text-[9px] font-semibold text-primary uppercase">
+                  {user.badge}
+                </span>
+              )}
+              <span className="hidden font-mono text-[10px] text-muted-foreground sm:inline">
+                (@{user.username})
+              </span>
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="flex items-center gap-2">
+            <span className="border border-primary/40 bg-primary/10 px-2 py-0.5 font-mono text-[10px] font-bold text-primary uppercase">
+              // GUEST_COMPOSER
+            </span>
+            <button
+              type="button"
+              onClick={onOpenAuth}
+              className="cursor-pointer font-mono text-[11px] text-muted-foreground underline hover:text-primary"
+            >
+              (or Sign In)
+            </button>
+          </div>
+        )}
 
         <div className="flex items-center gap-2">
           {isReply && (
-            <span className="font-mono text-[11px] text-primary/90 flex items-center gap-1">
+            <span className="flex items-center gap-1 font-mono text-[11px] text-primary/90">
               <HugeiconsIcon icon={ArrowTurnBackwardIcon} className="size-3" />
               Replying to @{replyToName}
             </span>
           )}
-          <button
-            type="button"
-            onClick={async () => {
-              await logout()
-              toast.info("Signed Out", {
-                description: "You have been disconnected from your account session.",
-              })
-            }}
-            className="font-mono text-[10px] text-muted-foreground hover:text-destructive transition-colors cursor-pointer"
-            title="Sign out of current account"
-          >
-            [Switch / Logout]
-          </button>
+          {isAuthenticated ? (
+            <button
+              type="button"
+              onClick={async () => {
+                await logout()
+                toast.info("Signed Out", {
+                  description:
+                    "You have been disconnected from your account session.",
+                })
+              }}
+              className="cursor-pointer font-mono text-[10px] text-muted-foreground transition-colors hover:text-destructive"
+              title="Sign out of current account"
+            >
+              [Switch / Logout]
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => setGuestMode(false)}
+              className="cursor-pointer font-mono text-[10px] text-muted-foreground transition-colors hover:text-foreground"
+            >
+              [Close Guest Mode]
+            </button>
+          )}
         </div>
       </div>
 
-      {/* Editor Box within Field */}
+      {/* Guest Name & Email Inputs if in Guest Mode */}
+      {!isAuthenticated && guestMode && (
+        <div className="grid grid-cols-1 gap-3 border border-border/60 bg-muted/15 p-3 sm:grid-cols-2">
+          <div>
+            <label className="mb-1 block font-mono text-[10px] text-muted-foreground uppercase">
+              Your Name *
+            </label>
+            <Input
+              type="text"
+              required
+              value={guestName}
+              onChange={(e) => {
+                setGuestName(e.target.value)
+                if (guestNameError) setGuestNameError(null)
+              }}
+              placeholder="e.g. Alex Engineer"
+              className="h-8 rounded-none bg-background/80 font-mono text-xs"
+            />
+            {guestNameError && (
+              <p className="mt-1 font-mono text-[10px] text-destructive">
+                {guestNameError}
+              </p>
+            )}
+          </div>
+          <div>
+            <label className="mb-1 block font-mono text-[10px] text-muted-foreground uppercase">
+              Email (Optional / Private)
+            </label>
+            <Input
+              type="email"
+              value={guestEmail}
+              onChange={(e) => setGuestEmail(e.target.value)}
+              placeholder="e.g. alex@example.com"
+              className="h-8 rounded-none bg-background/80 font-mono text-xs"
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Editor Box */}
       <Field data-invalid={!!composerError}>
-        <div className="relative border border-border bg-background/90 focus-within:border-primary/60 transition-colors">
+        <div className="relative border border-border bg-background/90 transition-colors focus-within:border-primary/60">
           {/* Formatting Toolbar */}
           <div className="flex items-center justify-between border-b border-border/40 bg-muted/30 px-3 py-1.5">
             <div className="flex items-center gap-1">
               <button
                 type="button"
                 onClick={() => insertFormatting("`", "`")}
-                className="p-1 font-mono text-xs text-muted-foreground hover:text-primary transition-colors cursor-pointer"
+                className="cursor-pointer p-1 font-mono text-xs text-muted-foreground transition-colors hover:text-primary"
                 title="Inline Code (`code`)"
               >
                 <HugeiconsIcon icon={CodeIcon} className="size-3.5" />
@@ -205,7 +306,7 @@ export function CommentComposer({
               <button
                 type="button"
                 onClick={() => insertFormatting("**", "**")}
-                className="p-1 font-mono text-xs font-bold text-muted-foreground hover:text-primary transition-colors cursor-pointer"
+                className="cursor-pointer p-1 font-mono text-xs font-bold text-muted-foreground transition-colors hover:text-primary"
                 title="Bold (**bold**)"
               >
                 B
@@ -213,7 +314,7 @@ export function CommentComposer({
               <button
                 type="button"
                 onClick={() => insertFormatting("> ")}
-                className="p-1 font-mono text-xs text-muted-foreground hover:text-primary transition-colors cursor-pointer"
+                className="cursor-pointer p-1 font-mono text-xs text-muted-foreground transition-colors hover:text-primary"
                 title="Quote (> text)"
               >
                 <HugeiconsIcon icon={QuoteDownIcon} className="size-3.5" />
@@ -257,7 +358,7 @@ export function CommentComposer({
             <button
               type="button"
               onClick={onCancelReply}
-              className="font-mono text-xs text-muted-foreground hover:text-foreground px-3 py-1.5 border border-border bg-background cursor-pointer"
+              className="cursor-pointer border border-border bg-background px-3 py-1.5 font-mono text-xs text-muted-foreground hover:text-foreground"
             >
               Cancel
             </button>
@@ -266,11 +367,14 @@ export function CommentComposer({
           <Button
             type="submit"
             disabled={isSubmitting || !content.trim()}
-            className="rounded-none font-mono text-xs font-bold uppercase tracking-wider bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50 cursor-pointer h-8 px-4"
+            className="h-8 cursor-pointer rounded-none bg-primary px-4 font-mono text-xs font-bold tracking-wider text-primary-foreground uppercase hover:bg-primary/90 disabled:opacity-50"
           >
             {isSubmitting ? (
               <>
-                <HugeiconsIcon icon={Loading03Icon} className="size-3 animate-spin mr-1" />
+                <HugeiconsIcon
+                  icon={Loading03Icon}
+                  className="mr-1 size-3 animate-spin"
+                />
                 <span>Publishing...</span>
               </>
             ) : isReply ? (

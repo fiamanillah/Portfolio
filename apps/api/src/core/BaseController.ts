@@ -1,14 +1,14 @@
 // src/core/BaseController.ts
-import { Request, Response } from "express";
-import { HTTPStatusCode } from "@/types/HTTPStatusCode";
-import { ApiResponse, PaginatedResponse } from "@/types/types";
-import { AppLogger } from "@workspace/logger";
+import { Request, Response } from "express"
+import { HTTPStatusCode } from "@/types/HTTPStatusCode"
+import { ApiResponse, PaginatedResponse } from "@/types/types"
+import { AppLogger } from "@workspace/logger"
 
 export abstract class BaseController {
-  protected logger: AppLogger;
+  protected logger: AppLogger
 
   constructor() {
-    this.logger = new AppLogger(this.constructor.name || "BaseController");
+    this.logger = new AppLogger(this.constructor.name || "BaseController")
   }
 
   /**
@@ -19,13 +19,13 @@ export abstract class BaseController {
     res: Response,
     message?: string,
     statusCode: HTTPStatusCode = HTTPStatusCode.OK,
-    data?: T,
+    data?: T
   ): Response<ApiResponse<T>> | void {
     if (req.timedout || res.headersSent) {
       this.logger.warn(
-        `[Blocked] Prevented sending response for ${req.method} ${req.originalUrl} - Request timed out or was closed.`,
-      );
-      return;
+        `[Blocked] Prevented sending response for ${req.method} ${req.originalUrl} - Request timed out or was closed.`
+      )
+      return
     }
 
     const response: ApiResponse<T> = {
@@ -36,9 +36,9 @@ export abstract class BaseController {
         timestamp: new Date().toISOString(),
       },
       data,
-    };
+    }
 
-    return res.status(statusCode).json(response);
+    return res.status(statusCode).json(response)
   }
 
   /**
@@ -49,13 +49,13 @@ export abstract class BaseController {
     res: Response,
     pagination: PaginatedResponse<T>["meta"]["pagination"],
     message?: string,
-    data?: T[],
+    data?: T[]
   ): Response<PaginatedResponse<T>> | void {
     if (req.timedout || res.headersSent || req.abortSignal.aborted) {
       this.logger.warn(
-        `[Blocked] Prevented sending response for ${req.method} ${req.originalUrl} - Request timed out or was closed.`,
-      );
-      return;
+        `[Blocked] Prevented sending response for ${req.method} ${req.originalUrl} - Request timed out or was closed.`
+      )
+      return
     }
 
     const response: PaginatedResponse<T> = {
@@ -67,9 +67,9 @@ export abstract class BaseController {
         pagination,
       },
       data,
-    };
+    }
 
-    return res.status(HTTPStatusCode.OK).json(response);
+    return res.status(HTTPStatusCode.OK).json(response)
   }
 
   /**
@@ -79,16 +79,16 @@ export abstract class BaseController {
     req: Request,
     res: Response,
     data: T,
-    message: string = "Resource created successfully",
+    message: string = "Resource created successfully"
   ): Response<ApiResponse<T>> | void {
-    return this.sendResponse(req, res, message, HTTPStatusCode.CREATED, data);
+    return this.sendResponse(req, res, message, HTTPStatusCode.CREATED, data)
   }
 
   /**
    * Send a 204 No Content response
    */
   protected sendNoContentResponse(res: Response): Response {
-    return res.status(HTTPStatusCode.NO_CONTENT).send();
+    return res.status(HTTPStatusCode.NO_CONTENT).send()
   }
 
   /**
@@ -98,22 +98,22 @@ export abstract class BaseController {
    */
   protected extractPaginationParams(
     req: Request,
-    maxLimit: number = 100,
+    maxLimit: number = 100
   ): {
-    page: number;
-    limit: number;
-    offset: number;
+    page: number
+    limit: number
+    offset: number
   } {
-    const page = Math.max(1, parseInt(req.query.page as string) || 1);
+    const page = Math.max(1, parseInt(req.query.page as string) || 1)
 
     // Use the provided maxLimit parameter instead of a hardcoded 100
     const limit = Math.min(
       maxLimit,
-      Math.max(1, parseInt(req.query.limit as string) || 10),
-    );
+      Math.max(1, parseInt(req.query.limit as string) || 10)
+    )
 
-    const offset = (page - 1) * limit;
+    const offset = (page - 1) * limit
 
-    return { page, limit, offset };
+    return { page, limit, offset }
   }
 }

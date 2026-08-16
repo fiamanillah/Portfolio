@@ -16,8 +16,8 @@ import type {
   BulkBlogStatusDTO,
   BulkBlogDeleteDTO,
   SeoPreviewDTO,
-} from "@workspace/shared";
-import { request } from "./client";
+} from "@workspace/shared"
+import { request } from "./client"
 
 export const BlogApi = {
   /**
@@ -26,31 +26,35 @@ export const BlogApi = {
   async getStats() {
     return await request<BlogStatsDTO>("/blogs/v1/admin/stats", {
       method: "GET",
-    });
+    })
   },
 
   /**
    * 2. List all blog posts with admin filters and pagination
    */
   async getAll(query: ListBlogPostsQueryDTO = {}) {
-    const params = new URLSearchParams();
-    if (query.page) params.append("page", String(query.page));
-    if (query.limit) params.append("limit", String(query.limit));
-    if (query.search) params.append("search", query.search);
-    if (query.status) params.append("status", query.status);
-    if (query.categoryId) params.append("categoryId", query.categoryId);
-    if (query.category) params.append("category", query.category);
-    if (query.tag) params.append("tag", query.tag);
-    if (query.featured !== undefined) params.append("featured", String(query.featured));
-    if (query.sortBy) params.append("sortBy", query.sortBy);
-    if (query.sortOrder) params.append("sortOrder", query.sortOrder);
-    if (query.startDate) params.append("startDate", query.startDate);
-    if (query.endDate) params.append("endDate", query.endDate);
+    const params = new URLSearchParams()
+    if (query.page) params.append("page", String(query.page))
+    if (query.limit) params.append("limit", String(query.limit))
+    if (query.search) params.append("search", query.search)
+    if (query.status) params.append("status", query.status)
+    if (query.categoryId) params.append("categoryId", query.categoryId)
+    if (query.category) params.append("category", query.category)
+    if (query.tag) params.append("tag", query.tag)
+    if (query.featured !== undefined)
+      params.append("featured", String(query.featured))
+    if (query.sortBy) params.append("sortBy", query.sortBy)
+    if (query.sortOrder) params.append("sortOrder", query.sortOrder)
+    if (query.startDate) params.append("startDate", query.startDate)
+    if (query.endDate) params.append("endDate", query.endDate)
 
-    const queryString = params.toString() ? `?${params.toString()}` : "";
-    return await request<BlogPostListItemDTO[]>(`/blogs/v1/admin/posts${queryString}`, {
-      method: "GET",
-    });
+    const queryString = params.toString() ? `?${params.toString()}` : ""
+    return await request<BlogPostListItemDTO[]>(
+      `/blogs/v1/admin/posts${queryString}`,
+      {
+        method: "GET",
+      }
+    )
   },
 
   /**
@@ -59,7 +63,7 @@ export const BlogApi = {
   async getById(id: string) {
     return await request<BlogPostDTO>(`/blogs/v1/admin/posts/${id}`, {
       method: "GET",
-    });
+    })
   },
 
   /**
@@ -69,7 +73,7 @@ export const BlogApi = {
     return await request<BlogPostDTO>("/blogs/v1/admin/posts", {
       method: "POST",
       body: JSON.stringify(payload),
-    });
+    })
   },
 
   /**
@@ -79,7 +83,7 @@ export const BlogApi = {
     return await request<BlogPostDTO>(`/blogs/v1/admin/posts/${id}`, {
       method: "PATCH",
       body: JSON.stringify(payload),
-    });
+    })
   },
 
   /**
@@ -88,7 +92,7 @@ export const BlogApi = {
   async delete(id: string) {
     return await request<{ id: string }>(`/blogs/v1/admin/posts/${id}`, {
       method: "DELETE",
-    });
+    })
   },
 
   /**
@@ -97,46 +101,58 @@ export const BlogApi = {
   async duplicate(id: string) {
     return await request<BlogPostDTO>(`/blogs/v1/admin/posts/${id}/duplicate`, {
       method: "POST",
-    });
+    })
   },
 
   /**
    * 8. Bulk update status
    */
   async bulkUpdateStatus(payload: BulkBlogStatusDTO) {
-    return await request<{ count: number }>("/blogs/v1/admin/posts/bulk-status", {
-      method: "POST",
-      body: JSON.stringify(payload),
-    });
+    return await request<{ count: number }>(
+      "/blogs/v1/admin/posts/bulk-status",
+      {
+        method: "POST",
+        body: JSON.stringify(payload),
+      }
+    )
   },
 
   /**
    * 9. Bulk delete posts
    */
   async bulkDelete(payload: BulkBlogDeleteDTO) {
-    return await request<{ count: number }>("/blogs/v1/admin/posts/bulk-delete", {
-      method: "POST",
-      body: JSON.stringify(payload),
-    });
+    return await request<{ count: number }>(
+      "/blogs/v1/admin/posts/bulk-delete",
+      {
+        method: "POST",
+        body: JSON.stringify(payload),
+      }
+    )
   },
 
   /**
    * 10. Generate real-time SEO preview & diagnostic health check
    */
   async generateSeoPreview(payload: SeoPreviewDTO) {
-    return await request<SeoAnalysisResult>("/blogs/v1/admin/posts/seo-preview", {
-      method: "POST",
-      body: JSON.stringify(payload),
-    });
+    return await request<SeoAnalysisResult>(
+      "/blogs/v1/admin/posts/seo-preview",
+      {
+        method: "POST",
+        body: JSON.stringify(payload),
+      }
+    )
   },
 
   /**
    * 11. Sync / seed local JSON posts into PostgreSQL
    */
   async seedLocal() {
-    return await request<{ imported: number; message: string }>("/blogs/v1/admin/seed-local", {
-      method: "POST",
-    });
+    return await request<{ imported: number; message: string }>(
+      "/blogs/v1/admin/seed-local",
+      {
+        method: "POST",
+      }
+    )
   },
 
   /**
@@ -145,7 +161,7 @@ export const BlogApi = {
   async getCategories() {
     return await request<BlogCategoryDTO[]>("/blogs/v1/admin/categories", {
       method: "GET",
-    });
+    })
   },
 
   /**
@@ -155,7 +171,7 @@ export const BlogApi = {
     return await request<BlogCategoryDTO>("/blogs/v1/admin/categories", {
       method: "POST",
       body: JSON.stringify(payload),
-    });
+    })
   },
 
   /**
@@ -165,7 +181,7 @@ export const BlogApi = {
     return await request<BlogCategoryDTO>(`/blogs/v1/admin/categories/${id}`, {
       method: "PATCH",
       body: JSON.stringify(payload),
-    });
+    })
   },
 
   /**
@@ -174,7 +190,7 @@ export const BlogApi = {
   async deleteCategory(id: string) {
     return await request<{ id: string }>(`/blogs/v1/admin/categories/${id}`, {
       method: "DELETE",
-    });
+    })
   },
 
   /**
@@ -183,7 +199,7 @@ export const BlogApi = {
   async getTags() {
     return await request<BlogTagDTO[]>("/blogs/v1/admin/tags", {
       method: "GET",
-    });
+    })
   },
 
   /**
@@ -193,7 +209,7 @@ export const BlogApi = {
     return await request<BlogTagDTO>("/blogs/v1/admin/tags", {
       method: "POST",
       body: JSON.stringify(payload),
-    });
+    })
   },
 
   /**
@@ -203,7 +219,7 @@ export const BlogApi = {
     return await request<BlogTagDTO>(`/blogs/v1/admin/tags/${id}`, {
       method: "PATCH",
       body: JSON.stringify(payload),
-    });
+    })
   },
 
   /**
@@ -212,6 +228,6 @@ export const BlogApi = {
   async deleteTag(id: string) {
     return await request<{ id: string }>(`/blogs/v1/admin/tags/${id}`, {
       method: "DELETE",
-    });
+    })
   },
-};
+}

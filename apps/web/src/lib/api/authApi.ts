@@ -6,36 +6,36 @@ import type {
   LoginInput,
   ResetPasswordInput,
   UpdateProfileInput,
-} from "@workspace/shared";
+} from "@workspace/shared"
 
-export type InitiateRegisterPayload = InitiateRegisterInput;
-export type VerifyRegisterOtpPayload = VerifyRegisterOtpInput;
-export type LoginPayload = LoginInput;
-export type ResetPasswordPayload = ResetPasswordInput;
-export type UpdateProfilePayload = UpdateProfileInput;
+export type InitiateRegisterPayload = InitiateRegisterInput
+export type VerifyRegisterOtpPayload = VerifyRegisterOtpInput
+export type LoginPayload = LoginInput
+export type ResetPasswordPayload = ResetPasswordInput
+export type UpdateProfilePayload = UpdateProfileInput
 
 const API_BASE_URL =
   (typeof import.meta !== "undefined" && import.meta.env?.PUBLIC_API_URL) ||
-  "http://localhost:3030";
+  "http://localhost:3030"
 
-const ACCESS_TOKEN_KEY = "portfolio_access_token";
+const ACCESS_TOKEN_KEY = "portfolio_access_token"
 
 export function getStoredAccessToken(): string | null {
-  if (typeof window === "undefined") return null;
+  if (typeof window === "undefined") return null
   try {
-    return localStorage.getItem(ACCESS_TOKEN_KEY);
+    return localStorage.getItem(ACCESS_TOKEN_KEY)
   } catch {
-    return null;
+    return null
   }
 }
 
 export function setStoredAccessToken(token: string | null): void {
-  if (typeof window === "undefined") return;
+  if (typeof window === "undefined") return
   try {
     if (token) {
-      localStorage.setItem(ACCESS_TOKEN_KEY, token);
+      localStorage.setItem(ACCESS_TOKEN_KEY, token)
     } else {
-      localStorage.removeItem(ACCESS_TOKEN_KEY);
+      localStorage.removeItem(ACCESS_TOKEN_KEY)
     }
   } catch {
     // ignore
@@ -46,44 +46,47 @@ async function request<T>(
   endpoint: string,
   options: RequestInit = {}
 ): Promise<{ success: boolean; data?: T; message?: string; error?: string }> {
-  const token = getStoredAccessToken();
+  const token = getStoredAccessToken()
   const headers: Record<string, string> = {
-    ...(options.body instanceof FormData ? {} : { "Content-Type": "application/json" }),
+    ...(options.body instanceof FormData
+      ? {}
+      : { "Content-Type": "application/json" }),
     ...(options.headers as Record<string, string>),
-  };
+  }
 
   if (token) {
-    headers["Authorization"] = `Bearer ${token}`;
+    headers["Authorization"] = `Bearer ${token}`
   }
 
   try {
-    const url = `${API_BASE_URL}${endpoint}`;
+    const url = `${API_BASE_URL}${endpoint}`
     const res = await fetch(url, {
       ...options,
       headers,
       credentials: "include",
-    });
+    })
 
-    const body = await res.json().catch(() => null);
+    const body = await res.json().catch(() => null)
 
     if (!res.ok) {
       const errMsg =
         body?.message ||
         body?.error?.message ||
-        `Request failed with status ${res.status}`;
-      return { success: false, error: errMsg, message: errMsg };
+        `Request failed with status ${res.status}`
+      return { success: false, error: errMsg, message: errMsg }
     }
 
     return {
       success: true,
       data: (body?.data !== undefined ? body.data : body) as T,
       message: body?.message,
-    };
+    }
   } catch (err: any) {
     return {
       success: false,
-      error: err?.message || "Network error. Please check your server connection.",
-    };
+      error:
+        err?.message || "Network error. Please check your server connection.",
+    }
   }
 }
 
@@ -98,7 +101,7 @@ export const AuthApi = {
         method: "POST",
         body: JSON.stringify(payload),
       }
-    );
+    )
   },
 
   /**
@@ -106,19 +109,19 @@ export const AuthApi = {
    */
   async verifyRegisterOtp(payload: VerifyRegisterOtpPayload) {
     const res = await request<{
-      user: AuthUser;
-      accessToken: string;
-      refreshToken: string;
+      user: AuthUser
+      accessToken: string
+      refreshToken: string
     }>("/auth/v1/register/verify-otp", {
       method: "POST",
       body: JSON.stringify(payload),
-    });
+    })
 
     if (res.success && res.data?.accessToken) {
-      setStoredAccessToken(res.data.accessToken);
+      setStoredAccessToken(res.data.accessToken)
     }
 
-    return res;
+    return res
   },
 
   /**
@@ -126,19 +129,19 @@ export const AuthApi = {
    */
   async login(payload: LoginPayload) {
     const res = await request<{
-      user: AuthUser;
-      accessToken: string;
-      refreshToken: string;
+      user: AuthUser
+      accessToken: string
+      refreshToken: string
     }>("/auth/v1/login", {
       method: "POST",
       body: JSON.stringify(payload),
-    });
+    })
 
     if (res.success && res.data?.accessToken) {
-      setStoredAccessToken(res.data.accessToken);
+      setStoredAccessToken(res.data.accessToken)
     }
 
-    return res;
+    return res
   },
 
   /**
@@ -146,19 +149,19 @@ export const AuthApi = {
    */
   async demoLogin(userId: string) {
     const res = await request<{
-      user: AuthUser;
-      accessToken: string;
-      refreshToken: string;
+      user: AuthUser
+      accessToken: string
+      refreshToken: string
     }>("/auth/v1/demo-login", {
       method: "POST",
       body: JSON.stringify({ userId }),
-    });
+    })
 
     if (res.success && res.data?.accessToken) {
-      setStoredAccessToken(res.data.accessToken);
+      setStoredAccessToken(res.data.accessToken)
     }
 
-    return res;
+    return res
   },
 
   /**
@@ -168,7 +171,7 @@ export const AuthApi = {
     return await request<{ message: string }>("/auth/v1/forgot-password", {
       method: "POST",
       body: JSON.stringify({ email }),
-    });
+    })
   },
 
   /**
@@ -178,7 +181,7 @@ export const AuthApi = {
     return await request<{ message: string }>("/auth/v1/verify-reset-otp", {
       method: "POST",
       body: JSON.stringify({ email, otpCode }),
-    });
+    })
   },
 
   /**
@@ -186,29 +189,32 @@ export const AuthApi = {
    */
   async resetPassword(payload: ResetPasswordPayload) {
     const res = await request<{
-      user: AuthUser;
-      accessToken: string;
-      refreshToken: string;
+      user: AuthUser
+      accessToken: string
+      refreshToken: string
     }>("/auth/v1/reset-password", {
       method: "POST",
       body: JSON.stringify(payload),
-    });
+    })
 
     if (res.success && res.data?.accessToken) {
-      setStoredAccessToken(res.data.accessToken);
+      setStoredAccessToken(res.data.accessToken)
     }
 
-    return res;
+    return res
   },
 
   /**
    * 8. Resend OTP Code
    */
-  async resendOtp(email: string, type: "REGISTER_EMAIL_VERIFY" | "PASSWORD_RESET") {
+  async resendOtp(
+    email: string,
+    type: "REGISTER_EMAIL_VERIFY" | "PASSWORD_RESET"
+  ) {
     return await request<{ message: string }>("/auth/v1/resend-otp", {
       method: "POST",
       body: JSON.stringify({ email, type }),
-    });
+    })
   },
 
   /**
@@ -217,7 +223,7 @@ export const AuthApi = {
   async getMe() {
     return await request<AuthUser>("/auth/v1/me", {
       method: "GET",
-    });
+    })
   },
 
   /**
@@ -227,7 +233,7 @@ export const AuthApi = {
     return await request<AuthUser>("/users/v1/profile", {
       method: "PATCH",
       body: JSON.stringify(payload),
-    });
+    })
   },
 
   /**
@@ -237,17 +243,20 @@ export const AuthApi = {
     return await request<{ message: string }>("/users/v1/change-password", {
       method: "PATCH",
       body: JSON.stringify({ currentPassword, newPassword }),
-    });
+    })
   },
 
   /**
    * 12. Update Newsletter Subscription
    */
   async updateSubscription(subscribedToNewsletter: boolean) {
-    return await request<{ subscribedToNewsletter: boolean }>("/users/v1/subscription", {
-      method: "PATCH",
-      body: JSON.stringify({ subscribedToNewsletter }),
-    });
+    return await request<{ subscribedToNewsletter: boolean }>(
+      "/users/v1/subscription",
+      {
+        method: "PATCH",
+        body: JSON.stringify({ subscribedToNewsletter }),
+      }
+    )
   },
 
   /**
@@ -256,22 +265,22 @@ export const AuthApi = {
   async deleteAccount() {
     const res = await request<{ message: string }>("/users/v1/account", {
       method: "DELETE",
-    });
-    setStoredAccessToken(null);
-    return res;
+    })
+    setStoredAccessToken(null)
+    return res
   },
 
   /**
    * 14. Upload Profile Avatar directly to Cloudflare R2 / S3
    */
   async uploadAvatar(file: File) {
-    const formData = new FormData();
-    formData.append("file", file);
+    const formData = new FormData()
+    formData.append("file", file)
 
     return await request<AuthUser>("/users/v1/profile/avatar", {
       method: "POST",
       body: formData,
-    });
+    })
   },
 
   /**
@@ -280,7 +289,7 @@ export const AuthApi = {
   async deleteAvatar() {
     return await request<AuthUser>("/users/v1/profile/avatar", {
       method: "DELETE",
-    });
+    })
   },
 
   /**
@@ -289,7 +298,7 @@ export const AuthApi = {
   async logout() {
     await request("/auth/v1/logout", {
       method: "POST",
-    });
-    setStoredAccessToken(null);
+    })
+    setStoredAccessToken(null)
   },
-};
+}

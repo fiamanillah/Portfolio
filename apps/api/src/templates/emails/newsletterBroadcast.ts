@@ -1,17 +1,17 @@
 // src/templates/emails/newsletterBroadcast.ts
-import { renderEmailLayout } from "./baseLayout";
+import { renderEmailLayout } from "./baseLayout"
 
 export interface NewsletterBroadcastOptions {
-  title?: string;
-  badgeLabel?: string;
-  previewText?: string;
-  articleTitle?: string;
-  articleExcerpt?: string;
-  articleUrl?: string;
-  articleTags?: string[];
-  mainContentHtml?: string;
-  unsubscribeUrl?: string;
-  manageUrl?: string;
+  title?: string
+  badgeLabel?: string
+  previewText?: string
+  articleTitle?: string
+  articleExcerpt?: string
+  articleUrl?: string
+  articleTags?: string[]
+  mainContentHtml?: string
+  unsubscribeUrl?: string
+  manageUrl?: string
 }
 
 /**
@@ -54,18 +54,20 @@ export function getNewsletterBroadcastLiquidBody(): string {
         <strong style="color: #f8fafc;">Fi Amanillah</strong>
       </p>
     </div>
-  `.trim();
+  `.trim()
 
   const { html } = renderEmailLayout({
     badgeLabel: "{{ badgeLabel | default: 'New Post' }}",
     title: "{{ title | default: 'Latest from Fi Amanillah' }}",
-    subtitle: "{{ subtitle | default: 'Engineering notes, systems design & tech insights' }}",
+    subtitle:
+      "{{ subtitle | default: 'Engineering notes, systems design & tech insights' }}",
     contentHtml,
-    previewText: "{{ previewText | default: 'New engineering post and system design write-up from Fi Amanillah' }}",
+    previewText:
+      "{{ previewText | default: 'New engineering post and system design write-up from Fi Amanillah' }}",
     unsubscribeUrl: "{{ unsubscribeUrl }}",
     manageUrl: "{{ manageUrl }}",
     showUnsubscribe: true,
-  });
+  })
 
-  return html;
+  return html
 }

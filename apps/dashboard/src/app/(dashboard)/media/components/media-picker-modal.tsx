@@ -21,7 +21,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@workspace/ui/components/dialog"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@workspace/ui/components/tabs"
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@workspace/ui/components/tabs"
 import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"
 import {
@@ -56,12 +61,16 @@ export function MediaPickerModal({
   title = "Select Media Asset",
   buttonText = "Insert Selected Asset",
 }: MediaPickerModalProps) {
-  const [activeTab, setActiveTab] = React.useState<"library" | "upload">("library")
+  const [activeTab, setActiveTab] = React.useState<"library" | "upload">(
+    "library"
+  )
   const [files, setFiles] = React.useState<MediaFileDTO[]>([])
   const [folders, setFolders] = React.useState<MediaFolderStat[]>([])
   const [isLoading, setIsLoading] = React.useState(true)
   const [searchQuery, setSearchQuery] = React.useState("")
-  const [folderFilter, setFolderFilter] = React.useState<string>(defaultFolder || "all")
+  const [folderFilter, setFolderFilter] = React.useState<string>(
+    defaultFolder || "all"
+  )
   const [selectedItems, setSelectedItems] = React.useState<MediaFileDTO[]>([])
 
   // Upload tab states
@@ -153,63 +162,71 @@ export function MediaPickerModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-[95vw] sm:min-w-[780px] md:min-w-[920px] lg:min-w-[1040px] max-w-6xl max-h-[90vh] flex flex-col p-0 overflow-hidden gap-0 bg-card border border-border/80 shadow-2xl">
-        <DialogHeader className="px-6 py-4 border-b border-border/80 bg-muted/20">
-          <DialogTitle className="text-base font-bold flex items-center gap-2">
+      <DialogContent className="flex max-h-[90vh] w-[95vw] max-w-6xl flex-col gap-0 overflow-hidden border border-border/80 bg-card p-0 shadow-2xl sm:min-w-[780px] md:min-w-[920px] lg:min-w-[1040px]">
+        <DialogHeader className="border-b border-border/80 bg-muted/20 px-6 py-4">
+          <DialogTitle className="flex items-center gap-2 text-base font-bold">
             <ImageIcon className="size-5 text-primary" />
             {title}
           </DialogTitle>
           <DialogDescription className="text-xs text-muted-foreground">
-            Browse and select media from your Cloudflare R2 library or upload new files.
+            Browse and select media from your Cloudflare R2 library or upload
+            new files.
           </DialogDescription>
         </DialogHeader>
 
         <Tabs
           value={activeTab}
           onValueChange={(val) => setActiveTab(val as any)}
-          className="flex-1 flex flex-col overflow-hidden"
+          className="flex flex-1 flex-col overflow-hidden"
         >
-          <div className="px-6 border-b border-border bg-card">
-            <TabsList className="h-10 bg-transparent p-0 gap-4">
+          <div className="border-b border-border bg-card px-6">
+            <TabsList className="h-10 gap-4 bg-transparent p-0">
               <TabsTrigger
                 value="library"
-                className="data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:bg-transparent rounded-none px-2 text-xs font-semibold"
+                className="rounded-none px-2 text-xs font-semibold data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:bg-transparent"
               >
                 Media Library
               </TabsTrigger>
               <TabsTrigger
                 value="upload"
-                className="data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:bg-transparent rounded-none px-2 text-xs font-semibold"
+                className="rounded-none px-2 text-xs font-semibold data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:bg-transparent"
               >
                 Upload Files
               </TabsTrigger>
             </TabsList>
           </div>
 
-          <TabsContent value="library" className="flex-1 flex overflow-hidden m-0">
+          <TabsContent
+            value="library"
+            className="m-0 flex flex-1 overflow-hidden"
+          >
             {/* Library Grid Area */}
-            <div className="flex-1 flex flex-col p-5 overflow-hidden">
+            <div className="flex flex-1 flex-col overflow-hidden p-5">
               {/* Search & Folder Filter Bar */}
-              <div className="flex items-center gap-3 mb-4">
-                <div className="relative flex-1 max-w-sm">
-                  <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground" />
+              <div className="mb-4 flex items-center gap-3">
+                <div className="relative max-w-sm flex-1">
+                  <Search className="absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-muted-foreground" />
                   <Input
                     placeholder="Search media..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="h-8 pl-8 text-xs bg-background"
+                    className="h-8 bg-background pl-8 text-xs"
                   />
                 </div>
 
                 <Select value={folderFilter} onValueChange={setFolderFilter}>
-                  <SelectTrigger className="h-8 w-[140px] text-xs bg-background">
-                    <FolderOpen className="size-3.5 mr-1 text-muted-foreground" />
+                  <SelectTrigger className="h-8 w-[140px] bg-background text-xs">
+                    <FolderOpen className="mr-1 size-3.5 text-muted-foreground" />
                     <SelectValue placeholder="Folder" />
                   </SelectTrigger>
                   <SelectContent className="text-xs">
                     <SelectItem value="all">All Folders</SelectItem>
                     {folders.map((f) => (
-                      <SelectItem key={f.folder} value={f.folder} className="capitalize">
+                      <SelectItem
+                        key={f.folder}
+                        value={f.folder}
+                        className="capitalize"
+                      >
                         {f.folder} ({f.count})
                       </SelectItem>
                     ))}
@@ -220,22 +237,24 @@ export function MediaPickerModal({
               {/* Grid of items */}
               <div className="flex-1 overflow-y-auto pr-1">
                 {isLoading ? (
-                  <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
+                  <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-5">
                     {Array.from({ length: 15 }).map((_, i) => (
                       <Skeleton key={i} className="aspect-square rounded-lg" />
                     ))}
                   </div>
                 ) : files.length > 0 ? (
-                  <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
+                  <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-5">
                     {files.map((file) => {
-                      const isSelected = selectedItems.some((i) => i.id === file.id)
+                      const isSelected = selectedItems.some(
+                        (i) => i.id === file.id
+                      )
                       return (
                         <div
                           key={file.id}
                           onClick={() => toggleSelectItem(file)}
-                          className={`group relative aspect-square rounded-lg overflow-hidden border cursor-pointer select-none transition-all ${
+                          className={`group relative aspect-square cursor-pointer overflow-hidden rounded-lg border transition-all select-none ${
                             isSelected
-                              ? "border-primary ring-2 ring-primary bg-primary/10"
+                              ? "border-primary bg-primary/10 ring-2 ring-primary"
                               : "border-border hover:border-primary/50"
                           }`}
                         >
@@ -248,11 +267,11 @@ export function MediaPickerModal({
                             thumbnailOnly
                           />
                           {isSelected && (
-                            <div className="absolute top-1.5 right-1.5 size-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-xs">
+                            <div className="absolute top-1.5 right-1.5 flex size-5 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-xs">
                               <Check className="size-3" />
                             </div>
                           )}
-                          <div className="absolute bottom-0 inset-x-0 p-1 bg-black/60 backdrop-blur-xs text-[10px] text-white truncate px-1.5">
+                          <div className="absolute inset-x-0 bottom-0 truncate bg-black/60 p-1 px-1.5 text-[10px] text-white backdrop-blur-xs">
                             {file.fileName}
                           </div>
                         </div>
@@ -260,7 +279,7 @@ export function MediaPickerModal({
                     })}
                   </div>
                 ) : (
-                  <div className="h-48 flex flex-col items-center justify-center text-center text-xs text-muted-foreground">
+                  <div className="flex h-48 flex-col items-center justify-center text-center text-xs text-muted-foreground">
                     <p>No media files found matching the criteria.</p>
                   </div>
                 )}
@@ -269,12 +288,12 @@ export function MediaPickerModal({
 
             {/* Right Preview & Details Sidebar */}
             {activeItem && (
-              <div className="w-64 border-l border-border/80 bg-muted/10 p-4 flex flex-col justify-between overflow-y-auto text-xs space-y-4">
+              <div className="flex w-64 flex-col justify-between space-y-4 overflow-y-auto border-l border-border/80 bg-muted/10 p-4 text-xs">
                 <div className="space-y-3">
-                  <span className="font-semibold text-foreground block">
+                  <span className="block font-semibold text-foreground">
                     Selected Attachment
                   </span>
-                  <div className="aspect-[4/3] rounded-lg overflow-hidden border border-border/80 bg-background">
+                  <div className="aspect-[4/3] overflow-hidden rounded-lg border border-border/80 bg-background">
                     <MediaPreview
                       url={activeItem.url}
                       mimeType={activeItem.mimeType}
@@ -286,11 +305,19 @@ export function MediaPickerModal({
                   </div>
 
                   <div className="space-y-1.5 text-muted-foreground">
-                    <p className="font-semibold text-foreground truncate">{activeItem.fileName}</p>
-                    <p className="font-mono text-[11px]">{activeItem.sizeFormatted}</p>
-                    <p className="font-mono text-[11px]">{activeItem.mimeType}</p>
+                    <p className="truncate font-semibold text-foreground">
+                      {activeItem.fileName}
+                    </p>
+                    <p className="font-mono text-[11px]">
+                      {activeItem.sizeFormatted}
+                    </p>
+                    <p className="font-mono text-[11px]">
+                      {activeItem.mimeType}
+                    </p>
                     {activeItem.altText && (
-                      <p className="text-[11px] italic">Alt: "{activeItem.altText}"</p>
+                      <p className="text-[11px] italic">
+                        Alt: "{activeItem.altText}"
+                      </p>
                     )}
                   </div>
                 </div>
@@ -298,10 +325,13 @@ export function MediaPickerModal({
             )}
           </TabsContent>
 
-          <TabsContent value="upload" className="flex-1 p-8 flex flex-col items-center justify-center m-0">
+          <TabsContent
+            value="upload"
+            className="m-0 flex flex-1 flex-col items-center justify-center p-8"
+          >
             <div
               onClick={() => fileInputRef.current?.click()}
-              className="flex flex-col items-center justify-center p-12 border-2 border-dashed border-border/80 hover:border-primary rounded-xl cursor-pointer bg-muted/10 hover:bg-muted/20 text-center max-w-md w-full transition-colors"
+              className="flex w-full max-w-md cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-border/80 bg-muted/10 p-12 text-center transition-colors hover:border-primary hover:bg-muted/20"
             >
               <input
                 ref={fileInputRef}
@@ -310,19 +340,21 @@ export function MediaPickerModal({
                 className="hidden"
                 onChange={handleDirectUpload}
               />
-              <div className="size-14 rounded-full bg-primary/10 text-primary flex items-center justify-center mb-3">
+              <div className="mb-3 flex size-14 items-center justify-center rounded-full bg-primary/10 text-primary">
                 <UploadCloud className="size-7" />
               </div>
-              <p className="text-sm font-semibold">Click to upload or drag files here</p>
-              <p className="text-xs text-muted-foreground mt-1">
+              <p className="text-sm font-semibold">
+                Click to upload or drag files here
+              </p>
+              <p className="mt-1 text-xs text-muted-foreground">
                 Asset will be saved to Cloudflare R2 and immediately selected.
               </p>
             </div>
           </TabsContent>
         </Tabs>
 
-        <DialogFooter className="px-6 py-3 border-t border-border bg-muted/20 sm:justify-between items-center">
-          <span className="text-xs text-muted-foreground font-mono">
+        <DialogFooter className="items-center border-t border-border bg-muted/20 px-6 py-3 sm:justify-between">
+          <span className="font-mono text-xs text-muted-foreground">
             {selectedItems.length > 0
               ? `${selectedItems.length} asset${selectedItems.length > 1 ? "s" : ""} selected`
               : "No asset selected"}
@@ -342,7 +374,7 @@ export function MediaPickerModal({
               size="sm"
               onClick={handleConfirmSelect}
               disabled={selectedItems.length === 0}
-              className="text-xs gap-1.5 bg-primary hover:bg-primary/90 text-primary-foreground shadow-xs"
+              className="gap-1.5 bg-primary text-xs text-primary-foreground shadow-xs hover:bg-primary/90"
             >
               <CheckCircle2 className="size-3.5" />
               {buttonText}

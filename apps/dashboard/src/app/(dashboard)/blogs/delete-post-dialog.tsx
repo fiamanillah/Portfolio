@@ -36,7 +36,7 @@ export function DeletePostDialog({
 
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogContent className="w-[95vw] sm:min-w-[480px] md:min-w-[540px] max-w-lg bg-card border border-border/80 p-6 shadow-xl">
+      <AlertDialogContent className="w-[95vw] max-w-lg border border-border/80 bg-card p-6 shadow-xl sm:min-w-[480px] md:min-w-[540px]">
         <AlertDialogHeader>
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-destructive/10 text-destructive">
@@ -44,20 +44,23 @@ export function DeletePostDialog({
             </div>
             <div>
               <AlertDialogTitle className="text-base font-bold">
-                {isBulk ? `Delete ${bulkCount} Blog Posts?` : "Delete Blog Post?"}
+                {isBulk
+                  ? `Delete ${bulkCount} Blog Posts?`
+                  : "Delete Blog Post?"}
               </AlertDialogTitle>
               <AlertDialogDescription className="mt-1 text-xs text-muted-foreground">
                 {isBulk ? (
                   <span>
                     Are you sure you want to permanently delete these{" "}
-                    <strong className="text-foreground">{bulkCount}</strong> blog posts?
-                    This action cannot be undone.
+                    <strong className="text-foreground">{bulkCount}</strong>{" "}
+                    blog posts? This action cannot be undone.
                   </span>
                 ) : (
                   <span>
                     Are you sure you want to delete{" "}
-                    <strong className="text-foreground">"{post?.title}"</strong>?
-                    All associated comments, metrics, and SEO links will be permanently removed.
+                    <strong className="text-foreground">"{post?.title}"</strong>
+                    ? All associated comments, metrics, and SEO links will be
+                    permanently removed.
                   </span>
                 )}
               </AlertDialogDescription>
@@ -66,7 +69,7 @@ export function DeletePostDialog({
         </AlertDialogHeader>
 
         <AlertDialogFooter className="mt-4 gap-2">
-          <AlertDialogCancel disabled={isProcessing} className="text-xs h-8">
+          <AlertDialogCancel disabled={isProcessing} className="h-8 text-xs">
             Cancel
           </AlertDialogCancel>
           <AlertDialogAction
@@ -75,7 +78,7 @@ export function DeletePostDialog({
               onConfirm()
             }}
             disabled={isProcessing}
-            className="bg-destructive text-destructive-foreground hover:bg-destructive/90 text-xs h-8 gap-1.5"
+            className="text-destructive-foreground h-8 gap-1.5 bg-destructive text-xs hover:bg-destructive/90"
           >
             {isProcessing ? (
               <Loader2 className="h-3.5 w-3.5 animate-spin" />

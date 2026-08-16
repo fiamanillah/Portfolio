@@ -18,7 +18,11 @@ import type { MediaFileDTO } from "@workspace/shared"
 import { Badge } from "@workspace/ui/components/badge"
 import { Button } from "@workspace/ui/components/button"
 import { Checkbox } from "@workspace/ui/components/checkbox"
-import { Avatar, AvatarFallback, AvatarImage } from "@workspace/ui/components/avatar"
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@workspace/ui/components/avatar"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -67,13 +71,15 @@ export function getMediaColumns({
     },
     {
       accessorKey: "fileName",
-      header: ({ column }) => <DataTableColumnHeader column={column} title="Asset" />,
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Asset" />
+      ),
       cell: ({ row }) => {
         const file = row.original
         return (
           <div
             onClick={() => onInspect(file)}
-            className="flex items-center gap-3 max-w-sm py-1 cursor-pointer group"
+            className="group flex max-w-sm cursor-pointer items-center gap-3 py-1"
           >
             <div className="size-10 shrink-0 overflow-hidden rounded-lg border border-border/80 bg-muted/20">
               <MediaPreview
@@ -85,11 +91,11 @@ export function getMediaColumns({
                 thumbnailOnly
               />
             </div>
-            <div className="flex flex-col min-w-0">
-              <span className="text-xs font-semibold truncate group-hover:text-primary transition-colors text-foreground">
+            <div className="flex min-w-0 flex-col">
+              <span className="truncate text-xs font-semibold text-foreground transition-colors group-hover:text-primary">
                 {file.fileName}
               </span>
-              <span className="text-[11px] text-muted-foreground font-mono truncate">
+              <span className="truncate font-mono text-[11px] text-muted-foreground">
                 {file.mimeType}
               </span>
             </div>
@@ -99,13 +105,15 @@ export function getMediaColumns({
     },
     {
       accessorKey: "folder",
-      header: ({ column }) => <DataTableColumnHeader column={column} title="Folder" />,
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Folder" />
+      ),
       cell: ({ row }) => {
         const folder = row.getValue("folder") as string
         return (
           <Badge
             variant="outline"
-            className="gap-1 capitalize text-xs font-normal border-border bg-card"
+            className="gap-1 border-border bg-card text-xs font-normal capitalize"
           >
             <Folder className="size-3 text-primary/70" />
             {folder}
@@ -115,7 +123,9 @@ export function getMediaColumns({
     },
     {
       accessorKey: "size",
-      header: ({ column }) => <DataTableColumnHeader column={column} title="File Size" />,
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="File Size" />
+      ),
       cell: ({ row }) => {
         const file = row.original
         return (
@@ -127,23 +137,33 @@ export function getMediaColumns({
     },
     {
       accessorKey: "altText",
-      header: ({ column }) => <DataTableColumnHeader column={column} title="Alt Text / Title" />,
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Alt Text / Title" />
+      ),
       cell: ({ row }) => {
         const alt = row.getValue("altText") as string | null
         return (
-          <span className="text-xs text-muted-foreground truncate max-w-[180px] block">
-            {alt || <span className="italic text-muted-foreground/50">None specified</span>}
+          <span className="block max-w-[180px] truncate text-xs text-muted-foreground">
+            {alt || (
+              <span className="text-muted-foreground/50 italic">
+                None specified
+              </span>
+            )}
           </span>
         )
       },
     },
     {
       accessorKey: "uploader",
-      header: ({ column }) => <DataTableColumnHeader column={column} title="Uploaded By" />,
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Uploaded By" />
+      ),
       cell: ({ row }) => {
         const uploader = row.original.uploader
         if (!uploader) {
-          return <span className="text-xs text-muted-foreground">System / API</span>
+          return (
+            <span className="text-xs text-muted-foreground">System / API</span>
+          )
         }
         return (
           <div className="flex items-center gap-2">
@@ -153,19 +173,23 @@ export function getMediaColumns({
                 {uploader.name?.slice(0, 2).toUpperCase() || "AD"}
               </AvatarFallback>
             </Avatar>
-            <span className="text-xs truncate max-w-[100px]">{uploader.name || uploader.email}</span>
+            <span className="max-w-[100px] truncate text-xs">
+              {uploader.name || uploader.email}
+            </span>
           </div>
         )
       },
     },
     {
       accessorKey: "createdAt",
-      header: ({ column }) => <DataTableColumnHeader column={column} title="Uploaded Date" />,
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Uploaded Date" />
+      ),
       cell: ({ row }) => {
         const dateStr = row.getValue("createdAt") as string
         const date = new Date(dateStr)
         return (
-          <span className="text-xs text-muted-foreground whitespace-nowrap">
+          <span className="text-xs whitespace-nowrap text-muted-foreground">
             {date.toLocaleDateString(undefined, {
               year: "numeric",
               month: "short",
@@ -209,7 +233,7 @@ export function getMediaColumns({
                 <MoreHorizontal className="size-4" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="text-xs min-w-40">
+            <DropdownMenuContent align="end" className="min-w-40 text-xs">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuItem onClick={() => onInspect(file)}>
                 <Eye className="mr-2 size-3.5" /> Details & Edit

@@ -71,43 +71,78 @@ export function PostEditorForm({
     initialPost?.content ||
       "## Introduction\n\nWrite your technical article here with code snippets, diagrams, and explanations...\n\n```typescript\nconsole.log('Production ready architecture');\n```\n\n> [!NOTE]\n> Real-time streaming enables microsecond state sync.\n\n## Conclusion\n\nSummary of takeaways."
   )
-  const [categoryId, setCategoryId] = React.useState<string>(initialPost?.categoryId || "none")
-  const [categoryName, setCategoryName] = React.useState(initialPost?.category?.name || "")
-  const [keyTakeaways, setKeyTakeaways] = React.useState<string[]>(initialPost?.keyTakeaways || [])
-  const [selectedTags, setSelectedTags] = React.useState<string[]>(initialPost?.tags || [])
+  const [categoryId, setCategoryId] = React.useState<string>(
+    initialPost?.categoryId || "none"
+  )
+  const [categoryName, setCategoryName] = React.useState(
+    initialPost?.category?.name || ""
+  )
+  const [keyTakeaways, setKeyTakeaways] = React.useState<string[]>(
+    initialPost?.keyTakeaways || []
+  )
+  const [selectedTags, setSelectedTags] = React.useState<string[]>(
+    initialPost?.tags || []
+  )
 
   // 2. SEO State
-  const [metaTitle, setMetaTitle] = React.useState(initialPost?.seo?.metaTitle || "")
-  const [metaDescription, setMetaDescription] = React.useState(initialPost?.seo?.metaDescription || "")
-  const [canonicalUrl, setCanonicalUrl] = React.useState(initialPost?.seo?.canonicalUrl || "")
+  const [metaTitle, setMetaTitle] = React.useState(
+    initialPost?.seo?.metaTitle || ""
+  )
+  const [metaDescription, setMetaDescription] = React.useState(
+    initialPost?.seo?.metaDescription || ""
+  )
+  const [canonicalUrl, setCanonicalUrl] = React.useState(
+    initialPost?.seo?.canonicalUrl || ""
+  )
   const [articleType, setArticleType] = React.useState<BlogArticleType>(
     initialPost?.seo?.articleType || "TechArticle"
   )
-  const [noIndex, setNoIndex] = React.useState(Boolean(initialPost?.seo?.noIndex))
-  const [noFollow, setNoFollow] = React.useState(Boolean(initialPost?.seo?.noFollow))
-  const [ogTitle, setOgTitle] = React.useState(initialPost?.seo?.ogTitle || "")
-  const [ogDescription, setOgDescription] = React.useState(initialPost?.seo?.ogDescription || "")
-  const [ogImage, setOgImage] = React.useState(initialPost?.seo?.ogImage || "")
-  const [twitterCard, setTwitterCard] = React.useState<"summary" | "summary_large_image">(
-    initialPost?.seo?.twitterCard || "summary_large_image"
+  const [noIndex, setNoIndex] = React.useState(
+    Boolean(initialPost?.seo?.noIndex)
   )
-  const [twitterTitle, setTwitterTitle] = React.useState(initialPost?.seo?.twitterTitle || "")
-  const [twitterDescription, setTwitterDescription] = React.useState(initialPost?.seo?.twitterDescription || "")
-  const [twitterImage, setTwitterImage] = React.useState(initialPost?.seo?.twitterImage || "")
-  const [seoAnalysis, setSeoAnalysis] = React.useState<SeoAnalysisResult | null>(null)
+  const [noFollow, setNoFollow] = React.useState(
+    Boolean(initialPost?.seo?.noFollow)
+  )
+  const [ogTitle, setOgTitle] = React.useState(initialPost?.seo?.ogTitle || "")
+  const [ogDescription, setOgDescription] = React.useState(
+    initialPost?.seo?.ogDescription || ""
+  )
+  const [ogImage, setOgImage] = React.useState(initialPost?.seo?.ogImage || "")
+  const [twitterCard, setTwitterCard] = React.useState<
+    "summary" | "summary_large_image"
+  >(initialPost?.seo?.twitterCard || "summary_large_image")
+  const [twitterTitle, setTwitterTitle] = React.useState(
+    initialPost?.seo?.twitterTitle || ""
+  )
+  const [twitterDescription, setTwitterDescription] = React.useState(
+    initialPost?.seo?.twitterDescription || ""
+  )
+  const [twitterImage, setTwitterImage] = React.useState(
+    initialPost?.seo?.twitterImage || ""
+  )
+  const [seoAnalysis, setSeoAnalysis] =
+    React.useState<SeoAnalysisResult | null>(null)
 
   // 3. Publishing State
-  const [status, setStatus] = React.useState<BlogStatus>(initialPost?.status || "DRAFT")
+  const [status, setStatus] = React.useState<BlogStatus>(
+    initialPost?.status || "DRAFT"
+  )
   const [featured, setFeatured] = React.useState(Boolean(initialPost?.featured))
   const [pinned, setPinned] = React.useState(Boolean(initialPost?.pinned))
   const [publishedAt, setPublishedAt] = React.useState(
-    initialPost?.publishedAt ? new Date(initialPost.publishedAt).toISOString().slice(0, 16) : ""
+    initialPost?.publishedAt
+      ? new Date(initialPost.publishedAt).toISOString().slice(0, 16)
+      : ""
   )
   const [scheduledAt, setScheduledAt] = React.useState(
-    initialPost?.scheduledAt ? new Date(initialPost.scheduledAt).toISOString().slice(0, 16) : ""
+    initialPost?.scheduledAt
+      ? new Date(initialPost.scheduledAt).toISOString().slice(0, 16)
+      : ""
   )
   const [dateDisplay, setDateDisplay] = React.useState(initialPost?.date || "")
-  const [readTimeOverride, setReadTimeOverride] = React.useState(initialPost?.readTime || "")
+  const [readTimeOverride, setReadTimeOverride] = React.useState(
+    initialPost?.readTime || ""
+  )
 
   // 4. Media State
   const [thumbnail, setThumbnail] = React.useState(
@@ -119,7 +154,9 @@ export function PostEditorForm({
     initialPost?.author?.name || user?.name || "Fi Amanillah"
   )
   const [authorRole, setAuthorRole] = React.useState(
-    initialPost?.author?.role || user?.headline || "Full Stack & DevOps Engineer"
+    initialPost?.author?.role ||
+      user?.headline ||
+      "Full Stack & DevOps Engineer"
   )
   const [authorAvatar, setAuthorAvatar] = React.useState(
     initialPost?.author?.avatar || user?.avatar || "/fi.png"
@@ -139,7 +176,11 @@ export function PostEditorForm({
 
   // Live Word Count & Reading Time
   const wordCount = React.useMemo(() => {
-    return content.replace(/```[\s\S]*?```/g, "").replace(/<[^>]*>/g, "").split(/\s+/).filter(Boolean).length
+    return content
+      .replace(/```[\s\S]*?```/g, "")
+      .replace(/<[^>]*>/g, "")
+      .split(/\s+/)
+      .filter(Boolean).length
   }, [content])
 
   const calculatedReadTime = React.useMemo(() => {
@@ -354,8 +395,12 @@ export function PostEditorForm({
         status,
         featured,
         pinned,
-        publishedAt: publishedAt ? new Date(publishedAt).toISOString() : undefined,
-        scheduledAt: scheduledAt ? new Date(scheduledAt).toISOString() : undefined,
+        publishedAt: publishedAt
+          ? new Date(publishedAt).toISOString()
+          : undefined,
+        scheduledAt: scheduledAt
+          ? new Date(scheduledAt).toISOString()
+          : undefined,
         date: dateDisplay.trim() || undefined,
         readTime: readTimeOverride.trim() || calculatedReadTime,
         author: {
@@ -385,7 +430,10 @@ export function PostEditorForm({
       }
 
       if (isEdit && initialPost) {
-        const res = await BlogApi.update(initialPost.id, payload as UpdateBlogPostDTO)
+        const res = await BlogApi.update(
+          initialPost.id,
+          payload as UpdateBlogPostDTO
+        )
         if (res.success && res.data) {
           toast.success(`Updated '${title}' successfully`)
           router.push(onSuccessRedirect)
@@ -429,7 +477,7 @@ export function PostEditorForm({
       />
 
       {/* Main Multi-tab Editor Box */}
-      <div className="rounded-xl border border-border/80 bg-card overflow-hidden shadow-xs">
+      <div className="overflow-hidden rounded-xl border border-border/80 bg-card shadow-xs">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           {/* Navigation Bar */}
           <EditorTabsNav
@@ -441,7 +489,10 @@ export function PostEditorForm({
           {/* Content Bodies */}
           <div className="p-6 md:p-8">
             {/* TAB 1: Content & Editor */}
-            <TabsContent value="content" className="m-0 focus-visible:outline-hidden space-y-6">
+            <TabsContent
+              value="content"
+              className="m-0 space-y-6 focus-visible:outline-hidden"
+            >
               <TitleSlugSection
                 title={title}
                 setTitle={setTitle}
@@ -470,8 +521,8 @@ export function PostEditorForm({
                 setKeyTakeaways={setKeyTakeaways}
               />
 
-              <div className="space-y-2 pt-4 border-t border-border/80">
-                <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+              <div className="space-y-2 border-t border-border/80 pt-4">
+                <label className="text-xs font-bold tracking-wider text-muted-foreground uppercase">
                   Article Markdown Body *
                 </label>
                 <MarkdownEditor
@@ -484,7 +535,10 @@ export function PostEditorForm({
             </TabsContent>
 
             {/* TAB 2: SEO & Previews */}
-            <TabsContent value="seo" className="m-0 focus-visible:outline-hidden space-y-6">
+            <TabsContent
+              value="seo"
+              className="m-0 space-y-6 focus-visible:outline-hidden"
+            >
               <MetaTagsSection
                 title={title}
                 summary={summary}
@@ -508,7 +562,7 @@ export function PostEditorForm({
 
               <SeoDiagnosticsCard seoAnalysis={seoAnalysis} />
 
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-4 border-t border-border">
+              <div className="grid grid-cols-1 gap-6 border-t border-border pt-4 lg:grid-cols-2">
                 <SerpPreview
                   desktop={seoAnalysis?.previews.googleSearchDesktop}
                   mobile={seoAnalysis?.previews.googleSearchMobile}
@@ -522,7 +576,10 @@ export function PostEditorForm({
             </TabsContent>
 
             {/* TAB 3: Publishing & Schedule */}
-            <TabsContent value="publishing" className="m-0 focus-visible:outline-hidden space-y-6">
+            <TabsContent
+              value="publishing"
+              className="m-0 space-y-6 focus-visible:outline-hidden"
+            >
               <PublicationStatusSection
                 status={status}
                 setStatus={setStatus}
@@ -550,7 +607,10 @@ export function PostEditorForm({
             </TabsContent>
 
             {/* TAB 4: Media & Hero */}
-            <TabsContent value="media" className="m-0 focus-visible:outline-hidden space-y-6">
+            <TabsContent
+              value="media"
+              className="m-0 space-y-6 focus-visible:outline-hidden"
+            >
               <CoverImageSection
                 thumbnail={thumbnail}
                 setThumbnail={setThumbnail}
@@ -566,7 +626,10 @@ export function PostEditorForm({
             </TabsContent>
 
             {/* TAB 5: Author Persona */}
-            <TabsContent value="author" className="m-0 focus-visible:outline-hidden space-y-6">
+            <TabsContent
+              value="author"
+              className="m-0 space-y-6 focus-visible:outline-hidden"
+            >
               <AuthorProfileSection
                 authorName={authorName}
                 setAuthorName={setAuthorName}
@@ -588,13 +651,18 @@ export function PostEditorForm({
             </TabsContent>
 
             {/* TAB 6: LIVE WEBSITE PREVIEW */}
-            <TabsContent value="preview" className="m-0 focus-visible:outline-hidden space-y-4">
-              <div className="flex items-center justify-between p-3 rounded-lg border border-border/80 bg-muted/20">
-                <span className="text-xs font-mono text-muted-foreground">
-                  // REAL-TIME RENDERING SIMULATION AS VIEWED ON HTTPS://FI.AMANILLAH.COM/BLOG/{slug || "SLUG"}
+            <TabsContent
+              value="preview"
+              className="m-0 space-y-4 focus-visible:outline-hidden"
+            >
+              <div className="flex items-center justify-between rounded-lg border border-border/80 bg-muted/20 p-3">
+                <span className="font-mono text-xs text-muted-foreground">
+                  // REAL-TIME RENDERING SIMULATION AS VIEWED ON
+                  HTTPS://FI.AMANILLAH.COM/BLOG/{slug || "SLUG"}
                 </span>
-                <span className="text-xs font-semibold text-emerald-500 flex items-center gap-1.5">
-                  <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" /> Live Frontend Sync
+                <span className="flex items-center gap-1.5 text-xs font-semibold text-emerald-500">
+                  <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-500" />{" "}
+                  Live Frontend Sync
                 </span>
               </div>
 

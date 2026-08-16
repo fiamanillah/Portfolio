@@ -28,20 +28,24 @@ const tocItems: TocItem[] =
 
 {
   tocItems.length > 0 && (
-    <div class="w-full h-full">
+    <div class="h-full w-full">
       {/* Mobile Collapsible TOC */}
       <details class="group mb-8 border border-border bg-background/80 p-4 lg:hidden">
         <summary class="flex cursor-pointer items-center justify-between font-mono text-xs font-bold tracking-widest text-primary uppercase select-none">
           <span>// TABLE OF CONTENTS ({tocItems.length})</span>
-          <span class="transition-transform duration-200 group-open:rotate-180">↓</span>
+          <span class="transition-transform duration-200 group-open:rotate-180">
+            ↓
+          </span>
         </summary>
         <nav class="mt-3 border-t border-border/60 pt-3">
           <ul class="space-y-2 font-mono text-xs text-muted-foreground">
             {tocItems.map((item) => (
-              <li class={item.depth === 3 ? "pl-3 border-l border-border/40" : ""}>
+              <li
+                class={item.depth === 3 ? "border-l border-border/40 pl-3" : ""}
+              >
                 <a
                   href={`#${item.id}`}
-                  class="toc-mobile-link hover:text-primary transition-colors block py-1 border-l border-transparent pl-2"
+                  class="toc-mobile-link block border-l border-transparent py-1 pl-2 transition-colors hover:text-primary"
                 >
                   {item.depth === 3 ? "↳ " : "→ "} {item.title}
                 </a>
@@ -52,14 +56,14 @@ const tocItems: TocItem[] =
       </details>
 
       {/* Desktop Sticky Right Sidebar TOC */}
-      <div class="hidden lg:block sticky top-24 border border-border/80 bg-background/80 p-6 backdrop-blur-md transition-all duration-300 toc-container">
+      <div class="toc-container sticky top-24 hidden border border-border/80 bg-background/80 p-6 backdrop-blur-md transition-all duration-300 lg:block">
         {/* Cyberpunk corner brackets */}
         <div class="pointer-events-none absolute top-2 left-2 z-10 h-3 w-3 border-t border-l border-border" />
         <div class="pointer-events-none absolute top-2 right-2 z-10 h-3 w-3 border-t border-r border-border" />
         <div class="pointer-events-none absolute bottom-2 left-2 z-10 h-3 w-3 border-b border-l border-border" />
         <div class="pointer-events-none absolute right-2 bottom-2 z-10 h-3 w-3 border-r border-b border-border" />
 
-        <div class="flex items-center justify-between border-b border-border/60 pb-3 mb-4">
+        <div class="mb-4 flex items-center justify-between border-b border-border/60 pb-3">
           <h3 class="font-mono text-xs font-bold tracking-widest text-primary uppercase">
             // TABLE OF CONTENTS
           </h3>
@@ -71,18 +75,26 @@ const tocItems: TocItem[] =
         <nav aria-label="Table of Contents" class="toc-nav-scrollable">
           <ul id="toc-list" class="relative space-y-1 font-mono text-xs">
             {tocItems.map((item, index) => (
-              <li class={`toc-item ${item.depth === 3 ? "pl-3" : ""}`} style={`--toc-index: ${index};`}>
+              <li
+                class={`toc-item ${item.depth === 3 ? "pl-3" : ""}`}
+                style={`--toc-index: ${index};`}
+              >
                 <a
                   href={`#${item.id}`}
                   data-toc-link={item.id}
                   class={`toc-link group relative flex items-center justify-between rounded-sm px-3 py-2 text-muted-foreground transition-all duration-300 ease-out hover:bg-muted/40 hover:text-foreground ${
-                    index === 0 ? "toc-active bg-primary/10 border-l-2 border-primary text-primary font-bold" : ""
+                    index === 0
+                      ? "toc-active border-l-2 border-primary bg-primary/10 font-bold text-primary"
+                      : ""
                   }`}
                 >
-                  <span class={`line-clamp-2 transition-colors ${item.depth === 3 ? "text-[11px] opacity-80" : ""}`}>
-                    {item.depth === 3 ? "↳ " : ""}{item.title}
+                  <span
+                    class={`line-clamp-2 transition-colors ${item.depth === 3 ? "text-[11px] opacity-80" : ""}`}
+                  >
+                    {item.depth === 3 ? "↳ " : ""}
+                    {item.title}
                   </span>
-                  <span class="text-[10px] opacity-40 group-hover:opacity-100 transition-opacity shrink-0 ml-2">
+                  <span class="ml-2 shrink-0 text-[10px] opacity-40 transition-opacity group-hover:opacity-100">
                     #0{index + 1}
                   </span>
                 </a>
@@ -92,17 +104,22 @@ const tocItems: TocItem[] =
         </nav>
 
         {/* Reading Progress Section */}
-        <div class="mt-5 border-t border-border/60 pt-4 space-y-3">
+        <div class="mt-5 space-y-3 border-t border-border/60 pt-4">
           {/* Progress Bar */}
           <div class="space-y-1.5">
             <div class="flex items-center justify-between font-mono text-[10px] text-muted-foreground">
               <span>READING PROGRESS</span>
-              <span id="toc-progress-pct" class="tabular-nums text-primary font-bold">0%</span>
+              <span
+                id="toc-progress-pct"
+                class="font-bold text-primary tabular-nums"
+              >
+                0%
+              </span>
             </div>
-            <div class="h-1 w-full overflow-hidden bg-border/40 rounded-full">
+            <div class="h-1 w-full overflow-hidden rounded-full bg-border/40">
               <div
                 id="toc-progress-bar"
-                class="h-full bg-primary rounded-full transition-[width] duration-300 ease-out"
+                class="h-full rounded-full bg-primary transition-[width] duration-300 ease-out"
                 style="width: 0%"
               />
             </div>
@@ -110,7 +127,7 @@ const tocItems: TocItem[] =
 
           <a
             href="#article-top"
-            class="toc-mobile-link flex items-center justify-center gap-1.5 text-[11px] font-mono text-muted-foreground transition-all duration-200 hover:text-primary hover:-translate-y-0.5 py-1"
+            class="toc-mobile-link flex items-center justify-center gap-1.5 py-1 font-mono text-[11px] text-muted-foreground transition-all duration-200 hover:-translate-y-0.5 hover:text-primary"
           >
             ↑ BACK TO TOP
           </a>
@@ -167,7 +184,9 @@ const tocItems: TocItem[] =
 
   /* Container subtle border glow on scroll */
   .toc-container {
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    transition:
+      border-color 0.3s ease,
+      box-shadow 0.3s ease;
   }
 
   .toc-container.toc-scrolled {
@@ -249,8 +268,14 @@ const tocItems: TocItem[] =
                 const linkTop = linkEl.offsetTop - navEl.offsetTop
                 const navScroll = navEl.scrollTop
                 const navHeight = navEl.clientHeight
-                if (linkTop < navScroll || linkTop > navScroll + navHeight - 40) {
-                  navEl.scrollTo({ top: linkTop - navHeight / 3, behavior: "smooth" })
+                if (
+                  linkTop < navScroll ||
+                  linkTop > navScroll + navHeight - 40
+                ) {
+                  navEl.scrollTo({
+                    top: linkTop - navHeight / 3,
+                    behavior: "smooth",
+                  })
                 }
               }
             } else {

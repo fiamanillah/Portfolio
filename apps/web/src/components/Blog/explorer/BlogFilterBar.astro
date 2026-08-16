@@ -1,5 +1,10 @@
 ---
-import { Icon } from "astro-icon/components"
+import { HugeiconsIcon } from "@hugeicons/react"
+import {
+  Search01Icon,
+  Cancel01Icon,
+  FilterIcon,
+} from "@hugeicons/core-free-icons"
 
 interface CategoryItem {
   name: string
@@ -19,55 +24,96 @@ const {
 } = Astro.props
 ---
 
-<div class={`w-full border-b border-border/60 pb-6 pt-2 ${className}`}>
-  <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-    <!-- Filter Label with Monospace Terminal Accent -->
-    <div class="flex items-center gap-2 text-muted-foreground">
-      <Icon name="mdi:filter-variant" class="size-4 text-primary" />
-      <span class="font-mono text-xs font-semibold tracking-wider uppercase">
-        Filter by Category:
-      </span>
-    </div>
+<div
+  class={`w-full border-b border-border/60 pb-6 pt-2 space-y-4 ${className}`}
+>
+  <div
+    class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between"
+  >
+    {/* Category Pill Filters */}
+    <div class="flex flex-col gap-2">
+      <div class="flex items-center gap-2 text-muted-foreground">
+        <HugeiconsIcon icon={FilterIcon} className="size-3.5 text-primary" />
+        <span class="font-mono text-xs font-semibold tracking-wider uppercase">
+          Filter by Domain:
+        </span>
+      </div>
 
-    <!-- Category Pill Buttons -->
-    <div
-      data-category-buttons
-      class="flex flex-wrap items-center gap-2"
-      role="group"
-      aria-label="Category Filters"
-    >
-      {
-        categories.map((cat, idx) => {
-          const isAll = idx === 0 || cat.name.toLowerCase() === "all"
-          const isActive = activeCategory.toLowerCase() === cat.name.toLowerCase() || (isAll && activeCategory.toLowerCase() === "all")
+      <div
+        data-category-buttons
+        class="flex flex-wrap items-center gap-2"
+        role="tablist"
+        aria-label="Engineering Domain Filters"
+      >
+        {
+          categories.map((cat, idx) => {
+            const isAll = idx === 0 || cat.name.toLowerCase() === "all"
+            const isActive =
+              activeCategory.toLowerCase() === cat.name.toLowerCase() ||
+              (isAll && activeCategory.toLowerCase() === "all")
 
-          return (
-            <button
-              type="button"
-              data-category-btn
-              data-category-name={cat.name}
-              aria-pressed={isActive ? "true" : "false"}
-              class={`group/btn category-btn flex items-center gap-2 border px-3.5 py-1.5 font-mono text-xs transition-all duration-200 cursor-pointer select-none rounded-none ${
-                isActive
-                  ? "active border-primary bg-primary/10 text-primary font-bold shadow-[0_0_14px_oklch(var(--primary)/20%)]"
-                  : "border-border bg-background/50 text-muted-foreground hover:border-primary/40 hover:text-foreground hover:bg-background/80"
-              }`}
-            >
-              <span class="tracking-wide">{cat.name}</span>
-              <span
-                data-category-count
-                class={`inline-flex h-4 min-w-[1.25rem] items-center justify-center rounded-sm px-1.5 font-mono text-[10px] transition-colors ${
+            return (
+              <button
+                type="button"
+                role="tab"
+                data-category-btn
+                data-category-name={cat.name}
+                aria-selected={isActive ? "true" : "false"}
+                tabindex={isActive ? 0 : -1}
+                class={`group/btn category-btn flex cursor-pointer items-center gap-2 rounded-none border px-3 py-1.5 font-mono text-xs transition-all duration-200 select-none focus-visible:ring-1 focus-visible:ring-primary focus-visible:outline-none ${
                   isActive
-                    ? "bg-primary text-primary-foreground font-bold"
-                    : "bg-muted text-muted-foreground group-hover/btn:text-foreground group-hover/btn:bg-muted/80"
+                    ? "active border-primary bg-primary/10 font-bold text-primary shadow-[0_0_14px_oklch(var(--primary)/20%)]"
+                    : "border-border bg-background/50 text-muted-foreground hover:border-primary/40 hover:bg-background/80 hover:text-foreground"
                 }`}
               >
-                {cat.count}
-              </span>
-            </button>
-          )
-        })
-      }
+                <span class="tracking-wide">{cat.name}</span>
+                <span
+                  data-category-count
+                  class={`inline-flex h-4 min-w-[1.25rem] items-center justify-center rounded-xs px-1.5 font-mono text-[10px] transition-colors ${
+                    isActive
+                      ? "bg-primary font-bold text-primary-foreground"
+                      : "bg-muted text-muted-foreground group-hover/btn:bg-muted/80 group-hover/btn:text-foreground"
+                  }`}
+                >
+                  {cat.count}
+                </span>
+              </button>
+            )
+          })
+        }
+      </div>
+    </div>
+
+    {/* Accessible Real-time Search Input */}
+    <div class="relative w-full shrink-0 lg:w-72">
+      <label for="blog-search-input" class="sr-only">
+        Search articles by title, topic, or tags
+      </label>
+      <div
+        class="relative flex items-center border border-border bg-background/80 transition-all focus-within:border-primary focus-within:shadow-[0_0_12px_oklch(var(--primary)/15%)]"
+      >
+        <span
+          class="pointer-events-none flex items-center pl-3 text-muted-foreground/70"
+        >
+          <HugeiconsIcon icon={Search01Icon} className="size-3.5" />
+        </span>
+        <input
+          id="blog-search-input"
+          type="text"
+          data-blog-search-input
+          placeholder="Search articles, keywords (/)..."
+          autocomplete="off"
+          class="w-full bg-transparent py-1.5 pr-8 pl-2 font-sans text-xs text-foreground placeholder:text-muted-foreground/60 focus:outline-none"
+        />
+        <button
+          type="button"
+          data-blog-search-clear
+          aria-label="Clear search query"
+          class="absolute right-2.5 hidden cursor-pointer p-0.5 text-muted-foreground/70 transition-colors hover:text-foreground"
+        >
+          <HugeiconsIcon icon={Cancel01Icon} className="size-3" />
+        </button>
+      </div>
     </div>
   </div>
 </div>

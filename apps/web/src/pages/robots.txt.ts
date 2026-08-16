@@ -13,7 +13,11 @@ Sitemap: ${sitemapURL.href}
 `
 
 export const GET: APIRoute = ({ site }) => {
-  const siteUrl = (site?.toString() || import.meta.env.PUBLIC_WEB_URL || "https://fi.amanillah.com").replace(/\/$/, "")
+  const siteUrl = (
+    site?.toString() ||
+    import.meta.env.PUBLIC_WEB_URL ||
+    "https://fi.amanillah.com"
+  ).replace(/\/$/, "")
   const sitemapURL = new URL("sitemap-index.xml", siteUrl)
   return new Response(getRobotsTxt(sitemapURL, siteUrl), {
     headers: {

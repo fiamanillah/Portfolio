@@ -28,14 +28,23 @@ const popularCategoryNames = categories
   .map((c) => c.name)
 ---
 
-<div id="blog-grid-top" class="w-full" data-blog-explorer data-posts-per-page={postsPerPage}>
-  <!-- 1. Category Filter Navigation Bar -->
+<div
+  id="blog-grid-top"
+  class="w-full"
+  data-blog-explorer
+  data-posts-per-page={postsPerPage}
+>
+  <!-- 1. Accessible Category Filter & Real-Time Search Bar -->
   <BlogFilterBar categories={categories} activeCategory="all" />
 
   <!-- 2. Grid Results Header with Live Counter & Category Indicator -->
-  <BlogGridHeader totalCount={totalCount} postsPerPage={postsPerPage} activeCategory="all" />
+  <BlogGridHeader
+    totalCount={totalCount}
+    postsPerPage={postsPerPage}
+    activeCategory="all"
+  />
 
-  <!-- 3. Skeleton Loading State (animated shimmer during category/page transitions) -->
+  <!-- 3. Skeleton Loading State (animated shimmer during category/search/page transitions) -->
   <div data-loading-container class="hidden">
     <BlogSkeletonGrid count={postsPerPage} />
   </div>
@@ -43,7 +52,7 @@ const popularCategoryNames = categories
   <!-- 4. Cards Grid Container -->
   <div
     data-cards-grid
-    class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3 transition-opacity duration-200"
+    class="grid grid-cols-1 gap-8 transition-opacity duration-200 md:grid-cols-2 lg:grid-cols-3"
   >
     {
       posts.map((post, index) => (
@@ -65,38 +74,113 @@ const popularCategoryNames = categories
     if (!explorer) return
 
     const postsPerPage = parseInt(explorer.dataset.postsPerPage || "6", 10)
-    const cards = Array.from(explorer.querySelectorAll<HTMLElement>("[data-blog-card]"))
-    const categoryBtns = Array.from(explorer.querySelectorAll<HTMLButtonElement>("[data-category-btn]"))
-    const journalTitle = explorer.querySelector<HTMLElement>("[data-journal-title]")
-    const activeCategoryBadge = explorer.querySelector<HTMLElement>("[data-active-category-badge]")
-    const activeCategoryText = explorer.querySelector<HTMLElement>("[data-active-category-text]")
-    const showingCount = explorer.querySelector<HTMLElement>("[data-showing-count]")
+    const cards = Array.from(
+      explorer.querySelectorAll<HTMLElement>("[data-blog-card]")
+    )
+    const categoryBtns = Array.from(
+      explorer.querySelectorAll<HTMLButtonElement>("[data-category-btn]")
+    )
+    const searchInput = explorer.querySelector<HTMLInputElement>(
+      "[data-blog-search-input]"
+    )
+    const searchClearBtn = explorer.querySelector<HTMLButtonElement>(
+      "[data-blog-search-clear]"
+    )
+    const journalTitle = explorer.querySelector<HTMLElement>(
+      "[data-journal-title]"
+    )
+    const activeCategoryText = explorer.querySelector<HTMLElement>(
+      "[data-active-category-text]"
+    )
+    const showingCount = explorer.querySelector<HTMLElement>(
+      "[data-showing-count]"
+    )
     const cardsGrid = explorer.querySelector<HTMLElement>("[data-cards-grid]")
-    const loadingContainer = explorer.querySelector<HTMLElement>("[data-loading-container]")
+    const loadingContainer = explorer.querySelector<HTMLElement>(
+      "[data-loading-container]"
+    )
     const emptyState = explorer.querySelector<HTMLElement>("[data-empty-state]")
-    const emptyCategoryName = explorer.querySelector<HTMLElement>("[data-empty-category-name]")
-    const resetBtn = explorer.querySelector<HTMLButtonElement>("[data-reset-filter-btn]")
-    const emptyCategoryChips = Array.from(explorer.querySelectorAll<HTMLButtonElement>("[data-empty-category-chip]"))
-    const paginationBar = explorer.querySelector<HTMLElement>("[data-pagination-bar]")
-    const currentPageNum = explorer.querySelector<HTMLElement>("[data-current-page-num]")
-    const totalPagesNum = explorer.querySelector<HTMLElement>("[data-total-pages-num]")
-    const prevBtn = explorer.querySelector<HTMLButtonElement>("[data-pagination-prev]")
-    const nextBtn = explorer.querySelector<HTMLButtonElement>("[data-pagination-next]")
-    const pageNumbersContainer = explorer.querySelector<HTMLElement>("[data-page-numbers]")
+    const emptyCategoryName = explorer.querySelector<HTMLElement>(
+      "[data-empty-category-name]"
+    )
+    const resetBtn = explorer.querySelector<HTMLButtonElement>(
+      "[data-reset-filter-btn]"
+    )
+    const emptyCategoryChips = Array.from(
+      explorer.querySelectorAll<HTMLButtonElement>("[data-empty-category-chip]")
+    )
+    const paginationBar = explorer.querySelector<HTMLElement>(
+      "[data-pagination-bar]"
+    )
+    const currentPageNum = explorer.querySelector<HTMLElement>(
+      "[data-current-page-num]"
+    )
+    const totalPagesNum = explorer.querySelector<HTMLElement>(
+      "[data-total-pages-num]"
+    )
+    const prevBtn = explorer.querySelector<HTMLButtonElement>(
+      "[data-pagination-prev]"
+    )
+    const nextBtn = explorer.querySelector<HTMLButtonElement>(
+      "[data-pagination-next]"
+    )
+    const pageNumbersContainer = explorer.querySelector<HTMLElement>(
+      "[data-page-numbers]"
+    )
 
-    // Check URL search param on load
+    // Check URL search params on load
     const urlParams = new URLSearchParams(window.location.search)
-    const initialCategoryParam = urlParams.get("category") || "all"
-
-    let activeCategory = initialCategoryParam.toLowerCase()
-    let currentPage = 1
+    let activeCategory = (urlParams.get("category") || "all").toLowerCase()
+    let searchQuery = (urlParams.get("q") || "").trim().toLowerCase()
+    let currentPage = parseInt(urlParams.get("page") || "1", 10) || 1
     let transitionTimer: ReturnType<typeof setTimeout> | null = null
 
+    if (searchInput && searchQuery) {
+      searchInput.value = searchQuery
+      if (searchClearBtn) searchClearBtn.classList.remove("hidden")
+    }
+
+    function syncUrl() {
+      const url = new URL(window.location.href)
+      if (activeCategory === "all") {
+        url.searchParams.delete("category")
+      } else {
+        url.searchParams.set("category", activeCategory)
+      }
+
+      if (searchQuery) {
+        url.searchParams.set("q", searchQuery)
+      } else {
+        url.searchParams.delete("q")
+      }
+
+      if (currentPage > 1) {
+        url.searchParams.set("page", String(currentPage))
+      } else {
+        url.searchParams.delete("page")
+      }
+
+      window.history.replaceState({}, "", url.toString())
+    }
+
     function performUpdate(targetPage = 1, shouldScroll = false) {
-      // 1. Filter matching cards
+      // 1. Filter matching cards by both category and query string
       const matchingCards = cards.filter((card) => {
-        if (activeCategory === "all") return true
-        return (card.dataset.category || "").toLowerCase() === activeCategory
+        const cardCat = (card.dataset.category || "").toLowerCase()
+        const cardTitle = (card.dataset.title || "").toLowerCase()
+        const cardSummary = (card.dataset.summary || "").toLowerCase()
+        const cardTags = (card.dataset.tags || "").toLowerCase()
+
+        const matchesCategory =
+          activeCategory === "all" || cardCat === activeCategory
+
+        const matchesQuery =
+          !searchQuery ||
+          cardTitle.includes(searchQuery) ||
+          cardSummary.includes(searchQuery) ||
+          cardTags.includes(searchQuery)
+
+        return matchesCategory && matchesQuery
       })
 
       const totalCount = matchingCards.length
@@ -108,9 +192,7 @@ const popularCategoryNames = categories
 
       // 2. Show / hide cards
       cards.forEach((card) => {
-        const isMatch =
-          activeCategory === "all" || (card.dataset.category || "").toLowerCase() === activeCategory
-
+        const isMatch = matchingCards.includes(card)
         if (!isMatch) {
           card.classList.add("hidden")
           card.classList.remove("flex")
@@ -127,51 +209,51 @@ const popularCategoryNames = categories
         }
       })
 
-      // 3. Update Category button states
+      // 3. Update Category button states & ARIA
       categoryBtns.forEach((btn) => {
         const catName = (btn.dataset.categoryName || "").toLowerCase()
         const isAll = catName === "all"
-        const isActive = catName === activeCategory || (isAll && activeCategory === "all")
-        const countSpan = btn.querySelector<HTMLElement>("[data-category-count]")
+        const isActive =
+          catName === activeCategory || (isAll && activeCategory === "all")
+        const countSpan = btn.querySelector<HTMLElement>(
+          "[data-category-count]"
+        )
 
-        btn.setAttribute("aria-pressed", isActive ? "true" : "false")
+        btn.setAttribute("aria-selected", isActive ? "true" : "false")
+        btn.setAttribute("tabindex", isActive ? "0" : "-1")
 
         if (isActive) {
           btn.className =
-            "group/btn category-btn flex items-center gap-2 border px-3.5 py-1.5 font-mono text-xs transition-all duration-200 cursor-pointer select-none rounded-none active border-primary bg-primary/10 text-primary font-bold shadow-[0_0_14px_oklch(var(--primary)/20%)]"
+            "group/btn category-btn flex items-center gap-2 border px-3.5 py-1.5 font-mono text-xs transition-all duration-200 cursor-pointer select-none rounded-none active border-primary bg-primary/10 text-primary font-bold shadow-[0_0_14px_oklch(var(--primary)/20%)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"
           if (countSpan) {
             countSpan.className =
-              "inline-flex h-4 min-w-[1.25rem] items-center justify-center rounded-sm px-1.5 font-mono text-[10px] bg-primary text-primary-foreground font-bold"
+              "inline-flex h-4 min-w-[1.25rem] items-center justify-center rounded-xs px-1.5 font-mono text-[10px] bg-primary text-primary-foreground font-bold"
           }
         } else {
           btn.className =
-            "group/btn category-btn flex items-center gap-2 border px-3.5 py-1.5 font-mono text-xs transition-all duration-200 cursor-pointer select-none rounded-none border-border bg-background/50 text-muted-foreground hover:border-primary/40 hover:text-foreground hover:bg-background/80"
+            "group/btn category-btn flex items-center gap-2 border px-3.5 py-1.5 font-mono text-xs transition-all duration-200 cursor-pointer select-none rounded-none border-border bg-background/50 text-muted-foreground hover:border-primary/40 hover:text-foreground hover:bg-background/80 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"
           if (countSpan) {
             countSpan.className =
-              "inline-flex h-4 min-w-[1.25rem] items-center justify-center rounded-sm px-1.5 font-mono text-[10px] bg-muted text-muted-foreground group-hover/btn:text-foreground group-hover/btn:bg-muted/80"
+              "inline-flex h-4 min-w-[1.25rem] items-center justify-center rounded-xs px-1.5 font-mono text-[10px] bg-muted text-muted-foreground group-hover/btn:text-foreground group-hover/btn:bg-muted/80"
           }
         }
       })
 
       // 4. Update Header counts & title
       if (journalTitle) {
-        journalTitle.textContent =
-          activeCategory !== "all"
-            ? `// ARTICLES JOURNAL [${activeCategory.toUpperCase()}]`
-            : "// ARTICLES JOURNAL"
+        if (searchQuery) {
+          journalTitle.textContent = `// SEARCH RESULTS ["${searchQuery}"]`
+        } else if (activeCategory !== "all") {
+          journalTitle.textContent = `// ARTICLES JOURNAL [${activeCategory.toUpperCase()}]`
+        } else {
+          journalTitle.textContent = "// ARTICLES JOURNAL"
+        }
       }
 
       if (activeCategoryText) {
-        activeCategoryText.textContent = activeCategory.toUpperCase()
-      }
-
-      if (activeCategoryBadge) {
-        if (activeCategory === "all") {
-          activeCategoryBadge.classList.remove("border-amber-500/40", "bg-amber-500/10", "text-amber-400")
-          activeCategoryBadge.classList.add("border-primary/30", "bg-primary/10", "text-primary")
-        } else {
-          activeCategoryBadge.classList.add("border-primary/30", "bg-primary/10", "text-primary")
-        }
+        activeCategoryText.textContent = searchQuery
+          ? `SEARCH: ${searchQuery}`
+          : activeCategory.toUpperCase()
       }
 
       if (showingCount) {
@@ -190,7 +272,9 @@ const popularCategoryNames = categories
         if (emptyState) {
           emptyState.classList.remove("hidden")
           if (emptyCategoryName) {
-            emptyCategoryName.textContent = `"${activeCategory}"`
+            emptyCategoryName.textContent = searchQuery
+              ? `query "${searchQuery}" in ${activeCategory}`
+              : `category "${activeCategory}"`
           }
         }
       } else {
@@ -249,7 +333,7 @@ const popularCategoryNames = categories
           if (i === currentPage) {
             btn.setAttribute("aria-current", "page")
             btn.className =
-              "h-8 w-8 font-mono text-xs transition-colors cursor-pointer select-none bg-primary text-primary-foreground font-bold shadow-sm"
+              "h-8 w-8 font-mono text-xs transition-colors cursor-pointer select-none bg-primary text-primary-foreground font-bold shadow-xs"
           } else {
             btn.className =
               "h-8 w-8 font-mono text-xs transition-colors cursor-pointer select-none border border-border bg-background text-muted-foreground hover:border-primary hover:text-primary"
@@ -267,15 +351,20 @@ const popularCategoryNames = categories
         cardsGrid.classList.remove("opacity-0")
       }
 
+      syncUrl()
+
       // Scroll to top of explorer grid
       if (shouldScroll) {
         explorer?.scrollIntoView({ behavior: "smooth", block: "start" })
       }
     }
 
-    function updateView(targetPage = 1, shouldScroll = false, withSkeleton = false) {
+    function updateView(
+      targetPage = 1,
+      shouldScroll = false,
+      withSkeleton = false
+    ) {
       if (withSkeleton && loadingContainer && cardsGrid) {
-        // Show skeleton shimmer briefly for smooth perceived transition
         if (transitionTimer) clearTimeout(transitionTimer)
         loadingContainer.classList.remove("hidden")
         cardsGrid.classList.add("opacity-0")
@@ -283,7 +372,7 @@ const popularCategoryNames = categories
 
         transitionTimer = setTimeout(() => {
           performUpdate(targetPage, shouldScroll)
-        }, 120)
+        }, 100)
       } else {
         performUpdate(targetPage, shouldScroll)
       }
@@ -292,29 +381,100 @@ const popularCategoryNames = categories
     function switchCategory(newCategory: string) {
       activeCategory = newCategory.toLowerCase()
       updateView(1, false, true)
-
-      // Sync with browser URL without page reload
-      const url = new URL(window.location.href)
-      if (activeCategory === "all") {
-        url.searchParams.delete("category")
-      } else {
-        url.searchParams.set("category", activeCategory)
-      }
-      window.history.replaceState({}, "", url.toString())
     }
 
-    // Attach Category Button Click Handlers
-    categoryBtns.forEach((btn) => {
+    // Attach Category Button Click & Keyboard Navigation
+    categoryBtns.forEach((btn, index) => {
       btn.addEventListener("click", () => {
         const cat = (btn.dataset.categoryName || "all").toLowerCase()
         switchCategory(cat)
       })
+
+      btn.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowRight") {
+          e.preventDefault()
+          const nextIndex = (index + 1) % categoryBtns.length
+          categoryBtns[nextIndex]?.focus()
+          categoryBtns[nextIndex]?.click()
+        } else if (e.key === "ArrowLeft") {
+          e.preventDefault()
+          const prevIndex =
+            (index - 1 + categoryBtns.length) % categoryBtns.length
+          categoryBtns[prevIndex]?.focus()
+          categoryBtns[prevIndex]?.click()
+        } else if (e.key === "Home") {
+          e.preventDefault()
+          categoryBtns[0]?.focus()
+          categoryBtns[0]?.click()
+        } else if (e.key === "End") {
+          e.preventDefault()
+          categoryBtns[categoryBtns.length - 1]?.focus()
+          categoryBtns[categoryBtns.length - 1]?.click()
+        }
+      })
+    })
+
+    // Search Input Listener
+    if (searchInput) {
+      searchInput.addEventListener("input", () => {
+        searchQuery = searchInput.value.trim().toLowerCase()
+        if (searchClearBtn) {
+          if (searchQuery) {
+            searchClearBtn.classList.remove("hidden")
+          } else {
+            searchClearBtn.classList.add("hidden")
+          }
+        }
+        updateView(1, false, false)
+      })
+    }
+
+    // Search Clear Listener
+    if (searchClearBtn && searchInput) {
+      searchClearBtn.addEventListener("click", () => {
+        searchInput.value = ""
+        searchQuery = ""
+        searchClearBtn.classList.add("hidden")
+        searchInput.focus()
+        updateView(1, false, false)
+      })
+    }
+
+    // Global keyboard shortcut ('/' to focus search, 'Escape' to clear)
+    window.addEventListener("keydown", (e) => {
+      if (
+        e.key === "/" &&
+        searchInput &&
+        document.activeElement !== searchInput &&
+        !["INPUT", "TEXTAREA"].includes(document.activeElement?.tagName || "")
+      ) {
+        e.preventDefault()
+        searchInput.focus()
+      } else if (
+        searchInput &&
+        e.key === "Escape" &&
+        document.activeElement === searchInput
+      ) {
+        if (searchInput.value) {
+          searchInput.value = ""
+          searchQuery = ""
+          searchClearBtn?.classList.add("hidden")
+          updateView(1, false, false)
+        } else {
+          searchInput.blur()
+        }
+      }
     })
 
     // Attach Empty State Category Chips
     emptyCategoryChips.forEach((chip) => {
       chip.addEventListener("click", () => {
         const cat = (chip.dataset.emptyCategoryChip || "all").toLowerCase()
+        if (searchInput) {
+          searchInput.value = ""
+          searchQuery = ""
+          searchClearBtn?.classList.add("hidden")
+        }
         switchCategory(cat)
       })
     })
@@ -322,6 +482,11 @@ const popularCategoryNames = categories
     // Reset Button Click Handler
     if (resetBtn) {
       resetBtn.addEventListener("click", () => {
+        if (searchInput) {
+          searchInput.value = ""
+          searchQuery = ""
+          searchClearBtn?.classList.add("hidden")
+        }
         switchCategory("all")
       })
     }
@@ -344,16 +509,22 @@ const popularCategoryNames = categories
     // Browser back/forward navigation sync
     window.addEventListener("popstate", () => {
       const currentUrlParams = new URLSearchParams(window.location.search)
-      const cat = (currentUrlParams.get("category") || "all").toLowerCase()
-      if (cat !== activeCategory) {
-        activeCategory = cat
-        updateView(1, false, false)
+      activeCategory = (currentUrlParams.get("category") || "all").toLowerCase()
+      searchQuery = (currentUrlParams.get("q") || "").trim().toLowerCase()
+      currentPage = parseInt(currentUrlParams.get("page") || "1", 10) || 1
+      if (searchInput) {
+        searchInput.value = searchQuery
+        if (searchClearBtn) {
+          if (searchQuery) searchClearBtn.classList.remove("hidden")
+          else searchClearBtn.classList.add("hidden")
+        }
       }
+      performUpdate(currentPage, false)
     })
 
-    // Initialize with current URL category if present
-    if (activeCategory !== "all") {
-      updateView(1, false, false)
+    // Initialize with current URL parameters
+    if (activeCategory !== "all" || searchQuery || currentPage > 1) {
+      performUpdate(currentPage, false)
     }
   }
 

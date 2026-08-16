@@ -21,7 +21,9 @@ interface SignInStepProps {
   password: string
   setPassword: (password: string) => void
   errors: { email?: string; password?: string }
-  setErrors: React.Dispatch<React.SetStateAction<{ email?: string; password?: string }>>
+  setErrors: React.Dispatch<
+    React.SetStateAction<{ email?: string; password?: string }>
+  >
   isSubmitting: boolean
   onSubmit: (e: FormEvent) => void
   onForgotPassword: () => void
@@ -54,15 +56,16 @@ export function SignInStep({
               value={email}
               onChange={(e) => {
                 setEmail(e.target.value)
-                if (errors.email) setErrors((prev) => ({ ...prev, email: undefined }))
+                if (errors.email)
+                  setErrors((prev) => ({ ...prev, email: undefined }))
               }}
               aria-invalid={!!errors.email}
-              className="rounded-none font-mono text-xs border-border bg-background/50 pl-8 focus:border-primary"
+              className="rounded-none border-border bg-background/50 pl-8 font-mono text-xs focus:border-primary"
               required
             />
             <HugeiconsIcon
               icon={Mail01Icon}
-              className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground"
+              className="absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-muted-foreground"
             />
           </div>
           <FieldError errors={errors.email} />
@@ -75,7 +78,7 @@ export function SignInStep({
             <button
               type="button"
               onClick={onForgotPassword}
-              className="font-mono text-[11px] text-primary hover:underline cursor-pointer"
+              className="cursor-pointer font-mono text-[11px] text-primary hover:underline"
             >
               Forgot Password?
             </button>
@@ -88,14 +91,15 @@ export function SignInStep({
               value={password}
               onChange={(e) => {
                 setPassword(e.target.value)
-                if (errors.password) setErrors((prev) => ({ ...prev, password: undefined }))
+                if (errors.password)
+                  setErrors((prev) => ({ ...prev, password: undefined }))
               }}
               aria-invalid={!!errors.password}
-              className="rounded-none font-mono text-xs border-border bg-background/50 pl-8 focus:border-primary"
+              className="rounded-none border-border bg-background/50 pl-8 font-mono text-xs focus:border-primary"
             />
             <HugeiconsIcon
               icon={LockPasswordIcon}
-              className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground"
+              className="absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-muted-foreground"
             />
           </div>
           <FieldError errors={errors.password} />
@@ -105,11 +109,14 @@ export function SignInStep({
       <Button
         type="submit"
         disabled={isSubmitting}
-        className="w-full rounded-none font-mono text-xs font-bold uppercase tracking-wider bg-primary text-primary-foreground hover:bg-primary/90 transition-colors cursor-pointer h-10 shadow-sm flex items-center justify-center gap-2"
+        className="flex h-10 w-full cursor-pointer items-center justify-center gap-2 rounded-none bg-primary font-mono text-xs font-bold tracking-wider text-primary-foreground uppercase shadow-sm transition-colors hover:bg-primary/90"
       >
         {isSubmitting ? (
           <>
-            <HugeiconsIcon icon={Loading03Icon} className="size-4 animate-spin" />
+            <HugeiconsIcon
+              icon={Loading03Icon}
+              className="size-4 animate-spin"
+            />
             <span>Signing In...</span>
           </>
         ) : (
@@ -120,13 +127,13 @@ export function SignInStep({
         )}
       </Button>
 
-      <div className="text-center pt-2 border-t border-border/60">
+      <div className="border-t border-border/60 pt-2 text-center">
         <p className="font-mono text-[11px] text-muted-foreground">
           Don't have an account?{" "}
           <button
             type="button"
             onClick={onNavigateToSignUp}
-            className="text-primary font-semibold hover:underline cursor-pointer"
+            className="cursor-pointer font-semibold text-primary hover:underline"
           >
             Register here
           </button>

@@ -6,75 +6,113 @@ import BlogCard from "@/components/Blog/cards/BlogCard.astro"
 import NewsletterSection from "@/components/Newsletter/NewsletterSection.astro"
 import BlogSEO from "@/components/SEO/BlogSEO.astro"
 import {
-  blogPostsData,
-  getAdjacentBlogPosts,
+  getAllBlogPostsAsync,
+  getBlogPostBySlugAsync,
   type BlogPost,
 } from "@/data/blogPosts"
 
 export async function getStaticPaths() {
-  return blogPostsData.map((post) => ({
+  const posts = await getAllBlogPostsAsync()
+  return posts.map((post) => ({
     params: { slug: post.slug },
     props: { post },
   }))
 }
 
 interface Props {
-  post: BlogPost
+  post?: BlogPost
 }
 
-const { post } = Astro.props
-const { prevPost, nextPost } = getAdjacentBlogPosts(post.slug)
+const { post: propPost } = Astro.props
+const slug = Astro.params.slug || propPost?.slug
 
-// Related posts matching category or general
-const relatedPosts = blogPostsData
-  .filter((p) => p.slug !== post.slug)
-  .slice(0, 2)
+if (!slug) {
+  return Astro.redirect("/404")
+}
+
+// Fetch complete post details, adjacent navigation, and related articles from DB / API
+const postData = await getBlogPostBySlugAsync(slug)
+const currentPost = postData?.post || propPost
+
+if (!currentPost) {
+  return Astro.redirect("/404")
+}
+
+const prevPost = postData?.prevPost || null
+const nextPost = postData?.nextPost || null
+const relatedPosts =
+  postData?.relatedPosts && postData.relatedPosts.length > 0
+    ? postData.relatedPosts
+    : (await getAllBlogPostsAsync()).filter((p) => p.slug !== slug).slice(0, 2)
 ---
 
 <MySiteLayout>
   <!-- SEO & Structured Data Schema Injection -->
   <Fragment slot="head">
-    <BlogSEO post={post} />
+    <BlogSEO post={currentPost} />
   </Fragment>
 
   <!-- Top Reading Progress Bar (fixed under navbar) -->
-  <div id="top-progress-track" class="fixed left-0 right-0 z-40 h-[3px] bg-border/20" style="top: 0; opacity: 0;">
+  <div
+    id="top-progress-track"
+    class="fixed right-0 left-0 z-40 h-[3px] bg-border/20"
+    style="top: 0; opacity: 0;"
+  >
     <div
       id="top-reading-progress"
       class="h-full bg-primary transition-[width] duration-150 ease-out"
       style="width: 0%"
-    ></div>
+    >
+    </div>
   </div>
 
   <!-- Centered Breadcrumbs Bar -->
-  <nav aria-label="Breadcrumbs" class="border-b border-border/60 bg-background/50 py-3.5">
+  <nav
+    aria-label="Breadcrumbs"
+    class="border-b border-border/60 bg-background/50 py-3.5"
+  >
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <div class="flex flex-wrap items-center gap-2 font-mono text-xs text-muted-foreground">
-        <a href="/" class="hover:text-foreground transition-colors">Home</a>
+      <div
+        class="flex flex-wrap items-center gap-2 font-mono text-xs text-muted-foreground"
+      >
+        <a href="/" class="transition-colors hover:text-foreground">Home</a>
         <span>/</span>
-        <a href="/blog" class="hover:text-foreground transition-colors">Blog</a>
+        <a href="/blog" class="transition-colors hover:text-foreground">Blog</a>
         <span>/</span>
-        <a href={`/blog?category=${encodeURIComponent(post.category.toLowerCase())}`} class="text-primary hover:underline">
-          {post.category}
+        <a
+          href={`/blog?category=${encodeURIComponent(currentPost.category.toLowerCase())}`}
+          class="text-primary hover:underline"
+        >
+          {currentPost.category}
         </a>
         <span>/</span>
-        <span class="truncate font-semibold text-foreground max-w-xs">{post.title}</span>
+        <span class="max-w-xs truncate font-semibold text-foreground"
+          >{currentPost.title}</span
+        >
       </div>
     </div>
   </nav>
 
-  <main class="w-full py-4">
+  <main class="w-full py-4" data-post-slug={currentPost.slug}>
     {/* Reader Body (Main Article + Sticky Right TOC) */}
-    <BlogContentBody post={post} />
+    <BlogContentBody post={currentPost} />
 
     {/* Bottom Sections Container — full container width */}
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-
       {/* Decorative section divider */}
-      <div class="flex items-center gap-4 my-4">
-        <div class="h-px flex-1 bg-gradient-to-r from-transparent via-primary/20 to-transparent"></div>
-        <span class="font-mono text-[10px] tracking-widest text-primary/40 uppercase">CONTINUE</span>
-        <div class="h-px flex-1 bg-gradient-to-r from-transparent via-primary/20 to-transparent"></div>
+      <div class="my-4 flex items-center gap-4">
+        <div
+          class="h-px flex-1 bg-gradient-to-r from-transparent via-primary/20 to-transparent"
+        >
+        </div>
+        <span
+          class="font-mono text-[10px] tracking-widest text-primary/40 uppercase"
+          >CONTINUE</span
+        >
+        <div
+          class="h-px flex-1 bg-gradient-to-r from-transparent via-primary/20 to-transparent"
+        >
+        </div>
       </div>
 
       {/* Previous & Next Article Navigation — full width */}
@@ -83,12 +121,15 @@ const relatedPosts = blogPostsData
       {/* Related Articles Recommendation Grid — full width */}
       {
         relatedPosts.length > 0 && (
-          <section class="border-t border-border/80 pt-12 mt-8 blog-bottom-animate">
+          <section class="blog-bottom-animate mt-8 border-t border-border/80 pt-12">
             <div class="mb-6 flex items-center justify-between">
               <h2 class="font-mono text-xs font-bold tracking-widest text-primary uppercase">
                 // CONTINUE READING RELATED ARTICLES
               </h2>
-              <a href="/blog" class="font-mono text-xs text-muted-foreground hover:text-foreground transition-colors">
+              <a
+                href="/blog"
+                class="font-mono text-xs text-muted-foreground transition-colors hover:text-foreground"
+              >
                 View All Articles →
               </a>
             </div>
@@ -102,7 +143,7 @@ const relatedPosts = blogPostsData
       }
 
       {/* Newsletter Subscription Form — full width */}
-      <div class="mt-16 pb-12 blog-bottom-animate">
+      <div class="blog-bottom-animate mt-16 pb-12">
         <NewsletterSection
           title="Enjoyed this Article?"
           subtitle="Get notified as soon as new system architecture breakdowns and performance guides are published."
@@ -139,6 +180,8 @@ const relatedPosts = blogPostsData
 </style>
 
 <script>
+  import { BlogApi } from "@/lib/api/blogApi"
+
   // Top reading progress bar
   function initTopProgress() {
     const track = document.getElementById("top-progress-track")
@@ -158,8 +201,10 @@ const relatedPosts = blogPostsData
       if (!ticking) {
         requestAnimationFrame(() => {
           const scrollY = window.scrollY
-          const docHeight = document.documentElement.scrollHeight - window.innerHeight
-          const progress = docHeight > 0 ? Math.min(100, (scrollY / docHeight) * 100) : 0
+          const docHeight =
+            document.documentElement.scrollHeight - window.innerHeight
+          const progress =
+            docHeight > 0 ? Math.min(100, (scrollY / docHeight) * 100) : 0
           bar.style.width = `${progress}%`
           ticking = false
         })
@@ -188,8 +233,42 @@ const relatedPosts = blogPostsData
     elements.forEach((el) => observer.observe(el))
   }
 
-  document.addEventListener("DOMContentLoaded", () => {
+  // Real-time View Counter & Telemetry Trigger
+  function initViewCounter() {
+    const mainEl = document.querySelector<HTMLElement>("main[data-post-slug]")
+    if (!mainEl) return
+    const slug = mainEl.dataset.postSlug
+    if (!slug) return
+
+    // Avoid duplicate increments in the same page view session
+    const sessionKey = `view_recorded_${slug}`
+    if (!sessionStorage.getItem(sessionKey)) {
+      sessionStorage.setItem(sessionKey, "true")
+      BlogApi.recordPostView(slug)
+        .then((result) => {
+          if (result && typeof result.views === "number") {
+            const viewSpans = document.querySelectorAll<HTMLElement>(
+              "[data-post-views-count]"
+            )
+            const formatted =
+              result.views >= 1000
+                ? `${(result.views / 1000).toFixed(result.views % 1000 === 0 ? 0 : 1)}k`
+                : `${result.views}`
+            viewSpans.forEach((span) => {
+              span.textContent = `${formatted} Views`
+            })
+          }
+        })
+        .catch(() => {})
+    }
+  }
+
+  function initAll() {
     initTopProgress()
     initBottomAnimations()
-  })
+    initViewCounter()
+  }
+
+  document.addEventListener("DOMContentLoaded", initAll)
+  document.addEventListener("astro:page-load", initAll)
 </script>

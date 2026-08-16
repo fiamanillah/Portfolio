@@ -142,17 +142,69 @@ const languageMap: Record<string, string> = {
 
 // List of known built-in Shiki languages to prevent runtime/build fallback errors
 const shikiKnownLanguages = new Set([
-  "astro", "bash", "bat", "c", "clojure", "cmake", "cpp", "csharp", "css", "csv",
-  "dart", "diff", "dockerfile", "elixir", "erlang", "go", "graphql", "haskell",
-  "html", "ini", "java", "javascript", "json", "json5", "jsonc", "jsx", "kotlin",
-  "less", "lua", "makefile", "markdown", "mdx", "nginx", "php", "plaintext",
-  "powershell", "prisma", "proto", "python", "r", "ruby", "rust", "sass", "scala",
-  "scss", "solidity", "sql", "svelte", "swift", "terraform", "toml", "tsx",
-  "typescript", "vue", "xml", "yaml", "zig"
+  "astro",
+  "bash",
+  "bat",
+  "c",
+  "clojure",
+  "cmake",
+  "cpp",
+  "csharp",
+  "css",
+  "csv",
+  "dart",
+  "diff",
+  "dockerfile",
+  "elixir",
+  "erlang",
+  "go",
+  "graphql",
+  "haskell",
+  "html",
+  "ini",
+  "java",
+  "javascript",
+  "json",
+  "json5",
+  "jsonc",
+  "jsx",
+  "kotlin",
+  "less",
+  "lua",
+  "makefile",
+  "markdown",
+  "mdx",
+  "nginx",
+  "php",
+  "plaintext",
+  "powershell",
+  "prisma",
+  "proto",
+  "python",
+  "r",
+  "ruby",
+  "rust",
+  "sass",
+  "scala",
+  "scss",
+  "solidity",
+  "sql",
+  "svelte",
+  "swift",
+  "terraform",
+  "toml",
+  "tsx",
+  "typescript",
+  "vue",
+  "xml",
+  "yaml",
+  "zig",
 ])
 
 const targetLang = languageMap[rawLang] || rawLang
-const normalizedLang = shikiKnownLanguages.has(targetLang) ? targetLang : "plaintext"
+const normalizedLang = shikiKnownLanguages.has(targetLang)
+  ? targetLang
+  : "plaintext"
 
 // Clean, formatted display labels for the header badge
 const displayLabels: Record<string, string> = {
@@ -228,47 +280,86 @@ const displayLabels: Record<string, string> = {
   text: "Plain Text",
 }
 
-const displayBadge = displayLabels[rawLang] || displayLabels[normalizedLang] || rawLang.toUpperCase()
+const displayBadge =
+  displayLabels[rawLang] ||
+  displayLabels[normalizedLang] ||
+  rawLang.toUpperCase()
 ---
 
-<div class={`code-block-container relative my-6 overflow-hidden rounded-md border shadow-lg transition-all duration-200 ${className}`}>
+<div
+  class={`code-block-container relative my-6 overflow-hidden rounded-md border shadow-lg transition-all duration-200 ${className}`}
+>
   <!-- Terminal Header -->
-  <div class="code-header flex items-center justify-between border-b px-4 py-2 text-xs font-mono select-none">
+  <div
+    class="code-header flex items-center justify-between border-b px-4 py-2 font-mono text-xs select-none"
+  >
     <!-- Left: Terminal Dots & Status -->
     <div class="flex items-center gap-2">
       <div class="flex items-center gap-1.5">
-        <span class="h-2.5 w-2.5 rounded-full bg-red-500/70 inline-block"></span>
-        <span class="h-2.5 w-2.5 rounded-full bg-amber-500/70 inline-block"></span>
-        <span class="h-2.5 w-2.5 rounded-full bg-emerald-500/70 inline-block"></span>
+        <span class="inline-block h-2.5 w-2.5 rounded-full bg-red-500/70"
+        ></span>
+        <span class="inline-block h-2.5 w-2.5 rounded-full bg-amber-500/70"
+        ></span>
+        <span class="inline-block h-2.5 w-2.5 rounded-full bg-emerald-500/70"
+        ></span>
       </div>
-      {title && (
-        <span class="ml-2 font-medium text-foreground/80 flex items-center gap-1.5 truncate max-w-xs">
-          <svg class="h-3.5 w-3.5 text-muted-foreground shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
-            <polyline points="14 2 14 8 20 8"/>
-          </svg>
-          <span class="truncate">{title}</span>
-        </span>
-      )}
+      {
+        title && (
+          <span class="ml-2 flex max-w-xs items-center gap-1.5 truncate font-medium text-foreground/80">
+            <svg
+              class="h-3.5 w-3.5 shrink-0 text-muted-foreground"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
+              <polyline points="14 2 14 8 20 8" />
+            </svg>
+            <span class="truncate">{title}</span>
+          </span>
+        )
+      }
     </div>
 
     <!-- Right: Language Badge & Copy Button -->
     <div class="flex items-center gap-3">
-      <span class="rounded bg-primary/10 px-2 py-0.5 text-[11px] font-semibold text-primary uppercase tracking-wider border border-primary/20">
+      <span
+        class="rounded border border-primary/20 bg-primary/10 px-2 py-0.5 text-[11px] font-semibold tracking-wider text-primary uppercase"
+      >
         {displayBadge}
       </span>
       <button
         type="button"
-        class="code-copy-btn inline-flex items-center gap-1.5 rounded px-2 py-1 text-[11px] font-medium text-muted-foreground hover:bg-primary/10 hover:text-primary transition-all duration-150 cursor-pointer"
+        class="code-copy-btn inline-flex cursor-pointer items-center gap-1.5 rounded px-2 py-1 text-[11px] font-medium text-muted-foreground transition-all duration-150 hover:bg-primary/10 hover:text-primary"
         data-code={code}
         aria-label="Copy code to clipboard"
       >
-        <svg class="copy-icon h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
-          <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+        <svg
+          class="copy-icon h-3.5 w-3.5"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect>
+          <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"
+          ></path>
         </svg>
-        <svg class="check-icon hidden h-3.5 w-3.5 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="20 6 9 17 4 12"/>
+        <svg
+          class="check-icon hidden h-3.5 w-3.5 text-emerald-500"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <polyline points="20 6 9 17 4 12"></polyline>
         </svg>
         <span class="btn-text">Copy</span>
       </button>
@@ -276,7 +367,9 @@ const displayBadge = displayLabels[rawLang] || displayLabels[normalizedLang] || 
   </div>
 
   <!-- Shiki Highlighted Code Body -->
-  <div class="code-body-wrapper max-h-[420px] min-h-[50px] overflow-auto text-[13px] leading-relaxed">
+  <div
+    class="code-body-wrapper max-h-[420px] min-h-[50px] overflow-auto text-[13px] leading-relaxed"
+  >
     <Code
       code={code.trim()}
       lang={normalizedLang as any}

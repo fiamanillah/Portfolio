@@ -112,14 +112,25 @@ const submitTextId = `${idPrefix}-submit-text`
 
     <!-- Form Container -->
     <div class="mx-auto mt-8 max-w-xl">
-      <form id={formId} data-source={source} data-prefix={idPrefix} class="flex flex-col gap-4">
+      <form
+        id={formId}
+        data-source={source}
+        data-prefix={idPrefix}
+        class="flex flex-col gap-4"
+      >
         <!-- Honeypot Trap (Hidden visually & from screen readers) -->
         <div
           aria-hidden="true"
           style="display:none; position:absolute; left:-9999px; opacity:0; pointer-events:none;"
         >
           <label for={hpInputId}>Leave empty</label>
-          <input type="text" id={hpInputId} name="hp_field" tabindex="-1" autocomplete="off" />
+          <input
+            type="text"
+            id={hpInputId}
+            name="hp_field"
+            tabindex="-1"
+            autocomplete="off"
+          />
         </div>
 
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-12">
@@ -148,7 +159,11 @@ const submitTextId = `${idPrefix}-submit-text`
         </div>
 
         <!-- Cloudflare Turnstile Container -->
-        <div id={turnstileContainerId} class="flex justify-center empty:hidden py-1"></div>
+        <div
+          id={turnstileContainerId}
+          class="flex justify-center py-1 empty:hidden"
+        >
+        </div>
 
         <!-- Status Message Alert -->
         <div
@@ -169,14 +184,22 @@ const submitTextId = `${idPrefix}-submit-text`
             class="flex items-center gap-2 transition-transform duration-200"
           >
             Subscribe Now
-            <Icon name="mdi:send-outline" class="size-4 transition-transform group-hover/btn:translate-x-1" />
+            <Icon
+              name="mdi:send-outline"
+              class="size-4 transition-transform group-hover/btn:translate-x-1"
+            />
           </span>
         </button>
       </form>
 
       <!-- Subtext -->
-      <div class="mt-4 flex items-center justify-center gap-2 font-mono text-[11px] text-muted-foreground/70">
-        <Icon name="mdi:shield-check-outline" class="size-3.5 text-primary/70" />
+      <div
+        class="mt-4 flex items-center justify-center gap-2 font-mono text-[11px] text-muted-foreground/70"
+      >
+        <Icon
+          name="mdi:shield-check-outline"
+          class="size-3.5 text-primary/70"
+        />
         <span>Zero spam. Unsubscribe anytime with 1-click.</span>
       </div>
     </div>
@@ -186,20 +209,31 @@ const submitTextId = `${idPrefix}-submit-text`
 <script>
   function setupNewsletterForm(formElement: HTMLFormElement) {
     const prefix = formElement.getAttribute("data-prefix") || "newsletter"
-    const source = formElement.getAttribute("data-source") || "newsletter_section"
+    const source =
+      formElement.getAttribute("data-source") || "newsletter_section"
 
-    const submitBtn = document.getElementById(`${prefix}-submit`) as HTMLButtonElement | null
+    const submitBtn = document.getElementById(
+      `${prefix}-submit`
+    ) as HTMLButtonElement | null
     const submitText = document.getElementById(`${prefix}-submit-text`)
     const statusDiv = document.getElementById(`${prefix}-status`)
-    const turnstileContainer = document.getElementById(`${prefix}-turnstile-container`)
+    const turnstileContainer = document.getElementById(
+      `${prefix}-turnstile-container`
+    )
 
     if (!submitBtn || !submitText || !statusDiv) return
 
     let widgetId: string | null = null
 
-    const emailInput = document.getElementById(`${prefix}-email`) as HTMLInputElement | null
+    const emailInput = document.getElementById(
+      `${prefix}-email`
+    ) as HTMLInputElement | null
 
-    function showStatus(message: string, isError: boolean, suggestedEmail?: string) {
+    function showStatus(
+      message: string,
+      isError: boolean,
+      suggestedEmail?: string
+    ) {
       if (!statusDiv) return
       statusDiv.classList.remove(
         "hidden",
@@ -260,10 +294,13 @@ const submitTextId = `${idPrefix}-submit-text`
       const render = () => {
         if ((window as any).turnstile && widgetId === null) {
           try {
-            widgetId = (window as any).turnstile.render(`#${prefix}-turnstile-container`, {
-              sitekey: turnstileKey,
-              theme: "dark",
-            })
+            widgetId = (window as any).turnstile.render(
+              `#${prefix}-turnstile-container`,
+              {
+                sitekey: turnstileKey,
+                theme: "dark",
+              }
+            )
           } catch (err) {
             console.warn(`[Turnstile] ${prefix} render warning:`, err)
           }
@@ -275,7 +312,9 @@ const submitTextId = `${idPrefix}-submit-text`
         return
       }
 
-      let script = document.getElementById("cf-turnstile-script") as HTMLScriptElement | null
+      let script = document.getElementById(
+        "cf-turnstile-script"
+      ) as HTMLScriptElement | null
       if (!script) {
         script = document.createElement("script")
         script.id = "cf-turnstile-script"
@@ -291,12 +330,26 @@ const submitTextId = `${idPrefix}-submit-text`
     if (formElement.dataset.bound === "true") return
     formElement.dataset.bound = "true"
 
-    const nameInput = document.getElementById(`${prefix}-name`) as HTMLInputElement | null
-    emailInput?.addEventListener("focus", initNewsletterTurnstileOnDemand, { once: true })
-    emailInput?.addEventListener("click", initNewsletterTurnstileOnDemand, { once: true })
-    nameInput?.addEventListener("focus", initNewsletterTurnstileOnDemand, { once: true })
-    nameInput?.addEventListener("click", initNewsletterTurnstileOnDemand, { once: true })
-    formElement.addEventListener("mouseenter", initNewsletterTurnstileOnDemand, { once: true })
+    const nameInput = document.getElementById(
+      `${prefix}-name`
+    ) as HTMLInputElement | null
+    emailInput?.addEventListener("focus", initNewsletterTurnstileOnDemand, {
+      once: true,
+    })
+    emailInput?.addEventListener("click", initNewsletterTurnstileOnDemand, {
+      once: true,
+    })
+    nameInput?.addEventListener("focus", initNewsletterTurnstileOnDemand, {
+      once: true,
+    })
+    nameInput?.addEventListener("click", initNewsletterTurnstileOnDemand, {
+      once: true,
+    })
+    formElement.addEventListener(
+      "mouseenter",
+      initNewsletterTurnstileOnDemand,
+      { once: true }
+    )
 
     formElement.addEventListener("submit", async (e) => {
       e.preventDefault()
@@ -340,7 +393,10 @@ const submitTextId = `${idPrefix}-submit-text`
           const isAlready = data.data?.alreadySubscribed || false
           if (isAlready) {
             submitText.innerHTML = `Already Subscribed!`
-            showStatus(data.message || "You are already subscribed to the newsletter!", false)
+            showStatus(
+              data.message || "You are already subscribed to the newsletter!",
+              false
+            )
           } else {
             submitText.innerHTML = `
               <svg class="size-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
@@ -348,7 +404,11 @@ const submitTextId = `${idPrefix}-submit-text`
               </svg>
               Subscribed!
             `
-            showStatus(data.message || "Thank you for subscribing! Check your inbox for confirmation.", false)
+            showStatus(
+              data.message ||
+                "Thank you for subscribing! Check your inbox for confirmation.",
+              false
+            )
           }
 
           submitBtn.classList.remove("bg-primary", "border-primary")
@@ -356,7 +416,7 @@ const submitTextId = `${idPrefix}-submit-text`
           formElement.reset()
 
           if ((window as any).turnstile && widgetId !== null) {
-            (window as any).turnstile.reset(widgetId)
+            ;(window as any).turnstile.reset(widgetId)
           }
 
           setTimeout(() => {
@@ -366,14 +426,20 @@ const submitTextId = `${idPrefix}-submit-text`
             submitBtn.disabled = false
           }, 5000)
         } else {
-          const errorMessage = data.message || data.error?.message || "Failed to subscribe. Please try again."
-          const suggestedEmail = data.data?.suggestedEmail || data.details?.suggestedEmail || data.error?.details?.suggestedEmail
+          const errorMessage =
+            data.message ||
+            data.error?.message ||
+            "Failed to subscribe. Please try again."
+          const suggestedEmail =
+            data.data?.suggestedEmail ||
+            data.details?.suggestedEmail ||
+            data.error?.details?.suggestedEmail
           showStatus(errorMessage, true, suggestedEmail)
           submitText.innerHTML = originalHTML
           submitBtn.disabled = false
 
           if ((window as any).turnstile && widgetId !== null) {
-            (window as any).turnstile.reset(widgetId)
+            ;(window as any).turnstile.reset(widgetId)
           }
         }
       } catch (err) {
@@ -386,7 +452,8 @@ const submitTextId = `${idPrefix}-submit-text`
   }
 
   function initAllNewsletterForms() {
-    const forms = document.querySelectorAll<HTMLFormElement>("form[data-prefix]")
+    const forms =
+      document.querySelectorAll<HTMLFormElement>("form[data-prefix]")
     forms.forEach((form) => setupNewsletterForm(form))
   }
 

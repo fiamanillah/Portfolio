@@ -29,8 +29,11 @@ interface SubscriptionAccountCardProps {
   user: AuthUser
 }
 
-export function SubscriptionAccountCard({ user }: SubscriptionAccountCardProps) {
-  const { subscribedToNewsletter, updateSubscription, deleteAccount } = useProfileState()
+export function SubscriptionAccountCard({
+  user,
+}: SubscriptionAccountCardProps) {
+  const { subscribedToNewsletter, updateSubscription, deleteAccount } =
+    useProfileState()
   const { logout } = useAuthSession()
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [isUpdatingSub, setIsUpdatingSub] = useState(false)
@@ -48,7 +51,8 @@ export function SubscriptionAccountCard({ user }: SubscriptionAccountCardProps) 
         })
       } else {
         toast.info("Unsubscribed from Newsletter", {
-          description: "You will no longer receive recurring engineering updates.",
+          description:
+            "You will no longer receive recurring engineering updates.",
         })
       }
     } else {
@@ -64,10 +68,13 @@ export function SubscriptionAccountCard({ user }: SubscriptionAccountCardProps) 
     if (res.success) {
       await logout()
       toast.success("Account Erased", {
-        description: "Your account and authentication session have been deleted.",
+        description:
+          "Your account and authentication session have been deleted.",
       })
     } else {
-      toast.error("Account Deletion Failed", { description: res.error || "Could not delete account." })
+      toast.error("Account Deletion Failed", {
+        description: res.error || "Could not delete account.",
+      })
     }
   }
 
@@ -82,30 +89,40 @@ export function SubscriptionAccountCard({ user }: SubscriptionAccountCardProps) 
         >
           <div className="space-y-3">
             <div className="flex items-start justify-between gap-4">
-              <div className="space-y-1 min-w-0">
+              <div className="min-w-0 space-y-1">
                 <div className="flex items-center gap-2">
                   <span
-                    className={`size-2 rounded-full shrink-0 ${
+                    className={`size-2 shrink-0 rounded-full ${
                       subscribedToNewsletter ? "bg-emerald-500" : "bg-zinc-500"
                     }`}
                   />
                   <label
                     htmlFor="newsletter-toggle"
-                    className="font-mono text-xs font-semibold text-foreground cursor-pointer flex items-center gap-1.5"
+                    className="flex cursor-pointer items-center gap-1.5 font-mono text-xs font-semibold text-foreground"
                   >
-                    <HugeiconsIcon icon={Notification01Icon} className="size-3.5 text-primary" />
+                    <HugeiconsIcon
+                      icon={Notification01Icon}
+                      className="size-3.5 text-primary"
+                    />
                     <span>Technical Newsletter & Case Studies</span>
                   </label>
                 </div>
-                <p className="text-xs text-muted-foreground pl-5 leading-relaxed">
-                  Deep dives on distributed systems, WebSockets, benchmarks, and DevOps architectures sent to{" "}
-                  <span className="text-foreground font-mono font-medium">{user.email}</span>.
+                <p className="pl-5 text-xs leading-relaxed text-muted-foreground">
+                  Deep dives on distributed systems, WebSockets, benchmarks, and
+                  DevOps architectures sent to{" "}
+                  <span className="font-mono font-medium text-foreground">
+                    {user.email}
+                  </span>
+                  .
                 </p>
               </div>
 
-              <div className="flex items-center gap-2 shrink-0 mt-0.5">
+              <div className="mt-0.5 flex shrink-0 items-center gap-2">
                 {isUpdatingSub && (
-                  <HugeiconsIcon icon={Loading03Icon} className="size-3.5 animate-spin text-primary" />
+                  <HugeiconsIcon
+                    icon={Loading03Icon}
+                    className="size-3.5 animate-spin text-primary"
+                  />
                 )}
                 <Switch
                   id="newsletter-toggle"
@@ -125,14 +142,15 @@ export function SubscriptionAccountCard({ user }: SubscriptionAccountCardProps) 
           description="Permanently delete your account and personal data from the database."
           danger={true}
         >
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div className="space-y-1 min-w-0">
-              <p className="font-mono text-xs font-semibold text-destructive flex items-center gap-1.5">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="min-w-0 space-y-1">
+              <p className="flex items-center gap-1.5 font-mono text-xs font-semibold text-destructive">
                 <HugeiconsIcon icon={AlertCircleIcon} className="size-3.5" />
                 <span>Permanent Account Deletion</span>
               </p>
-              <p className="text-xs text-muted-foreground max-w-md leading-relaxed">
-                Once confirmed, your user record, authentication tokens, credentials, and profile details will be permanently wiped.
+              <p className="max-w-md text-xs leading-relaxed text-muted-foreground">
+                Once confirmed, your user record, authentication tokens,
+                credentials, and profile details will be permanently wiped.
               </p>
             </div>
 
@@ -140,7 +158,7 @@ export function SubscriptionAccountCard({ user }: SubscriptionAccountCardProps) 
               type="button"
               size="sm"
               onClick={() => setDeleteDialogOpen(true)}
-              className="rounded-none font-mono text-xs font-bold uppercase tracking-wider bg-destructive text-destructive-foreground hover:bg-destructive/90 transition-colors cursor-pointer shrink-0 h-8 px-3 flex items-center gap-1.5"
+              className="text-destructive-foreground flex h-8 shrink-0 cursor-pointer items-center gap-1.5 rounded-none bg-destructive px-3 font-mono text-xs font-bold tracking-wider uppercase transition-colors hover:bg-destructive/90"
             >
               <HugeiconsIcon icon={Delete02Icon} className="size-3.5" />
               <span>Delete Account</span>
@@ -151,24 +169,29 @@ export function SubscriptionAccountCard({ user }: SubscriptionAccountCardProps) 
 
       {/* Deletion Confirmation Dialog */}
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <AlertDialogContent className="sm:max-w-md rounded-none border border-destructive/40 bg-card/95 p-6 backdrop-blur-xl gap-4">
+        <AlertDialogContent className="gap-4 rounded-none border border-destructive/40 bg-card/95 p-6 backdrop-blur-xl sm:max-w-md">
           <AlertDialogHeader className="space-y-2">
-            <AlertDialogTitle className="font-mono text-base font-bold text-destructive flex items-center gap-2">
-              <HugeiconsIcon icon={AlertCircleIcon} className="size-4 text-destructive" />
+            <AlertDialogTitle className="flex items-center gap-2 font-mono text-base font-bold text-destructive">
+              <HugeiconsIcon
+                icon={AlertCircleIcon}
+                className="size-4 text-destructive"
+              />
               <span>Permanently delete account?</span>
             </AlertDialogTitle>
-            <AlertDialogDescription className="text-xs text-muted-foreground leading-relaxed">
-              This action cannot be undone. All your session data, profile configuration, and credentials will be removed from the server database immediately.
+            <AlertDialogDescription className="text-xs leading-relaxed text-muted-foreground">
+              This action cannot be undone. All your session data, profile
+              configuration, and credentials will be removed from the server
+              database immediately.
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter className="flex flex-row justify-end gap-2 pt-2 border-t border-border/50">
-            <AlertDialogCancel className="rounded-none font-mono text-xs cursor-pointer">
+          <AlertDialogFooter className="flex flex-row justify-end gap-2 border-t border-border/50 pt-2">
+            <AlertDialogCancel className="cursor-pointer rounded-none font-mono text-xs">
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDeleteConfirm}
               disabled={isDeleting}
-              className="rounded-none font-mono text-xs font-bold uppercase bg-destructive text-destructive-foreground hover:bg-destructive/90 cursor-pointer"
+              className="text-destructive-foreground cursor-pointer rounded-none bg-destructive font-mono text-xs font-bold uppercase hover:bg-destructive/90"
             >
               {isDeleting ? "Deleting..." : "Yes, Erase Account"}
             </AlertDialogAction>

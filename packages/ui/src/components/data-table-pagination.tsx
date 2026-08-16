@@ -43,34 +43,44 @@ export function DataTablePagination<TData extends RowData>({
     ? table.getFilteredSelectedRowModel().rows.length
     : 0
 
-  const state = (typeof table.getState === "function" ? table.getState() : table.state) || {}
-  
+  const state =
+    (typeof table.getState === "function" ? table.getState() : table.state) ||
+    {}
+
   // 1-indexed current page
-  const activePage = explicitCurrentPage !== undefined 
-    ? explicitCurrentPage 
-    : ((state.pagination?.pageIndex ?? 0) + 1)
-  
-  const activePageSize = explicitPageSize !== undefined 
-    ? explicitPageSize 
-    : (state.pagination?.pageSize ?? 20)
+  const activePage =
+    explicitCurrentPage !== undefined
+      ? explicitCurrentPage
+      : (state.pagination?.pageIndex ?? 0) + 1
 
-  const totalRows = totalItemsCount !== undefined 
-    ? totalItemsCount 
-    : (table.getFilteredRowModel ? table.getFilteredRowModel().rows.length : 0)
+  const activePageSize =
+    explicitPageSize !== undefined
+      ? explicitPageSize
+      : (state.pagination?.pageSize ?? 20)
 
-  const totalPages = explicitPageCount !== undefined
-    ? explicitPageCount
-    : Math.max(1, Math.ceil(totalRows / activePageSize))
+  const totalRows =
+    totalItemsCount !== undefined
+      ? totalItemsCount
+      : table.getFilteredRowModel
+        ? table.getFilteredRowModel().rows.length
+        : 0
+
+  const totalPages =
+    explicitPageCount !== undefined
+      ? explicitPageCount
+      : Math.max(1, Math.ceil(totalRows / activePageSize))
 
   const canPreviousPage = activePage > 1
   const canNextPage = activePage < totalPages
 
-  const startRecord = totalRows === 0 ? 0 : (activePage - 1) * activePageSize + 1
+  const startRecord =
+    totalRows === 0 ? 0 : (activePage - 1) * activePageSize + 1
   const endRecord = Math.min(activePage * activePageSize, totalRows)
 
   const handlePageChange = (targetPage: number) => {
-    if (targetPage < 1 || targetPage > totalPages || targetPage === activePage) return
-    
+    if (targetPage < 1 || targetPage > totalPages || targetPage === activePage)
+      return
+
     if (typeof table.setPageIndex === "function") {
       table.setPageIndex(targetPage - 1)
     }
@@ -86,7 +96,7 @@ export function DataTablePagination<TData extends RowData>({
   }
 
   return (
-    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between px-2 py-3">
+    <div className="flex flex-col gap-4 px-2 py-3 sm:flex-row sm:items-center sm:justify-between">
       <div className="text-xs text-muted-foreground">
         {selectedRowsCount > 0 ? (
           <span className="font-medium text-foreground">
@@ -94,16 +104,18 @@ export function DataTablePagination<TData extends RowData>({
           </span>
         ) : (
           <span>
-            Showing <span className="font-medium text-foreground">{startRecord}</span> to{" "}
-            <span className="font-medium text-foreground">{endRecord}</span> of{" "}
-            <span className="font-medium text-foreground">{totalRows}</span> total records
+            Showing{" "}
+            <span className="font-medium text-foreground">{startRecord}</span>{" "}
+            to <span className="font-medium text-foreground">{endRecord}</span>{" "}
+            of <span className="font-medium text-foreground">{totalRows}</span>{" "}
+            total records
           </span>
         )}
       </div>
 
       <div className="flex flex-wrap items-center gap-4 sm:gap-6 lg:gap-8">
         <div className="flex items-center space-x-2">
-          <p className="text-xs font-medium text-muted-foreground whitespace-nowrap">
+          <p className="text-xs font-medium whitespace-nowrap text-muted-foreground">
             Rows per page
           </p>
           <Select

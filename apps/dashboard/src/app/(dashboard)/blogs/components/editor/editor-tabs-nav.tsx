@@ -1,7 +1,14 @@
 "use client"
 
 import * as React from "react"
-import { FileText, Search, Calendar, Image as ImageIcon, User, Eye } from "lucide-react"
+import {
+  FileText,
+  Search,
+  Calendar,
+  Image as ImageIcon,
+  User,
+  Eye,
+} from "lucide-react"
 import { TabsList, TabsTrigger } from "@workspace/ui/components/tabs"
 import { Badge } from "@workspace/ui/components/badge"
 import type { SeoAnalysisResult } from "@workspace/shared"
@@ -18,11 +25,11 @@ export function EditorTabsNav({
   hasRequiredContent,
 }: EditorTabsNavProps) {
   return (
-    <div className="px-4 md:px-6 border-b border-border/80 bg-muted/20 overflow-x-auto">
-      <TabsList className="bg-transparent h-12 p-0 gap-2 md:gap-4 w-auto">
+    <div className="overflow-x-auto border-b border-border/80 bg-muted/20 px-4 md:px-6">
+      <TabsList className="h-12 w-auto gap-2 bg-transparent p-0 md:gap-4">
         <TabsTrigger
           value="content"
-          className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none px-2 font-medium text-xs md:text-sm shrink-0 gap-1.5"
+          className="shrink-0 gap-1.5 rounded-none px-2 text-xs font-medium data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none md:text-sm"
         >
           <FileText className="h-4 w-4" /> 1. Content & Editor
           {hasRequiredContent && (
@@ -32,18 +39,18 @@ export function EditorTabsNav({
 
         <TabsTrigger
           value="seo"
-          className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none px-2 font-medium text-xs md:text-sm shrink-0 gap-1.5"
+          className="shrink-0 gap-1.5 rounded-none px-2 text-xs font-medium data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none md:text-sm"
         >
           <Search className="h-4 w-4" /> 2. SEO & Previews
           {seoAnalysis && (
             <Badge
               variant="outline"
-              className={`ml-1 text-[10px] h-4 px-1.5 font-mono ${
+              className={`ml-1 h-4 px-1.5 font-mono text-[10px] ${
                 seoAnalysis.score >= 90
-                  ? "text-emerald-500 border-emerald-500/30"
+                  ? "border-emerald-500/30 text-emerald-500"
                   : seoAnalysis.score >= 75
-                  ? "text-amber-500 border-amber-500/30"
-                  : "text-rose-500 border-rose-500/30"
+                    ? "border-amber-500/30 text-amber-500"
+                    : "border-rose-500/30 text-rose-500"
               }`}
             >
               {seoAnalysis.score}
@@ -53,14 +60,14 @@ export function EditorTabsNav({
 
         <TabsTrigger
           value="publishing"
-          className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none px-2 font-medium text-xs md:text-sm shrink-0 gap-1.5"
+          className="shrink-0 gap-1.5 rounded-none px-2 text-xs font-medium data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none md:text-sm"
         >
           <Calendar className="h-4 w-4" /> 3. Publishing & Schedule
         </TabsTrigger>
 
         <TabsTrigger
           value="media"
-          className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none px-2 font-medium text-xs md:text-sm shrink-0 gap-1.5"
+          className="shrink-0 gap-1.5 rounded-none px-2 text-xs font-medium data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none md:text-sm"
         >
           <ImageIcon className="h-4 w-4" /> 4. Media & Hero
           {hasCoverImage && (
@@ -70,14 +77,14 @@ export function EditorTabsNav({
 
         <TabsTrigger
           value="author"
-          className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none px-2 font-medium text-xs md:text-sm shrink-0 gap-1.5"
+          className="shrink-0 gap-1.5 rounded-none px-2 text-xs font-medium data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none md:text-sm"
         >
           <User className="h-4 w-4" /> 5. Author Persona
         </TabsTrigger>
 
         <TabsTrigger
           value="preview"
-          className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none px-2 font-medium text-xs md:text-sm shrink-0 gap-1.5 text-primary font-semibold"
+          className="shrink-0 gap-1.5 rounded-none px-2 text-xs font-medium font-semibold text-primary data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none md:text-sm"
         >
           <Eye className="h-4 w-4" /> 6. Live Website Preview
         </TabsTrigger>

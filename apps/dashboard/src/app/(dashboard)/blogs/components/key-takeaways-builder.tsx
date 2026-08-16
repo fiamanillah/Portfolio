@@ -30,10 +30,11 @@ export function KeyTakeawaysBuilder({
   return (
     <div className="space-y-2.5">
       <div className="flex items-center justify-between">
-        <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-          <Sparkles className="h-3.5 w-3.5 text-primary" /> Key Takeaways (Highlights Box)
+        <label className="flex items-center gap-1.5 text-xs font-semibold tracking-wider text-muted-foreground uppercase">
+          <Sparkles className="h-3.5 w-3.5 text-primary" /> Key Takeaways
+          (Highlights Box)
         </label>
-        <span className="text-[11px] text-muted-foreground font-mono">
+        <span className="font-mono text-[11px] text-muted-foreground">
           {takeaways.length} highlights
         </span>
       </div>
@@ -51,8 +52,14 @@ export function KeyTakeawaysBuilder({
           }}
           className="text-xs"
         />
-        <Button type="button" variant="outline" size="sm" onClick={handleAdd} className="text-xs shrink-0">
-          <Plus className="h-3.5 w-3.5 mr-1" /> Add
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={handleAdd}
+          className="shrink-0 text-xs"
+        >
+          <Plus className="mr-1 h-3.5 w-3.5" /> Add
         </Button>
       </div>
 
@@ -61,17 +68,17 @@ export function KeyTakeawaysBuilder({
           {takeaways.map((item, idx) => (
             <div
               key={idx}
-              className="flex items-center justify-between p-2 rounded-md bg-muted/40 border border-border/70 text-xs gap-2"
+              className="flex items-center justify-between gap-2 rounded-md border border-border/70 bg-muted/40 p-2 text-xs"
             >
-              <div className="flex items-center gap-2 min-w-0">
-                <CheckCircle2 className="h-3.5 w-3.5 text-primary shrink-0" />
-                <span className="text-foreground/90 truncate">{item}</span>
+              <div className="flex min-w-0 items-center gap-2">
+                <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-primary" />
+                <span className="truncate text-foreground/90">{item}</span>
               </div>
               <Button
                 type="button"
                 variant="ghost"
                 size="icon"
-                className="h-6 w-6 text-muted-foreground hover:text-destructive shrink-0"
+                className="h-6 w-6 shrink-0 text-muted-foreground hover:text-destructive"
                 onClick={() => handleRemove(idx)}
               >
                 <Trash2 className="h-3 w-3" />

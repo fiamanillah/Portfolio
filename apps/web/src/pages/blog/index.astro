@@ -6,14 +6,16 @@ import BlogExplorer from "@/components/Blog/explorer/BlogExplorer.astro"
 import NewsletterSection from "@/components/Newsletter/NewsletterSection.astro"
 import BlogSEO from "@/components/SEO/BlogSEO.astro"
 import {
-  blogPostsData,
-  getBlogCategories,
-  getFeaturedBlogPosts,
+  getAllBlogPostsAsync,
+  getBlogCategoriesAsync,
+  getFeaturedBlogPostsAsync,
 } from "@/data/blogPosts"
 
-const categories = getBlogCategories()
-const featuredPosts = getFeaturedBlogPosts()
-const totalTopics = new Set(blogPostsData.flatMap((p) => p.tags)).size
+// Fetch published posts, categories, and featured stories directly from DB / API
+const posts = await getAllBlogPostsAsync()
+const categories = await getBlogCategoriesAsync()
+const featuredPosts = await getFeaturedBlogPostsAsync()
+const totalTopics = new Set(posts.flatMap((p) => p.tags)).size
 ---
 
 <MySiteLayout>
@@ -24,26 +26,30 @@ const totalTopics = new Set(blogPostsData.flatMap((p) => p.tags)).size
       description="In-depth technical articles, performance benchmarks, real-time microservices architecture, and DevOps guides by Fi Amanillah."
       type="website"
       url="/blog"
-      tags={["Software Engineering", "System Architecture", "Microservices", "Redis", "TypeScript", "DevOps"]}
+      tags={[
+        "Software Engineering",
+        "System Architecture",
+        "Microservices",
+        "Redis",
+        "TypeScript",
+        "DevOps",
+      ]}
     />
   </Fragment>
 
-  <!-- Hero Header -->
+  <!-- Hero Header with live aggregated database metrics -->
   <BlogHeader
-    totalPosts={blogPostsData.length}
-    totalCategories={categories.length - 1}
+    totalPosts={posts.length}
+    totalCategories={Math.max(1, categories.length - 1)}
     totalTopics={totalTopics}
   />
 
   <main class="container mx-auto px-4 py-12">
-    <!-- Featured Stories Grid Section (Displays multiple featured articles in a grid) -->
+    <!-- Featured Stories Grid Section (Displays database featured articles in a grid) -->
     <BlogFeaturedGrid featuredPosts={featuredPosts} />
 
-    <!-- Interactive Articles Explorer (Instant Category Filtering & Pagination) -->
-    <BlogExplorer
-      initialPosts={blogPostsData}
-      categories={categories}
-    />
+    <!-- Interactive Articles Explorer (Instant Category Filtering & Pagination backed by DB) -->
+    <BlogExplorer initialPosts={posts} categories={categories} />
 
     <!-- Newsletter Section -->
     <div class="mt-20">

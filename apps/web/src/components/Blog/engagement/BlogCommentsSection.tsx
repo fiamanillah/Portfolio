@@ -1,6 +1,8 @@
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import { usePostEngagement } from "@/lib/engagementStore"
 import { useAuthSession } from "@/lib/authStore"
+import { CommentsApi, type GuestCommentPayload } from "@/lib/api/commentsApi"
+import type { AuthUser } from "@/data/commentsData"
 import { CommentComposer } from "./CommentComposer"
 import { CommentItem } from "./CommentItem"
 import { AuthModal } from "./AuthModal"
@@ -19,14 +21,13 @@ interface BlogCommentsSectionProps {
 
 type SortOrder = "newest" | "top" | "oldest"
 
-const PAGE_SIZE = 3
+const PAGE_SIZE = 5
 
-export function BlogCommentsSection({
-  postSlug,
-}: BlogCommentsSectionProps) {
+export function BlogCommentsSection({ postSlug }: BlogCommentsSectionProps) {
   const {
     comments,
     totalCommentsCount,
+    setComments,
     addComment,
     addReply,
     toggleCommentLike,
@@ -37,19 +38,43 @@ export function BlogCommentsSection({
   const [authModalOpen, setAuthModalOpen] = useState(false)
   const [sortBy, setSortBy] = useState<SortOrder>("newest")
   const [page, setPage] = useState(1)
+  const [isLoadingInitial, setIsLoadingInitial] = useState(true)
   const [isLoadingMore, setIsLoadingMore] = useState(false)
+
+  // Fetch initial comments from backend API on mount
+  useEffect(() => {
+    let isMounted = true
+    setIsLoadingInitial(true)
+
+    CommentsApi.getComments(postSlug, 1, 20, sortBy)
+      .then((res) => {
+        if (isMounted && res.comments) {
+          setComments(res.comments)
+        }
+      })
+      .catch(() => {})
+      .finally(() => {
+        if (isMounted) setIsLoadingInitial(false)
+      })
+
+    return () => {
+      isMounted = false
+    }
+  }, [postSlug, sortBy])
 
   // Sort comments based on selected order
   const sortedComments = useMemo(() => {
     const list = [...comments]
     if (sortBy === "newest") {
       return list.sort(
-        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       )
     }
     if (sortBy === "oldest") {
       return list.sort(
-        (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+        (a, b) =>
+          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
       )
     }
     if (sortBy === "top") {
@@ -75,19 +100,31 @@ export function BlogCommentsSection({
     if (isLoadingMore || !hasMore) return
     setIsLoadingMore(true)
 
-    // Simulate realistic async network API latency
     setTimeout(() => {
       setPage((prev) => prev + 1)
       setIsLoadingMore(false)
-    }, 450)
+    }, 300)
   }
 
-  const handleTopLevelCommentSubmit = (content: string) => {
-    if (!user) {
+  const handleTopLevelCommentSubmit = async (
+    content: string,
+    guestInfo?: GuestCommentPayload
+  ) => {
+    if (user) {
+      await addComment(user, content)
+    } else if (guestInfo && guestInfo.guestName) {
+      await addComment(guestInfo, content)
+    } else {
       setAuthModalOpen(true)
-      return
     }
-    addComment(user, content)
+  }
+
+  const handleReplySubmit = async (
+    parentId: string,
+    author: AuthUser | GuestCommentPayload,
+    content: string
+  ) => {
+    await addReply(parentId, author, content)
   }
 
   return (
@@ -96,17 +133,18 @@ export function BlogCommentsSection({
       className="relative mt-12 border-t border-border/80 pt-10"
     >
       {/* Section Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6">
+      <div className="flex flex-col justify-between gap-4 pb-6 sm:flex-row sm:items-center">
         <div>
           <div className="flex items-center gap-2">
             <span className="font-mono text-xs font-bold tracking-widest text-primary uppercase">
               // DISCUSSION_THREAD
             </span>
             <span className="border border-primary/40 bg-primary/10 px-2 py-0.5 font-mono text-[10px] font-bold text-primary">
-              {totalCommentsCount} {totalCommentsCount === 1 ? "COMMENT" : "COMMENTS"}
+              {totalCommentsCount}{" "}
+              {totalCommentsCount === 1 ? "COMMENT" : "COMMENTS"}
             </span>
           </div>
-          <h3 className="font-mono text-lg font-bold text-foreground mt-1">
+          <h3 className="mt-1 font-mono text-lg font-bold text-foreground">
             Community Insights & Architectural Q&A
           </h3>
         </div>
@@ -120,9 +158,9 @@ export function BlogCommentsSection({
             <button
               type="button"
               onClick={() => handleSortChange("newest")}
-              className={`px-2.5 py-1 font-mono text-[11px] transition-colors cursor-pointer ${
+              className={`cursor-pointer px-2.5 py-1 font-mono text-[11px] transition-colors ${
                 sortBy === "newest"
-                  ? "bg-primary text-primary-foreground font-semibold"
+                  ? "bg-primary font-semibold text-primary-foreground"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
@@ -131,9 +169,9 @@ export function BlogCommentsSection({
             <button
               type="button"
               onClick={() => handleSortChange("top")}
-              className={`px-2.5 py-1 font-mono text-[11px] transition-colors cursor-pointer ${
+              className={`cursor-pointer px-2.5 py-1 font-mono text-[11px] transition-colors ${
                 sortBy === "top"
-                  ? "bg-primary text-primary-foreground font-semibold"
+                  ? "bg-primary font-semibold text-primary-foreground"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
@@ -142,9 +180,9 @@ export function BlogCommentsSection({
             <button
               type="button"
               onClick={() => handleSortChange("oldest")}
-              className={`px-2.5 py-1 font-mono text-[11px] transition-colors cursor-pointer ${
+              className={`cursor-pointer px-2.5 py-1 font-mono text-[11px] transition-colors ${
                 sortBy === "oldest"
-                  ? "bg-primary text-primary-foreground font-semibold"
+                  ? "bg-primary font-semibold text-primary-foreground"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
@@ -172,17 +210,37 @@ export function BlogCommentsSection({
 
         {/* Stream Status Header Bar */}
         <div className="flex items-center justify-between border-b border-border/60 bg-muted/20 px-4 py-2">
-          <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
-            // ACTIVE_THREAD_STREAM ({sortedComments.length} {sortedComments.length === 1 ? "thread" : "threads"})
+          <span className="font-mono text-[10px] tracking-wider text-muted-foreground uppercase">
+            // ACTIVE_THREAD_STREAM ({sortedComments.length}{" "}
+            {sortedComments.length === 1 ? "thread" : "threads"})
           </span>
           <span className="font-mono text-[10px] text-primary/80">
-            Showing {Math.min(visibleComments.length, sortedComments.length)} of {sortedComments.length}
+            Showing {Math.min(visibleComments.length, sortedComments.length)} of{" "}
+            {sortedComments.length}
           </span>
         </div>
 
         {/* Scrollable Viewport with Min & Max Fixed Bounds */}
-        <div className="h-[500px] min-h-[380px] max-h-[620px] overflow-y-auto custom-scrollbar p-4 sm:p-6 space-y-4">
-          {visibleComments.length > 0 ? (
+        <div className="custom-scrollbar h-[520px] max-h-[640px] min-h-[380px] space-y-4 overflow-y-auto p-4 sm:p-6">
+          {isLoadingInitial ? (
+            <div className="animate-pulse space-y-4">
+              <div className="space-y-3 border border-border/60 p-4">
+                <div className="flex items-center gap-3">
+                  <div className="size-8 rounded-full bg-muted/60" />
+                  <div className="h-3.5 w-32 rounded bg-muted/60" />
+                </div>
+                <div className="ml-11 h-3 w-full rounded bg-muted/40" />
+                <div className="ml-11 h-3 w-3/4 rounded bg-muted/30" />
+              </div>
+              <div className="space-y-3 border border-border/60 p-4">
+                <div className="flex items-center gap-3">
+                  <div className="size-8 rounded-full bg-muted/60" />
+                  <div className="h-3.5 w-28 rounded bg-muted/60" />
+                </div>
+                <div className="ml-11 h-3 w-5/6 rounded bg-muted/40" />
+              </div>
+            </div>
+          ) : visibleComments.length > 0 ? (
             <div className="space-y-4 pr-1">
               {visibleComments.map((comment) => (
                 <CommentItem
@@ -190,15 +248,15 @@ export function BlogCommentsSection({
                   comment={comment}
                   postSlug={postSlug}
                   onLike={toggleCommentLike}
-                  onReply={addReply}
+                  onReply={handleReplySubmit}
                   onDelete={deleteComment}
                   onOpenAuth={() => setAuthModalOpen(true)}
                 />
               ))}
 
-              {/* Simulated Loading Skeleton during Pagination */}
+              {/* Loading Skeleton during Pagination */}
               {isLoadingMore && (
-                <div className="border border-primary/20 bg-primary/[0.02] p-4 animate-pulse space-y-3 mt-4">
+                <div className="mt-4 animate-pulse space-y-3 border border-primary/20 bg-primary/[0.02] p-4">
                   <div className="flex items-center gap-3">
                     <div className="size-8 rounded-full bg-muted/60" />
                     <div className="space-y-1.5">
@@ -214,32 +272,46 @@ export function BlogCommentsSection({
               )}
 
               {/* Pagination / Load More Footer Action */}
-              <div className="pt-4 border-t border-border/40 flex flex-col items-center justify-center gap-2">
+              <div className="flex flex-col items-center justify-center gap-2 border-t border-border/40 pt-4">
                 {hasMore ? (
                   <button
                     type="button"
                     disabled={isLoadingMore}
                     onClick={handleLoadMore}
-                    className="inline-flex items-center gap-2 border border-primary/40 bg-primary/10 px-5 py-2 font-mono text-xs font-semibold text-primary transition-all duration-200 hover:border-primary hover:bg-primary/20 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_0_12px_-3px_oklch(var(--primary)/20%)]"
+                    className="inline-flex cursor-pointer items-center gap-2 border border-primary/40 bg-primary/10 px-5 py-2 font-mono text-xs font-semibold text-primary shadow-[0_0_12px_-3px_oklch(var(--primary)/20%)] transition-all duration-200 hover:border-primary hover:bg-primary/20 disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     {isLoadingMore ? (
                       <>
-                        <HugeiconsIcon icon={Loading03Icon} className="size-3.5 animate-spin" />
+                        <HugeiconsIcon
+                          icon={Loading03Icon}
+                          className="size-3.5 animate-spin"
+                        />
                         <span>Loading next batch...</span>
                       </>
                     ) : (
                       <>
-                        <HugeiconsIcon icon={ArrowDown01Icon} className="size-3.5" />
+                        <HugeiconsIcon
+                          icon={ArrowDown01Icon}
+                          className="size-3.5"
+                        />
                         <span>
-                          Load More ({sortedComments.length - visibleComments.length} remaining)
+                          Load More (
+                          {sortedComments.length - visibleComments.length}{" "}
+                          remaining)
                         </span>
                       </>
                     )}
                   </button>
                 ) : (
-                  <div className="flex items-center gap-1.5 font-mono text-[11px] text-muted-foreground/80 py-2">
-                    <HugeiconsIcon icon={Tick02Icon} className="size-3.5 text-primary" />
-                    <span>// ALL THREADS LOADED — {sortedComments.length} total discussions</span>
+                  <div className="flex items-center gap-1.5 py-2 font-mono text-[11px] text-muted-foreground/80">
+                    <HugeiconsIcon
+                      icon={Tick02Icon}
+                      className="size-3.5 text-primary"
+                    />
+                    <span>
+                      // ALL THREADS LOADED — {sortedComments.length} total
+                      discussions
+                    </span>
                   </div>
                 )}
               </div>
@@ -250,11 +322,12 @@ export function BlogCommentsSection({
               <div className="flex size-12 items-center justify-center rounded-full border border-primary/30 bg-primary/10 text-primary">
                 <HugeiconsIcon icon={Message01Icon} className="size-6" />
               </div>
-              <h4 className="font-mono text-sm font-bold text-foreground mt-4">
+              <h4 className="mt-4 font-mono text-sm font-bold text-foreground">
                 No discussion yet
               </h4>
-              <p className="text-xs text-muted-foreground max-w-sm mt-1 leading-relaxed">
-                Be the first engineer to start the conversation on this architecture breakdown!
+              <p className="mt-1 max-w-sm text-xs leading-relaxed text-muted-foreground">
+                Be the first engineer to start the conversation on this
+                architecture breakdown!
               </p>
             </div>
           )}
@@ -270,4 +343,3 @@ export function BlogCommentsSection({
     </section>
   )
 }
-

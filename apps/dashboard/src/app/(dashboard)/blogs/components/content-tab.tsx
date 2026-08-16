@@ -94,20 +94,20 @@ export function ContentTab({
       {/* Title & Subtitle */}
       <div className="space-y-3.5">
         <div className="space-y-1">
-          <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+          <label className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
             Article Title *
           </label>
           <Input
             placeholder="e.g. Scaling Distributed Message Queues with Redis Streams & Bun"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="text-base font-semibold bg-card"
+            className="bg-card text-base font-semibold"
             required
           />
         </div>
 
         <div className="space-y-1">
-          <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+          <label className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
             Subtitle / Lead Sentence
           </label>
           <Input
@@ -120,16 +120,16 @@ export function ContentTab({
       </div>
 
       {/* Slug & Category */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div className="space-y-1">
           <div className="flex items-center justify-between">
-            <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            <label className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
               URL Slug *
             </label>
             <button
               type="button"
               onClick={generateSlug}
-              className="text-[11px] text-primary hover:underline font-medium"
+              className="text-[11px] font-medium text-primary hover:underline"
             >
               Generate from Title
             </button>
@@ -138,12 +138,12 @@ export function ContentTab({
             placeholder="e.g. scaling-distributed-message-queues-redis-bun"
             value={slug}
             onChange={(e) => setSlug(e.target.value)}
-            className="font-mono text-xs bg-card"
+            className="bg-card font-mono text-xs"
           />
         </div>
 
         <div className="space-y-1">
-          <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+          <label className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
             Primary Category
           </label>
           <Select
@@ -172,11 +172,11 @@ export function ContentTab({
       {/* Summary / Excerpt */}
       <div className="space-y-1">
         <div className="flex items-center justify-between">
-          <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+          <label className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
             Summary / Excerpt (Used on card feeds & meta tags) *
           </label>
           <span
-            className={`text-[11px] font-mono ${
+            className={`font-mono text-[11px] ${
               summary.length > 160 ? "text-amber-500" : "text-muted-foreground"
             }`}
           >
@@ -202,7 +202,7 @@ export function ContentTab({
       />
 
       {/* Key Takeaways Highlights Builder */}
-      <div className="p-4 rounded-xl border border-border/80 bg-muted/20">
+      <div className="rounded-xl border border-border/80 bg-muted/20 p-4">
         <KeyTakeawaysBuilder
           takeaways={keyTakeaways}
           onChange={setKeyTakeaways}
@@ -210,8 +210,8 @@ export function ContentTab({
       </div>
 
       {/* Tags Multi-Chip Input */}
-      <div className="space-y-2 pt-2 border-t border-border">
-        <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+      <div className="space-y-2 border-t border-border pt-2">
+        <label className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
           Tags & Taxonomy
         </label>
         <div className="flex gap-2">
@@ -225,20 +225,30 @@ export function ContentTab({
                 handleAddTag()
               }
             }}
-            className="text-xs bg-card"
+            className="bg-card text-xs"
           />
-          <Button type="button" variant="outline" size="sm" onClick={handleAddTag} className="text-xs">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={handleAddTag}
+            className="text-xs"
+          >
             Add Tag
           </Button>
         </div>
         <div className="flex flex-wrap gap-1.5 pt-1">
           {selectedTags.map((tag) => (
-            <Badge key={tag} variant="secondary" className="text-xs flex items-center gap-1">
+            <Badge
+              key={tag}
+              variant="secondary"
+              className="flex items-center gap-1 text-xs"
+            >
               #{tag}
               <button
                 type="button"
                 onClick={() => handleRemoveTag(tag)}
-                className="hover:text-destructive font-bold ml-1"
+                className="ml-1 font-bold hover:text-destructive"
               >
                 ×
               </button>

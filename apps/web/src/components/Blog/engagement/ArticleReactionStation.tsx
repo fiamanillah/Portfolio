@@ -21,12 +21,8 @@ interface ArticleReactionStationProps {
 export function ArticleReactionStation({
   postSlug,
 }: ArticleReactionStationProps) {
-  const {
-    reactions,
-    totalCommentsCount,
-    toggleLike,
-    toggleReaction,
-  } = usePostEngagement(postSlug)
+  const { reactions, totalCommentsCount, toggleLike, toggleReaction } =
+    usePostEngagement(postSlug)
 
   const [isLikingAnimation, setIsLikingAnimation] = useState(false)
   const [copied, setCopied] = useState(false)
@@ -97,7 +93,7 @@ export function ArticleReactionStation({
   ]
 
   return (
-    <div className="relative my-10 overflow-hidden border border-border/80 bg-background/90 p-6 sm:p-8 backdrop-blur-md">
+    <div className="relative my-10 overflow-hidden border border-border/80 bg-background/90 p-6 backdrop-blur-md sm:p-8">
       {/* Cyberpunk corner brackets */}
       <div className="pointer-events-none absolute top-2 left-2 h-3.5 w-3.5 border-t-[1.5px] border-l-[1.5px] border-primary/40" />
       <div className="pointer-events-none absolute top-2 right-2 h-3.5 w-3.5 border-t-[1.5px] border-r-[1.5px] border-primary/40" />
@@ -106,15 +102,15 @@ export function ArticleReactionStation({
 
       <div className="flex flex-col gap-6">
         {/* Top Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border/60 pb-5">
+        <div className="flex flex-col justify-between gap-3 border-b border-border/60 pb-5 sm:flex-row sm:items-center">
           <div>
-            <span className="font-mono text-[10px] font-semibold text-primary uppercase tracking-widest block">
+            <span className="block font-mono text-[10px] font-semibold tracking-widest text-primary uppercase">
               // ARTICLE_TELEMETRY & FEEDBACK
             </span>
-            <h3 className="font-mono text-base font-bold text-foreground mt-0.5">
+            <h3 className="mt-0.5 font-mono text-base font-bold text-foreground">
               Enjoyed this architecture breakdown?
             </h3>
-            <p className="text-xs text-muted-foreground mt-0.5">
+            <p className="mt-0.5 text-xs text-muted-foreground">
               Leave a reaction or join the discussion below.
             </p>
           </div>
@@ -124,16 +120,19 @@ export function ArticleReactionStation({
             <button
               type="button"
               onClick={scrollToComments}
-              className="inline-flex h-8 items-center gap-1.5 border border-border bg-background px-3 font-mono text-xs text-muted-foreground transition-colors hover:border-primary hover:text-foreground cursor-pointer"
+              className="inline-flex h-8 cursor-pointer items-center gap-1.5 border border-border bg-background px-3 font-mono text-xs text-muted-foreground transition-colors hover:border-primary hover:text-foreground"
             >
-              <HugeiconsIcon icon={Comment01Icon} className="size-3.5 text-primary" />
+              <HugeiconsIcon
+                icon={Comment01Icon}
+                className="size-3.5 text-primary"
+              />
               <span>{totalCommentsCount} Comments</span>
             </button>
 
             <button
               type="button"
               onClick={handleShareClick}
-              className="inline-flex h-8 items-center gap-1.5 border border-border bg-background px-3 font-mono text-xs text-muted-foreground transition-colors hover:border-primary hover:text-foreground cursor-pointer"
+              className="inline-flex h-8 cursor-pointer items-center gap-1.5 border border-border bg-background px-3 font-mono text-xs text-muted-foreground transition-colors hover:border-primary hover:text-foreground"
             >
               <HugeiconsIcon
                 icon={copied ? Tick02Icon : Share01Icon}
@@ -150,7 +149,7 @@ export function ArticleReactionStation({
           <button
             type="button"
             onClick={handleLikeClick}
-            className={`group relative inline-flex items-center gap-2.5 border px-4 py-2 font-mono text-xs font-bold transition-all duration-200 cursor-pointer select-none ${
+            className={`group relative inline-flex cursor-pointer items-center gap-2.5 border px-4 py-2 font-mono text-xs font-bold transition-all duration-200 select-none ${
               reactions.userLiked
                 ? "border-rose-500/60 bg-rose-500/10 text-rose-400 shadow-[0_0_20px_-3px_rgba(244,63,94,0.3)]"
                 : "border-border bg-background/80 text-foreground hover:border-rose-500/50 hover:bg-rose-500/5 hover:text-rose-400"
@@ -158,13 +157,17 @@ export function ArticleReactionStation({
           >
             <span
               className={`flex items-center transition-transform duration-300 ${
-                isLikingAnimation ? "scale-140 rotate-12" : "group-hover:scale-115"
+                isLikingAnimation
+                  ? "scale-140 rotate-12"
+                  : "group-hover:scale-115"
               }`}
             >
               <HugeiconsIcon
                 icon={FavouriteIcon}
                 className={`size-4 transition-colors ${
-                  reactions.userLiked ? "text-rose-400 fill-rose-400" : "text-muted-foreground group-hover:text-rose-400"
+                  reactions.userLiked
+                    ? "fill-rose-400 text-rose-400"
+                    : "text-muted-foreground group-hover:text-rose-400"
                 }`}
               />
             </span>
@@ -182,7 +185,7 @@ export function ArticleReactionStation({
             </span>
           </button>
 
-          <div className="h-6 w-px bg-border/80 hidden sm:block" />
+          <div className="hidden h-6 w-px bg-border/80 sm:block" />
 
           {/* Reaction Chips */}
           <div className="flex flex-wrap items-center gap-2">
@@ -191,13 +194,16 @@ export function ArticleReactionStation({
                 key={btn.key}
                 type="button"
                 onClick={() => toggleReaction(btn.key)}
-                className={`inline-flex items-center gap-1.5 border px-3 py-1.5 font-mono text-xs transition-all duration-150 cursor-pointer ${
+                className={`inline-flex cursor-pointer items-center gap-1.5 border px-3 py-1.5 font-mono text-xs transition-all duration-150 ${
                   btn.active
                     ? "border-primary/70 bg-primary/15 text-primary shadow-[0_0_12px_-2px_oklch(var(--primary)/30%)]"
-                    : "border-border bg-background/60 text-muted-foreground hover:border-primary/40 hover:text-foreground hover:bg-primary/5"
+                    : "border-border bg-background/60 text-muted-foreground hover:border-primary/40 hover:bg-primary/5 hover:text-foreground"
                 }`}
               >
-                <HugeiconsIcon icon={btn.icon} className={`size-3.5 ${btn.active ? "text-primary" : btn.iconColor}`} />
+                <HugeiconsIcon
+                  icon={btn.icon}
+                  className={`size-3.5 ${btn.active ? "text-primary" : btn.iconColor}`}
+                />
                 <span className="text-[11px]">{btn.label}</span>
                 <span className="font-mono text-[10px] opacity-70">
                   {btn.count}

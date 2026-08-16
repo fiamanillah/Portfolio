@@ -99,7 +99,8 @@ export default function SubscribersPage() {
   const [isExporting, setIsExporting] = React.useState(false)
 
   // Selected item for dialogs
-  const [selectedSubscriber, setSelectedSubscriber] = React.useState<SubscriberItem | null>(null)
+  const [selectedSubscriber, setSelectedSubscriber] =
+    React.useState<SubscriberItem | null>(null)
   const [bulkSelectedIds, setBulkSelectedIds] = React.useState<string[]>([])
 
   // Form states
@@ -150,7 +151,8 @@ export default function SubscribersPage() {
         }
       } else {
         toast.error("Failed to load subscribers", {
-          description: res.error || "Please ensure the backend API is connected.",
+          description:
+            res.error || "Please ensure the backend API is connected.",
         })
       }
     } catch (err: any) {
@@ -233,7 +235,9 @@ export default function SubscribersPage() {
   const handleAddSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!addForm.email || !addForm.email.includes("@")) {
-      toast.error("Invalid Email", { description: "Please provide a valid email address." })
+      toast.error("Invalid Email", {
+        description: "Please provide a valid email address.",
+      })
       return
     }
 
@@ -401,7 +405,15 @@ export default function SubscribersPage() {
           return
         }
 
-        const headers = ["ID", "Email", "Name", "Status", "Source", "Subscribed At", "Updated At"]
+        const headers = [
+          "ID",
+          "Email",
+          "Name",
+          "Status",
+          "Source",
+          "Subscribed At",
+          "Updated At",
+        ]
         const csvContent = [
           headers.join(","),
           ...rows.map((r) =>
@@ -461,12 +473,16 @@ export default function SubscribersPage() {
             <h1 className="text-2xl font-bold tracking-tight md:text-3xl">
               Subscribers Management
             </h1>
-            <Badge variant="outline" className="font-mono text-xs text-primary border-primary/30">
+            <Badge
+              variant="outline"
+              className="border-primary/30 font-mono text-xs text-primary"
+            >
               Audience Control
             </Badge>
           </div>
-          <p className="text-sm text-muted-foreground mt-1">
-            Real-time subscriber audience directory, Plunk sync metrics, double opt-in tracking, and batch controls.
+          <p className="mt-1 text-sm text-muted-foreground">
+            Real-time subscriber audience directory, Plunk sync metrics, double
+            opt-in tracking, and batch controls.
           </p>
         </div>
 
@@ -496,8 +512,8 @@ export default function SubscribersPage() {
       {/* KPI Overview Cards */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {/* Card 1: Total Subscribers */}
-        <Card className="border-border/80 bg-card/60 relative overflow-hidden">
-          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+        <Card className="relative overflow-hidden border-border/80 bg-card/60">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
               Total Subscribers
             </CardTitle>
@@ -506,8 +522,10 @@ export default function SubscribersPage() {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.total.toLocaleString()}</div>
-            <div className="flex items-center gap-1 text-xs text-emerald-600 dark:text-emerald-400 mt-1">
+            <div className="text-2xl font-bold">
+              {stats.total.toLocaleString()}
+            </div>
+            <div className="mt-1 flex items-center gap-1 text-xs text-emerald-600 dark:text-emerald-400">
               <TrendingUp className="size-3" />
               <span>+{stats.recentSubscribers7d} this week</span>
             </div>
@@ -516,7 +534,7 @@ export default function SubscribersPage() {
 
         {/* Card 2: Active & Confirmed */}
         <Card className="border-border/80 bg-card/60">
-          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
               Active & Subscribed
             </CardTitle>
@@ -528,7 +546,7 @@ export default function SubscribersPage() {
             <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
               {stats.subscribed.toLocaleString()}
             </div>
-            <p className="text-xs text-muted-foreground mt-1">
+            <p className="mt-1 text-xs text-muted-foreground">
               {stats.confirmationRate}% confirmation rate
             </p>
           </CardContent>
@@ -536,7 +554,7 @@ export default function SubscribersPage() {
 
         {/* Card 3: Pending Double Opt-in */}
         <Card className="border-border/80 bg-card/60">
-          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
               Pending Confirmation
             </CardTitle>
@@ -548,7 +566,7 @@ export default function SubscribersPage() {
             <div className="text-2xl font-bold text-amber-600 dark:text-amber-400">
               {stats.pending.toLocaleString()}
             </div>
-            <p className="text-xs text-muted-foreground mt-1">
+            <p className="mt-1 text-xs text-muted-foreground">
               Awaiting double opt-in click
             </p>
           </CardContent>
@@ -556,7 +574,7 @@ export default function SubscribersPage() {
 
         {/* Card 4: Unsubscribed */}
         <Card className="border-border/80 bg-card/60">
-          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
               Unsubscribed
             </CardTitle>
@@ -568,8 +586,11 @@ export default function SubscribersPage() {
             <div className="text-2xl font-bold text-rose-600 dark:text-rose-400">
               {stats.unsubscribed.toLocaleString()}
             </div>
-            <p className="text-xs text-muted-foreground mt-1">
-              {stats.total > 0 ? ((stats.unsubscribed / stats.total) * 100).toFixed(1) : 0}% churn rate
+            <p className="mt-1 text-xs text-muted-foreground">
+              {stats.total > 0
+                ? ((stats.unsubscribed / stats.total) * 100).toFixed(1)
+                : 0}
+              % churn rate
             </p>
           </CardContent>
         </Card>
@@ -584,7 +605,8 @@ export default function SubscribersPage() {
                 Audience Directory
               </CardTitle>
               <CardDescription className="text-xs">
-                Search, filter, inspect and manage subscribers synchronized with Plunk contacts.
+                Search, filter, inspect and manage subscribers synchronized with
+                Plunk contacts.
               </CardDescription>
             </div>
           </div>
@@ -620,12 +642,13 @@ export default function SubscribersPage() {
         <DialogContent className="sm:max-w-md">
           <form onSubmit={handleAddSubmit}>
             <DialogHeader>
-              <DialogTitle className="text-base flex items-center gap-2">
+              <DialogTitle className="flex items-center gap-2 text-base">
                 <UserPlus className="size-4 text-primary" />
                 <span>Add New Subscriber</span>
               </DialogTitle>
               <DialogDescription className="text-xs">
-                Manually register a subscriber into your audience database and sync with Plunk.
+                Manually register a subscriber into your audience database and
+                sync with Plunk.
               </DialogDescription>
             </DialogHeader>
 
@@ -639,9 +662,11 @@ export default function SubscribersPage() {
                   type="email"
                   placeholder="subscriber@example.com"
                   value={addForm.email}
-                  onChange={(e) => setAddForm({ ...addForm, email: e.target.value })}
+                  onChange={(e) =>
+                    setAddForm({ ...addForm, email: e.target.value })
+                  }
                   required
-                  className="text-xs h-9"
+                  className="h-9 text-xs"
                 />
               </div>
 
@@ -654,8 +679,10 @@ export default function SubscribersPage() {
                   type="text"
                   placeholder="Jane Doe"
                   value={addForm.name || ""}
-                  onChange={(e) => setAddForm({ ...addForm, name: e.target.value })}
-                  className="text-xs h-9"
+                  onChange={(e) =>
+                    setAddForm({ ...addForm, name: e.target.value })
+                  }
+                  className="h-9 text-xs"
                 />
               </div>
 
@@ -664,9 +691,11 @@ export default function SubscribersPage() {
                   <Label className="text-xs">Subscription Status</Label>
                   <Select
                     value={addForm.status}
-                    onValueChange={(val: any) => setAddForm({ ...addForm, status: val })}
+                    onValueChange={(val: any) =>
+                      setAddForm({ ...addForm, status: val })
+                    }
                   >
-                    <SelectTrigger className="text-xs h-9 w-full">
+                    <SelectTrigger className="h-9 w-full text-xs">
                       <SelectValue placeholder="Select status" />
                     </SelectTrigger>
                     <SelectContent>
@@ -687,14 +716,20 @@ export default function SubscribersPage() {
                   <Label className="text-xs">Acquisition Channel</Label>
                   <Select
                     value={addForm.source || "admin_portal"}
-                    onValueChange={(val) => setAddForm({ ...addForm, source: val })}
+                    onValueChange={(val) =>
+                      setAddForm({ ...addForm, source: val })
+                    }
                   >
-                    <SelectTrigger className="text-xs h-9 w-full">
+                    <SelectTrigger className="h-9 w-full text-xs">
                       <SelectValue placeholder="Select channel" />
                     </SelectTrigger>
                     <SelectContent>
                       {DEFAULT_SOURCES.map((src) => (
-                        <SelectItem key={src} value={src} className="text-xs capitalize">
+                        <SelectItem
+                          key={src}
+                          value={src}
+                          className="text-xs capitalize"
+                        >
                           {src.replace(/_/g, " ")}
                         </SelectItem>
                       ))}
@@ -713,14 +748,14 @@ export default function SubscribersPage() {
                 />
                 <Label
                   htmlFor="send-welcome"
-                  className="text-xs font-normal text-muted-foreground cursor-pointer"
+                  className="cursor-pointer text-xs font-normal text-muted-foreground"
                 >
                   Send welcome email with unsubscribe link immediately
                 </Label>
               </div>
             </div>
 
-            <DialogFooter className="gap-2 sm:gap-0 pt-2">
+            <DialogFooter className="gap-2 pt-2 sm:gap-0">
               <Button
                 type="button"
                 variant="outline"
@@ -743,13 +778,16 @@ export default function SubscribersPage() {
         <DialogContent className="sm:max-w-md">
           <form onSubmit={handleEditSubmit}>
             <DialogHeader>
-              <DialogTitle className="text-base flex items-center gap-2">
+              <DialogTitle className="flex items-center gap-2 text-base">
                 <UserCheck className="size-4 text-primary" />
                 <span>Edit Subscriber Profile</span>
               </DialogTitle>
               <DialogDescription className="text-xs">
                 Update metadata for subscriber{" "}
-                <span className="font-semibold text-foreground">{selectedSubscriber?.email}</span>.
+                <span className="font-semibold text-foreground">
+                  {selectedSubscriber?.email}
+                </span>
+                .
               </DialogDescription>
             </DialogHeader>
 
@@ -763,8 +801,10 @@ export default function SubscribersPage() {
                   type="text"
                   placeholder="Jane Doe"
                   value={editForm.name || ""}
-                  onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
-                  className="text-xs h-9"
+                  onChange={(e) =>
+                    setEditForm({ ...editForm, name: e.target.value })
+                  }
+                  className="h-9 text-xs"
                 />
               </div>
 
@@ -773,9 +813,11 @@ export default function SubscribersPage() {
                   <Label className="text-xs">Status</Label>
                   <Select
                     value={editForm.status || "subscribed"}
-                    onValueChange={(val: any) => setEditForm({ ...editForm, status: val })}
+                    onValueChange={(val: any) =>
+                      setEditForm({ ...editForm, status: val })
+                    }
                   >
-                    <SelectTrigger className="text-xs h-9 w-full">
+                    <SelectTrigger className="h-9 w-full text-xs">
                       <SelectValue placeholder="Select status" />
                     </SelectTrigger>
                     <SelectContent>
@@ -796,14 +838,20 @@ export default function SubscribersPage() {
                   <Label className="text-xs">Source</Label>
                   <Select
                     value={editForm.source || "admin_portal"}
-                    onValueChange={(val) => setEditForm({ ...editForm, source: val })}
+                    onValueChange={(val) =>
+                      setEditForm({ ...editForm, source: val })
+                    }
                   >
-                    <SelectTrigger className="text-xs h-9 w-full">
+                    <SelectTrigger className="h-9 w-full text-xs">
                       <SelectValue placeholder="Select source" />
                     </SelectTrigger>
                     <SelectContent>
                       {DEFAULT_SOURCES.map((src) => (
-                        <SelectItem key={src} value={src} className="text-xs capitalize">
+                        <SelectItem
+                          key={src}
+                          value={src}
+                          className="text-xs capitalize"
+                        >
                           {src.replace(/_/g, " ")}
                         </SelectItem>
                       ))}
@@ -813,7 +861,7 @@ export default function SubscribersPage() {
               </div>
             </div>
 
-            <DialogFooter className="gap-2 sm:gap-0 pt-2">
+            <DialogFooter className="gap-2 pt-2 sm:gap-0">
               <Button
                 type="button"
                 variant="outline"
@@ -835,7 +883,7 @@ export default function SubscribersPage() {
       <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
-            <DialogTitle className="text-base flex items-center gap-2">
+            <DialogTitle className="flex items-center gap-2 text-base">
               <Mail className="size-4 text-primary" />
               <span>Subscriber Overview & Audit</span>
             </DialogTitle>
@@ -847,13 +895,13 @@ export default function SubscribersPage() {
           {selectedSubscriber && (
             <div className="space-y-4 py-2 text-xs">
               {/* Profile Card */}
-              <div className="rounded-xl border border-border/80 bg-muted/40 p-4 space-y-3">
+              <div className="space-y-3 rounded-xl border border-border/80 bg-muted/40 p-4">
                 <div className="flex items-center justify-between">
                   <div className="grid">
-                    <span className="font-semibold text-sm text-foreground">
+                    <span className="text-sm font-semibold text-foreground">
                       {selectedSubscriber.name || "Anonymous Subscriber"}
                     </span>
-                    <span className="font-mono text-muted-foreground mt-0.5">
+                    <span className="mt-0.5 font-mono text-muted-foreground">
                       {selectedSubscriber.email}
                     </span>
                   </div>
@@ -862,51 +910,63 @@ export default function SubscribersPage() {
                       selectedSubscriber.status === "subscribed"
                         ? "default"
                         : selectedSubscriber.status === "pending"
-                        ? "secondary"
-                        : "outline"
+                          ? "secondary"
+                          : "outline"
                     }
-                    className="capitalize font-mono text-[10px]"
+                    className="font-mono text-[10px] capitalize"
                   >
                     {selectedSubscriber.status}
                   </Badge>
                 </div>
 
-                <div className="grid grid-cols-2 gap-2 pt-2 border-t border-border/60 text-muted-foreground">
+                <div className="grid grid-cols-2 gap-2 border-t border-border/60 pt-2 text-muted-foreground">
                   <div>
-                    <span className="text-[10px] uppercase font-semibold text-foreground/70">
+                    <span className="text-[10px] font-semibold text-foreground/70 uppercase">
                       Subscriber ID
                     </span>
-                    <p className="font-mono text-[11px] truncate">{selectedSubscriber.id}</p>
+                    <p className="truncate font-mono text-[11px]">
+                      {selectedSubscriber.id}
+                    </p>
                   </div>
                   <div>
-                    <span className="text-[10px] uppercase font-semibold text-foreground/70">
+                    <span className="text-[10px] font-semibold text-foreground/70 uppercase">
                       Acquisition Channel
                     </span>
-                    <p className="capitalize">{selectedSubscriber.source.replace(/_/g, " ")}</p>
+                    <p className="capitalize">
+                      {selectedSubscriber.source.replace(/_/g, " ")}
+                    </p>
                   </div>
                   <div>
-                    <span className="text-[10px] uppercase font-semibold text-foreground/70">
+                    <span className="text-[10px] font-semibold text-foreground/70 uppercase">
                       Subscribed On
                     </span>
-                    <p>{new Date(selectedSubscriber.subscribedAt).toLocaleString()}</p>
+                    <p>
+                      {new Date(
+                        selectedSubscriber.subscribedAt
+                      ).toLocaleString()}
+                    </p>
                   </div>
                   <div>
-                    <span className="text-[10px] uppercase font-semibold text-foreground/70">
+                    <span className="text-[10px] font-semibold text-foreground/70 uppercase">
                       Last Updated
                     </span>
-                    <p>{new Date(selectedSubscriber.updatedAt).toLocaleString()}</p>
+                    <p>
+                      {new Date(selectedSubscriber.updatedAt).toLocaleString()}
+                    </p>
                   </div>
                 </div>
               </div>
 
               {/* Sync Integration Status */}
-              <div className="rounded-xl border border-border/80 p-3 space-y-1.5">
+              <div className="space-y-1.5 rounded-xl border border-border/80 p-3">
                 <div className="flex items-center gap-1.5 font-medium text-foreground">
                   <Sparkles className="size-3.5 text-primary" />
                   <span>Plunk Contacts Sync</span>
                 </div>
                 <p className="text-[11px] text-muted-foreground">
-                  State is synchronized bidirectionally with Plunk Contacts API. Unsubscribe tokens are cryptographically signed using HMAC-SHA256.
+                  State is synchronized bidirectionally with Plunk Contacts API.
+                  Unsubscribe tokens are cryptographically signed using
+                  HMAC-SHA256.
                 </p>
               </div>
             </div>
@@ -929,18 +989,21 @@ export default function SubscribersPage() {
       <Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle className="text-base flex items-center gap-2 text-destructive">
+            <DialogTitle className="flex items-center gap-2 text-base text-destructive">
               <Trash2 className="size-4" />
               <span>Confirm Subscriber Deletion</span>
             </DialogTitle>
             <DialogDescription className="text-xs">
               Are you sure you want to delete subscriber{" "}
-              <span className="font-semibold text-foreground">{selectedSubscriber?.email}</span>?
-              This will remove them from the audience and sync unsubscribe with Plunk.
+              <span className="font-semibold text-foreground">
+                {selectedSubscriber?.email}
+              </span>
+              ? This will remove them from the audience and sync unsubscribe
+              with Plunk.
             </DialogDescription>
           </DialogHeader>
 
-          <DialogFooter className="gap-2 sm:gap-0 pt-2">
+          <DialogFooter className="gap-2 pt-2 sm:gap-0">
             <Button
               type="button"
               variant="outline"
@@ -967,7 +1030,7 @@ export default function SubscribersPage() {
       <Dialog open={isBulkDeleteOpen} onOpenChange={setIsBulkDeleteOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle className="text-base flex items-center gap-2 text-destructive">
+            <DialogTitle className="flex items-center gap-2 text-base text-destructive">
               <Trash2 className="size-4" />
               <span>Bulk Delete {bulkSelectedIds.length} Subscribers</span>
             </DialogTitle>
@@ -980,7 +1043,7 @@ export default function SubscribersPage() {
             </DialogDescription>
           </DialogHeader>
 
-          <DialogFooter className="gap-2 sm:gap-0 pt-2">
+          <DialogFooter className="gap-2 pt-2 sm:gap-0">
             <Button
               type="button"
               variant="outline"
@@ -997,7 +1060,9 @@ export default function SubscribersPage() {
               onClick={handleBulkDeleteConfirm}
               disabled={isProcessing}
             >
-              {isProcessing ? "Deleting..." : `Delete ${bulkSelectedIds.length} Records`}
+              {isProcessing
+                ? "Deleting..."
+                : `Delete ${bulkSelectedIds.length} Records`}
             </Button>
           </DialogFooter>
         </DialogContent>

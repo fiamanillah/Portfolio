@@ -106,24 +106,28 @@ export default function DashboardOverviewPage() {
             <h1 className="text-2xl font-bold tracking-tight md:text-3xl">
               System Overview
             </h1>
-            <Badge variant="secondary" className="font-mono text-xs text-primary">
+            <Badge
+              variant="secondary"
+              className="font-mono text-xs text-primary"
+            >
               Live Feed
             </Badge>
           </div>
-          <p className="text-sm text-muted-foreground mt-1">
-            Welcome back! Here is a summary of your portfolio traffic, subscribers, and content activity.
+          <p className="mt-1 text-sm text-muted-foreground">
+            Welcome back! Here is a summary of your portfolio traffic,
+            subscribers, and content activity.
           </p>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="outline" size="sm" asChild>
             <Link href="/settings">
-              <Sparkles className="size-4 mr-1 text-primary" />
+              <Sparkles className="mr-1 size-4 text-primary" />
               Configure System
             </Link>
           </Button>
           <Button size="sm" asChild>
             <Link href="/subscribers">
-              <Mail className="size-4 mr-1" />
+              <Mail className="mr-1 size-4" />
               Manage Audience
             </Link>
           </Button>
@@ -133,8 +137,11 @@ export default function DashboardOverviewPage() {
       {/* KPI Cards Grid */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {stats.map((stat) => (
-          <Card key={stat.title} className="relative overflow-hidden border-border/80 bg-card/60 backdrop-blur-xs">
-            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+          <Card
+            key={stat.title}
+            className="relative overflow-hidden border-border/80 bg-card/60 backdrop-blur-xs"
+          >
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
                 {stat.title}
               </CardTitle>
@@ -143,10 +150,12 @@ export default function DashboardOverviewPage() {
               </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold tracking-tight">{stat.value}</div>
-              <div className="flex items-center gap-1.5 mt-1 text-xs text-muted-foreground">
-                <span className="flex items-center text-primary font-medium">
-                  <TrendingUp className="size-3 mr-0.5" />
+              <div className="text-2xl font-bold tracking-tight">
+                {stat.value}
+              </div>
+              <div className="mt-1 flex items-center gap-1.5 text-xs text-muted-foreground">
+                <span className="flex items-center font-medium text-primary">
+                  <TrendingUp className="mr-0.5 size-3" />
                   {stat.change}
                 </span>
                 <span>{stat.description}</span>
@@ -159,7 +168,7 @@ export default function DashboardOverviewPage() {
       {/* Main Grid: Recent Activity & Quick Actions */}
       <div className="grid gap-6 lg:grid-cols-7">
         {/* Recent Subscribers Table */}
-        <Card className="lg:col-span-4 border-border/80">
+        <Card className="border-border/80 lg:col-span-4">
           <CardHeader className="flex flex-row items-center justify-between">
             <div>
               <CardTitle className="text-base font-semibold">
@@ -189,7 +198,7 @@ export default function DashboardOverviewPage() {
               <TableBody>
                 {recentSubscribers.map((sub) => (
                   <TableRow key={sub.id}>
-                    <TableCell className="pl-6 font-medium font-mono text-xs">
+                    <TableCell className="pl-6 font-mono text-xs font-medium">
                       {sub.email}
                     </TableCell>
                     <TableCell>
@@ -199,13 +208,16 @@ export default function DashboardOverviewPage() {
                           Active
                         </Badge>
                       ) : (
-                        <Badge variant="secondary" className="gap-1 text-[10px]">
+                        <Badge
+                          variant="secondary"
+                          className="gap-1 text-[10px]"
+                        >
                           <Clock className="size-2.5" />
                           Pending
                         </Badge>
                       )}
                     </TableCell>
-                    <TableCell className="hidden sm:table-cell text-xs text-muted-foreground">
+                    <TableCell className="hidden text-xs text-muted-foreground sm:table-cell">
                       {sub.source}
                     </TableCell>
                     <TableCell className="pr-6 text-right text-xs text-muted-foreground">
@@ -222,36 +234,62 @@ export default function DashboardOverviewPage() {
         <div className="space-y-6 lg:col-span-3">
           <Card className="border-border/80">
             <CardHeader>
-              <CardTitle className="text-base font-semibold">Quick Actions</CardTitle>
+              <CardTitle className="text-base font-semibold">
+                Quick Actions
+              </CardTitle>
               <CardDescription>
                 Common administrative management tasks.
               </CardDescription>
             </CardHeader>
             <CardContent className="grid gap-2">
-              <Button variant="outline" className="justify-start gap-2 h-11" asChild>
+              <Button
+                variant="outline"
+                className="h-11 justify-start gap-2"
+                asChild
+              >
                 <Link href="/templates">
                   <FileCode2 className="size-4 text-primary" />
                   <div className="flex flex-col items-start text-xs">
-                    <span className="font-semibold text-foreground">Create Email Template</span>
-                    <span className="text-muted-foreground">Design a new transactional template</span>
+                    <span className="font-semibold text-foreground">
+                      Create Email Template
+                    </span>
+                    <span className="text-muted-foreground">
+                      Design a new transactional template
+                    </span>
                   </div>
                 </Link>
               </Button>
-              <Button variant="outline" className="justify-start gap-2 h-11" asChild>
+              <Button
+                variant="outline"
+                className="h-11 justify-start gap-2"
+                asChild
+              >
                 <Link href="/comments">
                   <MessageSquareQuote className="size-4 text-primary" />
                   <div className="flex flex-col items-start text-xs">
-                    <span className="font-semibold text-foreground">Review Pending Comments</span>
-                    <span className="text-muted-foreground">Moderate 3 discussion comments</span>
+                    <span className="font-semibold text-foreground">
+                      Review Pending Comments
+                    </span>
+                    <span className="text-muted-foreground">
+                      Moderate 3 discussion comments
+                    </span>
                   </div>
                 </Link>
               </Button>
-              <Button variant="outline" className="justify-start gap-2 h-11" asChild>
+              <Button
+                variant="outline"
+                className="h-11 justify-start gap-2"
+                asChild
+              >
                 <Link href="/settings">
                   <Activity className="size-4 text-primary" />
                   <div className="flex flex-col items-start text-xs">
-                    <span className="font-semibold text-foreground">System Diagnostics</span>
-                    <span className="text-muted-foreground">Inspect API connection and database status</span>
+                    <span className="font-semibold text-foreground">
+                      System Diagnostics
+                    </span>
+                    <span className="text-muted-foreground">
+                      Inspect API connection and database status
+                    </span>
                   </div>
                 </Link>
               </Button>

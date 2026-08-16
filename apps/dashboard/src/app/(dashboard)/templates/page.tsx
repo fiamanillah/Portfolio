@@ -78,7 +78,8 @@ export default function TemplatesPage() {
   const [searchQuery, setSearchQuery] = React.useState("")
   const [typeFilter, setTypeFilter] = React.useState<string>("ALL")
   const [sourceFilter, setSourceFilter] = React.useState<TemplateSource>("ALL")
-  const [syncStatusFilter, setSyncStatusFilter] = React.useState<TemplateSyncStatus>("ALL")
+  const [syncStatusFilter, setSyncStatusFilter] =
+    React.useState<TemplateSyncStatus>("ALL")
   const [viewMode, setViewMode] = React.useState<"grid" | "table">("grid")
 
   // Pagination
@@ -94,7 +95,8 @@ export default function TemplatesPage() {
   const [isSyncAllOpen, setIsSyncAllOpen] = React.useState(false)
   const [isDeleteOpen, setIsDeleteOpen] = React.useState(false)
 
-  const [activeTemplate, setActiveTemplate] = React.useState<EmailTemplate | null>(null)
+  const [activeTemplate, setActiveTemplate] =
+    React.useState<EmailTemplate | null>(null)
   const [isProcessing, setIsProcessing] = React.useState(false)
   const [isSyncingAll, setIsSyncingAll] = React.useState(false)
   const [syncReport, setSyncReport] = React.useState<SyncReport | null>(null)
@@ -119,7 +121,8 @@ export default function TemplatesPage() {
         page: currentPage,
         limit: pageSize,
         search: searchQuery.trim() || undefined,
-        type: typeFilter !== "ALL" ? (typeFilter as EmailTemplateType) : undefined,
+        type:
+          typeFilter !== "ALL" ? (typeFilter as EmailTemplateType) : undefined,
         source: sourceFilter !== "ALL" ? sourceFilter : undefined,
         syncStatus: syncStatusFilter !== "ALL" ? syncStatusFilter : undefined,
       })
@@ -139,7 +142,14 @@ export default function TemplatesPage() {
     } finally {
       setIsLoading(false)
     }
-  }, [currentPage, pageSize, searchQuery, typeFilter, sourceFilter, syncStatusFilter])
+  }, [
+    currentPage,
+    pageSize,
+    searchQuery,
+    typeFilter,
+    sourceFilter,
+    syncStatusFilter,
+  ])
 
   // Initial load
   React.useEffect(() => {
@@ -216,7 +226,8 @@ export default function TemplatesPage() {
   const handleDuplicate = async (tpl: EmailTemplate) => {
     toast.promise(
       TemplateApi.duplicate(tpl.id).then((res) => {
-        if (!res.success) throw new Error(res.error || "Failed to duplicate template")
+        if (!res.success)
+          throw new Error(res.error || "Failed to duplicate template")
         fetchTemplates()
         fetchStats()
         return res.data
@@ -232,14 +243,16 @@ export default function TemplatesPage() {
   const handleResetDefault = async (tpl: EmailTemplate) => {
     toast.promise(
       TemplateApi.resetToDefault(tpl.slug || tpl.id).then((res) => {
-        if (!res.success) throw new Error(res.error || "Failed to reset template")
+        if (!res.success)
+          throw new Error(res.error || "Failed to reset template")
         fetchTemplates()
         fetchStats()
         return res.data
       }),
       {
         loading: `Resetting "${tpl.name}" to codebase default...`,
-        success: (data) => `Template "${data?.name}" restored to codebase default!`,
+        success: (data) =>
+          `Template "${data?.name}" restored to codebase default!`,
         error: (err) => err?.message || "Failed to reset template",
       }
     )
@@ -248,7 +261,8 @@ export default function TemplatesPage() {
   const handleSyncSingle = async (tpl: EmailTemplate) => {
     toast.promise(
       TemplateApi.syncSingle(tpl.id).then((res) => {
-        if (!res.success) throw new Error(res.error || "Failed to sync template with Plunk")
+        if (!res.success)
+          throw new Error(res.error || "Failed to sync template with Plunk")
         fetchTemplates()
         fetchStats()
         return res.data
@@ -267,7 +281,9 @@ export default function TemplatesPage() {
       const res = await TemplateApi.syncAll()
       if (res.success && res.data) {
         setSyncReport(res.data)
-        toast.success(`Plunk sync completed! ${res.data.synced}/${res.data.total} synced.`)
+        toast.success(
+          `Plunk sync completed! ${res.data.synced}/${res.data.total} synced.`
+        )
         fetchTemplates()
         fetchStats()
       } else {
@@ -283,10 +299,12 @@ export default function TemplatesPage() {
   const handleBulkSync = async (selected: EmailTemplate[]) => {
     if (selected.length === 0) return
     toast.promise(
-      Promise.all(selected.map((t) => TemplateApi.syncSingle(t.id))).then(() => {
-        fetchTemplates()
-        fetchStats()
-      }),
+      Promise.all(selected.map((t) => TemplateApi.syncSingle(t.id))).then(
+        () => {
+          fetchTemplates()
+          fetchStats()
+        }
+      ),
       {
         loading: `Synchronizing ${selected.length} template(s) to Plunk...`,
         success: `Successfully synced ${selected.length} template(s) to Plunk!`,
@@ -374,23 +392,25 @@ export default function TemplatesPage() {
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold tracking-tight md:text-3xl text-foreground">
+            <h1 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">
               Template Engine & Plunk Sync
             </h1>
             <Badge
               variant="outline"
-              className="border-emerald-500/30 bg-emerald-500/10 text-emerald-400 text-xs gap-1 hidden sm:inline-flex"
+              className="hidden gap-1 border-emerald-500/30 bg-emerald-500/10 text-xs text-emerald-400 sm:inline-flex"
             >
               <CheckCircle2 className="size-3" />
               Live Sync Active
             </Badge>
           </div>
-          <p className="text-sm text-muted-foreground mt-1">
-            Build, preview, test, and synchronize transactional and marketing email templates seamlessly between your codebase, database, and Plunk API.
+          <p className="mt-1 text-sm text-muted-foreground">
+            Build, preview, test, and synchronize transactional and marketing
+            email templates seamlessly between your codebase, database, and
+            Plunk API.
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5 flex-wrap">
+        <div className="flex flex-wrap items-center gap-2.5">
           <Button
             variant="outline"
             size="sm"
@@ -399,10 +419,12 @@ export default function TemplatesPage() {
               fetchStats()
               toast.info("Refreshed templates & statistics")
             }}
-            className="h-9 gap-1.5 text-xs bg-background/80"
+            className="h-9 gap-1.5 bg-background/80 text-xs"
             disabled={isLoading}
           >
-            <RefreshCw className={`size-3.5 ${isLoading ? "animate-spin" : ""}`} />
+            <RefreshCw
+              className={`size-3.5 ${isLoading ? "animate-spin" : ""}`}
+            />
             Refresh
           </Button>
 
@@ -410,7 +432,7 @@ export default function TemplatesPage() {
             variant="outline"
             size="sm"
             onClick={() => setIsSyncAllOpen(true)}
-            className="h-9 gap-1.5 text-xs border-emerald-500/30 hover:bg-emerald-500/10 text-emerald-400 bg-background/80"
+            className="h-9 gap-1.5 border-emerald-500/30 bg-background/80 text-xs text-emerald-400 hover:bg-emerald-500/10"
           >
             <CloudUpload className="size-4" />
             Sync with Plunk
@@ -419,7 +441,7 @@ export default function TemplatesPage() {
           <Button
             size="sm"
             onClick={() => setIsCreateOpen(true)}
-            className="h-9 gap-1.5 text-xs bg-primary text-primary-foreground font-semibold shadow-sm"
+            className="h-9 gap-1.5 bg-primary text-xs font-semibold text-primary-foreground shadow-sm"
           >
             <Plus className="size-4" />
             Create Template
@@ -428,11 +450,11 @@ export default function TemplatesPage() {
       </div>
 
       {/* KPI Metrics Summary Cards */}
-      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {/* Total Templates */}
-        <Card className="border-border/80 bg-card/60 backdrop-blur-sm shadow-sm">
+        <Card className="border-border/80 bg-card/60 shadow-sm backdrop-blur-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            <CardTitle className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
               Total Templates
             </CardTitle>
             <div className="flex size-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
@@ -443,7 +465,7 @@ export default function TemplatesPage() {
             <div className="text-2xl font-bold text-foreground">
               {stats.total}
             </div>
-            <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1.5">
+            <p className="mt-1 flex items-center gap-1.5 text-xs text-muted-foreground">
               <span>{stats.typesCount.TRANSACTIONAL || 0} Transactional</span>
               <span>•</span>
               <span>{stats.typesCount.MARKETING || 0} Marketing</span>
@@ -452,9 +474,9 @@ export default function TemplatesPage() {
         </Card>
 
         {/* Codebase System Templates */}
-        <Card className="border-border/80 bg-card/60 backdrop-blur-sm shadow-sm">
+        <Card className="border-border/80 bg-card/60 shadow-sm backdrop-blur-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            <CardTitle className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
               Codebase Templates
             </CardTitle>
             <div className="flex size-8 items-center justify-center rounded-lg bg-blue-500/10 text-blue-400">
@@ -465,16 +487,16 @@ export default function TemplatesPage() {
             <div className="text-2xl font-bold text-blue-400">
               {stats.systemCount}
             </div>
-            <p className="text-xs text-muted-foreground mt-1">
+            <p className="mt-1 text-xs text-muted-foreground">
               Auth OTP, Reset, Welcome & Contacts
             </p>
           </CardContent>
         </Card>
 
         {/* Custom Made Templates */}
-        <Card className="border-border/80 bg-card/60 backdrop-blur-sm shadow-sm">
+        <Card className="border-border/80 bg-card/60 shadow-sm backdrop-blur-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            <CardTitle className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
               Custom Templates
             </CardTitle>
             <div className="flex size-8 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-400">
@@ -485,16 +507,16 @@ export default function TemplatesPage() {
             <div className="text-2xl font-bold text-emerald-400">
               {stats.customCount}
             </div>
-            <p className="text-xs text-muted-foreground mt-1">
+            <p className="mt-1 text-xs text-muted-foreground">
               User-created custom email flows
             </p>
           </CardContent>
         </Card>
 
         {/* Plunk Sync Rate */}
-        <Card className="border-border/80 bg-card/60 backdrop-blur-sm shadow-sm">
+        <Card className="border-border/80 bg-card/60 shadow-sm backdrop-blur-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            <CardTitle className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
               Plunk Cloud Sync
             </CardTitle>
             <div className="flex size-8 items-center justify-center rounded-lg bg-purple-500/10 text-purple-400">
@@ -505,7 +527,7 @@ export default function TemplatesPage() {
             <div className="text-2xl font-bold text-purple-400">
               {syncRate}%
             </div>
-            <p className="text-xs text-muted-foreground mt-1">
+            <p className="mt-1 text-xs text-muted-foreground">
               {stats.plunkSyncedCount} of {stats.total} synchronized
             </p>
           </CardContent>
@@ -513,11 +535,11 @@ export default function TemplatesPage() {
       </div>
 
       {/* Filter and Search Bar with View Switcher */}
-      <div className="flex flex-col gap-3.5 p-4 rounded-xl border border-border/80 bg-card/60 backdrop-blur-sm shadow-sm">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+      <div className="flex flex-col gap-3.5 rounded-xl border border-border/80 bg-card/60 p-4 shadow-sm backdrop-blur-sm">
+        <div className="flex flex-col justify-between gap-3 md:flex-row md:items-center">
           {/* Search Input */}
-          <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3 top-2.5 size-4 text-muted-foreground" />
+          <div className="relative max-w-md flex-1">
+            <Search className="absolute top-2.5 left-3 size-4 text-muted-foreground" />
             <Input
               placeholder="Search templates by name, slug, subject, or description..."
               value={searchQuery}
@@ -525,7 +547,7 @@ export default function TemplatesPage() {
                 setSearchQuery(e.target.value)
                 setCurrentPage(1)
               }}
-              className="pl-9 h-9 text-xs bg-background/80"
+              className="h-9 bg-background/80 pl-9 text-xs"
             />
           </div>
 
@@ -555,8 +577,8 @@ export default function TemplatesPage() {
         </div>
 
         {/* Filter Dropdowns Row */}
-        <div className="flex flex-wrap items-center gap-2.5 pt-1 border-t border-border/40">
-          <div className="flex items-center gap-1.5 text-xs text-muted-foreground mr-1">
+        <div className="flex flex-wrap items-center gap-2.5 border-t border-border/40 pt-1">
+          <div className="mr-1 flex items-center gap-1.5 text-xs text-muted-foreground">
             <Filter className="size-3.5" />
             <span>Filters:</span>
           </div>
@@ -569,7 +591,7 @@ export default function TemplatesPage() {
               setCurrentPage(1)
             }}
           >
-            <SelectTrigger className="h-8 text-xs w-[140px] bg-background/80">
+            <SelectTrigger className="h-8 w-[140px] bg-background/80 text-xs">
               <SelectValue placeholder="All Types" />
             </SelectTrigger>
             <SelectContent>
@@ -596,7 +618,7 @@ export default function TemplatesPage() {
               setCurrentPage(1)
             }}
           >
-            <SelectTrigger className="h-8 text-xs w-[150px] bg-background/80">
+            <SelectTrigger className="h-8 w-[150px] bg-background/80 text-xs">
               <SelectValue placeholder="All Sources" />
             </SelectTrigger>
             <SelectContent>
@@ -620,7 +642,7 @@ export default function TemplatesPage() {
               setCurrentPage(1)
             }}
           >
-            <SelectTrigger className="h-8 text-xs w-[140px] bg-background/80">
+            <SelectTrigger className="h-8 w-[140px] bg-background/80 text-xs">
               <SelectValue placeholder="Sync Status" />
             </SelectTrigger>
             <SelectContent>
@@ -641,7 +663,7 @@ export default function TemplatesPage() {
               variant="ghost"
               size="sm"
               onClick={resetFilters}
-              className="h-8 text-xs text-muted-foreground hover:text-foreground ml-auto"
+              className="ml-auto h-8 text-xs text-muted-foreground hover:text-foreground"
             >
               Reset Filters
             </Button>
@@ -657,7 +679,7 @@ export default function TemplatesPage() {
               {Array.from({ length: 6 }).map((_, i) => (
                 <Card
                   key={`skeleton-card-${i}`}
-                  className="h-64 animate-pulse bg-card/40 border-border/60"
+                  className="h-64 animate-pulse border-border/60 bg-card/40"
                 />
               ))}
             </div>
@@ -678,7 +700,7 @@ export default function TemplatesPage() {
               ))}
             </div>
           ) : (
-            <Card className="p-12 text-center border-border/80 bg-card/40">
+            <Card className="border-border/80 bg-card/40 p-12 text-center">
               <div className="flex flex-col items-center justify-center space-y-3">
                 <div className="flex size-12 items-center justify-center rounded-full bg-muted/60 text-muted-foreground">
                   <Layers className="size-6" />
@@ -686,15 +708,16 @@ export default function TemplatesPage() {
                 <h3 className="text-base font-semibold text-foreground">
                   No templates match your filters
                 </h3>
-                <p className="text-xs text-muted-foreground max-w-sm">
-                  Try adjusting your search query, type, or source filters, or create a new email template.
+                <p className="max-w-sm text-xs text-muted-foreground">
+                  Try adjusting your search query, type, or source filters, or
+                  create a new email template.
                 </p>
                 {hasActiveFilters && (
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={resetFilters}
-                    className="text-xs mt-2"
+                    className="mt-2 text-xs"
                   >
                     Clear all filters
                   </Button>
@@ -705,7 +728,7 @@ export default function TemplatesPage() {
 
           {/* Grid View Pagination Controls */}
           {totalCount > pageSize && (
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-xl border border-border/80 bg-card/60 backdrop-blur-sm">
+            <div className="flex flex-col items-center justify-between gap-4 rounded-xl border border-border/80 bg-card/60 p-4 backdrop-blur-sm sm:flex-row">
               <span className="text-xs text-muted-foreground">
                 Showing{" "}
                 <span className="font-semibold text-foreground">
@@ -715,7 +738,11 @@ export default function TemplatesPage() {
                 <span className="font-semibold text-foreground">
                   {Math.min(currentPage * pageSize, totalCount)}
                 </span>{" "}
-                of <span className="font-semibold text-foreground">{totalCount}</span> templates
+                of{" "}
+                <span className="font-semibold text-foreground">
+                  {totalCount}
+                </span>{" "}
+                templates
               </span>
 
               <div className="flex items-center gap-2">
@@ -728,7 +755,7 @@ export default function TemplatesPage() {
                 >
                   Previous
                 </Button>
-                <span className="text-xs font-medium px-2">
+                <span className="px-2 text-xs font-medium">
                   Page {currentPage} of {Math.ceil(totalCount / pageSize)}
                 </span>
                 <Button

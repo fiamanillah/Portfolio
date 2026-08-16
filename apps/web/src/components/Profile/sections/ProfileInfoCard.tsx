@@ -95,7 +95,8 @@ export function ProfileInfoCard({ user }: ProfileInfoCardProps) {
     e.preventDefault()
     if (!validate()) {
       toast.error("Validation Error", {
-        description: "Please resolve the highlighted form errors and try again.",
+        description:
+          "Please resolve the highlighted form errors and try again.",
       })
       return
     }
@@ -116,7 +117,8 @@ export function ProfileInfoCard({ user }: ProfileInfoCardProps) {
 
       if (res.success) {
         toast.success("Profile Updated", {
-          description: "Your personal information and public links have been saved.",
+          description:
+            "Your personal information and public links have been saved.",
         })
       } else {
         toast.error("Failed to Save Profile", {
@@ -147,16 +149,19 @@ export function ProfileInfoCard({ user }: ProfileInfoCardProps) {
             type="submit"
             size="sm"
             disabled={isSaving}
-            className="rounded-none font-mono text-xs font-bold uppercase tracking-wider bg-primary text-primary-foreground hover:bg-primary/90 transition-colors cursor-pointer h-8 px-3"
+            className="h-8 cursor-pointer rounded-none bg-primary px-3 font-mono text-xs font-bold tracking-wider text-primary-foreground uppercase transition-colors hover:bg-primary/90"
           >
             {isSaving ? (
               <>
-                <HugeiconsIcon icon={Loading03Icon} className="size-3.5 mr-1.5 animate-spin" />
+                <HugeiconsIcon
+                  icon={Loading03Icon}
+                  className="mr-1.5 size-3.5 animate-spin"
+                />
                 Saving...
               </>
             ) : (
               <>
-                <HugeiconsIcon icon={Tick02Icon} className="size-3.5 mr-1.5" />
+                <HugeiconsIcon icon={Tick02Icon} className="mr-1.5 size-3.5" />
                 Save Changes
               </>
             )}
@@ -167,7 +172,10 @@ export function ProfileInfoCard({ user }: ProfileInfoCardProps) {
           <FieldGroup className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             {/* Full Name */}
             <Field data-invalid={!!errors.name}>
-              <FieldLabel htmlFor="info-name" className="font-mono text-xs font-semibold">
+              <FieldLabel
+                htmlFor="info-name"
+                className="font-mono text-xs font-semibold"
+              >
                 Full Name <span className="text-destructive">*</span>
               </FieldLabel>
               <Input
@@ -178,7 +186,7 @@ export function ProfileInfoCard({ user }: ProfileInfoCardProps) {
                   setName(e.target.value)
                   if (errors.name) setErrors((prev) => ({ ...prev, name: "" }))
                 }}
-                className="rounded-none font-mono text-xs border-border bg-background/50 focus:border-primary"
+                className="rounded-none border-border bg-background/50 font-mono text-xs focus:border-primary"
                 placeholder="e.g. Elena Rostova"
                 required
               />
@@ -187,11 +195,14 @@ export function ProfileInfoCard({ user }: ProfileInfoCardProps) {
 
             {/* Username */}
             <Field data-invalid={!!errors.username}>
-              <FieldLabel htmlFor="info-username" className="font-mono text-xs font-semibold">
+              <FieldLabel
+                htmlFor="info-username"
+                className="font-mono text-xs font-semibold"
+              >
                 Username Handle <span className="text-destructive">*</span>
               </FieldLabel>
               <div className="relative">
-                <span className="absolute left-2.5 top-1/2 -translate-y-1/2 font-mono text-xs text-primary">
+                <span className="absolute top-1/2 left-2.5 -translate-y-1/2 font-mono text-xs text-primary">
                   @
                 </span>
                 <Input
@@ -199,10 +210,13 @@ export function ProfileInfoCard({ user }: ProfileInfoCardProps) {
                   type="text"
                   value={username}
                   onChange={(e) => {
-                    setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ""))
-                    if (errors.username) setErrors((prev) => ({ ...prev, username: "" }))
+                    setUsername(
+                      e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, "")
+                    )
+                    if (errors.username)
+                      setErrors((prev) => ({ ...prev, username: "" }))
                   }}
-                  className="rounded-none font-mono text-xs border-border bg-background/50 pl-7 focus:border-primary"
+                  className="rounded-none border-border bg-background/50 pl-7 font-mono text-xs focus:border-primary"
                   placeholder="username"
                   required
                 />
@@ -212,7 +226,10 @@ export function ProfileInfoCard({ user }: ProfileInfoCardProps) {
 
             {/* Professional Headline */}
             <Field data-invalid={!!errors.headline}>
-              <FieldLabel htmlFor="info-headline" className="font-mono text-xs font-semibold">
+              <FieldLabel
+                htmlFor="info-headline"
+                className="font-mono text-xs font-semibold"
+              >
                 Professional Title / Headline
               </FieldLabel>
               <Input
@@ -221,9 +238,10 @@ export function ProfileInfoCard({ user }: ProfileInfoCardProps) {
                 value={headline}
                 onChange={(e) => {
                   setHeadline(e.target.value)
-                  if (errors.headline) setErrors((prev) => ({ ...prev, headline: "" }))
+                  if (errors.headline)
+                    setErrors((prev) => ({ ...prev, headline: "" }))
                 }}
-                className="rounded-none font-mono text-xs border-border bg-background/50 focus:border-primary"
+                className="rounded-none border-border bg-background/50 font-mono text-xs focus:border-primary"
                 placeholder="e.g. Senior Distributed Systems Engineer"
               />
               <FieldError errors={errors.headline} />
@@ -231,13 +249,16 @@ export function ProfileInfoCard({ user }: ProfileInfoCardProps) {
 
             {/* Location */}
             <Field data-invalid={!!errors.location}>
-              <FieldLabel htmlFor="info-location" className="font-mono text-xs font-semibold">
+              <FieldLabel
+                htmlFor="info-location"
+                className="font-mono text-xs font-semibold"
+              >
                 Location & Timezone
               </FieldLabel>
               <div className="relative">
                 <HugeiconsIcon
                   icon={Location01Icon}
-                  className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground"
+                  className="absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-muted-foreground"
                 />
                 <Input
                   id="info-location"
@@ -245,9 +266,10 @@ export function ProfileInfoCard({ user }: ProfileInfoCardProps) {
                   value={location}
                   onChange={(e) => {
                     setLocation(e.target.value)
-                    if (errors.location) setErrors((prev) => ({ ...prev, location: "" }))
+                    if (errors.location)
+                      setErrors((prev) => ({ ...prev, location: "" }))
                   }}
-                  className="rounded-none font-mono text-xs border-border bg-background/50 pl-8 focus:border-primary"
+                  className="rounded-none border-border bg-background/50 pl-8 font-mono text-xs focus:border-primary"
                   placeholder="e.g. San Francisco, CA (UTC-8)"
                 />
               </div>
@@ -258,7 +280,10 @@ export function ProfileInfoCard({ user }: ProfileInfoCardProps) {
           {/* Bio Textarea */}
           <Field data-invalid={!!errors.bio}>
             <div className="flex items-center justify-between">
-              <FieldLabel htmlFor="info-bio" className="font-mono text-xs font-semibold">
+              <FieldLabel
+                htmlFor="info-bio"
+                className="font-mono text-xs font-semibold"
+              >
                 About & Technical Bio
               </FieldLabel>
               <span className="font-mono text-[10px] text-muted-foreground">
@@ -274,7 +299,7 @@ export function ProfileInfoCard({ user }: ProfileInfoCardProps) {
                 setBio(e.target.value)
                 if (errors.bio) setErrors((prev) => ({ ...prev, bio: "" }))
               }}
-              className="rounded-none font-sans text-xs border-border bg-background/50 focus:border-primary leading-relaxed resize-y min-h-[80px]"
+              className="min-h-[80px] resize-y rounded-none border-border bg-background/50 font-sans text-xs leading-relaxed focus:border-primary"
               placeholder="Share a brief overview of your background, engineering interests, or projects..."
             />
             <FieldDescription className="font-mono text-[10px]">
@@ -294,13 +319,16 @@ export function ProfileInfoCard({ user }: ProfileInfoCardProps) {
         <FieldGroup className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {/* Website / Portfolio */}
           <Field data-invalid={!!errors.website}>
-            <FieldLabel htmlFor="link-website" className="font-mono text-xs font-semibold">
+            <FieldLabel
+              htmlFor="link-website"
+              className="font-mono text-xs font-semibold"
+            >
               Website / Portfolio URL
             </FieldLabel>
             <div className="relative">
               <HugeiconsIcon
                 icon={GlobeIcon}
-                className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground"
+                className="absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-muted-foreground"
               />
               <Input
                 id="link-website"
@@ -308,9 +336,10 @@ export function ProfileInfoCard({ user }: ProfileInfoCardProps) {
                 value={website}
                 onChange={(e) => {
                   setWebsite(e.target.value)
-                  if (errors.website) setErrors((prev) => ({ ...prev, website: "" }))
+                  if (errors.website)
+                    setErrors((prev) => ({ ...prev, website: "" }))
                 }}
-                className="rounded-none font-mono text-xs border-border bg-background/50 pl-8 focus:border-primary"
+                className="rounded-none border-border bg-background/50 pl-8 font-mono text-xs focus:border-primary"
                 placeholder="https://fiamanillah.dev"
               />
             </div>
@@ -319,13 +348,16 @@ export function ProfileInfoCard({ user }: ProfileInfoCardProps) {
 
           {/* GitHub URL */}
           <Field data-invalid={!!errors.githubUrl}>
-            <FieldLabel htmlFor="link-github" className="font-mono text-xs font-semibold">
+            <FieldLabel
+              htmlFor="link-github"
+              className="font-mono text-xs font-semibold"
+            >
               GitHub Profile
             </FieldLabel>
             <div className="relative">
               <HugeiconsIcon
                 icon={GithubIcon}
-                className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground"
+                className="absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-muted-foreground"
               />
               <Input
                 id="link-github"
@@ -333,9 +365,10 @@ export function ProfileInfoCard({ user }: ProfileInfoCardProps) {
                 value={githubUrl}
                 onChange={(e) => {
                   setGithubUrl(e.target.value)
-                  if (errors.githubUrl) setErrors((prev) => ({ ...prev, githubUrl: "" }))
+                  if (errors.githubUrl)
+                    setErrors((prev) => ({ ...prev, githubUrl: "" }))
                 }}
-                className="rounded-none font-mono text-xs border-border bg-background/50 pl-8 focus:border-primary"
+                className="rounded-none border-border bg-background/50 pl-8 font-mono text-xs focus:border-primary"
                 placeholder="https://github.com/username"
               />
             </div>
@@ -344,13 +377,16 @@ export function ProfileInfoCard({ user }: ProfileInfoCardProps) {
 
           {/* Twitter / X */}
           <Field data-invalid={!!errors.twitterUrl}>
-            <FieldLabel htmlFor="link-twitter" className="font-mono text-xs font-semibold">
+            <FieldLabel
+              htmlFor="link-twitter"
+              className="font-mono text-xs font-semibold"
+            >
               X (Twitter) Profile
             </FieldLabel>
             <div className="relative">
               <HugeiconsIcon
                 icon={NewTwitterIcon}
-                className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground"
+                className="absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-muted-foreground"
               />
               <Input
                 id="link-twitter"
@@ -358,9 +394,10 @@ export function ProfileInfoCard({ user }: ProfileInfoCardProps) {
                 value={twitterUrl}
                 onChange={(e) => {
                   setTwitterUrl(e.target.value)
-                  if (errors.twitterUrl) setErrors((prev) => ({ ...prev, twitterUrl: "" }))
+                  if (errors.twitterUrl)
+                    setErrors((prev) => ({ ...prev, twitterUrl: "" }))
                 }}
-                className="rounded-none font-mono text-xs border-border bg-background/50 pl-8 focus:border-primary"
+                className="rounded-none border-border bg-background/50 pl-8 font-mono text-xs focus:border-primary"
                 placeholder="https://twitter.com/username"
               />
             </div>
@@ -369,13 +406,16 @@ export function ProfileInfoCard({ user }: ProfileInfoCardProps) {
 
           {/* LinkedIn */}
           <Field data-invalid={!!errors.linkedinUrl}>
-            <FieldLabel htmlFor="link-linkedin" className="font-mono text-xs font-semibold">
+            <FieldLabel
+              htmlFor="link-linkedin"
+              className="font-mono text-xs font-semibold"
+            >
               LinkedIn Profile
             </FieldLabel>
             <div className="relative">
               <HugeiconsIcon
                 icon={Linkedin02Icon}
-                className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground"
+                className="absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-muted-foreground"
               />
               <Input
                 id="link-linkedin"
@@ -383,9 +423,10 @@ export function ProfileInfoCard({ user }: ProfileInfoCardProps) {
                 value={linkedinUrl}
                 onChange={(e) => {
                   setLinkedinUrl(e.target.value)
-                  if (errors.linkedinUrl) setErrors((prev) => ({ ...prev, linkedinUrl: "" }))
+                  if (errors.linkedinUrl)
+                    setErrors((prev) => ({ ...prev, linkedinUrl: "" }))
                 }}
-                className="rounded-none font-mono text-xs border-border bg-background/50 pl-8 focus:border-primary"
+                className="rounded-none border-border bg-background/50 pl-8 font-mono text-xs focus:border-primary"
                 placeholder="https://linkedin.com/in/username"
               />
             </div>
@@ -402,24 +443,30 @@ export function ProfileInfoCard({ user }: ProfileInfoCardProps) {
       >
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
           {/* Email Card */}
-          <div className="border border-border/80 bg-muted/20 p-3 space-y-1">
-            <div className="flex items-center gap-1.5 text-muted-foreground font-mono text-[11px]">
-              <HugeiconsIcon icon={Mail01Icon} className="size-3.5 text-primary" />
+          <div className="space-y-1 border border-border/80 bg-muted/20 p-3">
+            <div className="flex items-center gap-1.5 font-mono text-[11px] text-muted-foreground">
+              <HugeiconsIcon
+                icon={Mail01Icon}
+                className="size-3.5 text-primary"
+              />
               <span>Registered Email</span>
             </div>
-            <p className="font-mono text-xs font-bold text-foreground truncate">
+            <p className="truncate font-mono text-xs font-bold text-foreground">
               {user.email}
             </p>
-            <span className="inline-flex items-center gap-1 font-mono text-[10px] text-emerald-500 font-semibold">
+            <span className="inline-flex items-center gap-1 font-mono text-[10px] font-semibold text-emerald-500">
               <HugeiconsIcon icon={CheckmarkCircle02Icon} className="size-3" />
               Verified & Active
             </span>
           </div>
 
           {/* Role Card */}
-          <div className="border border-border/80 bg-muted/20 p-3 space-y-1">
-            <div className="flex items-center gap-1.5 text-muted-foreground font-mono text-[11px]">
-              <HugeiconsIcon icon={Shield01Icon} className="size-3.5 text-primary" />
+          <div className="space-y-1 border border-border/80 bg-muted/20 p-3">
+            <div className="flex items-center gap-1.5 font-mono text-[11px] text-muted-foreground">
+              <HugeiconsIcon
+                icon={Shield01Icon}
+                className="size-3.5 text-primary"
+              />
               <span>Account Role</span>
             </div>
             <p className="font-mono text-xs font-bold text-primary uppercase">
@@ -431,9 +478,12 @@ export function ProfileInfoCard({ user }: ProfileInfoCardProps) {
           </div>
 
           {/* Member Since Card */}
-          <div className="border border-border/80 bg-muted/20 p-3 space-y-1">
-            <div className="flex items-center gap-1.5 text-muted-foreground font-mono text-[11px]">
-              <HugeiconsIcon icon={Calendar01Icon} className="size-3.5 text-primary" />
+          <div className="space-y-1 border border-border/80 bg-muted/20 p-3">
+            <div className="flex items-center gap-1.5 font-mono text-[11px] text-muted-foreground">
+              <HugeiconsIcon
+                icon={Calendar01Icon}
+                className="size-3.5 text-primary"
+              />
               <span>Member Since</span>
             </div>
             <p className="font-mono text-xs font-bold text-foreground">

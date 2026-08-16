@@ -21,7 +21,8 @@ interface DataTableViewOptionsProps<TData extends RowData> {
 export function DataTableViewOptions<TData extends RowData>({
   table,
 }: DataTableViewOptionsProps<TData>) {
-  const allColumns = typeof table.getAllColumns === "function" ? table.getAllColumns() : []
+  const allColumns =
+    typeof table.getAllColumns === "function" ? table.getAllColumns() : []
 
   return (
     <DropdownMenu>
@@ -36,16 +37,23 @@ export function DataTableViewOptions<TData extends RowData>({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[160px]">
-        <DropdownMenuLabel className="text-xs">Toggle columns</DropdownMenuLabel>
+        <DropdownMenuLabel className="text-xs">
+          Toggle columns
+        </DropdownMenuLabel>
         <DropdownMenuSeparator />
         {allColumns
-          .filter((column: any) => typeof column.getCanHide === "function" ? column.getCanHide() : true)
+          .filter((column: any) =>
+            typeof column.getCanHide === "function" ? column.getCanHide() : true
+          )
           .map((column: any) => {
-            const isVisible = typeof column.getIsVisible === "function" ? column.getIsVisible() : true
+            const isVisible =
+              typeof column.getIsVisible === "function"
+                ? column.getIsVisible()
+                : true
             return (
               <DropdownMenuCheckboxItem
                 key={column.id}
-                className="capitalize text-xs"
+                className="text-xs capitalize"
                 checked={isVisible}
                 onCheckedChange={(value) => column.toggleVisibility?.(!!value)}
               >

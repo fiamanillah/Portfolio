@@ -1,26 +1,28 @@
 // src/templates/emails/baseLayout.ts
 
 export interface EmailLayoutOptions {
-  badgeLabel?: string;
-  title: string;
-  subtitle?: string;
-  contentHtml: string;
-  previewText?: string;
-  unsubscribeUrl?: string;
-  manageUrl?: string;
-  showUnsubscribe?: boolean;
+  badgeLabel?: string
+  title: string
+  subtitle?: string
+  contentHtml: string
+  previewText?: string
+  unsubscribeUrl?: string
+  manageUrl?: string
+  showUnsubscribe?: boolean
 }
 
 export interface EmailLayoutResult {
-  html: string;
-  listUnsubscribeHeader: string;
+  html: string
+  listUnsubscribeHeader: string
 }
 
 /**
  * Clean, Minimalist & Modern Email Layout matching Fi Amanillah's Portfolio.
  * Refined typography, subtle borders, sleek buttons, and resilient HTML tables.
  */
-export function renderEmailLayout(options: EmailLayoutOptions): EmailLayoutResult {
+export function renderEmailLayout(
+  options: EmailLayoutOptions
+): EmailLayoutResult {
   const {
     badgeLabel,
     title,
@@ -30,12 +32,14 @@ export function renderEmailLayout(options: EmailLayoutOptions): EmailLayoutResul
     unsubscribeUrl,
     manageUrl,
     showUnsubscribe = true,
-  } = options;
+  } = options
 
-  const fontSans = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif";
-  const fontMono = "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace";
+  const fontSans =
+    "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+  const fontMono =
+    "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace"
 
-  let footerLinksHtml = "";
+  let footerLinksHtml = ""
   if (showUnsubscribe) {
     if (unsubscribeUrl) {
       footerLinksHtml = `
@@ -46,14 +50,14 @@ export function renderEmailLayout(options: EmailLayoutOptions): EmailLayoutResul
           <a href="${unsubscribeUrl}" style="color: #06b6d4; text-decoration: none;">Unsubscribe</a>
           ${manageUrl ? `&nbsp;&nbsp;·&nbsp;&nbsp;<a href="${manageUrl}" style="color: #64748b; text-decoration: none;">Preferences</a>` : ""}
         </p>
-      `;
+      `
     } else {
       footerLinksHtml = `
         <p style="margin: 16px 0 0 0; font-size: 12px; color: #64748b; line-height: 1.5;">
           This is a transactional transmission from <a href="https://fi.amanillah.com" style="color: #94a3b8; text-decoration: underline;">fi.amanillah.com</a>.
           If you did not make this request, you can safely disregard it.
         </p>
-      `;
+      `
     }
   }
 
@@ -188,10 +192,10 @@ export function renderEmailLayout(options: EmailLayoutOptions): EmailLayoutResul
   </table>
 </body>
 </html>
-  `.trim();
+  `.trim()
 
   return {
     html,
     listUnsubscribeHeader: unsubscribeUrl ? `<${unsubscribeUrl}>` : "",
-  };
+  }
 }

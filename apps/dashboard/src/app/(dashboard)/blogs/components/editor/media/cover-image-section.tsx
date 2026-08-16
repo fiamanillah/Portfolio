@@ -25,8 +25,14 @@ interface CoverImageSectionProps {
 
 const DEFAULT_PRESETS = [
   { label: "Distributed Systems", url: "/assets/images/mickanic-cover.png" },
-  { label: "Cloud Architecture", url: "/assets/images/case-studies/nexus/overview.png" },
-  { label: "DevOps & CI/CD", url: "/assets/images/case-studies/nexus/results.png" },
+  {
+    label: "Cloud Architecture",
+    url: "/assets/images/case-studies/nexus/overview.png",
+  },
+  {
+    label: "DevOps & CI/CD",
+    url: "/assets/images/case-studies/nexus/results.png",
+  },
 ]
 
 export function CoverImageSection({
@@ -75,11 +81,13 @@ export function CoverImageSection({
       {/* Header bar */}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="space-y-0.5">
-          <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-            <ImageIcon className="h-4 w-4 text-primary" /> Primary Cover / Thumbnail Artwork *
+          <label className="flex items-center gap-1.5 text-xs font-bold tracking-wider text-muted-foreground uppercase">
+            <ImageIcon className="h-4 w-4 text-primary" /> Primary Cover /
+            Thumbnail Artwork *
           </label>
           <p className="text-[11px] text-muted-foreground">
-            Featured at the top of the article, on the home page, and across blog index cards (16:9 ratio recommended).
+            Featured at the top of the article, on the home page, and across
+            blog index cards (16:9 ratio recommended).
           </p>
         </div>
 
@@ -97,7 +105,7 @@ export function CoverImageSection({
             size="sm"
             onClick={() => fileInputRef.current?.click()}
             disabled={isUploading}
-            className="h-8 text-xs gap-1.5 bg-background hover:bg-muted"
+            className="h-8 gap-1.5 bg-background text-xs hover:bg-muted"
           >
             {isUploading ? (
               <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -111,7 +119,7 @@ export function CoverImageSection({
             variant="outline"
             size="sm"
             onClick={() => setIsPickerOpen(true)}
-            className="h-8 text-xs gap-1.5 bg-background hover:bg-muted"
+            className="h-8 gap-1.5 bg-background text-xs hover:bg-muted"
           >
             <FolderOpen className="h-3.5 w-3.5 text-primary" /> Browse Library
           </Button>
@@ -124,7 +132,7 @@ export function CoverImageSection({
           placeholder="Enter image URL or select from Media Library / Upload above..."
           value={thumbnail}
           onChange={(e) => setThumbnail(e.target.value)}
-          className="text-xs font-mono h-9 bg-background border-border/90 hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary/20 shadow-xs"
+          className="h-9 border-border/90 bg-background font-mono text-xs shadow-xs hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary/20"
         />
         {thumbnail && (
           <Button
@@ -132,7 +140,7 @@ export function CoverImageSection({
             variant="ghost"
             size="icon"
             onClick={() => setThumbnail("")}
-            className="h-9 w-9 text-muted-foreground hover:text-destructive shrink-0"
+            className="h-9 w-9 shrink-0 text-muted-foreground hover:text-destructive"
             title="Clear cover"
           >
             <X className="h-4 w-4" />
@@ -142,24 +150,24 @@ export function CoverImageSection({
 
       {/* Live Cover Preview or Dropzone */}
       {thumbnail ? (
-        <div className="relative rounded-xl overflow-hidden border border-border/80 aspect-[16/9] bg-muted/40 max-h-96 group shadow-sm">
+        <div className="group relative aspect-[16/9] max-h-96 overflow-hidden rounded-xl border border-border/80 bg-muted/40 shadow-sm">
           <img
             src={thumbnail}
             alt="Cover preview"
-            className="w-full h-full object-cover group-hover:scale-[1.01] transition-transform duration-300"
+            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.01]"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent pointer-events-none" />
-          <div className="absolute bottom-3 left-4 text-xs font-mono text-muted-foreground">
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
+          <div className="absolute bottom-3 left-4 font-mono text-xs text-muted-foreground">
             // COVER PREVIEW (16:9)
           </div>
 
-          <div className="absolute top-3 right-3 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+          <div className="absolute top-3 right-3 flex items-center gap-2 opacity-0 transition-opacity group-hover:opacity-100">
             <Button
               type="button"
               variant="secondary"
               size="sm"
               onClick={() => setIsPickerOpen(true)}
-              className="h-7 text-xs bg-background/90 backdrop-blur-xs shadow-xs"
+              className="h-7 bg-background/90 text-xs shadow-xs backdrop-blur-xs"
             >
               Change from Library
             </Button>
@@ -177,9 +185,9 @@ export function CoverImageSection({
       ) : (
         <div
           onClick={() => fileInputRef.current?.click()}
-          className="rounded-xl border-2 border-dashed border-border/80 hover:border-primary/70 p-10 text-center text-xs text-muted-foreground bg-background/50 hover:bg-background/80 cursor-pointer transition-colors space-y-2 shadow-xs"
+          className="cursor-pointer space-y-2 rounded-xl border-2 border-dashed border-border/80 bg-background/50 p-10 text-center text-xs text-muted-foreground shadow-xs transition-colors hover:border-primary/70 hover:bg-background/80"
         >
-          <UploadCloud className="size-9 mx-auto text-muted-foreground/60" />
+          <UploadCloud className="mx-auto size-9 text-muted-foreground/60" />
           <div className="font-semibold text-foreground">
             No cover image set. Click to upload or browse library.
           </div>
@@ -191,13 +199,15 @@ export function CoverImageSection({
 
       {/* Presets */}
       <div className="flex flex-wrap items-center gap-2 pt-1">
-        <span className="text-[11px] text-muted-foreground font-mono">Sample Presets:</span>
+        <span className="font-mono text-[11px] text-muted-foreground">
+          Sample Presets:
+        </span>
         {DEFAULT_PRESETS.map((preset, i) => (
           <button
             key={i}
             type="button"
             onClick={() => setThumbnail(preset.url)}
-            className="text-[11px] font-mono px-2 py-0.5 rounded bg-background hover:bg-muted text-muted-foreground hover:text-primary transition-colors border border-border/80"
+            className="rounded border border-border/80 bg-background px-2 py-0.5 font-mono text-[11px] text-muted-foreground transition-colors hover:bg-muted hover:text-primary"
           >
             {preset.label}
           </button>

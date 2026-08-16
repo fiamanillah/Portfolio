@@ -12,7 +12,9 @@ import {
 } from "@hugeicons/core-free-icons"
 
 const Toaster = ({ ...props }: ToasterProps) => {
-  const [theme, setTheme] = React.useState<"light" | "dark" | "system">("system")
+  const [theme, setTheme] = React.useState<"light" | "dark" | "system">(
+    "system"
+  )
 
   React.useEffect(() => {
     const updateTheme = () => {

@@ -11,7 +11,8 @@ import MySiteLayout from "@/layouts/MySiteLayout.astro"
     <div class="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
       <div
         class="absolute top-1/2 left-1/2 h-72 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/8 blur-[100px]"
-      ></div>
+      >
+      </div>
     </div>
 
     <div class="container mx-auto px-4">
@@ -22,102 +23,188 @@ import MySiteLayout from "@/layouts/MySiteLayout.astro"
           data-grid-cross
         >
           <!-- Corner brackets -->
-          <div class="pointer-events-none absolute top-3 left-3 h-4 w-4 border-t-2 border-l-2 border-primary/40"></div>
-          <div class="pointer-events-none absolute top-3 right-3 h-4 w-4 border-t-2 border-r-2 border-primary/40"></div>
-          <div class="pointer-events-none absolute bottom-3 left-3 h-4 w-4 border-b-2 border-l-2 border-primary/40"></div>
-          <div class="pointer-events-none absolute right-3 bottom-3 h-4 w-4 border-r-2 border-b-2 border-primary/40"></div>
+          <div
+            class="pointer-events-none absolute top-3 left-3 h-4 w-4 border-t-2 border-l-2 border-primary/40"
+          >
+          </div>
+          <div
+            class="pointer-events-none absolute top-3 right-3 h-4 w-4 border-t-2 border-r-2 border-primary/40"
+          >
+          </div>
+          <div
+            class="pointer-events-none absolute bottom-3 left-3 h-4 w-4 border-b-2 border-l-2 border-primary/40"
+          >
+          </div>
+          <div
+            class="pointer-events-none absolute right-3 bottom-3 h-4 w-4 border-r-2 border-b-2 border-primary/40"
+          >
+          </div>
 
           <!-- Background stripes -->
           <div
             class="diagonal-stripes pointer-events-none absolute inset-0 z-0 bg-background opacity-60"
             aria-hidden="true"
-          ></div>
+          >
+          </div>
 
           <div class="relative z-10 p-8 sm:p-10">
             <!-- Badge label -->
-            <p class="mb-5 inline-block rounded-xs border border-primary/20 bg-primary/5 px-3 py-1 font-mono text-xs font-semibold tracking-wider text-primary uppercase">
+            <p
+              class="mb-5 inline-block rounded-xs border border-primary/20 bg-primary/5 px-3 py-1 font-mono text-xs font-semibold tracking-wider text-primary uppercase"
+            >
               [ NEWSLETTER // SUBSCRIPTION MANAGEMENT ]
             </p>
 
             <!-- State: Loading (auto token processing) -->
             <div id="unsub-loading" class="hidden">
-              <h1 class="mb-3 text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+              <h1
+                class="mb-3 text-2xl font-bold tracking-tight text-foreground sm:text-3xl"
+              >
                 Processing...
               </h1>
               <p class="text-sm text-muted-foreground">
                 Please wait while we process your request.
               </p>
               <div class="mt-6 flex items-center gap-3">
-                <div class="h-1.5 w-1.5 animate-ping rounded-full bg-primary"></div>
-                <div class="h-1.5 w-1.5 animate-ping rounded-full bg-primary [animation-delay:200ms]"></div>
-                <div class="h-1.5 w-1.5 animate-ping rounded-full bg-primary [animation-delay:400ms]"></div>
+                <div class="h-1.5 w-1.5 animate-ping rounded-full bg-primary">
+                </div>
+                <div
+                  class="h-1.5 w-1.5 animate-ping rounded-full bg-primary [animation-delay:200ms]"
+                >
+                </div>
+                <div
+                  class="h-1.5 w-1.5 animate-ping rounded-full bg-primary [animation-delay:400ms]"
+                >
+                </div>
               </div>
             </div>
 
             <!-- State: Success / Unsubscribed -->
             <div id="unsub-success" class="hidden">
-              <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-full border border-emerald-500/30 bg-emerald-500/10">
-                <svg class="size-6 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+              <div
+                class="mb-4 flex h-12 w-12 items-center justify-center rounded-full border border-emerald-500/30 bg-emerald-500/10"
+              >
+                <svg
+                  class="size-6 text-emerald-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M5 13l4 4L19 7"></path>
                 </svg>
               </div>
-              <h1 id="unsub-title" class="mb-3 text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+              <h1
+                id="unsub-title"
+                class="mb-3 text-2xl font-bold tracking-tight text-foreground sm:text-3xl"
+              >
                 You're unsubscribed.
               </h1>
-              <p id="unsub-description" class="mb-2 text-sm leading-relaxed text-muted-foreground">
+              <p
+                id="unsub-description"
+                class="mb-2 text-sm leading-relaxed text-muted-foreground"
+              >
                 Your email address has been removed from my newsletter list.
               </p>
-              <p id="unsub-email-display" class="mb-6 font-mono text-xs font-semibold text-primary/80"></p>
+              <p
+                id="unsub-email-display"
+                class="mb-6 font-mono text-xs font-semibold text-primary/80"
+              >
+              </p>
 
               <!-- Status Alert Notification -->
               <div
                 id="unsub-action-status"
-                class="hidden mb-6 rounded-none border p-3 font-mono text-xs leading-relaxed"
+                class="mb-6 hidden rounded-none border p-3 font-mono text-xs leading-relaxed"
                 role="alert"
-              ></div>
+              >
+              </div>
 
               <!-- Quick Action Bar -->
               <div class="flex flex-col gap-3">
                 <!-- 1-Click Re-subscribe Button -->
                 <button
                   id="one-click-resubscribe-btn"
-                  class="group/btn inline-flex h-11 w-full items-center justify-center gap-2 border border-primary bg-primary px-5 font-mono text-xs font-bold tracking-wider text-primary-foreground uppercase transition-all duration-200 hover:shadow-[0_0_20px_oklch(var(--primary)/0.4)] disabled:opacity-60 cursor-pointer"
+                  class="group/btn inline-flex h-11 w-full cursor-pointer items-center justify-center gap-2 border border-primary bg-primary px-5 font-mono text-xs font-bold tracking-wider text-primary-foreground uppercase transition-all duration-200 hover:shadow-[0_0_20px_oklch(var(--primary)/0.4)] disabled:opacity-60"
                 >
-                  <svg class="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  <svg
+                    class="size-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                    ></path>
                   </svg>
-                  <span id="resubscribe-btn-text">Re-subscribe with 1-Click</span>
+                  <span id="resubscribe-btn-text"
+                    >Re-subscribe with 1-Click</span
+                  >
                 </button>
 
                 <!-- Toggle Change Email Button -->
                 <button
                   id="toggle-change-email-btn"
-                  class="inline-flex h-10 w-full items-center justify-center gap-2 border border-border bg-background/80 px-4 font-mono text-xs font-semibold tracking-wider text-muted-foreground uppercase transition-all duration-200 hover:border-primary hover:text-foreground cursor-pointer"
+                  class="inline-flex h-10 w-full cursor-pointer items-center justify-center gap-2 border border-border bg-background/80 px-4 font-mono text-xs font-semibold tracking-wider text-muted-foreground uppercase transition-all duration-200 hover:border-primary hover:text-foreground"
                 >
-                  <svg class="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                  <svg
+                    class="size-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                    ></path>
                   </svg>
                   Update to Different Email
                 </button>
               </div>
 
               <!-- Inline Change Email Form (Hidden by default) -->
-              <div id="change-email-panel" class="hidden mt-6 border-t border-border pt-5">
-                <h3 class="mb-2 font-mono text-xs font-semibold tracking-wider text-foreground uppercase">
+              <div
+                id="change-email-panel"
+                class="mt-6 hidden border-t border-border pt-5"
+              >
+                <h3
+                  class="mb-2 font-mono text-xs font-semibold tracking-wider text-foreground uppercase"
+                >
                   Change Subscription Email
                 </h3>
                 <p class="mb-4 text-xs text-muted-foreground">
-                  Transfer your newsletter subscription to a different email address.
+                  Transfer your newsletter subscription to a different email
+                  address.
                 </p>
                 <form id="change-email-form" class="flex flex-col gap-3">
                   <!-- Honeypot Field -->
-                  <div aria-hidden="true" style="display:none; position:absolute; left:-9999px; opacity:0; pointer-events:none;">
+                  <div
+                    aria-hidden="true"
+                    style="display:none; position:absolute; left:-9999px; opacity:0; pointer-events:none;"
+                  >
                     <label for="change-email-hp">Leave empty</label>
-                    <input type="text" id="change-email-hp" name="hp_field" tabindex="-1" autocomplete="off" />
+                    <input
+                      type="text"
+                      id="change-email-hp"
+                      name="hp_field"
+                      tabindex="-1"
+                      autocomplete="off"
+                    />
                   </div>
 
                   <div>
-                    <label for="change-email-new-input" class="mb-1 block font-mono text-[11px] text-muted-foreground uppercase">
+                    <label
+                      for="change-email-new-input"
+                      class="mb-1 block font-mono text-[11px] text-muted-foreground uppercase"
+                    >
                       New Email Address
                     </label>
                     <input
@@ -130,20 +217,29 @@ import MySiteLayout from "@/layouts/MySiteLayout.astro"
                   </div>
 
                   <!-- Turnstile container -->
-                  <div id="change-email-turnstile-container" class="flex justify-center empty:hidden py-1"></div>
+                  <div
+                    id="change-email-turnstile-container"
+                    class="flex justify-center py-1 empty:hidden"
+                  >
+                  </div>
 
                   <button
                     type="submit"
                     id="submit-change-email-btn"
-                    class="inline-flex h-10 w-full items-center justify-center gap-2 border border-primary bg-primary/10 font-mono text-xs font-bold tracking-wider text-primary uppercase transition-all hover:bg-primary hover:text-primary-foreground cursor-pointer"
+                    class="inline-flex h-10 w-full cursor-pointer items-center justify-center gap-2 border border-primary bg-primary/10 font-mono text-xs font-bold tracking-wider text-primary uppercase transition-all hover:bg-primary hover:text-primary-foreground"
                   >
-                    <span id="submit-change-email-text">Update Subscription Email</span>
+                    <span id="submit-change-email-text"
+                      >Update Subscription Email</span
+                    >
                   </button>
                 </form>
               </div>
 
               <div class="mt-8 border-t border-border pt-4 text-center">
-                <a href="/" class="font-mono text-xs text-muted-foreground transition-colors hover:text-primary">
+                <a
+                  href="/"
+                  class="font-mono text-xs text-muted-foreground transition-colors hover:text-primary"
+                >
                   ← Back to Portfolio
                 </a>
               </div>
@@ -151,20 +247,37 @@ import MySiteLayout from "@/layouts/MySiteLayout.astro"
 
             <!-- State: Error -->
             <div id="unsub-error" class="hidden">
-              <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-full border border-destructive/30 bg-destructive/10">
-                <svg class="size-6 text-destructive" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+              <div
+                class="mb-4 flex h-12 w-12 items-center justify-center rounded-full border border-destructive/30 bg-destructive/10"
+              >
+                <svg
+                  class="size-6 text-destructive"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
               </div>
-              <h1 class="mb-3 text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+              <h1
+                class="mb-3 text-2xl font-bold tracking-tight text-foreground sm:text-3xl"
+              >
                 Link expired or invalid.
               </h1>
-              <p id="unsub-error-message" class="mb-6 text-sm leading-relaxed text-muted-foreground">
-                This unsubscribe link is invalid or has expired. Please use the form below to unsubscribe manually.
+              <p
+                id="unsub-error-message"
+                class="mb-6 text-sm leading-relaxed text-muted-foreground"
+              >
+                This unsubscribe link is invalid or has expired. Please use the
+                form below to unsubscribe manually.
               </p>
               <button
                 id="show-manual-form-btn"
-                class="inline-flex h-10 items-center gap-2 border border-primary bg-primary px-5 font-mono text-xs font-semibold tracking-wider text-primary-foreground uppercase transition-all duration-200 hover:opacity-90 cursor-pointer"
+                class="inline-flex h-10 cursor-pointer items-center gap-2 border border-primary bg-primary px-5 font-mono text-xs font-semibold tracking-wider text-primary-foreground uppercase transition-all duration-200 hover:opacity-90"
               >
                 Use Manual Form ↓
               </button>
@@ -172,22 +285,37 @@ import MySiteLayout from "@/layouts/MySiteLayout.astro"
 
             <!-- State: Default / Manual Form -->
             <div id="unsub-manual">
-              <h1 class="mb-3 text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+              <h1
+                class="mb-3 text-2xl font-bold tracking-tight text-foreground sm:text-3xl"
+              >
                 Manage Subscription
               </h1>
               <p class="mb-6 text-sm leading-relaxed text-muted-foreground">
-                Enter your email address to unsubscribe or manage your subscription settings.
+                Enter your email address to unsubscribe or manage your
+                subscription settings.
               </p>
 
               <form id="unsub-manual-form" class="flex flex-col gap-4">
                 <!-- Honeypot Field -->
-                <div aria-hidden="true" style="display:none; position:absolute; left:-9999px; opacity:0; pointer-events:none;">
+                <div
+                  aria-hidden="true"
+                  style="display:none; position:absolute; left:-9999px; opacity:0; pointer-events:none;"
+                >
                   <label for="unsub-manual-hp">Leave empty</label>
-                  <input type="text" id="unsub-manual-hp" name="hp_field" tabindex="-1" autocomplete="off" />
+                  <input
+                    type="text"
+                    id="unsub-manual-hp"
+                    name="hp_field"
+                    tabindex="-1"
+                    autocomplete="off"
+                  />
                 </div>
 
                 <div>
-                  <label for="unsub-email-input" class="mb-1.5 block font-mono text-xs font-semibold tracking-wider text-muted-foreground uppercase">
+                  <label
+                    for="unsub-email-input"
+                    class="mb-1.5 block font-mono text-xs font-semibold tracking-wider text-muted-foreground uppercase"
+                  >
                     Email Address
                   </label>
                   <input
@@ -201,41 +329,60 @@ import MySiteLayout from "@/layouts/MySiteLayout.astro"
                 </div>
 
                 <!-- Turnstile container -->
-                <div id="unsub-manual-turnstile-container" class="flex justify-center empty:hidden py-1"></div>
+                <div
+                  id="unsub-manual-turnstile-container"
+                  class="flex justify-center py-1 empty:hidden"
+                >
+                </div>
 
                 <!-- Status -->
                 <div
                   id="unsub-manual-status"
                   class="hidden rounded-none border p-3 font-mono text-xs leading-relaxed"
                   role="alert"
-                ></div>
+                >
+                </div>
 
                 <div class="flex flex-col gap-2.5 sm:flex-row">
                   <button
                     type="submit"
                     id="unsub-manual-submit"
-                    class="group/btn inline-flex h-11 w-full flex-1 items-center justify-center gap-2 border border-primary bg-primary px-4 font-mono text-xs font-bold tracking-[0.15em] text-primary-foreground uppercase transition-all duration-300 hover:shadow-[0_0_20px_oklch(var(--primary)/0.4)] disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer"
+                    class="group/btn inline-flex h-11 w-full flex-1 cursor-pointer items-center justify-center gap-2 border border-primary bg-primary px-4 font-mono text-xs font-bold tracking-[0.15em] text-primary-foreground uppercase transition-all duration-300 hover:shadow-[0_0_20px_oklch(var(--primary)/0.4)] disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     <span id="unsub-manual-btn-text">Unsubscribe Now</span>
                   </button>
                 </div>
               </form>
 
-              <div class="mt-6 flex items-center gap-2 font-mono text-[11px] text-muted-foreground/60">
-                <svg class="size-3.5 text-primary/60" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+              <div
+                class="mt-6 flex items-center gap-2 font-mono text-[11px] text-muted-foreground/60"
+              >
+                <svg
+                  class="size-3.5 text-primary/60"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                  ></path>
                 </svg>
                 <span>Instant database &amp; Plunk email sync.</span>
               </div>
 
               <!-- Link back -->
               <div class="mt-6 border-t border-border pt-4">
-                <a href="/" class="font-mono text-xs text-muted-foreground transition-colors hover:text-primary">
+                <a
+                  href="/"
+                  class="font-mono text-xs text-muted-foreground transition-colors hover:text-primary"
+                >
                   ← Back to Portfolio
                 </a>
               </div>
             </div>
-
           </div>
         </div>
       </div>
@@ -263,20 +410,38 @@ import MySiteLayout from "@/layouts/MySiteLayout.astro"
   const errorMessage = document.getElementById("unsub-error-message")!
 
   const showManualFormBtn = document.getElementById("show-manual-form-btn")
-  const oneClickResubscribeBtn = document.getElementById("one-click-resubscribe-btn") as HTMLButtonElement
+  const oneClickResubscribeBtn = document.getElementById(
+    "one-click-resubscribe-btn"
+  ) as HTMLButtonElement
   const resubscribeBtnText = document.getElementById("resubscribe-btn-text")!
 
-  const toggleChangeEmailBtn = document.getElementById("toggle-change-email-btn")
+  const toggleChangeEmailBtn = document.getElementById(
+    "toggle-change-email-btn"
+  )
   const changeEmailPanel = document.getElementById("change-email-panel")!
-  const changeEmailForm = document.getElementById("change-email-form") as HTMLFormElement
-  const changeEmailNewInput = document.getElementById("change-email-new-input") as HTMLInputElement
-  const submitChangeEmailBtn = document.getElementById("submit-change-email-btn") as HTMLButtonElement
-  const submitChangeEmailText = document.getElementById("submit-change-email-text")!
+  const changeEmailForm = document.getElementById(
+    "change-email-form"
+  ) as HTMLFormElement
+  const changeEmailNewInput = document.getElementById(
+    "change-email-new-input"
+  ) as HTMLInputElement
+  const submitChangeEmailBtn = document.getElementById(
+    "submit-change-email-btn"
+  ) as HTMLButtonElement
+  const submitChangeEmailText = document.getElementById(
+    "submit-change-email-text"
+  )!
 
   // Manual form refs
-  const manualForm = document.getElementById("unsub-manual-form") as HTMLFormElement
-  const manualEmailInput = document.getElementById("unsub-email-input") as HTMLInputElement
-  const manualSubmitBtn = document.getElementById("unsub-manual-submit") as HTMLButtonElement
+  const manualForm = document.getElementById(
+    "unsub-manual-form"
+  ) as HTMLFormElement
+  const manualEmailInput = document.getElementById(
+    "unsub-email-input"
+  ) as HTMLInputElement
+  const manualSubmitBtn = document.getElementById(
+    "unsub-manual-submit"
+  ) as HTMLButtonElement
   const manualBtnText = document.getElementById("unsub-manual-btn-text")!
   const manualStatus = document.getElementById("unsub-manual-status")!
 
@@ -307,7 +472,9 @@ import MySiteLayout from "@/layouts/MySiteLayout.astro"
       return
     }
 
-    let script = document.getElementById("cf-turnstile-script") as HTMLScriptElement | null
+    let script = document.getElementById(
+      "cf-turnstile-script"
+    ) as HTMLScriptElement | null
     if (!script) {
       script = document.createElement("script")
       script.id = "cf-turnstile-script"
@@ -321,16 +488,21 @@ import MySiteLayout from "@/layouts/MySiteLayout.astro"
 
   function initManualTurnstileOnDemand() {
     const turnstileKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY
-    const container = document.getElementById("unsub-manual-turnstile-container")
+    const container = document.getElementById(
+      "unsub-manual-turnstile-container"
+    )
     if (!turnstileKey || !container || manualTurnstileWidgetId !== null) return
 
     loadTurnstileScriptLazy(() => {
       if ((window as any).turnstile && manualTurnstileWidgetId === null) {
         try {
-          manualTurnstileWidgetId = (window as any).turnstile.render("#unsub-manual-turnstile-container", {
-            sitekey: turnstileKey,
-            theme: "dark",
-          })
+          manualTurnstileWidgetId = (window as any).turnstile.render(
+            "#unsub-manual-turnstile-container",
+            {
+              sitekey: turnstileKey,
+              theme: "dark",
+            }
+          )
         } catch (err) {
           console.warn("Manual Unsub Turnstile error:", err)
         }
@@ -340,16 +512,22 @@ import MySiteLayout from "@/layouts/MySiteLayout.astro"
 
   function initChangeEmailTurnstileOnDemand() {
     const turnstileKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY
-    const container = document.getElementById("change-email-turnstile-container")
-    if (!turnstileKey || !container || changeEmailTurnstileWidgetId !== null) return
+    const container = document.getElementById(
+      "change-email-turnstile-container"
+    )
+    if (!turnstileKey || !container || changeEmailTurnstileWidgetId !== null)
+      return
 
     loadTurnstileScriptLazy(() => {
       if ((window as any).turnstile && changeEmailTurnstileWidgetId === null) {
         try {
-          changeEmailTurnstileWidgetId = (window as any).turnstile.render("#change-email-turnstile-container", {
-            sitekey: turnstileKey,
-            theme: "dark",
-          })
+          changeEmailTurnstileWidgetId = (window as any).turnstile.render(
+            "#change-email-turnstile-container",
+            {
+              sitekey: turnstileKey,
+              theme: "dark",
+            }
+          )
         } catch (err) {
           console.warn("Change Email Turnstile error:", err)
         }
@@ -357,16 +535,32 @@ import MySiteLayout from "@/layouts/MySiteLayout.astro"
     })
   }
 
-  function showActionStatus(msg: string, isError: boolean, suggestedEmail?: string) {
+  function showActionStatus(
+    msg: string,
+    isError: boolean,
+    suggestedEmail?: string
+  ) {
     actionStatus.classList.remove(
       "hidden",
-      "bg-emerald-500/10", "border-emerald-500/30", "text-emerald-400",
-      "bg-destructive/10", "border-destructive/30", "text-destructive"
+      "bg-emerald-500/10",
+      "border-emerald-500/30",
+      "text-emerald-400",
+      "bg-destructive/10",
+      "border-destructive/30",
+      "text-destructive"
     )
     if (isError) {
-      actionStatus.classList.add("bg-destructive/10", "border-destructive/30", "text-destructive")
+      actionStatus.classList.add(
+        "bg-destructive/10",
+        "border-destructive/30",
+        "text-destructive"
+      )
     } else {
-      actionStatus.classList.add("bg-emerald-500/10", "border-emerald-500/30", "text-emerald-400")
+      actionStatus.classList.add(
+        "bg-emerald-500/10",
+        "border-emerald-500/30",
+        "text-emerald-400"
+      )
     }
 
     if (suggestedEmail) {
@@ -391,16 +585,32 @@ import MySiteLayout from "@/layouts/MySiteLayout.astro"
     }
   }
 
-  function showManualStatus(msg: string, isError: boolean, suggestedEmail?: string) {
+  function showManualStatus(
+    msg: string,
+    isError: boolean,
+    suggestedEmail?: string
+  ) {
     manualStatus.classList.remove(
       "hidden",
-      "bg-emerald-500/10", "border-emerald-500/30", "text-emerald-400",
-      "bg-destructive/10", "border-destructive/30", "text-destructive"
+      "bg-emerald-500/10",
+      "border-emerald-500/30",
+      "text-emerald-400",
+      "bg-destructive/10",
+      "border-destructive/30",
+      "text-destructive"
     )
     if (isError) {
-      manualStatus.classList.add("bg-destructive/10", "border-destructive/30", "text-destructive")
+      manualStatus.classList.add(
+        "bg-destructive/10",
+        "border-destructive/30",
+        "text-destructive"
+      )
     } else {
-      manualStatus.classList.add("bg-emerald-500/10", "border-emerald-500/30", "text-emerald-400")
+      manualStatus.classList.add(
+        "bg-emerald-500/10",
+        "border-emerald-500/30",
+        "text-emerald-400"
+      )
     }
 
     if (suggestedEmail) {
@@ -430,7 +640,9 @@ import MySiteLayout from "@/layouts/MySiteLayout.astro"
     showState("loading")
     currentToken = token
     try {
-      const res = await fetch(`${API_URL}/subscriber/v1/unsubscribe?token=${encodeURIComponent(token)}`)
+      const res = await fetch(
+        `${API_URL}/subscriber/v1/unsubscribe?token=${encodeURIComponent(token)}`
+      )
       const data = await res.json().catch(() => ({}))
 
       if (res.ok && data.success) {
@@ -439,10 +651,12 @@ import MySiteLayout from "@/layouts/MySiteLayout.astro"
 
         if (isAlready) {
           unsubTitle.textContent = "Already Unsubscribed"
-          unsubDescription.textContent = "This email address is already unsubscribed from our newsletter list."
+          unsubDescription.textContent =
+            "This email address is already unsubscribed from our newsletter list."
         } else {
           unsubTitle.textContent = "You're unsubscribed."
-          unsubDescription.textContent = "Your email address has been removed from my newsletter list."
+          unsubDescription.textContent =
+            "Your email address has been removed from my newsletter list."
         }
 
         if (currentEmail) {
@@ -456,7 +670,8 @@ import MySiteLayout from "@/layouts/MySiteLayout.astro"
         showState("error")
       }
     } catch {
-      errorMessage.textContent = "Network error. Please use the manual form below."
+      errorMessage.textContent =
+        "Network error. Please use the manual form below."
       showState("error")
     }
   }
@@ -477,7 +692,10 @@ import MySiteLayout from "@/layouts/MySiteLayout.astro"
       const res = await fetch(`${API_URL}/subscriber/v1/subscribe`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: currentEmail, source: "unsubscribe_resubscribe" }),
+        body: JSON.stringify({
+          email: currentEmail,
+          source: "unsubscribe_resubscribe",
+        }),
       })
 
       const data = await res.json().catch(() => ({}))
@@ -486,19 +704,33 @@ import MySiteLayout from "@/layouts/MySiteLayout.astro"
         const isAlready = data.data?.alreadySubscribed || false
         if (isAlready) {
           unsubTitle.textContent = "Already Subscribed"
-          unsubDescription.textContent = "This email address is already active on our newsletter list."
-          showActionStatus(`ℹ️ You are already subscribed as ${currentEmail}.`, false)
+          unsubDescription.textContent =
+            "This email address is already active on our newsletter list."
+          showActionStatus(
+            `ℹ️ You are already subscribed as ${currentEmail}.`,
+            false
+          )
         } else {
           unsubTitle.textContent = "Welcome back!"
-          unsubDescription.textContent = "Your subscription has been restored in our database and Plunk."
-          showActionStatus(`✔ Re-subscribed successfully! A confirmation email has been sent to ${currentEmail}.`, false)
+          unsubDescription.textContent =
+            "Your subscription has been restored in our database and Plunk."
+          showActionStatus(
+            `✔ Re-subscribed successfully! A confirmation email has been sent to ${currentEmail}.`,
+            false
+          )
         }
         emailDisplay.textContent = `Status: Subscribed (${currentEmail})`
         resubscribeBtnText.textContent = `Subscribed (${currentEmail})`
         oneClickResubscribeBtn.classList.remove("bg-primary", "border-primary")
-        oneClickResubscribeBtn.classList.add("bg-emerald-600", "border-emerald-600")
+        oneClickResubscribeBtn.classList.add(
+          "bg-emerald-600",
+          "border-emerald-600"
+        )
       } else {
-        const msg = data.message || data.error?.message || "Failed to re-subscribe. Please try again."
+        const msg =
+          data.message ||
+          data.error?.message ||
+          "Failed to re-subscribe. Please try again."
         showActionStatus(msg, true)
         resubscribeBtnText.textContent = originalBtnText
         oneClickResubscribeBtn.disabled = false
@@ -511,11 +743,23 @@ import MySiteLayout from "@/layouts/MySiteLayout.astro"
   })
 
   // Attach lazy Turnstile event listeners to inputs
-  manualEmailInput?.addEventListener("focus", initManualTurnstileOnDemand, { once: true })
-  manualEmailInput?.addEventListener("click", initManualTurnstileOnDemand, { once: true })
+  manualEmailInput?.addEventListener("focus", initManualTurnstileOnDemand, {
+    once: true,
+  })
+  manualEmailInput?.addEventListener("click", initManualTurnstileOnDemand, {
+    once: true,
+  })
 
-  changeEmailNewInput?.addEventListener("focus", initChangeEmailTurnstileOnDemand, { once: true })
-  changeEmailNewInput?.addEventListener("click", initChangeEmailTurnstileOnDemand, { once: true })
+  changeEmailNewInput?.addEventListener(
+    "focus",
+    initChangeEmailTurnstileOnDemand,
+    { once: true }
+  )
+  changeEmailNewInput?.addEventListener(
+    "click",
+    initChangeEmailTurnstileOnDemand,
+    { once: true }
+  )
 
   // Toggle Change Email Panel
   toggleChangeEmailBtn?.addEventListener("click", () => {
@@ -535,10 +779,13 @@ import MySiteLayout from "@/layouts/MySiteLayout.astro"
     const newEmail = changeEmailNewInput.value.trim()
     if (!newEmail) return
 
-    const hp_field = (new FormData(changeEmailForm).get("hp_field") as string) || ""
+    const hp_field =
+      (new FormData(changeEmailForm).get("hp_field") as string) || ""
     let captchaToken = ""
     if ((window as any).turnstile && changeEmailTurnstileWidgetId !== null) {
-      captchaToken = (window as any).turnstile.getResponse(changeEmailTurnstileWidgetId) || ""
+      captchaToken =
+        (window as any).turnstile.getResponse(changeEmailTurnstileWidgetId) ||
+        ""
     }
 
     const originalSubmitText = submitChangeEmailText.textContent
@@ -564,27 +811,43 @@ import MySiteLayout from "@/layouts/MySiteLayout.astro"
         const oldEmail = currentEmail
         currentEmail = newEmail
         unsubTitle.textContent = "Email Updated!"
-        unsubDescription.textContent = "Your subscription email address has been transferred."
+        unsubDescription.textContent =
+          "Your subscription email address has been transferred."
         emailDisplay.textContent = `Status: Subscribed (${newEmail})`
         resubscribeBtnText.textContent = `Subscribed as ${newEmail}`
 
-        showActionStatus(`✔ Subscription email updated from ${oldEmail || "previous address"} to ${newEmail}! A confirmation email was sent to ${newEmail}.`, false)
+        showActionStatus(
+          `✔ Subscription email updated from ${oldEmail || "previous address"} to ${newEmail}! A confirmation email was sent to ${newEmail}.`,
+          false
+        )
         changeEmailPanel.classList.add("hidden")
         changeEmailForm.reset()
 
-        if ((window as any).turnstile && changeEmailTurnstileWidgetId !== null) {
-          (window as any).turnstile.reset(changeEmailTurnstileWidgetId)
+        if (
+          (window as any).turnstile &&
+          changeEmailTurnstileWidgetId !== null
+        ) {
+          ;(window as any).turnstile.reset(changeEmailTurnstileWidgetId)
         }
 
         submitChangeEmailText.textContent = originalSubmitText
         submitChangeEmailBtn.disabled = false
       } else {
-        const msg = data.message || data.error?.message || "Failed to update email. Please try again."
-        const suggestedEmail = data.data?.suggestedEmail || data.details?.suggestedEmail || data.error?.details?.suggestedEmail
+        const msg =
+          data.message ||
+          data.error?.message ||
+          "Failed to update email. Please try again."
+        const suggestedEmail =
+          data.data?.suggestedEmail ||
+          data.details?.suggestedEmail ||
+          data.error?.details?.suggestedEmail
         showActionStatus(msg, true, suggestedEmail)
 
-        if ((window as any).turnstile && changeEmailTurnstileWidgetId !== null) {
-          (window as any).turnstile.reset(changeEmailTurnstileWidgetId)
+        if (
+          (window as any).turnstile &&
+          changeEmailTurnstileWidgetId !== null
+        ) {
+          ;(window as any).turnstile.reset(changeEmailTurnstileWidgetId)
         }
 
         submitChangeEmailText.textContent = originalSubmitText
@@ -609,7 +872,8 @@ import MySiteLayout from "@/layouts/MySiteLayout.astro"
     const hp_field = (new FormData(manualForm).get("hp_field") as string) || ""
     let captchaToken = ""
     if ((window as any).turnstile && manualTurnstileWidgetId !== null) {
-      captchaToken = (window as any).turnstile.getResponse(manualTurnstileWidgetId) || ""
+      captchaToken =
+        (window as any).turnstile.getResponse(manualTurnstileWidgetId) || ""
     }
 
     const originalText = manualBtnText.textContent
@@ -635,22 +899,30 @@ import MySiteLayout from "@/layouts/MySiteLayout.astro"
 
         if (isAlready) {
           unsubTitle.textContent = "Already Unsubscribed"
-          unsubDescription.textContent = "This email address is already unsubscribed from our newsletter list."
+          unsubDescription.textContent =
+            "This email address is already unsubscribed from our newsletter list."
         } else {
           unsubTitle.textContent = "You're unsubscribed."
-          unsubDescription.textContent = "Your email address has been removed from my newsletter list."
+          unsubDescription.textContent =
+            "Your email address has been removed from my newsletter list."
         }
 
         emailDisplay.textContent = `Status: Unsubscribed (${email})`
         resubscribeBtnText.textContent = `Re-subscribe as ${email}`
         showState("success")
       } else {
-        const msg = data.message || data.error?.message || "Failed to unsubscribe. Please try again."
-        const suggestedEmail = data.data?.suggestedEmail || data.details?.suggestedEmail || data.error?.details?.suggestedEmail
+        const msg =
+          data.message ||
+          data.error?.message ||
+          "Failed to unsubscribe. Please try again."
+        const suggestedEmail =
+          data.data?.suggestedEmail ||
+          data.details?.suggestedEmail ||
+          data.error?.details?.suggestedEmail
         showManualStatus(msg, true, suggestedEmail)
 
         if ((window as any).turnstile && manualTurnstileWidgetId !== null) {
-          (window as any).turnstile.reset(manualTurnstileWidgetId)
+          ;(window as any).turnstile.reset(manualTurnstileWidgetId)
         }
 
         manualBtnText.textContent = originalText ?? "Unsubscribe Now"

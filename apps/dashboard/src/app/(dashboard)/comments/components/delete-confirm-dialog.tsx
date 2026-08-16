@@ -1,6 +1,6 @@
 // apps/dashboard/src/app/(dashboard)/comments/components/delete-confirm-dialog.tsx
-import * as React from "react";
-import { Trash2 } from "lucide-react";
+import * as React from "react"
+import { Trash2 } from "lucide-react"
 import {
   Dialog,
   DialogContent,
@@ -8,15 +8,15 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@workspace/ui/components/dialog";
-import { Button } from "@workspace/ui/components/button";
+} from "@workspace/ui/components/dialog"
+import { Button } from "@workspace/ui/components/button"
 
 interface DeleteConfirmDialogProps {
-  target: { id: string; type: "single" | "bulk" } | null;
-  selectedCount: number;
-  actionLoading: boolean;
-  onClose: () => void;
-  onConfirm: () => void;
+  target: { id: string; type: "single" | "bulk" } | null
+  selectedCount: number
+  actionLoading: boolean
+  onClose: () => void
+  onConfirm: () => void
 }
 
 export function DeleteConfirmDialog({
@@ -26,13 +26,13 @@ export function DeleteConfirmDialog({
   onClose,
   onConfirm,
 }: DeleteConfirmDialogProps) {
-  if (!target) return null;
+  if (!target) return null
 
   return (
     <Dialog open={!!target} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2 text-destructive text-base">
+          <DialogTitle className="flex items-center gap-2 text-base text-destructive">
             <Trash2 className="size-5" />
             Confirm Permanent Deletion
           </DialogTitle>
@@ -43,8 +43,13 @@ export function DeleteConfirmDialog({
           </DialogDescription>
         </DialogHeader>
 
-        <DialogFooter className="gap-2 sm:gap-0 pt-3">
-          <Button variant="outline" size="sm" onClick={onClose} disabled={actionLoading}>
+        <DialogFooter className="gap-2 pt-3 sm:gap-0">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onClose}
+            disabled={actionLoading}
+          >
             Cancel
           </Button>
           <Button
@@ -59,5 +64,5 @@ export function DeleteConfirmDialog({
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  );
+  )
 }

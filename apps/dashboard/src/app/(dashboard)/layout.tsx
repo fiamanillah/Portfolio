@@ -13,9 +13,9 @@ export default function DashboardLayout({
     <AdminGuard>
       <SidebarProvider>
         <DashboardSidebar />
-        <SidebarInset className="flex flex-col min-h-screen">
+        <SidebarInset className="flex min-h-screen flex-col">
           <DashboardHeader />
-          <main className="flex-1 p-6 md:p-8 space-y-6 max-w-7xl w-full mx-auto">
+          <main className="mx-auto w-full max-w-7xl flex-1 space-y-6 p-6 md:p-8">
             {children}
           </main>
         </SidebarInset>
@@ -23,4 +23,3 @@ export default function DashboardLayout({
     </AdminGuard>
   )
 }
-

@@ -8,7 +8,10 @@ import Hero from "@/components/CaseStudy/Hero.astro"
 import OtherCaseStudies from "@/components/CaseStudy/OtherCaseStudies.astro"
 import NewsletterSection from "@/components/Newsletter/NewsletterSection.astro"
 import MySiteLayout from "@/layouts/MySiteLayout.astro"
-import { getAllCaseStudyDetails, type CaseStudyDetail } from "@/data/caseStudies"
+import {
+  getAllCaseStudyDetails,
+  type CaseStudyDetail,
+} from "@/data/caseStudies"
 
 export async function getStaticPaths() {
   const caseStudies = getAllCaseStudyDetails()
@@ -37,7 +40,7 @@ const { caseStudy } = Astro.props
     metadata={caseStudy.metadata}
   />
 
-  <div class="w-full pt-10 pb-24 space-y-16">
+  <div class="w-full space-y-16 pt-10 pb-24">
     <ContextSection blocks={caseStudy.contextBlocks} />
     <ArchitectureTopology layers={caseStudy.architectureLayers} />
     <KeyFeatures features={caseStudy.features} />
@@ -53,4 +56,3 @@ const { caseStudy } = Astro.props
     />
   </div>
 </MySiteLayout>
-

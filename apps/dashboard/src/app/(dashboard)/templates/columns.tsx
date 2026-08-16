@@ -93,8 +93,12 @@ export function getTemplateColumns(
 
         return (
           <Checkbox
-            checked={isAllSelected || (isSomeSelected ? "indeterminate" : false)}
-            onCheckedChange={(value) => table.toggleAllPageRowsSelected?.(!!value)}
+            checked={
+              isAllSelected || (isSomeSelected ? "indeterminate" : false)
+            }
+            onCheckedChange={(value) =>
+              table.toggleAllPageRowsSelected?.(!!value)
+            }
             aria-label="Select all templates on page"
             className="translate-y-[2px]"
           />
@@ -103,7 +107,9 @@ export function getTemplateColumns(
       cell: ({ row }) => (
         <Checkbox
           checked={
-            typeof row.getIsSelected === "function" ? row.getIsSelected() : false
+            typeof row.getIsSelected === "function"
+              ? row.getIsSelected()
+              : false
           }
           onCheckedChange={(value) => row.toggleSelected?.(!!value)}
           aria-label={`Select ${row.original.name}`}
@@ -121,12 +127,12 @@ export function getTemplateColumns(
       cell: ({ row }) => {
         const template = row.original
         return (
-          <div className="flex items-center gap-3 max-w-[280px]">
+          <div className="flex max-w-[280px] items-center gap-3">
             <div
               className={`flex size-9 shrink-0 items-center justify-center rounded-lg ${
                 template.isSystem
-                  ? "bg-blue-500/10 text-blue-500 border border-blue-500/20"
-                  : "bg-emerald-500/10 text-emerald-500 border border-emerald-500/20"
+                  ? "border border-blue-500/20 bg-blue-500/10 text-blue-500"
+                  : "border border-emerald-500/20 bg-emerald-500/10 text-emerald-500"
               }`}
             >
               {template.isSystem ? (
@@ -135,12 +141,12 @@ export function getTemplateColumns(
                 <Sparkles className="size-4.5" />
               )}
             </div>
-            <div className="flex flex-col min-w-0">
-              <span className="font-semibold text-sm truncate text-foreground">
+            <div className="flex min-w-0 flex-col">
+              <span className="truncate text-sm font-semibold text-foreground">
                 {template.name}
               </span>
-              <div className="flex items-center gap-1.5 mt-0.5">
-                <code className="text-[11px] font-mono text-muted-foreground truncate max-w-[170px]">
+              <div className="mt-0.5 flex items-center gap-1.5">
+                <code className="max-w-[170px] truncate font-mono text-[11px] text-muted-foreground">
                   {template.slug}
                 </code>
                 <button
@@ -150,7 +156,7 @@ export function getTemplateColumns(
                     navigator.clipboard.writeText(template.slug)
                     toast.success("Slug copied to clipboard")
                   }}
-                  className="text-muted-foreground/60 hover:text-foreground transition-colors"
+                  className="text-muted-foreground/60 transition-colors hover:text-foreground"
                   title="Copy slug"
                 >
                   <Copy className="size-3" />
@@ -173,7 +179,7 @@ export function getTemplateColumns(
         return isSystem ? (
           <Badge
             variant="outline"
-            className="border-blue-500/30 bg-blue-500/10 text-blue-400 font-medium text-[11px] gap-1 px-2.5 py-0.5"
+            className="gap-1 border-blue-500/30 bg-blue-500/10 px-2.5 py-0.5 text-[11px] font-medium text-blue-400"
           >
             <Code2 className="size-3" />
             Codebase
@@ -181,7 +187,7 @@ export function getTemplateColumns(
         ) : (
           <Badge
             variant="outline"
-            className="border-emerald-500/30 bg-emerald-500/10 text-emerald-400 font-medium text-[11px] gap-1 px-2.5 py-0.5"
+            className="gap-1 border-emerald-500/30 bg-emerald-500/10 px-2.5 py-0.5 text-[11px] font-medium text-emerald-400"
           >
             <Sparkles className="size-3" />
             Custom Made
@@ -201,7 +207,7 @@ export function getTemplateColumns(
           return (
             <Badge
               variant="outline"
-              className="border-amber-500/30 bg-amber-500/10 text-amber-400 font-medium text-[11px]"
+              className="border-amber-500/30 bg-amber-500/10 text-[11px] font-medium text-amber-400"
             >
               Transactional
             </Badge>
@@ -211,7 +217,7 @@ export function getTemplateColumns(
           return (
             <Badge
               variant="outline"
-              className="border-purple-500/30 bg-purple-500/10 text-purple-400 font-medium text-[11px]"
+              className="border-purple-500/30 bg-purple-500/10 text-[11px] font-medium text-purple-400"
             >
               Marketing
             </Badge>
@@ -220,7 +226,7 @@ export function getTemplateColumns(
         return (
           <Badge
             variant="outline"
-            className="border-sky-500/30 bg-sky-500/10 text-sky-400 font-medium text-[11px]"
+            className="border-sky-500/30 bg-sky-500/10 text-[11px] font-medium text-sky-400"
           >
             Headless
           </Badge>
@@ -237,7 +243,7 @@ export function getTemplateColumns(
         const subject = row.original.subject
         return (
           <span
-            className="text-xs text-muted-foreground line-clamp-1 max-w-[260px]"
+            className="line-clamp-1 max-w-[260px] text-xs text-muted-foreground"
             title={subject}
           >
             {subject}
@@ -260,14 +266,14 @@ export function getTemplateColumns(
           <div className="flex items-center gap-1.5">
             <Badge
               variant="outline"
-              className="border-emerald-500/30 bg-emerald-500/10 text-emerald-400 font-medium text-[11px] gap-1 px-2 py-0.5"
+              className="gap-1 border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 text-[11px] font-medium text-emerald-400"
             >
               <CheckCircle2 className="size-3" />
               Synced
             </Badge>
             {syncedAt && (
               <span
-                className="text-[10px] text-muted-foreground hidden lg:inline"
+                className="hidden text-[10px] text-muted-foreground lg:inline"
                 title={`Synced at: ${formatFullDate(syncedAt)}`}
               >
                 {formatRelativeTime(syncedAt)}
@@ -277,7 +283,7 @@ export function getTemplateColumns(
         ) : (
           <Badge
             variant="outline"
-            className="border-zinc-700 bg-zinc-800/40 text-muted-foreground font-medium text-[11px] gap-1 px-2 py-0.5"
+            className="gap-1 border-zinc-700 bg-zinc-800/40 px-2 py-0.5 text-[11px] font-medium text-muted-foreground"
           >
             <CloudOff className="size-3" />
             Local Only
@@ -350,35 +356,35 @@ export function getTemplateColumns(
                 </DropdownMenuLabel>
                 <DropdownMenuItem
                   onClick={() => actions.onPreview(template)}
-                  className="text-xs gap-2 cursor-pointer"
+                  className="cursor-pointer gap-2 text-xs"
                 >
                   <Eye className="size-3.5 text-blue-400" />
                   Live Preview
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={() => actions.onEdit(template)}
-                  className="text-xs gap-2 cursor-pointer"
+                  className="cursor-pointer gap-2 text-xs"
                 >
                   <Pencil className="size-3.5 text-amber-400" />
                   Edit Template
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={() => actions.onSendTest(template)}
-                  className="text-xs gap-2 cursor-pointer"
+                  className="cursor-pointer gap-2 text-xs"
                 >
                   <Send className="size-3.5 text-purple-400" />
                   Send Test Email
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={() => actions.onSyncSingle(template)}
-                  className="text-xs gap-2 cursor-pointer"
+                  className="cursor-pointer gap-2 text-xs"
                 >
                   <Cloud className="size-3.5 text-emerald-400" />
                   Sync to Plunk
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={() => actions.onDuplicate(template)}
-                  className="text-xs gap-2 cursor-pointer"
+                  className="cursor-pointer gap-2 text-xs"
                 >
                   <Copy className="size-3.5 text-sky-400" />
                   Duplicate
@@ -389,7 +395,7 @@ export function getTemplateColumns(
                 {template.isSystem ? (
                   <DropdownMenuItem
                     onClick={() => actions.onResetDefault(template)}
-                    className="text-xs gap-2 cursor-pointer text-amber-400 focus:text-amber-400"
+                    className="cursor-pointer gap-2 text-xs text-amber-400 focus:text-amber-400"
                   >
                     <RotateCcw className="size-3.5" />
                     Reset to Codebase Default
@@ -397,7 +403,7 @@ export function getTemplateColumns(
                 ) : (
                   <DropdownMenuItem
                     onClick={() => actions.onDelete(template)}
-                    className="text-xs gap-2 cursor-pointer text-destructive focus:text-destructive"
+                    className="cursor-pointer gap-2 text-xs text-destructive focus:text-destructive"
                   >
                     <Trash2 className="size-3.5" />
                     Delete Template

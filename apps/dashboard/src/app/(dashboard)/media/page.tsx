@@ -29,7 +29,9 @@ export default function MediaPage() {
   const [debouncedSearch, setDebouncedSearch] = React.useState("")
   const [typeFilter, setTypeFilter] = React.useState("all")
   const [folderFilter, setFolderFilter] = React.useState("all")
-  const [sortBy, setSortBy] = React.useState<"createdAt" | "size" | "fileName" | "updatedAt">("createdAt")
+  const [sortBy, setSortBy] = React.useState<
+    "createdAt" | "size" | "fileName" | "updatedAt"
+  >("createdAt")
   const [sortOrder, setSortOrder] = React.useState<"asc" | "desc">("desc")
   const [viewMode, setViewMode] = React.useState<"grid" | "table">("grid")
 
@@ -44,10 +46,12 @@ export default function MediaPage() {
   // Dialogs
   const [isUploadOpen, setIsUploadOpen] = React.useState(false)
   const [isInspectorOpen, setIsInspectorOpen] = React.useState(false)
-  const [inspectingFile, setInspectingFile] = React.useState<MediaFileDTO | null>(null)
+  const [inspectingFile, setInspectingFile] =
+    React.useState<MediaFileDTO | null>(null)
   const [isBulkMoveOpen, setIsBulkMoveOpen] = React.useState(false)
   const [isDeleteOpen, setIsDeleteOpen] = React.useState(false)
-  const [singleDeleteFile, setSingleDeleteFile] = React.useState<MediaFileDTO | null>(null)
+  const [singleDeleteFile, setSingleDeleteFile] =
+    React.useState<MediaFileDTO | null>(null)
   const [isCleanupOpen, setIsCleanupOpen] = React.useState(false)
 
   // Debounce search input
@@ -60,41 +64,52 @@ export default function MediaPage() {
   }, [searchQuery])
 
   // Load Data
-  const loadData = React.useCallback(async (showRefreshing = false) => {
-    if (showRefreshing) setIsRefreshing(true)
-    else setIsLoading(true)
+  const loadData = React.useCallback(
+    async (showRefreshing = false) => {
+      if (showRefreshing) setIsRefreshing(true)
+      else setIsLoading(true)
 
-    try {
-      const [filesRes, statsRes] = await Promise.all([
-        MediaApi.getAll({
-          page: currentPage,
-          limit: pageSize,
-          search: debouncedSearch.trim() || undefined,
-          mimeType: typeFilter !== "all" ? typeFilter : undefined,
-          folder: folderFilter !== "all" ? folderFilter : undefined,
-          sortBy,
-          sortOrder,
-        }),
-        MediaApi.getStats(),
-      ])
+      try {
+        const [filesRes, statsRes] = await Promise.all([
+          MediaApi.getAll({
+            page: currentPage,
+            limit: pageSize,
+            search: debouncedSearch.trim() || undefined,
+            mimeType: typeFilter !== "all" ? typeFilter : undefined,
+            folder: folderFilter !== "all" ? folderFilter : undefined,
+            sortBy,
+            sortOrder,
+          }),
+          MediaApi.getStats(),
+        ])
 
-      if (filesRes.success && filesRes.data) {
-        setFiles(filesRes.data)
-        setTotalCount(filesRes.pagination?.total || filesRes.data.length)
-      } else {
-        toast.error(filesRes.error || "Failed to load media files")
+        if (filesRes.success && filesRes.data) {
+          setFiles(filesRes.data)
+          setTotalCount(filesRes.pagination?.total || filesRes.data.length)
+        } else {
+          toast.error(filesRes.error || "Failed to load media files")
+        }
+
+        if (statsRes.success && statsRes.data) {
+          setStats(statsRes.data)
+        }
+      } catch (err: any) {
+        toast.error(err.message || "Failed to load media")
+      } finally {
+        setIsLoading(false)
+        setIsRefreshing(false)
       }
-
-      if (statsRes.success && statsRes.data) {
-        setStats(statsRes.data)
-      }
-    } catch (err: any) {
-      toast.error(err.message || "Failed to load media")
-    } finally {
-      setIsLoading(false)
-      setIsRefreshing(false)
-    }
-  }, [currentPage, pageSize, debouncedSearch, typeFilter, folderFilter, sortBy, sortOrder])
+    },
+    [
+      currentPage,
+      pageSize,
+      debouncedSearch,
+      typeFilter,
+      folderFilter,
+      sortBy,
+      sortOrder,
+    ]
+  )
 
   React.useEffect(() => {
     loadData()
@@ -170,7 +185,7 @@ export default function MediaPage() {
   )
 
   return (
-    <div className="flex-1 space-y-6 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
+    <div className="mx-auto max-w-7xl flex-1 space-y-6 p-4 sm:p-6 lg:p-8">
       {/* Top Overview & KPI Cards */}
       <MediaStatsOverview
         stats={stats}
@@ -277,7 +292,9 @@ export default function MediaPage() {
         onPrev={handlePrevInspector}
         onNext={handleNextInspector}
         hasPrev={currentInspectIndex > 0}
-        hasNext={currentInspectIndex < files.length - 1 && currentInspectIndex >= 0}
+        hasNext={
+          currentInspectIndex < files.length - 1 && currentInspectIndex >= 0
+        }
         existingFolders={stats?.folders || []}
       />
 

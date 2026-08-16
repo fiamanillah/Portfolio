@@ -32,7 +32,9 @@ export function MarkdownEditor({
   const [mode, setMode] = React.useState<"write" | "preview">("write")
 
   const insertSnippet = (before: string, after: string = "") => {
-    const textarea = document.getElementById("content-editor-textarea") as HTMLTextAreaElement
+    const textarea = document.getElementById(
+      "content-editor-textarea"
+    ) as HTMLTextAreaElement
     if (!textarea) return
 
     const start = textarea.selectionStart
@@ -40,12 +42,16 @@ export function MarkdownEditor({
     const selectedText = value.substring(start, end)
     const replacement = `${before}${selectedText || "text"}${after}`
 
-    const newContent = value.substring(0, start) + replacement + value.substring(end)
+    const newContent =
+      value.substring(0, start) + replacement + value.substring(end)
     onChange(newContent)
 
     setTimeout(() => {
       textarea.focus()
-      textarea.setSelectionRange(start + before.length, start + before.length + (selectedText.length || 4))
+      textarea.setSelectionRange(
+        start + before.length,
+        start + before.length + (selectedText.length || 4)
+      )
     }, 50)
   }
 
@@ -53,32 +59,32 @@ export function MarkdownEditor({
     <div className="space-y-2">
       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border pb-2">
         <div className="flex items-center gap-2">
-          <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+          <label className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
             Article Markdown Content *
           </label>
-          <div className="flex items-center bg-muted/60 rounded-md p-0.5 border border-border">
+          <div className="flex items-center rounded-md border border-border bg-muted/60 p-0.5">
             <Button
               type="button"
               variant={mode === "write" ? "secondary" : "ghost"}
               size="sm"
-              className="h-7 text-xs px-2.5"
+              className="h-7 px-2.5 text-xs"
               onClick={() => setMode("write")}
             >
-              <Edit3 className="h-3 w-3 mr-1" /> Write
+              <Edit3 className="mr-1 h-3 w-3" /> Write
             </Button>
             <Button
               type="button"
               variant={mode === "preview" ? "secondary" : "ghost"}
               size="sm"
-              className="h-7 text-xs px-2.5"
+              className="h-7 px-2.5 text-xs"
               onClick={() => setMode("preview")}
             >
-              <Eye className="h-3 w-3 mr-1" /> Preview
+              <Eye className="mr-1 h-3 w-3" /> Preview
             </Button>
           </div>
         </div>
 
-        <div className="flex items-center gap-3 text-xs font-mono text-muted-foreground">
+        <div className="flex items-center gap-3 font-mono text-xs text-muted-foreground">
           <span>{wordCount} words</span>
           <span>•</span>
           <span>{readTime}</span>
@@ -86,7 +92,7 @@ export function MarkdownEditor({
       </div>
 
       {mode === "write" && (
-        <div className="flex flex-wrap items-center gap-1 p-1.5 rounded-lg border border-border/80 bg-muted/30 text-muted-foreground">
+        <div className="flex flex-wrap items-center gap-1 rounded-lg border border-border/80 bg-muted/30 p-1.5 text-muted-foreground">
           <Button
             type="button"
             variant="ghost"
@@ -107,7 +113,7 @@ export function MarkdownEditor({
           >
             <Heading3 className="h-3.5 w-3.5" />
           </Button>
-          <div className="h-4 w-[1px] bg-border mx-1" />
+          <div className="mx-1 h-4 w-[1px] bg-border" />
           <Button
             type="button"
             variant="ghost"
@@ -148,7 +154,7 @@ export function MarkdownEditor({
           >
             <span className="font-mono text-[10px] font-bold">{"{ }"}</span>
           </Button>
-          <div className="h-4 w-[1px] bg-border mx-1" />
+          <div className="mx-1 h-4 w-[1px] bg-border" />
           <Button
             type="button"
             variant="ghost"
@@ -193,12 +199,16 @@ export function MarkdownEditor({
           value={value}
           onChange={(e) => onChange(e.target.value)}
           rows={20}
-          className="font-mono text-sm leading-relaxed bg-card"
+          className="bg-card font-mono text-sm leading-relaxed"
           required
         />
       ) : (
-        <div className="p-5 rounded-lg border border-border bg-card min-h-[400px] max-h-[600px] overflow-y-auto whitespace-pre-wrap text-sm leading-relaxed">
-          {value || <span className="text-muted-foreground italic">No content to preview...</span>}
+        <div className="max-h-[600px] min-h-[400px] overflow-y-auto rounded-lg border border-border bg-card p-5 text-sm leading-relaxed whitespace-pre-wrap">
+          {value || (
+            <span className="text-muted-foreground italic">
+              No content to preview...
+            </span>
+          )}
         </div>
       )}
     </div>

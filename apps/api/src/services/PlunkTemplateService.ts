@@ -1,89 +1,100 @@
 // src/services/PlunkTemplateService.ts
-import axios from "axios";
-import { config } from "@/core/config";
-import { AppLogger } from "@workspace/logger";
-import { PlunkVerifyService } from "./PlunkVerifyService";
-import { BadRequestError, ExternalServiceError, NotFoundError } from "@/core/errors/AppError";
+import axios from "axios"
+import { config } from "@/core/config"
+import { AppLogger } from "@workspace/logger"
+import { PlunkVerifyService } from "./PlunkVerifyService"
+import {
+  BadRequestError,
+  ExternalServiceError,
+  NotFoundError,
+} from "@/core/errors/AppError"
 
 export interface PlunkTemplatePayload {
-  name: string;
-  description?: string;
-  subject: string;
-  body: string;
-  from?: string;
-  fromName?: string;
-  replyTo?: string;
-  type?: "TRANSACTIONAL" | "MARKETING" | "HEADLESS";
+  name: string
+  description?: string
+  subject: string
+  body: string
+  from?: string
+  fromName?: string
+  replyTo?: string
+  type?: "TRANSACTIONAL" | "MARKETING" | "HEADLESS"
 }
 
 export interface PlunkTemplateResponse {
-  id: string;
-  name: string;
-  description?: string;
-  subject: string;
-  body: string;
-  from: string;
-  fromName?: string;
-  replyTo?: string;
-  type: string;
-  projectId?: string;
-  createdAt: string;
-  updatedAt: string;
+  id: string
+  name: string
+  description?: string
+  subject: string
+  body: string
+  from: string
+  fromName?: string
+  replyTo?: string
+  type: string
+  projectId?: string
+  createdAt: string
+  updatedAt: string
 }
 
 export interface PlunkListTemplatesQuery {
-  page?: number;
-  pageSize?: number;
-  type?: "TRANSACTIONAL" | "MARKETING" | "HEADLESS";
-  search?: string;
-  sort?: "name" | "createdAt" | "updatedAt";
-  dir?: "asc" | "desc";
+  page?: number
+  pageSize?: number
+  type?: "TRANSACTIONAL" | "MARKETING" | "HEADLESS"
+  search?: string
+  sort?: "name" | "createdAt" | "updatedAt"
+  dir?: "asc" | "desc"
 }
 
 export interface PlunkListTemplatesResponse {
-  data: PlunkTemplateResponse[];
-  total: number;
-  page: number;
-  pageSize: number;
-  totalPages: number;
+  data: PlunkTemplateResponse[]
+  total: number
+  page: number
+  pageSize: number
+  totalPages: number
 }
 
 export class PlunkTemplateService {
-  private static logger = new AppLogger("PlunkTemplateService");
+  private static logger = new AppLogger("PlunkTemplateService")
 
   private static getHeaders() {
-    const secretKey = config.plunk.secretKey;
+    const secretKey = config.plunk.secretKey
     return {
       Authorization: `Bearer ${secretKey}`,
       "Content-Type": "application/json",
-    };
+    }
   }
 
   private static isPlaceholder(): boolean {
-    return PlunkVerifyService.isPlaceholderKey(config.plunk.secretKey);
+    return PlunkVerifyService.isPlaceholderKey(config.plunk.secretKey)
   }
 
   /**
    * CREATE: Create a new template in Plunk
    * POST https://next-api.useplunk.com/templates
    */
-  public static async createTemplate(payload: PlunkTemplatePayload): Promise<PlunkTemplateResponse> {
+  public static async createTemplate(
+    payload: PlunkTemplatePayload
+  ): Promise<PlunkTemplateResponse> {
     if (this.isPlaceholder()) {
-      this.logger.info(`ℹ️ [SIMULATED PLUNK TEMPLATE CREATE] Created template: "${payload.name}"`);
-      const mockId = `sim_plunk_${Date.now()}`;
+      this.logger.info(
+        `ℹ️ [SIMULATED PLUNK TEMPLATE CREATE] Created template: "${payload.name}"`
+      )
+      const mockId = `sim_plunk_${Date.now()}`
       return {
         id: mockId,
         name: payload.name,
         description: payload.description,
         subject: payload.subject,
         body: payload.body,
-        from: payload.from || config.contact.recipientEmail || "hello@amanillah.com",
+        from:
+          payload.from ||
+          config.contact.recipientEmail ||
+          "hello@amanillah.com",
         fromName: payload.fromName || "Fi Amanillah",
         replyTo: payload.replyTo || config.contact.recipientEmail,
         type: payload.type || "MARKETING",
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-      };
+      }
     }
 
     try {
@@ -103,12 +114,14 @@ export class PlunkTemplateService {
           headers: this.getHeaders(),
           timeout: 10000,
         }
-      );
+      )
 
-      this.logger.info(`✔ Plunk template created successfully: ${response.data.id} (${payload.name})`);
-      return response.data;
+      this.logger.info(
+        `✔ Plunk template created successfully: ${response.data.id} (${payload.name})`
+      )
+      return response.data
     } catch (error) {
-      this.handleAxiosError(error, "Failed to create template in Plunk");
+      this.handleAxiosError(error, "Failed to create template in Plunk")
     }
   }
 
@@ -116,16 +129,20 @@ export class PlunkTemplateService {
    * LIST: Get paginated list of templates from Plunk
    * GET https://next-api.useplunk.com/templates
    */
-  public static async listTemplates(query: PlunkListTemplatesQuery = {}): Promise<PlunkListTemplatesResponse> {
+  public static async listTemplates(
+    query: PlunkListTemplatesQuery = {}
+  ): Promise<PlunkListTemplatesResponse> {
     if (this.isPlaceholder()) {
-      this.logger.info("ℹ️ [SIMULATED PLUNK TEMPLATES LIST] Returning empty/simulated list");
+      this.logger.info(
+        "ℹ️ [SIMULATED PLUNK TEMPLATES LIST] Returning empty/simulated list"
+      )
       return {
         data: [],
         total: 0,
         page: query.page || 1,
         pageSize: query.pageSize || 20,
         totalPages: 0,
-      };
+      }
     }
 
     try {
@@ -133,11 +150,11 @@ export class PlunkTemplateService {
         headers: this.getHeaders(),
         params: query,
         timeout: 10000,
-      });
+      })
 
-      return response.data;
+      return response.data
     } catch (error) {
-      this.handleAxiosError(error, "Failed to list templates from Plunk");
+      this.handleAxiosError(error, "Failed to list templates from Plunk")
     }
   }
 
@@ -147,7 +164,7 @@ export class PlunkTemplateService {
    */
   public static async getTemplate(id: string): Promise<PlunkTemplateResponse> {
     if (this.isPlaceholder()) {
-      this.logger.info(`ℹ️ [SIMULATED PLUNK TEMPLATE GET] Fetching ${id}`);
+      this.logger.info(`ℹ️ [SIMULATED PLUNK TEMPLATE GET] Fetching ${id}`)
       return {
         id,
         name: "Simulated Template",
@@ -157,21 +174,24 @@ export class PlunkTemplateService {
         type: "TRANSACTIONAL",
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-      };
+      }
     }
 
     try {
-      const response = await axios.get(`${config.plunk.apiUrl}/templates/${id}`, {
-        headers: this.getHeaders(),
-        timeout: 10000,
-      });
+      const response = await axios.get(
+        `${config.plunk.apiUrl}/templates/${id}`,
+        {
+          headers: this.getHeaders(),
+          timeout: 10000,
+        }
+      )
 
-      return response.data;
+      return response.data
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.status === 404) {
-        throw new NotFoundError(`Plunk template ${id} not found`);
+        throw new NotFoundError(`Plunk template ${id} not found`)
       }
-      this.handleAxiosError(error, `Failed to retrieve Plunk template ${id}`);
+      this.handleAxiosError(error, `Failed to retrieve Plunk template ${id}`)
     }
   }
 
@@ -179,9 +199,14 @@ export class PlunkTemplateService {
    * UPDATE: Update template in Plunk
    * PUT or PATCH https://next-api.useplunk.com/templates/:id
    */
-  public static async updateTemplate(id: string, payload: Partial<PlunkTemplatePayload>): Promise<PlunkTemplateResponse> {
+  public static async updateTemplate(
+    id: string,
+    payload: Partial<PlunkTemplatePayload>
+  ): Promise<PlunkTemplateResponse> {
     if (this.isPlaceholder()) {
-      this.logger.info(`ℹ️ [SIMULATED PLUNK TEMPLATE UPDATE] Updated template ${id}`);
+      this.logger.info(
+        `ℹ️ [SIMULATED PLUNK TEMPLATE UPDATE] Updated template ${id}`
+      )
       return {
         id,
         name: payload.name || "Updated Template",
@@ -194,34 +219,38 @@ export class PlunkTemplateService {
         type: payload.type || "MARKETING",
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-      };
+      }
     }
 
     try {
       // Try PATCH first, fall back to PUT if necessary
-      let response;
+      let response
       try {
         response = await axios.patch(
           `${config.plunk.apiUrl}/templates/${id}`,
           payload,
           { headers: this.getHeaders(), timeout: 10000 }
-        );
+        )
       } catch (patchErr) {
-        if (axios.isAxiosError(patchErr) && (patchErr.response?.status === 405 || patchErr.response?.status === 404)) {
+        if (
+          axios.isAxiosError(patchErr) &&
+          (patchErr.response?.status === 405 ||
+            patchErr.response?.status === 404)
+        ) {
           response = await axios.put(
             `${config.plunk.apiUrl}/templates/${id}`,
             payload,
             { headers: this.getHeaders(), timeout: 10000 }
-          );
+          )
         } else {
-          throw patchErr;
+          throw patchErr
         }
       }
 
-      this.logger.info(`✔ Plunk template updated successfully: ${id}`);
-      return response.data;
+      this.logger.info(`✔ Plunk template updated successfully: ${id}`)
+      return response.data
     } catch (error) {
-      this.handleAxiosError(error, `Failed to update Plunk template ${id}`);
+      this.handleAxiosError(error, `Failed to update Plunk template ${id}`)
     }
   }
 
@@ -231,22 +260,26 @@ export class PlunkTemplateService {
    */
   public static async deleteTemplate(id: string): Promise<void> {
     if (this.isPlaceholder()) {
-      this.logger.info(`ℹ️ [SIMULATED PLUNK TEMPLATE DELETE] Deleted template ${id}`);
-      return;
+      this.logger.info(
+        `ℹ️ [SIMULATED PLUNK TEMPLATE DELETE] Deleted template ${id}`
+      )
+      return
     }
 
     try {
       await axios.delete(`${config.plunk.apiUrl}/templates/${id}`, {
         headers: this.getHeaders(),
         timeout: 4000,
-      });
-      this.logger.info(`✔ Plunk template deleted successfully: ${id}`);
+      })
+      this.logger.info(`✔ Plunk template deleted successfully: ${id}`)
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.status === 404) {
-        this.logger.warn(`Plunk template ${id} already deleted or not found.`);
-        return;
+        this.logger.warn(`Plunk template ${id} already deleted or not found.`)
+        return
       }
-      this.logger.warn(`Non-blocking issue deleting Plunk template ${id}`, { error });
+      this.logger.warn(`Non-blocking issue deleting Plunk template ${id}`, {
+        error,
+      })
     }
   }
 
@@ -254,9 +287,13 @@ export class PlunkTemplateService {
    * DUPLICATE: Duplicate a template in Plunk
    * POST https://next-api.useplunk.com/templates/:id/duplicate
    */
-  public static async duplicateTemplate(id: string): Promise<PlunkTemplateResponse> {
+  public static async duplicateTemplate(
+    id: string
+  ): Promise<PlunkTemplateResponse> {
     if (this.isPlaceholder()) {
-      this.logger.info(`ℹ️ [SIMULATED PLUNK TEMPLATE DUPLICATE] Duplicated ${id}`);
+      this.logger.info(
+        `ℹ️ [SIMULATED PLUNK TEMPLATE DUPLICATE] Duplicated ${id}`
+      )
       return {
         id: `sim_plunk_copy_${Date.now()}`,
         name: "Copy of Template",
@@ -266,7 +303,7 @@ export class PlunkTemplateService {
         type: "TRANSACTIONAL",
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-      };
+      }
     }
 
     try {
@@ -274,11 +311,13 @@ export class PlunkTemplateService {
         `${config.plunk.apiUrl}/templates/${id}/duplicate`,
         {},
         { headers: this.getHeaders(), timeout: 10000 }
-      );
-      this.logger.info(`✔ Plunk template duplicated: ${id} -> ${response.data.id}`);
-      return response.data;
+      )
+      this.logger.info(
+        `✔ Plunk template duplicated: ${id} -> ${response.data.id}`
+      )
+      return response.data
     } catch (error) {
-      this.handleAxiosError(error, `Failed to duplicate Plunk template ${id}`);
+      this.handleAxiosError(error, `Failed to duplicate Plunk template ${id}`)
     }
   }
 
@@ -286,26 +325,39 @@ export class PlunkTemplateService {
    * SEND: Dispatch email using Plunk /v1/send with template and liquid variables
    */
   public static async sendWithTemplate(options: {
-    to: string;
-    templateId?: string;
-    subject?: string;
-    body?: string;
-    data?: Record<string, any>;
-    reply?: string;
-    from?: string;
-    fromName?: string;
-    headers?: Record<string, string>;
+    to: string
+    templateId?: string
+    subject?: string
+    body?: string
+    data?: Record<string, any>
+    reply?: string
+    from?: string
+    fromName?: string
+    headers?: Record<string, string>
   }): Promise<void> {
-    const { to, templateId, subject, body, data, reply, from, fromName, headers } = options;
+    const {
+      to,
+      templateId,
+      subject,
+      body,
+      data,
+      reply,
+      from,
+      fromName,
+      headers,
+    } = options
 
     if (this.isPlaceholder()) {
-      this.logger.info(`ℹ️ [SIMULATED PLUNK SEND] Sent email to: ${to} (Template: ${templateId || 'None'})`);
-      return;
+      this.logger.info(
+        `ℹ️ [SIMULATED PLUNK SEND] Sent email to: ${to} (Template: ${templateId || "None"})`
+      )
+      return
     }
 
     try {
-      const senderFrom = from || config.contact.recipientEmail || "fi@amanillah.com";
-      const senderName = fromName || "Fi Amanillah";
+      const senderFrom =
+        from || config.contact.recipientEmail || "fi@amanillah.com"
+      const senderName = fromName || "Fi Amanillah"
 
       const payload: Record<string, any> = {
         to,
@@ -317,53 +369,71 @@ export class PlunkTemplateService {
         ...(data ? { data } : {}),
         ...(reply ? { reply } : {}),
         ...(headers ? { headers } : {}),
-      };
+      }
 
       if (templateId) {
-        payload.template = templateId;
+        payload.template = templateId
       }
 
       await axios.post(`${config.plunk.apiUrl}/v1/send`, payload, {
         headers: this.getHeaders(),
         timeout: 10000,
-      });
+      })
 
-      this.logger.info(`✔ Email dispatched to ${to} via Plunk (Template: ${templateId || 'Direct Body'})`);
+      this.logger.info(
+        `✔ Email dispatched to ${to} via Plunk (Template: ${templateId || "Direct Body"})`
+      )
     } catch (error) {
-      this.handleAxiosError(error, `Failed to dispatch email to ${to} via Plunk`);
+      this.handleAxiosError(
+        error,
+        `Failed to dispatch email to ${to} via Plunk`
+      )
     }
   }
 
   /**
    * Standard error handler for Plunk API responses
    */
-  private static handleAxiosError(error: unknown, defaultMessage: string): never {
+  private static handleAxiosError(
+    error: unknown,
+    defaultMessage: string
+  ): never {
     if (axios.isAxiosError(error)) {
-      const status = error.response?.status;
-      const data = error.response?.data;
+      const status = error.response?.status
+      const data = error.response?.data
       const errorMsg =
         typeof data === "string"
           ? data
-          : data?.message || data?.error || JSON.stringify(data) || error.message;
+          : data?.message ||
+            data?.error ||
+            JSON.stringify(data) ||
+            error.message
 
-      this.logger.error(`Plunk API Error [${status}]: ${errorMsg}`, { status, data });
+      this.logger.error(`Plunk API Error [${status}]: ${errorMsg}`, {
+        status,
+        data,
+      })
 
       if (status === 400) {
-        throw new BadRequestError(`Plunk Validation Error: ${errorMsg}`);
+        throw new BadRequestError(`Plunk Validation Error: ${errorMsg}`)
       }
       if (status === 401) {
-        throw new ExternalServiceError("Plunk Authentication Error: Invalid or expired API Key.");
+        throw new ExternalServiceError(
+          "Plunk Authentication Error: Invalid or expired API Key."
+        )
       }
       if (status === 403) {
-        throw new BadRequestError(`Plunk Domain Error: Sender address must belong to a verified domain (${errorMsg}).`);
+        throw new BadRequestError(
+          `Plunk Domain Error: Sender address must belong to a verified domain (${errorMsg}).`
+        )
       }
       if (status === 404) {
-        throw new NotFoundError(`Plunk Resource Not Found: ${errorMsg}`);
+        throw new NotFoundError(`Plunk Resource Not Found: ${errorMsg}`)
       }
 
-      throw new ExternalServiceError(`${defaultMessage}: ${errorMsg}`);
+      throw new ExternalServiceError(`${defaultMessage}: ${errorMsg}`)
     }
 
-    throw new ExternalServiceError(`${defaultMessage}: ${String(error)}`);
+    throw new ExternalServiceError(`${defaultMessage}: ${String(error)}`)
   }
 }

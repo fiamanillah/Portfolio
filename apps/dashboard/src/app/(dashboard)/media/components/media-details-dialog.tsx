@@ -42,7 +42,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@workspace/ui/components/select"
-import { Avatar, AvatarFallback, AvatarImage } from "@workspace/ui/components/avatar"
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@workspace/ui/components/avatar"
 import { toast } from "@workspace/ui/components/sonner"
 
 interface MediaDetailsDialogProps {
@@ -78,7 +82,9 @@ export function MediaDetailsDialog({
   const [tagInput, setTagInput] = React.useState("")
   const [isPublic, setIsPublic] = React.useState(true)
   const [isSaving, setIsSaving] = React.useState(false)
-  const [copiedType, setCopiedType] = React.useState<"url" | "markdown" | "html" | null>(null)
+  const [copiedType, setCopiedType] = React.useState<
+    "url" | "markdown" | "html" | null
+  >(null)
 
   // Sync form whenever the selected file changes
   React.useEffect(() => {
@@ -102,8 +108,8 @@ export function MediaDetailsDialog({
       type === "url"
         ? "Public URL copied!"
         : type === "markdown"
-        ? "Markdown code copied!"
-        : "HTML snippet copied!"
+          ? "Markdown code copied!"
+          : "HTML snippet copied!"
     )
     setTimeout(() => setCopiedType(null), 2000)
   }
@@ -159,7 +165,14 @@ export function MediaDetailsDialog({
   }
 
   const folderOptions = Array.from(
-    new Set(["general", "blogs", "avatars", "templates", "documents", ...existingFolders.map((f) => f.folder)])
+    new Set([
+      "general",
+      "blogs",
+      "avatars",
+      "templates",
+      "documents",
+      ...existingFolders.map((f) => f.folder),
+    ])
   ).sort()
 
   const formattedCreated = new Date(file.createdAt).toLocaleString(undefined, {
@@ -172,14 +185,17 @@ export function MediaDetailsDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-[96vw] max-w-none sm:max-w-none min-w-[94vw] lg:min-w-[88vw] xl:min-w-[1340px] 2xl:min-w-[1500px] max-h-[94vh] flex flex-col p-0 overflow-hidden gap-0 border-border shadow-2xl">
+      <DialogContent className="flex max-h-[94vh] w-[96vw] max-w-none min-w-[94vw] flex-col gap-0 overflow-hidden border-border p-0 shadow-2xl sm:max-w-none lg:min-w-[88vw] xl:min-w-[1340px] 2xl:min-w-[1500px]">
         {/* Header & Navigation */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-border/80 bg-muted/20">
-          <div className="flex items-center gap-3 min-w-0">
-            <DialogTitle className="text-base font-bold truncate">
+        <div className="flex items-center justify-between border-b border-border/80 bg-muted/20 px-6 py-4">
+          <div className="flex min-w-0 items-center gap-3">
+            <DialogTitle className="truncate text-base font-bold">
               Attachment Details
             </DialogTitle>
-            <Badge variant="outline" className="font-mono text-[10px] uppercase">
+            <Badge
+              variant="outline"
+              className="font-mono text-[10px] uppercase"
+            >
               {file.fileExtension || file.mimeType.split("/")[1] || "FILE"}
             </Badge>
           </div>
@@ -213,10 +229,10 @@ export function MediaDetailsDialog({
         </div>
 
         {/* Dual-Column Body */}
-        <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 overflow-y-auto divide-y lg:divide-y-0 lg:divide-x divide-border">
+        <div className="grid flex-1 grid-cols-1 divide-y divide-border overflow-y-auto lg:grid-cols-12 lg:divide-x lg:divide-y-0">
           {/* Left Side: Media Preview (Cols 1-8) */}
-          <div className="lg:col-span-8 p-6 lg:p-8 flex flex-col items-center justify-center bg-muted/10 min-h-[380px] lg:min-h-[580px]">
-            <div className="w-full h-full max-h-[560px] flex items-center justify-center rounded-xl overflow-hidden shadow-xs border border-border/60 bg-background/50">
+          <div className="flex min-h-[380px] flex-col items-center justify-center bg-muted/10 p-6 lg:col-span-8 lg:min-h-[580px] lg:p-8">
+            <div className="flex h-full max-h-[560px] w-full items-center justify-center overflow-hidden rounded-xl border border-border/60 bg-background/50 shadow-xs">
               <MediaPreview
                 url={file.url}
                 mimeType={file.mimeType}
@@ -228,12 +244,12 @@ export function MediaDetailsDialog({
             </div>
 
             {/* Quick Action Pills Below Preview */}
-            <div className="flex flex-wrap items-center justify-center gap-2.5 mt-5 w-full">
+            <div className="mt-5 flex w-full flex-wrap items-center justify-center gap-2.5">
               <Button
                 variant="secondary"
                 size="sm"
                 onClick={() => handleCopy(file.url, "url")}
-                className="h-8 text-xs gap-1.5"
+                className="h-8 gap-1.5 text-xs"
               >
                 {copiedType === "url" ? (
                   <Check className="size-3.5 text-emerald-500" />
@@ -247,9 +263,12 @@ export function MediaDetailsDialog({
                 variant="secondary"
                 size="sm"
                 onClick={() =>
-                  handleCopy(`![${altText || file.fileName}](${file.url})`, "markdown")
+                  handleCopy(
+                    `![${altText || file.fileName}](${file.url})`,
+                    "markdown"
+                  )
                 }
-                className="h-8 text-xs gap-1.5"
+                className="h-8 gap-1.5 text-xs"
               >
                 {copiedType === "markdown" ? (
                   <Check className="size-3.5 text-emerald-500" />
@@ -268,7 +287,7 @@ export function MediaDetailsDialog({
                     "html"
                   )
                 }
-                className="h-8 text-xs gap-1.5"
+                className="h-8 gap-1.5 text-xs"
               >
                 {copiedType === "html" ? (
                   <Check className="size-3.5 text-emerald-500" />
@@ -282,7 +301,7 @@ export function MediaDetailsDialog({
                 variant="outline"
                 size="sm"
                 onClick={handleDownload}
-                className="h-8 text-xs gap-1.5"
+                className="h-8 gap-1.5 text-xs"
               >
                 <Download className="size-3.5" />
                 Download
@@ -292,7 +311,7 @@ export function MediaDetailsDialog({
                 variant="outline"
                 size="sm"
                 asChild
-                className="h-8 text-xs gap-1.5"
+                className="h-8 gap-1.5 text-xs"
               >
                 <a href={file.url} target="_blank" rel="noreferrer">
                   <ExternalLink className="size-3.5" />
@@ -303,32 +322,45 @@ export function MediaDetailsDialog({
           </div>
 
           {/* Right Side: Metadata & Interactive Editing (Cols 9-12) */}
-          <div className="lg:col-span-4 p-6 lg:p-7 flex flex-col justify-between overflow-y-auto space-y-6 bg-card">
+          <div className="flex flex-col justify-between space-y-6 overflow-y-auto bg-card p-6 lg:col-span-4 lg:p-7">
             <div className="space-y-5">
               {/* File Info Block */}
-              <div className="p-3.5 rounded-xl border border-border/80 bg-muted/20 space-y-2 text-xs">
+              <div className="space-y-2 rounded-xl border border-border/80 bg-muted/20 p-3.5 text-xs">
                 <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground font-medium">Uploaded on:</span>
-                  <span className="font-mono text-foreground">{formattedCreated}</span>
+                  <span className="font-medium text-muted-foreground">
+                    Uploaded on:
+                  </span>
+                  <span className="font-mono text-foreground">
+                    {formattedCreated}
+                  </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground font-medium">File size:</span>
+                  <span className="font-medium text-muted-foreground">
+                    File size:
+                  </span>
                   <span className="font-mono font-semibold text-foreground">
                     {file.sizeFormatted}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground font-medium">MIME type:</span>
-                  <span className="font-mono text-foreground">{file.mimeType}</span>
+                  <span className="font-medium text-muted-foreground">
+                    MIME type:
+                  </span>
+                  <span className="font-mono text-foreground">
+                    {file.mimeType}
+                  </span>
                 </div>
                 {file.uploader && (
-                  <div className="flex items-center justify-between pt-1 border-t border-border/60">
-                    <span className="text-muted-foreground font-medium">Uploaded by:</span>
+                  <div className="flex items-center justify-between border-t border-border/60 pt-1">
+                    <span className="font-medium text-muted-foreground">
+                      Uploaded by:
+                    </span>
                     <div className="flex items-center gap-1.5">
                       <Avatar className="size-4">
                         <AvatarImage src={file.uploader.avatar || undefined} />
                         <AvatarFallback className="text-[8px]">
-                          {file.uploader.name?.slice(0, 2).toUpperCase() || "AD"}
+                          {file.uploader.name?.slice(0, 2).toUpperCase() ||
+                            "AD"}
                         </AvatarFallback>
                       </Avatar>
                       <span className="font-medium text-foreground">
@@ -343,27 +375,32 @@ export function MediaDetailsDialog({
               <div className="space-y-4 text-xs">
                 {/* File Title */}
                 <div className="space-y-1.5">
-                  <Label className="text-xs font-semibold">Title / Display Name</Label>
+                  <Label className="text-xs font-semibold">
+                    Title / Display Name
+                  </Label>
                   <Input
                     value={fileName}
                     onChange={(e) => setFileName(e.target.value)}
-                    className="h-8 text-xs bg-background"
+                    className="h-8 bg-background text-xs"
                   />
                 </div>
 
                 {/* Alt Text (Alternative Text for SEO) */}
                 <div className="space-y-1.5">
                   <div className="flex items-center justify-between">
-                    <Label className="text-xs font-semibold">Alternative Text (Alt Text)</Label>
-                    <span className="text-[10px] text-muted-foreground flex items-center gap-1">
-                      <Info className="size-3 text-primary" /> Crucial for SEO & A11y
+                    <Label className="text-xs font-semibold">
+                      Alternative Text (Alt Text)
+                    </Label>
+                    <span className="flex items-center gap-1 text-[10px] text-muted-foreground">
+                      <Info className="size-3 text-primary" /> Crucial for SEO &
+                      A11y
                     </span>
                   </div>
                   <Input
                     placeholder="Describe the purpose of this asset..."
                     value={altText}
                     onChange={(e) => setAltText(e.target.value)}
-                    className="h-8 text-xs bg-background"
+                    className="h-8 bg-background text-xs"
                   />
                 </div>
 
@@ -375,18 +412,18 @@ export function MediaDetailsDialog({
                     value={caption}
                     onChange={(e) => setCaption(e.target.value)}
                     rows={2}
-                    className="text-xs bg-background resize-none min-h-[56px]"
+                    className="min-h-[56px] resize-none bg-background text-xs"
                   />
                 </div>
 
                 {/* Folder & Visibility Row */}
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-1.5">
-                    <Label className="text-xs font-semibold flex items-center gap-1">
+                    <Label className="flex items-center gap-1 text-xs font-semibold">
                       <Folder className="size-3 text-primary" /> Folder
                     </Label>
                     <Select value={folder} onValueChange={setFolder}>
-                      <SelectTrigger className="h-8 text-xs bg-background">
+                      <SelectTrigger className="h-8 bg-background text-xs">
                         <SelectValue placeholder="Folder" />
                       </SelectTrigger>
                       <SelectContent className="text-xs">
@@ -400,7 +437,7 @@ export function MediaDetailsDialog({
                   </div>
 
                   <div className="space-y-1.5">
-                    <Label className="text-xs font-semibold flex items-center gap-1">
+                    <Label className="flex items-center gap-1 text-xs font-semibold">
                       {isPublic ? (
                         <Globe className="size-3 text-emerald-500" />
                       ) : (
@@ -408,21 +445,24 @@ export function MediaDetailsDialog({
                       )}
                       Visibility
                     </Label>
-                    <div className="flex items-center justify-between h-8 px-2 rounded-lg border border-border bg-background">
+                    <div className="flex h-8 items-center justify-between rounded-lg border border-border bg-background px-2">
                       <span className="text-[11px] text-muted-foreground">
                         {isPublic ? "Public" : "Private"}
                       </span>
-                      <Switch checked={isPublic} onCheckedChange={setIsPublic} />
+                      <Switch
+                        checked={isPublic}
+                        onCheckedChange={setIsPublic}
+                      />
                     </div>
                   </div>
                 </div>
 
                 {/* Tags */}
                 <div className="space-y-1.5">
-                  <Label className="text-xs font-semibold flex items-center gap-1">
+                  <Label className="flex items-center gap-1 text-xs font-semibold">
                     <Tag className="size-3 text-primary" /> Tags
                   </Label>
-                  <div className="flex flex-wrap items-center gap-1.5 p-1.5 min-h-[36px] rounded-lg border border-border bg-background">
+                  <div className="flex min-h-[36px] flex-wrap items-center gap-1.5 rounded-lg border border-border bg-background p-1.5">
                     {tags.map((tag) => (
                       <Badge
                         key={tag}
@@ -445,7 +485,7 @@ export function MediaDetailsDialog({
                       value={tagInput}
                       onChange={(e) => setTagInput(e.target.value)}
                       onKeyDown={handleAddTag}
-                      className="flex-1 min-w-[80px] bg-transparent text-xs outline-hidden px-1 placeholder:text-muted-foreground"
+                      className="min-w-[80px] flex-1 bg-transparent px-1 text-xs outline-hidden placeholder:text-muted-foreground"
                     />
                   </div>
                 </div>
@@ -453,12 +493,12 @@ export function MediaDetailsDialog({
             </div>
 
             {/* Bottom Actions */}
-            <div className="pt-4 border-t border-border/80 flex items-center justify-between">
+            <div className="flex items-center justify-between border-t border-border/80 pt-4">
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => onDeleteFile(file)}
-                className="text-destructive hover:bg-destructive/10 hover:text-destructive h-8 px-2.5 text-xs gap-1.5"
+                className="h-8 gap-1.5 px-2.5 text-xs text-destructive hover:bg-destructive/10 hover:text-destructive"
               >
                 <Trash2 className="size-3.5" />
                 Delete Permanently
@@ -468,7 +508,7 @@ export function MediaDetailsDialog({
                 onClick={handleSaveChanges}
                 disabled={isSaving}
                 size="sm"
-                className="h-8 text-xs gap-1.5 bg-primary hover:bg-primary/90 text-primary-foreground shadow-xs"
+                className="h-8 gap-1.5 bg-primary text-xs text-primary-foreground shadow-xs hover:bg-primary/90"
               >
                 {isSaving ? (
                   <>

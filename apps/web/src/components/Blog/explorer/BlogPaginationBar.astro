@@ -17,12 +17,16 @@ const { initialTotalPages = 1, class: className = "" } = Astro.props
   } ${className}`}
 >
   <!-- Page Counter -->
-  <div class="flex items-center gap-1.5 font-mono text-xs text-muted-foreground">
+  <div
+    class="flex items-center gap-1.5 font-mono text-xs text-muted-foreground"
+  >
     <Icon name="mdi:file-document-outline" class="size-3.5 text-primary/70" />
     <span>PAGE</span>
     <span data-current-page-num class="font-bold text-foreground">1</span>
     <span>OF</span>
-    <span data-total-pages-num class="font-bold text-foreground">{initialTotalPages}</span>
+    <span data-total-pages-num class="font-bold text-foreground"
+      >{initialTotalPages}</span
+    >
   </div>
 
   <!-- Pagination Action Controls -->
@@ -33,7 +37,7 @@ const { initialTotalPages = 1, class: className = "" } = Astro.props
       data-pagination-prev
       disabled
       aria-label="Previous Page"
-      class="inline-flex items-center gap-1 border border-border bg-background px-3 py-1.5 font-mono text-xs transition-colors cursor-not-allowed opacity-40 select-none"
+      class="inline-flex cursor-not-allowed items-center gap-1 border border-border bg-background px-3 py-1.5 font-mono text-xs opacity-40 transition-colors select-none"
     >
       <Icon name="mdi:chevron-left" class="size-4" />
       <span>Prev</span>
@@ -42,24 +46,26 @@ const { initialTotalPages = 1, class: className = "" } = Astro.props
     <!-- Numbered Page Buttons Container -->
     <div data-page-numbers class="flex items-center gap-1">
       {
-        Array.from({ length: initialTotalPages }, (_, i) => i + 1).map((pageNum) => {
-          const isCurrent = pageNum === 1
-          return (
-            <button
-              type="button"
-              data-page-btn={pageNum}
-              aria-label={`Go to page ${pageNum}`}
-              aria-current={isCurrent ? "page" : undefined}
-              class={`h-8 w-8 font-mono text-xs transition-colors cursor-pointer select-none ${
-                isCurrent
-                  ? "bg-primary text-primary-foreground font-bold shadow-sm"
-                  : "border border-border bg-background text-muted-foreground hover:border-primary hover:text-primary"
-              }`}
-            >
-              {pageNum}
-            </button>
-          )
-        })
+        Array.from({ length: initialTotalPages }, (_, i) => i + 1).map(
+          (pageNum) => {
+            const isCurrent = pageNum === 1
+            return (
+              <button
+                type="button"
+                data-page-btn={pageNum}
+                aria-label={`Go to page ${pageNum}`}
+                aria-current={isCurrent ? "page" : undefined}
+                class={`h-8 w-8 cursor-pointer font-mono text-xs transition-colors select-none ${
+                  isCurrent
+                    ? "bg-primary font-bold text-primary-foreground shadow-sm"
+                    : "border border-border bg-background text-muted-foreground hover:border-primary hover:text-primary"
+                }`}
+              >
+                {pageNum}
+              </button>
+            )
+          }
+        )
       }
     </div>
 

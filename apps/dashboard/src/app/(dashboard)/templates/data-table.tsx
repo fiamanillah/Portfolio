@@ -8,13 +8,7 @@ import {
   type RowSelectionState,
   type SortingState,
 } from "@tanstack/react-table"
-import {
-  Cloud,
-  Layers,
-  RefreshCw,
-  Search,
-  X,
-} from "lucide-react"
+import { Cloud, Layers, RefreshCw, Search, X } from "lucide-react"
 
 import type { EmailTemplate } from "@workspace/shared"
 import { Button } from "@workspace/ui/components/button"
@@ -57,8 +51,12 @@ export function TemplatesDataTable({
   onBulkSync,
 }: TemplatesDataTableProps) {
   const [sorting, setSorting] = React.useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
-  const [columnVisibility, setColumnVisibility] = React.useState<Record<string, boolean>>({})
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    []
+  )
+  const [columnVisibility, setColumnVisibility] = React.useState<
+    Record<string, boolean>
+  >({})
   const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({})
 
   const [pagination, setPagination] = React.useState({
@@ -116,7 +114,7 @@ export function TemplatesDataTable({
     <div className="space-y-4">
       {/* Bulk Action Toolbar if items are selected */}
       {selectedCount > 0 && (
-        <div className="flex items-center justify-between gap-4 p-3 rounded-lg border border-primary/30 bg-primary/5 text-primary text-xs animate-in fade-in slide-in-from-top-2">
+        <div className="flex animate-in items-center justify-between gap-4 rounded-lg border border-primary/30 bg-primary/5 p-3 text-xs text-primary fade-in slide-in-from-top-2">
           <div className="flex items-center gap-2">
             <span className="font-semibold">{selectedCount}</span>
             <span>template{selectedCount > 1 ? "s" : ""} selected</span>
@@ -126,7 +124,7 @@ export function TemplatesDataTable({
               <Button
                 size="sm"
                 variant="outline"
-                className="h-8 gap-1.5 text-xs bg-background/80"
+                className="h-8 gap-1.5 bg-background/80 text-xs"
                 onClick={() => onBulkSync(selectedTemplates)}
               >
                 <Cloud className="size-3.5 text-emerald-400" />
@@ -146,20 +144,23 @@ export function TemplatesDataTable({
       )}
 
       {/* Data Table */}
-      <div className="rounded-xl border border-border/80 bg-card/60 backdrop-blur-sm shadow-sm overflow-hidden">
+      <div className="overflow-hidden rounded-xl border border-border/80 bg-card/60 shadow-sm backdrop-blur-sm">
         <Table>
           <TableHeader className="bg-muted/40">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id} className="hover:bg-transparent">
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id} className="py-3 px-4 text-xs font-semibold">
+                  <TableHead
+                    key={header.id}
+                    className="px-4 py-3 text-xs font-semibold"
+                  >
                     {header.isPlaceholder
                       ? null
                       : header.column.columnDef.header
-                      ? typeof header.column.columnDef.header === "function"
-                        ? header.column.columnDef.header(header.getContext())
-                        : header.column.columnDef.header
-                      : null}
+                        ? typeof header.column.columnDef.header === "function"
+                          ? header.column.columnDef.header(header.getContext())
+                          : header.column.columnDef.header
+                        : null}
                   </TableHead>
                 ))}
               </TableRow>
@@ -170,7 +171,10 @@ export function TemplatesDataTable({
               Array.from({ length: 6 }).map((_, idx) => (
                 <TableRow key={`skeleton-row-${idx}`}>
                   {columns.map((_, colIdx) => (
-                    <TableCell key={`skeleton-col-${colIdx}`} className="py-3 px-4">
+                    <TableCell
+                      key={`skeleton-col-${colIdx}`}
+                      className="px-4 py-3"
+                    >
                       <Skeleton className="h-5 w-full rounded" />
                     </TableCell>
                   ))}
@@ -181,10 +185,10 @@ export function TemplatesDataTable({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  className="transition-colors hover:bg-muted/30 border-border/50"
+                  className="border-border/50 transition-colors hover:bg-muted/30"
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="py-3 px-4">
+                    <TableCell key={cell.id} className="px-4 py-3">
                       {typeof cell.column.columnDef.cell === "function"
                         ? cell.column.columnDef.cell(cell.getContext())
                         : (cell.getValue() as React.ReactNode)}
@@ -212,15 +216,19 @@ export function TemplatesDataTable({
         </Table>
 
         {/* Column Options & Pagination Footer */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 border-t border-border/60 bg-muted/20">
-          <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-start">
+        <div className="flex flex-col items-center justify-between gap-4 border-t border-border/60 bg-muted/20 p-4 sm:flex-row">
+          <div className="flex w-full items-center justify-between gap-2 sm:w-auto sm:justify-start">
             <span className="text-xs text-muted-foreground">
-              Total <span className="font-semibold text-foreground">{totalCount}</span> templates
+              Total{" "}
+              <span className="font-semibold text-foreground">
+                {totalCount}
+              </span>{" "}
+              templates
             </span>
             <DataTableViewOptions table={table} />
           </div>
 
-          <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
+          <div className="flex w-full items-center justify-end gap-2 sm:w-auto">
             <DataTablePagination
               table={table}
               totalItemsCount={totalCount}

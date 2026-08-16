@@ -86,10 +86,11 @@ export function SignUpStep({
               value={name}
               onChange={(e) => {
                 setName(e.target.value)
-                if (errors.name) setErrors((prev) => ({ ...prev, name: undefined }))
+                if (errors.name)
+                  setErrors((prev) => ({ ...prev, name: undefined }))
               }}
               aria-invalid={!!errors.name}
-              className="rounded-none font-mono text-xs border-border bg-background/50 focus:border-primary"
+              className="rounded-none border-border bg-background/50 font-mono text-xs focus:border-primary"
               required
             />
             <FieldError errors={errors.name} />
@@ -105,10 +106,11 @@ export function SignUpStep({
               value={username}
               onChange={(e) => {
                 setUsername(e.target.value)
-                if (errors.username) setErrors((prev) => ({ ...prev, username: undefined }))
+                if (errors.username)
+                  setErrors((prev) => ({ ...prev, username: undefined }))
               }}
               aria-invalid={!!errors.username}
-              className="rounded-none font-mono text-xs border-border bg-background/50 focus:border-primary"
+              className="rounded-none border-border bg-background/50 font-mono text-xs focus:border-primary"
             />
             <FieldError errors={errors.username} />
           </Field>
@@ -124,10 +126,11 @@ export function SignUpStep({
             value={email}
             onChange={(e) => {
               setEmail(e.target.value)
-              if (errors.email) setErrors((prev) => ({ ...prev, email: undefined }))
+              if (errors.email)
+                setErrors((prev) => ({ ...prev, email: undefined }))
             }}
             aria-invalid={!!errors.email}
-            className="rounded-none font-mono text-xs border-border bg-background/50 focus:border-primary"
+            className="rounded-none border-border bg-background/50 font-mono text-xs focus:border-primary"
             required
           />
           <FieldError errors={errors.email} />
@@ -144,10 +147,11 @@ export function SignUpStep({
               value={password}
               onChange={(e) => {
                 setPassword(e.target.value)
-                if (errors.password) setErrors((prev) => ({ ...prev, password: undefined }))
+                if (errors.password)
+                  setErrors((prev) => ({ ...prev, password: undefined }))
               }}
               aria-invalid={!!errors.password}
-              className="rounded-none font-mono text-xs border-border bg-background/50 focus:border-primary"
+              className="rounded-none border-border bg-background/50 font-mono text-xs focus:border-primary"
             />
             <FieldError errors={errors.password} />
           </Field>
@@ -161,7 +165,7 @@ export function SignUpStep({
               placeholder="DevOps Lead"
               value={role}
               onChange={(e) => setRole(e.target.value)}
-              className="rounded-none font-mono text-xs border-border bg-background/50 focus:border-primary"
+              className="rounded-none border-border bg-background/50 font-mono text-xs focus:border-primary"
             />
           </Field>
         </div>
@@ -175,7 +179,7 @@ export function SignUpStep({
                 key={idx}
                 type="button"
                 onClick={() => setSelectedAvatar(avatarUrl)}
-                className={`relative rounded-full p-0.5 border-2 transition-all cursor-pointer shrink-0 ${
+                className={`relative shrink-0 cursor-pointer rounded-full border-2 p-0.5 transition-all ${
                   selectedAvatar === avatarUrl
                     ? "border-primary shadow-[0_0_10px_oklch(var(--primary)/40%)]"
                     : "border-border hover:border-primary/50"
@@ -187,7 +191,7 @@ export function SignUpStep({
                   className="size-8 rounded-full object-cover"
                 />
                 {selectedAvatar === avatarUrl && (
-                  <span className="absolute -bottom-1 -right-1 flex size-3.5 items-center justify-center rounded-full bg-primary text-primary-foreground">
+                  <span className="absolute -right-1 -bottom-1 flex size-3.5 items-center justify-center rounded-full bg-primary text-primary-foreground">
                     <HugeiconsIcon icon={Tick02Icon} className="size-2.5" />
                   </span>
                 )}
@@ -199,7 +203,7 @@ export function SignUpStep({
         {/* Newsletter & Updates Subscription Checkbox with Field Component */}
         <Field
           orientation="horizontal"
-          className="border border-border/80 bg-muted/20 p-3 rounded-none items-start"
+          className="items-start rounded-none border border-border/80 bg-muted/20 p-3"
         >
           <Checkbox
             id="newsletter-sub"
@@ -210,13 +214,17 @@ export function SignUpStep({
           <FieldContent className="cursor-pointer select-none">
             <FieldLabel
               htmlFor="newsletter-sub"
-              className="font-semibold flex items-center gap-1 cursor-pointer"
+              className="flex cursor-pointer items-center gap-1 font-semibold"
             >
-              <HugeiconsIcon icon={Notification01Icon} className="size-3 text-primary inline" />
+              <HugeiconsIcon
+                icon={Notification01Icon}
+                className="inline size-3 text-primary"
+              />
               Subscribe to Updates & Newsletter
             </FieldLabel>
             <FieldDescription>
-              Receive deep-dive architectural breakdowns, system case studies, and engineering updates.
+              Receive deep-dive architectural breakdowns, system case studies,
+              and engineering updates.
             </FieldDescription>
           </FieldContent>
         </Field>
@@ -225,11 +233,14 @@ export function SignUpStep({
       <Button
         type="submit"
         disabled={isSubmitting}
-        className="w-full rounded-none font-mono text-xs font-bold uppercase tracking-wider bg-primary text-primary-foreground hover:bg-primary/90 transition-colors cursor-pointer h-10 shadow-sm flex items-center justify-center gap-2"
+        className="flex h-10 w-full cursor-pointer items-center justify-center gap-2 rounded-none bg-primary font-mono text-xs font-bold tracking-wider text-primary-foreground uppercase shadow-sm transition-colors hover:bg-primary/90"
       >
         {isSubmitting ? (
           <>
-            <HugeiconsIcon icon={Loading03Icon} className="size-4 animate-spin" />
+            <HugeiconsIcon
+              icon={Loading03Icon}
+              className="size-4 animate-spin"
+            />
             <span>Sending Verification Code...</span>
           </>
         ) : (

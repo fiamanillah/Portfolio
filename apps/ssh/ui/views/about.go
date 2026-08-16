@@ -65,7 +65,7 @@ func DrawAbout(width int) string {
 	// Each card: Width(cardW) + 2 border chars = cardW+2 visual width
 	// 4 cards side by side + spaces between = needs to fit in iw
 	// Safe formula: 4*(cardW+2) + 3 gaps <= iw
-	cardW := (iw - 3) / 4 - 2
+	cardW := (iw-3)/4 - 2
 	if cardW < 10 {
 		cardW = 10
 	}

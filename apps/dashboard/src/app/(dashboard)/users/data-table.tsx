@@ -8,12 +8,7 @@ import {
   type RowSelectionState,
   type SortingState,
 } from "@tanstack/react-table"
-import {
-  Layers,
-  RefreshCw,
-  Search,
-  X,
-} from "lucide-react"
+import { Layers, RefreshCw, Search, X } from "lucide-react"
 
 import type { AuthUser } from "@workspace/shared"
 import { Button } from "@workspace/ui/components/button"
@@ -63,8 +58,12 @@ export function UsersDataTable({
   onRefresh,
 }: UsersDataTableProps) {
   const [sorting, setSorting] = React.useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
-  const [columnVisibility, setColumnVisibility] = React.useState<Record<string, boolean>>({})
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    []
+  )
+  const [columnVisibility, setColumnVisibility] = React.useState<
+    Record<string, boolean>
+  >({})
   const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({})
 
   const [pagination, setPagination] = React.useState({
@@ -129,18 +128,18 @@ export function UsersDataTable({
         <div className="flex flex-1 flex-wrap items-center gap-2">
           {/* Search Box */}
           <div className="relative w-full sm:w-64">
-            <Search className="absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />
+            <Search className="absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-muted-foreground" />
             <Input
               placeholder="Search name, username, email..."
               value={searchQuery}
               onChange={(e) => onSearchChange?.(e.target.value)}
-              className="pl-8 h-8 text-xs bg-background/80"
+              className="h-8 bg-background/80 pl-8 text-xs"
             />
             {searchQuery && (
               <button
                 type="button"
                 onClick={() => onSearchChange?.("")}
-                className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground p-0.5"
+                className="absolute top-1/2 right-2 -translate-y-1/2 p-0.5 text-muted-foreground hover:text-foreground"
               >
                 <X className="size-3" />
               </button>
@@ -148,7 +147,7 @@ export function UsersDataTable({
           </div>
 
           {/* Role Filter Tabs */}
-          <div className="flex items-center gap-1 bg-muted/50 p-0.5 rounded-lg border border-border/80 text-xs">
+          <div className="flex items-center gap-1 rounded-lg border border-border/80 bg-muted/50 p-0.5 text-xs">
             {[
               { label: "All Roles", value: "ALL" },
               { label: "Admin", value: "ADMIN" },
@@ -160,7 +159,7 @@ export function UsersDataTable({
                 key={tab.value}
                 type="button"
                 onClick={() => onRoleFilterChange?.(tab.value)}
-                className={`px-2.5 py-1 text-[11px] rounded-md font-medium transition-all ${
+                className={`rounded-md px-2.5 py-1 text-[11px] font-medium transition-all ${
                   roleFilter === tab.value
                     ? "bg-primary text-primary-foreground shadow-xs"
                     : "text-muted-foreground hover:text-foreground"
@@ -195,7 +194,9 @@ export function UsersDataTable({
               disabled={isLoading}
               className="h-8 gap-1.5 text-xs"
             >
-              <RefreshCw className={`size-3.5 ${isLoading ? "animate-spin" : ""}`} />
+              <RefreshCw
+                className={`size-3.5 ${isLoading ? "animate-spin" : ""}`}
+              />
               <span className="hidden sm:inline">Refresh</span>
             </Button>
           )}
@@ -204,14 +205,20 @@ export function UsersDataTable({
       </div>
 
       {/* Main Table Structure */}
-      <div className="rounded-xl border border-border/80 overflow-hidden bg-card/60">
+      <div className="overflow-hidden rounded-xl border border-border/80 bg-card/60">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className="bg-muted/40 hover:bg-muted/40">
+              <TableRow
+                key={headerGroup.id}
+                className="bg-muted/40 hover:bg-muted/40"
+              >
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id} className="h-10 text-xs font-semibold">
+                    <TableHead
+                      key={header.id}
+                      className="h-10 text-xs font-semibold"
+                    >
                       {header.isPlaceholder ? null : (
                         <table.FlexRender header={header} />
                       )}
@@ -225,13 +232,13 @@ export function UsersDataTable({
             {isLoading ? (
               Array.from({ length: Math.min(pageSize, 6) }).map((_, index) => (
                 <TableRow key={`skeleton-user-${index}`}>
-                  <TableCell className="pl-4 w-10">
+                  <TableCell className="w-10 pl-4">
                     <Skeleton className="size-4 rounded" />
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-3">
-                      <Skeleton className="size-8 rounded-lg shrink-0" />
-                      <div className="space-y-1.5 min-w-0 flex-1">
+                      <Skeleton className="size-8 shrink-0 rounded-lg" />
+                      <div className="min-w-0 flex-1 space-y-1.5">
                         <Skeleton className="h-3.5 w-28 max-w-full" />
                         <Skeleton className="h-3 w-36 max-w-full" />
                       </div>
@@ -253,18 +260,25 @@ export function UsersDataTable({
                     </div>
                   </TableCell>
                   <TableCell className="pr-4 text-right">
-                    <Skeleton className="size-8 rounded-md ml-auto" />
+                    <Skeleton className="ml-auto size-8 rounded-md" />
                   </TableCell>
                 </TableRow>
               ))
             ) : table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => {
-                const isSelected = typeof row.getIsSelected === "function" ? row.getIsSelected() : false
+                const isSelected =
+                  typeof row.getIsSelected === "function"
+                    ? row.getIsSelected()
+                    : false
                 return (
                   <TableRow
                     key={row.id}
                     data-state={isSelected && "selected"}
-                    className={isSelected ? "bg-primary/5 hover:bg-primary/10" : "hover:bg-muted/50"}
+                    className={
+                      isSelected
+                        ? "bg-primary/5 hover:bg-primary/10"
+                        : "hover:bg-muted/50"
+                    }
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell key={cell.id} className="py-2.5 text-xs">
@@ -276,15 +290,18 @@ export function UsersDataTable({
               })
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length} className="h-40 text-center">
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-40 text-center"
+                >
                   <div className="flex flex-col items-center justify-center gap-2 text-muted-foreground">
                     <div className="flex size-10 items-center justify-center rounded-full bg-muted">
                       <Layers className="size-5 text-muted-foreground/80" />
                     </div>
-                    <div className="font-medium text-foreground text-sm">
+                    <div className="text-sm font-medium text-foreground">
                       No users found
                     </div>
-                    <p className="text-xs max-w-sm">
+                    <p className="max-w-sm text-xs">
                       {isFiltered
                         ? "No users match your search query or role filter. Try clearing your filters."
                         : "There are no users registered in the platform yet."}

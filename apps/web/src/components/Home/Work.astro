@@ -6,7 +6,6 @@ import { projectsData as projects } from "@/data/projects"
 
 // components/Home/Work.astro
 
-
 const CARD_HEADER_HEIGHT = 50 // px
 const BASE_TOP_OFFSET = 72
 ---
@@ -22,18 +21,14 @@ const BASE_TOP_OFFSET = 72
     </div>
 
     <div class="relative z-10 py-8">
-      <p class="section-label mb-4">
-        Selected projects and case studies
-      </p>
+      <p class="section-label mb-4">Selected projects and case studies</p>
 
-      <h2
-        class="section-title text-foreground"
-      >
+      <h2 class="section-title text-foreground">
         Work <span class="text-primary">/</span> Projects
       </h2>
 
       <!--  Accent bar -->
-      <div class="accent-bar mx-auto mb-6 mt-4 w-60"></div>
+      <div class="accent-bar mx-auto mt-4 mb-6 w-60"></div>
     </div>
   </div>
 
@@ -77,25 +72,31 @@ const BASE_TOP_OFFSET = 72
               </span>
 
               {p.links.live && p.links.live !== "#" && (
-                <a href={p.links.live} target="_blank" rel="noopener noreferrer">
+                <a
+                  href={p.links.live}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <Button variant={"outline"} size={"sm"}>
                     Live
                     <span>↗</span>
                   </Button>
                 </a>
               )}
-              {'github' in p.links && p.links.github && p.links.github !== "#" && (
-                <a
-                  href={p.links.github as string}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Button variant={"outline"} size={"sm"}>
-                    Code
-                    <span>↗</span>
-                  </Button>
-                </a>
-              )}
+              {"github" in p.links &&
+                p.links.github &&
+                p.links.github !== "#" && (
+                  <a
+                    href={p.links.github as string}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Button variant={"outline"} size={"sm"}>
+                      Code
+                      <span>↗</span>
+                    </Button>
+                  </a>
+                )}
             </div>
           </div>
 
@@ -157,7 +158,8 @@ const BASE_TOP_OFFSET = 72
                 </div>
 
                 {/* CTA Buttons */}
-                {((p.links.live && p.links.live !== "#") || (p.links.caseStudy && p.links.caseStudy !== "#")) && (
+                {((p.links.live && p.links.live !== "#") ||
+                  (p.links.caseStudy && p.links.caseStudy !== "#")) && (
                   <div class="flex flex-wrap gap-2 pt-1">
                     {p.links.live && p.links.live !== "#" && (
                       <a
@@ -174,8 +176,14 @@ const BASE_TOP_OFFSET = 72
                     {p.links.caseStudy && p.links.caseStudy !== "#" && (
                       <a
                         href={p.links.caseStudy}
-                        target={p.links.caseStudy.startsWith("/") ? "_self" : "_blank"}
-                        rel={p.links.caseStudy.startsWith("/") ? undefined : "noopener noreferrer"}
+                        target={
+                          p.links.caseStudy.startsWith("/") ? "_self" : "_blank"
+                        }
+                        rel={
+                          p.links.caseStudy.startsWith("/")
+                            ? undefined
+                            : "noopener noreferrer"
+                        }
                       >
                         <Button variant={"secondary"}>
                           Case study

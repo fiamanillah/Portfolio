@@ -3,12 +3,7 @@
 import * as React from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import {
-  Plus,
-  FolderTree,
-  CloudDownload,
-  Loader2,
-} from "lucide-react"
+import { Plus, FolderTree, CloudDownload, Loader2 } from "lucide-react"
 
 import type {
   BlogPostListItemDTO,
@@ -67,7 +62,8 @@ export default function BlogsPage() {
   // Dialog states
   const [isTaxonomyOpen, setIsTaxonomyOpen] = React.useState(false)
   const [isDeleteOpen, setIsDeleteOpen] = React.useState(false)
-  const [deletingPost, setDeletingPost] = React.useState<BlogPostListItemDTO | null>(null)
+  const [deletingPost, setDeletingPost] =
+    React.useState<BlogPostListItemDTO | null>(null)
   const [bulkDeletingIds, setBulkDeletingIds] = React.useState<string[]>([])
   const [isDeleting, setIsDeleting] = React.useState(false)
   const [isSyncing, setIsSyncing] = React.useState(false)
@@ -81,7 +77,8 @@ export default function BlogsPage() {
         limit: pageSize,
         search: searchQuery.trim() || undefined,
         category: categoryFilter !== "all" ? categoryFilter : undefined,
-        status: statusFilter !== "all" ? (statusFilter as BlogStatus) : undefined,
+        status:
+          statusFilter !== "all" ? (statusFilter as BlogStatus) : undefined,
         featured: featuredFilter === "featured" ? true : undefined,
         sortBy: sortBy as any,
         sortOrder,
@@ -100,7 +97,16 @@ export default function BlogsPage() {
     } finally {
       setIsLoading(false)
     }
-  }, [currentPage, pageSize, searchQuery, categoryFilter, statusFilter, featuredFilter, sortBy, sortOrder])
+  }, [
+    currentPage,
+    pageSize,
+    searchQuery,
+    categoryFilter,
+    statusFilter,
+    featuredFilter,
+    sortBy,
+    sortOrder,
+  ])
 
   const loadStatsAndTaxonomies = React.useCallback(async () => {
     try {
@@ -150,7 +156,10 @@ export default function BlogsPage() {
     }
   }
 
-  const handleStatusChange = async (postItem: BlogPostListItemDTO, newStatus: BlogStatus) => {
+  const handleStatusChange = async (
+    postItem: BlogPostListItemDTO,
+    newStatus: BlogStatus
+  ) => {
     try {
       const res = await BlogApi.update(postItem.id, { status: newStatus })
       if (res.success) {
@@ -183,7 +192,9 @@ export default function BlogsPage() {
       if (bulkDeletingIds.length > 0) {
         const res = await BlogApi.bulkDelete({ ids: bulkDeletingIds })
         if (res.success) {
-          toast.success(`Deleted ${res.data?.count || bulkDeletingIds.length} blog posts`)
+          toast.success(
+            `Deleted ${res.data?.count || bulkDeletingIds.length} blog posts`
+          )
           setIsDeleteOpen(false)
           setBulkDeletingIds([])
           loadPosts()
@@ -210,7 +221,10 @@ export default function BlogsPage() {
     }
   }
 
-  const handleBulkStatusChange = async (ids: string[], newStatus: BlogStatus) => {
+  const handleBulkStatusChange = async (
+    ids: string[],
+    newStatus: BlogStatus
+  ) => {
     try {
       const res = await BlogApi.bulkUpdateStatus({ ids, status: newStatus })
       if (res.success) {
@@ -230,7 +244,10 @@ export default function BlogsPage() {
     try {
       const res = await BlogApi.seedLocal()
       if (res.success) {
-        toast.success(res.message || `Successfully synced ${res.data?.imported || 9} local posts!`)
+        toast.success(
+          res.message ||
+            `Successfully synced ${res.data?.imported || 9} local posts!`
+        )
         loadPosts()
         loadStatsAndTaxonomies()
       } else {
@@ -256,18 +273,22 @@ export default function BlogsPage() {
   return (
     <div className="space-y-6">
       {/* Header & Primary Actions */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground">
+            <h1 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">
               Blog Post Management
             </h1>
-            <Badge variant="outline" className="font-mono text-xs text-primary border-primary/30">
+            <Badge
+              variant="outline"
+              className="border-primary/30 font-mono text-xs text-primary"
+            >
               SEO Engine
             </Badge>
           </div>
-          <p className="text-sm text-muted-foreground mt-1">
-            Author, edit, schedule, and optimize technical articles with real-time SERP previews and Google Schema.org graphs.
+          <p className="mt-1 text-sm text-muted-foreground">
+            Author, edit, schedule, and optimize technical articles with
+            real-time SERP previews and Google Schema.org graphs.
           </p>
         </div>
 

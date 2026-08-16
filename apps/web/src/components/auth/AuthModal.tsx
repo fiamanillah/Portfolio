@@ -67,7 +67,10 @@ export function AuthModal({
   // Sign In Form State & Validation
   const [signInEmail, setSignInEmail] = useState("")
   const [signInPassword, setSignInPassword] = useState("")
-  const [signInErrors, setSignInErrors] = useState<{ email?: string; password?: string }>({})
+  const [signInErrors, setSignInErrors] = useState<{
+    email?: string
+    password?: string
+  }>({})
   const [isSigningIn, setIsSigningIn] = useState(false)
 
   // Registration Form State & Validation
@@ -220,7 +223,8 @@ export function AuthModal({
       })
     } catch (err: any) {
       toast.error("Sign-in Error", {
-        description: err?.message || "Could not connect to authentication server.",
+        description:
+          err?.message || "Could not connect to authentication server.",
       })
     } finally {
       setIsSigningIn(false)
@@ -249,7 +253,11 @@ export function AuthModal({
         password?: string
       } = {}
       parseResult.error.issues.forEach((issue) => {
-        const field = issue.path[0] as "name" | "username" | "email" | "password"
+        const field = issue.path[0] as
+          | "name"
+          | "username"
+          | "email"
+          | "password"
         if (field && !errors[field]) errors[field] = issue.message
       })
       setSignUpErrors(errors)
@@ -272,12 +280,14 @@ export function AuthModal({
         })
       } else {
         toast.error("Registration Failed", {
-          description: res.error || res.message || "Failed to initiate registration.",
+          description:
+            res.error || res.message || "Failed to initiate registration.",
         })
       }
     } catch (err: any) {
       toast.error("Registration Error", {
-        description: err?.message || "Could not connect to authentication server.",
+        description:
+          err?.message || "Could not connect to authentication server.",
       })
     } finally {
       setIsSendingRegisterOtp(false)
@@ -316,7 +326,9 @@ export function AuthModal({
     })
 
     if (!parseResult.success) {
-      setRegisterOtpError(parseResult.error.issues[0]?.message || "Invalid verification code")
+      setRegisterOtpError(
+        parseResult.error.issues[0]?.message || "Invalid verification code"
+      )
       return
     }
 
@@ -363,7 +375,9 @@ export function AuthModal({
     })
 
     if (!parseResult.success) {
-      setResetEmailError(parseResult.error.issues[0]?.message || "Invalid email address")
+      setResetEmailError(
+        parseResult.error.issues[0]?.message || "Invalid email address"
+      )
       return
     }
 
@@ -422,7 +436,9 @@ export function AuthModal({
     })
 
     if (!parseResult.success) {
-      setResetOtpError(parseResult.error.issues[0]?.message || "Invalid verification code")
+      setResetOtpError(
+        parseResult.error.issues[0]?.message || "Invalid verification code"
+      )
       return
     }
 
@@ -430,7 +446,10 @@ export function AuthModal({
     setIsVerifyingResetOtp(true)
 
     try {
-      const res = await AuthApi.verifyResetOtp(parseResult.data.email, parseResult.data.otpCode)
+      const res = await AuthApi.verifyResetOtp(
+        parseResult.data.email,
+        parseResult.data.otpCode
+      )
       if (res.success) {
         navigateToStep("reset-password")
         toast.success("OTP Code Verified", {
@@ -438,7 +457,9 @@ export function AuthModal({
         })
       } else {
         setResetOtpError(res.error || res.message || "Invalid code.")
-        toast.error("Verification Failed", { description: res.error || res.message })
+        toast.error("Verification Failed", {
+          description: res.error || res.message,
+        })
       }
     } catch (err: any) {
       setResetOtpError(err?.message || "Verification failed.")
@@ -484,7 +505,9 @@ export function AuthModal({
       const res = await AuthApi.resetPassword({
         email: parseResult.success ? parseResult.data.email : resetEmail,
         otpCode: parseResult.success ? parseResult.data.otpCode : resetOtpCode,
-        newPassword: parseResult.success ? parseResult.data.newPassword : newPassword,
+        newPassword: parseResult.success
+          ? parseResult.data.newPassword
+          : newPassword,
       })
 
       if (res.success && res.data?.user) {
@@ -506,7 +529,7 @@ export function AuthModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-      <DialogContent className="sm:max-w-[480px] w-[calc(100vw-2rem)] rounded-none border border-border bg-card/95 p-5 sm:p-7 backdrop-blur-xl gap-4 shadow-2xl">
+      <DialogContent className="w-[calc(100vw-2rem)] gap-4 rounded-none border border-border bg-card/95 p-5 shadow-2xl backdrop-blur-xl sm:max-w-[480px] sm:p-7">
         {/* Modal Header */}
         <DialogHeader className="space-y-1.5 pb-1">
           <div className="flex items-center justify-between pr-10">
@@ -519,7 +542,7 @@ export function AuthModal({
               <button
                 type="button"
                 onClick={() => navigateToStep("signup")}
-                className="inline-flex items-center gap-1 font-mono text-[11px] text-muted-foreground hover:text-primary transition-colors cursor-pointer"
+                className="inline-flex cursor-pointer items-center gap-1 font-mono text-[11px] text-muted-foreground transition-colors hover:text-primary"
               >
                 <HugeiconsIcon icon={ArrowLeft01Icon} className="size-3" />
                 <span>Edit Details</span>
@@ -532,7 +555,7 @@ export function AuthModal({
               <button
                 type="button"
                 onClick={() => navigateToStep("signin")}
-                className="inline-flex items-center gap-1 font-mono text-[11px] text-muted-foreground hover:text-primary transition-colors cursor-pointer"
+                className="inline-flex cursor-pointer items-center gap-1 font-mono text-[11px] text-muted-foreground transition-colors hover:text-primary"
               >
                 <HugeiconsIcon icon={ArrowLeft01Icon} className="size-3" />
                 <span>Back to Sign In</span>
@@ -549,7 +572,7 @@ export function AuthModal({
             {currentStep === "reset-password" && "Set New Password"}
           </DialogTitle>
 
-          <DialogDescription className="text-xs text-muted-foreground leading-relaxed">
+          <DialogDescription className="text-xs leading-relaxed text-muted-foreground">
             {currentStep === "signin" &&
               `Sign in ${actionLabel}. Access discussions, profile preferences, and security settings.`}
             {currentStep === "signup" &&
@@ -567,13 +590,13 @@ export function AuthModal({
 
         {/* Tab Selector for Primary Steps (Sign In vs Register) */}
         {(currentStep === "signin" || currentStep === "signup") && (
-          <div className="grid grid-cols-2 gap-1 border border-border bg-muted/30 p-1 mb-4">
+          <div className="mb-4 grid grid-cols-2 gap-1 border border-border bg-muted/30 p-1">
             <button
               type="button"
               onClick={() => navigateToStep("signin")}
-              className={`flex items-center justify-center gap-1.5 py-1.5 font-mono text-xs transition-all cursor-pointer ${
+              className={`flex cursor-pointer items-center justify-center gap-1.5 py-1.5 font-mono text-xs transition-all ${
                 currentStep === "signin"
-                  ? "bg-background text-primary font-bold shadow-xs border border-border"
+                  ? "border border-border bg-background font-bold text-primary shadow-xs"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
@@ -583,9 +606,9 @@ export function AuthModal({
             <button
               type="button"
               onClick={() => navigateToStep("signup")}
-              className={`flex items-center justify-center gap-1.5 py-1.5 font-mono text-xs transition-all cursor-pointer ${
+              className={`flex cursor-pointer items-center justify-center gap-1.5 py-1.5 font-mono text-xs transition-all ${
                 currentStep === "signup"
-                  ? "bg-background text-primary font-bold shadow-xs border border-border"
+                  ? "border border-border bg-background font-bold text-primary shadow-xs"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >

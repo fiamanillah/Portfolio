@@ -3,7 +3,12 @@ import { useState, type FormEvent } from "react"
 import { ProfileSectionCard } from "../shared/ProfileSectionCard"
 import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"
-import { Field, FieldLabel, FieldDescription, FieldError } from "@workspace/ui/components/field"
+import {
+  Field,
+  FieldLabel,
+  FieldDescription,
+  FieldError,
+} from "@workspace/ui/components/field"
 import { toast } from "@workspace/ui/components/sonner"
 import { setAuthUrlParam } from "@/lib/authStore"
 import { AuthApi } from "@/lib/api/authApi"
@@ -42,7 +47,9 @@ export function PasswordSecurityCard({ user }: PasswordSecurityCardProps) {
     })
 
     if (!parseResult.success) {
-      setError(parseResult.error.issues[0]?.message || "Invalid password parameters.")
+      setError(
+        parseResult.error.issues[0]?.message || "Invalid password parameters."
+      )
       return
     }
 
@@ -63,7 +70,9 @@ export function PasswordSecurityCard({ user }: PasswordSecurityCardProps) {
         })
       } else {
         setError(res.error || res.message || "Failed to update password.")
-        toast.error("Password Update Failed", { description: res.error || res.message })
+        toast.error("Password Update Failed", {
+          description: res.error || res.message,
+        })
       }
     } catch (err: any) {
       setError(err?.message || "Password update failed.")
@@ -87,10 +96,13 @@ export function PasswordSecurityCard({ user }: PasswordSecurityCardProps) {
         title="Update Password"
         description="Change your login password. Must be at least 8 characters."
       >
-        <form onSubmit={handlePasswordSubmit} className="space-y-4 max-w-lg">
+        <form onSubmit={handlePasswordSubmit} className="max-w-lg space-y-4">
           {/* Current Password */}
           <Field data-invalid={!!error && !currentPassword}>
-            <FieldLabel htmlFor="pwd-current" className="font-mono text-xs font-semibold">
+            <FieldLabel
+              htmlFor="pwd-current"
+              className="font-mono text-xs font-semibold"
+            >
               Current Password <span className="text-destructive">*</span>
             </FieldLabel>
             <div className="relative">
@@ -102,14 +114,14 @@ export function PasswordSecurityCard({ user }: PasswordSecurityCardProps) {
                   setCurrentPassword(e.target.value)
                   if (error) setError(null)
                 }}
-                className="rounded-none font-mono text-xs border-border bg-background/50 pr-9 focus:border-primary"
+                className="rounded-none border-border bg-background/50 pr-9 font-mono text-xs focus:border-primary"
                 placeholder="••••••••••••"
                 required
               />
               <button
                 type="button"
                 onClick={() => setShowCurrent(!showCurrent)}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground cursor-pointer"
+                className="absolute top-1/2 right-2.5 -translate-y-1/2 cursor-pointer text-muted-foreground hover:text-foreground"
                 tabIndex={-1}
               >
                 <HugeiconsIcon
@@ -122,7 +134,10 @@ export function PasswordSecurityCard({ user }: PasswordSecurityCardProps) {
 
           {/* New Password */}
           <Field data-invalid={!!error && newPassword.length < 8}>
-            <FieldLabel htmlFor="pwd-new" className="font-mono text-xs font-semibold">
+            <FieldLabel
+              htmlFor="pwd-new"
+              className="font-mono text-xs font-semibold"
+            >
               New Password <span className="text-destructive">*</span>
             </FieldLabel>
             <div className="relative">
@@ -134,14 +149,14 @@ export function PasswordSecurityCard({ user }: PasswordSecurityCardProps) {
                   setNewPassword(e.target.value)
                   if (error) setError(null)
                 }}
-                className="rounded-none font-mono text-xs border-border bg-background/50 pr-9 focus:border-primary"
+                className="rounded-none border-border bg-background/50 pr-9 font-mono text-xs focus:border-primary"
                 placeholder="••••••••••••"
                 required
               />
               <button
                 type="button"
                 onClick={() => setShowNew(!showNew)}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground cursor-pointer"
+                className="absolute top-1/2 right-2.5 -translate-y-1/2 cursor-pointer text-muted-foreground hover:text-foreground"
                 tabIndex={-1}
               >
                 <HugeiconsIcon
@@ -157,7 +172,10 @@ export function PasswordSecurityCard({ user }: PasswordSecurityCardProps) {
 
           {/* Confirm Password */}
           <Field data-invalid={!!error && confirmPassword !== newPassword}>
-            <FieldLabel htmlFor="pwd-confirm" className="font-mono text-xs font-semibold">
+            <FieldLabel
+              htmlFor="pwd-confirm"
+              className="font-mono text-xs font-semibold"
+            >
               Confirm New Password <span className="text-destructive">*</span>
             </FieldLabel>
             <Input
@@ -168,21 +186,26 @@ export function PasswordSecurityCard({ user }: PasswordSecurityCardProps) {
                 setConfirmPassword(e.target.value)
                 if (error) setError(null)
               }}
-              className="rounded-none font-mono text-xs border-border bg-background/50 focus:border-primary"
+              className="rounded-none border-border bg-background/50 font-mono text-xs focus:border-primary"
               placeholder="••••••••••••"
               required
             />
-            {error && <FieldError className="font-mono text-xs">{error}</FieldError>}
+            {error && (
+              <FieldError className="font-mono text-xs">{error}</FieldError>
+            )}
           </Field>
 
           <Button
             type="submit"
             disabled={isUpdating || !currentPassword || newPassword.length < 8}
-            className="rounded-none font-mono text-xs font-bold uppercase tracking-wider bg-primary text-primary-foreground hover:bg-primary/90 transition-colors cursor-pointer h-9 px-4 flex items-center gap-2"
+            className="flex h-9 cursor-pointer items-center gap-2 rounded-none bg-primary px-4 font-mono text-xs font-bold tracking-wider text-primary-foreground uppercase transition-colors hover:bg-primary/90"
           >
             {isUpdating ? (
               <>
-                <HugeiconsIcon icon={Loading03Icon} className="size-3.5 animate-spin" />
+                <HugeiconsIcon
+                  icon={Loading03Icon}
+                  className="size-3.5 animate-spin"
+                />
                 <span>Updating Password...</span>
               </>
             ) : (
@@ -201,14 +224,18 @@ export function PasswordSecurityCard({ user }: PasswordSecurityCardProps) {
         title="Forgot Current Password?"
         description="Trigger an instant 6-digit one-time passcode to your verified inbox."
       >
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div className="space-y-1 min-w-0">
-            <p className="font-mono text-xs font-semibold text-foreground flex items-center gap-1.5">
-              <HugeiconsIcon icon={Mail02Icon} className="size-3.5 text-primary" />
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="min-w-0 space-y-1">
+            <p className="flex items-center gap-1.5 font-mono text-xs font-semibold text-foreground">
+              <HugeiconsIcon
+                icon={Mail02Icon}
+                className="size-3.5 text-primary"
+              />
               <span>Send recovery OTP to {user.email}</span>
             </p>
-            <p className="text-xs text-muted-foreground max-w-md leading-relaxed">
-              If you have forgotten your existing password, you can generate a secure OTP code to reset it.
+            <p className="max-w-md text-xs leading-relaxed text-muted-foreground">
+              If you have forgotten your existing password, you can generate a
+              secure OTP code to reset it.
             </p>
           </div>
 
@@ -217,7 +244,7 @@ export function PasswordSecurityCard({ user }: PasswordSecurityCardProps) {
             variant="outline"
             size="sm"
             onClick={handleTriggerReset}
-            className="rounded-none font-mono text-xs border-primary/40 bg-primary/5 text-primary hover:bg-primary hover:text-primary-foreground transition-all cursor-pointer shrink-0 h-8 px-3 flex items-center gap-1.5"
+            className="flex h-8 shrink-0 cursor-pointer items-center gap-1.5 rounded-none border-primary/40 bg-primary/5 px-3 font-mono text-xs text-primary transition-all hover:bg-primary hover:text-primary-foreground"
           >
             <HugeiconsIcon icon={LockPasswordIcon} className="size-3.5" />
             <span>Reset via OTP</span>

@@ -1,11 +1,11 @@
-import fs from "fs";
-import path from "path";
-import { Request, Response } from "express";
-import { BaseController } from "@/core/BaseController";
-import { MediaService } from "./media.service";
-import { HTTPStatusCode } from "@/types/HTTPStatusCode";
-import { BadRequestError } from "@/core/errors/AppError";
-import { UploadMediaBody } from "./MediaDTO";
+import fs from "fs"
+import path from "path"
+import { Request, Response } from "express"
+import { BaseController } from "@/core/BaseController"
+import { MediaService } from "./media.service"
+import { HTTPStatusCode } from "@/types/HTTPStatusCode"
+import { BadRequestError } from "@/core/errors/AppError"
+import { UploadMediaBody } from "./MediaDTO"
 import {
   PresignedUploadRequestDTO,
   ConfirmPresignedUploadDTO,
@@ -13,11 +13,11 @@ import {
   ListMediaQueryDTO,
   BulkDeleteMediaDTO,
   BulkUpdateMediaDTO,
-} from "@workspace/shared";
+} from "@workspace/shared"
 
 export class MediaController extends BaseController {
   constructor(private readonly mediaService: MediaService) {
-    super();
+    super()
   }
 
   /**
@@ -25,20 +25,24 @@ export class MediaController extends BaseController {
    * Handles multipart/form-data single or multiple file uploads
    */
   public async upload(req: Request, res: Response): Promise<void> {
-    const options: UploadMediaBody = req.body || {};
-    const uploaderId = req.user?.id;
+    const options: UploadMediaBody = req.body || {}
+    const uploaderId = req.user?.id
 
     if (req.file) {
       // Single file upload
-      const result = await this.mediaService.uploadSingle(req.file, options, uploaderId);
+      const result = await this.mediaService.uploadSingle(
+        req.file,
+        options,
+        uploaderId
+      )
       this.sendResponse(
         req,
         res,
         "File uploaded successfully",
         HTTPStatusCode.CREATED,
         result
-      );
-      return;
+      )
+      return
     }
 
     if (req.files && Array.isArray(req.files) && req.files.length > 0) {
@@ -47,18 +51,20 @@ export class MediaController extends BaseController {
         req.files as Express.Multer.File[],
         options,
         uploaderId
-      );
+      )
       this.sendResponse(
         req,
         res,
         `${results.length} files uploaded successfully`,
         HTTPStatusCode.CREATED,
         results
-      );
-      return;
+      )
+      return
     }
 
-    throw new BadRequestError("No file provided in form-data. Use 'file' or 'files' field.");
+    throw new BadRequestError(
+      "No file provided in form-data. Use 'file' or 'files' field."
+    )
   }
 
   /**
@@ -66,17 +72,20 @@ export class MediaController extends BaseController {
    * Generates a pre-signed PUT upload URL for direct client-to-R2 upload
    */
   public async createPresignedUrl(req: Request, res: Response): Promise<void> {
-    const dto = (req.validatedBody || req.body) as PresignedUploadRequestDTO;
-    const uploaderId = req.user?.id;
+    const dto = (req.validatedBody || req.body) as PresignedUploadRequestDTO
+    const uploaderId = req.user?.id
 
-    const result = await this.mediaService.createPresignedUpload(dto, uploaderId);
+    const result = await this.mediaService.createPresignedUpload(
+      dto,
+      uploaderId
+    )
     this.sendResponse(
       req,
       res,
       "Presigned upload URL generated successfully",
       HTTPStatusCode.CREATED,
       result
-    );
+    )
   }
 
   /**
@@ -84,17 +93,20 @@ export class MediaController extends BaseController {
    * Verifies and indexes direct presigned upload in DB
    */
   public async confirmPresigned(req: Request, res: Response): Promise<void> {
-    const dto = (req.validatedBody || req.body) as ConfirmPresignedUploadDTO;
-    const uploaderId = req.user?.id;
+    const dto = (req.validatedBody || req.body) as ConfirmPresignedUploadDTO
+    const uploaderId = req.user?.id
 
-    const result = await this.mediaService.confirmPresignedUpload(dto, uploaderId);
+    const result = await this.mediaService.confirmPresignedUpload(
+      dto,
+      uploaderId
+    )
     this.sendResponse(
       req,
       res,
       "Upload verified and registered successfully",
       HTTPStatusCode.OK,
       result
-    );
+    )
   }
 
   /**
@@ -102,8 +114,8 @@ export class MediaController extends BaseController {
    * Search and filter media library with pagination
    */
   public async list(req: Request, res: Response): Promise<void> {
-    const query = (req.validatedQuery || req.query) as ListMediaQueryDTO;
-    const result = await this.mediaService.listMedia(query);
+    const query = (req.validatedQuery || req.query) as ListMediaQueryDTO
+    const result = await this.mediaService.listMedia(query)
 
     this.sendPaginatedResponse(
       req,
@@ -111,7 +123,7 @@ export class MediaController extends BaseController {
       result.pagination,
       "Media files retrieved successfully",
       result.data
-    );
+    )
   }
 
   /**
@@ -119,10 +131,16 @@ export class MediaController extends BaseController {
    * Get single media file by ID
    */
   public async getById(req: Request, res: Response): Promise<void> {
-    const id = req.params.id as string;
-    const file = await this.mediaService.getMediaById(id);
+    const id = req.params.id as string
+    const file = await this.mediaService.getMediaById(id)
 
-    this.sendResponse(req, res, "Media file retrieved successfully", HTTPStatusCode.OK, file);
+    this.sendResponse(
+      req,
+      res,
+      "Media file retrieved successfully",
+      HTTPStatusCode.OK,
+      file
+    )
   }
 
   /**
@@ -131,17 +149,23 @@ export class MediaController extends BaseController {
    */
   public async getByKey(req: Request, res: Response): Promise<void> {
     const rawKey =
-      (req.params as any).key ??
-      (req.params as any)[0] ??
-      req.query.key;
-    const key = Array.isArray(rawKey) ? rawKey.join("/") : String(rawKey || "");
+      (req.params as any).key ?? (req.params as any)[0] ?? req.query.key
+    const key = Array.isArray(rawKey) ? rawKey.join("/") : String(rawKey || "")
 
     if (!key) {
-      throw new BadRequestError("Object key is required in request path or query");
+      throw new BadRequestError(
+        "Object key is required in request path or query"
+      )
     }
 
-    const file = await this.mediaService.getMediaByKey(key);
-    this.sendResponse(req, res, "Media file retrieved successfully", HTTPStatusCode.OK, file);
+    const file = await this.mediaService.getMediaByKey(key)
+    this.sendResponse(
+      req,
+      res,
+      "Media file retrieved successfully",
+      HTTPStatusCode.OK,
+      file
+    )
   }
 
   /**
@@ -149,13 +173,24 @@ export class MediaController extends BaseController {
    * Update media metadata, tags, alt text, caption, or folder
    */
   public async update(req: Request, res: Response): Promise<void> {
-    const id = req.params.id as string;
-    const dto = (req.validatedBody || req.body) as UpdateMediaFileDTO;
-    const currentUserId = req.user?.id;
-    const userRole = req.user?.role;
+    const id = req.params.id as string
+    const dto = (req.validatedBody || req.body) as UpdateMediaFileDTO
+    const currentUserId = req.user?.id
+    const userRole = req.user?.role
 
-    const updated = await this.mediaService.updateMedia(id, dto, currentUserId, userRole);
-    this.sendResponse(req, res, "Media file updated successfully", HTTPStatusCode.OK, updated);
+    const updated = await this.mediaService.updateMedia(
+      id,
+      dto,
+      currentUserId,
+      userRole
+    )
+    this.sendResponse(
+      req,
+      res,
+      "Media file updated successfully",
+      HTTPStatusCode.OK,
+      updated
+    )
   }
 
   /**
@@ -163,12 +198,16 @@ export class MediaController extends BaseController {
    * Delete media file from Cloudflare R2 / S3 and Database
    */
   public async delete(req: Request, res: Response): Promise<void> {
-    const id = req.params.id as string;
-    const currentUserId = req.user?.id;
-    const userRole = req.user?.role;
+    const id = req.params.id as string
+    const currentUserId = req.user?.id
+    const userRole = req.user?.role
 
-    const result = await this.mediaService.deleteMedia(id, currentUserId, userRole);
-    this.sendResponse(req, res, result.message, HTTPStatusCode.OK);
+    const result = await this.mediaService.deleteMedia(
+      id,
+      currentUserId,
+      userRole
+    )
+    this.sendResponse(req, res, result.message, HTTPStatusCode.OK)
   }
 
   /**
@@ -176,18 +215,22 @@ export class MediaController extends BaseController {
    * Bulk delete media files from R2 and Database
    */
   public async bulkDelete(req: Request, res: Response): Promise<void> {
-    const dto = (req.validatedBody || req.body) as BulkDeleteMediaDTO;
-    const currentUserId = req.user?.id;
-    const userRole = req.user?.role;
+    const dto = (req.validatedBody || req.body) as BulkDeleteMediaDTO
+    const currentUserId = req.user?.id
+    const userRole = req.user?.role
 
-    const result = await this.mediaService.bulkDeleteMedia(dto, currentUserId, userRole);
+    const result = await this.mediaService.bulkDeleteMedia(
+      dto,
+      currentUserId,
+      userRole
+    )
     this.sendResponse(
       req,
       res,
       `Successfully deleted ${result.count} media assets`,
       HTTPStatusCode.OK,
       result
-    );
+    )
   }
 
   /**
@@ -195,18 +238,22 @@ export class MediaController extends BaseController {
    * Bulk update folder, tags, or visibility for media assets
    */
   public async bulkUpdate(req: Request, res: Response): Promise<void> {
-    const dto = (req.validatedBody || req.body) as BulkUpdateMediaDTO;
-    const currentUserId = req.user?.id;
-    const userRole = req.user?.role;
+    const dto = (req.validatedBody || req.body) as BulkUpdateMediaDTO
+    const currentUserId = req.user?.id
+    const userRole = req.user?.role
 
-    const result = await this.mediaService.bulkUpdateMedia(dto, currentUserId, userRole);
+    const result = await this.mediaService.bulkUpdateMedia(
+      dto,
+      currentUserId,
+      userRole
+    )
     this.sendResponse(
       req,
       res,
       `Successfully updated ${result.count} media assets`,
       HTTPStatusCode.OK,
       result
-    );
+    )
   }
 
   /**
@@ -214,8 +261,14 @@ export class MediaController extends BaseController {
    * Aggregated storage KPI analytics
    */
   public async getStats(req: Request, res: Response): Promise<void> {
-    const stats = await this.mediaService.getMediaStats();
-    this.sendResponse(req, res, "Storage stats retrieved successfully", HTTPStatusCode.OK, stats);
+    const stats = await this.mediaService.getMediaStats()
+    this.sendResponse(
+      req,
+      res,
+      "Storage stats retrieved successfully",
+      HTTPStatusCode.OK,
+      stats
+    )
   }
 
   /**
@@ -223,17 +276,23 @@ export class MediaController extends BaseController {
    * Get secure download URL or redirect to file
    */
   public async getDownload(req: Request, res: Response): Promise<void> {
-    const id = req.params.id as string;
-    const expiresIn = parseInt(req.query.expiresIn as string) || 900;
+    const id = req.params.id as string
+    const expiresIn = parseInt(req.query.expiresIn as string) || 900
 
-    const result = await this.mediaService.getDownloadUrl(id, expiresIn);
+    const result = await this.mediaService.getDownloadUrl(id, expiresIn)
 
     if (req.query.redirect === "true") {
-      res.redirect(result.downloadUrl);
-      return;
+      res.redirect(result.downloadUrl)
+      return
     }
 
-    this.sendResponse(req, res, "Download URL generated successfully", HTTPStatusCode.OK, result);
+    this.sendResponse(
+      req,
+      res,
+      "Download URL generated successfully",
+      HTTPStatusCode.OK,
+      result
+    )
   }
 
   /**
@@ -242,18 +301,16 @@ export class MediaController extends BaseController {
    */
   public async streamByKey(req: Request, res: Response): Promise<void> {
     const rawKey =
-      (req.params as any).key ??
-      (req.params as any)[0] ??
-      req.query.key;
-    const key = Array.isArray(rawKey) ? rawKey.join("/") : String(rawKey || "");
+      (req.params as any).key ?? (req.params as any)[0] ?? req.query.key
+    const key = Array.isArray(rawKey) ? rawKey.join("/") : String(rawKey || "")
 
     if (!key) {
-      throw new BadRequestError("Object key is required");
+      throw new BadRequestError("Object key is required")
     }
 
-    const localPath = path.resolve(process.cwd(), "uploads", key);
+    const localPath = path.resolve(process.cwd(), "uploads", key)
     if (fs.existsSync(localPath)) {
-      const ext = path.extname(key).toLowerCase();
+      const ext = path.extname(key).toLowerCase()
       const mimeTypes: Record<string, string> = {
         ".png": "image/png",
         ".jpg": "image/jpeg",
@@ -263,38 +320,41 @@ export class MediaController extends BaseController {
         ".svg": "image/svg+xml",
         ".pdf": "application/pdf",
         ".txt": "text/plain",
-      };
-      res.setHeader("Content-Type", mimeTypes[ext] || "application/octet-stream");
-      res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
-      fs.createReadStream(localPath).pipe(res);
-      return;
+      }
+      res.setHeader(
+        "Content-Type",
+        mimeTypes[ext] || "application/octet-stream"
+      )
+      res.setHeader("Cache-Control", "public, max-age=31536000, immutable")
+      fs.createReadStream(localPath).pipe(res)
+      return
     }
 
     try {
-      const storageService = this.mediaService.getStorageService();
+      const storageService = this.mediaService.getStorageService()
       const { stream, contentType, contentLength, etag } =
-        await storageService.getObjectStream(key);
+        await storageService.getObjectStream(key)
 
-      res.setHeader("Content-Type", contentType);
-      if (contentLength) res.setHeader("Content-Length", contentLength);
-      res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
-      if (etag) res.setHeader("ETag", etag);
+      res.setHeader("Content-Type", contentType)
+      if (contentLength) res.setHeader("Content-Length", contentLength)
+      res.setHeader("Cache-Control", "public, max-age=31536000, immutable")
+      if (etag) res.setHeader("ETag", etag)
 
-      const streamAny = stream as any;
+      const streamAny = stream as any
       if (typeof streamAny.pipe === "function") {
-        streamAny.pipe(res);
+        streamAny.pipe(res)
       } else if (typeof streamAny.transformToByteArray === "function") {
-        const bytes = await streamAny.transformToByteArray();
-        res.end(Buffer.from(bytes));
+        const bytes = await streamAny.transformToByteArray()
+        res.end(Buffer.from(bytes))
       } else {
-        const chunks: Buffer[] = [];
+        const chunks: Buffer[] = []
         for await (const chunk of streamAny) {
-          chunks.push(typeof chunk === "string" ? Buffer.from(chunk) : chunk);
+          chunks.push(typeof chunk === "string" ? Buffer.from(chunk) : chunk)
         }
-        res.end(Buffer.concat(chunks));
+        res.end(Buffer.concat(chunks))
       }
     } catch {
-      res.status(404).json({ success: false, message: "Media asset not found" });
+      res.status(404).json({ success: false, message: "Media asset not found" })
     }
   }
 
@@ -303,8 +363,8 @@ export class MediaController extends BaseController {
    * Triggers orphan and unreferenced media cleanup in Cloudflare R2 and PostgreSQL DB
    */
   public async cleanupOrphans(req: Request, res: Response): Promise<void> {
-    const options = req.body || {};
-    const result = await this.mediaService.cleanOrphanedMedia(options);
-    this.sendResponse(req, res, result.message, HTTPStatusCode.OK, result);
+    const options = req.body || {}
+    const result = await this.mediaService.cleanOrphanedMedia(options)
+    this.sendResponse(req, res, result.message, HTTPStatusCode.OK, result)
   }
 }

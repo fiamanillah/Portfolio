@@ -66,7 +66,7 @@ export function MediaPreview({
     return (
       <div
         className={cn(
-          "relative group overflow-hidden bg-muted/20 flex items-center justify-center select-none",
+          "group relative flex items-center justify-center overflow-hidden bg-muted/20 select-none",
           aspectClass,
           className
         )}
@@ -75,15 +75,15 @@ export function MediaPreview({
           src={url}
           alt={altText || fileName}
           loading="lazy"
-          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
           onError={() => setHasError(true)}
         />
         {showOverlayOnHover && (
           <div
             onClick={onPreviewClick}
-            className="absolute inset-0 bg-black/40 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer gap-2"
+            className="absolute inset-0 flex cursor-pointer items-center justify-center gap-2 bg-black/40 opacity-0 backdrop-blur-[2px] transition-opacity group-hover:opacity-100"
           >
-            <span className="p-2 rounded-full bg-background/80 text-foreground shadow-sm hover:scale-110 transition-transform">
+            <span className="rounded-full bg-background/80 p-2 text-foreground shadow-sm transition-transform hover:scale-110">
               <Eye className="size-4" />
             </span>
           </div>
@@ -94,11 +94,17 @@ export function MediaPreview({
 
   if (isVideo && !thumbnailOnly) {
     return (
-      <div className={cn("relative overflow-hidden rounded-lg bg-black/90 flex items-center justify-center", aspectClass, className)}>
+      <div
+        className={cn(
+          "relative flex items-center justify-center overflow-hidden rounded-lg bg-black/90",
+          aspectClass,
+          className
+        )}
+      >
         <video
           src={url}
           controls
-          className="w-full h-full max-h-[480px] object-contain rounded-lg"
+          className="h-full max-h-[480px] w-full rounded-lg object-contain"
           preload="metadata"
         >
           Your browser does not support HTML video playback.
@@ -109,15 +115,20 @@ export function MediaPreview({
 
   if (isAudio && !thumbnailOnly) {
     return (
-      <div className={cn("p-6 rounded-xl bg-card border border-border flex flex-col items-center justify-center gap-4 text-center", className)}>
-        <div className="size-16 rounded-full bg-primary/10 text-primary flex items-center justify-center">
+      <div
+        className={cn(
+          "flex flex-col items-center justify-center gap-4 rounded-xl border border-border bg-card p-6 text-center",
+          className
+        )}
+      >
+        <div className="flex size-16 items-center justify-center rounded-full bg-primary/10 text-primary">
           <Music className="size-8 animate-pulse" />
         </div>
         <div className="space-y-1">
-          <p className="text-sm font-medium truncate max-w-xs">{fileName}</p>
-          <p className="text-xs text-muted-foreground font-mono">{mimeType}</p>
+          <p className="max-w-xs truncate text-sm font-medium">{fileName}</p>
+          <p className="font-mono text-xs text-muted-foreground">{mimeType}</p>
         </div>
-        <audio src={url} controls className="w-full max-w-md h-10 mt-2" />
+        <audio src={url} controls className="mt-2 h-10 w-full max-w-md" />
       </div>
     )
   }
@@ -126,62 +137,62 @@ export function MediaPreview({
   return (
     <div
       className={cn(
-        "relative group flex flex-col items-center justify-center p-4 bg-muted/20 text-muted-foreground select-none transition-colors group-hover:bg-muted/30",
+        "group relative flex flex-col items-center justify-center bg-muted/20 p-4 text-muted-foreground transition-colors select-none group-hover:bg-muted/30",
         aspectClass,
         className
       )}
     >
       {isVideo ? (
         <div className="flex flex-col items-center gap-2">
-          <div className="size-12 rounded-xl bg-purple-500/10 text-purple-500 flex items-center justify-center">
+          <div className="flex size-12 items-center justify-center rounded-xl bg-purple-500/10 text-purple-500">
             <Film className="size-6" />
           </div>
-          <span className="text-[10px] font-mono font-medium uppercase tracking-wider text-purple-400">
+          <span className="font-mono text-[10px] font-medium tracking-wider text-purple-400 uppercase">
             VIDEO
           </span>
         </div>
       ) : isAudio ? (
         <div className="flex flex-col items-center gap-2">
-          <div className="size-12 rounded-xl bg-pink-500/10 text-pink-500 flex items-center justify-center">
+          <div className="flex size-12 items-center justify-center rounded-xl bg-pink-500/10 text-pink-500">
             <Music className="size-6" />
           </div>
-          <span className="text-[10px] font-mono font-medium uppercase tracking-wider text-pink-400">
+          <span className="font-mono text-[10px] font-medium tracking-wider text-pink-400 uppercase">
             AUDIO
           </span>
         </div>
       ) : isPdf ? (
         <div className="flex flex-col items-center gap-2">
-          <div className="size-12 rounded-xl bg-rose-500/10 text-rose-500 flex items-center justify-center">
+          <div className="flex size-12 items-center justify-center rounded-xl bg-rose-500/10 text-rose-500">
             <FileText className="size-6" />
           </div>
-          <span className="text-[10px] font-mono font-medium uppercase tracking-wider text-rose-400">
+          <span className="font-mono text-[10px] font-medium tracking-wider text-rose-400 uppercase">
             PDF DOC
           </span>
         </div>
       ) : isArchive ? (
         <div className="flex flex-col items-center gap-2">
-          <div className="size-12 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center">
+          <div className="flex size-12 items-center justify-center rounded-xl bg-amber-500/10 text-amber-500">
             <FileArchive className="size-6" />
           </div>
-          <span className="text-[10px] font-mono font-medium uppercase tracking-wider text-amber-400">
+          <span className="font-mono text-[10px] font-medium tracking-wider text-amber-400 uppercase">
             ARCHIVE
           </span>
         </div>
       ) : isCode ? (
         <div className="flex flex-col items-center gap-2">
-          <div className="size-12 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
+          <div className="flex size-12 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-500">
             <FileCode className="size-6" />
           </div>
-          <span className="text-[10px] font-mono font-medium uppercase tracking-wider text-emerald-400">
+          <span className="font-mono text-[10px] font-medium tracking-wider text-emerald-400 uppercase">
             CODE
           </span>
         </div>
       ) : (
         <div className="flex flex-col items-center gap-2">
-          <div className="size-12 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center">
+          <div className="flex size-12 items-center justify-center rounded-xl bg-blue-500/10 text-blue-500">
             <FileQuestion className="size-6" />
           </div>
-          <span className="text-[10px] font-mono font-medium uppercase tracking-wider text-muted-foreground">
+          <span className="font-mono text-[10px] font-medium tracking-wider text-muted-foreground uppercase">
             FILE
           </span>
         </div>
@@ -190,9 +201,9 @@ export function MediaPreview({
       {showOverlayOnHover && (
         <div
           onClick={onPreviewClick}
-          className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer"
+          className="absolute inset-0 flex cursor-pointer items-center justify-center bg-black/30 opacity-0 transition-opacity group-hover:opacity-100"
         >
-          <span className="p-2 rounded-full bg-background/80 text-foreground shadow-sm">
+          <span className="rounded-full bg-background/80 p-2 text-foreground shadow-sm">
             <ExternalLink className="size-4" />
           </span>
         </div>

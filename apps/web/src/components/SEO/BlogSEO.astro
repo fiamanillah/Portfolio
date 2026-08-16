@@ -38,26 +38,43 @@ const {
   breadcrumbs: customBreadcrumbs,
 } = Astro.props
 
-const siteUrl = (import.meta.env.PUBLIC_WEB_URL || Astro.site?.toString() || "https://fi.amanillah.com").replace(/\/$/, "")
+const siteUrl = (
+  import.meta.env.PUBLIC_WEB_URL ||
+  Astro.site?.toString() ||
+  "https://fi.amanillah.com"
+).replace(/\/$/, "")
 
 // Calculate derived fields
 const isArticle = Boolean(post || customType === "article")
 const type = isArticle ? "article" : "website"
 
-const title = post?.seo?.metaTitle || (post
-  ? `${post.title} | Fi Amanillah`
-  : customTitle
-    ? `${customTitle} | Fi Amanillah`
-    : "Fi Amanillah | Full Stack & DevOps Engineer")
+const title =
+  post?.seo?.metaTitle ||
+  (post
+    ? `${post.title} | Fi Amanillah`
+    : customTitle
+      ? `${customTitle} | Fi Amanillah`
+      : "Fi Amanillah | Full Stack & DevOps Engineer")
 
-const rawTitle = post ? post.title : (customTitle || "Fi Amanillah")
-const description = post?.seo?.metaDescription || post?.summary || customDescription || "Engineering Blog, System Architecture & DevOps guides by Fi Amanillah."
-const relativeUrl = post ? `/blog/${post.slug}` : (customUrl || Astro.url.pathname)
-const canonicalUrl = post?.seo?.canonicalUrl && post.seo.canonicalUrl.startsWith("http")
-  ? post.seo.canonicalUrl
-  : `${siteUrl}${relativeUrl.startsWith("/") ? relativeUrl : `/${relativeUrl}`}`
+const rawTitle = post ? post.title : customTitle || "Fi Amanillah"
+const description =
+  post?.seo?.metaDescription ||
+  post?.summary ||
+  customDescription ||
+  "Engineering Blog, System Architecture & DevOps guides by Fi Amanillah."
+const relativeUrl = post
+  ? `/blog/${post.slug}`
+  : customUrl || Astro.url.pathname
+const canonicalUrl =
+  post?.seo?.canonicalUrl && post.seo.canonicalUrl.startsWith("http")
+    ? post.seo.canonicalUrl
+    : `${siteUrl}${relativeUrl.startsWith("/") ? relativeUrl : `/${relativeUrl}`}`
 
-const rawThumbnail = post?.seo?.ogImage || post?.thumbnail || customImage || "/assets/images/mickanic-cover.png"
+const rawThumbnail =
+  post?.seo?.ogImage ||
+  post?.thumbnail ||
+  customImage ||
+  "/assets/images/mickanic-cover.png"
 const absoluteImageUrl = rawThumbnail.startsWith("http")
   ? rawThumbnail
   : `${siteUrl}${rawThumbnail.startsWith("/") ? rawThumbnail : `/${rawThumbnail}`}`
@@ -69,10 +86,14 @@ const imageType = absoluteImageUrl.endsWith(".png")
     : "image/jpeg"
 
 const category = post?.category || customCategory || "Technology"
-const tags = post?.seo?.keywords || post?.tags || customTags || ["Software Engineering", "Full Stack", "DevOps"]
+const tags = post?.seo?.keywords ||
+  post?.tags ||
+  customTags || ["Software Engineering", "Full Stack", "DevOps"]
 const keywords = tags.join(", ")
 
-const publishedTime = post ? getBlogPostPublishedDate(post) : customPublishedTime
+const publishedTime = post
+  ? getBlogPostPublishedDate(post)
+  : customPublishedTime
 const modifiedTime = post?.modifiedAt || customModifiedTime || publishedTime
 
 // Calculate Word Count estimate for TechArticle schema if post content is present
@@ -81,30 +102,44 @@ const wordCount = post?.content
   : undefined
 
 // Build Breadcrumbs
-const breadcrumbs: BreadcrumbItem[] = customBreadcrumbs || (post
-  ? [
-      { name: "Home", url: `${siteUrl}/` },
-      { name: "Blog", url: `${siteUrl}/blog` },
-      { name: post.category, url: `${siteUrl}/blog?category=${encodeURIComponent(post.category.toLowerCase())}` },
-      { name: post.title, url: canonicalUrl },
-    ]
-  : [
-      { name: "Home", url: `${siteUrl}/` },
-      { name: "Blog", url: `${siteUrl}/blog` },
-    ])
+const breadcrumbs: BreadcrumbItem[] =
+  customBreadcrumbs ||
+  (post
+    ? [
+        { name: "Home", url: `${siteUrl}/` },
+        { name: "Blog", url: `${siteUrl}/blog` },
+        {
+          name: post.category,
+          url: `${siteUrl}/blog?category=${encodeURIComponent(post.category.toLowerCase())}`,
+        },
+        { name: post.title, url: canonicalUrl },
+      ]
+    : [
+        { name: "Home", url: `${siteUrl}/` },
+        { name: "Blog", url: `${siteUrl}/blog` },
+      ])
 
 // Author info from JSON schema
 const authorName = post?.author?.name || "Fi Amanillah"
 const authorRole = post?.author?.role || "Full Stack & DevOps Engineer"
 const authorAvatar = post?.author?.avatar
-  ? (post.author.avatar.startsWith("http") ? post.author.avatar : `${siteUrl}${post.author.avatar}`)
+  ? post.author.avatar.startsWith("http")
+    ? post.author.avatar
+    : `${siteUrl}${post.author.avatar}`
   : `${siteUrl}/fi.png`
 
 const authorTwitter = post?.author?.twitter || "@fiamanillah"
-const authorLinkedin = post?.author?.linkedin || "https://linkedin.com/in/fiamanillah"
+const authorLinkedin =
+  post?.author?.linkedin || "https://linkedin.com/in/fiamanillah"
 const authorGithub = post?.author?.github || "https://github.com/fiamanillah"
 
-const sameAsList = [authorGithub, authorLinkedin, authorTwitter.startsWith("http") ? authorTwitter : `https://twitter.com/${authorTwitter.replace(/^@/, "")}`].filter(Boolean)
+const sameAsList = [
+  authorGithub,
+  authorLinkedin,
+  authorTwitter.startsWith("http")
+    ? authorTwitter
+    : `https://twitter.com/${authorTwitter.replace(/^@/, "")}`,
+].filter(Boolean)
 
 // Article Type Schema (TechArticle / BlogPosting / Article)
 const articleSchemaType = post?.seo?.articleType || "TechArticle"
@@ -114,31 +149,31 @@ const schemaGraph: any[] = [
   {
     "@type": "WebSite",
     "@id": `${siteUrl}/#website`,
-    "url": siteUrl,
-    "name": "Fi Amanillah",
-    "description": "Portfolio & Engineering Architecture Blog of Fi Amanillah",
-    "publisher": {
+    url: siteUrl,
+    name: "Fi Amanillah",
+    description: "Portfolio & Engineering Architecture Blog of Fi Amanillah",
+    publisher: {
       "@id": `${siteUrl}/#person`,
     },
-    "inLanguage": "en-US",
+    inLanguage: "en-US",
   },
   {
     "@type": "Person",
     "@id": `${siteUrl}/#person`,
-    "name": authorName,
-    "jobTitle": authorRole,
-    "url": siteUrl,
-    "image": authorAvatar,
-    "sameAs": sameAsList,
+    name: authorName,
+    jobTitle: authorRole,
+    url: siteUrl,
+    image: authorAvatar,
+    sameAs: sameAsList,
   },
   {
     "@type": "BreadcrumbList",
     "@id": `${canonicalUrl}#breadcrumb`,
-    "itemListElement": breadcrumbs.map((crumb, idx) => ({
+    itemListElement: breadcrumbs.map((crumb, idx) => ({
       "@type": "ListItem",
-      "position": idx + 1,
-      "name": crumb.name,
-      "item": crumb.url,
+      position: idx + 1,
+      name: crumb.name,
+      item: crumb.url,
     })),
   },
 ]
@@ -147,45 +182,45 @@ if (isArticle) {
   schemaGraph.push({
     "@type": [articleSchemaType, "BlogPosting"],
     "@id": `${canonicalUrl}#article`,
-    "isPartOf": {
+    isPartOf: {
       "@id": `${siteUrl}/#website`,
     },
-    "headline": rawTitle,
-    "name": rawTitle,
-    "description": description,
-    "mainEntityOfPage": {
+    headline: rawTitle,
+    name: rawTitle,
+    description: description,
+    mainEntityOfPage: {
       "@type": "WebPage",
       "@id": canonicalUrl,
     },
-    "url": canonicalUrl,
-    "datePublished": publishedTime,
-    "dateModified": modifiedTime,
-    "articleSection": category,
-    "keywords": keywords,
+    url: canonicalUrl,
+    datePublished: publishedTime,
+    dateModified: modifiedTime,
+    articleSection: category,
+    keywords: keywords,
     ...(wordCount ? { wordCount } : {}),
-    "inLanguage": "en-US",
-    "image": {
+    inLanguage: "en-US",
+    image: {
       "@type": "ImageObject",
-      "url": absoluteImageUrl,
-      "width": 1200,
-      "height": 630,
-      "caption": rawTitle,
+      url: absoluteImageUrl,
+      width: 1200,
+      height: 630,
+      caption: rawTitle,
     },
-    "author": {
+    author: {
       "@type": "Person",
       "@id": `${siteUrl}/#person`,
-      "name": authorName,
-      "jobTitle": authorRole,
-      "url": siteUrl,
+      name: authorName,
+      jobTitle: authorRole,
+      url: siteUrl,
     },
-    "publisher": {
+    publisher: {
       "@type": "Person",
       "@id": `${siteUrl}/#person`,
-      "name": "Fi Amanillah",
-      "url": siteUrl,
-      "logo": {
+      name: "Fi Amanillah",
+      url: siteUrl,
+      logo: {
         "@type": "ImageObject",
-        "url": `${siteUrl}/favicon.svg`,
+        url: `${siteUrl}/favicon.svg`,
       },
     },
   })
@@ -193,13 +228,13 @@ if (isArticle) {
   schemaGraph.push({
     "@type": "CollectionPage",
     "@id": `${canonicalUrl}#collection`,
-    "isPartOf": {
+    isPartOf: {
       "@id": `${siteUrl}/#website`,
     },
-    "url": canonicalUrl,
-    "name": rawTitle,
-    "description": description,
-    "inLanguage": "en-US",
+    url: canonicalUrl,
+    name: rawTitle,
+    description: description,
+    inLanguage: "en-US",
   })
 }
 
@@ -217,9 +252,18 @@ const jsonLdPayload = {
 <link rel="canonical" href={canonicalUrl} />
 
 <!-- Crawler Directives -->
-<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
-<meta name="googlebot" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
-<meta name="bingbot" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+<meta
+  name="robots"
+  content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+/>
+<meta
+  name="googlebot"
+  content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+/>
+<meta
+  name="bingbot"
+  content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+/>
 
 <!-- Open Graph / Facebook / LinkedIn / Discord / Slack / WhatsApp -->
 <meta property="og:type" content={type} />
@@ -238,8 +282,12 @@ const jsonLdPayload = {
 {
   isArticle && (
     <>
-      {publishedTime && <meta property="article:published_time" content={publishedTime} />}
-      {modifiedTime && <meta property="article:modified_time" content={modifiedTime} />}
+      {publishedTime && (
+        <meta property="article:published_time" content={publishedTime} />
+      )}
+      {modifiedTime && (
+        <meta property="article:modified_time" content={modifiedTime} />
+      )}
       <meta property="article:author" content={authorName} />
       <meta property="article:section" content={category} />
       {tags.map((tag) => (
@@ -260,7 +308,16 @@ const jsonLdPayload = {
 <meta name="twitter:image:alt" content={rawTitle} />
 
 <!-- RSS Feed Auto-Discovery Link -->
-<link rel="alternate" type="application/rss+xml" title="Fi Amanillah's Engineering Blog" href={`${siteUrl}/rss.xml`} />
+<link
+  rel="alternate"
+  type="application/rss+xml"
+  title="Fi Amanillah's Engineering Blog"
+  href={`${siteUrl}/rss.xml`}
+/>
 
 <!-- JSON-LD Structured Data Schema -->
-<script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLdPayload)} />
+<script
+  is:inline
+  type="application/ld+json"
+  set:html={JSON.stringify(jsonLdPayload)}
+/>

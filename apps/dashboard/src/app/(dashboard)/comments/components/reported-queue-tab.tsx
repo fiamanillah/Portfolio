@@ -1,35 +1,35 @@
 // apps/dashboard/src/app/(dashboard)/comments/components/reported-queue-tab.tsx
-import * as React from "react";
-import { Search, ShieldCheck, Ban, Trash2 } from "lucide-react";
-import { Card, CardContent, CardHeader } from "@workspace/ui/components/card";
-import { Badge } from "@workspace/ui/components/badge";
-import { Button } from "@workspace/ui/components/button";
-import { Input } from "@workspace/ui/components/input";
+import * as React from "react"
+import { Search, ShieldCheck, Ban, Trash2 } from "lucide-react"
+import { Card, CardContent, CardHeader } from "@workspace/ui/components/card"
+import { Badge } from "@workspace/ui/components/badge"
+import { Button } from "@workspace/ui/components/button"
+import { Input } from "@workspace/ui/components/input"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@workspace/ui/components/select";
-import type { CommentReportDTO } from "@workspace/shared";
-import { renderStatusBadge, renderReasonBadge } from "./comment-badge-utils";
+} from "@workspace/ui/components/select"
+import type { CommentReportDTO } from "@workspace/shared"
+import { renderStatusBadge, renderReasonBadge } from "./comment-badge-utils"
 
 interface ReportedQueueTabProps {
-  reports: CommentReportDTO[];
-  loading: boolean;
-  actionLoading: boolean;
-  searchQuery: string;
-  statusFilter: string;
-  reasonFilter: string;
-  page: number;
-  totalPages: number;
-  onSearchChange: (q: string) => void;
-  onStatusFilterChange: (s: string) => void;
-  onReasonFilterChange: (r: string) => void;
-  onPageChange: (p: number) => void;
-  onDismissReport: (id: string) => void;
-  onOpenResolver: (report: CommentReportDTO, initialAction: string) => void;
+  reports: CommentReportDTO[]
+  loading: boolean
+  actionLoading: boolean
+  searchQuery: string
+  statusFilter: string
+  reasonFilter: string
+  page: number
+  totalPages: number
+  onSearchChange: (q: string) => void
+  onStatusFilterChange: (s: string) => void
+  onReasonFilterChange: (r: string) => void
+  onPageChange: (p: number) => void
+  onDismissReport: (id: string) => void
+  onOpenResolver: (report: CommentReportDTO, initialAction: string) => void
 }
 
 export function ReportedQueueTab({
@@ -51,20 +51,20 @@ export function ReportedQueueTab({
   return (
     <div className="space-y-4">
       {/* Filter Bar */}
-      <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between bg-card/60 p-3 rounded-lg border border-border/80">
+      <div className="flex flex-col gap-3 rounded-lg border border-border/80 bg-card/60 p-3 lg:flex-row lg:items-center lg:justify-between">
         <div className="flex flex-1 flex-wrap items-center gap-2">
           <div className="relative w-full sm:w-72">
-            <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
+            <Search className="absolute top-2.5 left-2.5 size-4 text-muted-foreground" />
             <Input
               placeholder="Search reported claims or details..."
               value={searchQuery}
               onChange={(e) => onSearchChange(e.target.value)}
-              className="pl-8 h-9 text-xs"
+              className="h-9 pl-8 text-xs"
             />
           </div>
 
           <Select value={statusFilter} onValueChange={onStatusFilterChange}>
-            <SelectTrigger className="w-[150px] h-9 text-xs">
+            <SelectTrigger className="h-9 w-[150px] text-xs">
               <SelectValue placeholder="Report Status" />
             </SelectTrigger>
             <SelectContent>
@@ -77,7 +77,7 @@ export function ReportedQueueTab({
           </Select>
 
           <Select value={reasonFilter} onValueChange={onReasonFilterChange}>
-            <SelectTrigger className="w-[150px] h-9 text-xs">
+            <SelectTrigger className="h-9 w-[150px] text-xs">
               <SelectValue placeholder="Report Reason" />
             </SelectTrigger>
             <SelectContent>
@@ -98,17 +98,19 @@ export function ReportedQueueTab({
         {loading ? (
           <div className="space-y-3">
             {[1, 2, 3].map((i) => (
-              <Card key={i} className="animate-pulse p-6 bg-card/40">
-                <div className="h-4 w-40 bg-muted/60 mb-2" />
+              <Card key={i} className="animate-pulse bg-card/40 p-6">
+                <div className="mb-2 h-4 w-40 bg-muted/60" />
                 <div className="h-3 w-full bg-muted/40" />
               </Card>
             ))}
           </div>
         ) : reports.length === 0 ? (
-          <Card className="p-12 text-center border-dashed">
-            <ShieldCheck className="size-10 text-emerald-500 mx-auto mb-3" />
-            <h3 className="font-semibold text-base">No reported comments pending review</h3>
-            <p className="text-xs text-muted-foreground mt-1 max-w-sm mx-auto">
+          <Card className="border-dashed p-12 text-center">
+            <ShieldCheck className="mx-auto mb-3 size-10 text-emerald-500" />
+            <h3 className="text-base font-semibold">
+              No reported comments pending review
+            </h3>
+            <p className="mx-auto mt-1 max-w-sm text-xs text-muted-foreground">
               All community flags have been moderated and resolved.
             </p>
           </Card>
@@ -126,12 +128,14 @@ export function ReportedQueueTab({
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                   <div className="flex items-center gap-2">
                     {renderReasonBadge(report.reason)}
-                    <span className="font-semibold text-sm">
+                    <span className="text-sm font-semibold">
                       Flagged by{" "}
-                      {report.reporterName || report.reporter?.name || "Anonymous Reader"}
+                      {report.reporterName ||
+                        report.reporter?.name ||
+                        "Anonymous Reader"}
                     </span>
                     {report.reporterEmail && (
-                      <span className="text-xs text-muted-foreground font-mono">
+                      <span className="font-mono text-xs text-muted-foreground">
                         ({report.reporterEmail})
                       </span>
                     )}
@@ -139,7 +143,7 @@ export function ReportedQueueTab({
 
                   <div className="flex items-center gap-2">
                     {report.status === "PENDING" ? (
-                      <Badge className="bg-rose-500 text-white text-[10px]">
+                      <Badge className="bg-rose-500 text-[10px] text-white">
                         Pending Action
                       </Badge>
                     ) : (
@@ -147,7 +151,7 @@ export function ReportedQueueTab({
                         {report.status}
                       </Badge>
                     )}
-                    <span className="text-xs text-muted-foreground font-mono">
+                    <span className="font-mono text-xs text-muted-foreground">
                       {new Date(report.createdAt).toLocaleDateString("en-US", {
                         month: "short",
                         day: "numeric",
@@ -159,10 +163,10 @@ export function ReportedQueueTab({
                 </div>
               </CardHeader>
 
-              <CardContent className="p-4 pt-0 space-y-3">
+              <CardContent className="space-y-3 p-4 pt-0">
                 {/* Reporter reason explanation */}
                 {report.details && (
-                  <div className="bg-rose-500/5 p-3 rounded-md border border-rose-500/20 text-xs">
+                  <div className="rounded-md border border-rose-500/20 bg-rose-500/5 p-3 text-xs">
                     <span className="font-semibold text-rose-600 dark:text-rose-400">
                       Reporter Note:{" "}
                     </span>
@@ -175,13 +179,14 @@ export function ReportedQueueTab({
                   <div className="space-y-1.5">
                     <div className="flex items-center justify-between text-xs text-muted-foreground">
                       <span>
-                        Offending Comment by: <strong>{report.comment.author?.name}</strong> on
+                        Offending Comment by:{" "}
+                        <strong>{report.comment.author?.name}</strong> on
                         article <strong>{report.comment.postTitle}</strong>
                       </span>
                       {renderStatusBadge(report.comment.status)}
                     </div>
 
-                    <div className="text-xs bg-muted/30 p-3 rounded border border-border/60 leading-relaxed italic text-foreground/90">
+                    <div className="rounded border border-border/60 bg-muted/30 p-3 text-xs leading-relaxed text-foreground/90 italic">
                       &ldquo;{report.comment.content}&rdquo;
                     </div>
                   </div>
@@ -193,14 +198,14 @@ export function ReportedQueueTab({
 
                 {/* Resolution Notes if reviewed */}
                 {report.resolutionNotes && (
-                  <div className="bg-muted/40 p-2.5 rounded text-xs border border-border/40">
+                  <div className="rounded border border-border/40 bg-muted/40 p-2.5 text-xs">
                     <span className="font-semibold">Resolution Note: </span>
                     <span>{report.resolutionNotes}</span>
                   </div>
                 )}
 
                 {/* Resolution Actions Bar */}
-                <div className="flex items-center justify-end gap-2 pt-2 border-t border-border/40">
+                <div className="flex items-center justify-end gap-2 border-t border-border/40 pt-2">
                   <Button
                     variant="ghost"
                     size="sm"
@@ -216,7 +221,7 @@ export function ReportedQueueTab({
                     size="sm"
                     onClick={() => onOpenResolver(report, "MARK_SPAM")}
                     disabled={actionLoading}
-                    className="h-8 text-xs gap-1 text-amber-600 hover:bg-amber-500/10"
+                    className="h-8 gap-1 text-xs text-amber-600 hover:bg-amber-500/10"
                   >
                     <Ban className="size-3.5" />
                     Mark as Spam
@@ -226,7 +231,7 @@ export function ReportedQueueTab({
                     size="sm"
                     onClick={() => onOpenResolver(report, "DELETE_COMMENT")}
                     disabled={actionLoading}
-                    className="h-8 text-xs gap-1 bg-rose-600 hover:bg-rose-700 text-white"
+                    className="h-8 gap-1 bg-rose-600 text-xs text-white hover:bg-rose-700"
                   >
                     <Trash2 className="size-3.5" />
                     Take Action / Delete
@@ -240,8 +245,8 @@ export function ReportedQueueTab({
 
       {/* Reports Pagination */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-between pt-4 border-t border-border/60">
-          <span className="text-xs text-muted-foreground font-mono">
+        <div className="flex items-center justify-between border-t border-border/60 pt-4">
+          <span className="font-mono text-xs text-muted-foreground">
             Page {page} of {totalPages}
           </span>
           <div className="flex items-center gap-2">
@@ -267,5 +272,5 @@ export function ReportedQueueTab({
         </div>
       )}
     </div>
-  );
+  )
 }

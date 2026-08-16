@@ -2,7 +2,11 @@
 
 import * as React from "react"
 import { Input } from "@workspace/ui/components/input"
-import { Avatar, AvatarFallback, AvatarImage } from "@workspace/ui/components/avatar"
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@workspace/ui/components/avatar"
 
 interface AuthorTabProps {
   authorName: string
@@ -36,21 +40,29 @@ export function AuthorTab({
   return (
     <div className="space-y-6">
       {/* Live Preview Card */}
-      <div className="p-4 rounded-xl border border-border/80 bg-muted/20 flex items-center gap-4">
+      <div className="flex items-center gap-4 rounded-xl border border-border/80 bg-muted/20 p-4">
         <Avatar className="h-14 w-14 border-2 border-primary/20">
           <AvatarImage src={authorAvatar} alt={authorName} />
-          <AvatarFallback>{(authorName || "FA").slice(0, 2).toUpperCase()}</AvatarFallback>
+          <AvatarFallback>
+            {(authorName || "FA").slice(0, 2).toUpperCase()}
+          </AvatarFallback>
         </Avatar>
         <div>
-          <div className="font-bold text-sm text-foreground">{authorName || "Author Name"}</div>
-          <div className="text-xs text-muted-foreground">{authorRole || "Engineer Title"}</div>
-          <div className="text-[11px] text-primary font-mono mt-0.5">{authorTwitter}</div>
+          <div className="text-sm font-bold text-foreground">
+            {authorName || "Author Name"}
+          </div>
+          <div className="text-xs text-muted-foreground">
+            {authorRole || "Engineer Title"}
+          </div>
+          <div className="mt-0.5 font-mono text-[11px] text-primary">
+            {authorTwitter}
+          </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div className="space-y-1">
-          <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+          <label className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
             Author Name
           </label>
           <Input
@@ -62,7 +74,7 @@ export function AuthorTab({
         </div>
 
         <div className="space-y-1">
-          <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+          <label className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
             Author Role / Title
           </label>
           <Input
@@ -75,7 +87,7 @@ export function AuthorTab({
       </div>
 
       <div className="space-y-1">
-        <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+        <label className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
           Author Avatar URL
         </label>
         <Input
@@ -86,9 +98,9 @@ export function AuthorTab({
         />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2 border-t border-border">
+      <div className="grid grid-cols-1 gap-3 border-t border-border pt-2 md:grid-cols-3">
         <div className="space-y-1">
-          <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+          <label className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
             Twitter / X Handle
           </label>
           <Input
@@ -100,7 +112,7 @@ export function AuthorTab({
         </div>
 
         <div className="space-y-1">
-          <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+          <label className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
             LinkedIn Profile URL
           </label>
           <Input
@@ -112,7 +124,7 @@ export function AuthorTab({
         </div>
 
         <div className="space-y-1">
-          <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+          <label className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
             GitHub Profile URL
           </label>
           <Input

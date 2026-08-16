@@ -22,39 +22,45 @@ export function AuthorSocialLinksSection({
   setAuthorGithub,
 }: AuthorSocialLinksSectionProps) {
   return (
-    <div className="space-y-3 pt-4 border-t border-border/80">
-      <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+    <div className="space-y-3 border-t border-border/80 pt-4">
+      <label className="flex items-center gap-1.5 text-xs font-bold tracking-wider text-muted-foreground uppercase">
         <Share2 className="h-3.5 w-3.5 text-primary" /> Author Social Links
       </label>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
         <div className="space-y-1.5">
-          <label className="text-[11px] font-semibold text-muted-foreground">Twitter / X</label>
+          <label className="text-[11px] font-semibold text-muted-foreground">
+            Twitter / X
+          </label>
           <Input
             placeholder="@fiamanillah"
             value={authorTwitter}
             onChange={(e) => setAuthorTwitter(e.target.value)}
-            className="text-xs h-9 bg-background border-border/90 hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary/20 shadow-xs"
+            className="h-9 border-border/90 bg-background text-xs shadow-xs hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary/20"
           />
         </div>
 
         <div className="space-y-1.5">
-          <label className="text-[11px] font-semibold text-muted-foreground">LinkedIn</label>
+          <label className="text-[11px] font-semibold text-muted-foreground">
+            LinkedIn
+          </label>
           <Input
             placeholder="https://linkedin.com/in/fiamanillah"
             value={authorLinkedin}
             onChange={(e) => setAuthorLinkedin(e.target.value)}
-            className="text-xs h-9 bg-background border-border/90 hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary/20 shadow-xs"
+            className="h-9 border-border/90 bg-background text-xs shadow-xs hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary/20"
           />
         </div>
 
         <div className="space-y-1.5">
-          <label className="text-[11px] font-semibold text-muted-foreground">GitHub</label>
+          <label className="text-[11px] font-semibold text-muted-foreground">
+            GitHub
+          </label>
           <Input
             placeholder="https://github.com/fiamanillah"
             value={authorGithub}
             onChange={(e) => setAuthorGithub(e.target.value)}
-            className="text-xs h-9 bg-background border-border/90 hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary/20 shadow-xs"
+            className="h-9 border-border/90 bg-background text-xs shadow-xs hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary/20"
           />
         </div>
       </div>

@@ -7,27 +7,31 @@ import type {
   UpdateSubscriberPayload,
   AdminBulkUpdateStatusPayload,
   AdminBulkDeletePayload,
-} from "@workspace/shared";
-import { request } from "./client";
+} from "@workspace/shared"
+import { request } from "./client"
 
 export const SubscriberApi = {
   /**
    * 1. List subscribers with pagination, search, status/source filters & sorting
    */
   async list(params?: AdminSubscriberQuery) {
-    const searchParams = new URLSearchParams();
-    if (params?.page) searchParams.set("page", String(params.page));
-    if (params?.limit) searchParams.set("limit", String(params.limit));
-    if (params?.search) searchParams.set("search", params.search);
-    if (params?.status && params.status !== "ALL") searchParams.set("status", params.status);
-    if (params?.source && params.source !== "ALL") searchParams.set("source", params.source);
-    if (params?.sortBy) searchParams.set("sortBy", params.sortBy);
-    if (params?.sortOrder) searchParams.set("sortOrder", params.sortOrder);
+    const searchParams = new URLSearchParams()
+    if (params?.page) searchParams.set("page", String(params.page))
+    if (params?.limit) searchParams.set("limit", String(params.limit))
+    if (params?.search) searchParams.set("search", params.search)
+    if (params?.status && params.status !== "ALL")
+      searchParams.set("status", params.status)
+    if (params?.source && params.source !== "ALL")
+      searchParams.set("source", params.source)
+    if (params?.sortBy) searchParams.set("sortBy", params.sortBy)
+    if (params?.sortOrder) searchParams.set("sortOrder", params.sortOrder)
 
-    const queryStr = searchParams.toString() ? `?${searchParams.toString()}` : "";
+    const queryStr = searchParams.toString()
+      ? `?${searchParams.toString()}`
+      : ""
     return await request<SubscriberItem[]>(`/subscriber/v1/list${queryStr}`, {
       method: "GET",
-    });
+    })
   },
 
   /**
@@ -36,7 +40,7 @@ export const SubscriberApi = {
   async getStats() {
     return await request<SubscriberStats>("/subscriber/v1/admin/stats", {
       method: "GET",
-    });
+    })
   },
 
   /**
@@ -46,7 +50,7 @@ export const SubscriberApi = {
     return await request<SubscriberItem>("/subscriber/v1/admin/create", {
       method: "POST",
       body: JSON.stringify(payload),
-    });
+    })
   },
 
   /**
@@ -56,7 +60,7 @@ export const SubscriberApi = {
     return await request<SubscriberItem>(`/subscriber/v1/${id}`, {
       method: "PATCH",
       body: JSON.stringify(payload),
-    });
+    })
   },
 
   /**
@@ -65,52 +69,68 @@ export const SubscriberApi = {
   async delete(id: string) {
     return await request<{ message: string }>(`/subscriber/v1/${id}`, {
       method: "DELETE",
-    });
+    })
   },
 
   /**
    * 6. Bulk update status
    */
   async bulkUpdateStatus(payload: AdminBulkUpdateStatusPayload) {
-    return await request<{ count: number }>("/subscriber/v1/admin/bulk-status", {
-      method: "POST",
-      body: JSON.stringify(payload),
-    });
+    return await request<{ count: number }>(
+      "/subscriber/v1/admin/bulk-status",
+      {
+        method: "POST",
+        body: JSON.stringify(payload),
+      }
+    )
   },
 
   /**
    * 7. Bulk delete subscribers
    */
   async bulkDelete(payload: AdminBulkDeletePayload) {
-    return await request<{ count: number }>("/subscriber/v1/admin/bulk-delete", {
-      method: "POST",
-      body: JSON.stringify(payload),
-    });
+    return await request<{ count: number }>(
+      "/subscriber/v1/admin/bulk-delete",
+      {
+        method: "POST",
+        body: JSON.stringify(payload),
+      }
+    )
   },
 
   /**
    * 8. Resend confirmation / welcome email
    */
   async resendWelcome(id: string) {
-    return await request<{ email: string; message: string }>(`/subscriber/v1/admin/${id}/resend`, {
-      method: "POST",
-    });
+    return await request<{ email: string; message: string }>(
+      `/subscriber/v1/admin/${id}/resend`,
+      {
+        method: "POST",
+      }
+    )
   },
 
   /**
    * 9. Export all filtered subscribers
    */
   async export(params?: AdminSubscriberQuery) {
-    const searchParams = new URLSearchParams();
-    if (params?.search) searchParams.set("search", params.search);
-    if (params?.status && params.status !== "ALL") searchParams.set("status", params.status);
-    if (params?.source && params.source !== "ALL") searchParams.set("source", params.source);
-    if (params?.sortBy) searchParams.set("sortBy", params.sortBy);
-    if (params?.sortOrder) searchParams.set("sortOrder", params.sortOrder);
+    const searchParams = new URLSearchParams()
+    if (params?.search) searchParams.set("search", params.search)
+    if (params?.status && params.status !== "ALL")
+      searchParams.set("status", params.status)
+    if (params?.source && params.source !== "ALL")
+      searchParams.set("source", params.source)
+    if (params?.sortBy) searchParams.set("sortBy", params.sortBy)
+    if (params?.sortOrder) searchParams.set("sortOrder", params.sortOrder)
 
-    const queryStr = searchParams.toString() ? `?${searchParams.toString()}` : "";
-    return await request<SubscriberItem[]>(`/subscriber/v1/admin/export${queryStr}`, {
-      method: "GET",
-    });
+    const queryStr = searchParams.toString()
+      ? `?${searchParams.toString()}`
+      : ""
+    return await request<SubscriberItem[]>(
+      `/subscriber/v1/admin/export${queryStr}`,
+      {
+        method: "GET",
+      }
+    )
   },
-};
+}

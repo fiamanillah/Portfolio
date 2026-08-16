@@ -8,7 +8,9 @@ interface Props {
 const { totalPosts, totalCategories, totalTopics = 16 } = Astro.props
 ---
 
-<header class="relative overflow-hidden border-b border-border pb-12 pt-6 text-center sm:pt-10">
+<header
+  class="relative overflow-hidden border-b border-border pt-6 pb-12 text-center sm:pt-10"
+>
   <!-- Background Diagonal Pattern -->
   <div
     class="diagonal-stripes pointer-events-none absolute inset-0 z-0 bg-background opacity-80"
@@ -18,28 +20,40 @@ const { totalPosts, totalCategories, totalTopics = 16 } = Astro.props
 
   <div class="relative z-10 mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
     <!-- Monospace Section Tag -->
-    <p class="section-label mb-3 inline-block rounded-sm border border-primary/20 bg-primary/5 px-3 py-1 font-mono text-xs font-semibold tracking-wider text-primary uppercase">
+    <p
+      class="section-label mb-3 inline-block rounded-sm border border-primary/20 bg-primary/5 px-3 py-1 font-mono text-xs font-semibold tracking-wider text-primary uppercase"
+    >
       [ SYSTEM_LOGS // ARTICLES_JOURNAL ]
     </p>
 
-    <h1 class="text-3xl font-black tracking-tight text-foreground sm:text-4xl md:text-5xl">
+    <h1
+      class="text-3xl font-black tracking-tight text-foreground sm:text-4xl md:text-5xl"
+    >
       Technical <span class="text-primary">Articles</span> & Insights
     </h1>
 
     <!-- Accent Bar -->
-    <div class="accent-bar mx-auto mb-6 mt-4 w-48"></div>
+    <div class="accent-bar mx-auto mt-4 mb-6 w-48"></div>
 
-    <p class="mx-auto max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-      In-depth technical writeups on distributed systems, message queue decoupling, database latency optimization, and real-time backend engineering.
+    <p
+      class="mx-auto max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg"
+    >
+      In-depth technical writeups on distributed systems, message queue
+      decoupling, database latency optimization, and real-time backend
+      engineering.
     </p>
 
     <!-- Stats Overview Bar -->
-    <div class="mt-8 grid grid-cols-2 gap-4 border-t border-b border-border/80 py-4 sm:grid-cols-3">
+    <div
+      class="mt-8 grid grid-cols-2 gap-4 border-t border-b border-border/80 py-4 sm:grid-cols-3"
+    >
       <div class="flex flex-col items-center justify-center p-2">
         <span class="font-mono text-2xl font-black text-primary sm:text-3xl">
           {totalPosts}
         </span>
-        <span class="text-xs font-medium tracking-wide text-muted-foreground uppercase">
+        <span
+          class="text-xs font-medium tracking-wide text-muted-foreground uppercase"
+        >
           Technical Articles
         </span>
       </div>
@@ -48,16 +62,22 @@ const { totalPosts, totalCategories, totalTopics = 16 } = Astro.props
         <span class="font-mono text-2xl font-black text-primary sm:text-3xl">
           {totalCategories}
         </span>
-        <span class="text-xs font-medium tracking-wide text-muted-foreground uppercase">
+        <span
+          class="text-xs font-medium tracking-wide text-muted-foreground uppercase"
+        >
           Engineering Domains
         </span>
       </div>
 
-      <div class="col-span-2 flex flex-col items-center justify-center p-2 sm:col-span-1">
+      <div
+        class="col-span-2 flex flex-col items-center justify-center p-2 sm:col-span-1"
+      >
         <span class="font-mono text-2xl font-black text-primary sm:text-3xl">
           {totalTopics}+
         </span>
-        <span class="text-xs font-medium tracking-wide text-muted-foreground uppercase">
+        <span
+          class="text-xs font-medium tracking-wide text-muted-foreground uppercase"
+        >
           Specialized Topics
         </span>
       </div>

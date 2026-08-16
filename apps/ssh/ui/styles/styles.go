@@ -172,16 +172,16 @@ var (
 				Bold(true)
 
 	StyleBadgeGold = lipgloss.NewStyle().
-				Background(ColorGold).
-				Foreground(ColorBackground).
-				Padding(0, 1).
-				Bold(true)
+			Background(ColorGold).
+			Foreground(ColorBackground).
+			Padding(0, 1).
+			Bold(true)
 
 	StyleBadgeGreen = lipgloss.NewStyle().
-				Background(ColorGreen).
-				Foreground(ColorBackground).
-				Padding(0, 1).
-				Bold(true)
+			Background(ColorGreen).
+			Foreground(ColorBackground).
+			Padding(0, 1).
+			Bold(true)
 )
 
 // ─── Layout Constants ────────────────────────────────────────────────────────

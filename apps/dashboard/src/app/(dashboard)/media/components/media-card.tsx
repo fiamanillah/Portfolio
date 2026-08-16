@@ -69,9 +69,9 @@ export function MediaCard({
     <div
       onClick={() => onInspect(file)}
       className={cn(
-        "group relative flex flex-col overflow-hidden rounded-xl border bg-card text-card-foreground shadow-2xs transition-all duration-200 cursor-pointer select-none",
+        "group relative flex cursor-pointer flex-col overflow-hidden rounded-xl border bg-card text-card-foreground shadow-2xs transition-all duration-200 select-none",
         isSelected
-          ? "border-primary ring-2 ring-primary/20 bg-primary/5"
+          ? "border-primary bg-primary/5 ring-2 ring-primary/20"
           : "border-border/80 hover:border-primary/50 hover:shadow-md"
       )}
     >
@@ -79,11 +79,11 @@ export function MediaCard({
       <div
         onClick={(e) => e.stopPropagation()}
         className={cn(
-          "absolute left-2.5 top-2.5 z-10 transition-opacity duration-150",
+          "absolute top-2.5 left-2.5 z-10 transition-opacity duration-150",
           isSelected ? "opacity-100" : "opacity-0 group-hover:opacity-100"
         )}
       >
-        <div className="rounded-md bg-background/90 p-1 backdrop-blur-xs shadow-xs">
+        <div className="rounded-md bg-background/90 p-1 shadow-xs backdrop-blur-xs">
           <Checkbox
             checked={isSelected}
             onCheckedChange={() => onToggleSelect(file.id)}
@@ -95,16 +95,20 @@ export function MediaCard({
       {/* Top Right Actions */}
       <div
         onClick={(e) => e.stopPropagation()}
-        className="absolute right-2.5 top-2.5 z-10 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-150"
+        className="absolute top-2.5 right-2.5 z-10 flex items-center gap-1 opacity-0 transition-opacity duration-150 group-hover:opacity-100"
       >
         <Button
           variant="secondary"
           size="icon"
           onClick={handleCopyUrl}
-          className="size-7 rounded-md bg-background/90 hover:bg-background shadow-xs backdrop-blur-xs text-xs"
+          className="size-7 rounded-md bg-background/90 text-xs shadow-xs backdrop-blur-xs hover:bg-background"
           title="Copy URL"
         >
-          {isCopied ? <Check className="size-3.5 text-emerald-500" /> : <Copy className="size-3.5" />}
+          {isCopied ? (
+            <Check className="size-3.5 text-emerald-500" />
+          ) : (
+            <Copy className="size-3.5" />
+          )}
         </Button>
 
         <DropdownMenu>
@@ -112,12 +116,12 @@ export function MediaCard({
             <Button
               variant="secondary"
               size="icon"
-              className="size-7 rounded-md bg-background/90 hover:bg-background shadow-xs backdrop-blur-xs text-xs"
+              className="size-7 rounded-md bg-background/90 text-xs shadow-xs backdrop-blur-xs hover:bg-background"
             >
               <MoreVertical className="size-3.5" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="text-xs min-w-36">
+          <DropdownMenuContent align="end" className="min-w-36 text-xs">
             <DropdownMenuItem onClick={() => onInspect(file)}>
               <Eye className="mr-2 size-3.5" /> Details & Edit
             </DropdownMenuItem>
@@ -130,7 +134,7 @@ export function MediaCard({
             <DropdownMenuSeparator />
             <DropdownMenuItem
               onClick={() => onDelete(file)}
-              className="text-destructive focus:text-destructive focus:bg-destructive/10"
+              className="text-destructive focus:bg-destructive/10 focus:text-destructive"
             >
               <Trash2 className="mr-2 size-3.5" /> Delete Permanently
             </DropdownMenuItem>
@@ -139,7 +143,7 @@ export function MediaCard({
       </div>
 
       {/* Media Visual Area */}
-      <div className="relative aspect-[4/3] w-full overflow-hidden bg-muted/20 border-b border-border/40">
+      <div className="relative aspect-[4/3] w-full overflow-hidden border-b border-border/40 bg-muted/20">
         <MediaPreview
           url={file.url}
           mimeType={file.mimeType}
@@ -153,14 +157,14 @@ export function MediaCard({
         <div className="absolute bottom-2 left-2 flex items-center gap-1">
           <Badge
             variant="secondary"
-            className="h-5 px-1.5 text-[10px] font-mono uppercase bg-background/80 backdrop-blur-xs border border-border/50 text-foreground"
+            className="h-5 border border-border/50 bg-background/80 px-1.5 font-mono text-[10px] text-foreground uppercase backdrop-blur-xs"
           >
             {ext}
           </Badge>
           {!file.isPublic && (
             <Badge
               variant="destructive"
-              className="h-5 px-1 text-[10px] bg-amber-500/80 text-white gap-0.5"
+              className="h-5 gap-0.5 bg-amber-500/80 px-1 text-[10px] text-white"
               title="Private / Restricted"
             >
               <Lock className="size-2.5" />
@@ -169,10 +173,10 @@ export function MediaCard({
         </div>
 
         {/* Size Pill on bottom right */}
-        <div className="absolute bottom-2 right-2">
+        <div className="absolute right-2 bottom-2">
           <Badge
             variant="secondary"
-            className="h-5 px-1.5 text-[10px] font-mono bg-background/80 backdrop-blur-xs border border-border/50 text-muted-foreground"
+            className="h-5 border border-border/50 bg-background/80 px-1.5 font-mono text-[10px] text-muted-foreground backdrop-blur-xs"
           >
             {file.sizeFormatted}
           </Badge>
@@ -180,10 +184,10 @@ export function MediaCard({
       </div>
 
       {/* Card Footer Information */}
-      <div className="flex flex-col p-3 gap-1">
+      <div className="flex flex-col gap-1 p-3">
         <div className="flex items-center justify-between gap-1.5">
           <span
-            className="text-xs font-semibold truncate text-foreground hover:text-primary transition-colors"
+            className="truncate text-xs font-semibold text-foreground transition-colors hover:text-primary"
             title={file.fileName}
           >
             {file.fileName}
@@ -192,10 +196,10 @@ export function MediaCard({
 
         <div className="flex items-center justify-between text-[11px] text-muted-foreground">
           <span className="flex items-center gap-1 truncate capitalize">
-            <Folder className="size-3 text-primary/70 shrink-0" />
+            <Folder className="size-3 shrink-0 text-primary/70" />
             {file.folder}
           </span>
-          <span className="font-mono text-[10px] shrink-0">
+          <span className="shrink-0 font-mono text-[10px]">
             {new Date(file.createdAt).toLocaleDateString(undefined, {
               month: "short",
               day: "numeric",

@@ -1,33 +1,33 @@
 // src/core/BaseModule.ts
-import { Router } from "express";
-import { Context } from "./Context";
-import { IgnitorModule } from "./IgnitorModule";
-import { AppLogger } from "@workspace/logger";
+import { Router } from "express"
+import { Context } from "./Context"
+import { IgnitorModule } from "./IgnitorModule"
+import { AppLogger } from "@workspace/logger"
 
 // Registry interface for localized Dependency Injection
 export interface ModuleDependencies {
-  services: Map<string, any>;
-  controllers: Map<string, any>;
+  services: Map<string, any>
+  controllers: Map<string, any>
 }
 
 export abstract class BaseModule implements IgnitorModule {
-  public abstract readonly name: string;
-  public abstract readonly version: string;
-  public abstract readonly basePath: string;
-  public abstract readonly dependencies?: string[];
+  public abstract readonly name: string
+  public abstract readonly version: string
+  public abstract readonly basePath: string
+  public abstract readonly dependencies?: string[]
 
-  protected router: Router;
-  protected context!: Context;
-  protected logger!: AppLogger;
+  protected router: Router
+  protected context!: Context
+  protected logger!: AppLogger
 
   // Internal DI container for the module
   protected container: ModuleDependencies = {
     services: new Map(),
     controllers: new Map(),
-  };
+  }
 
   constructor() {
-    this.router = Router();
+    this.router = Router()
   }
 
   /**
@@ -35,27 +35,29 @@ export abstract class BaseModule implements IgnitorModule {
    * Follows Clean Architecture Dependency Rule: from innermost layer to outermost layer
    */
   public async initialize(context: Context): Promise<void> {
-    this.context = context;
-    this.logger = new AppLogger(this.name || this.constructor.name || "BaseModule");
+    this.context = context
+    this.logger = new AppLogger(
+      this.name || this.constructor.name || "BaseModule"
+    )
 
-    this.logger.info(`Initializing module: ${this.name} v${this.version}`);
+    this.logger.info(`Initializing module: ${this.name} v${this.version}`)
 
     // 1. Pre-init hooks
-    await this.onBeforeInit();
+    await this.onBeforeInit()
 
     // 2. Business Logic / Use Cases Layer
-    await this.setupUseCases();
+    await this.setupUseCases()
 
     // 3. Interface Adapters Layer (Controllers)
-    await this.setupControllers();
+    await this.setupControllers()
 
     // 4. Delivery Layer (Routes)
-    await this.setupRoutes();
+    await this.setupRoutes()
 
     // 5. Post-init hooks
-    await this.onAfterInit();
+    await this.onAfterInit()
 
-    this.logger.info(`Module ${this.name} initialized successfully`);
+    this.logger.info(`Module ${this.name} initialized successfully`)
   }
 
   // ==========================================
@@ -65,36 +67,36 @@ export abstract class BaseModule implements IgnitorModule {
   /**
    * Layer 1: Setup business logic Services / Use Cases
    */
-  protected abstract setupUseCases(): Promise<void>;
+  protected abstract setupUseCases(): Promise<void>
 
   /**
    * Layer 2: Setup Presentation Controllers
    */
-  protected abstract setupControllers(): Promise<void>;
+  protected abstract setupControllers(): Promise<void>
 
   /**
    * Layer 3: Wire HTTP routes to controllers
    */
-  protected abstract setupRoutes(): Promise<void>;
+  protected abstract setupRoutes(): Promise<void>
 
   // ==========================================
   // Dependency Injection Helpers
   // ==========================================
 
   protected registerService(key: string, instance: any): void {
-    this.container.services.set(key, instance);
+    this.container.services.set(key, instance)
   }
 
   protected getService<T>(key: string): T {
-    return this.container.services.get(key) as T;
+    return this.container.services.get(key) as T
   }
 
   protected registerController(key: string, instance: any): void {
-    this.container.controllers.set(key, instance);
+    this.container.controllers.set(key, instance)
   }
 
   protected getController<T>(key: string): T {
-    return this.container.controllers.get(key) as T;
+    return this.container.controllers.get(key) as T
   }
 
   // ==========================================
@@ -105,18 +107,18 @@ export abstract class BaseModule implements IgnitorModule {
   protected async onAfterInit(): Promise<void> {}
 
   public async onShutdown(): Promise<void> {
-    this.logger.info(`Shutting down module: ${this.name}`);
-    await this.cleanup();
+    this.logger.info(`Shutting down module: ${this.name}`)
+    await this.cleanup()
   }
 
   protected async cleanup(): Promise<void> {
     // Clear DI registries to prevent memory leaks during shutdown
-    this.container.services.clear();
-    this.container.controllers.clear();
+    this.container.services.clear()
+    this.container.controllers.clear()
   }
 
   public getRouter(): Router {
-    return this.router;
+    return this.router
   }
 
   public getMetadata() {
@@ -124,13 +126,13 @@ export abstract class BaseModule implements IgnitorModule {
       name: this.name,
       version: this.version,
       dependencies: this.dependencies || [],
-    };
+    }
   }
 
   public async healthCheck(): Promise<{
-    status: "healthy" | "unhealthy";
-    details?: any;
+    status: "healthy" | "unhealthy"
+    details?: any
   }> {
-    return { status: "healthy" };
+    return { status: "healthy" }
   }
 }

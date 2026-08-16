@@ -41,7 +41,10 @@ function slugify(text: string): string {
 }
 
 function processAlertCallouts(html: string): string {
-  const alertTypes: Record<string, { label: string; classModifier: string; icon: string }> = {
+  const alertTypes: Record<
+    string,
+    { label: string; classModifier: string; icon: string }
+  > = {
     NOTE: {
       label: "NOTE",
       icon: `<svg class="h-4 w-4 text-sky-400 shrink-0 inline-block mr-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>`,
@@ -69,12 +72,15 @@ function processAlertCallouts(html: string): string {
     },
   }
 
-  const blockquoteRegex = /<blockquote>\s*<p>\s*\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*(?:<br\s*\/?>)?([\s\S]*?)<\/p>\s*([\s\S]*?)<\/blockquote>/gi
+  const blockquoteRegex =
+    /<blockquote>\s*<p>\s*\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*(?:<br\s*\/?>)?([\s\S]*?)<\/p>\s*([\s\S]*?)<\/blockquote>/gi
 
   return html.replace(blockquoteRegex, (_match, type, firstLine, rest) => {
     const upperType = type.toUpperCase()
     const config = alertTypes[upperType] || alertTypes.NOTE
-    const fullBody = (firstLine.trim() + (rest ? `\n${rest.trim()}` : "")).trim()
+    const fullBody = (
+      firstLine.trim() + (rest ? `\n${rest.trim()}` : "")
+    ).trim()
 
     return `
       <div class="my-6 relative overflow-hidden rounded-md border p-4 sm:p-5 backdrop-blur-sm ${config.classModifier}">
@@ -96,9 +102,11 @@ function processAlertCallouts(html: string): string {
 }
 
 function processMarkdownImages(html: string): string {
-  return html.replace(/<p><img\s+src="([^"]+)"\s+alt="([^"]*)"(?:\s+title="([^"]*)")?\s*\/?>\s*<\/p>/gi, (_match, src, alt, title) => {
-    const caption = title || (alt && alt !== src ? alt : "")
-    return `
+  return html.replace(
+    /<p><img\s+src="([^"]+)"\s+alt="([^"]*)"(?:\s+title="([^"]*)")?\s*\/?>\s*<\/p>/gi,
+    (_match, src, alt, title) => {
+      const caption = title || (alt && alt !== src ? alt : "")
+      return `
       <figure class="blog-image-figure my-8 overflow-hidden rounded-md border border-border/80 bg-card/60 shadow-md">
         <div class="relative overflow-hidden">
           <img
@@ -119,7 +127,8 @@ function processMarkdownImages(html: string): string {
         }
       </figure>
     `
-  })
+    }
+  )
 }
 
 function processMarkdownTables(html: string): string {
@@ -131,9 +140,11 @@ function processMarkdownTables(html: string): string {
 
 function processCodeBlocks(html: string): string {
   // Add macOS terminal header dots to code blocks
-  return html.replace(/<pre><code class="language-([^"]+)">([\s\S]*?)<\/code><\/pre>/gi, (_match, lang, code) => {
-    const displayLang = lang.toUpperCase()
-    return `
+  return html.replace(
+    /<pre><code class="language-([^"]+)">([\s\S]*?)<\/code><\/pre>/gi,
+    (_match, lang, code) => {
+      const displayLang = lang.toUpperCase()
+      return `
       <div class="code-block-container relative my-6 overflow-hidden rounded-md border border-border/80 shadow-lg bg-[#0d1117]">
         <div class="code-header flex items-center justify-between border-b border-border/40 bg-muted/20 px-4 py-2 text-xs font-mono select-none">
           <div class="flex items-center gap-2">
@@ -151,7 +162,8 @@ function processCodeBlocks(html: string): string {
         <pre class="p-4 overflow-x-auto text-[13px] font-mono leading-relaxed text-[#e6edf3]"><code>${code}</code></pre>
       </div>
     `
-  })
+    }
+  )
 }
 
 export function FrontendArticlePreview({
@@ -164,7 +176,15 @@ export function FrontendArticlePreview({
   const authorRole = post.author?.role || "Full Stack & DevOps Engineer"
   const authorAvatar = post.author?.avatar || "/fi.png"
   const categoryName = post.category?.name || "Architecture"
-  const publishedDate = post.date || (post.publishedAt ? new Date(post.publishedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : "Live Article")
+  const publishedDate =
+    post.date ||
+    (post.publishedAt
+      ? new Date(post.publishedAt).toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        })
+      : "Live Article")
 
   // Extract headings and parse HTML
   const { html, toc } = React.useMemo(() => {
@@ -233,17 +253,24 @@ export function FrontendArticlePreview({
   }
 
   return (
-    <div className="w-full bg-background text-foreground rounded-2xl border border-border/80 overflow-hidden shadow-md">
+    <div className="w-full overflow-hidden rounded-2xl border border-border/80 bg-background text-foreground shadow-md">
       {/* 1. Top Breadcrumbs Bar (Matching Frontend) */}
-      <nav aria-label="Breadcrumbs" className="border-b border-border/60 bg-muted/20 py-3 px-4 sm:px-6">
+      <nav
+        aria-label="Breadcrumbs"
+        className="border-b border-border/60 bg-muted/20 px-4 py-3 sm:px-6"
+      >
         <div className="flex flex-wrap items-center gap-2 font-mono text-xs text-muted-foreground">
-          <span className="hover:text-foreground cursor-pointer">Home</span>
+          <span className="cursor-pointer hover:text-foreground">Home</span>
           <span>/</span>
-          <span className="hover:text-foreground cursor-pointer">Blog</span>
+          <span className="cursor-pointer hover:text-foreground">Blog</span>
           <span>/</span>
-          <span className="text-primary hover:underline cursor-pointer">{categoryName}</span>
+          <span className="cursor-pointer text-primary hover:underline">
+            {categoryName}
+          </span>
           <span>/</span>
-          <span className="truncate font-semibold text-foreground max-w-xs">{post.title}</span>
+          <span className="max-w-xs truncate font-semibold text-foreground">
+            {post.title}
+          </span>
         </div>
       </nav>
 
@@ -251,7 +278,7 @@ export function FrontendArticlePreview({
       <div className="p-4 sm:p-6 lg:p-10">
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-12">
           {/* Main Article Reading Column (8 cols lg) */}
-          <article className="lg:col-span-8 min-w-0">
+          <article className="min-w-0 lg:col-span-8">
             {/* Header: Category & Featured */}
             <header className="border-b border-border/80 pb-8 text-left">
               <div className="mb-4 flex flex-wrap items-center gap-2">
@@ -266,13 +293,13 @@ export function FrontendArticlePreview({
               </div>
 
               {/* Main Article Title */}
-              <h1 className="text-3xl font-black tracking-tight text-foreground sm:text-4xl lg:text-5xl leading-[1.15]">
+              <h1 className="text-3xl leading-[1.15] font-black tracking-tight text-foreground sm:text-4xl lg:text-5xl">
                 {post.title}
               </h1>
 
               {/* Subtitle */}
               {post.subtitle && (
-                <p className="mt-4 text-base font-medium text-muted-foreground sm:text-lg leading-relaxed">
+                <p className="mt-4 text-base leading-relaxed font-medium text-muted-foreground sm:text-lg">
                   {post.subtitle}
                 </p>
               )}
@@ -287,32 +314,32 @@ export function FrontendArticlePreview({
                   <div className="pointer-events-none absolute right-1 bottom-1 h-2 w-2 border-r border-b border-primary/40" />
 
                   {/* Left: Author Profile */}
-                  <div className="flex items-center gap-3.5 min-w-0">
+                  <div className="flex min-w-0 items-center gap-3.5">
                     <div className="relative shrink-0">
                       <img
                         src={authorAvatar}
                         alt={authorName}
                         className="h-11 w-11 rounded-full border-2 border-primary/50 object-cover shadow-xs"
                       />
-                      <span className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-background bg-emerald-500 shadow-xs" />
+                      <span className="absolute -right-0.5 -bottom-0.5 h-3 w-3 rounded-full border-2 border-background bg-emerald-500 shadow-xs" />
                     </div>
-                    <div className="flex flex-col justify-center min-w-0">
+                    <div className="flex min-w-0 flex-col justify-center">
                       <div className="flex items-center gap-2">
-                        <span className="font-mono text-sm font-bold text-foreground truncate">
+                        <span className="truncate font-mono text-sm font-bold text-foreground">
                           {authorName}
                         </span>
-                        <span className="border border-primary/30 bg-primary/10 px-1.5 py-0.2 font-mono text-[9px] font-semibold text-primary uppercase">
+                        <span className="py-0.2 border border-primary/30 bg-primary/10 px-1.5 font-mono text-[9px] font-semibold text-primary uppercase">
                           Author
                         </span>
                       </div>
-                      <span className="font-mono text-xs text-muted-foreground truncate">
+                      <span className="truncate font-mono text-xs text-muted-foreground">
                         {authorRole}
                       </span>
                     </div>
                   </div>
 
                   {/* Right: Metrics Badges & Social Actions */}
-                  <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border/40 pt-3 lg:border-t-0 lg:justify-end lg:pt-0">
+                  <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border/40 pt-3 lg:justify-end lg:border-t-0 lg:pt-0">
                     <div className="flex flex-wrap items-center gap-1.5 font-mono text-xs text-muted-foreground">
                       <div className="inline-flex items-center gap-1.5 border border-border/70 bg-muted/20 px-2 py-1">
                         <Calendar className="size-3 text-primary/70" />
@@ -332,7 +359,7 @@ export function FrontendArticlePreview({
                       variant="outline"
                       size="sm"
                       onClick={copyPublicUrl}
-                      className="h-7 text-xs font-mono gap-1"
+                      className="h-7 gap-1 font-mono text-xs"
                     >
                       {copiedLink ? (
                         <>
@@ -376,10 +403,10 @@ export function FrontendArticlePreview({
                 <h3 className="font-mono text-xs font-bold tracking-widest text-primary uppercase">
                   // KEY TAKEAWAYS & ARCHITECTURE HIGHLIGHTS
                 </h3>
-                <ul className="mt-3 space-y-2 text-sm text-foreground/90 leading-relaxed">
+                <ul className="mt-3 space-y-2 text-sm leading-relaxed text-foreground/90">
                   {post.keyTakeaways.map((item, idx) => (
                     <li key={idx} className="flex items-start gap-2.5">
-                      <span className="mt-0.5 text-primary font-bold">⚡</span>
+                      <span className="mt-0.5 font-bold text-primary">⚡</span>
                       <span>{item}</span>
                     </li>
                   ))}
@@ -389,7 +416,7 @@ export function FrontendArticlePreview({
 
             {/* 5. Main Markdown Rendered Content */}
             <div
-              className="markdown-content max-w-3xl space-y-6 text-foreground/90 leading-relaxed text-base"
+              className="markdown-content max-w-3xl space-y-6 text-base leading-relaxed text-foreground/90"
               dangerouslySetInnerHTML={{ __html: html }}
             />
 
@@ -404,8 +431,10 @@ export function FrontendArticlePreview({
 
             {/* 7. Article Tags */}
             {post.tags && post.tags.length > 0 && (
-              <div className="border-t border-border/60 pt-6 flex flex-wrap items-center gap-2">
-                <span className="font-mono text-xs text-muted-foreground">TAGS:</span>
+              <div className="flex flex-wrap items-center gap-2 border-t border-border/60 pt-6">
+                <span className="font-mono text-xs text-muted-foreground">
+                  TAGS:
+                </span>
                 {post.tags.map((tag) => (
                   <span
                     key={tag}
@@ -418,35 +447,37 @@ export function FrontendArticlePreview({
             )}
 
             {/* 8. Author Bio Card (Matching Frontend) */}
-            <div className="relative mt-8 overflow-hidden border border-border/80 bg-background/80 p-6 sm:p-7 backdrop-blur-md">
+            <div className="relative mt-8 overflow-hidden border border-border/80 bg-background/80 p-6 backdrop-blur-md sm:p-7">
               {/* Cyberpunk corner brackets */}
               <div className="pointer-events-none absolute top-2 left-2 h-3.5 w-3.5 border-t-[1.5px] border-l-[1.5px] border-primary/40" />
               <div className="pointer-events-none absolute top-2 right-2 h-3.5 w-3.5 border-t-[1.5px] border-r-[1.5px] border-primary/40" />
               <div className="pointer-events-none absolute bottom-2 left-2 h-3.5 w-3.5 border-b-[1.5px] border-l-[1.5px] border-primary/40" />
               <div className="pointer-events-none absolute right-2 bottom-2 h-3.5 w-3.5 border-r-[1.5px] border-b-[1.5px] border-primary/40" />
 
-              <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5">
+              <div className="flex flex-col items-center gap-5 sm:flex-row sm:items-start">
                 <div className="relative shrink-0">
                   <img
                     src={authorAvatar}
                     alt={authorName}
                     className="h-16 w-16 rounded-full border-2 border-primary/50 object-cover shadow-md"
                   />
-                  <span className="absolute bottom-0 right-0 h-4 w-4 rounded-full border-2 border-background bg-emerald-500 shadow-xs" />
+                  <span className="absolute right-0 bottom-0 h-4 w-4 rounded-full border-2 border-background bg-emerald-500 shadow-xs" />
                 </div>
 
-                <div className="text-center sm:text-left space-y-1">
-                  <span className="inline-block font-mono text-[10px] font-semibold text-primary uppercase tracking-wider">
+                <div className="space-y-1 text-center sm:text-left">
+                  <span className="inline-block font-mono text-[10px] font-semibold tracking-wider text-primary uppercase">
                     [ AUTHOR // LEAD_ARCHITECT ]
                   </span>
-                  <h4 className="font-mono text-base font-bold text-foreground leading-tight">
+                  <h4 className="font-mono text-base leading-tight font-bold text-foreground">
                     {authorName}
                   </h4>
-                  <p className="font-mono text-xs text-muted-foreground leading-none">
+                  <p className="font-mono text-xs leading-none text-muted-foreground">
                     {authorRole}
                   </p>
-                  <p className="text-xs text-muted-foreground/90 leading-relaxed pt-2">
-                    Full Stack Engineer specializing in TypeScript backend architecture, event-driven microservices with RabbitMQ & Redis, Prisma ORM tuning, and cloud VPS deployments.
+                  <p className="pt-2 text-xs leading-relaxed text-muted-foreground/90">
+                    Full Stack Engineer specializing in TypeScript backend
+                    architecture, event-driven microservices with RabbitMQ &
+                    Redis, Prisma ORM tuning, and cloud VPS deployments.
                   </p>
                 </div>
               </div>
@@ -454,9 +485,9 @@ export function FrontendArticlePreview({
           </article>
 
           {/* Right Sidebar Column: Sticky Table of Contents (4 cols lg) */}
-          <aside className="lg:col-span-4 min-w-0 h-full">
+          <aside className="h-full min-w-0 lg:col-span-4">
             <div className="sticky top-24 space-y-4 rounded-xl border border-border/80 bg-card/60 p-5 backdrop-blur-xs">
-              <div className="flex items-center gap-2 border-b border-border/60 pb-3 font-mono text-xs font-bold uppercase tracking-wider text-primary">
+              <div className="flex items-center gap-2 border-b border-border/60 pb-3 font-mono text-xs font-bold tracking-wider text-primary uppercase">
                 <Hash className="size-3.5" />
                 <span>Table of Contents</span>
               </div>
@@ -466,12 +497,14 @@ export function FrontendArticlePreview({
                   {toc.map((item, index) => (
                     <li
                       key={index}
-                      style={{ paddingLeft: item.level === 3 ? "0.75rem" : "0" }}
+                      style={{
+                        paddingLeft: item.level === 3 ? "0.75rem" : "0",
+                      }}
                       className="line-clamp-1"
                     >
                       <a
                         href={`#${item.id}`}
-                        className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-1.5"
+                        className="flex items-center gap-1.5 text-muted-foreground transition-colors hover:text-primary"
                       >
                         <span className="text-primary/40">›</span>
                         <span className="truncate">{item.text}</span>
@@ -481,7 +514,8 @@ export function FrontendArticlePreview({
                 </ul>
               ) : (
                 <p className="text-xs text-muted-foreground italic">
-                  Headings (H2, H3) in your markdown content will appear here automatically.
+                  Headings (H2, H3) in your markdown content will appear here
+                  automatically.
                 </p>
               )}
             </div>

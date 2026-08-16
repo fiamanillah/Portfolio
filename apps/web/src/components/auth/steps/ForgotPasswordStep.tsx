@@ -30,10 +30,14 @@ export function ForgotPasswordStep({
 }: ForgotPasswordStepProps) {
   return (
     <form onSubmit={onSubmit} noValidate className="space-y-4">
-      <div className="rounded-none border border-primary/20 bg-primary/5 p-3 flex items-start gap-2.5">
-        <HugeiconsIcon icon={Key01Icon} className="size-4 text-primary shrink-0 mt-0.5" />
-        <p className="font-mono text-[11px] text-foreground/80 leading-relaxed">
-          Enter your registered email address. We will generate and dispatch a 6-digit verification code (OTP) to restore your account access.
+      <div className="flex items-start gap-2.5 rounded-none border border-primary/20 bg-primary/5 p-3">
+        <HugeiconsIcon
+          icon={Key01Icon}
+          className="mt-0.5 size-4 shrink-0 text-primary"
+        />
+        <p className="font-mono text-[11px] leading-relaxed text-foreground/80">
+          Enter your registered email address. We will generate and dispatch a
+          6-digit verification code (OTP) to restore your account access.
         </p>
       </div>
 
@@ -50,12 +54,12 @@ export function ForgotPasswordStep({
               if (error) setError(null)
             }}
             aria-invalid={!!error}
-            className="rounded-none font-mono text-xs border-border bg-background/50 pl-8 focus:border-primary"
+            className="rounded-none border-border bg-background/50 pl-8 font-mono text-xs focus:border-primary"
             required
           />
           <HugeiconsIcon
             icon={Mail01Icon}
-            className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground"
+            className="absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-muted-foreground"
           />
         </div>
         <FieldError errors={error ?? undefined} />
@@ -64,11 +68,14 @@ export function ForgotPasswordStep({
       <Button
         type="submit"
         disabled={isSubmitting}
-        className="w-full rounded-none font-mono text-xs font-bold uppercase tracking-wider bg-primary text-primary-foreground hover:bg-primary/90 transition-colors cursor-pointer h-10 shadow-sm flex items-center justify-center gap-2"
+        className="flex h-10 w-full cursor-pointer items-center justify-center gap-2 rounded-none bg-primary font-mono text-xs font-bold tracking-wider text-primary-foreground uppercase shadow-sm transition-colors hover:bg-primary/90"
       >
         {isSubmitting ? (
           <>
-            <HugeiconsIcon icon={Loading03Icon} className="size-4 animate-spin" />
+            <HugeiconsIcon
+              icon={Loading03Icon}
+              className="size-4 animate-spin"
+            />
             <span>Dispatching OTP...</span>
           </>
         ) : (
@@ -79,11 +86,11 @@ export function ForgotPasswordStep({
         )}
       </Button>
 
-      <div className="text-center pt-2">
+      <div className="pt-2 text-center">
         <button
           type="button"
           onClick={onNavigateToSignIn}
-          className="font-mono text-[11px] text-muted-foreground hover:text-primary transition-colors cursor-pointer"
+          className="cursor-pointer font-mono text-[11px] text-muted-foreground transition-colors hover:text-primary"
         >
           ← Return to Sign In
         </button>

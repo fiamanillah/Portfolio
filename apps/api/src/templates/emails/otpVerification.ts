@@ -1,14 +1,17 @@
 // src/templates/emails/otpVerification.ts
-import { renderEmailLayout } from "./baseLayout";
+import { renderEmailLayout } from "./baseLayout"
 
-export type OtpEmailPurpose = "REGISTER_EMAIL_VERIFY" | "PASSWORD_RESET" | "LOGIN_2FA";
+export type OtpEmailPurpose =
+  | "REGISTER_EMAIL_VERIFY"
+  | "PASSWORD_RESET"
+  | "LOGIN_2FA"
 
 export interface OtpEmailOptions {
-  email: string;
-  code: string;
-  name?: string;
-  purpose?: OtpEmailPurpose;
-  expiresInMinutes?: number;
+  email: string
+  code: string
+  name?: string
+  purpose?: OtpEmailPurpose
+  expiresInMinutes?: number
 }
 
 /**
@@ -62,27 +65,28 @@ export function getOtpVerificationLiquidBody(): string {
         <strong style="color: #f8fafc;">Fi Amanillah</strong>
       </p>
     </div>
-  `.trim();
+  `.trim()
 
   const { html } = renderEmailLayout({
     badgeLabel: "Security Code",
     title: "Your Verification Code",
     subtitle: "Single-use verification passcode for your account",
     contentHtml,
-    previewText: "Your 6-digit verification code is {{ code }}. Valid for 10 minutes.",
+    previewText:
+      "Your 6-digit verification code is {{ code }}. Valid for 10 minutes.",
     showUnsubscribe: false,
-  });
+  })
 
-  return html;
+  return html
 }
 
 /**
  * Renders the OTP Email with concrete runtime values.
  */
 export function renderOtpEmail(options: OtpEmailOptions): {
-  subject: string;
-  html: string;
-  listUnsubscribeHeader: string;
+  subject: string
+  html: string
+  listUnsubscribeHeader: string
 } {
   const {
     email,
@@ -90,28 +94,34 @@ export function renderOtpEmail(options: OtpEmailOptions): {
     name,
     purpose = "REGISTER_EMAIL_VERIFY",
     expiresInMinutes = 10,
-  } = options;
+  } = options
 
-  const displayName = name && name.trim().length > 0 ? name.trim() : email.split("@")[0] || "there";
+  const displayName =
+    name && name.trim().length > 0
+      ? name.trim()
+      : email.split("@")[0] || "there"
 
-  let badgeLabel = "Verification";
-  let title = "Verify Your Email";
-  let subtitle = "Activate your account on fi.amanillah.dev";
-  let subject = `[${code}] Your Email Verification Code — Fi Amanillah`;
-  let leadText = "Thank you for joining my developer portal! Enter the 6-digit verification code below to verify your email address and activate your account:";
+  let badgeLabel = "Verification"
+  let title = "Verify Your Email"
+  let subtitle = "Activate your account on fi.amanillah.dev"
+  let subject = `[${code}] Your Email Verification Code — Fi Amanillah`
+  let leadText =
+    "Thank you for joining my developer portal! Enter the 6-digit verification code below to verify your email address and activate your account:"
 
   if (purpose === "PASSWORD_RESET") {
-    badgeLabel = "Password Recovery";
-    title = "Reset Your Password";
-    subtitle = "Single-use recovery passcode for your account";
-    subject = `[${code}] Password Reset Code — Fi Amanillah`;
-    leadText = "We received a request to reset your password. Use the single-use verification code below to establish a new password for your account:";
+    badgeLabel = "Password Recovery"
+    title = "Reset Your Password"
+    subtitle = "Single-use recovery passcode for your account"
+    subject = `[${code}] Password Reset Code — Fi Amanillah`
+    leadText =
+      "We received a request to reset your password. Use the single-use verification code below to establish a new password for your account:"
   } else if (purpose === "LOGIN_2FA") {
-    badgeLabel = "Authentication";
-    title = "Two-Factor Security Code";
-    subtitle = "Verify your sign-in session";
-    subject = `[${code}] Sign-in Security Code — Fi Amanillah`;
-    leadText = "Enter the security verification code below to authorize your account sign-in:";
+    badgeLabel = "Authentication"
+    title = "Two-Factor Security Code"
+    subtitle = "Verify your sign-in session"
+    subject = `[${code}] Sign-in Security Code — Fi Amanillah`
+    leadText =
+      "Enter the security verification code below to authorize your account sign-in:"
   }
 
   const contentHtml = `
@@ -155,7 +165,7 @@ export function renderOtpEmail(options: OtpEmailOptions): {
         <strong style="color: #f8fafc;">Fi Amanillah</strong>
       </p>
     </div>
-  `.trim();
+  `.trim()
 
   const { html, listUnsubscribeHeader } = renderEmailLayout({
     badgeLabel,
@@ -164,7 +174,7 @@ export function renderOtpEmail(options: OtpEmailOptions): {
     contentHtml,
     previewText: `Your verification code is ${code}. Valid for ${expiresInMinutes} minutes.`,
     showUnsubscribe: false,
-  });
+  })
 
-  return { subject, html, listUnsubscribeHeader };
+  return { subject, html, listUnsubscribeHeader }
 }

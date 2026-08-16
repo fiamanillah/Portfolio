@@ -19,7 +19,8 @@ const fontMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Admin Dashboard | Portfolio Platform",
-  description: "Administrative control center for portfolio management, content, subscribers, and system telemetry.",
+  description:
+    "Administrative control center for portfolio management, content, subscribers, and system telemetry.",
 }
 
 export default function RootLayout({
@@ -31,7 +32,12 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={cn("antialiased", fontMono.variable, "font-sans", inter.variable)}
+      className={cn(
+        "antialiased",
+        fontMono.variable,
+        "font-sans",
+        inter.variable
+      )}
     >
       <body className="min-h-screen bg-background text-foreground">
         <ThemeProvider>
@@ -44,4 +50,3 @@ export default function RootLayout({
     </html>
   )
 }
-

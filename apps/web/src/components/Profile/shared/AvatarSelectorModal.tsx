@@ -9,7 +9,11 @@ import {
 } from "@workspace/ui/components/dialog"
 import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"
-import { Field, FieldLabel, FieldDescription } from "@workspace/ui/components/field"
+import {
+  Field,
+  FieldLabel,
+  FieldDescription,
+} from "@workspace/ui/components/field"
 import { AVATAR_OPTIONS } from "@/data/commentsData"
 import { AuthApi } from "@/lib/api/authApi"
 import { HugeiconsIcon } from "@hugeicons/react"
@@ -72,7 +76,11 @@ export function AvatarSelectorModal({
         onSaveAvatar(res.data.avatar)
         onOpenChange(false)
       } else {
-        setError(res.error || res.message || "Failed to upload avatar to cloud storage.")
+        setError(
+          res.error ||
+            res.message ||
+            "Failed to upload avatar to cloud storage."
+        )
       }
     } catch (err: any) {
       setError(err?.message || "Failed to upload avatar.")
@@ -87,7 +95,9 @@ export function AvatarSelectorModal({
   const handleApply = () => {
     const target = customUrl.trim() || selected
     if (!target) {
-      setError("Please select a preset avatar, upload a file, or enter an image URL.")
+      setError(
+        "Please select a preset avatar, upload a file, or enter an image URL."
+      )
       return
     }
     onSaveAvatar(target)
@@ -119,13 +129,13 @@ export function AvatarSelectorModal({
                     "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80"
                 }}
               />
-              <span className="absolute -bottom-0.5 -right-0.5 flex size-4 items-center justify-center rounded-full bg-primary text-primary-foreground">
+              <span className="absolute -right-0.5 -bottom-0.5 flex size-4 items-center justify-center rounded-full bg-primary text-primary-foreground">
                 <HugeiconsIcon icon={Tick02Icon} className="size-2.5" />
               </span>
             </div>
             <div className="min-w-0">
               <p className="text-sm font-medium text-foreground">Preview</p>
-              <p className="text-xs text-muted-foreground truncate">
+              <p className="truncate text-xs text-muted-foreground">
                 Shown in comments, reviews & navbar
               </p>
             </div>
@@ -146,7 +156,7 @@ export function AvatarSelectorModal({
                       setCustomUrl("")
                       setError(null)
                     }}
-                    className={`group relative flex aspect-square items-center justify-center overflow-hidden rounded-lg border p-1 transition-all cursor-pointer ${
+                    className={`group relative flex aspect-square cursor-pointer items-center justify-center overflow-hidden rounded-lg border p-1 transition-all ${
                       isSelected
                         ? "border-primary ring-2 ring-primary/30"
                         : "border-border hover:border-primary/50"
@@ -158,8 +168,11 @@ export function AvatarSelectorModal({
                       className="size-full rounded-full object-cover transition-transform group-hover:scale-105"
                     />
                     {isSelected && (
-                      <span className="absolute inset-0 flex items-center justify-center bg-primary/20 backdrop-blur-[1px] rounded-lg">
-                        <HugeiconsIcon icon={CheckmarkBadge01Icon} className="size-4 text-primary" />
+                      <span className="absolute inset-0 flex items-center justify-center rounded-lg bg-primary/20 backdrop-blur-[1px]">
+                        <HugeiconsIcon
+                          icon={CheckmarkBadge01Icon}
+                          className="size-4 text-primary"
+                        />
                       </span>
                     )}
                   </button>
@@ -184,16 +197,22 @@ export function AvatarSelectorModal({
               size="sm"
               disabled={isUploading}
               onClick={() => fileInputRef.current?.click()}
-              className="w-full justify-center gap-2 border-dashed border-border/80 bg-background/50 hover:bg-accent/40 text-xs cursor-pointer h-10"
+              className="h-10 w-full cursor-pointer justify-center gap-2 border-dashed border-border/80 bg-background/50 text-xs hover:bg-accent/40"
             >
               {isUploading ? (
                 <>
-                  <HugeiconsIcon icon={Loading03Icon} className="size-3.5 animate-spin" />
+                  <HugeiconsIcon
+                    icon={Loading03Icon}
+                    className="size-3.5 animate-spin"
+                  />
                   Uploading to Cloud Storage...
                 </>
               ) : (
                 <>
-                  <HugeiconsIcon icon={Upload02Icon} className="size-3.5 text-primary" />
+                  <HugeiconsIcon
+                    icon={Upload02Icon}
+                    className="size-3.5 text-primary"
+                  />
                   Choose Image File (JPG, PNG, WebP)
                 </>
               )}
@@ -215,27 +234,30 @@ export function AvatarSelectorModal({
                   setCustomUrl(e.target.value)
                   setError(null)
                 }}
-                className="rounded-md text-sm pl-8"
+                className="rounded-md pl-8 text-sm"
               />
               <HugeiconsIcon
                 icon={Globe02Icon}
-                className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground pointer-events-none"
+                className="pointer-events-none absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-muted-foreground"
               />
             </div>
             {error && <p className="text-xs text-destructive">{error}</p>}
             <FieldDescription className="text-[11px] text-muted-foreground">
-              Tip: Use <code className="text-foreground">https://github.com/[username].png</code>
+              Tip: Use{" "}
+              <code className="text-foreground">
+                https://github.com/[username].png
+              </code>
             </FieldDescription>
           </Field>
         </div>
 
-        <DialogFooter className="flex flex-row justify-end gap-2 pt-2 border-t border-border/50">
+        <DialogFooter className="flex flex-row justify-end gap-2 border-t border-border/50 pt-2">
           <Button
             type="button"
             variant="ghost"
             size="sm"
             onClick={() => onOpenChange(false)}
-            className="rounded-md text-xs cursor-pointer"
+            className="cursor-pointer rounded-md text-xs"
           >
             Cancel
           </Button>
@@ -243,9 +265,9 @@ export function AvatarSelectorModal({
             type="button"
             size="sm"
             onClick={handleApply}
-            className="rounded-md text-xs cursor-pointer"
+            className="cursor-pointer rounded-md text-xs"
           >
-            <HugeiconsIcon icon={Tick02Icon} className="size-3.5 mr-1" />
+            <HugeiconsIcon icon={Tick02Icon} className="mr-1 size-3.5" />
             Save Avatar
           </Button>
         </DialogFooter>

@@ -41,8 +41,8 @@ export function MediaStatsOverview({
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {[1, 2, 3, 4].map((i) => (
           <Card key={i} className="p-5">
-            <Skeleton className="h-4 w-24 mb-2" />
-            <Skeleton className="h-8 w-16 mb-2" />
+            <Skeleton className="mb-2 h-4 w-24" />
+            <Skeleton className="mb-2 h-8 w-16" />
             <Skeleton className="h-3 w-32" />
           </Card>
         ))}
@@ -54,7 +54,10 @@ export function MediaStatsOverview({
   const totalSizeFormatted = stats?.totalSizeFormatted || "0 B"
   const images = stats?.categories?.images || { count: 0, sizeFormatted: "0 B" }
   const videos = stats?.categories?.videos || { count: 0, sizeFormatted: "0 B" }
-  const documents = stats?.categories?.documents || { count: 0, sizeFormatted: "0 B" }
+  const documents = stats?.categories?.documents || {
+    count: 0,
+    sizeFormatted: "0 B",
+  }
   const audio = stats?.categories?.audio || { count: 0, sizeFormatted: "0 B" }
   const foldersCount = stats?.folders?.length || 0
 
@@ -65,12 +68,16 @@ export function MediaStatsOverview({
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-2xl font-bold tracking-tight">Media Library</h1>
-            <Badge variant="outline" className="font-mono text-xs text-primary border-primary/30">
+            <Badge
+              variant="outline"
+              className="border-primary/30 font-mono text-xs text-primary"
+            >
               Cloudflare R2
             </Badge>
           </div>
-          <p className="text-sm text-muted-foreground mt-0.5">
-            Manage, optimize, and organize all digital assets across your portfolio and blog.
+          <p className="mt-0.5 text-sm text-muted-foreground">
+            Manage, optimize, and organize all digital assets across your
+            portfolio and blog.
           </p>
         </div>
 
@@ -80,9 +87,11 @@ export function MediaStatsOverview({
             size="sm"
             onClick={onRefreshClick}
             disabled={isRefreshing}
-            className="gap-1.5 text-xs h-9"
+            className="h-9 gap-1.5 text-xs"
           >
-            <RefreshCw className={`size-3.5 ${isRefreshing ? "animate-spin" : ""}`} />
+            <RefreshCw
+              className={`size-3.5 ${isRefreshing ? "animate-spin" : ""}`}
+            />
             Refresh
           </Button>
 
@@ -90,7 +99,7 @@ export function MediaStatsOverview({
             variant="outline"
             size="sm"
             onClick={onCleanupClick}
-            className="gap-1.5 text-xs h-9 border-destructive/30 hover:border-destructive/60 hover:text-destructive hover:bg-destructive/10"
+            className="h-9 gap-1.5 border-destructive/30 text-xs hover:border-destructive/60 hover:bg-destructive/10 hover:text-destructive"
           >
             <Trash2 className="size-3.5 text-destructive" />
             Storage Cleaner
@@ -99,7 +108,7 @@ export function MediaStatsOverview({
           <Button
             onClick={onUploadClick}
             size="sm"
-            className="gap-1.5 text-xs h-9 bg-primary hover:bg-primary/90 text-primary-foreground shadow-xs"
+            className="h-9 gap-1.5 bg-primary text-xs text-primary-foreground shadow-xs hover:bg-primary/90"
           >
             <UploadCloud className="size-4" />
             Upload Media
@@ -113,23 +122,27 @@ export function MediaStatsOverview({
         <Card className="relative overflow-hidden border-border/80 bg-linear-to-br from-card to-card/50 shadow-xs">
           <CardContent className="p-5">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              <span className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
                 Total Storage
               </span>
-              <div className="size-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
+              <div className="flex size-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
                 <HardDrive className="size-4" />
               </div>
             </div>
             <div className="mt-3 flex items-baseline gap-2">
-              <span className="text-2xl font-bold tracking-tight">{totalSizeFormatted}</span>
-              <span className="text-xs text-muted-foreground font-medium font-mono">
+              <span className="text-2xl font-bold tracking-tight">
+                {totalSizeFormatted}
+              </span>
+              <span className="font-mono text-xs font-medium text-muted-foreground">
                 / {totalFiles} assets
               </span>
             </div>
             <div className="mt-3 flex items-center gap-1.5 text-xs text-muted-foreground">
               <FolderOpen className="size-3.5 text-primary" />
               <span>
-                Organized across <strong className="text-foreground">{foldersCount}</strong> folders
+                Organized across{" "}
+                <strong className="text-foreground">{foldersCount}</strong>{" "}
+                folders
               </span>
             </div>
           </CardContent>
@@ -139,18 +152,22 @@ export function MediaStatsOverview({
         <Card className="relative overflow-hidden border-border/80 bg-linear-to-br from-card to-card/50 shadow-xs">
           <CardContent className="p-5">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              <span className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
                 Images & Photos
               </span>
-              <div className="size-8 rounded-lg bg-blue-500/10 text-blue-500 flex items-center justify-center">
+              <div className="flex size-8 items-center justify-center rounded-lg bg-blue-500/10 text-blue-500">
                 <ImageIcon className="size-4" />
               </div>
             </div>
             <div className="mt-3 flex items-baseline gap-2">
-              <span className="text-2xl font-bold tracking-tight">{images.count}</span>
-              <span className="text-xs text-muted-foreground font-mono">{images.sizeFormatted}</span>
+              <span className="text-2xl font-bold tracking-tight">
+                {images.count}
+              </span>
+              <span className="font-mono text-xs text-muted-foreground">
+                {images.sizeFormatted}
+              </span>
             </div>
-            <div className="mt-3 text-xs text-muted-foreground truncate">
+            <div className="mt-3 truncate text-xs text-muted-foreground">
               WebP, PNG, JPG, SVG & Icons
             </div>
           </CardContent>
@@ -160,10 +177,10 @@ export function MediaStatsOverview({
         <Card className="relative overflow-hidden border-border/80 bg-linear-to-br from-card to-card/50 shadow-xs">
           <CardContent className="p-5">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              <span className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
                 Video & Audio
               </span>
-              <div className="size-8 rounded-lg bg-purple-500/10 text-purple-500 flex items-center justify-center">
+              <div className="flex size-8 items-center justify-center rounded-lg bg-purple-500/10 text-purple-500">
                 <Film className="size-4" />
               </div>
             </div>
@@ -171,7 +188,7 @@ export function MediaStatsOverview({
               <span className="text-2xl font-bold tracking-tight">
                 {videos.count + audio.count}
               </span>
-              <span className="text-xs text-muted-foreground font-mono">
+              <span className="font-mono text-xs text-muted-foreground">
                 {videos.sizeFormatted}
               </span>
             </div>
@@ -185,16 +202,18 @@ export function MediaStatsOverview({
         <Card className="relative overflow-hidden border-border/80 bg-linear-to-br from-card to-card/50 shadow-xs">
           <CardContent className="p-5">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              <span className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
                 Documents & Files
               </span>
-              <div className="size-8 rounded-lg bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
+              <div className="flex size-8 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-500">
                 <FileText className="size-4" />
               </div>
             </div>
             <div className="mt-3 flex items-baseline gap-2">
-              <span className="text-2xl font-bold tracking-tight">{documents.count}</span>
-              <span className="text-xs text-muted-foreground font-mono">
+              <span className="text-2xl font-bold tracking-tight">
+                {documents.count}
+              </span>
+              <span className="font-mono text-xs text-muted-foreground">
                 {documents.sizeFormatted}
               </span>
             </div>

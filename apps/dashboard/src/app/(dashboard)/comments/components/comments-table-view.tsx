@@ -1,21 +1,21 @@
 // apps/dashboard/src/app/(dashboard)/comments/components/comments-table-view.tsx
-import * as React from "react";
-import { Trash2 } from "lucide-react";
-import { Card } from "@workspace/ui/components/card";
-import { Button } from "@workspace/ui/components/button";
-import { Checkbox } from "@workspace/ui/components/checkbox";
-import { Avatar, AvatarFallback } from "@workspace/ui/components/avatar";
-import type { CommentAdminListItemDTO, CommentStatus } from "@workspace/shared";
-import { renderStatusBadge } from "./comment-badge-utils";
+import * as React from "react"
+import { Trash2 } from "lucide-react"
+import { Card } from "@workspace/ui/components/card"
+import { Button } from "@workspace/ui/components/button"
+import { Checkbox } from "@workspace/ui/components/checkbox"
+import { Avatar, AvatarFallback } from "@workspace/ui/components/avatar"
+import type { CommentAdminListItemDTO, CommentStatus } from "@workspace/shared"
+import { renderStatusBadge } from "./comment-badge-utils"
 
 interface CommentsTableViewProps {
-  comments: CommentAdminListItemDTO[];
-  selectedCommentIds: string[];
-  onToggleSelect: (id: string) => void;
-  onSelectAllPage: (checked: boolean) => void;
-  onInspect: (id: string) => void;
-  onUpdateStatus: (id: string, status: CommentStatus) => void;
-  onDeleteConfirm: (id: string) => void;
+  comments: CommentAdminListItemDTO[]
+  selectedCommentIds: string[]
+  onToggleSelect: (id: string) => void
+  onSelectAllPage: (checked: boolean) => void
+  onInspect: (id: string) => void
+  onUpdateStatus: (id: string, status: CommentStatus) => void
+  onDeleteConfirm: (id: string) => void
 }
 
 export function CommentsTableView({
@@ -27,15 +27,16 @@ export function CommentsTableView({
   onUpdateStatus,
   onDeleteConfirm,
 }: CommentsTableViewProps) {
-  const isAllSelected = comments.length > 0 && selectedCommentIds.length === comments.length;
+  const isAllSelected =
+    comments.length > 0 && selectedCommentIds.length === comments.length
 
   return (
-    <Card className="border-border/80 overflow-hidden">
+    <Card className="overflow-hidden border-border/80">
       <div className="overflow-x-auto">
-        <table className="w-full text-left text-xs border-collapse">
+        <table className="w-full border-collapse text-left text-xs">
           <thead>
-            <tr className="border-b border-border/80 bg-muted/40 text-muted-foreground font-mono">
-              <th className="p-3 w-10">
+            <tr className="border-b border-border/80 bg-muted/40 font-mono text-muted-foreground">
+              <th className="w-10 p-3">
                 <Checkbox
                   checked={isAllSelected}
                   onCheckedChange={(checked) => onSelectAllPage(!!checked)}
@@ -51,7 +52,7 @@ export function CommentsTableView({
           </thead>
           <tbody className="divide-y divide-border/40 font-sans">
             {comments.map((cm) => (
-              <tr key={cm.id} className="hover:bg-muted/20 transition-colors">
+              <tr key={cm.id} className="transition-colors hover:bg-muted/20">
                 <td className="p-3">
                   <Checkbox
                     checked={selectedCommentIds.includes(cm.id)}
@@ -68,24 +69,24 @@ export function CommentsTableView({
                     <div>
                       <span className="font-semibold">{cm.author.name}</span>
                       {cm.author.email && (
-                        <p className="text-[10px] text-muted-foreground font-mono">
+                        <p className="font-mono text-[10px] text-muted-foreground">
                           {cm.author.email}
                         </p>
                       )}
                     </div>
                   </div>
                 </td>
-                <td className="p-3 max-w-xs truncate text-muted-foreground">
+                <td className="max-w-xs truncate p-3 text-muted-foreground">
                   &ldquo;{cm.content}&rdquo;
                 </td>
-                <td className="p-3 max-w-[200px] truncate text-foreground font-medium">
+                <td className="max-w-[200px] truncate p-3 font-medium text-foreground">
                   {cm.postTitle}
                 </td>
                 <td className="p-3">{renderStatusBadge(cm.status)}</td>
                 <td className="p-3 font-mono text-[11px] text-muted-foreground">
                   {cm.likesCount}L • {cm.repliesCount}R
                 </td>
-                <td className="p-3 text-right space-x-1">
+                <td className="space-x-1 p-3 text-right">
                   <Button
                     variant="ghost"
                     size="sm"
@@ -119,5 +120,5 @@ export function CommentsTableView({
         </table>
       </div>
     </Card>
-  );
+  )
 }

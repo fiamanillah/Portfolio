@@ -1,14 +1,14 @@
 // src/templates/emails/contactConfirmation.ts
-import { renderEmailLayout } from "./baseLayout";
+import { renderEmailLayout } from "./baseLayout"
 
 export interface ContactConfirmationOptions {
-  name?: string;
-  email?: string;
-  subject?: string;
-  message?: string;
-  subscribed?: boolean;
-  unsubscribeUrl?: string;
-  manageUrl?: string;
+  name?: string
+  email?: string
+  subject?: string
+  message?: string
+  subscribed?: boolean
+  unsubscribeUrl?: string
+  manageUrl?: string
 }
 
 /**
@@ -50,35 +50,49 @@ export function getContactConfirmationLiquidBody(): string {
         <strong style="color: #f8fafc;">Fi Amanillah</strong>
       </p>
     </div>
-  `.trim();
+  `.trim()
 
   const { html } = renderEmailLayout({
     badgeLabel: "Message Received",
     title: "Thank you for getting in touch",
     subtitle: "Your message has been received and queued for review",
     contentHtml,
-    previewText: "Hi {{ name | default: 'there' }}, thank you for getting in touch! Your message has been received.",
+    previewText:
+      "Hi {{ name | default: 'there' }}, thank you for getting in touch! Your message has been received.",
     unsubscribeUrl: "{{ unsubscribeUrl }}",
     manageUrl: "{{ manageUrl }}",
     showUnsubscribe: true,
-  });
+  })
 
-  return html;
+  return html
 }
 
 /**
  * Renders the Confirmation Email with concrete runtime values.
  */
-export function renderContactConfirmationEmail(options: ContactConfirmationOptions): {
-  subject: string;
-  html: string;
-  listUnsubscribeHeader: string;
+export function renderContactConfirmationEmail(
+  options: ContactConfirmationOptions
+): {
+  subject: string
+  html: string
+  listUnsubscribeHeader: string
 } {
-  const { name, email, subject: userSubject, message, subscribed, unsubscribeUrl, manageUrl } = options;
-  const displayName = name && name.trim().length > 0 ? name.trim() : "there";
-  const safeSubject = userSubject && userSubject.trim().length > 0 ? userSubject.trim() : "Your Inquiry";
-  const safeMessage = message || "";
-  const emailSubject = `[Confirmation] Thank you for getting in touch! - Fi Amanillah`;
+  const {
+    name,
+    email,
+    subject: userSubject,
+    message,
+    subscribed,
+    unsubscribeUrl,
+    manageUrl,
+  } = options
+  const displayName = name && name.trim().length > 0 ? name.trim() : "there"
+  const safeSubject =
+    userSubject && userSubject.trim().length > 0
+      ? userSubject.trim()
+      : "Your Inquiry"
+  const safeMessage = message || ""
+  const emailSubject = `[Confirmation] Thank you for getting in touch! - Fi Amanillah`
 
   const contentHtml = `
     <p style="margin: 0 0 16px 0; font-size: 15px; color: #f1f5f9;">
@@ -115,7 +129,7 @@ export function renderContactConfirmationEmail(options: ContactConfirmationOptio
         <strong style="color: #f8fafc;">Fi Amanillah</strong>
       </p>
     </div>
-  `.trim();
+  `.trim()
 
   const { html, listUnsubscribeHeader } = renderEmailLayout({
     badgeLabel: "Message Received",
@@ -126,7 +140,7 @@ export function renderContactConfirmationEmail(options: ContactConfirmationOptio
     unsubscribeUrl: subscribed ? unsubscribeUrl : undefined,
     manageUrl,
     showUnsubscribe: !!subscribed,
-  });
+  })
 
-  return { subject: emailSubject, html, listUnsubscribeHeader };
+  return { subject: emailSubject, html, listUnsubscribeHeader }
 }

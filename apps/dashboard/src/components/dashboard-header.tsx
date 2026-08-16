@@ -32,7 +32,9 @@ const routeTitles: Record<string, string> = {
 export function DashboardHeader() {
   const pathname = usePathname()
   const { user } = useAuth()
-  const currentTitle = routeTitles[pathname] || pathname.replace("/", "").charAt(0).toUpperCase() + pathname.slice(2)
+  const currentTitle =
+    routeTitles[pathname] ||
+    pathname.replace("/", "").charAt(0).toUpperCase() + pathname.slice(2)
 
   return (
     <header className="sticky top-0 z-30 flex h-14 shrink-0 items-center justify-between gap-4 border-b border-border bg-background/80 px-4 backdrop-blur-md transition-all">
@@ -64,13 +66,16 @@ export function DashboardHeader() {
       </div>
 
       <div className="flex items-center gap-2">
-        <div className="hidden lg:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 border border-primary/20 text-[11px] font-medium text-primary">
+        <div className="hidden items-center gap-1.5 rounded-full border border-primary/20 bg-primary/10 px-2.5 py-1 text-[11px] font-medium text-primary lg:flex">
           <Shield className="size-3" />
           <span>Super Admin: {user?.name || "Fi Amanillah"}</span>
         </div>
 
-        <div className="hidden sm:flex items-center gap-1 border-l border-border pl-2">
-          <Badge variant="secondary" className="h-6 gap-1 px-2 font-mono text-[11px]">
+        <div className="hidden items-center gap-1 border-l border-border pl-2 sm:flex">
+          <Badge
+            variant="secondary"
+            className="h-6 gap-1 px-2 font-mono text-[11px]"
+          >
             <Terminal className="size-3 text-primary" />
             <span>API: online</span>
           </Badge>

@@ -50,26 +50,35 @@ export function PublishingTab({
 }: PublishingTabProps) {
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div className="space-y-1">
-          <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+          <label className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
             Publication Status
           </label>
-          <Select value={status} onValueChange={(val) => setStatus(val as BlogStatus)}>
+          <Select
+            value={status}
+            onValueChange={(val) => setStatus(val as BlogStatus)}
+          >
             <SelectTrigger className="bg-card text-xs">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="DRAFT">Draft (Unpublished)</SelectItem>
-              <SelectItem value="PUBLISHED">Published (Live to public)</SelectItem>
-              <SelectItem value="SCHEDULED">Scheduled (Future release)</SelectItem>
-              <SelectItem value="ARCHIVED">Archived (Hidden from feeds)</SelectItem>
+              <SelectItem value="PUBLISHED">
+                Published (Live to public)
+              </SelectItem>
+              <SelectItem value="SCHEDULED">
+                Scheduled (Future release)
+              </SelectItem>
+              <SelectItem value="ARCHIVED">
+                Archived (Hidden from feeds)
+              </SelectItem>
             </SelectContent>
           </Select>
         </div>
 
         <div className="space-y-1">
-          <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+          <label className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
             Published Date & Time
           </label>
           <Input
@@ -81,9 +90,9 @@ export function PublishingTab({
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div className="space-y-1">
-          <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+          <label className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
             Scheduled Release Date (Optional)
           </label>
           <Input
@@ -95,7 +104,7 @@ export function PublishingTab({
         </div>
 
         <div className="space-y-1">
-          <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+          <label className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
             Display Date Label (e.g. "AUG 2025")
           </label>
           <Input
@@ -107,9 +116,9 @@ export function PublishingTab({
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div className="space-y-1">
-          <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+          <label className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
             Reading Time Override
           </label>
           <Input
@@ -122,23 +131,27 @@ export function PublishingTab({
       </div>
 
       {/* Featured & Pinned Switches */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-border">
-        <div className="flex items-center justify-between p-3.5 rounded-lg border border-border bg-card">
+      <div className="grid grid-cols-1 gap-4 border-t border-border pt-2 sm:grid-cols-2">
+        <div className="flex items-center justify-between rounded-lg border border-border bg-card p-3.5">
           <div>
-            <div className="text-sm font-semibold flex items-center gap-1.5">
+            <div className="flex items-center gap-1.5 text-sm font-semibold">
               <Sparkles className="h-4 w-4 text-amber-500" /> Featured Article
             </div>
-            <div className="text-xs text-muted-foreground">Display prominently on home & blog featured grids</div>
+            <div className="text-xs text-muted-foreground">
+              Display prominently on home & blog featured grids
+            </div>
           </div>
           <Switch checked={featured} onCheckedChange={setFeatured} />
         </div>
 
-        <div className="flex items-center justify-between p-3.5 rounded-lg border border-border bg-card">
+        <div className="flex items-center justify-between rounded-lg border border-border bg-card p-3.5">
           <div>
-            <div className="text-sm font-semibold flex items-center gap-1.5">
+            <div className="flex items-center gap-1.5 text-sm font-semibold">
               <Pin className="h-4 w-4 text-primary" /> Pinned Article
             </div>
-            <div className="text-xs text-muted-foreground">Keep pinned at top of blog listings</div>
+            <div className="text-xs text-muted-foreground">
+              Keep pinned at top of blog listings
+            </div>
           </div>
           <Switch checked={pinned} onCheckedChange={setPinned} />
         </div>

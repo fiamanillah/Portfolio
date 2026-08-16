@@ -1,12 +1,20 @@
 import rss from "@astrojs/rss"
 import type { APIRoute } from "astro"
-import { blogPostsData, getBlogPostPublishedDate } from "@/data/blogPosts"
+import {
+  getAllBlogPostsAsync,
+  getBlogPostPublishedDate,
+} from "@/data/blogPosts"
 
 export const GET: APIRoute = async (context) => {
-  const site = (context.site?.toString() || import.meta.env.PUBLIC_WEB_URL || "https://fi.amanillah.com").replace(/\/$/, "")
+  const site = (
+    context.site?.toString() ||
+    import.meta.env.PUBLIC_WEB_URL ||
+    "https://fi.amanillah.com"
+  ).replace(/\/$/, "")
+  const posts = await getAllBlogPostsAsync()
 
   // Sort posts latest first
-  const sortedPosts = [...blogPostsData].sort((a, b) => {
+  const sortedPosts = [...posts].sort((a, b) => {
     const dateA = new Date(getBlogPostPublishedDate(a)).getTime()
     const dateB = new Date(getBlogPostPublishedDate(b)).getTime()
     return dateB - dateA

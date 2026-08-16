@@ -38,7 +38,10 @@ export interface SubscriberColumnActions {
   onViewDetails: (subscriber: SubscriberItem) => void
   onEdit: (subscriber: SubscriberItem) => void
   onDelete: (subscriber: SubscriberItem) => void
-  onToggleStatus: (subscriber: SubscriberItem, newStatus: "subscribed" | "unsubscribed" | "pending") => void
+  onToggleStatus: (
+    subscriber: SubscriberItem,
+    newStatus: "subscribed" | "unsubscribed" | "pending"
+  ) => void
   onResendEmail: (subscriber: SubscriberItem) => void
 }
 
@@ -80,13 +83,23 @@ export function getSubscriberColumns(
     columnHelper.display({
       id: "select",
       header: ({ table }) => {
-        const isAllSelected = typeof table.getIsAllPageRowsSelected === "function" ? table.getIsAllPageRowsSelected() : false
-        const isSomeSelected = typeof table.getIsSomePageRowsSelected === "function" ? table.getIsSomePageRowsSelected() : false
+        const isAllSelected =
+          typeof table.getIsAllPageRowsSelected === "function"
+            ? table.getIsAllPageRowsSelected()
+            : false
+        const isSomeSelected =
+          typeof table.getIsSomePageRowsSelected === "function"
+            ? table.getIsSomePageRowsSelected()
+            : false
 
         return (
           <Checkbox
-            checked={isAllSelected || (isSomeSelected ? "indeterminate" : false)}
-            onCheckedChange={(value) => table.toggleAllPageRowsSelected?.(!!value)}
+            checked={
+              isAllSelected || (isSomeSelected ? "indeterminate" : false)
+            }
+            onCheckedChange={(value) =>
+              table.toggleAllPageRowsSelected?.(!!value)
+            }
             aria-label="Select all subscribers on page"
             className="translate-y-[2px]"
           />
@@ -94,7 +107,11 @@ export function getSubscriberColumns(
       },
       cell: ({ row }) => (
         <Checkbox
-          checked={typeof row.getIsSelected === "function" ? row.getIsSelected() : false}
+          checked={
+            typeof row.getIsSelected === "function"
+              ? row.getIsSelected()
+              : false
+          }
           onCheckedChange={(value) => row.toggleSelected?.(!!value)}
           aria-label={`Select ${row.original.email}`}
           className="translate-y-[2px]"
@@ -125,11 +142,13 @@ export function getSubscriberColumns(
                 {initials}
               </AvatarFallback>
             </Avatar>
-            <div className="grid leading-tight min-w-0">
-              <div className="flex items-center gap-1.5 font-medium text-xs truncate">
-                <span className="truncate">{sub.name || "Anonymous Subscriber"}</span>
+            <div className="grid min-w-0 leading-tight">
+              <div className="flex items-center gap-1.5 truncate text-xs font-medium">
+                <span className="truncate">
+                  {sub.name || "Anonymous Subscriber"}
+                </span>
               </div>
-              <div className="flex items-center gap-1 mt-0.5 text-[11px] text-muted-foreground font-mono">
+              <div className="mt-0.5 flex items-center gap-1 font-mono text-[11px] text-muted-foreground">
                 <span className="truncate">{sub.email}</span>
                 <button
                   type="button"
@@ -138,7 +157,7 @@ export function getSubscriberColumns(
                     navigator.clipboard.writeText(sub.email)
                     toast.success("Email copied to clipboard")
                   }}
-                  className="text-muted-foreground/60 hover:text-foreground transition-colors p-0.5"
+                  className="p-0.5 text-muted-foreground/60 transition-colors hover:text-foreground"
                   title="Copy email"
                 >
                   <Copy className="size-3" />
@@ -160,7 +179,7 @@ export function getSubscriberColumns(
           return (
             <Badge
               variant="default"
-              className="bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 text-[10px] font-medium gap-1 px-2 py-0.5"
+              className="gap-1 border border-emerald-500/30 bg-emerald-500/15 px-2 py-0.5 text-[10px] font-medium text-emerald-600 dark:text-emerald-400"
             >
               <CheckCircle2 className="size-3" />
               Subscribed
@@ -172,7 +191,7 @@ export function getSubscriberColumns(
           return (
             <Badge
               variant="secondary"
-              className="bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30 text-[10px] font-medium gap-1 px-2 py-0.5"
+              className="gap-1 border border-amber-500/30 bg-amber-500/15 px-2 py-0.5 text-[10px] font-medium text-amber-600 dark:text-amber-400"
             >
               <Clock className="size-3" />
               Pending
@@ -183,7 +202,7 @@ export function getSubscriberColumns(
         return (
           <Badge
             variant="outline"
-            className="bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/30 text-[10px] font-medium gap-1 px-2 py-0.5"
+            className="gap-1 border border-rose-500/30 bg-rose-500/10 px-2 py-0.5 text-[10px] font-medium text-rose-600 dark:text-rose-400"
           >
             <XCircle className="size-3" />
             Unsubscribed
@@ -201,7 +220,7 @@ export function getSubscriberColumns(
 
         return (
           <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-            <span className="inline-flex items-center rounded-md bg-muted px-2 py-0.5 text-[11px] font-medium border border-border/60">
+            <span className="inline-flex items-center rounded-md border border-border/60 bg-muted px-2 py-0.5 text-[11px] font-medium">
               {formatted}
             </span>
           </div>
@@ -214,12 +233,15 @@ export function getSubscriberColumns(
       ),
       cell: ({ row }) => {
         const date = row.original.subscribedAt
-        if (!date) return <span className="text-xs text-muted-foreground">—</span>
+        if (!date)
+          return <span className="text-xs text-muted-foreground">—</span>
 
         return (
-          <div className="grid leading-tight text-xs">
-            <span className="font-medium text-foreground">{formatFullDate(date)}</span>
-            <span className="text-[10px] text-muted-foreground mt-0.5">
+          <div className="grid text-xs leading-tight">
+            <span className="font-medium text-foreground">
+              {formatFullDate(date)}
+            </span>
+            <span className="mt-0.5 text-[10px] text-muted-foreground">
               {formatRelativeTime(date)}
             </span>
           </div>
@@ -228,13 +250,13 @@ export function getSubscriberColumns(
     }),
     columnHelper.display({
       id: "actions",
-      header: () => <div className="text-right pr-2">Actions</div>,
+      header: () => <div className="pr-2 text-right">Actions</div>,
       cell: ({ row }) => {
         const sub = row.original
         const isSubscribed = sub.status?.toLowerCase() === "subscribed"
 
         return (
-          <div className="text-right pr-2">
+          <div className="pr-2 text-right">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="size-8">
@@ -250,7 +272,7 @@ export function getSubscriberColumns(
 
                 <DropdownMenuItem
                   onClick={() => actions.onViewDetails(sub)}
-                  className="text-xs gap-2"
+                  className="gap-2 text-xs"
                 >
                   <ExternalLink className="size-3.5 text-primary" />
                   View Details & Audit
@@ -258,7 +280,7 @@ export function getSubscriberColumns(
 
                 <DropdownMenuItem
                   onClick={() => actions.onEdit(sub)}
-                  className="text-xs gap-2"
+                  className="gap-2 text-xs"
                 >
                   <Pencil className="size-3.5" />
                   Edit Subscriber
@@ -266,7 +288,7 @@ export function getSubscriberColumns(
 
                 <DropdownMenuItem
                   onClick={() => actions.onResendEmail(sub)}
-                  className="text-xs gap-2"
+                  className="gap-2 text-xs"
                 >
                   <RotateCw className="size-3.5" />
                   Resend Welcome Email
@@ -277,7 +299,7 @@ export function getSubscriberColumns(
                 {isSubscribed ? (
                   <DropdownMenuItem
                     onClick={() => actions.onToggleStatus(sub, "unsubscribed")}
-                    className="text-xs gap-2 text-amber-600 dark:text-amber-400"
+                    className="gap-2 text-xs text-amber-600 dark:text-amber-400"
                   >
                     <UserX className="size-3.5" />
                     Mark Unsubscribed
@@ -285,7 +307,7 @@ export function getSubscriberColumns(
                 ) : (
                   <DropdownMenuItem
                     onClick={() => actions.onToggleStatus(sub, "subscribed")}
-                    className="text-xs gap-2 text-emerald-600 dark:text-emerald-400"
+                    className="gap-2 text-xs text-emerald-600 dark:text-emerald-400"
                   >
                     <UserCheck className="size-3.5" />
                     Mark Subscribed
@@ -297,7 +319,7 @@ export function getSubscriberColumns(
                     navigator.clipboard.writeText(sub.id)
                     toast.success("Subscriber ID copied")
                   }}
-                  className="text-xs gap-2 text-muted-foreground font-mono"
+                  className="gap-2 font-mono text-xs text-muted-foreground"
                 >
                   <Copy className="size-3.5" />
                   Copy ID: {sub.id.slice(0, 8)}...
@@ -307,7 +329,7 @@ export function getSubscriberColumns(
 
                 <DropdownMenuItem
                   onClick={() => actions.onDelete(sub)}
-                  className="text-xs gap-2 text-destructive focus:bg-destructive/10 focus:text-destructive"
+                  className="gap-2 text-xs text-destructive focus:bg-destructive/10 focus:text-destructive"
                 >
                   <Trash2 className="size-3.5" />
                   Delete Subscriber

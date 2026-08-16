@@ -34,19 +34,22 @@ export function MediaBulkBar({
   const isAllPageSelected = selectedCount >= totalOnPage && totalOnPage > 0
 
   return (
-    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 animate-in fade-in slide-in-from-bottom-5 duration-200">
-      <div className="flex items-center gap-2 p-2 px-3.5 rounded-full border border-border/80 bg-background/95 backdrop-blur-md shadow-xl text-xs">
-        <Badge variant="default" className="rounded-full px-2.5 py-0.5 text-xs font-mono">
+    <div className="fixed bottom-6 left-1/2 z-40 -translate-x-1/2 animate-in duration-200 slide-in-from-bottom-5 fade-in">
+      <div className="flex items-center gap-2 rounded-full border border-border/80 bg-background/95 p-2 px-3.5 text-xs shadow-xl backdrop-blur-md">
+        <Badge
+          variant="default"
+          className="rounded-full px-2.5 py-0.5 font-mono text-xs"
+        >
           {selectedCount} selected
         </Badge>
 
-        <div className="h-4 w-px bg-border mx-0.5" />
+        <div className="mx-0.5 h-4 w-px bg-border" />
 
         <Button
           variant="ghost"
           size="sm"
           onClick={isAllPageSelected ? onClearSelection : onSelectAllPage}
-          className="h-7 px-2 text-xs text-muted-foreground hover:text-foreground gap-1.5"
+          className="h-7 gap-1.5 px-2 text-xs text-muted-foreground hover:text-foreground"
         >
           {isAllPageSelected ? (
             <>
@@ -63,7 +66,7 @@ export function MediaBulkBar({
           variant="secondary"
           size="sm"
           onClick={onBulkMoveFolder}
-          className="h-7 px-2.5 text-xs gap-1.5 shadow-2xs"
+          className="h-7 gap-1.5 px-2.5 text-xs shadow-2xs"
         >
           <FolderInput className="size-3.5 text-primary" />
           Move Folder
@@ -73,7 +76,7 @@ export function MediaBulkBar({
           variant="destructive"
           size="sm"
           onClick={onBulkDelete}
-          className="h-7 px-2.5 text-xs gap-1.5 shadow-2xs bg-destructive text-destructive-foreground hover:bg-destructive/90"
+          className="text-destructive-foreground h-7 gap-1.5 bg-destructive px-2.5 text-xs shadow-2xs hover:bg-destructive/90"
         >
           <Trash2 className="size-3.5" />
           Delete Selected
@@ -83,7 +86,7 @@ export function MediaBulkBar({
           variant="ghost"
           size="icon"
           onClick={onClearSelection}
-          className="size-7 rounded-full text-muted-foreground hover:text-foreground ml-1"
+          className="ml-1 size-7 rounded-full text-muted-foreground hover:text-foreground"
           title="Dismiss"
         >
           <X className="size-3.5" />

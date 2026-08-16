@@ -1,5 +1,6 @@
 import { useState } from "react"
 import type { BlogComment, AuthUser } from "@/data/commentsData"
+import type { GuestCommentPayload } from "@/lib/api/commentsApi"
 import { useAuthSession } from "@/lib/authStore"
 import { CommentComposer } from "./CommentComposer"
 import { ReportCommentModal } from "./ReportCommentModal"
@@ -18,7 +19,11 @@ interface CommentItemProps {
   comment: BlogComment
   postSlug: string
   onLike: (commentId: string, parentId?: string | null) => void
-  onReply: (parentId: string, author: AuthUser, content: string) => void
+  onReply: (
+    parentId: string,
+    author: AuthUser | GuestCommentPayload,
+    content: string
+  ) => void
   onDelete: (commentId: string, parentId?: string | null) => void
   onOpenAuth: () => void
   isChild?: boolean
@@ -52,7 +57,7 @@ function renderCommentContent(content: string) {
   const lines = content.split("\n")
 
   return (
-    <div className="space-y-1.5 text-xs text-foreground/90 leading-relaxed font-sans">
+    <div className="space-y-1.5 font-sans text-xs leading-relaxed text-foreground/90">
       {lines.map((line, idx) => {
         if (!line.trim()) {
           return <div key={idx} className="h-1" />
@@ -116,20 +121,30 @@ export function CommentItem({
   const [isLoadingMoreReplies, setIsLoadingMoreReplies] = useState(false)
   const [showReportModal, setShowReportModal] = useState(false)
 
-  const isAuthorSelf = user?.id === comment.author.id || user?.username === comment.author.username
-  const isPostAuthor = comment.author.badge === "Author" || comment.author.username === "fiamanillah"
+  const isAuthorSelf =
+    (user?.id && comment.author.id === user.id) ||
+    (user?.username && comment.author.username === user.username)
+  const isPostAuthor =
+    comment.author.badge === "Author" ||
+    comment.author.username === "fiamanillah"
   const totalReplies = comment.replies || []
   const hasReplies = totalReplies.length > 0
 
   const visibleReplies = totalReplies.slice(0, replyPage * REPLIES_PAGE_SIZE)
   const hasMoreReplies = visibleReplies.length < totalReplies.length
 
-  const handleReplySubmit = (content: string) => {
-    if (!user) {
+  const handleReplySubmit = (
+    content: string,
+    guestInfo?: GuestCommentPayload
+  ) => {
+    if (user) {
+      onReply(comment.parentId || comment.id, user, content)
+    } else if (guestInfo && guestInfo.guestName) {
+      onReply(comment.parentId || comment.id, guestInfo, content)
+    } else {
       onOpenAuth()
       return
     }
-    onReply(comment.parentId || comment.id, user, content)
     setShowReplyBox(false)
     setIsRepliesExpanded(true)
     setReplyPage(Math.ceil((totalReplies.length + 1) / REPLIES_PAGE_SIZE))
@@ -156,28 +171,28 @@ export function CommentItem({
       >
         {/* Comment Top Header */}
         <div className="flex items-start justify-between gap-3">
-          <div className="flex items-center gap-3 min-w-0">
+          <div className="flex min-w-0 items-center gap-3">
             <img
               src={comment.author.avatar || "/fi.png"}
               alt={comment.author.name}
-              className={`size-8 rounded-full border object-cover shrink-0 ${
+              className={`size-8 shrink-0 rounded-full border object-cover ${
                 isPostAuthor ? "border-primary" : "border-border"
               }`}
             />
             <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-1.5">
-                <span className="font-mono text-xs font-bold text-foreground truncate">
+                <span className="truncate font-mono text-xs font-bold text-foreground">
                   {comment.author.name}
                 </span>
 
                 {isPostAuthor && (
-                  <span className="bg-primary px-1.5 py-0.2 font-mono text-[9px] font-bold text-primary-foreground uppercase shadow-xs">
+                  <span className="py-0.2 bg-primary px-1.5 font-mono text-[9px] font-bold text-primary-foreground uppercase shadow-xs">
                     AUTHOR
                   </span>
                 )}
 
                 {comment.author.badge && !isPostAuthor && (
-                  <span className="border border-primary/30 bg-primary/10 px-1.5 py-0.2 font-mono text-[9px] font-semibold text-primary uppercase">
+                  <span className="py-0.2 border border-primary/30 bg-primary/10 px-1.5 font-mono text-[9px] font-semibold text-primary uppercase">
                     {comment.author.badge}
                   </span>
                 )}
@@ -188,7 +203,7 @@ export function CommentItem({
               </div>
 
               {comment.author.role && (
-                <p className="font-mono text-[10px] text-muted-foreground truncate">
+                <p className="truncate font-mono text-[10px] text-muted-foreground">
                   {comment.author.role}
                 </p>
               )}
@@ -200,7 +215,7 @@ export function CommentItem({
             <button
               type="button"
               onClick={() => onDelete(comment.id, parentCommentId)}
-              className="font-mono text-[10px] text-muted-foreground hover:text-destructive transition-colors cursor-pointer p-1"
+              className="cursor-pointer p-1 font-mono text-[10px] text-muted-foreground transition-colors hover:text-destructive"
               title="Delete this comment"
             >
               <HugeiconsIcon icon={Delete01Icon} className="size-3.5" />
@@ -213,22 +228,24 @@ export function CommentItem({
           {renderCommentContent(comment.content)}
 
           {/* Comment Actions Footer */}
-          <div className="mt-3 flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-border/40">
+          <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-border/40 pt-2">
             <div className="flex items-center gap-3">
               {/* Like Button */}
               <button
                 type="button"
                 onClick={() => onLike(comment.id, parentCommentId)}
-                className={`inline-flex items-center gap-1.5 font-mono text-xs transition-colors cursor-pointer ${
+                className={`inline-flex cursor-pointer items-center gap-1.5 font-mono text-xs transition-colors ${
                   comment.isLiked
-                    ? "text-rose-400 font-semibold"
+                    ? "font-semibold text-rose-400"
                     : "text-muted-foreground hover:text-rose-400"
                 }`}
               >
                 <HugeiconsIcon
                   icon={FavouriteIcon}
                   className={`size-3.5 ${
-                    comment.isLiked ? "text-rose-400 fill-rose-400" : "text-muted-foreground"
+                    comment.isLiked
+                      ? "fill-rose-400 text-rose-400"
+                      : "text-muted-foreground"
                   }`}
                 />
                 <span className="text-[11px]">{comment.likes || 0}</span>
@@ -239,9 +256,12 @@ export function CommentItem({
                 <button
                   type="button"
                   onClick={() => setShowReplyBox(!showReplyBox)}
-                  className="inline-flex items-center gap-1 font-mono text-[11px] text-muted-foreground hover:text-primary transition-colors cursor-pointer"
+                  className="inline-flex cursor-pointer items-center gap-1 font-mono text-[11px] text-muted-foreground transition-colors hover:text-primary"
                 >
-                  <HugeiconsIcon icon={ArrowTurnBackwardIcon} className="size-3" />
+                  <HugeiconsIcon
+                    icon={ArrowTurnBackwardIcon}
+                    className="size-3"
+                  />
                   <span>{showReplyBox ? "Cancel" : "Reply"}</span>
                 </button>
               )}
@@ -250,10 +270,13 @@ export function CommentItem({
               <button
                 type="button"
                 onClick={() => setShowReportModal(true)}
-                className="inline-flex items-center gap-1 font-mono text-[11px] text-muted-foreground hover:text-rose-400 transition-colors cursor-pointer"
+                className="inline-flex cursor-pointer items-center gap-1 font-mono text-[11px] text-muted-foreground transition-colors hover:text-rose-400"
                 title="Report this comment to moderation team"
               >
-                <HugeiconsIcon icon={AlertCircleIcon} className="size-3 text-muted-foreground/80 hover:text-rose-400" />
+                <HugeiconsIcon
+                  icon={AlertCircleIcon}
+                  className="size-3 text-muted-foreground/80 hover:text-rose-400"
+                />
                 <span>Report</span>
               </button>
             </div>
@@ -263,7 +286,7 @@ export function CommentItem({
               <button
                 type="button"
                 onClick={() => setIsRepliesExpanded(!isRepliesExpanded)}
-                className="inline-flex items-center gap-1.5 border border-primary/20 bg-primary/5 px-2.5 py-0.5 font-mono text-[11px] text-primary transition-colors hover:border-primary/40 hover:bg-primary/10 cursor-pointer"
+                className="inline-flex cursor-pointer items-center gap-1.5 border border-primary/20 bg-primary/5 px-2.5 py-0.5 font-mono text-[11px] text-primary transition-colors hover:border-primary/40 hover:bg-primary/10"
               >
                 <HugeiconsIcon
                   icon={isRepliesExpanded ? ArrowUp01Icon : ArrowDown01Icon}
@@ -282,7 +305,7 @@ export function CommentItem({
 
       {/* Inline Reply Composer */}
       {showReplyBox && (
-        <div className="mt-3 pl-6 sm:pl-10 border-l-2 border-primary/40">
+        <div className="mt-3 border-l-2 border-primary/40 pl-6 sm:pl-10">
           <CommentComposer
             isReply={true}
             replyToName={comment.author.name}
@@ -296,7 +319,7 @@ export function CommentItem({
 
       {/* Nested Replies */}
       {hasReplies && isRepliesExpanded && (
-        <div className="space-y-3 pl-4 sm:pl-8 border-l-2 border-border/80 ml-4 sm:ml-6 mt-3 transition-all duration-200">
+        <div className="mt-3 ml-4 space-y-3 border-l-2 border-border/80 pl-4 transition-all duration-200 sm:ml-6 sm:pl-8">
           {visibleReplies.map((reply) => (
             <CommentItem
               key={reply.id}
@@ -318,18 +341,25 @@ export function CommentItem({
                 type="button"
                 disabled={isLoadingMoreReplies}
                 onClick={handleLoadMoreReplies}
-                className="inline-flex items-center gap-1.5 font-mono text-[11px] text-primary border border-primary/30 bg-primary/5 hover:bg-primary/15 px-2.5 py-1 transition-colors cursor-pointer disabled:opacity-50"
+                className="inline-flex cursor-pointer items-center gap-1.5 border border-primary/30 bg-primary/5 px-2.5 py-1 font-mono text-[11px] text-primary transition-colors hover:bg-primary/15 disabled:opacity-50"
               >
                 {isLoadingMoreReplies ? (
                   <>
-                    <HugeiconsIcon icon={Loading03Icon} className="size-3 animate-spin text-primary" />
+                    <HugeiconsIcon
+                      icon={Loading03Icon}
+                      className="size-3 animate-spin text-primary"
+                    />
                     <span>Loading replies...</span>
                   </>
                 ) : (
                   <>
-                    <HugeiconsIcon icon={ArrowDown01Icon} className="size-3 text-primary" />
+                    <HugeiconsIcon
+                      icon={ArrowDown01Icon}
+                      className="size-3 text-primary"
+                    />
                     <span>
-                      Show more replies ({totalReplies.length - visibleReplies.length} remaining)
+                      Show more replies (
+                      {totalReplies.length - visibleReplies.length} remaining)
                     </span>
                   </>
                 )}

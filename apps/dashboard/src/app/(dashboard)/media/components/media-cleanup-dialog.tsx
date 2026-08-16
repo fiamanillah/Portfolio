@@ -44,7 +44,9 @@ export function MediaCleanupDialog({
   onOpenChange,
   onSuccess,
 }: MediaCleanupDialogProps) {
-  const [cleanType, setCleanType] = React.useState<"all" | "avatars" | "blog" | "temp">("all")
+  const [cleanType, setCleanType] = React.useState<
+    "all" | "avatars" | "blog" | "temp"
+  >("all")
   const [olderThanDays, setOlderThanDays] = React.useState<number>(1)
   const [dryRun, setDryRun] = React.useState<boolean>(true)
   const [isProcessing, setIsProcessing] = React.useState<boolean>(false)
@@ -95,8 +97,8 @@ export function MediaCleanupDialog({
             Storage Cleaner & Orphan Purge
           </DialogTitle>
           <DialogDescription className="text-xs text-muted-foreground">
-            Identify and reclaim Cloudflare R2 storage space from unreferenced avatars, temporary uploads,
-            and deleted blog thumbnails.
+            Identify and reclaim Cloudflare R2 storage space from unreferenced
+            avatars, temporary uploads, and deleted blog thumbnails.
           </DialogDescription>
         </DialogHeader>
 
@@ -109,7 +111,7 @@ export function MediaCleanupDialog({
                 value={cleanType}
                 onValueChange={(val) => setCleanType(val as any)}
               >
-                <SelectTrigger className="h-8 text-xs bg-card">
+                <SelectTrigger className="h-8 bg-card text-xs">
                   <SelectValue placeholder="Scope" />
                 </SelectTrigger>
                 <SelectContent className="text-xs">
@@ -122,14 +124,14 @@ export function MediaCleanupDialog({
             </div>
 
             <div className="space-y-1.5">
-              <Label className="text-xs font-semibold flex items-center gap-1">
+              <Label className="flex items-center gap-1 text-xs font-semibold">
                 <Calendar className="size-3 text-primary" /> Older Than
               </Label>
               <Select
                 value={String(olderThanDays)}
                 onValueChange={(val) => setOlderThanDays(Number(val))}
               >
-                <SelectTrigger className="h-8 text-xs bg-card">
+                <SelectTrigger className="h-8 bg-card text-xs">
                   <SelectValue placeholder="Age threshold" />
                 </SelectTrigger>
                 <SelectContent className="text-xs">
@@ -143,9 +145,9 @@ export function MediaCleanupDialog({
           </div>
 
           {/* Dry Run Toggle */}
-          <div className="flex items-center justify-between p-3 rounded-xl border border-border/80 bg-muted/20">
+          <div className="flex items-center justify-between rounded-xl border border-border/80 bg-muted/20 p-3">
             <div className="space-y-0.5">
-              <span className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+              <span className="flex items-center gap-1.5 text-xs font-semibold text-foreground">
                 <ShieldCheck className="size-3.5 text-primary" />
                 Dry Run Simulation
               </span>
@@ -158,7 +160,7 @@ export function MediaCleanupDialog({
 
           {/* Result Block */}
           {result && (
-            <div className="p-4 rounded-xl border border-border/80 bg-card space-y-2.5 animate-in fade-in duration-200">
+            <div className="animate-in space-y-2.5 rounded-xl border border-border/80 bg-card p-4 duration-200 fade-in">
               <div className="flex items-center justify-between">
                 <Badge
                   variant={result.dryRun ? "outline" : "default"}
@@ -171,15 +173,17 @@ export function MediaCleanupDialog({
                 </span>
               </div>
 
-              <div className="text-xs text-muted-foreground space-y-1">
+              <div className="space-y-1 text-xs text-muted-foreground">
                 <p>
-                  Found <strong className="text-foreground">{result.count}</strong> orphaned file(s).
+                  Found{" "}
+                  <strong className="text-foreground">{result.count}</strong>{" "}
+                  orphaned file(s).
                 </p>
                 <p className="text-[11px] leading-relaxed">{result.message}</p>
               </div>
 
               {result.dryRun && result.count > 0 && (
-                <div className="pt-2 border-t border-border/60 flex justify-end">
+                <div className="flex justify-end border-t border-border/60 pt-2">
                   <Button
                     size="sm"
                     variant="destructive"
@@ -188,7 +192,7 @@ export function MediaCleanupDialog({
                       handleRunCleanup()
                     }}
                     disabled={isProcessing}
-                    className="h-8 text-xs gap-1.5"
+                    className="h-8 gap-1.5 text-xs"
                   >
                     <Trash2 className="size-3.5" />
                     Purge {result.count} Orphan(s) Permanently
@@ -215,7 +219,7 @@ export function MediaCleanupDialog({
             size="sm"
             onClick={handleRunCleanup}
             disabled={isProcessing}
-            className="text-xs gap-1.5 bg-primary hover:bg-primary/90 text-primary-foreground shadow-xs"
+            className="gap-1.5 bg-primary text-xs text-primary-foreground shadow-xs hover:bg-primary/90"
           >
             {isProcessing ? (
               <>

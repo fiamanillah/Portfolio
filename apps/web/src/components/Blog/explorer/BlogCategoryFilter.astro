@@ -13,9 +13,13 @@ interface Props {
 const { categories, activeCategory = "All", baseUrl = "/blog" } = Astro.props
 ---
 
-<div class="my-8 flex flex-wrap items-center justify-between gap-4 border-b border-border/60 pb-6">
+<div
+  class="my-8 flex flex-wrap items-center justify-between gap-4 border-b border-border/60 pb-6"
+>
   <div class="flex items-center gap-2">
-    <span class="font-mono text-xs font-semibold tracking-wider text-muted-foreground uppercase">
+    <span
+      class="font-mono text-xs font-semibold tracking-wider text-muted-foreground uppercase"
+    >
       FILTER CATEGORY:
     </span>
   </div>
@@ -33,16 +37,18 @@ const { categories, activeCategory = "All", baseUrl = "/blog" } = Astro.props
           <a href={targetUrl} class="focus:outline-none">
             <button
               type="button"
-              class={`flex items-center gap-2 border px-3.5 py-1.5 font-mono text-xs transition-all duration-200 cursor-pointer ${
+              class={`flex cursor-pointer items-center gap-2 border px-3.5 py-1.5 font-mono text-xs transition-all duration-200 ${
                 isActive
-                  ? "border-primary bg-primary/10 text-primary font-bold shadow-[0_0_12px_oklch(var(--primary)/15%)]"
+                  ? "border-primary bg-primary/10 font-bold text-primary shadow-[0_0_12px_oklch(var(--primary)/15%)]"
                   : "border-border bg-background/50 text-muted-foreground hover:border-primary/40 hover:text-foreground"
               }`}
             >
               <span>{cat.name}</span>
               <span
                 class={`inline-flex h-4 min-w-[1.25rem] items-center justify-center rounded-sm px-1 font-mono text-[10px] ${
-                  isActive ? "bg-primary text-primary-foreground font-bold" : "bg-muted text-muted-foreground"
+                  isActive
+                    ? "bg-primary font-bold text-primary-foreground"
+                    : "bg-muted text-muted-foreground"
                 }`}
               >
                 {cat.count}
