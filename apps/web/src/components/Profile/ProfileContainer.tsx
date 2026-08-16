@@ -1,7 +1,7 @@
+// src/components/Profile/ProfileContainer.tsx
 import { useState, useEffect } from "react"
 import { useAuthSession } from "@/lib/authStore"
 import { useProfileState } from "@/lib/profileStore"
-import { DEMO_USERS } from "@/data/commentsData"
 import { ProfileHeader } from "./ProfileHeader"
 import { GuestProfileBanner } from "./shared/GuestProfileBanner"
 import { ProfileInfoCard } from "./sections/ProfileInfoCard"
@@ -19,10 +19,15 @@ import {
 export type SimpleProfileTab = "info" | "security" | "subscription"
 
 export function ProfileContainer() {
-  const { user, isAuthenticated } = useAuthSession()
+  const { user, isAuthenticated, syncSession } = useAuthSession()
   const { profile } = useProfileState()
 
   const [activeTab, setActiveTab] = useState<SimpleProfileTab>("info")
+
+  useEffect(() => {
+    // Validate session on mount
+    syncSession()
+  }, [])
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -40,22 +45,22 @@ export function ProfileContainer() {
     }
   }
 
-  const effectiveUser = user || profile || DEMO_USERS[0]
+  const effectiveUser = user || profile
 
   const tabs = [
     {
       id: "info" as SimpleProfileTab,
-      label: "Profile",
+      label: "Profile & Identity",
       icon: UserCircleIcon,
     },
     {
       id: "security" as SimpleProfileTab,
-      label: "Security",
+      label: "Password & Security",
       icon: LockIcon,
     },
     {
       id: "subscription" as SimpleProfileTab,
-      label: "Subscription",
+      label: "Preferences & Account",
       icon: Notification01Icon,
     },
   ]
@@ -63,60 +68,61 @@ export function ProfileContainer() {
   return (
     <div className="py-8 sm:py-12 space-y-6 max-w-3xl mx-auto px-4 sm:px-6">
       {/* Breadcrumb */}
-      <nav aria-label="Breadcrumbs" className="flex items-center gap-1.5 text-xs text-muted-foreground">
+      <nav aria-label="Breadcrumbs" className="flex items-center gap-1.5 font-mono text-xs text-muted-foreground">
         <a href="/" className="hover:text-foreground flex items-center gap-1 transition-colors">
           <HugeiconsIcon icon={Home01Icon} className="size-3.5" />
           <span>Home</span>
         </a>
         <HugeiconsIcon icon={ArrowRight01Icon} className="size-3 text-border" />
-        <span className="text-foreground font-medium">Profile</span>
+        <span className="text-foreground font-semibold">Account Profile</span>
       </nav>
 
       {/* Guest Banner */}
-      {(!isAuthenticated || !user) && <GuestProfileBanner />}
+      {(!isAuthenticated || !effectiveUser) && <GuestProfileBanner />}
 
-      {/* Header */}
-      <ProfileHeader user={effectiveUser} />
+      {/* When Authenticated: Header & Profile Editing Cards */}
+      {effectiveUser && (
+        <>
+          <ProfileHeader user={effectiveUser} />
 
-      {/* Tab Navigation */}
-      <div className="flex items-center gap-1 border-b border-border">
-        {tabs.map((tab) => {
-          const isActive = activeTab === tab.id
-          return (
-            <button
-              key={tab.id}
-              type="button"
-              onClick={() => handleTabChange(tab.id)}
-              className={`relative flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium transition-colors cursor-pointer ${
-                isActive
-                  ? "text-primary"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              <HugeiconsIcon icon={tab.icon} className="size-4" />
-              <span>{tab.label}</span>
-              {isActive && (
-                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary rounded-full" />
-              )}
-            </button>
-          )
-        })}
-      </div>
+          {/* Tab Navigation */}
+          <div className="flex flex-wrap items-center gap-1 border border-border/80 bg-muted/20 p-1">
+            {tabs.map((tab) => {
+              const isActive = activeTab === tab.id
+              return (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => handleTabChange(tab.id)}
+                  className={`relative flex items-center gap-2 px-3.5 py-2 font-mono text-xs font-semibold transition-all cursor-pointer ${
+                    isActive
+                      ? "bg-background text-primary border border-border shadow-xs font-bold"
+                      : "text-muted-foreground hover:text-foreground border border-transparent"
+                  }`}
+                >
+                  <HugeiconsIcon icon={tab.icon} className="size-3.5" />
+                  <span>{tab.label}</span>
+                </button>
+              )
+            })}
+          </div>
 
-      {/* Tab Content */}
-      <div>
-        {activeTab === "info" && (
-          <ProfileInfoCard user={effectiveUser} />
-        )}
+          {/* Tab Content */}
+          <div className="pt-1">
+            {activeTab === "info" && (
+              <ProfileInfoCard user={effectiveUser} />
+            )}
 
-        {activeTab === "security" && (
-          <PasswordSecurityCard user={effectiveUser} />
-        )}
+            {activeTab === "security" && (
+              <PasswordSecurityCard user={effectiveUser} />
+            )}
 
-        {activeTab === "subscription" && (
-          <SubscriptionAccountCard user={effectiveUser} />
-        )}
-      </div>
+            {activeTab === "subscription" && (
+              <SubscriptionAccountCard user={effectiveUser} />
+            )}
+          </div>
+        </>
+      )}
     </div>
   )
 }

@@ -7,6 +7,7 @@ import { config } from "./core/config";
 import { PrismaProvider } from "./providers/PrismaProvider";
 import { prisma } from "@workspace/db";
 import { AuthModule } from "./Modules/Auth/AuthModule";
+import { UserModule } from "./Modules/User/UserModule";
 import { ContactModule } from "./Modules/Contact/ContactModule";
 import { SubscriberModule } from "./Modules/Subscriber/SubscriberModule";
 import { TemplateModule } from "./Modules/Template/TemplateModule";
@@ -29,6 +30,7 @@ async function bootstrap() {
     // 3. Register Application Modules
     logger.info("⚙ Registering modules...");
     app.registerModule(new AuthModule());
+    app.registerModule(new UserModule());
     app.registerModule(new ContactModule());
     app.registerModule(new SubscriberModule());
     app.registerModule(new TemplateModule());

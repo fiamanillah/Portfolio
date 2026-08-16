@@ -1,0 +1,27 @@
+info:
+  name: Initiate Registration
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{baseUrl}}/auth/v1/register/initiate"
+  body:
+    type: json
+    data: |-
+      {
+        "name": "Elena Rostova",
+        "username": "elena_ops",
+        "email": "elena@example.com",
+        "password": "Password123!",
+        "role": "DevOps Lead",
+        "avatar": "/avatars/avatar-2.svg",
+        "subscribedToNewsletter": true
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

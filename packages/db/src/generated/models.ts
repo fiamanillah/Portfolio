@@ -11,4 +11,7 @@
 export type * from './models/ContactSubmission'
 export type * from './models/Subscriber'
 export type * from './models/EmailTemplate'
+export type * from './models/User'
+export type * from './models/OtpVerification'
+export type * from './models/RefreshToken'
 export type * from './commonInputTypes'

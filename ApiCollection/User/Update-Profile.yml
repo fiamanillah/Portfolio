@@ -1,0 +1,32 @@
+info:
+  name: Update Profile
+  type: http
+  seq: 2
+
+http:
+  method: PATCH
+  url: "{{baseUrl}}/users/v1/profile"
+  headers:
+    - name: Authorization
+      value: "Bearer {{authToken}}"
+  body:
+    type: json
+    data: |-
+      {
+        "name": "Elena Rostova",
+        "username": "elena_ops",
+        "headline": "Lead Platform Engineer & Kubernetes Specialist",
+        "location": "Berlin, Germany (UTC+1)",
+        "bio": "Building scalable cloud native systems and observability pipelines.",
+        "website": "https://elenarostova.dev",
+        "githubUrl": "https://github.com/elena_ops",
+        "twitterUrl": "https://twitter.com/elena_ops",
+        "linkedinUrl": "https://linkedin.com/in/elena-rostova"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

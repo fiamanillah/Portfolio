@@ -1,3 +1,4 @@
+// src/components/auth/steps/RegisterOtpStep.tsx
 import { type FormEvent } from "react"
 import { Button } from "@workspace/ui/components/button"
 import { Field, FieldLabel, FieldError } from "@workspace/ui/components/field"
@@ -10,6 +11,7 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import {
   Loading03Icon,
   CheckmarkCircle02Icon,
+  Mail02Icon,
 } from "@hugeicons/core-free-icons"
 
 interface RegisterOtpStepProps {
@@ -39,59 +41,50 @@ export function RegisterOtpStep({
 }: RegisterOtpStepProps) {
   return (
     <form onSubmit={onSubmit} noValidate className="space-y-4">
-      <div className="rounded-none border border-border bg-muted/20 p-3 space-y-2">
-        <div className="flex items-center justify-between">
-          <span className="font-mono text-[11px] text-muted-foreground">
-            Verifying Email:
-          </span>
-          <span className="font-mono text-xs font-semibold text-primary">
-            {email || "user@example.io"}
-          </span>
-        </div>
-        <div className="flex items-center justify-between pt-1 border-t border-border/40">
-          <span className="font-mono text-[10px] text-muted-foreground">
-            Demo Shortcut:
-          </span>
-          <button
-            type="button"
-            onClick={() => {
-              setOtpCode("123456")
-              setError(null)
-            }}
-            className="font-mono text-[10px] text-primary underline hover:text-primary/80 cursor-pointer"
-          >
-            Auto-fill code (123456)
-          </button>
+      {/* Information Banner */}
+      <div className="rounded-none border border-primary/30 bg-primary/5 p-3.5 flex items-start gap-3">
+        <HugeiconsIcon icon={Mail02Icon} className="size-4 text-primary shrink-0 mt-0.5" />
+        <div className="space-y-0.5 min-w-0 flex-1">
+          <p className="font-mono text-xs font-semibold text-foreground">
+            Verification Code Dispatched
+          </p>
+          <p className="font-mono text-[11px] text-muted-foreground break-words leading-relaxed">
+            Please check your inbox at <span className="text-primary font-bold">{email || "your email"}</span> and enter the 6-digit code.
+          </p>
         </div>
       </div>
 
-      <Field data-invalid={!!error} className="flex flex-col items-center">
-        <FieldLabel htmlFor="reg-otp-input" className="self-start">
-          Enter 6-Digit Email Verification Code
+      {/* OTP Code Input */}
+      <Field data-invalid={!!error} className="space-y-2">
+        <FieldLabel htmlFor="reg-otp-input" className="font-mono text-xs font-semibold text-foreground block">
+          Enter 6-Digit Email OTP Code
         </FieldLabel>
-        <InputOTP
-          id="reg-otp-input"
-          maxLength={6}
-          value={otpCode}
-          onChange={(val) => {
-            setOtpCode(val)
-            if (error) setError(null)
-          }}
-          className="gap-2 my-1"
-        >
-          <InputOTPGroup className="gap-2">
-            <InputOTPSlot index={0} className="rounded-none font-mono text-base font-bold border-border" />
-            <InputOTPSlot index={1} className="rounded-none font-mono text-base font-bold border-border" />
-            <InputOTPSlot index={2} className="rounded-none font-mono text-base font-bold border-border" />
-            <InputOTPSlot index={3} className="rounded-none font-mono text-base font-bold border-border" />
-            <InputOTPSlot index={4} className="rounded-none font-mono text-base font-bold border-border" />
-            <InputOTPSlot index={5} className="rounded-none font-mono text-base font-bold border-border" />
-          </InputOTPGroup>
-        </InputOTP>
+        <div className="flex justify-center py-1">
+          <InputOTP
+            id="reg-otp-input"
+            maxLength={6}
+            value={otpCode}
+            onChange={(val) => {
+              setOtpCode(val)
+              if (error) setError(null)
+            }}
+            autoFocus
+          >
+            <InputOTPGroup className="gap-2 sm:gap-2.5">
+              <InputOTPSlot index={0} />
+              <InputOTPSlot index={1} />
+              <InputOTPSlot index={2} />
+              <InputOTPSlot index={3} />
+              <InputOTPSlot index={4} />
+              <InputOTPSlot index={5} />
+            </InputOTPGroup>
+          </InputOTP>
+        </div>
         <FieldError errors={error ?? undefined} />
       </Field>
 
-      <div className="flex items-center justify-between font-mono text-[11px] pt-1">
+      {/* Resend Link */}
+      <div className="flex items-center justify-between font-mono text-xs pt-1">
         <span className="text-muted-foreground">
           Didn't receive code?
         </span>
@@ -99,27 +92,30 @@ export function RegisterOtpStep({
           type="button"
           disabled={resendCountdown > 0 || isResending}
           onClick={onResend}
-          className="text-primary font-semibold hover:underline cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          className="text-primary font-semibold hover:underline cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
           {resendCountdown > 0
             ? `Resend in ${resendCountdown}s`
+            : isResending
+            ? "Sending..."
             : "Resend Code"}
         </button>
       </div>
 
+      {/* Submit Button */}
       <Button
         type="submit"
         disabled={otpCode.length < 6 || isActivating}
-        className="w-full rounded-none font-mono text-xs font-bold uppercase tracking-wider bg-primary text-primary-foreground hover:bg-primary/90 cursor-pointer h-9 shadow-sm"
+        className="w-full rounded-none font-mono text-xs font-bold uppercase tracking-wider bg-primary text-primary-foreground hover:bg-primary/90 transition-colors cursor-pointer h-10 shadow-sm flex items-center justify-center gap-2"
       >
         {isActivating ? (
           <>
-            <HugeiconsIcon icon={Loading03Icon} className="size-3.5 animate-spin mr-1.5" />
+            <HugeiconsIcon icon={Loading03Icon} className="size-4 animate-spin" />
             <span>Activating Account...</span>
           </>
         ) : (
           <>
-            <HugeiconsIcon icon={CheckmarkCircle02Icon} className="size-3.5 mr-1.5" />
+            <HugeiconsIcon icon={CheckmarkCircle02Icon} className="size-4" />
             <span>Verify & Activate Account</span>
           </>
         )}

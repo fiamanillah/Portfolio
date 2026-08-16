@@ -9,7 +9,7 @@
     "build": {
       "dependsOn": ["^db:generate", "^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": ["dist/**"]
+      "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
     },
     "lint": { "dependsOn": ["^lint"] },
     "format": { "dependsOn": ["^format"] },

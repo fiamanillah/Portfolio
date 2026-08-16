@@ -1,43 +1,30 @@
 // src/Modules/Subscriber/SubscriberDTO.ts
-import { z } from "zod";
+import {
+  subscribeSchema as sharedSubscribeSchema,
+  unsubscribeSchema as sharedUnsubscribeSchema,
+  updateSubscriberSchema as sharedUpdateSubscriberSchema,
+  changeEmailSchema as sharedChangeEmailSchema,
+} from "@workspace/shared";
+
+export * from "@workspace/shared";
 
 export const subscribeSchema = {
-  body: z.object({
-    email: z.string().email("Invalid email address"),
-    name: z.string().optional(),
-    source: z.string().optional().default("hero_section"),
-    captchaToken: z.string().optional(),
-    hp_field: z.string().optional(),
-  }),
+  body: sharedSubscribeSchema,
 };
 
 export const unsubscribeSchema = {
-  body: z.object({
-    email: z.string().email("Invalid email address"),
-    captchaToken: z.string().optional(),
-    hp_field: z.string().optional(),
-  }),
+  body: sharedUnsubscribeSchema,
 };
 
 export const updateSubscriberSchema = {
-  body: z.object({
-    name: z.string().optional(),
-    status: z.enum(["subscribed", "unsubscribed"]).optional(),
-  }),
+  body: sharedUpdateSubscriberSchema,
 };
 
 export const changeEmailSchema = {
-  body: z.object({
-    oldEmail: z.string().email("Invalid current email address").optional(),
-    token: z.string().optional(),
-    newEmail: z.string().email("Invalid new email address"),
-    captchaToken: z.string().optional(),
-    hp_field: z.string().optional(),
-  }),
+  body: sharedChangeEmailSchema,
 };
 
-export type SubscribeDTO = z.infer<typeof subscribeSchema.body>;
-export type UnsubscribeDTO = z.infer<typeof unsubscribeSchema.body>;
-export type UpdateSubscriberDTO = z.infer<typeof updateSubscriberSchema.body>;
-export type ChangeEmailDTO = z.infer<typeof changeEmailSchema.body>;
-
+export type SubscribeDTO = import("@workspace/shared").SubscribePayload;
+export type UnsubscribeDTO = import("@workspace/shared").UnsubscribePayload;
+export type UpdateSubscriberDTO = import("@workspace/shared").UpdateSubscriberPayload;
+export type ChangeEmailDTO = import("@workspace/shared").ChangeEmailPayload;

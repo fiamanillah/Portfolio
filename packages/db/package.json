@@ -16,6 +16,7 @@
     "db:reset": "prisma migrate reset",
     "db:studio": "prisma studio",
     "db:push": "prisma db push",
+    "db:seed": "bun prisma/seed.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
@@ -25,6 +26,7 @@
     "pg": "^8.16.3"
   },
   "devDependencies": {
+    "@types/bun": "latest",
     "@types/node": "^25.0.3",
     "@types/pg": "^8.16.0",
     "prisma": "^7.2.0",

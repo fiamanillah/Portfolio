@@ -1,16 +1,60 @@
 // src/Modules/Auth/AuthDTO.ts
-import { z } from "zod";
+import {
+  initiateRegisterSchema as sharedInitiateRegisterSchema,
+  verifyRegisterOtpSchema as sharedVerifyRegisterOtpSchema,
+  loginSchema as sharedLoginSchema,
+  demoLoginSchema as sharedDemoLoginSchema,
+  forgotPasswordSchema as sharedForgotPasswordSchema,
+  verifyResetOtpSchema as sharedVerifyResetOtpSchema,
+  resetPasswordSchema as sharedResetPasswordSchema,
+  resendOtpSchema as sharedResendOtpSchema,
+  refreshTokenSchema as sharedRefreshTokenSchema,
+} from "@workspace/shared";
 
-export const createUserSchema = {
-  body: z.object({
-    email: z.string().email("Invalid email address"),
-    firstName: z.string().min(2, "First name is too short"),
-    lastName: z.string().min(2, "Last name is too short"),
-    password: z.string().min(8, "Password must be at least 8 characters"),
-    // You can make optional fields available too based on your Prisma schema
-    username: z.string().optional(),
-  }),
+export * from "@workspace/shared";
+
+export const initiateRegisterSchema = {
+  body: sharedInitiateRegisterSchema,
 };
 
-// Extract the inferred TypeScript type for the validated body
-export type CreateUserDTO = z.infer<typeof createUserSchema.body>;
+export const verifyRegisterOtpSchema = {
+  body: sharedVerifyRegisterOtpSchema,
+};
+
+export const loginSchema = {
+  body: sharedLoginSchema,
+};
+
+export const demoLoginSchema = {
+  body: sharedDemoLoginSchema,
+};
+
+export const forgotPasswordSchema = {
+  body: sharedForgotPasswordSchema,
+};
+
+export const verifyResetOtpSchema = {
+  body: sharedVerifyResetOtpSchema,
+};
+
+export const resetPasswordSchema = {
+  body: sharedResetPasswordSchema,
+};
+
+export const resendOtpSchema = {
+  body: sharedResendOtpSchema,
+};
+
+export const refreshTokenSchema = {
+  body: sharedRefreshTokenSchema,
+};
+
+export type InitiateRegisterDTO = import("@workspace/shared").InitiateRegisterInput;
+export type VerifyRegisterOtpDTO = import("@workspace/shared").VerifyRegisterOtpInput;
+export type LoginDTO = import("@workspace/shared").LoginInput;
+export type DemoLoginDTO = import("@workspace/shared").DemoLoginInput;
+export type ForgotPasswordDTO = import("@workspace/shared").ForgotPasswordInput;
+export type VerifyResetOtpDTO = import("@workspace/shared").VerifyResetOtpInput;
+export type ResetPasswordDTO = import("@workspace/shared").ResetPasswordInput;
+export type ResendOtpDTO = import("@workspace/shared").ResendOtpInput;
+export type RefreshTokenDTO = import("@workspace/shared").RefreshTokenInput;

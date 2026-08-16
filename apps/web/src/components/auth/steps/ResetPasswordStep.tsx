@@ -64,7 +64,7 @@ export function ResetPasswordStep({
               className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground"
             />
           </div>
-          <FieldDescription>Must be at least 6 characters.</FieldDescription>
+          <FieldDescription>Must be at least 8 characters.</FieldDescription>
           <FieldError errors={errors.newPassword} />
         </Field>
 
@@ -98,16 +98,16 @@ export function ResetPasswordStep({
       <Button
         type="submit"
         disabled={isSubmitting}
-        className="w-full rounded-none font-mono text-xs font-bold uppercase tracking-wider bg-primary text-primary-foreground hover:bg-primary/90 cursor-pointer h-9 shadow-sm"
+        className="w-full rounded-none font-mono text-xs font-bold uppercase tracking-wider bg-primary text-primary-foreground hover:bg-primary/90 transition-colors cursor-pointer h-10 shadow-sm flex items-center justify-center gap-2"
       >
         {isSubmitting ? (
           <>
-            <HugeiconsIcon icon={Loading03Icon} className="size-3.5 animate-spin mr-1.5" />
+            <HugeiconsIcon icon={Loading03Icon} className="size-4 animate-spin" />
             <span>Updating Password...</span>
           </>
         ) : (
           <>
-            <HugeiconsIcon icon={Tick02Icon} className="size-3.5 mr-1.5" />
+            <HugeiconsIcon icon={Tick02Icon} className="size-4" />
             <span>Update Password & Sign In</span>
           </>
         )}

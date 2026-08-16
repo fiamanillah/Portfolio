@@ -5,7 +5,6 @@ import {
   Field,
   FieldGroup,
   FieldLabel,
-  FieldDescription,
   FieldError,
 } from "@workspace/ui/components/field"
 import { HugeiconsIcon } from "@hugeicons/react"
@@ -99,9 +98,6 @@ export function SignInStep({
               className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground"
             />
           </div>
-          <FieldDescription>
-            Demo mode: Enter any password or leave blank.
-          </FieldDescription>
           <FieldError errors={errors.password} />
         </Field>
       </FieldGroup>
@@ -109,16 +105,16 @@ export function SignInStep({
       <Button
         type="submit"
         disabled={isSubmitting}
-        className="w-full rounded-none font-mono text-xs font-bold uppercase tracking-wider bg-primary text-primary-foreground hover:bg-primary/90 cursor-pointer h-9 shadow-sm"
+        className="w-full rounded-none font-mono text-xs font-bold uppercase tracking-wider bg-primary text-primary-foreground hover:bg-primary/90 transition-colors cursor-pointer h-10 shadow-sm flex items-center justify-center gap-2"
       >
         {isSubmitting ? (
           <>
-            <HugeiconsIcon icon={Loading03Icon} className="size-3.5 animate-spin mr-1.5" />
+            <HugeiconsIcon icon={Loading03Icon} className="size-4 animate-spin" />
             <span>Signing In...</span>
           </>
         ) : (
           <>
-            <HugeiconsIcon icon={Login01Icon} className="size-3.5 mr-1.5" />
+            <HugeiconsIcon icon={Login01Icon} className="size-4" />
             <span>Sign In</span>
           </>
         )}

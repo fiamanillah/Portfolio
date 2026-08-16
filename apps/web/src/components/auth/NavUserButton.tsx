@@ -13,7 +13,6 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import {
   Login01Icon,
   Logout01Icon,
-  FlashIcon,
   UserAdd01Icon,
   Notification01Icon,
   UserCircleIcon,
@@ -22,8 +21,8 @@ import {
 export function NavUserButton() {
   const { user, isAuthenticated, logout } = useAuthSession()
 
-  const handleLogout = () => {
-    logout()
+  const handleLogout = async () => {
+    await logout()
     toast.success("Signed Out", {
       description: "You have been disconnected from your account session.",
     })
@@ -120,15 +119,6 @@ export function NavUserButton() {
             <HugeiconsIcon icon={UserCircleIcon} className="size-3.5 mr-2 text-primary" />
             <span>Profile & Settings</span>
           </a>
-        </DropdownMenuItem>
-
-        {/* Switch Persona / Demo */}
-        <DropdownMenuItem
-          onClick={() => setAuthUrlParam("quick")}
-          className="cursor-pointer text-xs rounded-none focus:bg-primary/10 focus:text-primary py-1.5"
-        >
-          <HugeiconsIcon icon={FlashIcon} className="size-3.5 mr-2 text-primary" />
-          <span>Switch Account</span>
         </DropdownMenuItem>
 
         {/* Register another account */}

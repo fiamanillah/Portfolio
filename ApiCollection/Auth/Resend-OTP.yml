@@ -1,0 +1,22 @@
+info:
+  name: Resend OTP
+  type: http
+  seq: 8
+
+http:
+  method: POST
+  url: "{{baseUrl}}/auth/v1/resend-otp"
+  body:
+    type: json
+    data: |-
+      {
+        "email": "fi@amanillah.dev",
+        "type": "REGISTER_EMAIL_VERIFY"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

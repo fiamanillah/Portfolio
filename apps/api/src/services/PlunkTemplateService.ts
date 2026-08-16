@@ -304,14 +304,18 @@ export class PlunkTemplateService {
     }
 
     try {
+      const senderFrom = from || config.contact.recipientEmail || "fi@amanillah.com";
+      const senderName = fromName || "Fi Amanillah";
+
       const payload: Record<string, any> = {
         to,
+        from: senderFrom,
+        name: senderName,
+        ...(fromName ? { fromName } : {}),
         ...(subject ? { subject } : {}),
         ...(body ? { body } : {}),
         ...(data ? { data } : {}),
         ...(reply ? { reply } : {}),
-        ...(from ? { from } : {}),
-        ...(fromName ? { fromName } : {}),
         ...(headers ? { headers } : {}),
       };
 

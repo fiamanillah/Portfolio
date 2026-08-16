@@ -1,47 +1,165 @@
-// src/Modules/Auth/AuthController.ts
+// src/Modules/Auth/auth.controller.ts
 import { Request, Response } from "express";
 import { BaseController } from "@/core/BaseController";
 import { AppLogger } from "@workspace/logger";
-import { CreateUserDTO } from "./AuthDTO";
 import { AuthServices } from "./auth.service";
+import {
+  InitiateRegisterDTO,
+  VerifyRegisterOtpDTO,
+  LoginDTO,
+  DemoLoginDTO,
+  ForgotPasswordDTO,
+  VerifyResetOtpDTO,
+  ResetPasswordDTO,
+  ResendOtpDTO,
+  RefreshTokenDTO,
+} from "./AuthDTO";
 
 export class AuthController extends BaseController {
-  // Initialize the contextual logger
   protected logger = new AppLogger("AuthController");
 
-  // Inject the service via the constructor
   constructor(private readonly authService: AuthServices) {
     super();
   }
 
   /**
-   * Endpoint: POST /auth/v1/users
+   * Helper to attach HTTP-only refresh token cookie
    */
-  public async createUser(req: Request, res: Response) {
-    this.logger.info("Received request to create a new user");
+  private setRefreshTokenCookie(res: Response, refreshToken?: string) {
+    if (!refreshToken) return;
+    res.cookie("refresh_token", refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+      path: "/",
+    });
+  }
 
-    // 1. Extract the validated body (populated by your validateRequest middleware)
-    const { email, firstName, lastName, password } =
-      req.validatedBody as CreateUserDTO;
+  /**
+   * POST /auth/v1/register/initiate
+   */
+  public async initiateRegistration(req: Request, res: Response) {
+    const dto = req.validatedBody as InitiateRegisterDTO;
+    const result = await this.authService.initiateRegistration(dto);
+    return this.sendResponse(req, res, result.message, 200, result);
+  }
 
-    // 2. Pass the data to the Service Layer (Business Logic)
-    const newUser = await this.authService.register(
-      email,
-      firstName,
-      lastName,
-      password,
-    );
+  /**
+   * POST /auth/v1/register/verify-otp
+   */
+  public async verifyRegisterOtp(req: Request, res: Response) {
+    const dto = req.validatedBody as VerifyRegisterOtpDTO;
+    const ip = req.ip || req.socket.remoteAddress;
+    const userAgent = req.headers["user-agent"];
 
-    // 3. Remove sensitive information before sending it back to the client
-    // (Alternatively, you can use Prisma's `omit` feature if you configure it)
-    const { password: _, ...userWithoutPassword } = newUser;
+    const result = await this.authService.verifyRegisterOtp(dto, ip, userAgent);
+    this.setRefreshTokenCookie(res, result.refreshToken);
 
-    // 4. Send the standardized response using BaseController's built-in method
-    return this.sendCreatedResponse(
-      req,
-      res,
-      userWithoutPassword,
-      "User registered successfully",
-    );
+    return this.sendCreatedResponse(req, res, result, result.message);
+  }
+
+  /**
+   * POST /auth/v1/login
+   */
+  public async login(req: Request, res: Response) {
+    const dto = req.validatedBody as LoginDTO;
+    const ip = req.ip || req.socket.remoteAddress;
+    const userAgent = req.headers["user-agent"];
+
+    const result = await this.authService.login(dto, ip, userAgent);
+    this.setRefreshTokenCookie(res, result.refreshToken);
+
+    return this.sendResponse(req, res, result.message, 200, result);
+  }
+
+  /**
+   * POST /auth/v1/demo-login
+   */
+  public async demoLogin(req: Request, res: Response) {
+    const dto = req.validatedBody as DemoLoginDTO;
+    const ip = req.ip || req.socket.remoteAddress;
+    const userAgent = req.headers["user-agent"];
+
+    const result = await this.authService.demoLogin(dto.userId, ip, userAgent);
+    this.setRefreshTokenCookie(res, result.refreshToken);
+
+    return this.sendResponse(req, res, result.message, 200, result);
+  }
+
+  /**
+   * POST /auth/v1/forgot-password
+   */
+  public async forgotPassword(req: Request, res: Response) {
+    const dto = req.validatedBody as ForgotPasswordDTO;
+    const result = await this.authService.forgotPassword(dto);
+    return this.sendResponse(req, res, result.message, 200, result);
+  }
+
+  /**
+   * POST /auth/v1/verify-reset-otp
+   */
+  public async verifyResetOtp(req: Request, res: Response) {
+    const dto = req.validatedBody as VerifyResetOtpDTO;
+    const result = await this.authService.verifyResetOtp(dto);
+    return this.sendResponse(req, res, result.message, 200, result);
+  }
+
+  /**
+   * POST /auth/v1/reset-password
+   */
+  public async resetPassword(req: Request, res: Response) {
+    const dto = req.validatedBody as ResetPasswordDTO;
+    const ip = req.ip || req.socket.remoteAddress;
+    const userAgent = req.headers["user-agent"];
+
+    const result = await this.authService.resetPassword(dto, ip, userAgent);
+    this.setRefreshTokenCookie(res, result.refreshToken);
+
+    return this.sendResponse(req, res, result.message, 200, result);
+  }
+
+  /**
+   * POST /auth/v1/resend-otp
+   */
+  public async resendOtp(req: Request, res: Response) {
+    const dto = req.validatedBody as ResendOtpDTO;
+    const result = await this.authService.resendOtp(dto);
+    return this.sendResponse(req, res, result.message, 200, result);
+  }
+
+  /**
+   * POST /auth/v1/refresh-token
+   */
+  public async refreshToken(req: Request, res: Response) {
+    const dto = (req.validatedBody || {}) as RefreshTokenDTO;
+    const refreshToken = dto.refreshToken || req.cookies?.refresh_token;
+
+    const result = await this.authService.refreshAccessToken(refreshToken);
+    return this.sendResponse(req, res, "Token refreshed successfully", 200, result);
+  }
+
+  /**
+   * POST /auth/v1/logout
+   */
+  public async logout(req: Request, res: Response) {
+    const refreshToken = req.body?.refreshToken || req.cookies?.refresh_token;
+    const userId = req.user?.id;
+
+    await this.authService.logout(refreshToken, userId);
+
+    res.clearCookie("refresh_token", { path: "/" });
+    res.clearCookie("auth_token", { path: "/" });
+
+    return this.sendResponse(req, res, "Signed out successfully", 200, { success: true });
+  }
+
+  /**
+   * GET /auth/v1/me
+   */
+  public async getMe(req: Request, res: Response) {
+    const userId = req.user!.id;
+    const user = await this.authService.getMe(userId);
+    return this.sendResponse(req, res, "Authenticated user profile", 200, user);
   }
 }

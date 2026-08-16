@@ -1,0 +1,22 @@
+info:
+  name: Verify Reset OTP
+  type: http
+  seq: 6
+
+http:
+  method: POST
+  url: "{{baseUrl}}/auth/v1/verify-reset-otp"
+  body:
+    type: json
+    data: |-
+      {
+        "email": "fi@amanillah.dev",
+        "otpCode": "123456"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

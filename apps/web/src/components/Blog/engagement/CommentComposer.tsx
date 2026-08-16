@@ -174,7 +174,12 @@ export function CommentComposer({
           )}
           <button
             type="button"
-            onClick={logout}
+            onClick={async () => {
+              await logout()
+              toast.info("Signed Out", {
+                description: "You have been disconnected from your account session.",
+              })
+            }}
             className="font-mono text-[10px] text-muted-foreground hover:text-destructive transition-colors cursor-pointer"
             title="Sign out of current account"
           >

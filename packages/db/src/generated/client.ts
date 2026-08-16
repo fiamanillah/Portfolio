@@ -56,3 +56,18 @@ export type Subscriber = Prisma.SubscriberModel
  * 
  */
 export type EmailTemplate = Prisma.EmailTemplateModel
+/**
+ * Model User
+ * 
+ */
+export type User = Prisma.UserModel
+/**
+ * Model OtpVerification
+ * 
+ */
+export type OtpVerification = Prisma.OtpVerificationModel
+/**
+ * Model RefreshToken
+ * 
+ */
+export type RefreshToken = Prisma.RefreshTokenModel

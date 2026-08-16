@@ -1,3 +1,4 @@
+// src/components/auth/AuthModal.tsx
 import { useState, useEffect, useCallback, type FormEvent } from "react"
 import {
   Dialog,
@@ -6,9 +7,9 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@workspace/ui/components/dialog"
-import { DEMO_USERS, AVATAR_OPTIONS, type AuthUser } from "@/data/commentsData"
+import { AVATAR_OPTIONS, type AuthUser } from "@/data/commentsData"
 import {
-  useAuthSession,
+  setStoredUser,
   getAuthUrlParam,
   setAuthUrlParam,
   AUTH_MODAL_EVENT,
@@ -19,18 +20,26 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import {
   Login01Icon,
   UserAdd01Icon,
-  FlashIcon,
   ArrowLeft01Icon,
 } from "@hugeicons/core-free-icons"
 
 // Import modular step components
-import { QuickLoginStep } from "./steps/QuickLoginStep"
 import { SignInStep } from "./steps/SignInStep"
 import { SignUpStep } from "./steps/SignUpStep"
 import { RegisterOtpStep } from "./steps/RegisterOtpStep"
 import { ForgotPasswordStep } from "./steps/ForgotPasswordStep"
 import { ResetOtpStep } from "./steps/ResetOtpStep"
 import { ResetPasswordStep } from "./steps/ResetPasswordStep"
+
+import { AuthApi } from "@/lib/api/authApi"
+import {
+  loginSchema,
+  initiateRegisterSchema,
+  verifyRegisterOtpSchema,
+  forgotPasswordSchema,
+  verifyResetOtpSchema,
+  resetPasswordSchema,
+} from "@workspace/shared"
 
 export interface AuthModalProps {
   open?: boolean
@@ -45,10 +54,8 @@ export function AuthModal({
   onOpenChange: controlledOnOpenChange,
   onSuccess,
   actionLabel = "to access interactive features",
-  initialStep = "quick",
+  initialStep = "signin",
 }: AuthModalProps) {
-  const { loginDemo, login, register, resetPassword } = useAuthSession()
-
   // Manage open state (either controlled via prop or synchronized via URL query)
   const [internalOpen, setInternalOpen] = useState(false)
   const isControlled = controlledOpen !== undefined
@@ -170,225 +177,293 @@ export function AuthModal({
     setResetPasswordErrors({})
   }
 
-  // 1-Click Demo Login
-  const handleDemoSelect = (userId: string) => {
-    const user = loginDemo(userId)
-    if (user) {
-      toast.success(`Signed in as ${user.name}`, {
-        description: "You now have access to discussions, reactions, and personalized preferences.",
-      })
-      handleOpenChange(false)
-      onSuccess?.(user)
-    }
-  }
-
-  // Social Login Simulation
-  const handleOAuthSimulate = (provider: "GitHub" | "Google") => {
-    const defaultDemo = provider === "GitHub" ? DEMO_USERS[1] : DEMO_USERS[2]
-    const user = loginDemo(defaultDemo.id) || login(`${provider.toLowerCase()}@example.io`)
-    toast.success(`Connected with ${provider}!`, {
-      description: `Signed in as ${user.name}`,
-    })
-    handleOpenChange(false)
-    onSuccess?.(user)
-  }
-
-  // Sign In Handler with validation
-  const handleSignInSubmit = (e: FormEvent) => {
+  // Sign In Handler using shared loginSchema
+  const handleSignInSubmit = async (e: FormEvent) => {
     e.preventDefault()
-    const errors: { email?: string; password?: string } = {}
 
-    if (!signInEmail.trim()) {
-      errors.email = "Email address is required"
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(signInEmail.trim())) {
-      errors.email = "Please enter a valid email address (e.g. name@domain.com)"
-    }
+    const parseResult = loginSchema.safeParse({
+      email: signInEmail,
+      password: signInPassword,
+    })
 
-    if (Object.keys(errors).length > 0) {
+    if (!parseResult.success) {
+      const errors: { email?: string; password?: string } = {}
+      parseResult.error.issues.forEach((issue) => {
+        const field = issue.path[0] as "email" | "password"
+        if (field && !errors[field]) errors[field] = issue.message
+      })
       setSignInErrors(errors)
       return
     }
 
     setSignInErrors({})
     setIsSigningIn(true)
-    setTimeout(() => {
-      setIsSigningIn(false)
-      const user = login(signInEmail, signInPassword)
-      toast.success(`Welcome back, ${user.name}!`, {
-        description: "Signed in successfully to your account.",
+
+    try {
+      const res = await AuthApi.login({
+        email: parseResult.data.email,
+        password: parseResult.data.password,
       })
-      handleOpenChange(false)
-      onSuccess?.(user)
-    }, 350)
+
+      if (res.success && res.data?.user) {
+        setStoredUser(res.data.user)
+        toast.success(`Welcome back, ${res.data.user.name}!`, {
+          description: "Signed in successfully to your account.",
+        })
+        handleOpenChange(false)
+        onSuccess?.(res.data.user)
+        return
+      }
+
+      toast.error("Sign-in Failed", {
+        description: res.error || res.message || "Invalid credentials.",
+      })
+    } catch (err: any) {
+      toast.error("Sign-in Error", {
+        description: err?.message || "Could not connect to authentication server.",
+      })
+    } finally {
+      setIsSigningIn(false)
+    }
   }
 
-  // Registration Step 1: Initiate registration with form validation and dispatch Email OTP
-  const handleInitiateRegistration = (e: FormEvent) => {
+  // Registration Step 1: Initiate registration with shared initiateRegisterSchema
+  const handleInitiateRegistration = async (e: FormEvent) => {
     e.preventDefault()
-    const errors: {
-      name?: string
-      username?: string
-      email?: string
-      password?: string
-    } = {}
 
-    if (!signUpName.trim()) {
-      errors.name = "Full name is required"
-    } else if (signUpName.trim().length < 2) {
-      errors.name = "Name must be at least 2 characters"
-    }
+    const parseResult = initiateRegisterSchema.safeParse({
+      name: signUpName,
+      username: signUpUsername.trim() || undefined,
+      email: signUpEmail,
+      password: signUpPassword,
+      role: signUpRole.trim() || undefined,
+      avatar: selectedAvatar,
+      subscribedToNewsletter: subscribeNewsletter,
+    })
 
-    if (signUpUsername.trim() && !/^[a-zA-Z0-9_]{3,20}$/.test(signUpUsername.trim())) {
-      errors.username = "Username must be 3-20 letters, numbers, or underscores"
-    }
-
-    if (!signUpEmail.trim()) {
-      errors.email = "Email address is required"
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(signUpEmail.trim())) {
-      errors.email = "Please provide a valid email address"
-    }
-
-    if (signUpPassword && signUpPassword.length < 6) {
-      errors.password = "Password must be at least 6 characters"
-    }
-
-    if (Object.keys(errors).length > 0) {
+    if (!parseResult.success) {
+      const errors: {
+        name?: string
+        username?: string
+        email?: string
+        password?: string
+      } = {}
+      parseResult.error.issues.forEach((issue) => {
+        const field = issue.path[0] as "name" | "username" | "email" | "password"
+        if (field && !errors[field]) errors[field] = issue.message
+      })
       setSignUpErrors(errors)
       return
     }
 
     setSignUpErrors({})
     setIsSendingRegisterOtp(true)
-    setTimeout(() => {
-      setIsSendingRegisterOtp(false)
-      setRegisterResendCountdown(45)
-      setRegisterOtpCode("")
-      setRegisterOtpError(null)
-      navigateToStep("register-verify-otp")
-      toast.success("Verification Code Sent", {
-        description: `We've sent a 6-digit OTP code to ${signUpEmail}. (Demo OTP: 123456)`,
+
+    try {
+      const res = await AuthApi.initiateRegister(parseResult.data)
+
+      if (res.success) {
+        setRegisterResendCountdown(45)
+        setRegisterOtpCode("")
+        setRegisterOtpError(null)
+        navigateToStep("register-verify-otp")
+        toast.success("Verification Code Sent", {
+          description: `We've dispatched a 6-digit verification code to ${signUpEmail}.`,
+        })
+      } else {
+        toast.error("Registration Failed", {
+          description: res.error || res.message || "Failed to initiate registration.",
+        })
+      }
+    } catch (err: any) {
+      toast.error("Registration Error", {
+        description: err?.message || "Could not connect to authentication server.",
       })
-    }, 450)
+    } finally {
+      setIsSendingRegisterOtp(false)
+    }
   }
 
   // Registration Step 2: Resend Registration OTP
-  const handleResendRegisterOtp = () => {
+  const handleResendRegisterOtp = async () => {
     if (registerResendCountdown > 0) return
     setIsSendingRegisterOtp(true)
-    setTimeout(() => {
+    try {
+      const res = await AuthApi.resendOtp(signUpEmail, "REGISTER_EMAIL_VERIFY")
+      if (res.success) {
+        setRegisterResendCountdown(45)
+        setRegisterOtpError(null)
+        toast.success("New OTP Code Sent", {
+          description: `A new 6-digit code has been dispatched to ${signUpEmail}.`,
+        })
+      } else {
+        toast.error("Resend Failed", { description: res.error || res.message })
+      }
+    } catch (err: any) {
+      toast.error("Resend Error", { description: err?.message })
+    } finally {
       setIsSendingRegisterOtp(false)
-      setRegisterResendCountdown(45)
-      setRegisterOtpError(null)
-      toast.success("New OTP Code Sent", {
-        description: `A new 6-digit code has been sent to ${signUpEmail}. (Demo OTP: 123456)`,
-      })
-    }, 350)
+    }
   }
 
-  // Registration Step 3: Verify Email OTP and Activate Account
-  const handleVerifyRegisterOtp = (e: FormEvent) => {
+  // Registration Step 3: Verify Email OTP with shared verifyRegisterOtpSchema
+  const handleVerifyRegisterOtp = async (e: FormEvent) => {
     e.preventDefault()
-    if (registerOtpCode.length < 6) {
-      setRegisterOtpError("Please enter all 6 digits of the verification code")
+
+    const parseResult = verifyRegisterOtpSchema.safeParse({
+      email: signUpEmail,
+      otpCode: registerOtpCode,
+    })
+
+    if (!parseResult.success) {
+      setRegisterOtpError(parseResult.error.issues[0]?.message || "Invalid verification code")
       return
     }
 
     setRegisterOtpError(null)
     setIsActivatingAccount(true)
-    setTimeout(() => {
-      setIsActivatingAccount(false)
-      const user = register({
-        name: signUpName,
-        username: signUpUsername || signUpName.toLowerCase().replace(/\s+/g, "_"),
-        email: signUpEmail,
-        role: signUpRole || "Software Engineer",
-        avatar: selectedAvatar,
-        subscribedToNewsletter: subscribeNewsletter,
-      })
 
-      if (subscribeNewsletter) {
-        toast.success(`Account Verified & Activated!`, {
-          description: `Welcome, ${user.name}! You're also subscribed to newsletters and architectural updates.`,
-        })
+    try {
+      const res = await AuthApi.verifyRegisterOtp(parseResult.data)
+
+      if (res.success && res.data?.user) {
+        setStoredUser(res.data.user)
+        if (subscribeNewsletter) {
+          toast.success(`Account Verified & Activated!`, {
+            description: `Welcome, ${res.data.user.name}! You're also subscribed to newsletters and architectural updates.`,
+          })
+        } else {
+          toast.success(`Account Verified & Activated!`, {
+            description: `Welcome, ${res.data.user.name}! Your account is now active.`,
+          })
+        }
+
+        handleOpenChange(false)
+        onSuccess?.(res.data.user)
       } else {
-        toast.success(`Account Verified & Activated!`, {
-          description: `Welcome, ${user.name}! Your account is now active.`,
+        setRegisterOtpError(res.error || res.message || "Invalid code.")
+        toast.error("Verification Failed", {
+          description: res.error || res.message || "Invalid verification code.",
         })
       }
-
-      handleOpenChange(false)
-      onSuccess?.(user)
-    }, 400)
+    } catch (err: any) {
+      setRegisterOtpError(err?.message || "Verification failed.")
+      toast.error("Verification Error", { description: err?.message })
+    } finally {
+      setIsActivatingAccount(false)
+    }
   }
 
-  // Forgot Password: Request OTP with validation
-  const handleRequestResetOtp = (e: FormEvent) => {
+  // Forgot Password: Request OTP with shared forgotPasswordSchema
+  const handleRequestResetOtp = async (e: FormEvent) => {
     e.preventDefault()
-    if (!resetEmail.trim()) {
-      setResetEmailError("Email address is required")
-      return
-    }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(resetEmail.trim())) {
-      setResetEmailError("Please provide a valid email address")
+
+    const parseResult = forgotPasswordSchema.safeParse({
+      email: resetEmail,
+    })
+
+    if (!parseResult.success) {
+      setResetEmailError(parseResult.error.issues[0]?.message || "Invalid email address")
       return
     }
 
     setResetEmailError(null)
     setIsSendingResetOtp(true)
-    setTimeout(() => {
+
+    try {
+      const res = await AuthApi.forgotPassword(parseResult.data.email)
+      if (res.success) {
+        setResetResendCountdown(45)
+        setResetOtpCode("")
+        setResetOtpError(null)
+        navigateToStep("verify-otp")
+        toast.success("Verification Code Sent", {
+          description: `We've sent a 6-digit OTP code to ${resetEmail}.`,
+        })
+      } else {
+        toast.error("Request Failed", { description: res.error || res.message })
+      }
+    } catch (err: any) {
+      toast.error("Request Error", { description: err?.message })
+    } finally {
       setIsSendingResetOtp(false)
-      setResetResendCountdown(45)
-      setResetOtpCode("")
-      setResetOtpError(null)
-      navigateToStep("verify-otp")
-      toast.success("Verification Code Sent", {
-        description: `We've sent a 6-digit OTP code to ${resetEmail}. (Demo OTP: 123456)`,
-      })
-    }, 450)
+    }
   }
 
   // Resend Reset OTP
-  const handleResendResetOtp = () => {
+  const handleResendResetOtp = async () => {
     if (resetResendCountdown > 0) return
     setIsSendingResetOtp(true)
-    setTimeout(() => {
+    try {
+      const res = await AuthApi.resendOtp(resetEmail, "PASSWORD_RESET")
+      if (res.success) {
+        setResetResendCountdown(45)
+        setResetOtpError(null)
+        toast.success("New OTP Code Sent", {
+          description: `A new 6-digit code has been dispatched to ${resetEmail}.`,
+        })
+      } else {
+        toast.error("Resend Failed", { description: res.error || res.message })
+      }
+    } catch (err: any) {
+      toast.error("Resend Error", { description: err?.message })
+    } finally {
       setIsSendingResetOtp(false)
-      setResetResendCountdown(45)
-      setResetOtpError(null)
-      toast.success("New OTP Code Sent", {
-        description: `A new 6-digit code has been dispatched to ${resetEmail}. (Demo OTP: 123456)`,
-      })
-    }, 350)
+    }
   }
 
-  // Verify Password Reset OTP
-  const handleVerifyResetOtp = (e: FormEvent) => {
+  // Verify Password Reset OTP with shared verifyResetOtpSchema
+  const handleVerifyResetOtp = async (e: FormEvent) => {
     e.preventDefault()
-    if (resetOtpCode.length < 6) {
-      setResetOtpError("Please enter all 6 digits of the verification code")
+
+    const parseResult = verifyResetOtpSchema.safeParse({
+      email: resetEmail,
+      otpCode: resetOtpCode,
+    })
+
+    if (!parseResult.success) {
+      setResetOtpError(parseResult.error.issues[0]?.message || "Invalid verification code")
       return
     }
 
     setResetOtpError(null)
     setIsVerifyingResetOtp(true)
-    setTimeout(() => {
+
+    try {
+      const res = await AuthApi.verifyResetOtp(parseResult.data.email, parseResult.data.otpCode)
+      if (res.success) {
+        navigateToStep("reset-password")
+        toast.success("OTP Code Verified", {
+          description: "Please choose a new password for your account.",
+        })
+      } else {
+        setResetOtpError(res.error || res.message || "Invalid code.")
+        toast.error("Verification Failed", { description: res.error || res.message })
+      }
+    } catch (err: any) {
+      setResetOtpError(err?.message || "Verification failed.")
+      toast.error("Verification Error", { description: err?.message })
+    } finally {
       setIsVerifyingResetOtp(false)
-      navigateToStep("reset-password")
-      toast.success("OTP Code Verified", {
-        description: "Please choose a new password for your account.",
-      })
-    }, 400)
+    }
   }
 
-  // Reset Password Submit with validation
-  const handleResetPasswordSubmit = (e: FormEvent) => {
+  // Reset Password Submit with shared resetPasswordSchema
+  const handleResetPasswordSubmit = async (e: FormEvent) => {
     e.preventDefault()
+
+    const parseResult = resetPasswordSchema.safeParse({
+      email: resetEmail,
+      otpCode: resetOtpCode,
+      newPassword,
+    })
+
     const errors: { newPassword?: string; confirmPassword?: string } = {}
 
-    if (!newPassword) {
-      errors.newPassword = "New password is required"
-    } else if (newPassword.length < 6) {
-      errors.newPassword = "Password must be at least 6 characters"
+    if (!parseResult.success) {
+      parseResult.error.issues.forEach((issue) => {
+        if (issue.path[0] === "newPassword") errors.newPassword = issue.message
+      })
     }
 
     if (!confirmPassword) {
@@ -404,30 +479,37 @@ export function AuthModal({
 
     setResetPasswordErrors({})
     setIsResettingPassword(true)
-    setTimeout(() => {
-      setIsResettingPassword(false)
-      resetPassword(resetEmail, newPassword)
-      const user = login(resetEmail, newPassword)
-      toast.success("Password Updated Successfully!", {
-        description: `Welcome back, ${user.name}. You are now signed in.`,
+
+    try {
+      const res = await AuthApi.resetPassword({
+        email: parseResult.success ? parseResult.data.email : resetEmail,
+        otpCode: parseResult.success ? parseResult.data.otpCode : resetOtpCode,
+        newPassword: parseResult.success ? parseResult.data.newPassword : newPassword,
       })
-      handleOpenChange(false)
-      onSuccess?.(user)
-    }, 450)
+
+      if (res.success && res.data?.user) {
+        setStoredUser(res.data.user)
+        toast.success("Password Updated Successfully!", {
+          description: `Welcome back, ${res.data.user.name}. You are now signed in.`,
+        })
+        handleOpenChange(false)
+        onSuccess?.(res.data.user)
+      } else {
+        toast.error("Reset Failed", { description: res.error || res.message })
+      }
+    } catch (err: any) {
+      toast.error("Reset Error", { description: err?.message })
+    } finally {
+      setIsResettingPassword(false)
+    }
   }
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-      <DialogContent className="max-w-md border border-border/80 bg-background/95 p-6 backdrop-blur-xl sm:rounded-none">
-        {/* Cyberpunk corner accents */}
-        <div className="pointer-events-none absolute top-2 left-2 z-10 h-3 w-3 border-t border-l border-primary" />
-        <div className="pointer-events-none absolute top-2 right-2 z-10 h-3 w-3 border-t border-r border-primary" />
-        <div className="pointer-events-none absolute bottom-2 left-2 z-10 h-3 w-3 border-b border-l border-primary" />
-        <div className="pointer-events-none absolute right-2 bottom-2 z-10 h-3 w-3 border-r border-b border-primary" />
-
-        {/* Modal Top Header */}
-        <DialogHeader className="text-left space-y-1.5 pb-2">
-          <div className="flex items-center justify-between">
+      <DialogContent className="sm:max-w-[480px] w-[calc(100vw-2rem)] rounded-none border border-border bg-card/95 p-5 sm:p-7 backdrop-blur-xl gap-4 shadow-2xl">
+        {/* Modal Header */}
+        <DialogHeader className="space-y-1.5 pb-1">
+          <div className="flex items-center justify-between pr-10">
             <span className="inline-flex items-center border border-primary/40 bg-primary/10 px-2 py-0.5 font-mono text-[10px] font-semibold text-primary uppercase">
               // ACCOUNT_AUTHENTICATION
             </span>
@@ -459,7 +541,6 @@ export function AuthModal({
           </div>
 
           <DialogTitle className="font-mono text-xl font-bold tracking-tight text-foreground">
-            {currentStep === "quick" && "Instant Account Access"}
             {currentStep === "signin" && "Sign In to Your Account"}
             {currentStep === "signup" && "Create an Account"}
             {currentStep === "register-verify-otp" && "Verify Your Email"}
@@ -469,10 +550,8 @@ export function AuthModal({
           </DialogTitle>
 
           <DialogDescription className="text-xs text-muted-foreground leading-relaxed">
-            {currentStep === "quick" &&
-              `Authenticate ${actionLabel}. Use a 1-click test profile or sign in with email.`}
             {currentStep === "signin" &&
-              "Access your account, discussions, and personal preferences."}
+              `Sign in ${actionLabel}. Access discussions, profile preferences, and security settings.`}
             {currentStep === "signup" &&
               "Fill in your details below. We'll send a quick verification code to your email."}
             {currentStep === "register-verify-otp" &&
@@ -486,21 +565,9 @@ export function AuthModal({
           </DialogDescription>
         </DialogHeader>
 
-        {/* Tab Selector for Primary Steps */}
-        {(currentStep === "quick" || currentStep === "signin" || currentStep === "signup") && (
-          <div className="grid grid-cols-3 gap-1 border border-border bg-muted/30 p-1 mb-4">
-            <button
-              type="button"
-              onClick={() => navigateToStep("quick")}
-              className={`flex items-center justify-center gap-1.5 py-1.5 font-mono text-xs transition-all cursor-pointer ${
-                currentStep === "quick"
-                  ? "bg-background text-primary font-bold shadow-xs border border-border"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              <HugeiconsIcon icon={FlashIcon} className="size-3.5" />
-              <span>1-Click</span>
-            </button>
+        {/* Tab Selector for Primary Steps (Sign In vs Register) */}
+        {(currentStep === "signin" || currentStep === "signup") && (
+          <div className="grid grid-cols-2 gap-1 border border-border bg-muted/30 p-1 mb-4">
             <button
               type="button"
               onClick={() => navigateToStep("signin")}
@@ -528,15 +595,7 @@ export function AuthModal({
           </div>
         )}
 
-        {/* STEP 1: Quick 1-Click Login */}
-        {currentStep === "quick" && (
-          <QuickLoginStep
-            onSelectDemo={handleDemoSelect}
-            onSelectOAuth={handleOAuthSimulate}
-          />
-        )}
-
-        {/* STEP 2: Sign In */}
+        {/* STEP 1: Sign In */}
         {currentStep === "signin" && (
           <SignInStep
             email={signInEmail}
@@ -555,7 +614,7 @@ export function AuthModal({
           />
         )}
 
-        {/* STEP 3: Register */}
+        {/* STEP 2: Register */}
         {currentStep === "signup" && (
           <SignUpStep
             name={signUpName}
@@ -579,7 +638,7 @@ export function AuthModal({
           />
         )}
 
-        {/* STEP 4: Email OTP Verification */}
+        {/* STEP 3: Register OTP Verification */}
         {currentStep === "register-verify-otp" && (
           <RegisterOtpStep
             email={signUpEmail}
@@ -595,7 +654,7 @@ export function AuthModal({
           />
         )}
 
-        {/* STEP 5: Forgot Password OTP Request */}
+        {/* STEP 4: Forgot Password Request */}
         {currentStep === "forgot-password" && (
           <ForgotPasswordStep
             email={resetEmail}
@@ -608,7 +667,7 @@ export function AuthModal({
           />
         )}
 
-        {/* STEP 6: Password Reset OTP Verification */}
+        {/* STEP 5: Verify Password Reset OTP */}
         {currentStep === "verify-otp" && (
           <ResetOtpStep
             email={resetEmail}
@@ -624,7 +683,7 @@ export function AuthModal({
           />
         )}
 
-        {/* STEP 7: Set New Password */}
+        {/* STEP 6: Set New Password */}
         {currentStep === "reset-password" && (
           <ResetPasswordStep
             newPassword={newPassword}

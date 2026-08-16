@@ -3,6 +3,7 @@ import { getContactConfirmationLiquidBody } from "./contactConfirmation";
 import { getContactNotificationLiquidBody } from "./contactNotification";
 import { getSubscriptionConfirmationLiquidBody } from "./subscriptionConfirmation";
 import { getNewsletterBroadcastLiquidBody } from "./newsletterBroadcast";
+import { getOtpVerificationLiquidBody } from "./otpVerification";
 
 export interface SystemTemplateDefinition {
   slug: string;
@@ -96,6 +97,42 @@ export const SYSTEM_TEMPLATES: SystemTemplateDefinition[] = [
       articleUrl: "https://fi.amanillah.com/blog/event-sourcing-at-scale",
       unsubscribeUrl: "https://fi.amanillah.com/unsubscribe?token=sample_token_789",
       manageUrl: "https://fi.amanillah.com/manage",
+    },
+  },
+  {
+    slug: "auth-otp-verification",
+    name: "Account Email Verification OTP",
+    description: "Single-use 6-digit verification passcode dispatched to newly registering visitors to activate their account.",
+    subject: "[{{ code }}] Your Email Verification Code — Fi Amanillah",
+    body: getOtpVerificationLiquidBody(),
+    fromName: "Fi Amanillah",
+    replyTo: "fi@amanillah.com",
+    type: "HEADLESS",
+    isSystem: true,
+    sampleData: {
+      name: "Alex Mercer",
+      email: "alex.mercer@example.com",
+      code: "839201",
+      purpose: "REGISTER_EMAIL_VERIFY",
+      expiresInMinutes: 10,
+    },
+  },
+  {
+    slug: "auth-password-reset",
+    name: "Password Reset Passcode OTP",
+    description: "Security passcode dispatched when a user initiates a password reset request.",
+    subject: "[{{ code }}] Password Reset Code — Fi Amanillah",
+    body: getOtpVerificationLiquidBody(),
+    fromName: "Fi Amanillah",
+    replyTo: "fi@amanillah.com",
+    type: "HEADLESS",
+    isSystem: true,
+    sampleData: {
+      name: "Alex Mercer",
+      email: "alex.mercer@example.com",
+      code: "472910",
+      purpose: "PASSWORD_RESET",
+      expiresInMinutes: 10,
     },
   },
 ];

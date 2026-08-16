@@ -1,50 +1,11 @@
-export interface AuthUser {
-  id: string
-  name: string
-  username: string
-  email: string
-  avatar: string
-  role?: string
-  badge?: string
-  bio?: string
-  joinedAt?: string
-  subscribedToNewsletter?: boolean
-  location?: string
-  website?: string
-  githubUrl?: string
-  twitterUrl?: string
-  linkedinUrl?: string
-  pronouns?: string
-  customStatus?: string
-  twoFactorEnabled?: boolean
-}
+import type {
+  AuthUser,
+  BlogComment,
+  PostReactions,
+  Role,
+} from "@workspace/shared"
 
-export interface BlogComment {
-  id: string
-  postSlug: string
-  author: AuthUser
-  content: string
-  createdAt: string // ISO string
-  likes: number
-  isLiked?: boolean
-  parentId?: string | null
-  replies?: BlogComment[]
-}
-
-export interface PostReactions {
-  likes: number
-  fire: number
-  insightful: number
-  fast: number
-  rocket: number
-  userLiked?: boolean
-  userReactions?: {
-    fire?: boolean
-    insightful?: boolean
-    fast?: boolean
-    rocket?: boolean
-  }
-}
+export type { AuthUser, BlogComment, PostReactions, Role }
 
 export const DEMO_USERS: AuthUser[] = [
   {
