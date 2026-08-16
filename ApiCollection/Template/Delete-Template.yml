@@ -1,0 +1,18 @@
+info:
+  name: Delete Template
+  type: http
+  seq: 13
+
+http:
+  method: DELETE
+  url: "{{baseUrl}}/templates/v1/TEMPLATE_ID"
+  headers:
+    - name: Authorization
+      value: "Bearer {{authToken}}"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

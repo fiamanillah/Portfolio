@@ -1,0 +1,18 @@
+info:
+  name: Admin - Get Subscriber By ID
+  type: http
+  seq: 12
+
+http:
+  method: GET
+  url: "{{baseUrl}}/subscriber/v1/SUBSCRIBER_ID"
+  headers:
+    - name: Authorization
+      value: "Bearer {{authToken}}"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

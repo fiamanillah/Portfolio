@@ -1,0 +1,23 @@
+info:
+  name: Subscribe
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{baseUrl}}/subscriber/v1/subscribe"
+  body:
+    type: json
+    data: |-
+      {
+        "email": "alex.subscriber@example.com",
+        "name": "Alex Rivera",
+        "source": "hero_section"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

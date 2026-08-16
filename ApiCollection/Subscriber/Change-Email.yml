@@ -1,0 +1,22 @@
+info:
+  name: Change Email
+  type: http
+  seq: 4
+
+http:
+  method: POST
+  url: "{{baseUrl}}/subscriber/v1/change-email"
+  body:
+    type: json
+    data: |-
+      {
+        "oldEmail": "alex.subscriber@example.com",
+        "newEmail": "alex.rivera.new@example.com"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

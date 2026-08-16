@@ -1,0 +1,25 @@
+info:
+  name: Submit Contact Form
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{baseUrl}}/contact/v1/send"
+  body:
+    type: json
+    data: |-
+      {
+        "name": "Jane Doe",
+        "email": "jane.doe@example.com",
+        "subject": "Project Collaboration Inquiry",
+        "message": "Hello, I would like to discuss a potential software development project with your team.",
+        "subscribe": true
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

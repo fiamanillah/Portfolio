@@ -1,0 +1,26 @@
+info:
+  name: Update Template
+  type: http
+  seq: 12
+
+http:
+  method: PATCH
+  url: "{{baseUrl}}/templates/v1/TEMPLATE_ID"
+  headers:
+    - name: Authorization
+      value: "Bearer {{authToken}}"
+  body:
+    type: json
+    data: |-
+      {
+        "name": "Weekly Tech Digest (Updated)",
+        "subject": "Updated Weekly Tech Digest for {{weekDate}}",
+        "description": "Updated weekly digest description"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

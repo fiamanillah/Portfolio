@@ -1,0 +1,28 @@
+info:
+  name: Admin - Create Subscriber
+  type: http
+  seq: 7
+
+http:
+  method: POST
+  url: "{{baseUrl}}/subscriber/v1/admin/create"
+  headers:
+    - name: Authorization
+      value: "Bearer {{authToken}}"
+  body:
+    type: json
+    data: |-
+      {
+        "email": "jordan.smith@example.com",
+        "name": "Jordan Smith",
+        "status": "subscribed",
+        "source": "admin_portal",
+        "sendWelcomeEmail": true
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

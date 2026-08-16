@@ -1,0 +1,26 @@
+info:
+  name: Admin - Update Subscriber
+  type: http
+  seq: 13
+
+http:
+  method: PATCH
+  url: "{{baseUrl}}/subscriber/v1/SUBSCRIBER_ID"
+  headers:
+    - name: Authorization
+      value: "Bearer {{authToken}}"
+  body:
+    type: json
+    data: |-
+      {
+        "name": "Alex Rivera Updated",
+        "status": "subscribed",
+        "source": "newsletter_footer"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

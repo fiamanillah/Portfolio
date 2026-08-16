@@ -1,0 +1,21 @@
+info:
+  name: Unsubscribe By Email
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: "{{baseUrl}}/subscriber/v1/unsubscribe"
+  body:
+    type: json
+    data: |-
+      {
+        "email": "alex.subscriber@example.com"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

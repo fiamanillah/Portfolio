@@ -1,0 +1,18 @@
+info:
+  name: Admin - Delete Subscriber
+  type: http
+  seq: 14
+
+http:
+  method: DELETE
+  url: "{{baseUrl}}/subscriber/v1/SUBSCRIBER_ID"
+  headers:
+    - name: Authorization
+      value: "Bearer {{authToken}}"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

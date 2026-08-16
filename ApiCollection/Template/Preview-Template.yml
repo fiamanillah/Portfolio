@@ -1,0 +1,29 @@
+info:
+  name: Preview Template
+  type: http
+  seq: 4
+
+http:
+  method: POST
+  url: "{{baseUrl}}/templates/v1/preview"
+  headers:
+    - name: Authorization
+      value: "Bearer {{authToken}}"
+  body:
+    type: json
+    data: |-
+      {
+        "slug": "welcome-newsletter",
+        "subject": "Welcome to our Platform, {{name}}!",
+        "body": "<h1>Welcome, {{name}}!</h1><p>Thank you for subscribing to our updates.</p>",
+        "sampleData": {
+          "name": "Jane Developer"
+        }
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

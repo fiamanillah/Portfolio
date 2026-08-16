@@ -1,0 +1,18 @@
+info:
+  name: Admin - Resend Welcome Email
+  type: http
+  seq: 10
+
+http:
+  method: POST
+  url: "{{baseUrl}}/subscriber/v1/admin/SUBSCRIBER_ID/resend"
+  headers:
+    - name: Authorization
+      value: "Bearer {{authToken}}"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

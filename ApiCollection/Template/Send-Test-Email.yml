@@ -1,0 +1,30 @@
+info:
+  name: Send Test Email
+  type: http
+  seq: 5
+
+http:
+  method: POST
+  url: "{{baseUrl}}/templates/v1/send-test"
+  headers:
+    - name: Authorization
+      value: "Bearer {{authToken}}"
+  body:
+    type: json
+    data: |-
+      {
+        "to": "test.recipient@example.com",
+        "slug": "welcome-newsletter",
+        "subject": "Test Email Preview",
+        "body": "<h1>Test Email</h1><p>Hello {{name}}, this is a test transmission.</p>",
+        "data": {
+          "name": "Test Tester"
+        }
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

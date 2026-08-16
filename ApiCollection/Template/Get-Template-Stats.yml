@@ -1,0 +1,18 @@
+info:
+  name: Get Template Stats
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: "{{baseUrl}}/templates/v1/stats"
+  headers:
+    - name: Authorization
+      value: "Bearer {{authToken}}"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

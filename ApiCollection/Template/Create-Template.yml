@@ -1,0 +1,33 @@
+info:
+  name: Create Template
+  type: http
+  seq: 7
+
+http:
+  method: POST
+  url: "{{baseUrl}}/templates/v1"
+  headers:
+    - name: Authorization
+      value: "Bearer {{authToken}}"
+  body:
+    type: json
+    data: |-
+      {
+        "slug": "weekly-digest",
+        "name": "Weekly Tech Digest",
+        "description": "Weekly newsletter containing top tech trends and articles",
+        "subject": "Your Weekly Digest for {{weekDate}}",
+        "body": "<h1>Weekly Digest</h1><p>Hi {{name}}, here are your top stories for {{weekDate}}.</p>",
+        "from": "newsletter@example.com",
+        "fromName": "Tech Digest Team",
+        "replyTo": "support@example.com",
+        "type": "MARKETING",
+        "syncToPlunk": true
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
