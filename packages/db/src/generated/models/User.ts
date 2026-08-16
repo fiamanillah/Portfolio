@@ -335,6 +335,7 @@ export type UserWhereInput = {
   commentReports?: Prisma.CommentReportListRelationFilter
   reviewedReports?: Prisma.CommentReportListRelationFilter
   uploadedMedia?: Prisma.MediaFileListRelationFilter
+  caseStudies?: Prisma.CaseStudyListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -370,6 +371,7 @@ export type UserOrderByWithRelationInput = {
   commentReports?: Prisma.CommentReportOrderByRelationAggregateInput
   reviewedReports?: Prisma.CommentReportOrderByRelationAggregateInput
   uploadedMedia?: Prisma.MediaFileOrderByRelationAggregateInput
+  caseStudies?: Prisma.CaseStudyOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -408,6 +410,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   commentReports?: Prisma.CommentReportListRelationFilter
   reviewedReports?: Prisma.CommentReportListRelationFilter
   uploadedMedia?: Prisma.MediaFileListRelationFilter
+  caseStudies?: Prisma.CaseStudyListRelationFilter
 }, "id" | "email" | "username">
 
 export type UserOrderByWithAggregationInput = {
@@ -501,6 +504,7 @@ export type UserCreateInput = {
   commentReports?: Prisma.CommentReportCreateNestedManyWithoutReporterInput
   reviewedReports?: Prisma.CommentReportCreateNestedManyWithoutReviewedByInput
   uploadedMedia?: Prisma.MediaFileCreateNestedManyWithoutUploaderInput
+  caseStudies?: Prisma.CaseStudyCreateNestedManyWithoutAuthorInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -536,6 +540,7 @@ export type UserUncheckedCreateInput = {
   commentReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReporterInput
   reviewedReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReviewedByInput
   uploadedMedia?: Prisma.MediaFileUncheckedCreateNestedManyWithoutUploaderInput
+  caseStudies?: Prisma.CaseStudyUncheckedCreateNestedManyWithoutAuthorInput
 }
 
 export type UserUpdateInput = {
@@ -571,6 +576,7 @@ export type UserUpdateInput = {
   commentReports?: Prisma.CommentReportUpdateManyWithoutReporterNestedInput
   reviewedReports?: Prisma.CommentReportUpdateManyWithoutReviewedByNestedInput
   uploadedMedia?: Prisma.MediaFileUpdateManyWithoutUploaderNestedInput
+  caseStudies?: Prisma.CaseStudyUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -606,6 +612,7 @@ export type UserUncheckedUpdateInput = {
   commentReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReporterNestedInput
   reviewedReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReviewedByNestedInput
   uploadedMedia?: Prisma.MediaFileUncheckedUpdateManyWithoutUploaderNestedInput
+  caseStudies?: Prisma.CaseStudyUncheckedUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -920,6 +927,22 @@ export type UserUpdateOneWithoutUploadedMediaNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutUploadedMediaInput, Prisma.UserUpdateWithoutUploadedMediaInput>, Prisma.UserUncheckedUpdateWithoutUploadedMediaInput>
 }
 
+export type UserCreateNestedOneWithoutCaseStudiesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCaseStudiesInput, Prisma.UserUncheckedCreateWithoutCaseStudiesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCaseStudiesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutCaseStudiesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCaseStudiesInput, Prisma.UserUncheckedCreateWithoutCaseStudiesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCaseStudiesInput
+  upsert?: Prisma.UserUpsertWithoutCaseStudiesInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCaseStudiesInput, Prisma.UserUpdateWithoutCaseStudiesInput>, Prisma.UserUncheckedUpdateWithoutCaseStudiesInput>
+}
+
 export type UserCreateWithoutOtpsInput = {
   id?: string
   email: string
@@ -952,6 +975,7 @@ export type UserCreateWithoutOtpsInput = {
   commentReports?: Prisma.CommentReportCreateNestedManyWithoutReporterInput
   reviewedReports?: Prisma.CommentReportCreateNestedManyWithoutReviewedByInput
   uploadedMedia?: Prisma.MediaFileCreateNestedManyWithoutUploaderInput
+  caseStudies?: Prisma.CaseStudyCreateNestedManyWithoutAuthorInput
 }
 
 export type UserUncheckedCreateWithoutOtpsInput = {
@@ -986,6 +1010,7 @@ export type UserUncheckedCreateWithoutOtpsInput = {
   commentReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReporterInput
   reviewedReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReviewedByInput
   uploadedMedia?: Prisma.MediaFileUncheckedCreateNestedManyWithoutUploaderInput
+  caseStudies?: Prisma.CaseStudyUncheckedCreateNestedManyWithoutAuthorInput
 }
 
 export type UserCreateOrConnectWithoutOtpsInput = {
@@ -1036,6 +1061,7 @@ export type UserUpdateWithoutOtpsInput = {
   commentReports?: Prisma.CommentReportUpdateManyWithoutReporterNestedInput
   reviewedReports?: Prisma.CommentReportUpdateManyWithoutReviewedByNestedInput
   uploadedMedia?: Prisma.MediaFileUpdateManyWithoutUploaderNestedInput
+  caseStudies?: Prisma.CaseStudyUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutOtpsInput = {
@@ -1070,6 +1096,7 @@ export type UserUncheckedUpdateWithoutOtpsInput = {
   commentReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReporterNestedInput
   reviewedReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReviewedByNestedInput
   uploadedMedia?: Prisma.MediaFileUncheckedUpdateManyWithoutUploaderNestedInput
+  caseStudies?: Prisma.CaseStudyUncheckedUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserCreateWithoutRefreshTokensInput = {
@@ -1104,6 +1131,7 @@ export type UserCreateWithoutRefreshTokensInput = {
   commentReports?: Prisma.CommentReportCreateNestedManyWithoutReporterInput
   reviewedReports?: Prisma.CommentReportCreateNestedManyWithoutReviewedByInput
   uploadedMedia?: Prisma.MediaFileCreateNestedManyWithoutUploaderInput
+  caseStudies?: Prisma.CaseStudyCreateNestedManyWithoutAuthorInput
 }
 
 export type UserUncheckedCreateWithoutRefreshTokensInput = {
@@ -1138,6 +1166,7 @@ export type UserUncheckedCreateWithoutRefreshTokensInput = {
   commentReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReporterInput
   reviewedReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReviewedByInput
   uploadedMedia?: Prisma.MediaFileUncheckedCreateNestedManyWithoutUploaderInput
+  caseStudies?: Prisma.CaseStudyUncheckedCreateNestedManyWithoutAuthorInput
 }
 
 export type UserCreateOrConnectWithoutRefreshTokensInput = {
@@ -1188,6 +1217,7 @@ export type UserUpdateWithoutRefreshTokensInput = {
   commentReports?: Prisma.CommentReportUpdateManyWithoutReporterNestedInput
   reviewedReports?: Prisma.CommentReportUpdateManyWithoutReviewedByNestedInput
   uploadedMedia?: Prisma.MediaFileUpdateManyWithoutUploaderNestedInput
+  caseStudies?: Prisma.CaseStudyUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRefreshTokensInput = {
@@ -1222,6 +1252,7 @@ export type UserUncheckedUpdateWithoutRefreshTokensInput = {
   commentReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReporterNestedInput
   reviewedReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReviewedByNestedInput
   uploadedMedia?: Prisma.MediaFileUncheckedUpdateManyWithoutUploaderNestedInput
+  caseStudies?: Prisma.CaseStudyUncheckedUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserCreateWithoutPostsInput = {
@@ -1256,6 +1287,7 @@ export type UserCreateWithoutPostsInput = {
   commentReports?: Prisma.CommentReportCreateNestedManyWithoutReporterInput
   reviewedReports?: Prisma.CommentReportCreateNestedManyWithoutReviewedByInput
   uploadedMedia?: Prisma.MediaFileCreateNestedManyWithoutUploaderInput
+  caseStudies?: Prisma.CaseStudyCreateNestedManyWithoutAuthorInput
 }
 
 export type UserUncheckedCreateWithoutPostsInput = {
@@ -1290,6 +1322,7 @@ export type UserUncheckedCreateWithoutPostsInput = {
   commentReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReporterInput
   reviewedReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReviewedByInput
   uploadedMedia?: Prisma.MediaFileUncheckedCreateNestedManyWithoutUploaderInput
+  caseStudies?: Prisma.CaseStudyUncheckedCreateNestedManyWithoutAuthorInput
 }
 
 export type UserCreateOrConnectWithoutPostsInput = {
@@ -1340,6 +1373,7 @@ export type UserUpdateWithoutPostsInput = {
   commentReports?: Prisma.CommentReportUpdateManyWithoutReporterNestedInput
   reviewedReports?: Prisma.CommentReportUpdateManyWithoutReviewedByNestedInput
   uploadedMedia?: Prisma.MediaFileUpdateManyWithoutUploaderNestedInput
+  caseStudies?: Prisma.CaseStudyUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPostsInput = {
@@ -1374,6 +1408,7 @@ export type UserUncheckedUpdateWithoutPostsInput = {
   commentReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReporterNestedInput
   reviewedReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReviewedByNestedInput
   uploadedMedia?: Prisma.MediaFileUncheckedUpdateManyWithoutUploaderNestedInput
+  caseStudies?: Prisma.CaseStudyUncheckedUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserCreateWithoutBlogReactionsInput = {
@@ -1408,6 +1443,7 @@ export type UserCreateWithoutBlogReactionsInput = {
   commentReports?: Prisma.CommentReportCreateNestedManyWithoutReporterInput
   reviewedReports?: Prisma.CommentReportCreateNestedManyWithoutReviewedByInput
   uploadedMedia?: Prisma.MediaFileCreateNestedManyWithoutUploaderInput
+  caseStudies?: Prisma.CaseStudyCreateNestedManyWithoutAuthorInput
 }
 
 export type UserUncheckedCreateWithoutBlogReactionsInput = {
@@ -1442,6 +1478,7 @@ export type UserUncheckedCreateWithoutBlogReactionsInput = {
   commentReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReporterInput
   reviewedReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReviewedByInput
   uploadedMedia?: Prisma.MediaFileUncheckedCreateNestedManyWithoutUploaderInput
+  caseStudies?: Prisma.CaseStudyUncheckedCreateNestedManyWithoutAuthorInput
 }
 
 export type UserCreateOrConnectWithoutBlogReactionsInput = {
@@ -1492,6 +1529,7 @@ export type UserUpdateWithoutBlogReactionsInput = {
   commentReports?: Prisma.CommentReportUpdateManyWithoutReporterNestedInput
   reviewedReports?: Prisma.CommentReportUpdateManyWithoutReviewedByNestedInput
   uploadedMedia?: Prisma.MediaFileUpdateManyWithoutUploaderNestedInput
+  caseStudies?: Prisma.CaseStudyUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutBlogReactionsInput = {
@@ -1526,6 +1564,7 @@ export type UserUncheckedUpdateWithoutBlogReactionsInput = {
   commentReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReporterNestedInput
   reviewedReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReviewedByNestedInput
   uploadedMedia?: Prisma.MediaFileUncheckedUpdateManyWithoutUploaderNestedInput
+  caseStudies?: Prisma.CaseStudyUncheckedUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserCreateWithoutCommentsInput = {
@@ -1560,6 +1599,7 @@ export type UserCreateWithoutCommentsInput = {
   commentReports?: Prisma.CommentReportCreateNestedManyWithoutReporterInput
   reviewedReports?: Prisma.CommentReportCreateNestedManyWithoutReviewedByInput
   uploadedMedia?: Prisma.MediaFileCreateNestedManyWithoutUploaderInput
+  caseStudies?: Prisma.CaseStudyCreateNestedManyWithoutAuthorInput
 }
 
 export type UserUncheckedCreateWithoutCommentsInput = {
@@ -1594,6 +1634,7 @@ export type UserUncheckedCreateWithoutCommentsInput = {
   commentReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReporterInput
   reviewedReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReviewedByInput
   uploadedMedia?: Prisma.MediaFileUncheckedCreateNestedManyWithoutUploaderInput
+  caseStudies?: Prisma.CaseStudyUncheckedCreateNestedManyWithoutAuthorInput
 }
 
 export type UserCreateOrConnectWithoutCommentsInput = {
@@ -1644,6 +1685,7 @@ export type UserUpdateWithoutCommentsInput = {
   commentReports?: Prisma.CommentReportUpdateManyWithoutReporterNestedInput
   reviewedReports?: Prisma.CommentReportUpdateManyWithoutReviewedByNestedInput
   uploadedMedia?: Prisma.MediaFileUpdateManyWithoutUploaderNestedInput
+  caseStudies?: Prisma.CaseStudyUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCommentsInput = {
@@ -1678,6 +1720,7 @@ export type UserUncheckedUpdateWithoutCommentsInput = {
   commentReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReporterNestedInput
   reviewedReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReviewedByNestedInput
   uploadedMedia?: Prisma.MediaFileUncheckedUpdateManyWithoutUploaderNestedInput
+  caseStudies?: Prisma.CaseStudyUncheckedUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserCreateWithoutCommentReactionsInput = {
@@ -1712,6 +1755,7 @@ export type UserCreateWithoutCommentReactionsInput = {
   commentReports?: Prisma.CommentReportCreateNestedManyWithoutReporterInput
   reviewedReports?: Prisma.CommentReportCreateNestedManyWithoutReviewedByInput
   uploadedMedia?: Prisma.MediaFileCreateNestedManyWithoutUploaderInput
+  caseStudies?: Prisma.CaseStudyCreateNestedManyWithoutAuthorInput
 }
 
 export type UserUncheckedCreateWithoutCommentReactionsInput = {
@@ -1746,6 +1790,7 @@ export type UserUncheckedCreateWithoutCommentReactionsInput = {
   commentReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReporterInput
   reviewedReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReviewedByInput
   uploadedMedia?: Prisma.MediaFileUncheckedCreateNestedManyWithoutUploaderInput
+  caseStudies?: Prisma.CaseStudyUncheckedCreateNestedManyWithoutAuthorInput
 }
 
 export type UserCreateOrConnectWithoutCommentReactionsInput = {
@@ -1796,6 +1841,7 @@ export type UserUpdateWithoutCommentReactionsInput = {
   commentReports?: Prisma.CommentReportUpdateManyWithoutReporterNestedInput
   reviewedReports?: Prisma.CommentReportUpdateManyWithoutReviewedByNestedInput
   uploadedMedia?: Prisma.MediaFileUpdateManyWithoutUploaderNestedInput
+  caseStudies?: Prisma.CaseStudyUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCommentReactionsInput = {
@@ -1830,6 +1876,7 @@ export type UserUncheckedUpdateWithoutCommentReactionsInput = {
   commentReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReporterNestedInput
   reviewedReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReviewedByNestedInput
   uploadedMedia?: Prisma.MediaFileUncheckedUpdateManyWithoutUploaderNestedInput
+  caseStudies?: Prisma.CaseStudyUncheckedUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserCreateWithoutCommentReportsInput = {
@@ -1864,6 +1911,7 @@ export type UserCreateWithoutCommentReportsInput = {
   commentReactions?: Prisma.CommentReactionCreateNestedManyWithoutUserInput
   reviewedReports?: Prisma.CommentReportCreateNestedManyWithoutReviewedByInput
   uploadedMedia?: Prisma.MediaFileCreateNestedManyWithoutUploaderInput
+  caseStudies?: Prisma.CaseStudyCreateNestedManyWithoutAuthorInput
 }
 
 export type UserUncheckedCreateWithoutCommentReportsInput = {
@@ -1898,6 +1946,7 @@ export type UserUncheckedCreateWithoutCommentReportsInput = {
   commentReactions?: Prisma.CommentReactionUncheckedCreateNestedManyWithoutUserInput
   reviewedReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReviewedByInput
   uploadedMedia?: Prisma.MediaFileUncheckedCreateNestedManyWithoutUploaderInput
+  caseStudies?: Prisma.CaseStudyUncheckedCreateNestedManyWithoutAuthorInput
 }
 
 export type UserCreateOrConnectWithoutCommentReportsInput = {
@@ -1937,6 +1986,7 @@ export type UserCreateWithoutReviewedReportsInput = {
   commentReactions?: Prisma.CommentReactionCreateNestedManyWithoutUserInput
   commentReports?: Prisma.CommentReportCreateNestedManyWithoutReporterInput
   uploadedMedia?: Prisma.MediaFileCreateNestedManyWithoutUploaderInput
+  caseStudies?: Prisma.CaseStudyCreateNestedManyWithoutAuthorInput
 }
 
 export type UserUncheckedCreateWithoutReviewedReportsInput = {
@@ -1971,6 +2021,7 @@ export type UserUncheckedCreateWithoutReviewedReportsInput = {
   commentReactions?: Prisma.CommentReactionUncheckedCreateNestedManyWithoutUserInput
   commentReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReporterInput
   uploadedMedia?: Prisma.MediaFileUncheckedCreateNestedManyWithoutUploaderInput
+  caseStudies?: Prisma.CaseStudyUncheckedCreateNestedManyWithoutAuthorInput
 }
 
 export type UserCreateOrConnectWithoutReviewedReportsInput = {
@@ -2021,6 +2072,7 @@ export type UserUpdateWithoutCommentReportsInput = {
   commentReactions?: Prisma.CommentReactionUpdateManyWithoutUserNestedInput
   reviewedReports?: Prisma.CommentReportUpdateManyWithoutReviewedByNestedInput
   uploadedMedia?: Prisma.MediaFileUpdateManyWithoutUploaderNestedInput
+  caseStudies?: Prisma.CaseStudyUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCommentReportsInput = {
@@ -2055,6 +2107,7 @@ export type UserUncheckedUpdateWithoutCommentReportsInput = {
   commentReactions?: Prisma.CommentReactionUncheckedUpdateManyWithoutUserNestedInput
   reviewedReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReviewedByNestedInput
   uploadedMedia?: Prisma.MediaFileUncheckedUpdateManyWithoutUploaderNestedInput
+  caseStudies?: Prisma.CaseStudyUncheckedUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserUpsertWithoutReviewedReportsInput = {
@@ -2100,6 +2153,7 @@ export type UserUpdateWithoutReviewedReportsInput = {
   commentReactions?: Prisma.CommentReactionUpdateManyWithoutUserNestedInput
   commentReports?: Prisma.CommentReportUpdateManyWithoutReporterNestedInput
   uploadedMedia?: Prisma.MediaFileUpdateManyWithoutUploaderNestedInput
+  caseStudies?: Prisma.CaseStudyUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutReviewedReportsInput = {
@@ -2134,6 +2188,7 @@ export type UserUncheckedUpdateWithoutReviewedReportsInput = {
   commentReactions?: Prisma.CommentReactionUncheckedUpdateManyWithoutUserNestedInput
   commentReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReporterNestedInput
   uploadedMedia?: Prisma.MediaFileUncheckedUpdateManyWithoutUploaderNestedInput
+  caseStudies?: Prisma.CaseStudyUncheckedUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserCreateWithoutUploadedMediaInput = {
@@ -2168,6 +2223,7 @@ export type UserCreateWithoutUploadedMediaInput = {
   commentReactions?: Prisma.CommentReactionCreateNestedManyWithoutUserInput
   commentReports?: Prisma.CommentReportCreateNestedManyWithoutReporterInput
   reviewedReports?: Prisma.CommentReportCreateNestedManyWithoutReviewedByInput
+  caseStudies?: Prisma.CaseStudyCreateNestedManyWithoutAuthorInput
 }
 
 export type UserUncheckedCreateWithoutUploadedMediaInput = {
@@ -2202,6 +2258,7 @@ export type UserUncheckedCreateWithoutUploadedMediaInput = {
   commentReactions?: Prisma.CommentReactionUncheckedCreateNestedManyWithoutUserInput
   commentReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReporterInput
   reviewedReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReviewedByInput
+  caseStudies?: Prisma.CaseStudyUncheckedCreateNestedManyWithoutAuthorInput
 }
 
 export type UserCreateOrConnectWithoutUploadedMediaInput = {
@@ -2252,6 +2309,7 @@ export type UserUpdateWithoutUploadedMediaInput = {
   commentReactions?: Prisma.CommentReactionUpdateManyWithoutUserNestedInput
   commentReports?: Prisma.CommentReportUpdateManyWithoutReporterNestedInput
   reviewedReports?: Prisma.CommentReportUpdateManyWithoutReviewedByNestedInput
+  caseStudies?: Prisma.CaseStudyUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUploadedMediaInput = {
@@ -2286,6 +2344,163 @@ export type UserUncheckedUpdateWithoutUploadedMediaInput = {
   commentReactions?: Prisma.CommentReactionUncheckedUpdateManyWithoutUserNestedInput
   commentReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReporterNestedInput
   reviewedReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReviewedByNestedInput
+  caseStudies?: Prisma.CaseStudyUncheckedUpdateManyWithoutAuthorNestedInput
+}
+
+export type UserCreateWithoutCaseStudiesInput = {
+  id?: string
+  email: string
+  username: string
+  name: string
+  password: string
+  avatar?: string | null
+  role?: $Enums.Role
+  headline?: string | null
+  badge?: string | null
+  bio?: string | null
+  location?: string | null
+  website?: string | null
+  githubUrl?: string | null
+  twitterUrl?: string | null
+  linkedinUrl?: string | null
+  pronouns?: string | null
+  customStatus?: string | null
+  isEmailVerified?: boolean
+  subscribedToNewsletter?: boolean
+  twoFactorEnabled?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  otps?: Prisma.OtpVerificationCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  posts?: Prisma.BlogPostCreateNestedManyWithoutAuthorInput
+  blogReactions?: Prisma.BlogReactionCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  commentReactions?: Prisma.CommentReactionCreateNestedManyWithoutUserInput
+  commentReports?: Prisma.CommentReportCreateNestedManyWithoutReporterInput
+  reviewedReports?: Prisma.CommentReportCreateNestedManyWithoutReviewedByInput
+  uploadedMedia?: Prisma.MediaFileCreateNestedManyWithoutUploaderInput
+}
+
+export type UserUncheckedCreateWithoutCaseStudiesInput = {
+  id?: string
+  email: string
+  username: string
+  name: string
+  password: string
+  avatar?: string | null
+  role?: $Enums.Role
+  headline?: string | null
+  badge?: string | null
+  bio?: string | null
+  location?: string | null
+  website?: string | null
+  githubUrl?: string | null
+  twitterUrl?: string | null
+  linkedinUrl?: string | null
+  pronouns?: string | null
+  customStatus?: string | null
+  isEmailVerified?: boolean
+  subscribedToNewsletter?: boolean
+  twoFactorEnabled?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  otps?: Prisma.OtpVerificationUncheckedCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  posts?: Prisma.BlogPostUncheckedCreateNestedManyWithoutAuthorInput
+  blogReactions?: Prisma.BlogReactionUncheckedCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  commentReactions?: Prisma.CommentReactionUncheckedCreateNestedManyWithoutUserInput
+  commentReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReporterInput
+  reviewedReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReviewedByInput
+  uploadedMedia?: Prisma.MediaFileUncheckedCreateNestedManyWithoutUploaderInput
+}
+
+export type UserCreateOrConnectWithoutCaseStudiesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutCaseStudiesInput, Prisma.UserUncheckedCreateWithoutCaseStudiesInput>
+}
+
+export type UserUpsertWithoutCaseStudiesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCaseStudiesInput, Prisma.UserUncheckedUpdateWithoutCaseStudiesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCaseStudiesInput, Prisma.UserUncheckedCreateWithoutCaseStudiesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutCaseStudiesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCaseStudiesInput, Prisma.UserUncheckedUpdateWithoutCaseStudiesInput>
+}
+
+export type UserUpdateWithoutCaseStudiesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  headline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  badge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  githubUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twitterUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  linkedinUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  subscribedToNewsletter?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  otps?: Prisma.OtpVerificationUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  posts?: Prisma.BlogPostUpdateManyWithoutAuthorNestedInput
+  blogReactions?: Prisma.BlogReactionUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  commentReactions?: Prisma.CommentReactionUpdateManyWithoutUserNestedInput
+  commentReports?: Prisma.CommentReportUpdateManyWithoutReporterNestedInput
+  reviewedReports?: Prisma.CommentReportUpdateManyWithoutReviewedByNestedInput
+  uploadedMedia?: Prisma.MediaFileUpdateManyWithoutUploaderNestedInput
+}
+
+export type UserUncheckedUpdateWithoutCaseStudiesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  headline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  badge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  githubUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twitterUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  linkedinUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  subscribedToNewsletter?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  otps?: Prisma.OtpVerificationUncheckedUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  posts?: Prisma.BlogPostUncheckedUpdateManyWithoutAuthorNestedInput
+  blogReactions?: Prisma.BlogReactionUncheckedUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  commentReactions?: Prisma.CommentReactionUncheckedUpdateManyWithoutUserNestedInput
+  commentReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReporterNestedInput
+  reviewedReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReviewedByNestedInput
+  uploadedMedia?: Prisma.MediaFileUncheckedUpdateManyWithoutUploaderNestedInput
 }
 
 
@@ -2303,6 +2518,7 @@ export type UserCountOutputType = {
   commentReports: number
   reviewedReports: number
   uploadedMedia: number
+  caseStudies: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2315,6 +2531,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   commentReports?: boolean | UserCountOutputTypeCountCommentReportsArgs
   reviewedReports?: boolean | UserCountOutputTypeCountReviewedReportsArgs
   uploadedMedia?: boolean | UserCountOutputTypeCountUploadedMediaArgs
+  caseStudies?: boolean | UserCountOutputTypeCountCaseStudiesArgs
 }
 
 /**
@@ -2390,6 +2607,13 @@ export type UserCountOutputTypeCountUploadedMediaArgs<ExtArgs extends runtime.Ty
   where?: Prisma.MediaFileWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountCaseStudiesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CaseStudyWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -2424,6 +2648,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   commentReports?: boolean | Prisma.User$commentReportsArgs<ExtArgs>
   reviewedReports?: boolean | Prisma.User$reviewedReportsArgs<ExtArgs>
   uploadedMedia?: boolean | Prisma.User$uploadedMediaArgs<ExtArgs>
+  caseStudies?: boolean | Prisma.User$caseStudiesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -2516,6 +2741,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   commentReports?: boolean | Prisma.User$commentReportsArgs<ExtArgs>
   reviewedReports?: boolean | Prisma.User$reviewedReportsArgs<ExtArgs>
   uploadedMedia?: boolean | Prisma.User$uploadedMediaArgs<ExtArgs>
+  caseStudies?: boolean | Prisma.User$caseStudiesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -2533,6 +2759,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     commentReports: Prisma.$CommentReportPayload<ExtArgs>[]
     reviewedReports: Prisma.$CommentReportPayload<ExtArgs>[]
     uploadedMedia: Prisma.$MediaFilePayload<ExtArgs>[]
+    caseStudies: Prisma.$CaseStudyPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2961,6 +3188,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   commentReports<T extends Prisma.User$commentReportsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$commentReportsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommentReportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   reviewedReports<T extends Prisma.User$reviewedReportsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$reviewedReportsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommentReportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   uploadedMedia<T extends Prisma.User$uploadedMediaArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$uploadedMediaArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MediaFilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  caseStudies<T extends Prisma.User$caseStudiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$caseStudiesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CaseStudyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3619,6 +3847,30 @@ export type User$uploadedMediaArgs<ExtArgs extends runtime.Types.Extensions.Inte
   take?: number
   skip?: number
   distinct?: Prisma.MediaFileScalarFieldEnum | Prisma.MediaFileScalarFieldEnum[]
+}
+
+/**
+ * User.caseStudies
+ */
+export type User$caseStudiesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CaseStudy
+   */
+  select?: Prisma.CaseStudySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CaseStudy
+   */
+  omit?: Prisma.CaseStudyOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CaseStudyInclude<ExtArgs> | null
+  where?: Prisma.CaseStudyWhereInput
+  orderBy?: Prisma.CaseStudyOrderByWithRelationInput | Prisma.CaseStudyOrderByWithRelationInput[]
+  cursor?: Prisma.CaseStudyWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CaseStudyScalarFieldEnum | Prisma.CaseStudyScalarFieldEnum[]
 }
 
 /**

@@ -8,14 +8,58 @@ import { Icon } from "astro-icon/components"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { ArrowUpRight01Icon, BookOpen01Icon } from "@hugeicons/core-free-icons"
 import {
-  getCaseStudies,
   getProjectsWithoutCaseStudy,
-  getAllProjects,
 } from "@/data/projects"
+import { CaseStudyApi } from "@/lib/api/caseStudyApi"
 
-const caseStudies = getCaseStudies()
+// Fetch published case studies directly from PostgreSQL API (with local fallback)
+const fetchedCaseStudies = await CaseStudyApi.fetchAllCaseStudies()
+
+const caseStudies = fetchedCaseStudies.map((study, idx) => {
+  const metaObj = (study.metadata || []).reduce((acc: any, item: any) => {
+    acc[item.label] = item.value
+    return acc
+  }, {})
+
+  return {
+    id: study.slug,
+    slug: study.slug,
+    title: study.title.includes("—")
+      ? study.title.split("—")[0]?.trim()
+      : study.title,
+    subtitle: study.title.includes("—")
+      ? study.title.split("—")[1]?.trim()
+      : undefined,
+    description: study.description,
+    role: metaObj["Role"] || "Full-Stack Architect",
+    impact:
+      study.description.length > 130
+        ? study.description.slice(0, 130) + "..."
+        : study.description,
+    tech: study.techStack || [],
+    links: {
+      live: study.liveUrl || undefined,
+      github: study.githubUrl || undefined,
+      caseStudy: `/case-study/${study.slug}`,
+    },
+    img: study.image,
+    index: String(idx + 1).padStart(2, "0"),
+    status: (study.status || "Completed").replace(/^Status:\s*/i, ""),
+    year: metaObj["Timeline"] || "2026",
+    hasCaseStudy: true,
+    featured: true,
+    metrics: (study.metrics || []).slice(0, 3).map((m) => ({
+      value: m.value,
+      label: m.label,
+    })),
+    highlights: (study.features || [])
+      .flatMap((f) => f.highlights || [])
+      .slice(0, 3),
+  }
+})
+
 const standardProjects = getProjectsWithoutCaseStudy()
-const allProjects = getAllProjects()
+const allProjects = [...caseStudies, ...standardProjects]
 
 const totalTechCount = new Set(allProjects.flatMap((p) => p.tech)).size
 ---

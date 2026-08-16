@@ -9,3 +9,4 @@ export * from "./subscriber";
 export * from "./templates";
 export * from "./blog";
 export * from "./media";
+export * from "./caseStudy";

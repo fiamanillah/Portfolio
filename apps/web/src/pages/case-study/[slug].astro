@@ -8,24 +8,41 @@ import Hero from "@/components/CaseStudy/Hero.astro"
 import OtherCaseStudies from "@/components/CaseStudy/OtherCaseStudies.astro"
 import NewsletterSection from "@/components/Newsletter/NewsletterSection.astro"
 import MySiteLayout from "@/layouts/MySiteLayout.astro"
-import {
-  getAllCaseStudyDetails,
-  type CaseStudyDetail,
-} from "@/data/caseStudies"
+import type { CaseStudyDetail } from "@/data/caseStudies"
+import { CaseStudyApi } from "@/lib/api/caseStudyApi"
 
 export async function getStaticPaths() {
-  const caseStudies = getAllCaseStudyDetails()
-  return caseStudies.map((study) => ({
-    params: { slug: study.slug },
-    props: { caseStudy: study },
-  }))
+  const caseStudies = await CaseStudyApi.fetchAllCaseStudies()
+  const fullDetails = await Promise.all(
+    caseStudies.map(async (study) => {
+      const full = await CaseStudyApi.fetchCaseStudyBySlug(study.slug, false)
+      return {
+        params: { slug: study.slug },
+        props: { caseStudy: full?.caseStudy || study },
+      }
+    })
+  )
+  return fullDetails
 }
 
 interface Props {
-  caseStudy: CaseStudyDetail
+  caseStudy?: CaseStudyDetail
 }
 
-const { caseStudy } = Astro.props
+const { slug } = Astro.params
+let caseStudy = Astro.props.caseStudy
+
+// On-demand fetch fallback for dynamic rendering or newly created case studies
+if ((!caseStudy || !caseStudy.contextBlocks?.length) && slug) {
+  const result = await CaseStudyApi.fetchCaseStudyBySlug(slug)
+  if (result) {
+    caseStudy = result.caseStudy
+  }
+}
+
+if (!caseStudy) {
+  return Astro.redirect("/404")
+}
 ---
 
 <MySiteLayout>
@@ -35,17 +52,33 @@ const { caseStudy } = Astro.props
     status={caseStudy.status}
     techStack={caseStudy.techStack}
     liveUrl={caseStudy.liveUrl}
+    githubUrl={caseStudy.githubUrl}
     image={caseStudy.image}
     imageLabel={caseStudy.imageLabel}
     metadata={caseStudy.metadata}
   />
 
   <div class="w-full space-y-16 pt-10 pb-24">
-    <ContextSection blocks={caseStudy.contextBlocks} />
-    <ArchitectureTopology layers={caseStudy.architectureLayers} />
-    <KeyFeatures features={caseStudy.features} />
-    <PerformanceMetrics metrics={caseStudy.metrics} />
-    <ArchitecturalPostMortem items={caseStudy.postMortem} />
+    {caseStudy.contextBlocks && caseStudy.contextBlocks.length > 0 && (
+      <ContextSection blocks={caseStudy.contextBlocks} />
+    )}
+
+    {caseStudy.architectureLayers && caseStudy.architectureLayers.length > 0 && (
+      <ArchitectureTopology layers={caseStudy.architectureLayers} />
+    )}
+
+    {caseStudy.features && caseStudy.features.length > 0 && (
+      <KeyFeatures features={caseStudy.features} />
+    )}
+
+    {caseStudy.metrics && caseStudy.metrics.length > 0 && (
+      <PerformanceMetrics metrics={caseStudy.metrics} />
+    )}
+
+    {caseStudy.postMortem && caseStudy.postMortem.length > 0 && (
+      <ArchitecturalPostMortem items={caseStudy.postMortem} />
+    )}
+
     <OtherCaseStudies currentSlug={caseStudy.slug} />
 
     <NewsletterSection

@@ -3,7 +3,7 @@ import {
   getAllBlogPostsAsync,
   getBlogPostPublishedDate,
 } from "@/data/blogPosts"
-import { getAllCaseStudyDetails } from "@/data/caseStudies"
+import { CaseStudyApi } from "@/lib/api/caseStudyApi"
 
 function escapeXml(unsafe: string): string {
   return unsafe
@@ -21,9 +21,9 @@ export const GET: APIRoute = async (context) => {
     "https://fi.amanillah.com"
   ).replace(/\/$/, "")
 
-  // Fetch real-time published blog posts directly from DB/API
+  // Fetch real-time published blog posts & case studies directly from DB/API
   const posts = await getAllBlogPostsAsync()
-  const caseStudies = getAllCaseStudyDetails()
+  const caseStudies = await CaseStudyApi.fetchAllCaseStudies()
 
   const nowIso = new Date().toISOString()
 
@@ -68,13 +68,26 @@ export const GET: APIRoute = async (context) => {
     },
   ]
 
-  // Dynamic Case Studies
-  const caseStudyRoutes = caseStudies.map((study) => ({
-    loc: `${siteUrl}/case-study/${study.slug}`,
-    lastmod: nowIso,
-    changefreq: "monthly",
-    priority: "0.85",
-  }))
+  // Dynamic Case Studies with live DB/API data & images
+  const caseStudyRoutes = caseStudies.map((study) => {
+    let imageTag = ""
+    if (study.image) {
+      const imgUrl = study.image.startsWith("http")
+        ? study.image
+        : `${siteUrl}${study.image.startsWith("/") ? "" : "/"}${study.image}`
+      imageTag = `\n    <image:image>
+      <image:loc>${escapeXml(imgUrl)}</image:loc>
+      <image:title>${escapeXml(study.title)}</image:title>
+    </image:image>`
+    }
+
+    return `  <url>
+    <loc>${siteUrl}/case-study/${study.slug}</loc>
+    <lastmod>${nowIso}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>${imageTag}
+  </url>`
+  })
 
   // Dynamic Blog Posts with live DB/API data & images
   const blogRoutes = posts.map((post) => {
@@ -112,16 +125,7 @@ export const GET: APIRoute = async (context) => {
     )
     .join("\n")
 
-  const caseStudiesXml = caseStudyRoutes
-    .map(
-      (route) => `  <url>
-    <loc>${route.loc}</loc>
-    <lastmod>${route.lastmod}</lastmod>
-    <changefreq>${route.changefreq}</changefreq>
-    <priority>${route.priority}</priority>
-  </url>`
-    )
-    .join("\n")
+  const caseStudiesXml = caseStudyRoutes.join("\n")
 
   const blogXml = blogRoutes.join("\n")
 

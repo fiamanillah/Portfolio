@@ -1,6 +1,3 @@
-import mickanicData from "./case-studies/mickanic.json"
-import mojaCaresData from "./case-studies/moja-cares.json"
-
 export interface ContextBlock {
   label: string
   body: string
@@ -36,6 +33,7 @@ export interface PerformanceMetric {
 export interface PostMortemEntry {
   heading: string
   detail: string
+  code?: string
 }
 
 export interface PostMortemSection {
@@ -64,17 +62,4 @@ export interface CaseStudyDetail {
   features: FeatureItem[]
   metrics: PerformanceMetric[]
   postMortem: PostMortemSection[]
-}
-
-export const caseStudiesRegistry: Record<string, CaseStudyDetail> = {
-  mickanic: mickanicData as CaseStudyDetail,
-  "moja-cares": mojaCaresData as CaseStudyDetail,
-}
-
-export function getCaseStudyDetail(slug: string): CaseStudyDetail | undefined {
-  return caseStudiesRegistry[slug]
-}
-
-export function getAllCaseStudyDetails(): CaseStudyDetail[] {
-  return Object.values(caseStudiesRegistry)
 }

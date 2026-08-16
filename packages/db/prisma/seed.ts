@@ -387,13 +387,188 @@ async function main() {
     }
   }
 
-  console.log(`✅ Seeded users, subscribers, and blog posts successfully:
+  // 7. Seed Case Studies directly
+  const SEED_CASE_STUDIES = [
+    {
+      slug: "mickanic",
+      title: "Mickanic — Real-Time Bidding & Service Marketplace Platform",
+      subtitle: "Real-Time Bidding & Service Marketplace Platform",
+      description: "I architected a service-based marketplace using Next.js 16 and Bun, integrating real-time bidding, Socket.io messaging, and tiered Stripe subscriptions, backed by PostgreSQL and RabbitMQ.",
+      status: "PUBLISHED" as const,
+      projectStatus: "Status: Completed",
+      order: 1,
+      featured: true,
+      pinned: true,
+      techStack: ["Next.js 16", "Bun", "PostgreSQL", "Prisma", "RabbitMQ", "Redis", "Socket.io", "Stripe", "Docker", "Redux Toolkit", "Tailwind CSS 4"],
+      liveUrl: "https://mickanic.ca/",
+      githubUrl: null,
+      image: "/assets/images/mickanic-cover.png",
+      imageLabel: "Mickanic_Architecture_Overview.png",
+      role: "Backend & DevOps Engineer",
+      timeline: "2025 - 2026",
+      client: "Mickanic",
+      impact: "Engineered contractor credit/bidding engine with Stripe billing, real-time Socket.io messaging with Redis, and Docker Compose deployment.",
+      views: 2840,
+      likesCount: 98,
+      publishedAt: new Date("2026-01-15T00:00:00.000Z"),
+      metadata: [
+        { label: "Role", value: "Backend & DevOps Engineer" },
+        { label: "Timeline", value: "2025 - 2026" },
+        { label: "Client / Company", value: "Mickanic" },
+        { label: "Tech Stack", value: "Next.js 16, Bun, PostgreSQL, RabbitMQ" },
+      ],
+      contextBlocks: [
+        { label: "The Problem", body: "Drivers needed a platform to post vehicle-service jobs, while mechanics needed a centralized place to browse jobs, submit bids, and manage subscriptions. A seamless way to connect and communicate was required for the Mickanic platform." },
+        { label: "The Solution", body: "I developed a service-based marketplace connecting consumers and contractors. The solution features a Next.js frontend and a Bun-powered API, featuring real-time Socket.io messaging and RabbitMQ background workers." },
+      ],
+      architectureLayers: [
+        { name: "Client / UI", description: "Frontend application catering to Admin, Consumer, and Contractor roles.", items: [{ title: "Next.js 16 & React 19", subtitle: "App Router framework" }, { title: "Tailwind CSS 4", subtitle: "Utility-first styling" }, { title: "Redux Toolkit Query", subtitle: "State & API data fetching" }] },
+        { name: "API & Compute", description: "High-performance backend API and WebSocket server.", items: [{ title: "Bun", subtitle: "JavaScript runtime and package manager" }, { title: "Express", subtitle: "Backend API framework" }, { title: "Socket.IO", subtitle: "Real-time communication" }] },
+        { name: "Data Layer", description: "Relational database, caching, and object storage.", items: [{ title: "PostgreSQL", subtitle: "Primary database via Prisma ORM" }, { title: "Redis", subtitle: "In-memory caching store" }, { title: "MinIO", subtitle: "S3-compatible object storage" }] },
+        { name: "Infra / Delivery", description: "Containerized orchestration and asynchronous task queues.", items: [{ title: "Docker Compose", subtitle: "Multi-container orchestration" }, { title: "RabbitMQ", subtitle: "Asynchronous message broker" }, { title: "Stripe", subtitle: "Payment and subscription processing" }] },
+      ],
+      features: [
+        { title: "Real-Time Bidding & Messaging", description: "Implemented a real-time messaging system between consumers and contractors using Socket.IO. The frontend utilizes Redux Toolkit Query alongside real-time hooks to manage conversations and typing indicators without full page reloads.", mediaType: "Image / Video", mediaLabel: "Messaging Interface", media: "/assets/images/mickanic-chat.png", tags: ["Socket.IO", "RTK Query", "Optimistic UI"], highlights: ["Instant bid updates & chat sync across active browser clients", "Optimistic state updates via Redux Toolkit Query handlers", "Typing indicators & read receipt state management"] },
+        { title: "Tiered Subscription Engine", description: "Integrated tiered subscription plans (Basic, Premium, Pro) for contractors, which govern job application limits, lead costs, and platform visibility. Stripe is used for handling the subscription and payment workflows.", mediaType: "Image / Video", mediaLabel: "Subscription Plans", media: "/assets/images/mickanic-billing.png", tags: ["Stripe API", "Webhooks", "Tiered Access"], highlights: ["Dynamic job bidding quota management based on tier levels", "Stripe Customer Portal integration for effortless plan upgrades", "Idempotent webhook handlers for subscription lifecycle events"] },
+        { title: "Event-Driven Background Processing", description: "Offloaded heavy processing like email delivery and web-push notifications to a background worker using RabbitMQ. This ensures the main API remains responsive during high-traffic events, with an hourly email limit of 150 strictly enforced.", mediaType: "Architecture / Infra", mediaLabel: "Docker Worker Architecture", media: "/assets/images/mickanic-cover.png", tags: ["Docker", "Bun Runtime", "RabbitMQ"], highlights: ["Isolated background containerized execution via Docker Compose", "Bun runtime execution for fast startup & minimal memory overhead", "Rate-limited queue consumer processing strictly 150 emails/hour"] },
+      ],
+      metrics: [
+        { value: "3", label: "Distinct user roles (Admin, Consumer, Contractor)" },
+        { value: "150", label: "Hourly email sending limit via RabbitMQ" },
+        { value: "3", label: "Contractor subscription tiers (Basic, Premium, Pro)" },
+        { value: "100%", label: "Type safety with Prisma and TypeScript" },
+      ],
+      postMortem: [
+        { title: "Technical Challenges", entries: [{ heading: "Real-Time State Synchronization", detail: "Keeping the optimistic UI in sync with backend state was complex. We leveraged Redux Toolkit Query to cache data and refresh active conversations automatically upon receiving Socket.IO events." }, { heading: "Asynchronous Notification Delivery", detail: "Blocking the main thread for transactional emails degraded performance. Implementing RabbitMQ allowed us to queue tasks like contact_auto_reply, handling them via a dedicated Bun email worker." }] },
+        { title: "Lessons Learned", entries: [{ heading: "Infrastructure Orchestration", detail: "Bundling PostgreSQL, Redis, and RabbitMQ within a single docker-compose.yml file simplified local development and ensured parity across environments." }, { heading: "Schema-Driven Type Safety", detail: "Using Prisma allowed us to define a single schema for users, contractors, jobs, and bids. Generating the client directly from the schema ensured reliable database operations." }] },
+      ],
+    },
+    {
+      slug: "moja-cares",
+      title: "Moja Cares — Healthcare Management & Patient Care Portal",
+      subtitle: "Healthcare Management & Patient Care Portal",
+      description: "Comprehensive healthcare management portal featuring multi-role RBAC, real-time clinical team chats, automated alerts, AI-powered document insight extraction, and Paystack billing integration.",
+      status: "PUBLISHED" as const,
+      projectStatus: "Status: Live",
+      order: 2,
+      featured: true,
+      pinned: false,
+      techStack: ["TypeScript", "Express", "Prisma", "PostgreSQL", "Redis", "RabbitMQ", "WebSockets", "OpenAI API", "AWS S3", "Paystack"],
+      liveUrl: "https://dev.mojacares.com/",
+      githubUrl: null,
+      image: "/assets/images/moja-cares-cover.png",
+      imageLabel: "Moja_Cares_Dashboard_Overview.png",
+      role: "Backend Developer",
+      timeline: "2026",
+      client: "Moja Cares",
+      impact: "Architected OpenAI API health insights worker, WebSocket patient-care chat, SES/Postmark alert dispatch, and Paystack billing.",
+      views: 1920,
+      likesCount: 74,
+      publishedAt: new Date("2026-01-15T00:00:00.000Z"),
+      metadata: [
+        { label: "Role", value: "Backend Developer" },
+        { label: "Timeline", value: "2026" },
+        { label: "Client / Company", value: "Moja Cares" },
+        { label: "Tech Stack", value: "Express, TypeScript, OpenAI API, WebSockets" },
+      ],
+      contextBlocks: [
+        { label: "The Problem", body: "Healthcare providers and clinical care teams needed a unified digital platform to handle multi-role patient access, stream real-time patient status updates, manage team communication, and analyze unstructured clinical documents without manual data entry bottlenecks." },
+        { label: "The Solution", body: "I architected the Moja Cares portal with a high-throughput Express API, WebSocket infrastructure for real-time care team chat, asynchronous message queues for transactional alerts, an automated OpenAI worker for medical document processing, and Paystack subscription management." },
+      ],
+      architectureLayers: [
+        { name: "Client / UI", description: "Multi-role responsive web application for Admins, Doctors, Nurses, and Patients.", items: [{ title: "Next.js & React", subtitle: "App Router & SSR" }, { title: "Tailwind CSS", subtitle: "Utility-first styling system" }, { title: "Zustand & SWR", subtitle: "Optimistic state & data hydration" }] },
+        { name: "API & Compute", description: "High-performance backend services and WebSocket communication nodes.", items: [{ title: "Express (Node.js)", subtitle: "Primary REST API aggregation" }, { title: "WebSockets", subtitle: "Full-duplex clinical chat nodes" }, { title: "OpenAI Worker", subtitle: "Background document analysis pipeline" }] },
+        { name: "Data Layer", description: "Relational database state, ephemeral memory caching, and object storage.", items: [{ title: "PostgreSQL", subtitle: "Relational medical records via Prisma" }, { title: "Redis", subtitle: "Session cache & socket event pub/sub" }, { title: "AWS S3", subtitle: "Secure patient document storage" }] },
+        { name: "Infra / Delivery", description: "Event brokering, notification dispatch, and payment gateways.", items: [{ title: "RabbitMQ", subtitle: "Asynchronous worker queue orchestration" }, { title: "AWS SES / Postmark", subtitle: "Transactional alert dispatch" }, { title: "Paystack API", subtitle: "Subscription & medical billing webhooks" }] },
+      ],
+      features: [
+        { title: "Real-Time Clinical Team Chat", description: "Implemented persistent WebSocket channels allowing doctors, nurses, and care administrators to exchange encrypted patient updates instantly with typing indicators and read receipts.", mediaType: "Image / Video", mediaLabel: "Clinical Team Messaging", media: "/assets/images/moja-cares-chat.png", tags: ["WebSockets", "Redis Pub/Sub", "Encrypted Messaging"], highlights: ["Sub-50ms message latency across distributed care nodes", "Role-restricted multi-party channels (Admins, Doctors, Nurses)", "Presence tracking & real-time typing indicators"] },
+        { title: "AI-Powered Document Insight Extraction", description: "Developed an automated background pipeline leveraging the OpenAI API to extract critical medical markers, risk flags, and summary points from uploaded health records.", mediaType: "Image / Video", mediaLabel: "AI Document Analysis", media: "/assets/images/moja-cares-insights.png", tags: ["OpenAI API", "AWS S3", "Async Worker"], highlights: ["Automated extraction of vital medical markers & risk alerts", "Direct pre-signed AWS S3 upload pipeline avoiding API bottlenecks", "Structured JSON schema response parsing with fallback validation"] },
+        { title: "Automated Alert Dispatch & Queuing", description: "Offloaded instant SMS and email notifications to background RabbitMQ workers consumed by standalone microservices to ensure reliable alert delivery under peak clinical loads.", mediaType: "Architecture / Infra", mediaLabel: "Alert Worker Architecture", media: "/assets/images/moja-cares-cover.png", tags: ["RabbitMQ", "Microservices", "Event-Driven"], highlights: ["Guaranteed persistent message delivery for high-priority alerts", "Non-blocking API throughput under heavy emergency care events", "Dead-letter exchange setup for failed notification retries"] },
+      ],
+      metrics: [
+        { value: "4", label: "Distinct user roles (Admin, Doctor, Nurse, Patient)" },
+        { value: "<50ms", label: "WebSocket real-time chat latency" },
+        { value: "10k+", label: "Clinical health insights extracted via AI worker" },
+        { value: "99.9%", label: "Uptime for asynchronous alert delivery" },
+      ],
+      postMortem: [
+        { title: "Technical Challenges", entries: [{ heading: "Handling Large Medical Document Processing", detail: "Parsing heavy medical PDF records caused API response stalls. Solved by decoupling document uploads directly to AWS S3, then dispatching asynchronous AI processing jobs over RabbitMQ." }, { heading: "Real-Time Multi-Party Socket Sync", detail: "Syncing care team chat state across multiple server instances required unified pub/sub. Implemented Redis Pub/Sub adapter for WebSockets to guarantee message delivery across nodes." }] },
+        { title: "Lessons Learned", entries: [{ heading: "Asynchronous First Architecture", detail: "Offloading document intelligence and email dispatches to dedicated background workers protected core patient API latency during peak clinic hours." }, { heading: "Strict Type Safety", detail: "Defining centralized Prisma schemas and TypeScript contracts eliminated schema drift between care team APIs, socket payloads, and billing webhooks." }] },
+      ],
+    },
+  ];
+
+  let seededCaseStudiesCount = 0;
+  for (const cs of SEED_CASE_STUDIES) {
+    try {
+      const caseStudyData = {
+        title: cs.title,
+        subtitle: cs.subtitle,
+        description: cs.description,
+        status: cs.status,
+        projectStatus: cs.projectStatus,
+        order: cs.order,
+        featured: cs.featured,
+        pinned: cs.pinned,
+        techStack: cs.techStack,
+        liveUrl: cs.liveUrl,
+        githubUrl: cs.githubUrl,
+        image: cs.image,
+        imageLabel: cs.imageLabel,
+        role: cs.role,
+        timeline: cs.timeline,
+        client: cs.client,
+        impact: cs.impact,
+        views: cs.views,
+        likesCount: cs.likesCount,
+        publishedAt: cs.publishedAt,
+        authorId: adminUser.id,
+        authorName: adminUser.name,
+        authorRole: adminUser.headline,
+        authorAvatar: adminUser.avatar,
+        authorTwitter: adminUser.twitterUrl,
+        authorLinkedin: adminUser.linkedinUrl,
+        authorGithub: adminUser.githubUrl,
+        metadata: cs.metadata,
+        contextBlocks: cs.contextBlocks,
+        architectureLayers: cs.architectureLayers,
+        features: cs.features,
+        metrics: cs.metrics,
+        postMortem: cs.postMortem,
+        metaTitle: `${cs.title} | Technical Case Study`,
+        metaDescription: cs.description,
+        metaKeywords: cs.techStack,
+        ogTitle: cs.title,
+        ogDescription: cs.description,
+        ogImage: cs.image,
+        twitterCard: "summary_large_image",
+        canonicalUrl: `https://fi.amanillah.com/case-study/${cs.slug}`,
+      };
+
+      await prisma.caseStudy.upsert({
+        where: { slug: cs.slug },
+        update: caseStudyData,
+        create: {
+          slug: cs.slug,
+          ...caseStudyData,
+        },
+      });
+
+      seededCaseStudiesCount++;
+    } catch (err) {
+      console.warn(`Could not seed case study ${cs.slug}:`, err);
+    }
+  }
+
+  console.log(`✅ Seeded users, subscribers, blog posts, and case studies successfully:
   - Admin: ${adminUser.email} (${adminUser.role})
   - Moderator: ${alexUser.email} (${alexUser.role})
   - User: ${sarahUser.email} (${sarahUser.role})
   - Subscribers: ${sampleSubscribers.length} records
   - Categories: ${categoriesData.length} records
   - Blog Posts: ${seededPostsCount} posts migrated
+  - Case Studies: ${seededCaseStudiesCount} case studies migrated
   `);
 }
 

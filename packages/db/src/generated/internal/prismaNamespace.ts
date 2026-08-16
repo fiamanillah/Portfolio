@@ -410,7 +410,8 @@ export const ModelName = {
   Comment: 'Comment',
   CommentReaction: 'CommentReaction',
   CommentReport: 'CommentReport',
-  MediaFile: 'MediaFile'
+  MediaFile: 'MediaFile',
+  CaseStudy: 'CaseStudy'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -426,7 +427,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "contactSubmission" | "subscriber" | "emailTemplate" | "user" | "otpVerification" | "refreshToken" | "blogCategory" | "blogTag" | "blogPost" | "blogReaction" | "comment" | "commentReaction" | "commentReport" | "mediaFile"
+    modelProps: "contactSubmission" | "subscriber" | "emailTemplate" | "user" | "otpVerification" | "refreshToken" | "blogCategory" | "blogTag" | "blogPost" | "blogReaction" | "comment" | "commentReaction" | "commentReport" | "mediaFile" | "caseStudy"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1466,6 +1467,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    CaseStudy: {
+      payload: Prisma.$CaseStudyPayload<ExtArgs>
+      fields: Prisma.CaseStudyFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CaseStudyFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CaseStudyPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CaseStudyFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CaseStudyPayload>
+        }
+        findFirst: {
+          args: Prisma.CaseStudyFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CaseStudyPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CaseStudyFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CaseStudyPayload>
+        }
+        findMany: {
+          args: Prisma.CaseStudyFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CaseStudyPayload>[]
+        }
+        create: {
+          args: Prisma.CaseStudyCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CaseStudyPayload>
+        }
+        createMany: {
+          args: Prisma.CaseStudyCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CaseStudyCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CaseStudyPayload>[]
+        }
+        delete: {
+          args: Prisma.CaseStudyDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CaseStudyPayload>
+        }
+        update: {
+          args: Prisma.CaseStudyUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CaseStudyPayload>
+        }
+        deleteMany: {
+          args: Prisma.CaseStudyDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CaseStudyUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CaseStudyUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CaseStudyPayload>[]
+        }
+        upsert: {
+          args: Prisma.CaseStudyUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CaseStudyPayload>
+        }
+        aggregate: {
+          args: Prisma.CaseStudyAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCaseStudy>
+        }
+        groupBy: {
+          args: Prisma.CaseStudyGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CaseStudyGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CaseStudyCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CaseStudyCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1783,6 +1858,61 @@ export const MediaFileScalarFieldEnum = {
 export type MediaFileScalarFieldEnum = (typeof MediaFileScalarFieldEnum)[keyof typeof MediaFileScalarFieldEnum]
 
 
+export const CaseStudyScalarFieldEnum = {
+  id: 'id',
+  slug: 'slug',
+  title: 'title',
+  subtitle: 'subtitle',
+  description: 'description',
+  status: 'status',
+  projectStatus: 'projectStatus',
+  order: 'order',
+  featured: 'featured',
+  pinned: 'pinned',
+  techStack: 'techStack',
+  liveUrl: 'liveUrl',
+  githubUrl: 'githubUrl',
+  image: 'image',
+  imageLabel: 'imageLabel',
+  role: 'role',
+  timeline: 'timeline',
+  client: 'client',
+  impact: 'impact',
+  views: 'views',
+  likesCount: 'likesCount',
+  publishedAt: 'publishedAt',
+  authorId: 'authorId',
+  authorName: 'authorName',
+  authorRole: 'authorRole',
+  authorAvatar: 'authorAvatar',
+  authorTwitter: 'authorTwitter',
+  authorLinkedin: 'authorLinkedin',
+  authorGithub: 'authorGithub',
+  metadata: 'metadata',
+  contextBlocks: 'contextBlocks',
+  architectureLayers: 'architectureLayers',
+  features: 'features',
+  metrics: 'metrics',
+  postMortem: 'postMortem',
+  metaTitle: 'metaTitle',
+  metaDescription: 'metaDescription',
+  metaKeywords: 'metaKeywords',
+  ogTitle: 'ogTitle',
+  ogDescription: 'ogDescription',
+  ogImage: 'ogImage',
+  twitterCard: 'twitterCard',
+  twitterTitle: 'twitterTitle',
+  twitterDescription: 'twitterDescription',
+  twitterImage: 'twitterImage',
+  canonicalUrl: 'canonicalUrl',
+  structuredData: 'structuredData',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CaseStudyScalarFieldEnum = (typeof CaseStudyScalarFieldEnum)[keyof typeof CaseStudyScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -1992,6 +2122,20 @@ export type ListBigIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaMod
 
 
 /**
+ * Reference to a field of type 'CaseStudyStatus'
+ */
+export type EnumCaseStudyStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CaseStudyStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'CaseStudyStatus[]'
+ */
+export type ListEnumCaseStudyStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CaseStudyStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'Float'
  */
 export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -2169,6 +2313,7 @@ export type GlobalOmitConfig = {
   commentReaction?: Prisma.CommentReactionOmit
   commentReport?: Prisma.CommentReportOmit
   mediaFile?: Prisma.MediaFileOmit
+  caseStudy?: Prisma.CaseStudyOmit
 }
 
 /* Types for Logging */

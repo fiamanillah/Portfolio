@@ -95,7 +95,7 @@ export function togglePostLike(
     userLiked: isLiked,
     userReactions: {
       ...(current.userReactions || {}),
-      like: isLiked,
+      liked: isLiked,
     },
   }
   saveStoredReactions(slug, updated)

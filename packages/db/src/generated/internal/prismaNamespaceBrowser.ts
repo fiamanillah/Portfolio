@@ -64,7 +64,8 @@ export const ModelName = {
   Comment: 'Comment',
   CommentReaction: 'CommentReaction',
   CommentReport: 'CommentReport',
-  MediaFile: 'MediaFile'
+  MediaFile: 'MediaFile',
+  CaseStudy: 'CaseStudy'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -359,6 +360,61 @@ export const MediaFileScalarFieldEnum = {
 } as const
 
 export type MediaFileScalarFieldEnum = (typeof MediaFileScalarFieldEnum)[keyof typeof MediaFileScalarFieldEnum]
+
+
+export const CaseStudyScalarFieldEnum = {
+  id: 'id',
+  slug: 'slug',
+  title: 'title',
+  subtitle: 'subtitle',
+  description: 'description',
+  status: 'status',
+  projectStatus: 'projectStatus',
+  order: 'order',
+  featured: 'featured',
+  pinned: 'pinned',
+  techStack: 'techStack',
+  liveUrl: 'liveUrl',
+  githubUrl: 'githubUrl',
+  image: 'image',
+  imageLabel: 'imageLabel',
+  role: 'role',
+  timeline: 'timeline',
+  client: 'client',
+  impact: 'impact',
+  views: 'views',
+  likesCount: 'likesCount',
+  publishedAt: 'publishedAt',
+  authorId: 'authorId',
+  authorName: 'authorName',
+  authorRole: 'authorRole',
+  authorAvatar: 'authorAvatar',
+  authorTwitter: 'authorTwitter',
+  authorLinkedin: 'authorLinkedin',
+  authorGithub: 'authorGithub',
+  metadata: 'metadata',
+  contextBlocks: 'contextBlocks',
+  architectureLayers: 'architectureLayers',
+  features: 'features',
+  metrics: 'metrics',
+  postMortem: 'postMortem',
+  metaTitle: 'metaTitle',
+  metaDescription: 'metaDescription',
+  metaKeywords: 'metaKeywords',
+  ogTitle: 'ogTitle',
+  ogDescription: 'ogDescription',
+  ogImage: 'ogImage',
+  twitterCard: 'twitterCard',
+  twitterTitle: 'twitterTitle',
+  twitterDescription: 'twitterDescription',
+  twitterImage: 'twitterImage',
+  canonicalUrl: 'canonicalUrl',
+  structuredData: 'structuredData',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CaseStudyScalarFieldEnum = (typeof CaseStudyScalarFieldEnum)[keyof typeof CaseStudyScalarFieldEnum]
 
 
 export const SortOrder = {

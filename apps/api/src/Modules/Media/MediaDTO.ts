@@ -13,8 +13,8 @@ export const uploadMediaBodySchema = z.object({
   folder: z
     .string()
     .regex(
-      /^[a-zA-Z0-9_-]+$/,
-      "Folder name must be alphanumeric with hyphens or underscores"
+      /^[a-zA-Z0-9_\/-]+$/,
+      "Folder name must be alphanumeric with hyphens, underscores, or slashes"
     )
     .optional()
     .default("general"),

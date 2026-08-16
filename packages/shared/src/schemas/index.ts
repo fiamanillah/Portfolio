@@ -8,3 +8,4 @@ export * from "./template.schema";
 export * from "./comment.schema";
 export * from "./blog.schema";
 export * from "./media.schema";
+export * from "./caseStudy.schema";

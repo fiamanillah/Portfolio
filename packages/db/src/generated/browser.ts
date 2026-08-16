@@ -87,3 +87,8 @@ export type CommentReport = Prisma.CommentReportModel
  * 
  */
 export type MediaFile = Prisma.MediaFileModel
+/**
+ * Model CaseStudy
+ * 
+ */
+export type CaseStudy = Prisma.CaseStudyModel

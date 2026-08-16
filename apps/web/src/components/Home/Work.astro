@@ -2,9 +2,48 @@
 import { Badge } from "@workspace/ui/components/badge"
 import { Button } from "@workspace/ui/components/button"
 import { Icon } from "astro-icon/components"
-import { projectsData as projects } from "@/data/projects"
+import { projectsData } from "@/data/projects"
+import { CaseStudyApi } from "@/lib/api/caseStudyApi"
 
-// components/Home/Work.astro
+// Fetch published case studies from API (with fallback to local projects)
+const fetchedStudies = await CaseStudyApi.fetchAllCaseStudies()
+
+const apiProjects = fetchedStudies.map((study, idx) => {
+  const metaObj = (study.metadata || []).reduce((acc: any, item: any) => {
+    acc[item.label] = item.value
+    return acc
+  }, {})
+
+  return {
+    id: study.slug,
+    slug: study.slug,
+    title: study.title.includes("—")
+      ? study.title.split("—")[0]?.trim()
+      : study.title,
+    subtitle: study.title.includes("—")
+      ? study.title.split("—")[1]?.trim()
+      : undefined,
+    description: study.description,
+    role: metaObj["Role"] || "Full-Stack Architect",
+    impact:
+      study.description.length > 130
+        ? study.description.slice(0, 130) + "..."
+        : study.description,
+    tech: study.techStack || [],
+    links: {
+      live: study.liveUrl || undefined,
+      github: study.githubUrl || undefined,
+      caseStudy: `/case-study/${study.slug}`,
+    },
+    img: study.image,
+    index: String(idx + 1).padStart(2, "0"),
+    status: (study.status || "Completed").replace(/^Status:\s*/i, ""),
+    year: metaObj["Timeline"] || "2026",
+    hasCaseStudy: true,
+  }
+})
+
+const projects = apiProjects.length > 0 ? apiProjects : projectsData
 
 const CARD_HEADER_HEIGHT = 50 // px
 const BASE_TOP_OFFSET = 72

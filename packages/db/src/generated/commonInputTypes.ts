@@ -409,6 +409,23 @@ export type BigIntWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedBigIntFilter<$PrismaModel>
 }
 
+export type EnumCaseStudyStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.CaseStudyStatus | Prisma.EnumCaseStudyStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.CaseStudyStatus[] | Prisma.ListEnumCaseStudyStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CaseStudyStatus[] | Prisma.ListEnumCaseStudyStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCaseStudyStatusFilter<$PrismaModel> | $Enums.CaseStudyStatus
+}
+
+export type EnumCaseStudyStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.CaseStudyStatus | Prisma.EnumCaseStudyStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.CaseStudyStatus[] | Prisma.ListEnumCaseStudyStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CaseStudyStatus[] | Prisma.ListEnumCaseStudyStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCaseStudyStatusWithAggregatesFilter<$PrismaModel> | $Enums.CaseStudyStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumCaseStudyStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumCaseStudyStatusFilter<$PrismaModel>
+}
+
 export type NestedUuidFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -784,6 +801,23 @@ export type NestedBigIntWithAggregatesFilter<$PrismaModel = never> = {
   _sum?: Prisma.NestedBigIntFilter<$PrismaModel>
   _min?: Prisma.NestedBigIntFilter<$PrismaModel>
   _max?: Prisma.NestedBigIntFilter<$PrismaModel>
+}
+
+export type NestedEnumCaseStudyStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.CaseStudyStatus | Prisma.EnumCaseStudyStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.CaseStudyStatus[] | Prisma.ListEnumCaseStudyStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CaseStudyStatus[] | Prisma.ListEnumCaseStudyStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCaseStudyStatusFilter<$PrismaModel> | $Enums.CaseStudyStatus
+}
+
+export type NestedEnumCaseStudyStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.CaseStudyStatus | Prisma.EnumCaseStudyStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.CaseStudyStatus[] | Prisma.ListEnumCaseStudyStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CaseStudyStatus[] | Prisma.ListEnumCaseStudyStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCaseStudyStatusWithAggregatesFilter<$PrismaModel> | $Enums.CaseStudyStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumCaseStudyStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumCaseStudyStatusFilter<$PrismaModel>
 }
 
 

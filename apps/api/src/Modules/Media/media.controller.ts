@@ -5,7 +5,7 @@ import { BaseController } from "@/core/BaseController"
 import { MediaService } from "./media.service"
 import { HTTPStatusCode } from "@/types/HTTPStatusCode"
 import { BadRequestError } from "@/core/errors/AppError"
-import { UploadMediaBody } from "./MediaDTO"
+import { UploadMediaBody, uploadMediaBodySchema } from "./MediaDTO"
 import {
   PresignedUploadRequestDTO,
   ConfirmPresignedUploadDTO,
@@ -25,7 +25,10 @@ export class MediaController extends BaseController {
    * Handles multipart/form-data single or multiple file uploads
    */
   public async upload(req: Request, res: Response): Promise<void> {
-    const options: UploadMediaBody = req.body || {}
+    const parsed = uploadMediaBodySchema.safeParse(req.body || {})
+    const options: UploadMediaBody = parsed.success
+      ? parsed.data
+      : (req.body || {})
     const uploaderId = req.user?.id
 
     if (req.file) {

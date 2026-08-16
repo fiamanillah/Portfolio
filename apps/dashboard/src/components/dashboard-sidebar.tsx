@@ -19,6 +19,7 @@ import {
   ShieldAlert,
   Shield,
   ExternalLink,
+  Layers,
 } from "lucide-react"
 
 import {
@@ -79,6 +80,11 @@ const navGroups: NavGroup[] = [
   {
     label: "Content",
     items: [
+      {
+        title: "Case Studies",
+        url: "/case-studies",
+        icon: Layers,
+      },
       {
         title: "Blog Posts",
         url: "/blogs",

@@ -1,0 +1,13 @@
+name: Admin Get Case Study Stats
+type: http
+seq: 4
+
+get {
+  url: {{baseUrl}}/case-studies/v1/admin/stats
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}

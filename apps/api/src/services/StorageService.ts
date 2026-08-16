@@ -129,7 +129,9 @@ export class StorageService {
   ): string {
     const cleanFolder = (folder || "general")
       .toLowerCase()
-      .replace(/[^a-z0-9_-]/g, "")
+      .replace(/[^a-z0-9_\-\/]/g, "")
+      .replace(/\/+/g, "/")
+      .replace(/^\/|\/$/g, "") || "general"
     const ext = path.extname(fileName).toLowerCase() || ""
     const baseName = path.basename(fileName, ext)
     const sanitizedBase = this.sanitizeFileName(baseName).slice(0, 50) || "file"

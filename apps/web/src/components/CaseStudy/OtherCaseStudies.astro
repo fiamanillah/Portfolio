@@ -2,7 +2,7 @@
 import CaseStudySectionTitle from "@/components/CaseStudy/CaseStudySectionTitle.astro"
 import { ArrowUpRight01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { getCaseStudies } from "@/data/projects"
+import { CaseStudyApi } from "@/lib/api/caseStudyApi"
 
 interface Props {
   currentSlug: string
@@ -10,17 +10,18 @@ interface Props {
 
 const { currentSlug } = Astro.props as Props
 
-const allCaseStudies = getCaseStudies().map((p) => ({
-  slug: p.slug || p.id,
-  title: p.subtitle ? `${p.title} — ${p.subtitle}` : p.title,
+const fetchedStudies = await CaseStudyApi.fetchAllCaseStudies()
+const allCaseStudies = fetchedStudies.map((p) => ({
+  slug: p.slug,
+  title: p.title,
   description: p.description,
-  href: p.links.caseStudy || `#`,
-  image: p.img,
-  techStack: p.tech.slice(0, 4),
+  href: `/case-study/${p.slug}`,
+  image: p.image,
+  techStack: (p.techStack || []).slice(0, 4),
 }))
 
 const otherStudies = allCaseStudies.filter(
-  (study) => study.slug !== currentSlug && study.href !== "#"
+  (study) => study.slug !== currentSlug
 )
 ---
 

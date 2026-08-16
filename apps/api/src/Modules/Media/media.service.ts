@@ -107,7 +107,26 @@ export class MediaService {
     const ext = path.extname(fileName).replace(/^\./, "").toLowerCase() || null
     const folder = options.folder || "general"
     const source = options.source || "API"
-    const isPublic = options.isPublic ?? true
+    const isPublic =
+      typeof options.isPublic === "boolean"
+        ? options.isPublic
+        : typeof options.isPublic === "string"
+          ? options.isPublic === "true" || options.isPublic === "1"
+          : true
+    const allowDuplicate =
+      typeof options.allowDuplicate === "boolean"
+        ? options.allowDuplicate
+        : typeof options.allowDuplicate === "string"
+          ? options.allowDuplicate === "true" || options.allowDuplicate === "1"
+          : false
+    const tags = Array.isArray(options.tags)
+      ? options.tags
+      : typeof options.tags === "string"
+        ? (options.tags as string)
+            .split(",")
+            .map((s) => s.trim())
+            .filter(Boolean)
+        : []
 
     this.logger.info("Processing single file upload", {
       fileName,
@@ -116,11 +135,12 @@ export class MediaService {
       folder,
       source,
       uploaderId,
+      isPublic,
     })
 
     const bufferLength = file.buffer.length
     const md5Hash = crypto.createHash("md5").update(file.buffer).digest("hex")
-    if (!options.allowDuplicate) {
+    if (!allowDuplicate) {
       const existingFile = await this.db.mediaFile.findFirst({
         where: {
           OR: [
@@ -159,7 +179,7 @@ export class MediaService {
       fileName,
       mimeType,
       folder,
-      tags: options.tags,
+      tags,
       metadata: {
         source,
         contentHash: md5Hash,
@@ -185,7 +205,7 @@ export class MediaService {
         folder,
         entityType: options.entityType || null,
         entityId: options.entityId || null,
-        tags: options.tags || [],
+        tags,
         altText: options.altText || null,
         caption: options.caption || null,
         metadata: {

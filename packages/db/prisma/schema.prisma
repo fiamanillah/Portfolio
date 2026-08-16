@@ -93,6 +93,7 @@ model User {
   commentReports         CommentReport[]   @relation("ReportedByUser")
   reviewedReports        CommentReport[]   @relation("ReviewedByUser")
   uploadedMedia          MediaFile[]
+  caseStudies            CaseStudy[]
 
   @@index([email])
   @@index([username])
@@ -378,6 +379,79 @@ model MediaFile {
   @@index([mimeType])
   @@index([entityType, entityId])
   @@index([uploaderId])
+  @@index([createdAt])
+}
+
+enum CaseStudyStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+model CaseStudy {
+  id                 String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  slug               String          @unique
+  title              String
+  subtitle           String?
+  description        String          @db.Text
+  status             CaseStudyStatus @default(DRAFT)
+  projectStatus      String          @default("Status: Completed")
+  order              Int             @default(0)
+  featured           Boolean         @default(false)
+  pinned             Boolean         @default(false)
+  techStack          String[]        @default([])
+  liveUrl            String?
+  githubUrl          String?
+  image              String
+  imageLabel         String?
+  role               String?
+  timeline           String?
+  client             String?
+  impact             String?         @db.Text
+  views              Int             @default(0)
+  likesCount         Int             @default(0)
+  publishedAt        DateTime?
+
+  // Author Relations & Personas
+  authorId           String?         @db.Uuid
+  author             User?           @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  authorName         String?
+  authorRole         String?
+  authorAvatar       String?
+  authorTwitter      String?
+  authorLinkedin     String?
+  authorGithub       String?
+
+  // Structured Content Sections stored as JSONB
+  metadata           Json?           @default("[]")
+  contextBlocks      Json?           @default("[]")
+  architectureLayers Json?           @default("[]")
+  features           Json?           @default("[]")
+  metrics            Json?           @default("[]")
+  postMortem         Json?           @default("[]")
+
+  // SEO & OpenGraph Metadata
+  metaTitle          String?
+  metaDescription    String?         @db.Text
+  metaKeywords       String[]        @default([])
+  ogTitle            String?
+  ogDescription      String?         @db.Text
+  ogImage            String?
+  twitterCard        String          @default("summary_large_image")
+  twitterTitle       String?
+  twitterDescription String?         @db.Text
+  twitterImage       String?
+  canonicalUrl       String?
+  structuredData     Json?
+
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @default(now()) @updatedAt
+
+  @@index([slug])
+  @@index([status, publishedAt])
+  @@index([featured])
+  @@index([order])
+  @@index([authorId])
   @@index([createdAt])
 }
 

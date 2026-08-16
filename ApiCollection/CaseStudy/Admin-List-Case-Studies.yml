@@ -1,0 +1,13 @@
+name: Admin List Case Studies
+type: http
+seq: 5
+
+get {
+  url: {{baseUrl}}/case-studies/v1/admin/list?page=1&limit=10
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}

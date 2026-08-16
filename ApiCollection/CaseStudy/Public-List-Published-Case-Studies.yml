@@ -1,0 +1,9 @@
+name: Public List Published Case Studies
+type: http
+seq: 1
+
+get {
+  url: {{baseUrl}}/case-studies/v1/public?page=1&limit=10
+  body: none
+  auth: none
+}

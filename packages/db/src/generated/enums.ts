@@ -68,3 +68,12 @@ export const CommentReportStatus = {
 } as const
 
 export type CommentReportStatus = (typeof CommentReportStatus)[keyof typeof CommentReportStatus]
+
+
+export const CaseStudyStatus = {
+  DRAFT: 'DRAFT',
+  PUBLISHED: 'PUBLISHED',
+  ARCHIVED: 'ARCHIVED'
+} as const
+
+export type CaseStudyStatus = (typeof CaseStudyStatus)[keyof typeof CaseStudyStatus]

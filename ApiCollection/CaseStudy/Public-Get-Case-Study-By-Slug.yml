@@ -1,0 +1,9 @@
+name: Public Get Case Study By Slug
+type: http
+seq: 3
+
+get {
+  url: {{baseUrl}}/case-studies/v1/public/slug/mickanic
+  body: none
+  auth: none
+}
