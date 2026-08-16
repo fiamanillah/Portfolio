@@ -17,6 +17,18 @@ export class TemplateController extends BaseController {
   }
 
   /**
+   * GET /templates/v1/stats - Retrieve aggregated template metrics & counts
+   */
+  public async getStats(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const result = await this.templateService.getStats();
+      this.sendResponse(req, res, "Template statistics retrieved successfully", HTTPStatusCode.OK, result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
    * POST /templates/v1 - Create a new email template
    */
   public async createTemplate(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -82,6 +94,32 @@ export class TemplateController extends BaseController {
       const payload: UpdateTemplateDTO = req.body;
       const result = await this.templateService.updateTemplate(id, payload);
       this.sendResponse(req, res, "Email template updated successfully", HTTPStatusCode.OK, result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * POST /templates/v1/:id/reset - Reset a codebase system template to default layout
+   */
+  public async resetTemplate(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
+      const result = await this.templateService.resetSystemTemplate(id);
+      this.sendResponse(req, res, "Template reset to codebase default successfully", HTTPStatusCode.OK, result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * POST /templates/v1/:id/sync - Sync single template with Plunk
+   */
+  public async syncSingleTemplate(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
+      const result = await this.templateService.syncSingleTemplate(id);
+      this.sendResponse(req, res, "Template synced with Plunk successfully", HTTPStatusCode.OK, result);
     } catch (error) {
       next(error);
     }

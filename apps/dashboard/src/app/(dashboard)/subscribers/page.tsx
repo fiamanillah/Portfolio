@@ -1,15 +1,39 @@
+"use client"
+
+import * as React from "react"
 import {
+  CheckCircle2,
+  Clock,
   Download,
+  ExternalLink,
   Filter,
   Mail,
   MoreVertical,
   Plus,
+  RefreshCw,
   Search,
+  Sparkles,
   Trash2,
+  TrendingUp,
   UserCheck,
+  UserPlus,
+  Users,
   UserX,
+  XCircle,
 } from "lucide-react"
 
+import type {
+  SubscriberItem,
+  SubscriberStats,
+  AdminCreateSubscriberPayload,
+  UpdateSubscriberPayload,
+} from "@workspace/shared"
+import { SubscriberApi } from "@/lib/api"
+import { Badge } from "@workspace/ui/components/badge"
+import { Button } from "@workspace/ui/components/button"
+import { Input } from "@workspace/ui/components/input"
+import { Label } from "@workspace/ui/components/label"
+import { Checkbox } from "@workspace/ui/components/checkbox"
 import {
   Card,
   CardContent,
@@ -17,223 +41,967 @@ import {
   CardHeader,
   CardTitle,
 } from "@workspace/ui/components/card"
-import { Badge } from "@workspace/ui/components/badge"
-import { Button } from "@workspace/ui/components/button"
-import { Input } from "@workspace/ui/components/input"
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@workspace/ui/components/table"
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@workspace/ui/components/dialog"
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@workspace/ui/components/dropdown-menu"
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@workspace/ui/components/select"
+import { toast } from "@workspace/ui/components/sonner"
+import { getSubscriberColumns } from "./columns"
+import { SubscribersDataTable } from "./data-table"
 
-const subscribersList = [
-  {
-    id: "sub_1",
-    email: "alex.rivera@techcorp.io",
-    status: "ACTIVE",
-    createdAt: "2026-08-14",
-    confirmedAt: "2026-08-14",
-    source: "Blog: Docker Guide",
-  },
-  {
-    id: "sub_2",
-    email: "sarah.c@cloudscale.dev",
-    status: "ACTIVE",
-    createdAt: "2026-08-12",
-    confirmedAt: "2026-08-12",
-    source: "Portfolio Hero",
-  },
-  {
-    id: "sub_3",
-    email: "dev.marcus@matrix.org",
-    status: "UNCONFIRMED",
-    createdAt: "2026-08-10",
-    confirmedAt: null,
-    source: "API Documentation",
-  },
-  {
-    id: "sub_4",
-    email: "elena.v@quantum.ai",
-    status: "ACTIVE",
-    createdAt: "2026-08-08",
-    confirmedAt: "2026-08-08",
-    source: "Blog: Prisma Optimization",
-  },
-  {
-    id: "sub_5",
-    email: "jordan.taylor@enterprise.net",
-    status: "UNSUBSCRIBED",
-    createdAt: "2026-07-22",
-    confirmedAt: "2026-07-22",
-    source: "Newsletter Modal",
-  },
+const DEFAULT_SOURCES = [
+  "hero_section",
+  "blog_post",
+  "newsletter_modal",
+  "admin_portal",
+  "api_docs",
+  "project_showcase",
 ]
 
 export default function SubscribersPage() {
+  const [subscribers, setSubscribers] = React.useState<SubscriberItem[]>([])
+  const [stats, setStats] = React.useState<SubscriberStats>({
+    total: 0,
+    subscribed: 0,
+    unsubscribed: 0,
+    pending: 0,
+    recentSubscribers7d: 0,
+    confirmationRate: 100,
+  })
+  const [isLoading, setIsLoading] = React.useState(true)
+
+  // Query state
+  const [searchQuery, setSearchQuery] = React.useState("")
+  const [statusFilter, setStatusFilter] = React.useState("ALL")
+  const [sourceFilter, setSourceFilter] = React.useState("ALL")
+  const [currentPage, setCurrentPage] = React.useState(1)
+  const [pageSize, setPageSize] = React.useState(20)
+  const [totalCount, setTotalCount] = React.useState(0)
+
+  // Dialog states
+  const [isAddOpen, setIsAddOpen] = React.useState(false)
+  const [isEditOpen, setIsEditOpen] = React.useState(false)
+  const [isDetailsOpen, setIsDetailsOpen] = React.useState(false)
+  const [isDeleteOpen, setIsDeleteOpen] = React.useState(false)
+  const [isBulkDeleteOpen, setIsBulkDeleteOpen] = React.useState(false)
+  const [isProcessing, setIsProcessing] = React.useState(false)
+  const [isExporting, setIsExporting] = React.useState(false)
+
+  // Selected item for dialogs
+  const [selectedSubscriber, setSelectedSubscriber] = React.useState<SubscriberItem | null>(null)
+  const [bulkSelectedIds, setBulkSelectedIds] = React.useState<string[]>([])
+
+  // Form states
+  const [addForm, setAddForm] = React.useState<AdminCreateSubscriberPayload>({
+    email: "",
+    name: "",
+    status: "subscribed",
+    source: "admin_portal",
+    sendWelcomeEmail: true,
+  })
+
+  const [editForm, setEditForm] = React.useState<UpdateSubscriberPayload>({
+    name: "",
+    status: "subscribed",
+    source: "admin_portal",
+  })
+
+  // Debounced search term
+  const [debouncedSearch, setDebouncedSearch] = React.useState(searchQuery)
+
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchQuery)
+      setCurrentPage(1) // Reset to page 1 on new search
+    }, 300)
+    return () => clearTimeout(timer)
+  }, [searchQuery])
+
+  // Fetch Subscribers List & Stats
+  const fetchSubscribers = React.useCallback(async () => {
+    try {
+      setIsLoading(true)
+      const res = await SubscriberApi.list({
+        page: currentPage,
+        limit: pageSize,
+        search: debouncedSearch || undefined,
+        status: statusFilter !== "ALL" ? (statusFilter as any) : undefined,
+        source: sourceFilter !== "ALL" ? sourceFilter : undefined,
+        sortBy: "subscribedAt",
+        sortOrder: "desc",
+      })
+
+      if (res.success && res.data) {
+        setSubscribers(res.data)
+        setTotalCount(res.pagination?.total || res.data.length)
+        if (res.stats) {
+          setStats(res.stats)
+        }
+      } else {
+        toast.error("Failed to load subscribers", {
+          description: res.error || "Please ensure the backend API is connected.",
+        })
+      }
+    } catch (err: any) {
+      toast.error("Error fetching audience data", {
+        description: err?.message || "Network issue occurred.",
+      })
+    } finally {
+      setIsLoading(false)
+    }
+  }, [currentPage, pageSize, debouncedSearch, statusFilter, sourceFilter])
+
+  React.useEffect(() => {
+    fetchSubscribers()
+  }, [fetchSubscribers])
+
+  // Row Action Handlers
+  const handleViewDetails = (sub: SubscriberItem) => {
+    setSelectedSubscriber(sub)
+    setIsDetailsOpen(true)
+  }
+
+  const handleEditOpen = (sub: SubscriberItem) => {
+    setSelectedSubscriber(sub)
+    setEditForm({
+      name: sub.name || "",
+      status: (sub.status?.toLowerCase() as any) || "subscribed",
+      source: sub.source || "admin_portal",
+    })
+    setIsEditOpen(true)
+  }
+
+  const handleDeletePrompt = (sub: SubscriberItem) => {
+    setSelectedSubscriber(sub)
+    setIsDeleteOpen(true)
+  }
+
+  const handleToggleStatus = async (
+    sub: SubscriberItem,
+    newStatus: "subscribed" | "unsubscribed" | "pending"
+  ) => {
+    try {
+      const res = await SubscriberApi.update(sub.id, { status: newStatus })
+      if (res.success) {
+        toast.success(`Subscriber status updated`, {
+          description: `${sub.email} is now marked as ${newStatus}.`,
+        })
+        fetchSubscribers()
+      } else {
+        toast.error("Status update failed", {
+          description: res.error,
+        })
+      }
+    } catch (err: any) {
+      toast.error("Error updating subscriber", {
+        description: err?.message,
+      })
+    }
+  }
+
+  const handleResendEmail = async (sub: SubscriberItem) => {
+    try {
+      const res = await SubscriberApi.resendWelcome(sub.id)
+      if (res.success) {
+        toast.success("Welcome email delivered", {
+          description: `Confirmation instructions resent to ${sub.email}.`,
+        })
+      } else {
+        toast.error("Failed to resend email", {
+          description: res.error,
+        })
+      }
+    } catch (err: any) {
+      toast.error("Error resending email", {
+        description: err?.message,
+      })
+    }
+  }
+
+  // Add Subscriber Submit
+  const handleAddSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!addForm.email || !addForm.email.includes("@")) {
+      toast.error("Invalid Email", { description: "Please provide a valid email address." })
+      return
+    }
+
+    try {
+      setIsProcessing(true)
+      const res = await SubscriberApi.create(addForm)
+      if (res.success) {
+        toast.success("Subscriber added successfully", {
+          description: `${addForm.email} has been added to your audience.`,
+        })
+        setIsAddOpen(false)
+        setAddForm({
+          email: "",
+          name: "",
+          status: "subscribed",
+          source: "admin_portal",
+          sendWelcomeEmail: true,
+        })
+        fetchSubscribers()
+      } else {
+        toast.error("Failed to add subscriber", {
+          description: res.error || "Email might already exist.",
+        })
+      }
+    } catch (err: any) {
+      toast.error("Error creating subscriber", {
+        description: err?.message,
+      })
+    } finally {
+      setIsProcessing(false)
+    }
+  }
+
+  // Edit Subscriber Submit
+  const handleEditSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!selectedSubscriber) return
+
+    try {
+      setIsProcessing(true)
+      const res = await SubscriberApi.update(selectedSubscriber.id, editForm)
+      if (res.success) {
+        toast.success("Subscriber updated", {
+          description: `Changes for ${selectedSubscriber.email} saved.`,
+        })
+        setIsEditOpen(false)
+        fetchSubscribers()
+      } else {
+        toast.error("Update failed", {
+          description: res.error,
+        })
+      }
+    } catch (err: any) {
+      toast.error("Error saving changes", {
+        description: err?.message,
+      })
+    } finally {
+      setIsProcessing(false)
+    }
+  }
+
+  // Delete Single Subscriber Submit
+  const handleDeleteConfirm = async () => {
+    if (!selectedSubscriber) return
+
+    try {
+      setIsProcessing(true)
+      const res = await SubscriberApi.delete(selectedSubscriber.id)
+      if (res.success) {
+        toast.success("Subscriber removed", {
+          description: `Successfully deleted ${selectedSubscriber.email}.`,
+        })
+        setIsDeleteOpen(false)
+        fetchSubscribers()
+      } else {
+        toast.error("Deletion failed", {
+          description: res.error,
+        })
+      }
+    } catch (err: any) {
+      toast.error("Error deleting subscriber", {
+        description: err?.message,
+      })
+    } finally {
+      setIsProcessing(false)
+    }
+  }
+
+  // Bulk Status Change
+  const handleBulkStatusChange = async (
+    ids: string[],
+    status: "subscribed" | "unsubscribed" | "pending"
+  ) => {
+    try {
+      const res = await SubscriberApi.bulkUpdateStatus({
+        subscriberIds: ids,
+        status,
+      })
+      if (res.success) {
+        toast.success(`Bulk update successful`, {
+          description: `Updated status to '${status}' for ${res.data?.count || ids.length} subscribers.`,
+        })
+        fetchSubscribers()
+      } else {
+        toast.error("Bulk update failed", {
+          description: res.error,
+        })
+      }
+    } catch (err: any) {
+      toast.error("Error during bulk update", {
+        description: err?.message,
+      })
+    }
+  }
+
+  // Bulk Delete Prompt
+  const handleBulkDeletePrompt = (ids: string[]) => {
+    setBulkSelectedIds(ids)
+    setIsBulkDeleteOpen(true)
+  }
+
+  // Bulk Delete Confirm
+  const handleBulkDeleteConfirm = async () => {
+    try {
+      setIsProcessing(true)
+      const res = await SubscriberApi.bulkDelete({
+        subscriberIds: bulkSelectedIds,
+      })
+      if (res.success) {
+        toast.success("Bulk deletion completed", {
+          description: `Removed ${res.data?.count || bulkSelectedIds.length} subscribers from the database.`,
+        })
+        setIsBulkDeleteOpen(false)
+        setBulkSelectedIds([])
+        fetchSubscribers()
+      } else {
+        toast.error("Bulk deletion failed", {
+          description: res.error,
+        })
+      }
+    } catch (err: any) {
+      toast.error("Error deleting subscribers", {
+        description: err?.message,
+      })
+    } finally {
+      setIsProcessing(false)
+    }
+  }
+
+  // CSV Export
+  const handleExportCSV = async () => {
+    try {
+      setIsExporting(true)
+      toast.info("Preparing CSV export...")
+      const res = await SubscriberApi.export({
+        search: debouncedSearch || undefined,
+        status: statusFilter !== "ALL" ? (statusFilter as any) : undefined,
+        source: sourceFilter !== "ALL" ? sourceFilter : undefined,
+      })
+
+      if (res.success && res.data) {
+        const rows = res.data
+        if (rows.length === 0) {
+          toast.warning("No subscribers to export.")
+          return
+        }
+
+        const headers = ["ID", "Email", "Name", "Status", "Source", "Subscribed At", "Updated At"]
+        const csvContent = [
+          headers.join(","),
+          ...rows.map((r) =>
+            [
+              `"${r.id}"`,
+              `"${r.email}"`,
+              `"${(r.name || "").replace(/"/g, '""')}"`,
+              `"${r.status}"`,
+              `"${r.source}"`,
+              `"${new Date(r.subscribedAt).toISOString()}"`,
+              `"${new Date(r.updatedAt).toISOString()}"`,
+            ].join(",")
+          ),
+        ].join("\n")
+
+        const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" })
+        const url = URL.createObjectURL(blob)
+        const link = document.createElement("a")
+        const dateStr = new Date().toISOString().split("T")[0]
+        link.setAttribute("href", url)
+        link.setAttribute("download", `subscribers_export_${dateStr}.csv`)
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        URL.revokeObjectURL(url)
+
+        toast.success("CSV export downloaded successfully", {
+          description: `Exported ${rows.length} subscriber records.`,
+        })
+      } else {
+        toast.error("Failed to generate CSV export", { description: res.error })
+      }
+    } catch (err: any) {
+      toast.error("Export error", { description: err?.message })
+    } finally {
+      setIsExporting(false)
+    }
+  }
+
+  // Memoized Columns with Action Callbacks
+  const columns = React.useMemo(() => {
+    return getSubscriberColumns({
+      onViewDetails: handleViewDetails,
+      onEdit: handleEditOpen,
+      onDelete: handleDeletePrompt,
+      onToggleStatus: handleToggleStatus,
+      onResendEmail: handleResendEmail,
+    })
+  }, [])
+
   return (
     <div className="space-y-6">
-      {/* Page Header */}
+      {/* Page Header Banner */}
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight md:text-3xl">
-            Subscribers Management
-          </h1>
+          <div className="flex items-center gap-2">
+            <h1 className="text-2xl font-bold tracking-tight md:text-3xl">
+              Subscribers Management
+            </h1>
+            <Badge variant="outline" className="font-mono text-xs text-primary border-primary/30">
+              Audience Control
+            </Badge>
+          </div>
           <p className="text-sm text-muted-foreground mt-1">
-            Manage your newsletter audience, track confirmations, and export subscriber lists.
+            Real-time subscriber audience directory, Plunk sync metrics, double opt-in tracking, and batch controls.
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm">
-            <Download className="size-4 mr-1.5" />
-            Export CSV
+
+        <div className="flex flex-wrap items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleExportCSV}
+            disabled={isExporting || isLoading}
+            className="gap-1.5 text-xs"
+          >
+            <Download className="size-3.5" />
+            {isExporting ? "Exporting..." : "Export CSV"}
           </Button>
-          <Button size="sm">
-            <Plus className="size-4 mr-1.5" />
+
+          <Button
+            size="sm"
+            onClick={() => setIsAddOpen(true)}
+            className="gap-1.5 text-xs shadow-xs"
+          >
+            <UserPlus className="size-3.5" />
             Add Subscriber
           </Button>
         </div>
       </div>
 
-      {/* Overview Cards */}
-      <div className="grid gap-4 sm:grid-cols-3">
-        <Card className="border-border/80">
-          <CardHeader className="pb-2">
-            <CardDescription>Total Subscribers</CardDescription>
-            <CardTitle className="text-2xl font-bold">1,248</CardTitle>
+      {/* KPI Overview Cards */}
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {/* Card 1: Total Subscribers */}
+        <Card className="border-border/80 bg-card/60 relative overflow-hidden">
+          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+            <CardTitle className="text-sm font-medium text-muted-foreground">
+              Total Subscribers
+            </CardTitle>
+            <div className="flex size-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
+              <Users className="size-4" />
+            </div>
           </CardHeader>
-          <CardContent className="text-xs text-muted-foreground">
-            +32 subscribers joined this week
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.total.toLocaleString()}</div>
+            <div className="flex items-center gap-1 text-xs text-emerald-600 dark:text-emerald-400 mt-1">
+              <TrendingUp className="size-3" />
+              <span>+{stats.recentSubscribers7d} this week</span>
+            </div>
           </CardContent>
         </Card>
-        <Card className="border-border/80">
-          <CardHeader className="pb-2">
-            <CardDescription>Confirmed & Active</CardDescription>
-            <CardTitle className="text-2xl font-bold text-primary">1,192</CardTitle>
+
+        {/* Card 2: Active & Confirmed */}
+        <Card className="border-border/80 bg-card/60">
+          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+            <CardTitle className="text-sm font-medium text-muted-foreground">
+              Active & Subscribed
+            </CardTitle>
+            <div className="flex size-8 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-500">
+              <CheckCircle2 className="size-4" />
+            </div>
           </CardHeader>
-          <CardContent className="text-xs text-muted-foreground">
-            95.5% confirmation rate
+          <CardContent>
+            <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
+              {stats.subscribed.toLocaleString()}
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">
+              {stats.confirmationRate}% confirmation rate
+            </p>
           </CardContent>
         </Card>
-        <Card className="border-border/80">
-          <CardHeader className="pb-2">
-            <CardDescription>Unconfirmed</CardDescription>
-            <CardTitle className="text-2xl font-bold">56</CardTitle>
+
+        {/* Card 3: Pending Double Opt-in */}
+        <Card className="border-border/80 bg-card/60">
+          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+            <CardTitle className="text-sm font-medium text-muted-foreground">
+              Pending Confirmation
+            </CardTitle>
+            <div className="flex size-8 items-center justify-center rounded-lg bg-amber-500/10 text-amber-500">
+              <Clock className="size-4" />
+            </div>
           </CardHeader>
-          <CardContent className="text-xs text-muted-foreground">
-            Awaiting double opt-in confirmation
+          <CardContent>
+            <div className="text-2xl font-bold text-amber-600 dark:text-amber-400">
+              {stats.pending.toLocaleString()}
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">
+              Awaiting double opt-in click
+            </p>
+          </CardContent>
+        </Card>
+
+        {/* Card 4: Unsubscribed */}
+        <Card className="border-border/80 bg-card/60">
+          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+            <CardTitle className="text-sm font-medium text-muted-foreground">
+              Unsubscribed
+            </CardTitle>
+            <div className="flex size-8 items-center justify-center rounded-lg bg-rose-500/10 text-rose-500">
+              <UserX className="size-4" />
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-rose-600 dark:text-rose-400">
+              {stats.unsubscribed.toLocaleString()}
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">
+              {stats.total > 0 ? ((stats.unsubscribed / stats.total) * 100).toFixed(1) : 0}% churn rate
+            </p>
           </CardContent>
         </Card>
       </div>
 
-      {/* Main Subscribers Table Card */}
+      {/* Main Table Card */}
       <Card className="border-border/80">
-        <CardHeader>
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <CardHeader className="pb-2">
+          <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <CardTitle className="text-base font-semibold">Audience Directory</CardTitle>
-              <CardDescription>
-                Filtered list of subscribers across all campaigns and channels.
+              <CardTitle className="text-base font-semibold">
+                Audience Directory
+              </CardTitle>
+              <CardDescription className="text-xs">
+                Search, filter, inspect and manage subscribers synchronized with Plunk contacts.
               </CardDescription>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="relative w-64">
-                <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
-                <Input
-                  placeholder="Filter by email or source..."
-                  className="pl-8 h-9 text-xs"
-                />
-              </div>
-              <Button variant="outline" size="sm" className="h-9 gap-1 text-xs">
-                <Filter className="size-3.5" />
-                Filter
-              </Button>
             </div>
           </div>
         </CardHeader>
-        <CardContent className="px-0">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="pl-6">Email Address</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="hidden md:table-cell">Source</TableHead>
-                <TableHead className="hidden sm:table-cell">Joined Date</TableHead>
-                <TableHead className="pr-6 text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {subscribersList.map((sub) => (
-                <TableRow key={sub.id}>
-                  <TableCell className="pl-6 font-medium font-mono text-xs">
-                    <div className="flex items-center gap-2">
-                      <Mail className="size-3.5 text-muted-foreground" />
-                      {sub.email}
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    {sub.status === "ACTIVE" && (
-                      <Badge variant="default" className="text-[10px]">
-                        Active
-                      </Badge>
-                    )}
-                    {sub.status === "UNCONFIRMED" && (
-                      <Badge variant="secondary" className="text-[10px]">
-                        Unconfirmed
-                      </Badge>
-                    )}
-                    {sub.status === "UNSUBSCRIBED" && (
-                      <Badge variant="outline" className="text-[10px] text-destructive border-destructive/30">
-                        Unsubscribed
-                      </Badge>
-                    )}
-                  </TableCell>
-                  <TableCell className="hidden md:table-cell text-xs text-muted-foreground">
-                    {sub.source}
-                  </TableCell>
-                  <TableCell className="hidden sm:table-cell text-xs text-muted-foreground">
-                    {sub.createdAt}
-                  </TableCell>
-                  <TableCell className="pr-6 text-right">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon" className="size-8">
-                          <MoreVertical className="size-4" />
-                          <span className="sr-only">Actions</span>
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem className="gap-2 text-xs">
-                          <UserCheck className="size-3.5" />
-                          Resend Confirmation
-                        </DropdownMenuItem>
-                        <DropdownMenuItem className="gap-2 text-xs">
-                          <UserX className="size-3.5" />
-                          Mark Unsubscribed
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem className="gap-2 text-xs text-destructive">
-                          <Trash2 className="size-3.5" />
-                          Delete Record
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+
+        <CardContent className="pt-2">
+          <SubscribersDataTable
+            columns={columns}
+            data={subscribers}
+            isLoading={isLoading}
+            totalCount={totalCount}
+            currentPage={currentPage}
+            pageSize={pageSize}
+            onPageChange={setCurrentPage}
+            onPageSizeChange={setPageSize}
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
+            statusFilter={statusFilter}
+            onStatusFilterChange={setStatusFilter}
+            sourceFilter={sourceFilter}
+            onSourceFilterChange={setSourceFilter}
+            onBulkStatusChange={handleBulkStatusChange}
+            onBulkDelete={handleBulkDeletePrompt}
+            onAddNew={() => setIsAddOpen(true)}
+            onRefresh={fetchSubscribers}
+            availableSources={DEFAULT_SOURCES}
+          />
         </CardContent>
       </Card>
+
+      {/* ── Dialog: Add Subscriber ────────────────────────────────────────── */}
+      <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
+        <DialogContent className="sm:max-w-md">
+          <form onSubmit={handleAddSubmit}>
+            <DialogHeader>
+              <DialogTitle className="text-base flex items-center gap-2">
+                <UserPlus className="size-4 text-primary" />
+                <span>Add New Subscriber</span>
+              </DialogTitle>
+              <DialogDescription className="text-xs">
+                Manually register a subscriber into your audience database and sync with Plunk.
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="space-y-4 py-3">
+              <div className="space-y-1.5">
+                <Label htmlFor="add-email" className="text-xs">
+                  Email Address <span className="text-destructive">*</span>
+                </Label>
+                <Input
+                  id="add-email"
+                  type="email"
+                  placeholder="subscriber@example.com"
+                  value={addForm.email}
+                  onChange={(e) => setAddForm({ ...addForm, email: e.target.value })}
+                  required
+                  className="text-xs h-9"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <Label htmlFor="add-name" className="text-xs">
+                  Full Name (Optional)
+                </Label>
+                <Input
+                  id="add-name"
+                  type="text"
+                  placeholder="Jane Doe"
+                  value={addForm.name || ""}
+                  onChange={(e) => setAddForm({ ...addForm, name: e.target.value })}
+                  className="text-xs h-9"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1.5">
+                  <Label className="text-xs">Subscription Status</Label>
+                  <Select
+                    value={addForm.status}
+                    onValueChange={(val: any) => setAddForm({ ...addForm, status: val })}
+                  >
+                    <SelectTrigger className="text-xs h-9 w-full">
+                      <SelectValue placeholder="Select status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="subscribed" className="text-xs">
+                        Subscribed (Active)
+                      </SelectItem>
+                      <SelectItem value="pending" className="text-xs">
+                        Pending Confirmation
+                      </SelectItem>
+                      <SelectItem value="unsubscribed" className="text-xs">
+                        Unsubscribed
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-1.5">
+                  <Label className="text-xs">Acquisition Channel</Label>
+                  <Select
+                    value={addForm.source || "admin_portal"}
+                    onValueChange={(val) => setAddForm({ ...addForm, source: val })}
+                  >
+                    <SelectTrigger className="text-xs h-9 w-full">
+                      <SelectValue placeholder="Select channel" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {DEFAULT_SOURCES.map((src) => (
+                        <SelectItem key={src} value={src} className="text-xs capitalize">
+                          {src.replace(/_/g, " ")}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="flex items-center space-x-2 pt-1">
+                <Checkbox
+                  id="send-welcome"
+                  checked={addForm.sendWelcomeEmail}
+                  onCheckedChange={(checked) =>
+                    setAddForm({ ...addForm, sendWelcomeEmail: !!checked })
+                  }
+                />
+                <Label
+                  htmlFor="send-welcome"
+                  className="text-xs font-normal text-muted-foreground cursor-pointer"
+                >
+                  Send welcome email with unsubscribe link immediately
+                </Label>
+              </div>
+            </div>
+
+            <DialogFooter className="gap-2 sm:gap-0 pt-2">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setIsAddOpen(false)}
+                disabled={isProcessing}
+              >
+                Cancel
+              </Button>
+              <Button type="submit" size="sm" disabled={isProcessing}>
+                {isProcessing ? "Adding..." : "Add Subscriber"}
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* ── Dialog: Edit Subscriber ───────────────────────────────────────── */}
+      <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
+        <DialogContent className="sm:max-w-md">
+          <form onSubmit={handleEditSubmit}>
+            <DialogHeader>
+              <DialogTitle className="text-base flex items-center gap-2">
+                <UserCheck className="size-4 text-primary" />
+                <span>Edit Subscriber Profile</span>
+              </DialogTitle>
+              <DialogDescription className="text-xs">
+                Update metadata for subscriber{" "}
+                <span className="font-semibold text-foreground">{selectedSubscriber?.email}</span>.
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="space-y-4 py-3">
+              <div className="space-y-1.5">
+                <Label htmlFor="edit-name" className="text-xs">
+                  Full Name
+                </Label>
+                <Input
+                  id="edit-name"
+                  type="text"
+                  placeholder="Jane Doe"
+                  value={editForm.name || ""}
+                  onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
+                  className="text-xs h-9"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1.5">
+                  <Label className="text-xs">Status</Label>
+                  <Select
+                    value={editForm.status || "subscribed"}
+                    onValueChange={(val: any) => setEditForm({ ...editForm, status: val })}
+                  >
+                    <SelectTrigger className="text-xs h-9 w-full">
+                      <SelectValue placeholder="Select status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="subscribed" className="text-xs">
+                        Subscribed
+                      </SelectItem>
+                      <SelectItem value="pending" className="text-xs">
+                        Pending
+                      </SelectItem>
+                      <SelectItem value="unsubscribed" className="text-xs">
+                        Unsubscribed
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-1.5">
+                  <Label className="text-xs">Source</Label>
+                  <Select
+                    value={editForm.source || "admin_portal"}
+                    onValueChange={(val) => setEditForm({ ...editForm, source: val })}
+                  >
+                    <SelectTrigger className="text-xs h-9 w-full">
+                      <SelectValue placeholder="Select source" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {DEFAULT_SOURCES.map((src) => (
+                        <SelectItem key={src} value={src} className="text-xs capitalize">
+                          {src.replace(/_/g, " ")}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </div>
+
+            <DialogFooter className="gap-2 sm:gap-0 pt-2">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setIsEditOpen(false)}
+                disabled={isProcessing}
+              >
+                Cancel
+              </Button>
+              <Button type="submit" size="sm" disabled={isProcessing}>
+                {isProcessing ? "Saving..." : "Save Changes"}
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* ── Dialog: Subscriber Details & Audit ────────────────────────────── */}
+      <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="text-base flex items-center gap-2">
+              <Mail className="size-4 text-primary" />
+              <span>Subscriber Overview & Audit</span>
+            </DialogTitle>
+            <DialogDescription className="text-xs">
+              Complete subscriber profile and audit timeline records.
+            </DialogDescription>
+          </DialogHeader>
+
+          {selectedSubscriber && (
+            <div className="space-y-4 py-2 text-xs">
+              {/* Profile Card */}
+              <div className="rounded-xl border border-border/80 bg-muted/40 p-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="grid">
+                    <span className="font-semibold text-sm text-foreground">
+                      {selectedSubscriber.name || "Anonymous Subscriber"}
+                    </span>
+                    <span className="font-mono text-muted-foreground mt-0.5">
+                      {selectedSubscriber.email}
+                    </span>
+                  </div>
+                  <Badge
+                    variant={
+                      selectedSubscriber.status === "subscribed"
+                        ? "default"
+                        : selectedSubscriber.status === "pending"
+                        ? "secondary"
+                        : "outline"
+                    }
+                    className="capitalize font-mono text-[10px]"
+                  >
+                    {selectedSubscriber.status}
+                  </Badge>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2 pt-2 border-t border-border/60 text-muted-foreground">
+                  <div>
+                    <span className="text-[10px] uppercase font-semibold text-foreground/70">
+                      Subscriber ID
+                    </span>
+                    <p className="font-mono text-[11px] truncate">{selectedSubscriber.id}</p>
+                  </div>
+                  <div>
+                    <span className="text-[10px] uppercase font-semibold text-foreground/70">
+                      Acquisition Channel
+                    </span>
+                    <p className="capitalize">{selectedSubscriber.source.replace(/_/g, " ")}</p>
+                  </div>
+                  <div>
+                    <span className="text-[10px] uppercase font-semibold text-foreground/70">
+                      Subscribed On
+                    </span>
+                    <p>{new Date(selectedSubscriber.subscribedAt).toLocaleString()}</p>
+                  </div>
+                  <div>
+                    <span className="text-[10px] uppercase font-semibold text-foreground/70">
+                      Last Updated
+                    </span>
+                    <p>{new Date(selectedSubscriber.updatedAt).toLocaleString()}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Sync Integration Status */}
+              <div className="rounded-xl border border-border/80 p-3 space-y-1.5">
+                <div className="flex items-center gap-1.5 font-medium text-foreground">
+                  <Sparkles className="size-3.5 text-primary" />
+                  <span>Plunk Contacts Sync</span>
+                </div>
+                <p className="text-[11px] text-muted-foreground">
+                  State is synchronized bidirectionally with Plunk Contacts API. Unsubscribe tokens are cryptographically signed using HMAC-SHA256.
+                </p>
+              </div>
+            </div>
+          )}
+
+          <DialogFooter className="pt-2">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setIsDetailsOpen(false)}
+            >
+              Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* ── Dialog: Single Delete Confirmation ───────────────────────────── */}
+      <Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-base flex items-center gap-2 text-destructive">
+              <Trash2 className="size-4" />
+              <span>Confirm Subscriber Deletion</span>
+            </DialogTitle>
+            <DialogDescription className="text-xs">
+              Are you sure you want to delete subscriber{" "}
+              <span className="font-semibold text-foreground">{selectedSubscriber?.email}</span>?
+              This will remove them from the audience and sync unsubscribe with Plunk.
+            </DialogDescription>
+          </DialogHeader>
+
+          <DialogFooter className="gap-2 sm:gap-0 pt-2">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setIsDeleteOpen(false)}
+              disabled={isProcessing}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              variant="destructive"
+              size="sm"
+              onClick={handleDeleteConfirm}
+              disabled={isProcessing}
+            >
+              {isProcessing ? "Deleting..." : "Permanently Delete"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* ── Dialog: Bulk Delete Confirmation ─────────────────────────────── */}
+      <Dialog open={isBulkDeleteOpen} onOpenChange={setIsBulkDeleteOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-base flex items-center gap-2 text-destructive">
+              <Trash2 className="size-4" />
+              <span>Bulk Delete {bulkSelectedIds.length} Subscribers</span>
+            </DialogTitle>
+            <DialogDescription className="text-xs">
+              Are you sure you want to permanently delete{" "}
+              <span className="font-semibold text-foreground">
+                {bulkSelectedIds.length} selected subscribers
+              </span>
+              ? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+
+          <DialogFooter className="gap-2 sm:gap-0 pt-2">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setIsBulkDeleteOpen(false)}
+              disabled={isProcessing}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              variant="destructive"
+              size="sm"
+              onClick={handleBulkDeleteConfirm}
+              disabled={isProcessing}
+            >
+              {isProcessing ? "Deleting..." : `Delete ${bulkSelectedIds.length} Records`}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

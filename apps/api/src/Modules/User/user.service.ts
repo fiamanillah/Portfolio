@@ -227,35 +227,45 @@ export class UserService {
    * 6. ADMIN: LIST USERS:
    */
   public async listUsersAdmin(query: AdminUserQueryDTO) {
-    const { page, limit, search, role } = query;
+    const { page, limit, search, role, sortBy, sortOrder } = query;
     const skip = (page - 1) * limit;
 
     const where: any = {};
 
-    if (search) {
+    if (search && search.trim()) {
+      const s = search.trim();
       where.OR = [
-        { name: { contains: search, mode: "insensitive" } },
-        { email: { contains: search, mode: "insensitive" } },
-        { username: { contains: search, mode: "insensitive" } },
-        { headline: { contains: search, mode: "insensitive" } },
+        { name: { contains: s, mode: "insensitive" } },
+        { email: { contains: s, mode: "insensitive" } },
+        { username: { contains: s, mode: "insensitive" } },
+        { headline: { contains: s, mode: "insensitive" } },
       ];
     }
 
-    if (role) {
-      where.role = role;
+    if (role && role !== ("ALL" as any)) {
+      where.role = role as Role;
     }
 
-    const [total, users] = await Promise.all([
+    const allowedSortFields = ["createdAt", "name", "email", "username", "role"];
+    const sortField = allowedSortFields.includes(sortBy || "") ? (sortBy as string) : "createdAt";
+    const sortDirection = sortOrder === "asc" ? "asc" : "desc";
+
+    const [total, users, totalAll, adminCount, modCount, authorCount, memberCount] = await Promise.all([
       this.db.user.count({ where }),
       this.db.user.findMany({
         where,
         skip,
         take: limit,
-        orderBy: { createdAt: "desc" },
+        orderBy: { [sortField]: sortDirection },
       }),
+      this.db.user.count(),
+      this.db.user.count({ where: { role: Role.ADMIN } }),
+      this.db.user.count({ where: { role: Role.MODERATOR } }),
+      this.db.user.count({ where: { role: Role.AUTHOR } }),
+      this.db.user.count({ where: { role: Role.USER } }),
     ]);
 
-    const totalPages = Math.ceil(total / limit);
+    const totalPages = Math.ceil(total / limit) || 1;
 
     return {
       data: users.map((u) => this.sanitizeUser(u)),
@@ -267,8 +277,16 @@ export class UserService {
         hasNext: page < totalPages,
         hasPrevious: page > 1,
       },
+      stats: {
+        total: totalAll,
+        admins: adminCount,
+        moderators: modCount,
+        authors: authorCount,
+        users: memberCount,
+      },
     };
   }
+
 
   /**
    * 7. ADMIN: UPDATE USER ROLE:

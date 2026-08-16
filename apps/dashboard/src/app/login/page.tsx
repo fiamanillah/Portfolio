@@ -76,10 +76,11 @@ const presets: AdminPreset[] = [
   },
 ];
 
-export default function AdminLoginPage() {
+function AdminLoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectPath = searchParams.get("redirect") || "/";
+
 
   const { login, loginAsDemo, isAuthenticated, isAdmin, isLoading: isAuthChecking } =
     useAuth();
@@ -368,3 +369,18 @@ export default function AdminLoginPage() {
     </div>
   );
 }
+
+export default function AdminLoginPage() {
+  return (
+    <React.Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center bg-background">
+          <Loader2 className="size-6 animate-spin text-primary" />
+        </div>
+      }
+    >
+      <AdminLoginForm />
+    </React.Suspense>
+  );
+}
+

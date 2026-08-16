@@ -309,17 +309,53 @@ export class SubscriberService {
   }
 
   /**
-   * READ ALL: Get paginated list of subscribers
+   * READ ALL: Get paginated, searched, filtered, and sorted list of subscribers with aggregate stats
    */
-  public async getAllSubscribers(page: number = 1, limit: number = 20): Promise<{ data: any[]; pagination: any }> {
+  public async getAllSubscribers(query?: {
+    page?: number;
+    limit?: number;
+    search?: string;
+    status?: string;
+    source?: string;
+    sortBy?: string;
+    sortOrder?: "asc" | "desc";
+  }): Promise<{ data: any[]; pagination: any; stats?: any }> {
+    const page = Math.max(1, Number(query?.page) || 1);
+    const limit = Math.min(200, Math.max(1, Number(query?.limit) || 20));
     const skip = (page - 1) * limit;
-    const [total, data] = await Promise.all([
-      prisma.subscriber.count(),
+
+    const where: any = {};
+
+    if (query?.search && query.search.trim()) {
+      const search = query.search.trim();
+      where.OR = [
+        { email: { contains: search, mode: "insensitive" } },
+        { name: { contains: search, mode: "insensitive" } },
+        { source: { contains: search, mode: "insensitive" } },
+      ];
+    }
+
+    if (query?.status && query.status !== "ALL") {
+      where.status = query.status;
+    }
+
+    if (query?.source && query.source !== "ALL" && query.source.trim()) {
+      where.source = { contains: query.source.trim(), mode: "insensitive" };
+    }
+
+    const allowedSortFields = ["subscribedAt", "updatedAt", "email", "name", "status", "source"];
+    const sortField = allowedSortFields.includes(query?.sortBy || "") ? (query?.sortBy as string) : "subscribedAt";
+    const sortDirection = query?.sortOrder === "asc" ? "asc" : "desc";
+
+    const [total, data, stats] = await Promise.all([
+      prisma.subscriber.count({ where }),
       prisma.subscriber.findMany({
+        where,
         skip,
         take: limit,
-        orderBy: { subscribedAt: "desc" },
+        orderBy: { [sortField]: sortDirection },
       }),
+      this.getSubscriberStats(),
     ]);
 
     return {
@@ -328,9 +364,92 @@ export class SubscriberService {
         total,
         page,
         limit,
-        totalPages: Math.ceil(total / limit),
+        totalPages: Math.ceil(total / limit) || 1,
       },
+      stats,
     };
+  }
+
+  /**
+   * GET STATS: Aggregated metrics for subscriber dashboard
+   */
+  public async getSubscriberStats(): Promise<{
+    total: number;
+    subscribed: number;
+    unsubscribed: number;
+    pending: number;
+    recentSubscribers7d: number;
+    confirmationRate: number;
+  }> {
+    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+
+    const [total, subscribed, unsubscribed, pending, recentSubscribers7d] = await Promise.all([
+      prisma.subscriber.count(),
+      prisma.subscriber.count({ where: { status: "subscribed" } }),
+      prisma.subscriber.count({ where: { status: "unsubscribed" } }),
+      prisma.subscriber.count({ where: { status: "pending" } }),
+      prisma.subscriber.count({
+        where: {
+          status: "subscribed",
+          subscribedAt: { gte: sevenDaysAgo },
+        },
+      }),
+    ]);
+
+    const confirmationRate = total > 0 ? Math.round((subscribed / total) * 1000) / 10 : 100;
+
+    return {
+      total,
+      subscribed,
+      unsubscribed,
+      pending,
+      recentSubscribers7d,
+      confirmationRate,
+    };
+  }
+
+  /**
+   * ADMIN CREATE: Manually add subscriber from Admin Dashboard
+   */
+  public async adminCreateSubscriber(payload: {
+    email: string;
+    name?: string;
+    status?: string;
+    source?: string;
+    sendWelcomeEmail?: boolean;
+  }): Promise<any> {
+    const cleanEmail = payload.email.trim().toLowerCase();
+    const cleanName = this.sanitizeInput(payload.name);
+    const status = payload.status || "subscribed";
+    const source = this.sanitizeInput(payload.source || "admin_portal");
+
+    const existing = await prisma.subscriber.findUnique({ where: { email: cleanEmail } });
+    if (existing) {
+      throw new BadRequestError(`Subscriber with email '${cleanEmail}' already exists in database.`);
+    }
+
+    const created = await prisma.subscriber.create({
+      data: {
+        email: cleanEmail,
+        name: cleanName || null,
+        status,
+        source,
+        subscribedAt: new Date(),
+        updatedAt: new Date(),
+      },
+    });
+
+    this.logger.info(`✔ Admin created subscriber ${cleanEmail} (status: ${status})`);
+
+    // Sync to Plunk
+    await this.syncSubscriberToPlunk(cleanEmail, cleanName, status === "subscribed", source);
+
+    // Optional welcome email
+    if (payload.sendWelcomeEmail) {
+      await this.sendWelcomeEmail(cleanEmail, cleanName || undefined);
+    }
+
+    return created;
   }
 
   /**
@@ -347,7 +466,7 @@ export class SubscriberService {
   /**
    * UPDATE: Update subscriber profile & sync with Plunk
    */
-  public async updateSubscriber(id: string, data: { name?: string; status?: string }): Promise<any> {
+  public async updateSubscriber(id: string, data: { name?: string; status?: string; source?: string }): Promise<any> {
     const existing = await this.getSubscriberById(id);
 
     const updated = await prisma.subscriber.update({
@@ -355,6 +474,7 @@ export class SubscriberService {
       data: {
         name: data.name !== undefined ? this.sanitizeInput(data.name) : existing.name,
         status: data.status !== undefined ? data.status : existing.status,
+        source: data.source !== undefined ? this.sanitizeInput(data.source) : existing.source,
         updatedAt: new Date(),
       },
     });
@@ -384,6 +504,122 @@ export class SubscriberService {
     // Sync unsubscribe/delete to Plunk
     await this.syncSubscriberToPlunk(existing.email, existing.name || "", false);
   }
+
+  /**
+   * BULK UPDATE STATUS: Update status for multiple subscribers
+   */
+  public async bulkUpdateStatus(subscriberIds: string[], status: string): Promise<{ count: number }> {
+    const validSubscribers = await prisma.subscriber.findMany({
+      where: { id: { in: subscriberIds } },
+      select: { id: true, email: true, name: true, source: true },
+    });
+
+    if (validSubscribers.length === 0) {
+      return { count: 0 };
+    }
+
+    await prisma.subscriber.updateMany({
+      where: { id: { in: subscriberIds } },
+      data: {
+        status,
+        updatedAt: new Date(),
+      },
+    });
+
+    this.logger.info(`✔ Bulk updated ${validSubscribers.length} subscribers to status '${status}'`);
+
+    // Sync with Plunk in background
+    Promise.all(
+      validSubscribers.map((sub) =>
+        this.syncSubscriberToPlunk(sub.email, sub.name || "", status === "subscribed", sub.source)
+      )
+    ).catch((err) => {
+      this.logger.warn("Plunk bulk sync error:", { err });
+    });
+
+    return { count: validSubscribers.length };
+  }
+
+  /**
+   * BULK DELETE: Delete multiple subscribers by IDs
+   */
+  public async bulkDeleteSubscribers(subscriberIds: string[]): Promise<{ count: number }> {
+    const validSubscribers = await prisma.subscriber.findMany({
+      where: { id: { in: subscriberIds } },
+      select: { id: true, email: true, name: true },
+    });
+
+    if (validSubscribers.length === 0) {
+      return { count: 0 };
+    }
+
+    await prisma.subscriber.deleteMany({
+      where: { id: { in: subscriberIds } },
+    });
+
+    this.logger.info(`✔ Bulk deleted ${validSubscribers.length} subscribers from DB`);
+
+    // Sync deletion to Plunk
+    Promise.all(
+      validSubscribers.map((sub) =>
+        this.syncSubscriberToPlunk(sub.email, sub.name || "", false)
+      )
+    ).catch((err) => {
+      this.logger.warn("Plunk bulk delete sync error:", { err });
+    });
+
+    return { count: validSubscribers.length };
+  }
+
+  /**
+   * RESEND WELCOME EMAIL: Re-trigger welcome email to subscriber
+   */
+  public async resendWelcomeEmail(id: string): Promise<any> {
+    const subscriber = await this.getSubscriberById(id);
+    await this.sendWelcomeEmail(subscriber.email, subscriber.name || undefined);
+    return { email: subscriber.email, message: `Welcome email resent to ${subscriber.email}` };
+  }
+
+  /**
+   * EXPORT SUBSCRIBERS: Fetch all filtered subscribers for CSV export
+   */
+  public async exportSubscribers(query?: {
+    search?: string;
+    status?: string;
+    source?: string;
+    sortBy?: string;
+    sortOrder?: "asc" | "desc";
+  }): Promise<any[]> {
+    const where: any = {};
+
+    if (query?.search && query.search.trim()) {
+      const search = query.search.trim();
+      where.OR = [
+        { email: { contains: search, mode: "insensitive" } },
+        { name: { contains: search, mode: "insensitive" } },
+        { source: { contains: search, mode: "insensitive" } },
+      ];
+    }
+
+    if (query?.status && query.status !== "ALL") {
+      where.status = query.status;
+    }
+
+    if (query?.source && query.source !== "ALL" && query.source.trim()) {
+      where.source = { contains: query.source.trim(), mode: "insensitive" };
+    }
+
+    const allowedSortFields = ["subscribedAt", "updatedAt", "email", "name", "status", "source"];
+    const sortField = allowedSortFields.includes(query?.sortBy || "") ? (query?.sortBy as string) : "subscribedAt";
+    const sortDirection = query?.sortOrder === "asc" ? "asc" : "desc";
+
+    return await prisma.subscriber.findMany({
+      where,
+      orderBy: { [sortField]: sortDirection },
+      take: 10000,
+    });
+  }
+
 
   // ── Plunk Sync & Email Dispatch ───────────────────────────────────────────
 

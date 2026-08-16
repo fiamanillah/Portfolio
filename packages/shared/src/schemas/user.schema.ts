@@ -54,5 +54,8 @@ export const adminUserQuerySchema = z.object({
     return val ? Math.min(100, Math.max(1, parseInt(val, 10))) : 20;
   }),
   search: z.string().optional(),
-  role: roleEnumSchema.optional(),
+  role: z.enum(["ALL", "ADMIN", "MODERATOR", "AUTHOR", "USER"]).optional(),
+  sortBy: z.enum(["createdAt", "name", "email", "username", "role"]).optional(),
+  sortOrder: z.enum(["asc", "desc"]).optional(),
 });
+

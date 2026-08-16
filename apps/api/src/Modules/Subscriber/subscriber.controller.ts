@@ -137,14 +137,60 @@ export class SubscriberController extends BaseController {
   }
 
   /**
-   * GET /subscriber/v1/list — CRUD Read All (Paginated)
+  /**
+   * GET /subscriber/v1/list or /subscriber/v1/admin/list — CRUD Read All (Paginated, Searched, Filtered, Sorted)
    */
   public async getAllSubscribers(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const page = parseInt(req.query.page as string || "1");
       const limit = parseInt(req.query.limit as string || "20");
-      const result = await this.subscriberService.getAllSubscribers(page, limit);
-      this.sendPaginatedResponse(req, res, result.pagination, "Subscribers retrieved successfully.", result.data);
+      const search = req.query.search as string | undefined;
+      const status = req.query.status as string | undefined;
+      const source = req.query.source as string | undefined;
+      const sortBy = req.query.sortBy as string | undefined;
+      const sortOrder = req.query.sortOrder as "asc" | "desc" | undefined;
+
+      const result = await this.subscriberService.getAllSubscribers({
+        page,
+        limit,
+        search,
+        status,
+        source,
+        sortBy,
+        sortOrder,
+      });
+
+      res.status(HTTPStatusCode.OK).json({
+        success: true,
+        message: "Subscribers retrieved successfully.",
+        data: result.data,
+        pagination: result.pagination,
+        stats: result.stats,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * GET /subscriber/v1/admin/stats — Get KPI metrics for subscriber audience
+   */
+  public async getStats(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const stats = await this.subscriberService.getSubscriberStats();
+      this.sendResponse(req, res, "Subscriber statistics retrieved successfully.", HTTPStatusCode.OK, stats);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * POST /subscriber/v1/admin/create — Admin manually create a subscriber
+   */
+  public async adminCreateSubscriber(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const created = await this.subscriberService.adminCreateSubscriber(req.body);
+      this.sendResponse(req, res, `Subscriber ${created.email} added successfully.`, HTTPStatusCode.CREATED, created);
     } catch (error) {
       next(error);
     }
@@ -188,4 +234,69 @@ export class SubscriberController extends BaseController {
       next(error);
     }
   }
+
+  /**
+   * POST /subscriber/v1/admin/bulk-status — Bulk update status
+   */
+  public async bulkUpdateStatus(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const { subscriberIds, status } = req.body;
+      const result = await this.subscriberService.bulkUpdateStatus(subscriberIds, status);
+      this.sendResponse(req, res, `Successfully updated ${result.count} subscribers to '${status}'.`, HTTPStatusCode.OK, result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * POST /subscriber/v1/admin/bulk-delete — Bulk delete subscribers
+   */
+  public async bulkDelete(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const { subscriberIds } = req.body;
+      const result = await this.subscriberService.bulkDeleteSubscribers(subscriberIds);
+      this.sendResponse(req, res, `Successfully deleted ${result.count} subscribers.`, HTTPStatusCode.OK, result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * POST /subscriber/v1/admin/:id/resend — Resend welcome email
+   */
+  public async resendWelcomeEmail(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const id = req.params.id as string;
+      const result = await this.subscriberService.resendWelcomeEmail(id);
+      this.sendResponse(req, res, `Welcome email resent to ${result.email}.`, HTTPStatusCode.OK, result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * GET /subscriber/v1/admin/export — Export subscribers
+   */
+  public async exportSubscribers(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const search = req.query.search as string | undefined;
+      const status = req.query.status as string | undefined;
+      const source = req.query.source as string | undefined;
+      const sortBy = req.query.sortBy as string | undefined;
+      const sortOrder = req.query.sortOrder as "asc" | "desc" | undefined;
+
+      const data = await this.subscriberService.exportSubscribers({
+        search,
+        status,
+        source,
+        sortBy,
+        sortOrder,
+      });
+
+      this.sendResponse(req, res, "Subscribers exported successfully.", HTTPStatusCode.OK, data);
+    } catch (error) {
+      next(error);
+    }
+  }
+
 }

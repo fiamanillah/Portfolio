@@ -149,10 +149,97 @@ async function main() {
     },
   });
 
-  console.log(`✅ Seeded users successfully:
+  // 4. Seed Subscribers
+  const sampleSubscribers = [
+    {
+      email: "alex.rivera@techcorp.io",
+      name: "Alex Rivera",
+      status: "subscribed",
+      source: "blog_post",
+      subscribedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
+    },
+    {
+      email: "sarah.c@cloudscale.dev",
+      name: "Sarah Connor",
+      status: "subscribed",
+      source: "hero_section",
+      subscribedAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000),
+    },
+    {
+      email: "dev.marcus@matrix.org",
+      name: "Marcus Vance",
+      status: "pending",
+      source: "api_docs",
+      subscribedAt: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000),
+    },
+    {
+      email: "elena.v@quantum.ai",
+      name: "Elena Rostova",
+      status: "subscribed",
+      source: "blog_post",
+      subscribedAt: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000),
+    },
+    {
+      email: "jordan.taylor@enterprise.net",
+      name: "Jordan Taylor",
+      status: "unsubscribed",
+      source: "newsletter_modal",
+      subscribedAt: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000),
+    },
+    {
+      email: "maya.patel@synthetix.io",
+      name: "Maya Patel",
+      status: "subscribed",
+      source: "hero_section",
+      subscribedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
+    },
+    {
+      email: "lucas.silva@bytecraft.br",
+      name: "Lucas Silva",
+      status: "subscribed",
+      source: "project_showcase",
+      subscribedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
+    },
+    {
+      email: "chloe.dupont@atelier.fr",
+      name: "Chloe Dupont",
+      status: "pending",
+      source: "newsletter_modal",
+      subscribedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
+    },
+    {
+      email: "daniel.kim@hyperlink.kr",
+      name: "Daniel Kim",
+      status: "subscribed",
+      source: "admin_portal",
+      subscribedAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000),
+    },
+    {
+      email: "nathan.drake@uncharted.io",
+      name: "Nathan Drake",
+      status: "unsubscribed",
+      source: "blog_post",
+      subscribedAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
+    },
+  ];
+
+  for (const sub of sampleSubscribers) {
+    await prisma.subscriber.upsert({
+      where: { email: sub.email },
+      update: {
+        name: sub.name,
+        status: sub.status,
+        source: sub.source,
+      },
+      create: sub,
+    });
+  }
+
+  console.log(`✅ Seeded users and subscribers successfully:
   - Admin: ${adminUser.email} (${adminUser.role})
   - Moderator: ${alexUser.email} (${alexUser.role})
   - User: ${sarahUser.email} (${sarahUser.role})
+  - Subscribers: ${sampleSubscribers.length} records seeded
   `);
 }
 

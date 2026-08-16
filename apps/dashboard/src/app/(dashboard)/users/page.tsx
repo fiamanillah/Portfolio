@@ -1,52 +1,37 @@
-"use client";
+"use client"
 
-import * as React from "react";
+import * as React from "react"
 import {
-  Users,
-  ShieldCheck,
-  ShieldAlert,
-  Search,
-  RefreshCw,
-  MoreVertical,
-  Trash2,
-  UserCheck,
-  UserX,
   CheckCircle2,
   Clock,
-  Sparkles,
+  ExternalLink,
+  Mail,
+  Pencil,
+  RefreshCw,
+  Search,
   Shield,
-  Filter,
-} from "lucide-react";
+  ShieldAlert,
+  ShieldCheck,
+  Sparkles,
+  Trash2,
+  User,
+  UserCheck,
+  Users,
+  UserX,
+} from "lucide-react"
 
-import type { AuthUser, Role } from "@workspace/shared";
-import { UserApi } from "@/lib/api";
-import { useAuth } from "@/providers/auth-provider";
-import { Button } from "@workspace/ui/components/button";
-import { Input } from "@workspace/ui/components/input";
-import { Badge } from "@workspace/ui/components/badge";
+import type { AuthUser, Role } from "@workspace/shared"
+import { UserApi } from "@/lib/api"
+import { useAuth } from "@/providers/auth-provider"
+import { Badge } from "@workspace/ui/components/badge"
+import { Button } from "@workspace/ui/components/button"
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@workspace/ui/components/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@workspace/ui/components/table";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@workspace/ui/components/dropdown-menu";
+} from "@workspace/ui/components/card"
 import {
   Dialog,
   DialogContent,
@@ -54,130 +39,202 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@workspace/ui/components/dialog";
-import { Avatar, AvatarFallback, AvatarImage } from "@workspace/ui/components/avatar";
-import { toast } from "@workspace/ui/components/sonner";
+} from "@workspace/ui/components/dialog"
+import { Avatar, AvatarFallback, AvatarImage } from "@workspace/ui/components/avatar"
+import { toast } from "@workspace/ui/components/sonner"
+import { getUserColumns } from "./columns"
+import { UsersDataTable } from "./data-table"
 
-const ROLE_OPTIONS: Role[] = ["ADMIN", "MODERATOR", "AUTHOR", "USER"];
+const ROLE_OPTIONS: Role[] = ["ADMIN", "MODERATOR", "AUTHOR", "USER"]
 
 export default function UsersManagementPage() {
-  const { user: currentAdmin } = useAuth();
+  const { user: currentAdmin } = useAuth()
 
-  const [users, setUsers] = React.useState<AuthUser[]>([]);
-  const [isLoading, setIsLoading] = React.useState<boolean>(true);
-  const [searchQuery, setSearchQuery] = React.useState<string>("");
-  const [selectedRoleFilter, setSelectedRoleFilter] = React.useState<string>("ALL");
+  const [users, setUsers] = React.useState<AuthUser[]>([])
+  const [stats, setStats] = React.useState<{
+    total: number
+    admins: number
+    moderators: number
+    authors: number
+    users: number
+  }>({
+    total: 0,
+    admins: 0,
+    moderators: 0,
+    authors: 0,
+    users: 0,
+  })
+  const [isLoading, setIsLoading] = React.useState(true)
 
-  // Selected user for role change or delete
-  const [targetUser, setTargetUser] = React.useState<AuthUser | null>(null);
-  const [roleToAssign, setRoleToAssign] = React.useState<Role>("USER");
-  const [isRoleDialogOpen, setIsRoleDialogOpen] = React.useState(false);
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false);
-  const [isProcessing, setIsProcessing] = React.useState(false);
+  // Query state
+  const [searchQuery, setSearchQuery] = React.useState("")
+  const [debouncedSearch, setDebouncedSearch] = React.useState("")
+  const [roleFilter, setRoleFilter] = React.useState("ALL")
+  const [currentPage, setCurrentPage] = React.useState(1)
+  const [pageSize, setPageSize] = React.useState(20)
+  const [totalCount, setTotalCount] = React.useState(0)
 
+  // Dialog states
+  const [targetUser, setTargetUser] = React.useState<AuthUser | null>(null)
+  const [roleToAssign, setRoleToAssign] = React.useState<Role>("USER")
+  const [isRoleDialogOpen, setIsRoleDialogOpen] = React.useState(false)
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false)
+  const [isDetailsOpen, setIsDetailsOpen] = React.useState(false)
+  const [isProcessing, setIsProcessing] = React.useState(false)
+
+  // Debounce search input
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchQuery)
+      setCurrentPage(1)
+    }, 300)
+    return () => clearTimeout(timer)
+  }, [searchQuery])
+
+  // Fetch Users List
   const fetchUsers = React.useCallback(async () => {
     try {
-      setIsLoading(true);
+      setIsLoading(true)
       const res = await UserApi.listUsersAdmin({
-        search: searchQuery || undefined,
-        role: selectedRoleFilter !== "ALL" ? selectedRoleFilter : undefined,
-      });
+        page: currentPage,
+        limit: pageSize,
+        search: debouncedSearch || undefined,
+        role: roleFilter !== "ALL" ? roleFilter : undefined,
+        sortBy: "createdAt",
+        sortOrder: "desc",
+      })
 
       if (res.success && res.data) {
-        setUsers(res.data);
+        setUsers(res.data)
+        setTotalCount(res.pagination?.total || res.data.length)
+        if (res.stats) {
+          setStats(res.stats)
+        } else {
+          // Fallback calculation
+          setStats({
+            total: res.data.length,
+            admins: res.data.filter((u) => u.role === "ADMIN").length,
+            moderators: res.data.filter((u) => u.role === "MODERATOR").length,
+            authors: res.data.filter((u) => u.role === "AUTHOR").length,
+            users: res.data.filter((u) => u.role === "USER").length,
+          })
+        }
       } else {
         toast.error("Failed to load user list", {
           description: res.error || "Please ensure the backend API is connected.",
-        });
+        })
       }
     } catch (err: any) {
       toast.error("Error loading users", {
         description: err?.message || "Network issue.",
-      });
+      })
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  }, [searchQuery, selectedRoleFilter]);
+  }, [currentPage, pageSize, debouncedSearch, roleFilter])
 
   React.useEffect(() => {
-    fetchUsers();
-  }, [fetchUsers]);
+    fetchUsers()
+  }, [fetchUsers])
 
+  // Action handlers
+  const handleRoleChangePrompt = (user: AuthUser) => {
+    setTargetUser(user)
+    setRoleToAssign((user.role as Role) || "USER")
+    setIsRoleDialogOpen(true)
+  }
+
+  const handleDeletePrompt = (user: AuthUser) => {
+    setTargetUser(user)
+    setIsDeleteDialogOpen(true)
+  }
+
+  const handleViewDetails = (user: AuthUser) => {
+    setTargetUser(user)
+    setIsDetailsOpen(true)
+  }
+
+  // Confirm Role Change
   const handleRoleChangeConfirm = async () => {
-    if (!targetUser) return;
+    if (!targetUser) return
 
     if (targetUser.id === currentAdmin?.id && roleToAssign !== "ADMIN") {
       toast.error("Self-demotion blocked", {
         description: "You cannot revoke your own Super Administrator role.",
-      });
-      setIsRoleDialogOpen(false);
-      return;
+      })
+      setIsRoleDialogOpen(false)
+      return
     }
 
     try {
-      setIsProcessing(true);
-      const res = await UserApi.updateUserRole(targetUser.id, roleToAssign);
+      setIsProcessing(true)
+      const res = await UserApi.updateUserRole(targetUser.id, roleToAssign)
 
       if (res.success) {
         toast.success(`Role updated successfully`, {
           description: `${targetUser.name}'s role was updated to ${roleToAssign}.`,
-        });
-        setIsRoleDialogOpen(false);
-        fetchUsers();
+        })
+        setIsRoleDialogOpen(false)
+        fetchUsers()
       } else {
         toast.error("Role update failed", {
           description: res.error || "Unable to modify user permissions.",
-        });
+        })
       }
     } catch (err: any) {
       toast.error("Error updating role", {
         description: err?.message,
-      });
+      })
     } finally {
-      setIsProcessing(false);
+      setIsProcessing(false)
     }
-  };
+  }
 
+  // Confirm Delete User
   const handleDeleteUserConfirm = async () => {
-    if (!targetUser) return;
+    if (!targetUser) return
 
     if (targetUser.id === currentAdmin?.id) {
       toast.error("Action Prohibited", {
         description: "You cannot delete your own active administrator account.",
-      });
-      setIsDeleteDialogOpen(false);
-      return;
+      })
+      setIsDeleteDialogOpen(false)
+      return
     }
 
     try {
-      setIsProcessing(true);
-      const res = await UserApi.deleteUser(targetUser.id);
+      setIsProcessing(true)
+      const res = await UserApi.deleteUser(targetUser.id)
 
       if (res.success) {
         toast.success("User account deleted", {
           description: `Successfully deleted user ${targetUser.email}.`,
-        });
-        setIsDeleteDialogOpen(false);
-        fetchUsers();
+        })
+        setIsDeleteDialogOpen(false)
+        fetchUsers()
       } else {
         toast.error("Deletion failed", {
           description: res.error || "Failed to remove user record.",
-        });
+        })
       }
     } catch (err: any) {
       toast.error("Error deleting user", {
         description: err?.message,
-      });
+      })
     } finally {
-      setIsProcessing(false);
+      setIsProcessing(false)
     }
-  };
+  }
 
-  // Metric counts
-  const totalUsers = users.length;
-  const adminCount = users.filter((u) => u.role === "ADMIN").length;
-  const modCount = users.filter((u) => u.role === "MODERATOR").length;
-  const memberCount = users.filter((u) => u.role === "USER" || u.role === "AUTHOR").length;
+  // Memoized Columns
+  const columns = React.useMemo(() => {
+    return getUserColumns({
+      currentUserId: currentAdmin?.id,
+      onChangeRole: handleRoleChangePrompt,
+      onDeleteUser: handleDeletePrompt,
+      onViewDetails: handleViewDetails,
+    })
+  }, [currentAdmin?.id])
 
   return (
     <div className="space-y-6">
@@ -211,7 +268,7 @@ export default function UsersManagementPage() {
         </div>
       </div>
 
-      {/* KPI Cards */}
+      {/* KPI Stat Cards */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Card className="border-border/80 bg-card/60">
           <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
@@ -223,8 +280,8 @@ export default function UsersManagementPage() {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{totalUsers}</div>
-            <p className="text-xs text-muted-foreground mt-0.5">Registered portfolio users</p>
+            <div className="text-2xl font-bold">{stats.total}</div>
+            <p className="text-xs text-muted-foreground mt-0.5">Registered platform accounts</p>
           </CardContent>
         </Card>
 
@@ -238,7 +295,9 @@ export default function UsersManagementPage() {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-emerald-500">{adminCount}</div>
+            <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
+              {stats.admins}
+            </div>
             <p className="text-xs text-muted-foreground mt-0.5">Full console authorization</p>
           </CardContent>
         </Card>
@@ -253,7 +312,9 @@ export default function UsersManagementPage() {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-amber-500">{modCount}</div>
+            <div className="text-2xl font-bold text-amber-600 dark:text-amber-400">
+              {stats.moderators}
+            </div>
             <p className="text-xs text-muted-foreground mt-0.5">Content & comments stewards</p>
           </CardContent>
         </Card>
@@ -261,219 +322,56 @@ export default function UsersManagementPage() {
         <Card className="border-border/80 bg-card/60">
           <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
             <CardTitle className="text-sm font-medium text-muted-foreground">
-              Standard Members
+              Members & Authors
             </CardTitle>
             <div className="flex size-8 items-center justify-center rounded-lg bg-blue-500/10 text-blue-500">
               <UserCheck className="size-4" />
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-blue-500">{memberCount}</div>
-            <p className="text-xs text-muted-foreground mt-0.5">Community & subscribers</p>
+            <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+              {stats.users + stats.authors}
+            </div>
+            <p className="text-xs text-muted-foreground mt-0.5">Community & contributors</p>
           </CardContent>
         </Card>
       </div>
 
-      {/* Users Table Card */}
+      {/* Main Users Table Card */}
       <Card className="border-border/80">
-        <CardHeader className="pb-4">
-          <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+        <CardHeader className="pb-2">
+          <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <CardTitle className="text-base font-semibold">
                 Platform Users & Roles
               </CardTitle>
               <CardDescription className="text-xs">
-                Real-time RBAC list with granular privilege management.
+                Real-time RBAC list with granular privilege management and sorting.
               </CardDescription>
-            </div>
-
-            {/* Filters and Search */}
-            <div className="flex flex-wrap items-center gap-2">
-              <div className="relative w-full sm:w-64">
-                <Search className="absolute left-3 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />
-                <Input
-                  placeholder="Search name, email, user..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-8 text-xs h-8"
-                />
-              </div>
-
-              <div className="flex items-center gap-1 bg-muted/40 p-0.5 rounded-lg border border-border">
-                {["ALL", "ADMIN", "MODERATOR", "USER"].map((role) => (
-                  <button
-                    key={role}
-                    type="button"
-                    onClick={() => setSelectedRoleFilter(role)}
-                    className={`px-2.5 py-1 text-[11px] rounded-md font-medium transition-all ${
-                      selectedRoleFilter === role
-                        ? "bg-primary text-primary-foreground shadow-xs"
-                        : "text-muted-foreground hover:text-foreground"
-                    }`}
-                  >
-                    {role}
-                  </button>
-                ))}
-              </div>
             </div>
           </div>
         </CardHeader>
 
-        <CardContent className="px-0">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="pl-6">User</TableHead>
-                <TableHead>Email & Status</TableHead>
-                <TableHead>Role</TableHead>
-                <TableHead className="hidden md:table-cell">Created</TableHead>
-                <TableHead className="pr-6 text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {isLoading ? (
-                <TableRow>
-                  <TableCell colSpan={5} className="h-32 text-center text-xs text-muted-foreground">
-                    <div className="flex flex-col items-center justify-center gap-2">
-                      <RefreshCw className="size-5 animate-spin text-primary" />
-                      <span>Loading user records...</span>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ) : users.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={5} className="h-32 text-center text-xs text-muted-foreground">
-                    No users matching criteria.
-                  </TableCell>
-                </TableRow>
-              ) : (
-                users.map((u) => {
-                  const isCurrent = u.id === currentAdmin?.id;
-
-                  return (
-                    <TableRow key={u.id} className={isCurrent ? "bg-primary/5" : ""}>
-                      <TableCell className="pl-6">
-                        <div className="flex items-center gap-3">
-                          <Avatar className="size-8 rounded-lg border border-border">
-                            <AvatarImage src={u.avatar || undefined} alt={u.name} />
-                            <AvatarFallback className="text-[11px] font-bold">
-                              {u.name.slice(0, 2).toUpperCase()}
-                            </AvatarFallback>
-                          </Avatar>
-                          <div className="grid leading-tight">
-                            <div className="flex items-center gap-1.5 font-medium text-xs">
-                              <span>{u.name}</span>
-                              {isCurrent && (
-                                <Badge variant="secondary" className="text-[9px] px-1 h-4">
-                                  You
-                                </Badge>
-                              )}
-                            </div>
-                            <span className="text-[11px] text-muted-foreground font-mono">
-                              @{u.username}
-                            </span>
-                          </div>
-                        </div>
-                      </TableCell>
-
-                      <TableCell>
-                        <div className="grid leading-tight">
-                          <span className="text-xs font-mono">{u.email}</span>
-                          <div className="flex items-center gap-1 mt-0.5">
-                            {u.isEmailVerified ? (
-                              <span className="flex items-center text-[10px] text-emerald-500 font-medium">
-                                <CheckCircle2 className="size-2.5 mr-0.5" />
-                                Verified
-                              </span>
-                            ) : (
-                              <span className="flex items-center text-[10px] text-amber-500">
-                                <Clock className="size-2.5 mr-0.5" />
-                                Unverified
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                      </TableCell>
-
-                      <TableCell>
-                        <Badge
-                          variant={
-                            u.role === "ADMIN"
-                              ? "default"
-                              : u.role === "MODERATOR"
-                              ? "secondary"
-                              : "outline"
-                          }
-                          className="font-mono text-[10px] uppercase"
-                        >
-                          {u.role || "USER"}
-                        </Badge>
-                      </TableCell>
-
-                      <TableCell className="hidden md:table-cell text-xs text-muted-foreground">
-                        {u.createdAt
-                          ? new Date(u.createdAt).toLocaleDateString("en-US", {
-                              month: "short",
-                              day: "numeric",
-                              year: "numeric",
-                            })
-                          : "—"}
-                      </TableCell>
-
-                      <TableCell className="pr-6 text-right">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon" className="size-8">
-                              <MoreVertical className="size-4" />
-                              <span className="sr-only">Actions</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end" className="w-48">
-                            <DropdownMenuLabel className="text-xs">
-                              Manage User
-                            </DropdownMenuLabel>
-                            <DropdownMenuSeparator />
-
-                            <DropdownMenuItem
-                              onClick={() => {
-                                setTargetUser(u);
-                                setRoleToAssign((u.role as Role) || "USER");
-                                setIsRoleDialogOpen(true);
-                              }}
-                              className="text-xs gap-2"
-                            >
-                              <Shield className="size-3.5 text-primary" />
-                              Change Role
-                            </DropdownMenuItem>
-
-                            {!isCurrent && (
-                              <>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem
-                                  onClick={() => {
-                                    setTargetUser(u);
-                                    setIsDeleteDialogOpen(true);
-                                  }}
-                                  className="text-xs gap-2 text-destructive focus:bg-destructive/10 focus:text-destructive"
-                                >
-                                  <Trash2 className="size-3.5" />
-                                  Delete Account
-                                </DropdownMenuItem>
-                              </>
-                            )}
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })
-              )}
-            </TableBody>
-          </Table>
+        <CardContent className="pt-2">
+          <UsersDataTable
+            columns={columns}
+            data={users}
+            isLoading={isLoading}
+            totalCount={totalCount}
+            currentPage={currentPage}
+            pageSize={pageSize}
+            onPageChange={setCurrentPage}
+            onPageSizeChange={setPageSize}
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
+            roleFilter={roleFilter}
+            onRoleFilterChange={setRoleFilter}
+            onRefresh={fetchUsers}
+          />
         </CardContent>
       </Card>
 
-      {/* Role Change Dialog */}
+      {/* ── Dialog: Role Change ───────────────────────────────────────────── */}
       <Dialog open={isRoleDialogOpen} onOpenChange={setIsRoleDialogOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
@@ -557,7 +455,89 @@ export default function UsersManagementPage() {
         </DialogContent>
       </Dialog>
 
-      {/* Delete User Confirmation Dialog */}
+      {/* ── Dialog: User Account Details ─────────────────────────────────── */}
+      <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-base flex items-center gap-2">
+              <User className="size-4 text-primary" />
+              <span>User Profile Overview</span>
+            </DialogTitle>
+            <DialogDescription className="text-xs">
+              Complete account metadata for{" "}
+              <span className="font-semibold text-foreground">{targetUser?.name}</span>.
+            </DialogDescription>
+          </DialogHeader>
+
+          {targetUser && (
+            <div className="space-y-4 py-2 text-xs">
+              <div className="rounded-xl border border-border/80 bg-muted/40 p-4 space-y-3">
+                <div className="flex items-center gap-3">
+                  <Avatar className="size-12 rounded-xl border border-border bg-muted">
+                    <AvatarImage src={targetUser.avatar || undefined} alt={targetUser.name} />
+                    <AvatarFallback className="text-sm font-bold">
+                      {targetUser.name.slice(0, 2).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="grid">
+                    <span className="font-bold text-sm text-foreground">{targetUser.name}</span>
+                    <span className="text-xs text-muted-foreground font-mono">
+                      @{targetUser.username}
+                    </span>
+                    <span className="text-[11px] text-muted-foreground font-mono mt-0.5">
+                      {targetUser.email}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2 pt-2 border-t border-border/60 text-muted-foreground">
+                  <div>
+                    <span className="text-[10px] uppercase font-semibold text-foreground/70">
+                      Assigned Role
+                    </span>
+                    <p className="font-mono uppercase font-medium text-foreground">
+                      {targetUser.role}
+                    </p>
+                  </div>
+                  <div>
+                    <span className="text-[10px] uppercase font-semibold text-foreground/70">
+                      Email Verification
+                    </span>
+                    <p className={targetUser.isEmailVerified ? "text-emerald-600" : "text-amber-600"}>
+                      {targetUser.isEmailVerified ? "Verified" : "Unverified"}
+                    </p>
+                  </div>
+                  <div>
+                    <span className="text-[10px] uppercase font-semibold text-foreground/70">
+                      Created Date
+                    </span>
+                    <p>{targetUser.createdAt ? new Date(targetUser.createdAt).toLocaleDateString() : "—"}</p>
+                  </div>
+                  <div>
+                    <span className="text-[10px] uppercase font-semibold text-foreground/70">
+                      Newsletter
+                    </span>
+                    <p>{targetUser.subscribedToNewsletter ? "Subscribed" : "Opted Out"}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setIsDetailsOpen(false)}
+            >
+              Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* ── Dialog: Delete User Confirmation ─────────────────────────────── */}
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
@@ -593,5 +573,5 @@ export default function UsersManagementPage() {
         </DialogContent>
       </Dialog>
     </div>
-  );
+  )
 }

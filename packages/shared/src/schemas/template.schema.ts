@@ -63,9 +63,15 @@ export const listTemplatesQuerySchema = z.object({
     return val ? Math.min(100, Math.max(1, parseInt(val, 10))) : 20;
   }),
   search: z.string().optional(),
-  type: templateTypeEnumSchema.optional(),
+  type: z.union([templateTypeEnumSchema, z.literal("ALL")]).optional(),
+  source: z.enum(["ALL", "CODEBASE", "CUSTOM"]).optional(),
+  syncStatus: z.enum(["ALL", "SYNCED", "LOCAL"]).optional(),
   isSystem: z.union([z.boolean(), z.enum(["true", "false"])]).optional().transform((val) => {
     if (typeof val === "boolean") return val;
-    return val === "true";
+    if (val === "true") return true;
+    if (val === "false") return false;
+    return undefined;
   }),
+  sortBy: z.enum(["name", "slug", "type", "createdAt", "updatedAt", "syncedAt"]).optional(),
+  sortOrder: z.enum(["asc", "desc"]).optional(),
 });

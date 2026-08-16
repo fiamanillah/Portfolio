@@ -39,7 +39,10 @@ export class TemplateModule extends BaseModule {
   protected async setupRoutes(): Promise<void> {
     const controller = this.getController<TemplateController>("TemplateController");
 
-    // ── Template Discovery & Sync Endpoints ─────────────────────────
+    // ── Template KPI & Discovery Endpoints ──────────────────────────
+    // GET /templates/v1/stats - Summary counts and metrics
+    this.router.get("/stats", controller.getStats.bind(controller));
+
     // GET /templates/v1/remote - List remote templates directly from Plunk
     this.router.get("/remote", controller.getRemoteTemplates.bind(controller));
 
@@ -60,7 +63,7 @@ export class TemplateModule extends BaseModule {
       controller.sendTestEmail.bind(controller)
     );
 
-    // ── Standard CRUD Endpoints ─────────────────────────────────────
+    // ── Standard CRUD & Actions Endpoints ────────────────────────────
     // GET /templates/v1 - List all templates (DB + sync status)
     this.router.get(
       "/",
@@ -77,6 +80,12 @@ export class TemplateModule extends BaseModule {
 
     // POST /templates/v1/:id/duplicate - Duplicate template
     this.router.post("/:id/duplicate", controller.duplicateTemplate.bind(controller));
+
+    // POST /templates/v1/:id/reset - Reset codebase template to default
+    this.router.post("/:id/reset", controller.resetTemplate.bind(controller));
+
+    // POST /templates/v1/:id/sync - Sync single template to Plunk
+    this.router.post("/:id/sync", controller.syncSingleTemplate.bind(controller));
 
     // GET /templates/v1/:idOrSlug - Get single template by ID or slug
     this.router.get("/:idOrSlug", controller.getTemplate.bind(controller));

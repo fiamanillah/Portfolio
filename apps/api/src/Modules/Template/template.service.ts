@@ -17,7 +17,8 @@ export class TemplateService {
   private logger = new AppLogger("TemplateService");
 
   /**
-   * Initializes built-in system templates into the database on bootstrap.
+   * Initializes built-in system templates into the database on bootstrap without
+   * overwriting custom edits that an admin might have made.
    */
   public async initializeSystemTemplates(): Promise<void> {
     try {
@@ -43,19 +44,11 @@ export class TemplateService {
             },
           });
           this.logger.info(`✔ Seeded default system template: [${sysTemplate.slug}] "${sysTemplate.name}"`);
-        } else if (existing.isSystem) {
-          // Keep system template bodies aligned with latest layout updates
+        } else if (!existing.isSystem) {
+          // Ensure system flag is set for known codebase templates
           await prisma.emailTemplate.update({
             where: { slug: sysTemplate.slug },
-            data: {
-              name: sysTemplate.name,
-              description: sysTemplate.description,
-              subject: sysTemplate.subject,
-              body: sysTemplate.body,
-              fromName: sysTemplate.fromName,
-              replyTo: sysTemplate.replyTo,
-              type: sysTemplate.type,
-            },
+            data: { isSystem: true },
           });
         }
       }
@@ -63,6 +56,40 @@ export class TemplateService {
     } catch (error) {
       this.logger.error("Failed to initialize system email templates", { error });
     }
+  }
+
+  /**
+   * KPI STATS: Aggregates total, codebase, custom, and plunk sync statistics
+   */
+  public async getStats() {
+    const [total, systemCount, customCount, plunkSyncedCount, typeGroups] = await Promise.all([
+      prisma.emailTemplate.count(),
+      prisma.emailTemplate.count({ where: { isSystem: true } }),
+      prisma.emailTemplate.count({ where: { isSystem: false } }),
+      prisma.emailTemplate.count({ where: { plunkId: { not: null } } }),
+      prisma.emailTemplate.groupBy({
+        by: ["type"],
+        _count: { _all: true },
+      }),
+    ]);
+
+    const typesCount: Record<string, number> = {
+      TRANSACTIONAL: 0,
+      MARKETING: 0,
+      HEADLESS: 0,
+    };
+
+    for (const group of typeGroups) {
+      typesCount[group.type] = group._count._all;
+    }
+
+    return {
+      total,
+      systemCount,
+      customCount,
+      plunkSyncedCount,
+      typesCount,
+    };
   }
 
   /**
@@ -115,7 +142,7 @@ export class TemplateService {
       },
     });
 
-    this.logger.info(`✔ Created email template "${template.name}" (${template.slug}) [Plunk ID: ${plunkId || 'local-only'}]`);
+    this.logger.info(`✔ Created email template "${template.name}" (${template.slug}) [Plunk ID: ${plunkId || "local-only"}]`);
     return template;
   }
 
@@ -123,7 +150,7 @@ export class TemplateService {
    * READ ALL: Paginated and filterable list of templates.
    */
   public async getAllTemplates(query: ListTemplatesQueryDTO) {
-    const { page, limit, search, type, isSystem } = query;
+    const { page = 1, limit = 20, search, type, source, syncStatus, isSystem, sortBy = "updatedAt", sortOrder = "desc" } = query;
     const skip = (page - 1) * limit;
 
     const where: any = {};
@@ -137,23 +164,55 @@ export class TemplateService {
       ];
     }
 
-    if (type) {
+    if (type && type !== "ALL") {
       where.type = type;
     }
 
-    if (isSystem !== undefined) {
+    if (source === "CODEBASE") {
+      where.isSystem = true;
+    } else if (source === "CUSTOM") {
+      where.isSystem = false;
+    } else if (isSystem !== undefined) {
       where.isSystem = isSystem;
     }
 
-    const [total, data] = await Promise.all([
+    if (syncStatus === "SYNCED") {
+      where.plunkId = { not: null };
+    } else if (syncStatus === "LOCAL") {
+      where.plunkId = null;
+    }
+
+    // Build sort order
+    const orderBy: any[] = [];
+    if (sortBy === "name" || sortBy === "slug" || sortBy === "type" || sortBy === "createdAt" || sortBy === "updatedAt" || sortBy === "syncedAt") {
+      orderBy.push({ [sortBy]: sortOrder });
+    } else {
+      orderBy.push({ isSystem: "desc" }, { updatedAt: "desc" });
+    }
+
+    const [total, templates] = await Promise.all([
       prisma.emailTemplate.count({ where }),
       prisma.emailTemplate.findMany({
         where,
         skip,
         take: limit,
-        orderBy: [{ isSystem: "desc" }, { updatedAt: "desc" }],
+        orderBy,
       }),
     ]);
+
+    // Attach sample data definitions if available
+    const data = templates.map((tpl) => {
+      const sysDef = SYSTEM_TEMPLATES.find((s) => s.slug === tpl.slug);
+      return {
+        ...tpl,
+        sampleData: sysDef?.sampleData || {
+          name: "Recipient",
+          email: "recipient@example.com",
+          subject: "Sample Subject",
+          message: "Sample message content for template preview.",
+        },
+      };
+    });
 
     const totalPages = Math.ceil(total / limit);
 
@@ -215,26 +274,26 @@ export class TemplateService {
       try {
         if (plunkId) {
           await PlunkTemplateService.updateTemplate(plunkId, {
-            name: dto.name,
-            description: dto.description ?? undefined,
-            subject: dto.subject,
-            body: dto.body,
-            from: dto.from ?? undefined,
-            fromName: dto.fromName ?? undefined,
-            replyTo: dto.replyTo ?? undefined,
-            type: dto.type as any,
+            name: dto.name || existing.name,
+            description: dto.description !== undefined ? dto.description ?? undefined : existing.description ?? undefined,
+            subject: dto.subject || existing.subject,
+            body: dto.body || existing.body,
+            from: dto.from !== undefined ? dto.from ?? undefined : existing.from ?? undefined,
+            fromName: dto.fromName !== undefined ? dto.fromName ?? undefined : existing.fromName ?? undefined,
+            replyTo: dto.replyTo !== undefined ? dto.replyTo ?? undefined : existing.replyTo ?? undefined,
+            type: (dto.type || existing.type) as any,
           });
           syncedAt = new Date();
         } else {
           // If not yet synced, create it in Plunk
           const plunkRes = await PlunkTemplateService.createTemplate({
             name: dto.name || existing.name,
-            description: dto.description ?? existing.description ?? undefined,
+            description: dto.description !== undefined ? dto.description ?? undefined : existing.description ?? undefined,
             subject: dto.subject || existing.subject,
             body: dto.body || existing.body,
-            from: dto.from ?? existing.from ?? undefined,
-            fromName: dto.fromName ?? existing.fromName ?? undefined,
-            replyTo: dto.replyTo ?? existing.replyTo ?? undefined,
+            from: dto.from !== undefined ? dto.from ?? undefined : existing.from ?? undefined,
+            fromName: dto.fromName !== undefined ? dto.fromName ?? undefined : existing.fromName ?? undefined,
+            replyTo: dto.replyTo !== undefined ? dto.replyTo ?? undefined : existing.replyTo ?? undefined,
             type: (dto.type || existing.type) as any,
           });
           plunkId = plunkRes.id;
@@ -266,6 +325,79 @@ export class TemplateService {
   }
 
   /**
+   * RESET: Restores a codebase system template back to its default source code layout
+   */
+  public async resetSystemTemplate(idOrSlug: string) {
+    const template = await this.getTemplateByIdOrSlug(idOrSlug);
+    const sysDef = SYSTEM_TEMPLATES.find((t) => t.slug === template.slug);
+
+    if (!sysDef) {
+      throw new BadRequestError(`No codebase default template definition found for slug "${template.slug}"`);
+    }
+
+    const updated = await this.updateTemplate(template.id, {
+      name: sysDef.name,
+      description: sysDef.description,
+      subject: sysDef.subject,
+      body: sysDef.body,
+      fromName: sysDef.fromName,
+      replyTo: sysDef.replyTo,
+      type: sysDef.type,
+      syncToPlunk: true,
+    });
+
+    this.logger.info(`✔ Reset codebase template "${template.slug}" to default system layout`);
+    return updated;
+  }
+
+  /**
+   * SYNC SINGLE: Push sync a single template to Plunk API
+   */
+  public async syncSingleTemplate(id: string) {
+    const template = await prisma.emailTemplate.findUnique({ where: { id } });
+    if (!template) {
+      throw new NotFoundError(`Template with ID ${id} not found.`);
+    }
+
+    let plunkId = template.plunkId;
+    if (plunkId) {
+      await PlunkTemplateService.updateTemplate(plunkId, {
+        name: template.name,
+        description: template.description ?? undefined,
+        subject: template.subject,
+        body: template.body,
+        from: template.from ?? undefined,
+        fromName: template.fromName ?? undefined,
+        replyTo: template.replyTo ?? undefined,
+        type: template.type as any,
+      });
+    } else {
+      const plunkRes = await PlunkTemplateService.createTemplate({
+        name: template.name,
+        description: template.description ?? undefined,
+        subject: template.subject,
+        body: template.body,
+        from: template.from ?? undefined,
+        fromName: template.fromName ?? undefined,
+        replyTo: template.replyTo ?? undefined,
+        type: template.type as any,
+      });
+      plunkId = plunkRes.id;
+    }
+
+    const updated = await prisma.emailTemplate.update({
+      where: { id },
+      data: {
+        plunkId,
+        syncedAt: new Date(),
+      },
+    });
+
+    this.logger.info(`✔ Single template sync completed: "${template.name}" -> Plunk ID ${plunkId}`);
+    return updated;
+  }
+
+  /**
    * DELETE: Deletes template from database and Plunk.
    */
   public async deleteTemplate(id: string, force: boolean = false) {
@@ -275,7 +407,7 @@ export class TemplateService {
     }
 
     if (existing.isSystem && !force) {
-      throw new BadRequestError("System email templates cannot be deleted.");
+      throw new BadRequestError("Codebase system email templates cannot be deleted. You can edit their subject/body or reset to default instead.");
     }
 
     if (existing.plunkId) {
@@ -300,7 +432,7 @@ export class TemplateService {
       throw new NotFoundError(`Template with ID ${id} not found.`);
     }
 
-    const newSlug = `${original.slug}-copy-${Date.now()}`;
+    const newSlug = `${original.slug}-copy-${Date.now().toString().slice(-4)}`;
     const newName = `Copy of ${original.name}`;
 
     return await this.createTemplate({
@@ -433,7 +565,6 @@ export class TemplateService {
   public async sendTestEmail(dto: SendTestEmailDTO) {
     let subject = dto.subject || "";
     let body = dto.body || "";
-    let templateId = dto.templateId;
     let plunkId: string | undefined = undefined;
 
     if (dto.templateId || dto.slug) {

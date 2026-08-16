@@ -16,9 +16,12 @@ export type PreviewTemplateDTO = z.infer<typeof previewTemplateSchema>;
 export type SendTestEmailDTO = z.infer<typeof sendTestEmailSchema>;
 export type ListTemplatesQueryDTO = z.infer<typeof listTemplatesQuerySchema>;
 
+export type TemplateSource = "ALL" | "CODEBASE" | "CUSTOM";
+export type TemplateSyncStatus = "ALL" | "SYNCED" | "LOCAL";
+
 export interface EmailTemplate {
   id: string;
-  slug?: string;
+  slug: string;
   name: string;
   subject: string;
   body: string;
@@ -28,18 +31,45 @@ export interface EmailTemplate {
   fromName?: string | null;
   replyTo?: string | null;
   plunkId?: string | null;
-  variables: Record<string, any>;
-  isActive: boolean;
+  variables?: Record<string, any> | string[];
+  isActive?: boolean;
   isSystem?: boolean;
+  syncedAt?: string | null;
   createdAt: string;
   updatedAt: string;
+  sampleData?: Record<string, any>;
+}
+
+export interface TemplateStats {
+  total: number;
+  systemCount: number;
+  customCount: number;
+  plunkSyncedCount: number;
+  typesCount: Record<string, number>;
+}
+
+export interface AdminTemplateQuery {
+  page?: number;
+  limit?: number;
+  search?: string;
+  type?: EmailTemplateType | "ALL";
+  source?: TemplateSource;
+  syncStatus?: TemplateSyncStatus;
+  isSystem?: boolean;
+  sortBy?: "name" | "slug" | "type" | "createdAt" | "updatedAt" | "syncedAt";
+  sortOrder?: "asc" | "desc";
 }
 
 export interface SystemTemplateDefinition {
+  slug: string;
   name: string;
   subject: string;
   body: string;
   type: EmailTemplateType;
   description: string;
-  variables: Record<string, any>;
+  from?: string;
+  fromName?: string;
+  replyTo?: string;
+  isSystem: boolean;
+  sampleData: Record<string, any>;
 }

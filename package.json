@@ -17,6 +17,7 @@
     "docker:logs": "docker compose logs -f"
   },
   "devDependencies": {
+    "@tanstack/react-table": "^9.1.2",
     "prettier": "^3.8.1",
     "prettier-plugin-astro": "^0.14.1",
     "prettier-plugin-tailwindcss": "^0.7.2",
@@ -32,6 +33,7 @@
     "packages/*"
   ],
   "dependencies": {
-    "@astrojs/rss": "^4.0.19"
+    "@astrojs/rss": "^4.0.19",
+    "lucide-react": "^1.31.0"
   }
 }

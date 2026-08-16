@@ -79,9 +79,16 @@ export class UserController extends BaseController {
    */
   public async listUsersAdmin(req: Request, res: Response) {
     const query = (req.validatedQuery || {}) as AdminUserQueryDTO;
-    const { data, pagination } = await this.userService.listUsersAdmin(query);
-    return this.sendPaginatedResponse(req, res, pagination, "User list retrieved", data);
+    const { data, pagination, stats } = await this.userService.listUsersAdmin(query);
+    return res.status(200).json({
+      success: true,
+      message: "User list retrieved successfully.",
+      data,
+      pagination,
+      stats,
+    });
   }
+
 
   /**
    * PATCH /users/v1/admin/users/:id/role (Admin only)
