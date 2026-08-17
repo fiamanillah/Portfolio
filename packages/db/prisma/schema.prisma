@@ -455,3 +455,97 @@ model CaseStudy {
   @@index([createdAt])
 }
 
+enum NewsletterStatus {
+  DRAFT
+  SCHEDULED
+  SENDING
+  SENT
+  FAILED
+  CANCELLED
+}
+
+enum AudienceType {
+  ALL
+  SEGMENT
+  CUSTOM
+}
+
+enum SendLogStatus {
+  PENDING
+  SENT
+  FAILED
+  BOUNCED
+}
+
+model Newsletter {
+  id              String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title           String
+  subject         String
+  previewText     String?
+  content         String           @db.Text
+  status          NewsletterStatus @default(DRAFT)
+  templateId      String?          @db.Uuid
+
+  // Custom sender overrides (optional)
+  senderName      String?
+  senderEmail     String?
+  replyTo         String?
+
+  // Audience targeting & filtering
+  targetAudience  AudienceType     @default(ALL)
+  includedSources String[]         @default([])
+  includedTags    String[]         @default([])
+  includedEmails  String[]         @default([])
+  excludedEmails  String[]         @default([])
+  excludedSources String[]         @default([])
+
+  // Scheduling & Dispatch Timing
+  scheduledAt     DateTime?
+  sentAt          DateTime?
+
+  // Plunk Integration
+  plunkCampaignId String?
+  
+  // Delivery & Dispatch Analytics
+  totalRecipients Int              @default(0)
+  successfulSends Int              @default(0)
+  failedSends     Int              @default(0)
+  deliveredCount  Int              @default(0)
+  openedCount     Int              @default(0)
+  clickedCount    Int              @default(0)
+  bouncedCount    Int              @default(0)
+
+  // Anti-spam deliverability metrics & metadata
+  spamScore       Float?           @default(0)
+  spamReport      Json?
+  metadata        Json?
+
+  // Audit Logs
+  logs            NewsletterSendLog[]
+
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @default(now()) @updatedAt
+
+  @@index([status, scheduledAt])
+  @@index([plunkCampaignId])
+  @@index([createdAt])
+}
+
+model NewsletterSendLog {
+  id           String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  newsletterId String        @db.Uuid
+  newsletter   Newsletter    @relation(fields: [newsletterId], references: [id], onDelete: Cascade)
+
+  subscriberId String?       @db.Uuid
+  email        String
+  name         String?
+  status       SendLogStatus @default(PENDING)
+  error        String?       @db.Text
+  sentAt       DateTime?
+  createdAt    DateTime      @default(now())
+
+  @@index([newsletterId, status])
+  @@index([email])
+  @@index([createdAt])
+}
+

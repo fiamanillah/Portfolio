@@ -14,46 +14,46 @@ export interface SubscriptionConfirmationOptions {
  */
 export function getSubscriptionConfirmationLiquidBody(): string {
   const contentHtml = `
-    <p style="margin: 0 0 16px 0; font-size: 15px; color: #f1f5f9;">
-      Hi <strong style="color: #ffffff;">{{ name | default: firstName | default: 'there' }}</strong>,
+    <p style="margin: 0 0 16px 0; font-size: 15px; color: #0f172a;">
+      Hi <strong>{{ name | default: firstName | default: 'there' }}</strong>,
     </p>
 
-    <p style="margin: 0 0 16px 0; color: #94a3b8; line-height: 1.7;">
-      You're now subscribed to my newsletter. I regularly share detailed architecture breakdowns, full-stack case studies, open-source releases, and engineering notes.
+    <p style="margin: 0 0 16px 0; color: #334155; line-height: 1.65;">
+      You are now subscribed to my engineering newsletter. I regularly share detailed architecture breakdowns, full-stack case studies, open-source releases, and engineering notes.
     </p>
 
     <!-- Subscribed Details Box -->
-    <div style="margin: 20px 0; background-color: #131c31; border: 1px solid #1e293b; border-radius: 8px; padding: 16px 18px;">
-      <p style="margin: 0 0 4px 0; font-size: 11px; font-weight: 600; color: #06b6d4; text-transform: uppercase; letter-spacing: 0.06em;">
-        Subscribed Address
+    <div style="margin: 20px 0; background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 0; padding: 16px 18px;">
+      <p style="margin: 0 0 4px 0; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em;">
+        SUBSCRIBED ADDRESS
       </p>
-      <p style="margin: 0; font-size: 14px; color: #f8fafc; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;">
+      <p style="margin: 0; font-size: 14px; color: #0f172a; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-weight: 600;">
         {{ email }}
       </p>
     </div>
 
-    <p style="margin: 0 0 20px 0; color: #94a3b8; line-height: 1.7;">
+    <p style="margin: 0 0 20px 0; color: #334155; line-height: 1.65;">
       Feel free to explore recent deep-dives and projects on my engineering blog:
     </p>
 
     <div style="margin: 22px 0; text-align: left;">
-      <a href="https://fi.amanillah.com/blog" style="display: inline-block; background-color: #06b6d4; color: #090d16; font-size: 13px; font-weight: 600; padding: 10px 20px; border-radius: 6px; text-decoration: none;">
-        Read Engineering Blog →
+      <a href="https://fi.amanillah.com/blog" style="display: inline-block; background-color: #0f172a; color: #ffffff; font-size: 13px; font-weight: 600; padding: 10px 20px; border-radius: 0; border: 1px solid #0f172a; text-decoration: none;">
+        Read Engineering Blog -&gt;
       </a>
     </div>
 
-    <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #1e293b;">
-      <p style="margin: 0; font-size: 14px; color: #94a3b8;">
+    <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #e2e8f0;">
+      <p style="margin: 0; font-size: 13px; color: #64748b;">
         Glad to have you along,<br>
-        <strong style="color: #f8fafc;">Fi Amanillah</strong>
+        <strong style="color: #0f172a;">Fi Amanillah</strong>
       </p>
     </div>
   `.trim()
 
   const { html } = renderEmailLayout({
     badgeLabel: "Welcome",
-    title: "You're subscribed to updates",
-    subtitle: "Architecture deep-dives, systems design & open-source releases",
+    title: "You are subscribed to updates",
+    subtitle: "Architecture deep-dives, systems design and open-source releases",
     contentHtml,
     previewText:
       "Hi {{ name | default: 'there' }} — welcome to Fi Amanillah's engineering newsletter.",
@@ -77,49 +77,49 @@ export function renderSubscriptionConfirmationEmail(
 } {
   const { email, name, unsubscribeUrl, manageUrl } = options
   const displayName = name && name.trim().length > 0 ? name.trim() : "there"
-  const emailSubject = `You're subscribed — Fi Amanillah`
+  const emailSubject = `You are subscribed — Fi Amanillah`
 
   const contentHtml = `
-    <p style="margin: 0 0 16px 0; font-size: 15px; color: #f1f5f9;">
-      Hi <strong style="color: #ffffff;">${displayName}</strong>,
+    <p style="margin: 0 0 16px 0; font-size: 15px; color: #0f172a;">
+      Hi <strong>${displayName}</strong>,
     </p>
 
-    <p style="margin: 0 0 16px 0; color: #94a3b8; line-height: 1.7;">
-      You're now subscribed to my newsletter. I regularly share detailed architecture breakdowns, full-stack case studies, open-source releases, and engineering notes.
+    <p style="margin: 0 0 16px 0; color: #334155; line-height: 1.65;">
+      You are now subscribed to my engineering newsletter. I regularly share detailed architecture breakdowns, full-stack case studies, open-source releases, and engineering notes.
     </p>
 
     <!-- Subscribed Details Box -->
-    <div style="margin: 20px 0; background-color: #131c31; border: 1px solid #1e293b; border-radius: 8px; padding: 16px 18px;">
-      <p style="margin: 0 0 4px 0; font-size: 11px; font-weight: 600; color: #06b6d4; text-transform: uppercase; letter-spacing: 0.06em;">
-        Subscribed Address
+    <div style="margin: 20px 0; background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 0; padding: 16px 18px;">
+      <p style="margin: 0 0 4px 0; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em;">
+        SUBSCRIBED ADDRESS
       </p>
-      <p style="margin: 0; font-size: 14px; color: #f8fafc; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;">
+      <p style="margin: 0; font-size: 14px; color: #0f172a; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-weight: 600;">
         ${email}
       </p>
     </div>
 
-    <p style="margin: 0 0 20px 0; color: #94a3b8; line-height: 1.7;">
+    <p style="margin: 0 0 20px 0; color: #334155; line-height: 1.65;">
       Feel free to explore recent deep-dives and projects on my engineering blog:
     </p>
 
     <div style="margin: 22px 0; text-align: left;">
-      <a href="https://fi.amanillah.com/blog" style="display: inline-block; background-color: #06b6d4; color: #090d16; font-size: 13px; font-weight: 600; padding: 10px 20px; border-radius: 6px; text-decoration: none;">
-        Read Engineering Blog →
+      <a href="https://fi.amanillah.com/blog" style="display: inline-block; background-color: #0f172a; color: #ffffff; font-size: 13px; font-weight: 600; padding: 10px 20px; border-radius: 0; border: 1px solid #0f172a; text-decoration: none;">
+        Read Engineering Blog -&gt;
       </a>
     </div>
 
-    <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #1e293b;">
-      <p style="margin: 0; font-size: 14px; color: #94a3b8;">
+    <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #e2e8f0;">
+      <p style="margin: 0; font-size: 13px; color: #64748b;">
         Glad to have you along,<br>
-        <strong style="color: #f8fafc;">Fi Amanillah</strong>
+        <strong style="color: #0f172a;">Fi Amanillah</strong>
       </p>
     </div>
   `.trim()
 
   const { html, listUnsubscribeHeader } = renderEmailLayout({
     badgeLabel: "Welcome",
-    title: "You're subscribed to updates",
-    subtitle: "Architecture deep-dives, systems design & open-source releases",
+    title: "You are subscribed to updates",
+    subtitle: "Architecture deep-dives, systems design and open-source releases",
     contentHtml,
     previewText: `Hi ${displayName} — welcome to Fi Amanillah's engineering newsletter.`,
     unsubscribeUrl,

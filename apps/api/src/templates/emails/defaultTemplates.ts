@@ -25,7 +25,7 @@ export const SYSTEM_TEMPLATES: SystemTemplateDefinition[] = [
     name: "Contact Form Confirmation",
     description:
       "Confirmation email sent automatically to users who submit the contact form with a summary copy of their message.",
-    subject: "[Confirmation] Thank you for getting in touch! - Fi Amanillah",
+    subject: "[Confirmation] Thank you for getting in touch - Fi Amanillah",
     body: getContactConfirmationLiquidBody(),
     fromName: "Fi Amanillah",
     replyTo: "fi@amanillah.com",
@@ -69,7 +69,7 @@ export const SYSTEM_TEMPLATES: SystemTemplateDefinition[] = [
     name: "Subscriber Welcome & Confirmation",
     description:
       "Welcome email sent to newly subscribed visitors with unsubscribe link and engineering blog highlights.",
-    subject: "You're subscribed — Fi Amanillah",
+    subject: "You are subscribed — Fi Amanillah",
     body: getSubscriptionConfirmationLiquidBody(),
     fromName: "Fi Amanillah",
     replyTo: "fi@amanillah.com",
@@ -97,7 +97,7 @@ export const SYSTEM_TEMPLATES: SystemTemplateDefinition[] = [
     isSystem: true,
     sampleData: {
       name: "Developer",
-      badgeLabel: "New Article",
+      badgeLabel: "Article",
       title: "Building Resilient Distributed Systems",
       subtitle: "A practical guide to fault-tolerance and event sourcing",
       previewText:

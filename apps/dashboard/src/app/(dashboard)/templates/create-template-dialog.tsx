@@ -57,45 +57,45 @@ const COMMON_VARIABLES = [
 ]
 
 const STARTER_TEMPLATE = `<!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{ subject | default: 'Notification' }}</title>
 </head>
-<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #0d1117; color: #e6edf3; padding: 32px 16px;">
-  <table width="100%" border="0" cellspacing="0" cellpadding="0" style="max-width: 600px; margin: 0 auto; background-color: #161b22; border-radius: 12px; border: 1px solid #30363d; overflow: hidden;">
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #f8fafc; color: #334155; margin: 0; padding: 36px 16px;">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" style="max-width: 580px; margin: 0 auto; background-color: #ffffff; border-radius: 0; border: 1px solid #e2e8f0;">
     <tr>
-      <td style="padding: 32px 32px 16px 32px; border-bottom: 1px solid #21262d;">
-        <h1 style="color: #58a6ff; font-size: 20px; margin: 0 0 8px 0; font-weight: 600;">Fi Amanillah</h1>
-        <p style="color: #8b949e; font-size: 14px; margin: 0;">Distributed Systems & Microservices Engineering</p>
+      <td style="padding: 24px 32px 18px 32px; border-bottom: 1px solid #e2e8f0;">
+        <h1 style="color: #0f172a; font-size: 16px; margin: 0 0 4px 0; font-weight: 700;">Fi Amanillah</h1>
+        <p style="color: #64748b; font-size: 12px; margin: 0;">Full-Stack &amp; DevOps Engineer</p>
       </td>
     </tr>
     <tr>
-      <td style="padding: 32px;">
-        <h2 style="color: #f0f6fc; font-size: 18px; margin: 0 0 16px 0;">Hello {{ name | default: 'Developer' }},</h2>
-        <p style="color: #c9d1d9; font-size: 14px; line-height: 1.6; margin: 0 0 20px 0;">
+      <td style="padding: 28px 32px;">
+        <h2 style="color: #0f172a; font-size: 18px; margin: 0 0 16px 0; font-weight: 700;">Hello {{ name | default: 'Developer' }},</h2>
+        <p style="color: #334155; font-size: 14px; line-height: 1.65; margin: 0 0 20px 0;">
           {{ message | default: 'Thank you for following the engineering journal and architecture updates.' }}
         </p>
         
         <!-- CTA Action -->
         {% if ctaUrl %}
-        <div style="margin: 28px 0;">
-          <a href="{{ ctaUrl }}" style="background-color: #238636; color: #ffffff; text-decoration: none; padding: 12px 24px; border-radius: 6px; font-weight: 600; font-size: 14px; display: inline-block;">
-            Explore Architecture
+        <div style="margin: 24px 0;">
+          <a href="{{ ctaUrl }}" style="background-color: #0f172a; color: #ffffff; text-decoration: none; padding: 10px 20px; border-radius: 0; font-weight: 600; font-size: 13px; display: inline-block; border: 1px solid #0f172a;">
+            Explore Article -&gt;
           </a>
         </div>
         {% endif %}
       </td>
     </tr>
     <tr>
-      <td style="padding: 24px 32px; background-color: #0d1117; border-top: 1px solid #21262d; text-align: center;">
-        <p style="color: #8b949e; font-size: 12px; margin: 0 0 8px 0;">
-          © {{ 'now' | date: '%Y' }} Fi Amanillah. All rights reserved.
+      <td style="padding: 20px 32px; background-color: #f8fafc; border-top: 1px solid #e2e8f0; text-align: left;">
+        <p style="color: #64748b; font-size: 12px; margin: 0 0 8px 0;">
+          Fi Amanillah · fi.amanillah.com
         </p>
         {% if unsubscribeUrl %}
-        <p style="color: #6e7681; font-size: 11px; margin: 0;">
-          <a href="{{ unsubscribeUrl }}" style="color: #58a6ff; text-decoration: underline;">Unsubscribe from updates</a>
+        <p style="color: #64748b; font-size: 11px; margin: 0;">
+          <a href="{{ unsubscribeUrl }}" style="color: #0f172a; text-decoration: underline;">Unsubscribe from updates</a>
         </p>
         {% endif %}
       </td>
@@ -367,7 +367,7 @@ export function CreateTemplateDialog({
                     type="email"
                     value={fromEmail}
                     onChange={(e) => setFromEmail(e.target.value)}
-                    placeholder="hello@amanillah.com"
+                    placeholder="fi@amanillah.com"
                     className="h-8 bg-background/80 text-xs"
                   />
                 </div>

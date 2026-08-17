@@ -22,7 +22,7 @@ export class TemplateService {
    */
   public async initializeSystemTemplates(): Promise<void> {
     try {
-      this.logger.info("⚙ Initializing and checking system email templates...")
+      this.logger.info("Initializing and checking system email templates...")
 
       for (const sysTemplate of SYSTEM_TEMPLATES) {
         const existing = await prisma.emailTemplate.findUnique({
@@ -44,17 +44,26 @@ export class TemplateService {
             },
           })
           this.logger.info(
-            `✔ Seeded default system template: [${sysTemplate.slug}] "${sysTemplate.name}"`
+            `Seeded default system template: [${sysTemplate.slug}] "${sysTemplate.name}"`
           )
-        } else if (!existing.isSystem) {
-          // Ensure system flag is set for known codebase templates
+        } else if (existing.isSystem) {
+          // Keep system template definition up-to-date with codebase defaults
           await prisma.emailTemplate.update({
             where: { slug: sysTemplate.slug },
-            data: { isSystem: true },
+            data: {
+              name: sysTemplate.name,
+              description: sysTemplate.description,
+              subject: sysTemplate.subject,
+              body: sysTemplate.body,
+              fromName: sysTemplate.fromName,
+              replyTo: sysTemplate.replyTo,
+              type: sysTemplate.type,
+              isSystem: true,
+            },
           })
         }
       }
-      this.logger.info("✔ System email templates verified and ready.")
+      this.logger.info("System email templates verified and ready.")
     } catch (error) {
       this.logger.error("Failed to initialize system email templates", {
         error,

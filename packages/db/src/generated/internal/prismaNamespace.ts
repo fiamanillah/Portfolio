@@ -411,7 +411,9 @@ export const ModelName = {
   CommentReaction: 'CommentReaction',
   CommentReport: 'CommentReport',
   MediaFile: 'MediaFile',
-  CaseStudy: 'CaseStudy'
+  CaseStudy: 'CaseStudy',
+  Newsletter: 'Newsletter',
+  NewsletterSendLog: 'NewsletterSendLog'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -427,7 +429,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "contactSubmission" | "subscriber" | "emailTemplate" | "user" | "otpVerification" | "refreshToken" | "blogCategory" | "blogTag" | "blogPost" | "blogReaction" | "comment" | "commentReaction" | "commentReport" | "mediaFile" | "caseStudy"
+    modelProps: "contactSubmission" | "subscriber" | "emailTemplate" | "user" | "otpVerification" | "refreshToken" | "blogCategory" | "blogTag" | "blogPost" | "blogReaction" | "comment" | "commentReaction" | "commentReport" | "mediaFile" | "caseStudy" | "newsletter" | "newsletterSendLog"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1541,6 +1543,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Newsletter: {
+      payload: Prisma.$NewsletterPayload<ExtArgs>
+      fields: Prisma.NewsletterFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.NewsletterFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NewsletterPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.NewsletterFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NewsletterPayload>
+        }
+        findFirst: {
+          args: Prisma.NewsletterFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NewsletterPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.NewsletterFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NewsletterPayload>
+        }
+        findMany: {
+          args: Prisma.NewsletterFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NewsletterPayload>[]
+        }
+        create: {
+          args: Prisma.NewsletterCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NewsletterPayload>
+        }
+        createMany: {
+          args: Prisma.NewsletterCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.NewsletterCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NewsletterPayload>[]
+        }
+        delete: {
+          args: Prisma.NewsletterDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NewsletterPayload>
+        }
+        update: {
+          args: Prisma.NewsletterUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NewsletterPayload>
+        }
+        deleteMany: {
+          args: Prisma.NewsletterDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.NewsletterUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.NewsletterUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NewsletterPayload>[]
+        }
+        upsert: {
+          args: Prisma.NewsletterUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NewsletterPayload>
+        }
+        aggregate: {
+          args: Prisma.NewsletterAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateNewsletter>
+        }
+        groupBy: {
+          args: Prisma.NewsletterGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.NewsletterGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.NewsletterCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.NewsletterCountAggregateOutputType> | number
+        }
+      }
+    }
+    NewsletterSendLog: {
+      payload: Prisma.$NewsletterSendLogPayload<ExtArgs>
+      fields: Prisma.NewsletterSendLogFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.NewsletterSendLogFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NewsletterSendLogPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.NewsletterSendLogFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NewsletterSendLogPayload>
+        }
+        findFirst: {
+          args: Prisma.NewsletterSendLogFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NewsletterSendLogPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.NewsletterSendLogFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NewsletterSendLogPayload>
+        }
+        findMany: {
+          args: Prisma.NewsletterSendLogFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NewsletterSendLogPayload>[]
+        }
+        create: {
+          args: Prisma.NewsletterSendLogCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NewsletterSendLogPayload>
+        }
+        createMany: {
+          args: Prisma.NewsletterSendLogCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.NewsletterSendLogCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NewsletterSendLogPayload>[]
+        }
+        delete: {
+          args: Prisma.NewsletterSendLogDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NewsletterSendLogPayload>
+        }
+        update: {
+          args: Prisma.NewsletterSendLogUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NewsletterSendLogPayload>
+        }
+        deleteMany: {
+          args: Prisma.NewsletterSendLogDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.NewsletterSendLogUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.NewsletterSendLogUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NewsletterSendLogPayload>[]
+        }
+        upsert: {
+          args: Prisma.NewsletterSendLogUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NewsletterSendLogPayload>
+        }
+        aggregate: {
+          args: Prisma.NewsletterSendLogAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateNewsletterSendLog>
+        }
+        groupBy: {
+          args: Prisma.NewsletterSendLogGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.NewsletterSendLogGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.NewsletterSendLogCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.NewsletterSendLogCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1913,6 +2063,58 @@ export const CaseStudyScalarFieldEnum = {
 export type CaseStudyScalarFieldEnum = (typeof CaseStudyScalarFieldEnum)[keyof typeof CaseStudyScalarFieldEnum]
 
 
+export const NewsletterScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  subject: 'subject',
+  previewText: 'previewText',
+  content: 'content',
+  status: 'status',
+  templateId: 'templateId',
+  senderName: 'senderName',
+  senderEmail: 'senderEmail',
+  replyTo: 'replyTo',
+  targetAudience: 'targetAudience',
+  includedSources: 'includedSources',
+  includedTags: 'includedTags',
+  includedEmails: 'includedEmails',
+  excludedEmails: 'excludedEmails',
+  excludedSources: 'excludedSources',
+  scheduledAt: 'scheduledAt',
+  sentAt: 'sentAt',
+  plunkCampaignId: 'plunkCampaignId',
+  totalRecipients: 'totalRecipients',
+  successfulSends: 'successfulSends',
+  failedSends: 'failedSends',
+  deliveredCount: 'deliveredCount',
+  openedCount: 'openedCount',
+  clickedCount: 'clickedCount',
+  bouncedCount: 'bouncedCount',
+  spamScore: 'spamScore',
+  spamReport: 'spamReport',
+  metadata: 'metadata',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type NewsletterScalarFieldEnum = (typeof NewsletterScalarFieldEnum)[keyof typeof NewsletterScalarFieldEnum]
+
+
+export const NewsletterSendLogScalarFieldEnum = {
+  id: 'id',
+  newsletterId: 'newsletterId',
+  subscriberId: 'subscriberId',
+  email: 'email',
+  name: 'name',
+  status: 'status',
+  error: 'error',
+  sentAt: 'sentAt',
+  createdAt: 'createdAt'
+} as const
+
+export type NewsletterSendLogScalarFieldEnum = (typeof NewsletterSendLogScalarFieldEnum)[keyof typeof NewsletterSendLogScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -2136,6 +2338,34 @@ export type ListEnumCaseStudyStatusFieldRefInput<$PrismaModel> = FieldRefInputTy
 
 
 /**
+ * Reference to a field of type 'NewsletterStatus'
+ */
+export type EnumNewsletterStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NewsletterStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'NewsletterStatus[]'
+ */
+export type ListEnumNewsletterStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NewsletterStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'AudienceType'
+ */
+export type EnumAudienceTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AudienceType'>
+    
+
+
+/**
+ * Reference to a field of type 'AudienceType[]'
+ */
+export type ListEnumAudienceTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AudienceType[]'>
+    
+
+
+/**
  * Reference to a field of type 'Float'
  */
 export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -2146,6 +2376,20 @@ export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, '
  * Reference to a field of type 'Float[]'
  */
 export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+    
+
+
+/**
+ * Reference to a field of type 'SendLogStatus'
+ */
+export type EnumSendLogStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SendLogStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'SendLogStatus[]'
+ */
+export type ListEnumSendLogStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SendLogStatus[]'>
     
 
 /**
@@ -2314,6 +2558,8 @@ export type GlobalOmitConfig = {
   commentReport?: Prisma.CommentReportOmit
   mediaFile?: Prisma.MediaFileOmit
   caseStudy?: Prisma.CaseStudyOmit
+  newsletter?: Prisma.NewsletterOmit
+  newsletterSendLog?: Prisma.NewsletterSendLogOmit
 }
 
 /* Types for Logging */

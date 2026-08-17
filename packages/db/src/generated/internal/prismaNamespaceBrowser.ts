@@ -65,7 +65,9 @@ export const ModelName = {
   CommentReaction: 'CommentReaction',
   CommentReport: 'CommentReport',
   MediaFile: 'MediaFile',
-  CaseStudy: 'CaseStudy'
+  CaseStudy: 'CaseStudy',
+  Newsletter: 'Newsletter',
+  NewsletterSendLog: 'NewsletterSendLog'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -415,6 +417,58 @@ export const CaseStudyScalarFieldEnum = {
 } as const
 
 export type CaseStudyScalarFieldEnum = (typeof CaseStudyScalarFieldEnum)[keyof typeof CaseStudyScalarFieldEnum]
+
+
+export const NewsletterScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  subject: 'subject',
+  previewText: 'previewText',
+  content: 'content',
+  status: 'status',
+  templateId: 'templateId',
+  senderName: 'senderName',
+  senderEmail: 'senderEmail',
+  replyTo: 'replyTo',
+  targetAudience: 'targetAudience',
+  includedSources: 'includedSources',
+  includedTags: 'includedTags',
+  includedEmails: 'includedEmails',
+  excludedEmails: 'excludedEmails',
+  excludedSources: 'excludedSources',
+  scheduledAt: 'scheduledAt',
+  sentAt: 'sentAt',
+  plunkCampaignId: 'plunkCampaignId',
+  totalRecipients: 'totalRecipients',
+  successfulSends: 'successfulSends',
+  failedSends: 'failedSends',
+  deliveredCount: 'deliveredCount',
+  openedCount: 'openedCount',
+  clickedCount: 'clickedCount',
+  bouncedCount: 'bouncedCount',
+  spamScore: 'spamScore',
+  spamReport: 'spamReport',
+  metadata: 'metadata',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type NewsletterScalarFieldEnum = (typeof NewsletterScalarFieldEnum)[keyof typeof NewsletterScalarFieldEnum]
+
+
+export const NewsletterSendLogScalarFieldEnum = {
+  id: 'id',
+  newsletterId: 'newsletterId',
+  subscriberId: 'subscriberId',
+  email: 'email',
+  name: 'name',
+  status: 'status',
+  error: 'error',
+  sentAt: 'sentAt',
+  createdAt: 'createdAt'
+} as const
+
+export type NewsletterSendLogScalarFieldEnum = (typeof NewsletterSendLogScalarFieldEnum)[keyof typeof NewsletterSendLogScalarFieldEnum]
 
 
 export const SortOrder = {

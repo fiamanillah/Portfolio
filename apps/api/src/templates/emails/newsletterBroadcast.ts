@@ -19,48 +19,48 @@ export interface NewsletterBroadcastOptions {
  */
 export function getNewsletterBroadcastLiquidBody(): string {
   const contentHtml = `
-    <p style="margin: 0 0 16px 0; font-size: 15px; color: #f1f5f9;">
-      Hi <strong style="color: #ffffff;">{{ name | default: firstName | default: 'there' }}</strong>,
+    <p style="margin: 0 0 16px 0; font-size: 15px; color: #0f172a;">
+      Hi <strong>{{ name | default: firstName | default: 'there' }}</strong>,
     </p>
 
-    {{ bodyContent | default: '<p style="margin: 0 0 16px 0; color: #94a3b8; line-height: 1.7;">Here is the latest update, architecture deep-dive, and release from my workbench.</p>' }}
+    {{ bodyContent | default: '<p style="margin: 0 0 16px 0; color: #334155; line-height: 1.65;">Here is the latest update, architecture deep-dive, and release from my workbench.</p>' }}
 
     <!-- Featured Post / Highlight Card -->
-    <div style="margin: 24px 0; background-color: #131c31; border: 1px solid #1e293b; border-radius: 8px; padding: 20px 22px;">
+    <div style="margin: 24px 0; background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 0; padding: 20px 22px;">
       {% if tag %}
-      <span style="font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 10px; font-weight: 600; color: #06b6d4; text-transform: uppercase; letter-spacing: 0.08em; background-color: rgba(6, 182, 212, 0.1); border: 1px solid rgba(6, 182, 212, 0.25); padding: 3px 8px; border-radius: 9999px; display: inline-block; margin-bottom: 12px;">
-        {{ tag | default: 'New Article' }}
+      <span style="font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 11px; font-weight: 600; color: #475569; text-transform: uppercase; letter-spacing: 0.04em; background-color: #f1f5f9; border: 1px solid #e2e8f0; padding: 2px 6px; border-radius: 0; display: inline-block; margin-bottom: 12px;">
+        {{ tag | default: 'Article' }}
       </span>
       {% endif %}
 
-      <h3 style="margin: 0 0 8px 0; font-size: 17px; font-weight: 700; color: #f8fafc; line-height: 1.4;">
-        {{ articleTitle | default: 'Deep Dive: Distributed Architecture & Real-Time Engines' }}
+      <h3 style="margin: 0 0 8px 0; font-size: 16px; font-weight: 700; color: #0f172a; line-height: 1.4;">
+        {{ articleTitle | default: 'Deep Dive: Distributed Architecture and Real-Time Engines' }}
       </h3>
 
-      <p style="margin: 0 0 16px 0; font-size: 13px; color: #94a3b8; line-height: 1.65;">
+      <p style="margin: 0 0 16px 0; font-size: 13px; color: #475569; line-height: 1.6;">
         {{ articleExcerpt | default: 'An overview of high-throughput distributed architectures, zero-downtime migrations, and event-driven patterns.' }}
       </p>
 
       <div style="text-align: left;">
-        <a href="{{ articleUrl | default: 'https://fi.amanillah.com/blog' }}" style="display: inline-block; background-color: #06b6d4; color: #090d16; font-size: 12px; font-weight: 600; padding: 8px 16px; border-radius: 6px; text-decoration: none;">
-          Read Article →
+        <a href="{{ articleUrl | default: 'https://fi.amanillah.com/blog' }}" style="display: inline-block; background-color: #0f172a; color: #ffffff; font-size: 13px; font-weight: 600; padding: 10px 18px; border-radius: 0; border: 1px solid #0f172a; text-decoration: none;">
+          Read Article -&gt;
         </a>
       </div>
     </div>
 
-    <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #1e293b;">
-      <p style="margin: 0; font-size: 14px; color: #94a3b8;">
+    <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #e2e8f0;">
+      <p style="margin: 0; font-size: 13px; color: #64748b;">
         Until next time,<br>
-        <strong style="color: #f8fafc;">Fi Amanillah</strong>
+        <strong style="color: #0f172a;">Fi Amanillah</strong>
       </p>
     </div>
   `.trim()
 
   const { html } = renderEmailLayout({
-    badgeLabel: "{{ badgeLabel | default: 'New Post' }}",
+    badgeLabel: "{{ badgeLabel | default: 'Newsletter' }}",
     title: "{{ title | default: 'Latest from Fi Amanillah' }}",
     subtitle:
-      "{{ subtitle | default: 'Engineering notes, systems design & tech insights' }}",
+      "{{ subtitle | default: 'Engineering notes, systems design and tech insights' }}",
     contentHtml,
     previewText:
       "{{ previewText | default: 'New engineering post and system design write-up from Fi Amanillah' }}",

@@ -88,7 +88,7 @@ export class PlunkTemplateService {
         from:
           payload.from ||
           config.contact.recipientEmail ||
-          "hello@amanillah.com",
+          "fi@amanillah.com",
         fromName: payload.fromName || "Fi Amanillah",
         replyTo: payload.replyTo || config.contact.recipientEmail,
         type: payload.type || "MARKETING",

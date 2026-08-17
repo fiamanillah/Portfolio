@@ -372,7 +372,7 @@ export function EditTemplateDialog({
                     type="email"
                     value={fromEmail}
                     onChange={(e) => setFromEmail(e.target.value)}
-                    placeholder="hello@amanillah.com"
+                    placeholder="fi@amanillah.com"
                     className="h-8 bg-background/80 text-xs"
                   />
                 </div>

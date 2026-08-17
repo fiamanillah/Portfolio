@@ -77,3 +77,34 @@ export const CaseStudyStatus = {
 } as const
 
 export type CaseStudyStatus = (typeof CaseStudyStatus)[keyof typeof CaseStudyStatus]
+
+
+export const NewsletterStatus = {
+  DRAFT: 'DRAFT',
+  SCHEDULED: 'SCHEDULED',
+  SENDING: 'SENDING',
+  SENT: 'SENT',
+  FAILED: 'FAILED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type NewsletterStatus = (typeof NewsletterStatus)[keyof typeof NewsletterStatus]
+
+
+export const AudienceType = {
+  ALL: 'ALL',
+  SEGMENT: 'SEGMENT',
+  CUSTOM: 'CUSTOM'
+} as const
+
+export type AudienceType = (typeof AudienceType)[keyof typeof AudienceType]
+
+
+export const SendLogStatus = {
+  PENDING: 'PENDING',
+  SENT: 'SENT',
+  FAILED: 'FAILED',
+  BOUNCED: 'BOUNCED'
+} as const
+
+export type SendLogStatus = (typeof SendLogStatus)[keyof typeof SendLogStatus]

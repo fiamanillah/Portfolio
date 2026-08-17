@@ -46,6 +46,7 @@ export interface ApiResponse<T> {
     totalPages?: number
   }
   stats?: any
+  meta?: any
 }
 
 export async function request<T>(
@@ -86,8 +87,9 @@ export async function request<T>(
       return {
         success: body.success !== false,
         data: (body.data !== undefined ? body.data : body) as T,
-        pagination: body.pagination,
+        pagination: body.pagination || body.meta?.pagination,
         stats: body.stats,
+        meta: body.meta,
         message: body.message,
       }
     }

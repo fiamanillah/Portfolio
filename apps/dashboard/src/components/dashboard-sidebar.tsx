@@ -4,6 +4,7 @@ import * as React from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import {
+  Mail,
   LayoutDashboard,
   Users,
   UserCheck,
@@ -100,16 +101,21 @@ const navGroups: NavGroup[] = [
   {
     label: "Audience & Access",
     items: [
-      {
-        title: "Users & RBAC",
-        url: "/users",
-        icon: UserCheck,
-        badge: "Admin",
+       {
+        title: "Newsletters",
+        url: "/newsletters",
+        icon: Mail,
       },
       {
         title: "Subscribers",
         url: "/subscribers",
         icon: Users,
+      },
+      {
+        title: "Users & RBAC",
+        url: "/users",
+        icon: UserCheck,
+        badge: "Admin",
       },
       {
         title: "Comments",

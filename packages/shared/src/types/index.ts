@@ -10,3 +10,4 @@ export * from "./templates";
 export * from "./blog";
 export * from "./media";
 export * from "./caseStudy";
+export * from "./newsletter";

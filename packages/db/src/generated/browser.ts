@@ -92,3 +92,13 @@ export type MediaFile = Prisma.MediaFileModel
  * 
  */
 export type CaseStudy = Prisma.CaseStudyModel
+/**
+ * Model Newsletter
+ * 
+ */
+export type Newsletter = Prisma.NewsletterModel
+/**
+ * Model NewsletterSendLog
+ * 
+ */
+export type NewsletterSendLog = Prisma.NewsletterSendLogModel
