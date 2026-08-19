@@ -11,3 +11,4 @@ export * from "./blog";
 export * from "./media";
 export * from "./caseStudy";
 export * from "./newsletter";
+export * from "./experience";

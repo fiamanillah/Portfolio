@@ -108,3 +108,12 @@ export const SendLogStatus = {
 } as const
 
 export type SendLogStatus = (typeof SendLogStatus)[keyof typeof SendLogStatus]
+
+
+export const ExperienceStatus = {
+  DRAFT: 'DRAFT',
+  PUBLISHED: 'PUBLISHED',
+  ARCHIVED: 'ARCHIVED'
+} as const
+
+export type ExperienceStatus = (typeof ExperienceStatus)[keyof typeof ExperienceStatus]

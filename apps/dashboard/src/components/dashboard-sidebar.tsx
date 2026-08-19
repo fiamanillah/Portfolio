@@ -21,6 +21,7 @@ import {
   Shield,
   ExternalLink,
   Layers,
+  Briefcase,
 } from "lucide-react"
 
 import {
@@ -85,6 +86,11 @@ const navGroups: NavGroup[] = [
         title: "Case Studies",
         url: "/case-studies",
         icon: Layers,
+      },
+      {
+        title: "Professional History",
+        url: "/experiences",
+        icon: Briefcase,
       },
       {
         title: "Blog Posts",

@@ -1,4 +1,4 @@
-import { prisma, Role } from "../src/index";
+import { prisma, Role, ExperienceStatus } from "../src/index";
 
 async function main() {
   console.log("🌱 Seeding database...");
@@ -561,7 +561,79 @@ async function main() {
     }
   }
 
-  console.log(`✅ Seeded users, subscribers, blog posts, and case studies successfully:
+  // 6. Seed Professional History / Experiences
+  const initialExperiences = [
+    {
+      company: "Softvence Agency",
+      companyUrl: "https://softvence.agency",
+      role: "FULL STACK DEVELOPER",
+      title: ["FULL STACK", "DEVELOPER"],
+      location: "Dhaka, Bangladesh · Remote-Friendly",
+      employmentType: "Full-Time",
+      period: "PRESENT // 14 MO",
+      year: "2025",
+      isCurrent: true,
+      description:
+        "Architected type-safe backend systems with TypeScript, Express.js, and Prisma ORM, integrated with React.js frontends to deliver responsive, high-performance applications.",
+      highlights: [
+        "Decoupled intensive background tasks like email and AI processing using RabbitMQ message brokers",
+        "Improved database query latency and API response times by implementing Redis caching",
+        "Built granular role-based access control (RBAC), real-time WebSockets, and Stripe/Paystack tiered subscription billing",
+        "Containerized multi-service environments with Docker and managed VPS deployments with AWS S3/MinIO media storage",
+      ],
+      technologies: [
+        "TypeScript",
+        "Express.js",
+        "Prisma ORM",
+        "PostgreSQL",
+        "Redis",
+        "RabbitMQ",
+        "WebSockets",
+        "Stripe",
+        "Paystack",
+        "Docker",
+        "AWS S3",
+        "MinIO",
+        "Linux VPS",
+      ],
+      stats: [
+        { label: "Background Queues", value: "RabbitMQ" },
+        { label: "Billing Systems", value: "Stripe & Paystack" },
+        { label: "Storage Providers", value: "AWS S3 / MinIO" },
+      ],
+      learned:
+        "Mastered decoupling intensive background jobs and optimizing database access patterns to ensure seamless scalability and real-time reliability under load.",
+      status: ExperienceStatus.PUBLISHED,
+      featured: true,
+      order: 0,
+    },
+  ];
+
+  let seededExperiencesCount = 0;
+  for (const exp of initialExperiences) {
+    try {
+      const existing = await prisma.experience.findFirst({
+        where: { company: exp.company, role: exp.role },
+      });
+
+      if (!existing) {
+        await prisma.experience.create({
+          data: exp,
+        });
+        seededExperiencesCount++;
+      } else {
+        await prisma.experience.update({
+          where: { id: existing.id },
+          data: exp,
+        });
+        seededExperiencesCount++;
+      }
+    } catch (err) {
+      console.warn(`Could not seed experience ${exp.company}:`, err);
+    }
+  }
+
+  console.log(`✅ Seeded users, subscribers, blog posts, case studies, and experiences successfully:
   - Admin: ${adminUser.email} (${adminUser.role})
   - Moderator: ${alexUser.email} (${alexUser.role})
   - User: ${sarahUser.email} (${sarahUser.role})
@@ -569,6 +641,7 @@ async function main() {
   - Categories: ${categoriesData.length} records
   - Blog Posts: ${seededPostsCount} posts migrated
   - Case Studies: ${seededCaseStudiesCount} case studies migrated
+  - Experiences: ${seededExperiencesCount} experiences migrated
   `);
 }
 

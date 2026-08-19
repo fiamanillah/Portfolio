@@ -1,50 +1,16 @@
 ---
-const experiences = [
-  {
-    year: "2025",
-    period: "PRESENT // 14 MO",
-    company: "Softvence Agency",
-    role: "FULL STACK DEVELOPER",
-    title: ["FULL STACK", "DEVELOPER"],
-    location: "Dhaka, Bangladesh · Remote-Friendly",
-    type: "Full-Time",
-    description:
-      "Architected type-safe backend systems with TypeScript, Express.js, and Prisma ORM, integrated with React.js frontends to deliver responsive, high-performance applications.",
-    highlights: [
-      "Decoupled intensive background tasks like email and AI processing using RabbitMQ message brokers",
-      "Improved database query latency and API response times by implementing Redis caching",
-      "Built granular role-based access control (RBAC), real-time WebSockets, and Stripe/Paystack tiered subscription billing",
-      "Containerized multi-service environments with Docker and managed VPS deployments with AWS S3/MinIO media storage",
-    ],
-    technologies: [
-      "TypeScript",
-      "Express.js",
-      "Prisma ORM",
-      "PostgreSQL",
-      "Redis",
-      "RabbitMQ",
-      "WebSockets",
-      "Stripe",
-      "Paystack",
-      "Docker",
-      "AWS S3",
-      "MinIO",
-      "Linux VPS",
-    ],
-    stats: [
-      { label: "Background Queues", value: "RabbitMQ" },
-      { label: "Billing Systems", value: "Stripe & Paystack" },
-      { label: "Storage Providers", value: "AWS S3 / MinIO" },
-    ],
-    learned:
-      "Mastered decoupling intensive background jobs and optimizing database access patterns to ensure seamless scalability and real-time reliability under load.",
-  },
-]
+import { ExperienceApi } from "@/lib/api/experienceApi"
 
-const totalYears = 1
-const totalCompanies = experiences.length
-const totalTech = [...new Set(experiences.flatMap((e) => e.technologies))]
-  .length
+const experiences = await ExperienceApi.fetchPublicExperiences()
+
+const distinctYears = new Set(experiences.map((e) => e.year)).size
+const totalYears = Math.max(1, distinctYears)
+const totalCompanies = new Set(
+  experiences.map((e) => e.company.toLowerCase().trim())
+).size
+const totalTech = [
+  ...new Set(experiences.flatMap((e) => e.technologies || [])),
+].length
 ---
 
 <section

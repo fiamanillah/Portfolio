@@ -17,6 +17,7 @@ import { CommentModule } from "./Modules/Comment/CommentModule"
 import { MediaModule } from "./Modules/Media/MediaModule"
 import { CaseStudyModule } from "./Modules/CaseStudy/CaseStudyModule"
 import { NewsletterModule } from "./Modules/Newsletter/NewsletterModule"
+import { ExperienceModule } from "./Modules/Experience/ExperienceModule"
 
 // Modules (Business Logic)
 
@@ -46,6 +47,7 @@ async function bootstrap() {
     app.registerModule(new MediaModule())
     app.registerModule(new CaseStudyModule())
     app.registerModule(new NewsletterModule())
+    app.registerModule(new ExperienceModule())
     logger.info("✔ All modules registered successfully")
 
     // 4. Spark the server!

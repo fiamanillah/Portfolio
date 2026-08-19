@@ -126,3 +126,8 @@ export type Newsletter = Prisma.NewsletterModel
  * 
  */
 export type NewsletterSendLog = Prisma.NewsletterSendLogModel
+/**
+ * Model Experience
+ * 
+ */
+export type Experience = Prisma.ExperienceModel
