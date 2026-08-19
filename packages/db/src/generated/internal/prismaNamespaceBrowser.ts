@@ -68,7 +68,8 @@ export const ModelName = {
   CaseStudy: 'CaseStudy',
   Newsletter: 'Newsletter',
   NewsletterSendLog: 'NewsletterSendLog',
-  Experience: 'Experience'
+  Experience: 'Experience',
+  Resume: 'Resume'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -142,6 +143,7 @@ export const UserScalarFieldEnum = {
   name: 'name',
   password: 'password',
   avatar: 'avatar',
+  resumeUrl: 'resumeUrl',
   role: 'role',
   headline: 'headline',
   badge: 'badge',
@@ -499,6 +501,25 @@ export const ExperienceScalarFieldEnum = {
 } as const
 
 export type ExperienceScalarFieldEnum = (typeof ExperienceScalarFieldEnum)[keyof typeof ExperienceScalarFieldEnum]
+
+
+export const ResumeScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  version: 'version',
+  fileName: 'fileName',
+  fileUrl: 'fileUrl',
+  fileKey: 'fileKey',
+  fileSize: 'fileSize',
+  mimeType: 'mimeType',
+  isActive: 'isActive',
+  description: 'description',
+  downloadCount: 'downloadCount',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ResumeScalarFieldEnum = (typeof ResumeScalarFieldEnum)[keyof typeof ResumeScalarFieldEnum]
 
 
 export const SortOrder = {

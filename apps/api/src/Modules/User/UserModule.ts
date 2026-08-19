@@ -46,9 +46,17 @@ export class UserModule extends BaseModule {
     const upload = multer({
       storage: multer.memoryStorage(),
       limits: {
-        fileSize: 10485760, // 10MB
+        fileSize: 20971520, // 20MB
       },
     })
+
+    // ── Public User & Resume Endpoints ────────────────────────────────────────
+
+    // GET /users/v1/public/resume - Get public resume metadata
+    this.router.get(
+      "/public/resume",
+      controller.getPublicResume.bind(controller)
+    )
 
     // ── Self Profile & Security Endpoints ─────────────────────────────────────
 
@@ -80,6 +88,21 @@ export class UserModule extends BaseModule {
       "/profile/avatar",
       authenticate,
       controller.deleteAvatar.bind(controller)
+    )
+
+    // POST /users/v1/profile/resume - Upload resume document to S3/R2
+    this.router.post(
+      "/profile/resume",
+      authenticate,
+      upload.single("file"),
+      controller.uploadResume.bind(controller)
+    )
+
+    // DELETE /users/v1/profile/resume - Delete resume document
+    this.router.delete(
+      "/profile/resume",
+      authenticate,
+      controller.deleteResume.bind(controller)
     )
 
     // PATCH /users/v1/change-password

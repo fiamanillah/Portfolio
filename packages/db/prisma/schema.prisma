@@ -66,6 +66,7 @@ model User {
   name                   String
   password               String
   avatar                 String?
+  resumeUrl              String?
   role                   Role              @default(USER)
   headline               String?
   badge                  String?
@@ -583,6 +584,25 @@ model Experience {
 
   @@index([status, order])
   @@index([order])
+  @@index([createdAt])
+}
+
+model Resume {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title         String
+  version       String
+  fileName      String
+  fileUrl       String
+  fileKey       String
+  fileSize      BigInt
+  mimeType      String   @default("application/pdf")
+  isActive      Boolean  @default(false)
+  description   String?  @db.Text
+  downloadCount Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @default(now()) @updatedAt
+
+  @@index([isActive])
   @@index([createdAt])
 }
 

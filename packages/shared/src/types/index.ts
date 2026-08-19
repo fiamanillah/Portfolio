@@ -12,3 +12,4 @@ export * from "./media";
 export * from "./caseStudy";
 export * from "./newsletter";
 export * from "./experience";
+export * from "./resume";

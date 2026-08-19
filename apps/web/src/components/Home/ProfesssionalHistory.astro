@@ -1,7 +1,10 @@
 ---
 import { ExperienceApi } from "@/lib/api/experienceApi"
+import { ResumeApi } from "@/lib/api/resumeApi"
 
 const experiences = await ExperienceApi.fetchPublicExperiences()
+const resumeData = await ResumeApi.fetchPublicResume()
+const resumeUrl = resumeData.downloadUrl || "/resume"
 
 const distinctYears = new Set(experiences.map((e) => e.year)).size
 const totalYears = Math.max(1, distinctYears)
@@ -38,7 +41,33 @@ const totalTech = [
             </h2>
 
             <!-- Accent bar -->
-            <div class="accent-bar mx-auto mb-6 w-48 md:w-56"></div>
+            <div class="accent-bar mx-auto mb-5 w-48 md:w-56"></div>
+
+            <!-- Download Resume CTA Button -->
+            <div class="mb-6 flex justify-center">
+              <a
+                href={resumeUrl}
+                target={resumeData.resumeUrl ? "_blank" : undefined}
+                download={resumeData.resumeUrl ? true : undefined}
+                class="group inline-flex items-center gap-2 rounded-md border border-primary/40 bg-primary/10 px-4 py-2 text-xs font-bold tracking-wider text-primary uppercase transition-all duration-200 hover:border-primary hover:bg-primary hover:text-primary-foreground"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="size-4 transition-transform duration-200 group-hover:translate-y-0.5"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="7 10 12 15 17 10"></polyline>
+                  <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                <span>Download Full Resume (PDF)</span>
+              </a>
+            </div>
 
             <!-- Summary Stats Bar -->
             <div

@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import Link from "next/link"
 import {
   Bell,
   Check,
@@ -20,6 +21,13 @@ import {
   Upload,
   Trash2,
   Camera,
+  FileText,
+  Download,
+  FileCheck,
+  FileUp,
+  Plus,
+  AlertCircle,
+  CheckCircle2,
 } from "lucide-react"
 
 import {
@@ -63,6 +71,11 @@ export default function SettingsPage() {
   const [isUploadingAvatar, setIsUploadingAvatar] = React.useState(false)
   const [isDeletingAvatar, setIsDeletingAvatar] = React.useState(false)
   const avatarInputRef = React.useRef<HTMLInputElement>(null)
+
+  // Resume Management State
+  const [isUploadingResume, setIsUploadingResume] = React.useState(false)
+  const [isDeletingResume, setIsDeletingResume] = React.useState(false)
+  const resumeInputRef = React.useRef<HTMLInputElement>(null)
 
   // Password Form State
   const [currentPassword, setCurrentPassword] = React.useState("")
@@ -142,6 +155,81 @@ export default function SettingsPage() {
       toast.error("Error", { description: err?.message })
     } finally {
       setIsDeletingAvatar(false)
+    }
+  }
+
+  const handleResumeUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    const allowedMimeTypes = [
+      "application/pdf",
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "application/octet-stream",
+    ]
+    const ext = file.name.split(".").pop()?.toLowerCase() || ""
+
+    if (
+      !allowedMimeTypes.includes(file.type) &&
+      !["pdf", "doc", "docx"].includes(ext)
+    ) {
+      toast.error("Invalid File Type", {
+        description:
+          "Please select a PDF or Word document (.pdf, .doc, .docx).",
+      })
+      return
+    }
+
+    if (file.size > 20 * 1024 * 1024) {
+      toast.error("File Too Large", {
+        description: "Resume file size must be under 20MB.",
+      })
+      return
+    }
+
+    try {
+      setIsUploadingResume(true)
+      const res = await UserApi.uploadResume(file)
+      if (res.success) {
+        await refreshUser()
+        toast.success("Resume Uploaded", {
+          description:
+            "Your resume file has been published and uploaded to Cloudflare R2 / S3.",
+        })
+      } else {
+        toast.error("Upload Failed", {
+          description: res.error || "Could not upload resume.",
+        })
+      }
+    } catch (err: any) {
+      toast.error("Upload Error", { description: err?.message })
+    } finally {
+      setIsUploadingResume(false)
+      if (resumeInputRef.current) {
+        resumeInputRef.current.value = ""
+      }
+    }
+  }
+
+  const handleRemoveResume = async () => {
+    try {
+      setIsDeletingResume(true)
+      const res = await UserApi.deleteResume()
+      if (res.success) {
+        await refreshUser()
+        toast.success("Resume Removed", {
+          description: "Resume file has been deleted from cloud storage.",
+        })
+      } else {
+        toast.error("Removal Failed", {
+          description: res.error || "Could not remove resume.",
+        })
+      }
+    } catch (err: any) {
+      toast.error("Error", { description: err?.message })
+    } finally {
+      setIsDeletingResume(false)
     }
   }
 
@@ -252,6 +340,10 @@ export default function SettingsPage() {
           <TabsTrigger value="general" className="gap-2 text-xs">
             <User className="size-3.5" />
             Admin Profile
+          </TabsTrigger>
+          <TabsTrigger value="resume" className="gap-2 text-xs">
+            <FileText className="size-3.5" />
+            Resume / CV
           </TabsTrigger>
           <TabsTrigger value="security" className="gap-2 text-xs">
             <Lock className="size-3.5" />
@@ -458,6 +550,173 @@ export default function SettingsPage() {
               </CardFooter>
             </Card>
           </form>
+        </TabsContent>
+
+        {/* Resume / CV Management Tab */}
+        <TabsContent value="resume" className="space-y-6">
+          <Card className="border-border/80">
+            <CardHeader>
+              <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+                <div className="flex items-center gap-3.5">
+                  <div className="flex size-12 shrink-0 items-center justify-center rounded-xl border border-primary/20 bg-primary/10 text-primary shadow-sm">
+                    <FileText className="size-6" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <CardTitle className="text-base font-semibold">
+                        Curriculum Vitae / Resume
+                      </CardTitle>
+                      {user?.resumeUrl ? (
+                        <Badge
+                          variant="outline"
+                          className="border-emerald-500/30 bg-emerald-500/10 font-mono text-[10px] text-emerald-600 dark:text-emerald-400"
+                        >
+                          <CheckCircle2 className="mr-1 size-3" /> Live & Active
+                        </Badge>
+                      ) : (
+                        <Badge
+                          variant="outline"
+                          className="border-amber-500/30 bg-amber-500/10 font-mono text-[10px] text-amber-600 dark:text-amber-400"
+                        >
+                          <AlertCircle className="mr-1 size-3" /> Not Uploaded
+                        </Badge>
+                      )}
+                    </div>
+                    <CardDescription className="mt-0.5 text-xs">
+                      Manage the downloadable PDF / Word document synced across your portfolio.
+                    </CardDescription>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <Button
+                    asChild
+                    size="sm"
+                    className="h-8 gap-1.5 text-xs shadow-sm"
+                  >
+                    <Link href="/resume">
+                      <FileText className="size-3.5" />
+                      Manage All Versions →
+                    </Link>
+                  </Button>
+                </div>
+              </div>
+            </CardHeader>
+
+            <CardContent className="space-y-6">
+              {user?.resumeUrl ? (
+                <div className="space-y-4">
+                  {/* File Details Box */}
+                  <div className="flex flex-col justify-between gap-4 rounded-xl border border-border/80 bg-muted/30 p-4 sm:flex-row sm:items-center">
+                    <div className="flex items-start gap-3">
+                      <div className="flex size-10 shrink-0 items-center justify-center rounded-lg border border-primary/20 bg-background text-primary shadow-xs">
+                        <FileCheck className="size-5" />
+                      </div>
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <p className="text-sm font-semibold text-foreground">
+                            Active Portfolio Resume Document
+                          </p>
+                          <Badge variant="secondary" className="font-mono text-[10px]">
+                            Cloud Storage
+                          </Badge>
+                        </div>
+                        <p className="max-w-md truncate font-mono text-xs text-muted-foreground">
+                          {user.resumeUrl}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <Button
+                        asChild
+                        variant="outline"
+                        size="sm"
+                        className="h-8 gap-1.5 text-xs"
+                      >
+                        <a
+                          href={user.resumeUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          download
+                        >
+                          <Download className="size-3.5 text-primary" />
+                          Download File
+                        </a>
+                      </Button>
+                      <Button
+                        asChild
+                        variant="secondary"
+                        size="sm"
+                        className="h-8 gap-1.5 text-xs"
+                      >
+                        <a
+                          href={user.resumeUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <ExternalLink className="size-3.5" />
+                          Preview in Browser
+                        </a>
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Integration Info Callout */}
+                  <div className="grid gap-3 sm:grid-cols-3">
+                    <div className="rounded-lg border border-border/60 bg-card p-3.5">
+                      <div className="text-xs font-semibold text-foreground">
+                        Hero Section
+                      </div>
+                      <p className="mt-1 text-[11px] text-muted-foreground">
+                        Visitors can immediately download your CV directly from the homepage Hero CTA.
+                      </p>
+                    </div>
+                    <div className="rounded-lg border border-border/60 bg-card p-3.5">
+                      <div className="text-xs font-semibold text-foreground">
+                        Dedicated Route
+                      </div>
+                      <p className="mt-1 text-[11px] text-muted-foreground">
+                        Accessible anytime via <span className="font-mono text-primary">/resume</span> on your site.
+                      </p>
+                    </div>
+                    <div className="rounded-lg border border-border/60 bg-card p-3.5">
+                      <div className="text-xs font-semibold text-foreground">
+                        About Terminal & History
+                      </div>
+                      <p className="mt-1 text-[11px] text-muted-foreground">
+                        Synced with the interactive terminal command and Professional History section.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed border-border/80 bg-muted/10 px-6 py-12 text-center">
+                  <div className="flex size-14 items-center justify-center rounded-full bg-primary/10 text-primary">
+                    <FileUp className="size-7" />
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-sm font-semibold text-foreground">
+                      Multi-Version Resume Management
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      Upload, version, track downloads, and manage all your resume PDF releases in the dedicated Resume Manager.
+                    </p>
+                  </div>
+                  <Button
+                    asChild
+                    size="sm"
+                    className="mt-2 h-8 gap-1.5 text-xs"
+                  >
+                    <Link href="/resume">
+                      <Plus className="size-3.5" />
+                      Open Resume Manager
+                    </Link>
+                  </Button>
+                </div>
+              )}
+            </CardContent>
+          </Card>
         </TabsContent>
 
         {/* Security & Password Tab */}

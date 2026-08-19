@@ -30,6 +30,7 @@ export interface SanitizedUser {
   email: string
   role: Role
   avatar: string | null
+  resumeUrl: string | null
   headline: string | null
   badge: string | null
   bio: string | null
@@ -76,6 +77,7 @@ export class AuthServices {
       email: user.email,
       role: user.role,
       avatar: user.avatar,
+      resumeUrl: user.resumeUrl || null,
       headline: user.headline,
       badge:
         user.badge ||

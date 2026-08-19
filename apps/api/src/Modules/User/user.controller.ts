@@ -81,6 +81,57 @@ export class UserController extends BaseController {
   }
 
   /**
+   * POST /users/v1/profile/resume
+   */
+  public async uploadResume(req: Request, res: Response) {
+    const userId = req.user!.id
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "No resume document provided. Please upload a PDF or DOCX file.",
+      })
+    }
+    const profile = await this.userService.uploadResume(userId, req.file)
+    return this.sendResponse(
+      req,
+      res,
+      "Resume document uploaded and updated successfully",
+      200,
+      profile
+    )
+  }
+
+  /**
+   * DELETE /users/v1/profile/resume
+   */
+  public async deleteResume(req: Request, res: Response) {
+    const userId = req.user!.id
+    const profile = await this.userService.deleteResume(userId)
+    return this.sendResponse(
+      req,
+      res,
+      "Resume removed successfully",
+      200,
+      profile
+    )
+  }
+
+  /**
+   * GET /users/v1/public/resume
+   */
+  public async getPublicResume(req: Request, res: Response) {
+    const data = await this.userService.getPublicResume()
+    return this.sendResponse(
+      req,
+      res,
+      "Public resume metadata retrieved",
+      200,
+      data
+    )
+  }
+
+  /**
    * PATCH /users/v1/change-password
    */
   public async changePassword(req: Request, res: Response) {

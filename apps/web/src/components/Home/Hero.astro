@@ -14,6 +14,10 @@ import {
 } from "@hugeicons/core-free-icons"
 import { Badge } from "@workspace/ui/components/badge"
 import { TextScramble } from "@workspace/ui/components/text-scramble"
+import { ResumeApi } from "@/lib/api/resumeApi"
+
+const resumeData = await ResumeApi.fetchPublicResume()
+const resumeUrl = resumeData.downloadUrl || "/resume"
 ---
 
 <section
@@ -127,7 +131,32 @@ import { TextScramble } from "@workspace/ui/components/text-scramble"
       </div>
 
       <!-- Secondary Navigation -->
-      <div class="flex items-center gap-6">
+      <div class="flex flex-wrap items-center gap-4 sm:gap-6">
+        <a
+          href={resumeUrl}
+          target={resumeData.resumeUrl ? "_blank" : undefined}
+          download={resumeData.resumeUrl ? true : undefined}
+          class="group inline-flex items-center gap-2 rounded-lg border-2 border-primary/40 bg-primary/10 px-4 py-2 text-xs font-bold tracking-wider text-primary uppercase transition-all duration-200 hover:border-primary hover:bg-primary hover:text-primary-foreground sm:text-sm"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="size-4 transition-transform duration-200 group-hover:translate-y-0.5"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          <span>Download CV</span>
+        </a>
+
+        <div class="hidden h-4 w-px bg-border sm:block"></div>
+
         <div
           class="flex items-center gap-2 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground sm:text-sm"
         >

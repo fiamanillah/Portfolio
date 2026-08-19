@@ -103,4 +103,39 @@ export const UserApi = {
       method: "DELETE",
     })
   },
+
+  /**
+   * 9. Upload resume document to Cloudflare R2 / S3
+   */
+  async uploadResume(file: File) {
+    const formData = new FormData()
+    formData.append("file", file)
+
+    return await request<AuthUser>("/users/v1/profile/resume", {
+      method: "POST",
+      body: formData,
+    })
+  },
+
+  /**
+   * 10. Remove resume document
+   */
+  async deleteResume() {
+    return await request<AuthUser>("/users/v1/profile/resume", {
+      method: "DELETE",
+    })
+  },
+
+  /**
+   * 11. Get public resume metadata
+   */
+  async getPublicResume() {
+    return await request<{
+      resumeUrl: string | null
+      name: string | null
+      updatedAt: string | null
+    }>("/users/v1/public/resume", {
+      method: "GET",
+    })
+  },
 }

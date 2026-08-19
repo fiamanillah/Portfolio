@@ -22,6 +22,7 @@ import {
   ExternalLink,
   Layers,
   Briefcase,
+  FileText,
 } from "lucide-react"
 
 import {
@@ -91,6 +92,11 @@ const navGroups: NavGroup[] = [
         title: "Professional History",
         url: "/experiences",
         icon: Briefcase,
+      },
+      {
+        title: "Resume / CV",
+        url: "/resume",
+        icon: FileText,
       },
       {
         title: "Blog Posts",

@@ -19,6 +19,7 @@ export const updateProfileSchema = z.object({
     .optional(),
   bio: z.string().max(500, "Bio cannot exceed 500 characters").optional(),
   avatar: z.string().optional(),
+  resumeUrl: z.string().nullable().optional(),
   role: z.string().max(100, "Headline/Role cannot exceed 100 characters").optional(),
   headline: z.string().max(120, "Headline cannot exceed 120 characters").optional(),
   location: z.string().max(100).optional(),

@@ -19,6 +19,7 @@ export interface AuthUser {
   username: string;
   email: string;
   avatar: string;
+  resumeUrl?: string | null;
   role?: Role | string;
   headline?: string | null;
   badge?: string | null;

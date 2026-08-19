@@ -1,4 +1,5 @@
 // src/Modules/User/user.service.ts
+import path from "path"
 import { prisma, Role, User } from "@workspace/db"
 import { AppLogger } from "@workspace/logger"
 import {
@@ -33,6 +34,7 @@ export class UserService {
       email: user.email,
       role: user.role,
       avatar: user.avatar,
+      resumeUrl: user.resumeUrl || null,
       headline: user.headline,
       badge:
         user.badge ||
@@ -334,6 +336,234 @@ export class UserService {
       userId,
     })
     return this.sanitizeUser(updated)
+  }
+
+  /**
+   * 2d. UPLOAD & SET RESUME / CV (Cloudflare R2 / S3):
+   */
+  public async uploadResume(
+    userId: string,
+    file: Express.Multer.File
+  ): Promise<SanitizedUser> {
+    if (!file || !file.buffer) {
+      throw new BadRequestError(
+        "Please select a resume document (PDF, DOC, DOCX) to upload."
+      )
+    }
+
+    const allowedMimeTypes = [
+      "application/pdf",
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "application/octet-stream",
+    ]
+
+    const ext = path.extname(file.originalname).toLowerCase()
+    const allowedExtensions = [".pdf", ".doc", ".docx"]
+
+    if (
+      !allowedMimeTypes.includes(file.mimetype) &&
+      !allowedExtensions.includes(ext)
+    ) {
+      throw new BadRequestError(
+        "Resume must be a PDF or Word document (.pdf, .doc, .docx)."
+      )
+    }
+
+    this.logger.info("Uploading resume file to S3/R2", {
+      userId,
+      fileName: file.originalname,
+      size: file.size,
+    })
+
+    const user = await this.db.user.findUnique({
+      where: { id: userId },
+    })
+
+    if (!user) {
+      throw new NotFoundError("User account not found.")
+    }
+
+    // 1. Find and delete previous resume files from Cloudflare R2 / S3
+    const previousResumes = await this.db.mediaFile.findMany({
+      where: {
+        OR: [
+          { source: "USER_RESUME", entityType: "User", entityId: userId },
+          { uploaderId: userId, folder: "resumes" },
+        ],
+      },
+    })
+
+    const oldKeys = previousResumes.map((a) => a.key).filter(Boolean)
+    if (user.resumeUrl) {
+      const extractedKey = this.storage.extractKeyFromUrl(user.resumeUrl)
+      if (extractedKey && !oldKeys.includes(extractedKey)) {
+        oldKeys.push(extractedKey)
+      }
+    }
+
+    if (oldKeys.length > 0) {
+      this.logger.info(
+        `Cleaning up ${oldKeys.length} previous resume file(s) from S3/R2 storage`,
+        {
+          userId,
+          oldKeys,
+        }
+      )
+      try {
+        await this.storage.deleteObjects(oldKeys)
+      } catch (err: any) {
+        this.logger.warn(
+          `Failed to delete old resume files from storage: ${err.message}`
+        )
+      }
+      await this.db.mediaFile.deleteMany({
+        where: { key: { in: oldKeys } },
+      })
+    }
+
+    // 2. Upload new resume buffer to S3 / Cloudflare R2 under resumes/ folder
+    const uploadResult = await this.storage.uploadBuffer({
+      buffer: file.buffer,
+      fileName: file.originalname || "resume.pdf",
+      mimeType: file.mimetype || "application/pdf",
+      folder: "resumes",
+      tags: ["resume", "cv"],
+      metadata: {
+        source: "USER_RESUME",
+        entityType: "User",
+        entityId: userId,
+        uploaderId: userId,
+      },
+      isPublic: true,
+      contentDisposition: `inline; filename="${file.originalname || "resume.pdf"}"`,
+    })
+
+    // 3. Save single active tracking record in MediaFile table
+    await this.db.mediaFile.create({
+      data: {
+        key: uploadResult.key,
+        bucket: uploadResult.bucket,
+        fileName: file.originalname || "resume.pdf",
+        fileExtension:
+          uploadResult.key.split(".").pop() || ext.replace(".", "") || "pdf",
+        mimeType: uploadResult.mimeType || "application/pdf",
+        size: BigInt(uploadResult.size),
+        url: uploadResult.url,
+        etag: uploadResult.etag,
+        source: "USER_RESUME",
+        folder: "resumes",
+        entityType: "User",
+        entityId: userId,
+        tags: ["resume", "cv"],
+        isPublic: true,
+        uploaderId: userId,
+      },
+    })
+
+    // 4. Update User.resumeUrl with the active public URL
+    const updated = await this.db.user.update({
+      where: { id: userId },
+      data: { resumeUrl: uploadResult.url },
+    })
+
+    this.logger.info("✔ User resume uploaded and updated successfully", {
+      userId,
+      url: uploadResult.url,
+    })
+    return this.sanitizeUser(updated)
+  }
+
+  /**
+   * 2e. DELETE / REMOVE RESUME:
+   * Removes resume URL and permanently purges the object from Cloudflare R2 / S3 storage.
+   */
+  public async deleteResume(userId: string): Promise<SanitizedUser> {
+    this.logger.info("Removing resume file", { userId })
+
+    const user = await this.db.user.findUnique({
+      where: { id: userId },
+    })
+
+    if (!user) {
+      throw new NotFoundError("User account not found.")
+    }
+
+    // Find and delete resume files from Cloudflare R2 / S3
+    const resumeFiles = await this.db.mediaFile.findMany({
+      where: {
+        OR: [
+          { source: "USER_RESUME", entityType: "User", entityId: userId },
+          { uploaderId: userId, folder: "resumes" },
+        ],
+      },
+    })
+
+    const keysToDelete = resumeFiles.map((a) => a.key).filter(Boolean)
+    if (user.resumeUrl) {
+      const extractedKey = this.storage.extractKeyFromUrl(user.resumeUrl)
+      if (extractedKey && !keysToDelete.includes(extractedKey)) {
+        keysToDelete.push(extractedKey)
+      }
+    }
+
+    if (keysToDelete.length > 0) {
+      this.logger.info(
+        `Purging ${keysToDelete.length} resume object(s) from S3/R2 storage`,
+        {
+          userId,
+          keysToDelete,
+        }
+      )
+      try {
+        await this.storage.deleteObjects(keysToDelete)
+      } catch (err: any) {
+        this.logger.warn(
+          `Failed to delete resume files from storage: ${err.message}`
+        )
+      }
+      await this.db.mediaFile.deleteMany({
+        where: { key: { in: keysToDelete } },
+      })
+    }
+
+    const updated = await this.db.user.update({
+      where: { id: userId },
+      data: { resumeUrl: null },
+    })
+
+    this.logger.info("✔ Resume removed and storage freed successfully", {
+      userId,
+    })
+    return this.sanitizeUser(updated)
+  }
+
+  /**
+   * 2f. GET PUBLIC RESUME INFO:
+   */
+  public async getPublicResume(): Promise<{
+    resumeUrl: string | null
+    name: string | null
+    updatedAt: string | null
+  }> {
+    // Find admin user or user with resumeUrl
+    const user = await this.db.user.findFirst({
+      where: {
+        OR: [{ resumeUrl: { not: null } }, { role: Role.ADMIN }],
+      },
+      orderBy: [{ resumeUrl: "desc" }, { createdAt: "asc" }],
+      select: {
+        name: true,
+        resumeUrl: true,
+        updatedAt: true,
+      },
+    })
+
+    return {
+      resumeUrl: user?.resumeUrl || null,
+      name: user?.name || null,
+      updatedAt: user?.updatedAt ? user.updatedAt.toISOString() : null,
+    }
   }
 
   /**
