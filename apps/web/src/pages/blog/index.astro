@@ -14,7 +14,15 @@ import {
 // Fetch published posts, categories, and featured stories directly from DB / API
 const posts = await getAllBlogPostsAsync()
 const categories = await getBlogCategoriesAsync()
-const featuredPosts = await getFeaturedBlogPostsAsync()
+let featuredPosts = await getFeaturedBlogPostsAsync()
+
+// Graceful fallback for featured section when database has no explicit featured items
+if (featuredPosts.length === 0 && posts.length > 0) {
+  const markedFeatured = posts.filter((p) => p.featured)
+  featuredPosts =
+    markedFeatured.length > 0 ? markedFeatured.slice(0, 4) : posts.slice(0, 4)
+}
+
 const totalTopics = new Set(posts.flatMap((p) => p.tags)).size
 ---
 

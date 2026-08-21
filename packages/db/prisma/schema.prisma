@@ -606,3 +606,52 @@ model Resume {
   @@index([createdAt])
 }
 
+enum SkillStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+model SkillCategory {
+  id          String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  slug        String       @unique
+  code        String
+  title       String
+  badge       String
+  ordinal     String?      @default("01")
+  suffix      String?      @default("ST")
+  icon        String?
+  color       String?      @default("blue")
+  description String?
+  order       Int          @default(0)
+  status      SkillStatus  @default(PUBLISHED)
+  skills      Skill[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @default(now()) @updatedAt
+
+  @@index([slug])
+  @@index([status, order])
+}
+
+model Skill {
+  id          String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name        String
+  leftLabel   String?
+  rightLabel  String?
+  level       Int            @default(5)
+  icon        String?
+  tags        String[]       @default([])
+  featured    Boolean        @default(false)
+  order       Int            @default(0)
+  status      SkillStatus    @default(PUBLISHED)
+  categoryId  String?        @db.Uuid
+  category    SkillCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @default(now()) @updatedAt
+
+  @@index([categoryId])
+  @@index([status, order])
+  @@index([featured])
+  @@index([createdAt])
+}
+

@@ -2,7 +2,11 @@
 import type { BlogPost } from "@/data/blogPosts"
 import { formatViewsCount } from "@/data/blogPosts"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { FavouriteIcon, Comment01Icon } from "@hugeicons/core-free-icons"
+import {
+  FavouriteIcon,
+  Comment01Icon,
+  ViewIcon,
+} from "@hugeicons/core-free-icons"
 
 interface Props {
   post: BlogPost
@@ -19,113 +23,79 @@ const { post, isInitiallyVisible = true, class: className = "" } = Astro.props
   data-title={post.title.toLowerCase()}
   data-summary={(post.summary || "").toLowerCase()}
   data-tags={(post.tags || []).join(",").toLowerCase()}
-  class={`group relative flex-col justify-between overflow-hidden border border-border bg-background/60 backdrop-blur-sm transition-all duration-300 hover:border-primary/40 hover:bg-background/90 hover:shadow-[0_0_0_1px_oklch(var(--primary)/20%),0_8px_32px_-8px_oklch(var(--primary)/12%)] ${
+  class={`group relative flex flex-col sm:flex-row items-stretch overflow-hidden bg-card/60 backdrop-blur-sm transition-all duration-300 hover:bg-card/90 hover:shadow-[0_0_24px_-4px_oklch(var(--primary)/15%),inset_0_0_0_1px_oklch(var(--primary)/35%)] ${
     isInitiallyVisible ? "flex" : "hidden"
   } ${className}`}
 >
-  {/* Cyberpunk corner brackets */}
+  {/* Cyberpunk corner brackets on all 4 corners with neon glow expansion */}
   <div
-    class="pointer-events-none absolute top-2 left-2 z-20 h-3.5 w-3.5 border-t-[1.5px] border-l-[1.5px] border-border transition-all duration-200 group-hover:h-4.5 group-hover:w-4.5 group-hover:border-primary"
+    class="pointer-events-none absolute top-2 left-2 z-30 h-2.5 w-2.5 border-t-[1.5px] border-l-[1.5px] border-border/80 transition-all duration-300 group-hover:h-3.5 group-hover:w-3.5 group-hover:border-primary group-hover:shadow-[0_0_8px_oklch(var(--primary)/60%)]"
   >
   </div>
   <div
-    class="pointer-events-none absolute top-2 right-2 z-20 h-3.5 w-3.5 border-t-[1.5px] border-r-[1.5px] border-border transition-all duration-200 group-hover:h-4.5 group-hover:w-4.5 group-hover:border-primary"
+    class="pointer-events-none absolute top-2 right-2 z-30 h-2.5 w-2.5 border-t-[1.5px] border-r-[1.5px] border-border/80 transition-all duration-300 group-hover:h-3.5 group-hover:w-3.5 group-hover:border-primary group-hover:shadow-[0_0_8px_oklch(var(--primary)/60%)]"
   >
   </div>
   <div
-    class="pointer-events-none absolute bottom-2 left-2 z-20 h-3.5 w-3.5 border-b-[1.5px] border-l-[1.5px] border-border transition-all duration-200 group-hover:h-4.5 group-hover:w-4.5 group-hover:border-primary"
+    class="pointer-events-none absolute bottom-2 left-2 z-30 h-2.5 w-2.5 border-b-[1.5px] border-l-[1.5px] border-border/80 transition-all duration-300 group-hover:h-3.5 group-hover:w-3.5 group-hover:border-primary group-hover:shadow-[0_0_8px_oklch(var(--primary)/60%)]"
   >
   </div>
   <div
-    class="pointer-events-none absolute right-2 bottom-2 z-20 h-3.5 w-3.5 border-r-[1.5px] border-b-[1.5px] border-border transition-all duration-200 group-hover:h-4.5 group-hover:w-4.5 group-hover:border-primary"
+    class="pointer-events-none absolute right-2 bottom-2 z-30 h-2.5 w-2.5 border-r-[1.5px] border-b-[1.5px] border-border/80 transition-all duration-300 group-hover:h-3.5 group-hover:w-3.5 group-hover:border-primary group-hover:shadow-[0_0_8px_oklch(var(--primary)/60%)]"
   >
   </div>
 
-  <div>
-    {/* Card Thumbnail Container */}
+  {/* Left: 16:9 Thumbnail with scanline overlay, light sweep, and category badge */}
+  <div
+    class="relative aspect-[16/9] w-full sm:w-[160px] md:w-[155px] lg:w-[185px] xl:w-[200px] shrink-0 overflow-hidden border-b sm:border-b-0 sm:border-r border-border bg-muted/30 before:pointer-events-none before:absolute before:inset-0 before:z-10 before:bg-[linear-gradient(105deg,transparent_40%,oklch(var(--primary)/15%)_50%,transparent_60%)] before:bg-size-[200%_100%] before:transition-all before:duration-700 hover:before:bg-position-[-100%_0] after:pointer-events-none after:absolute after:inset-0 after:bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(0,0,0,0.04)_2px,rgba(0,0,0,0.04)_4px)] after:opacity-60 after:transition-opacity after:duration-400 group-hover:after:opacity-0"
+  >
+    <img
+      src={post.thumbnail}
+      alt={post.title}
+      class="h-full w-full object-cover grayscale-[15%] transition-all duration-700 ease-out group-hover:scale-105 group-hover:grayscale-0"
+      loading="lazy"
+    />
     <div
-      class="relative aspect-[16/9] w-full overflow-hidden border-b border-border/80 bg-muted/40"
+      class="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/70 via-transparent to-transparent sm:bg-gradient-to-r sm:from-transparent sm:to-background/30"
     >
-      <img
-        src={post.thumbnail}
-        alt={post.title}
-        class="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
-        loading="lazy"
-      />
-      {/* Vignette Overlay */}
-      <div
-        class="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent"
-      >
-      </div>
-
-      {/* Category Badge on Top-Left */}
-      <div class="absolute top-3 left-3 z-10">
-        <span
-          class="inline-flex items-center rounded-none border border-primary/40 bg-background/80 px-2 py-0.5 font-mono text-[10px] font-semibold tracking-wider text-primary uppercase backdrop-blur-md"
-        >
-          {post.category}
-        </span>
-      </div>
-
-      {/* Featured Badge if applicable */}
-      {
-        post.featured && (
-          <div class="absolute top-3 right-3 z-10">
-            <span class="inline-flex items-center bg-primary px-2 py-0.5 font-mono text-[10px] font-bold tracking-wider text-primary-foreground uppercase shadow-sm">
-              FEATURED
-            </span>
-          </div>
-        )
-      }
     </div>
 
-    {/* Content Container */}
-    <div class="p-6">
-      {/* Date & Read Time Metadata */}
-      <div
-        class="flex flex-wrap items-center gap-2 font-mono text-[11px] tracking-widest text-muted-foreground uppercase"
+    {/* Subtle category badge overlay on thumbnail */}
+    <div class="absolute top-2.5 left-2.5 z-20">
+      <span
+        class="inline-flex items-center gap-1.5 border border-primary/40 bg-background/90 px-2 py-0.5 font-mono text-[9px] font-bold text-primary uppercase shadow-xs backdrop-blur-md"
       >
-        <span>{post.date}</span>
-        <span class="text-primary/60">•</span>
-        <span>{post.readTime}</span>
+        <span
+          class="h-1.5 w-1.5 rounded-full bg-primary shadow-[0_0_6px_oklch(var(--primary))]"
+        ></span>
+        {post.category}
+      </span>
+    </div>
+  </div>
+
+  {/* Right: Content Section */}
+  <div class="flex min-w-0 flex-1 flex-col justify-between p-4 sm:p-5">
+    <div>
+      {/* Date & Read Time */}
+      <div
+        class="flex items-center justify-between gap-2 font-mono text-[10px] sm:text-[11px] tracking-wider text-muted-foreground uppercase"
+      >
+        <div class="flex min-w-0 items-center gap-1.5">
+          <span class="text-primary/70">//</span>
+          <span class="truncate">{post.date}</span>
+        </div>
         {
-          post.views && (
-            <>
-              <span class="text-primary/60">•</span>
-              <span>{formatViewsCount(post.views)} VIEWS</span>
-            </>
-          )
-        }
-        {
-          post.likesCount !== undefined && (
-            <>
-              <span class="text-primary/60">•</span>
-              <span class="inline-flex items-center gap-1 text-rose-400">
-                <HugeiconsIcon
-                  icon={FavouriteIcon}
-                  className="size-3 fill-rose-400/40 text-rose-400"
-                />
-                <span>{post.likesCount}</span>
-              </span>
-            </>
-          )
-        }
-        {
-          post.commentsCount !== undefined && (
-            <>
-              <span class="text-primary/60">•</span>
-              <span class="inline-flex items-center gap-1 text-primary">
-                <HugeiconsIcon icon={Comment01Icon} className="size-3" />
-                <span>{post.commentsCount}</span>
-              </span>
-            </>
+          post.readTime && (
+            <span class="shrink-0 rounded-xs border border-border/80 bg-muted/40 px-1.5 py-0.5 font-mono text-[9px] text-muted-foreground">
+              {post.readTime}
+            </span>
           )
         }
       </div>
 
       {/* Title */}
       <h3
-        class="mt-3 line-clamp-2 text-lg font-bold tracking-tight text-foreground transition-colors duration-200 group-hover:text-primary"
+        class="mt-2 line-clamp-2 text-sm leading-snug font-bold tracking-tight text-foreground transition-colors duration-200 group-hover:text-primary sm:text-base md:text-lg"
       >
         <a href={`/blog/${post.slug}`} class="focus:outline-none">
           <span class="absolute inset-0 z-10" aria-hidden="true"></span>
@@ -135,82 +105,99 @@ const { post, isInitiallyVisible = true, class: className = "" } = Astro.props
 
       {/* Summary */}
       <p
-        class="mt-2.5 line-clamp-3 text-sm leading-relaxed text-muted-foreground"
+        class="mt-1.5 line-clamp-2 text-xs leading-relaxed text-muted-foreground sm:text-sm"
       >
         {post.summary}
       </p>
-    </div>
-  </div>
 
-  {/* Footer: Tags & Action */}
-  <div class="p-6 pt-0">
-    <div class="mb-4 flex flex-wrap gap-1.5">
+      {/* Topic Tags */}
       {
-        post.tags
-          .slice(0, 3)
-          .map((tag) => (
-            <span class="inline-flex items-center border border-border bg-muted/50 px-2 py-0.5 font-mono text-[10px] text-muted-foreground/90 transition-colors group-hover:border-primary/20">
-              #{tag}
-            </span>
-          ))
-      }
-      {
-        post.tags.length > 3 && (
-          <span class="inline-flex items-center font-mono text-[10px] text-muted-foreground/60">
-            +{post.tags.length - 3}
-          </span>
+        post.tags && post.tags.length > 0 && (
+          <div class="mt-2.5 flex flex-wrap gap-1">
+            {post.tags.slice(0, 3).map((tag) => (
+              <span class="inline-flex items-center border border-border/80 bg-muted/30 px-1.5 py-0.5 font-mono text-[9px] font-medium text-muted-foreground transition-colors group-hover:border-primary/40 group-hover:text-foreground">
+                #{tag}
+              </span>
+            ))}
+          </div>
         )
       }
     </div>
 
+    {/* Footer: Author Info & Stats */}
     <div
-      class="relative z-20 flex items-center justify-between border-t border-border/60 pt-4"
+      class="mt-3.5 flex items-center justify-between gap-2 border-t border-border/50 pt-2.5"
     >
-      {/* Author avatar & info */}
-      <div class="flex min-w-0 items-center gap-2.5">
+      {/* Author */}
+      <div class="flex min-w-0 items-center gap-2">
         {
-          post.author.avatar && (
-            <div class="relative shrink-0">
-              <img
-                src={post.author.avatar}
-                alt={post.author.name}
-                class="h-8 w-8 rounded-full border border-primary/40 object-cover shadow-xs"
-              />
-              <span class="absolute -right-0.5 -bottom-0.5 h-2.5 w-2.5 rounded-full border border-background bg-emerald-500 shadow-xs" />
+          post.author.avatar ? (
+            <img
+              src={post.author.avatar}
+              alt={post.author.name}
+              class="h-5 w-5 shrink-0 rounded-full border border-primary/40 object-cover shadow-[0_0_6px_oklch(var(--primary)/20%)]"
+            />
+          ) : (
+            <div class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-primary/40 bg-primary/10 font-mono text-[9px] font-bold text-primary">
+              {post.author.name.charAt(0)}
             </div>
           )
         }
-        <div class="flex min-w-0 flex-col justify-center gap-0.5">
-          <span
-            class="truncate font-mono text-xs leading-tight font-bold text-foreground transition-colors group-hover:text-primary"
-          >
-            {post.author.name}
-          </span>
-          <span
-            class="truncate font-mono text-[10px] leading-none text-muted-foreground"
-          >
-            {post.author.role}
-          </span>
-        </div>
+        <span
+          class="truncate font-mono text-xs font-semibold text-foreground transition-colors group-hover:text-primary"
+        >
+          {post.author.name}
+        </span>
       </div>
 
-      {/* Action button */}
-      <a
-        href={`/blog/${post.slug}`}
-        class="relative z-20 ml-3 inline-block shrink-0"
-      >
-        <button
-          type="button"
-          class="inline-flex h-8 cursor-pointer items-center gap-1.5 border border-border bg-background px-3 font-mono text-xs text-foreground transition-colors select-none hover:border-primary hover:text-primary"
+      {/* Stats Bar & Arrow indicator */}
+      <div class="flex shrink-0 items-center gap-2.5 font-mono text-[10px]">
+        {
+          post.views && (
+            <span
+              class="inline-flex items-center gap-1 text-muted-foreground transition-colors group-hover:text-foreground"
+              title={`${post.views} views`}
+            >
+              <HugeiconsIcon
+                icon={ViewIcon}
+                className="size-3 text-primary/70"
+              />
+              <span>{formatViewsCount(post.views)}</span>
+            </span>
+          )
+        }
+        {
+          post.likesCount !== undefined && (
+            <span
+              class="inline-flex items-center gap-1 text-rose-400/80 transition-colors group-hover:text-rose-400"
+              title={`${post.likesCount} likes`}
+            >
+              <HugeiconsIcon
+                icon={FavouriteIcon}
+                className="size-3 fill-rose-400/30 text-rose-400"
+              />
+              <span>{post.likesCount}</span>
+            </span>
+          )
+        }
+        {
+          post.commentsCount !== undefined && (
+            <span
+              class="inline-flex items-center gap-1 text-primary/80 transition-colors group-hover:text-primary"
+              title={`${post.commentsCount} comments`}
+            >
+              <HugeiconsIcon icon={Comment01Icon} className="size-3" />
+              <span>{post.commentsCount}</span>
+            </span>
+          )
+        }
+        <span
+          class="text-primary transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+          aria-hidden="true"
         >
-          <span>Read</span>
-          <span
-            class="transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-          >
-            ↗
-          </span>
-        </button>
-      </a>
+          ↗
+        </span>
+      </div>
     </div>
   </div>
 </article>

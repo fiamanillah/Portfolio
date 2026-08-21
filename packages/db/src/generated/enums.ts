@@ -117,3 +117,12 @@ export const ExperienceStatus = {
 } as const
 
 export type ExperienceStatus = (typeof ExperienceStatus)[keyof typeof ExperienceStatus]
+
+
+export const SkillStatus = {
+  DRAFT: 'DRAFT',
+  PUBLISHED: 'PUBLISHED',
+  ARCHIVED: 'ARCHIVED'
+} as const
+
+export type SkillStatus = (typeof SkillStatus)[keyof typeof SkillStatus]

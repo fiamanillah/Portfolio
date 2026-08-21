@@ -136,3 +136,13 @@ export type Experience = Prisma.ExperienceModel
  * 
  */
 export type Resume = Prisma.ResumeModel
+/**
+ * Model SkillCategory
+ * 
+ */
+export type SkillCategory = Prisma.SkillCategoryModel
+/**
+ * Model Skill
+ * 
+ */
+export type Skill = Prisma.SkillModel

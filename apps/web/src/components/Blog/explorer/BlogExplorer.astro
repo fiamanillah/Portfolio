@@ -49,16 +49,38 @@ const popularCategoryNames = categories
     <BlogSkeletonGrid count={postsPerPage} />
   </div>
 
-  <!-- 4. Cards Grid Container -->
+  <!-- 4. Cards Grid Container (2-Column 0-Gap Grid) -->
   <div
-    data-cards-grid
-    class="grid grid-cols-1 gap-8 transition-opacity duration-200 md:grid-cols-2 lg:grid-cols-3"
+    data-cards-container
+    class="overflow-hidden border border-border bg-card/60 backdrop-blur-sm shadow-xs transition-opacity duration-200"
   >
-    {
-      posts.map((post, index) => (
-        <BlogCard post={post} isInitiallyVisible={index < postsPerPage} />
-      ))
-    }
+    <div
+      data-cards-grid
+      class="grid grid-cols-1 md:grid-cols-2"
+    >
+      {
+        posts.map((post, index) => {
+          const isLeftCol = index % 2 === 0
+          const isLastRow =
+            index >=
+            Math.min(posts.length, postsPerPage) -
+              (Math.min(posts.length, postsPerPage) % 2 === 0 ? 2 : 1)
+          const isLastMobile =
+            index === Math.min(posts.length, postsPerPage) - 1
+          return (
+            <BlogCard
+              post={post}
+              isInitiallyVisible={index < postsPerPage}
+              class={`border-border ${
+                !isLastMobile ? "border-b" : "border-b-0"
+              } ${isLeftCol ? "md:border-r" : "md:border-r-0"} ${
+                isLastRow ? "md:border-b-0" : "md:border-b"
+              }`}
+            />
+          )
+        })
+      }
+    </div>
   </div>
 
   <!-- 5. Rich Empty State -->
@@ -95,7 +117,9 @@ const popularCategoryNames = categories
     const showingCount = explorer.querySelector<HTMLElement>(
       "[data-showing-count]"
     )
-    const cardsGrid = explorer.querySelector<HTMLElement>("[data-cards-grid]")
+    const cardsContainer = explorer.querySelector<HTMLElement>(
+      "[data-cards-container]"
+    )
     const loadingContainer = explorer.querySelector<HTMLElement>(
       "[data-loading-container]"
     )
@@ -189,24 +213,43 @@ const popularCategoryNames = categories
 
       const startIndex = (currentPage - 1) * postsPerPage
       const endIndex = startIndex + postsPerPage
+      const visibleCards = matchingCards.slice(startIndex, endIndex)
 
-      // 2. Show / hide cards
+      // 2. Show / hide cards and apply 0-gap border classes
       cards.forEach((card) => {
-        const isMatch = matchingCards.includes(card)
-        if (!isMatch) {
+        const isVisible = visibleCards.includes(card)
+        if (!isVisible) {
           card.classList.add("hidden")
           card.classList.remove("flex")
           return
         }
 
-        const indexInMatching = matchingCards.indexOf(card)
-        if (indexInMatching >= startIndex && indexInMatching < endIndex) {
-          card.classList.remove("hidden")
-          card.classList.add("flex")
-        } else {
-          card.classList.add("hidden")
-          card.classList.remove("flex")
-        }
+        const idx = visibleCards.indexOf(card)
+        card.classList.remove("hidden")
+        card.classList.add("flex")
+
+        const isLeftCol = idx % 2 === 0
+        const isLastRow =
+          idx >=
+          visibleCards.length - (visibleCards.length % 2 === 0 ? 2 : 1)
+        const isLastMobile = idx === visibleCards.length - 1
+
+        card.classList.remove(
+          "border-b",
+          "border-b-0",
+          "md:border-r",
+          "md:border-r-0",
+          "md:border-b",
+          "md:border-b-0"
+        )
+        if (!isLastMobile) card.classList.add("border-b")
+        else card.classList.add("border-b-0")
+
+        if (isLeftCol) card.classList.add("md:border-r")
+        else card.classList.add("md:border-r-0")
+
+        if (isLastRow) card.classList.add("md:border-b-0")
+        else card.classList.add("md:border-b")
       })
 
       // 3. Update Category button states & ARIA
@@ -268,7 +311,7 @@ const popularCategoryNames = categories
 
       // 5. Empty State Handling
       if (totalCount === 0) {
-        if (cardsGrid) cardsGrid.classList.add("hidden")
+        if (cardsContainer) cardsContainer.classList.add("hidden")
         if (emptyState) {
           emptyState.classList.remove("hidden")
           if (emptyCategoryName) {
@@ -278,7 +321,7 @@ const popularCategoryNames = categories
           }
         }
       } else {
-        if (cardsGrid) cardsGrid.classList.remove("hidden")
+        if (cardsContainer) cardsContainer.classList.remove("hidden")
         if (emptyState) emptyState.classList.add("hidden")
       }
 
@@ -349,8 +392,8 @@ const popularCategoryNames = categories
 
       // Hide loading skeleton and reveal cards grid
       if (loadingContainer) loadingContainer.classList.add("hidden")
-      if (cardsGrid && totalCount > 0) {
-        cardsGrid.classList.remove("opacity-0")
+      if (cardsContainer && totalCount > 0) {
+        cardsContainer.classList.remove("opacity-0")
       }
 
       syncUrl()
@@ -366,10 +409,10 @@ const popularCategoryNames = categories
       shouldScroll = false,
       withSkeleton = false
     ) {
-      if (withSkeleton && loadingContainer && cardsGrid) {
+      if (withSkeleton && loadingContainer && cardsContainer) {
         if (transitionTimer) clearTimeout(transitionTimer)
         loadingContainer.classList.remove("hidden")
-        cardsGrid.classList.add("opacity-0")
+        cardsContainer.classList.add("opacity-0")
         if (emptyState) emptyState.classList.add("hidden")
 
         transitionTimer = setTimeout(() => {
@@ -379,6 +422,7 @@ const popularCategoryNames = categories
         performUpdate(targetPage, shouldScroll)
       }
     }
+
 
     function switchCategory(newCategory: string) {
       activeCategory = newCategory.toLowerCase()

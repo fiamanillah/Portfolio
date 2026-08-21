@@ -133,10 +133,26 @@ const relatedPosts =
                 View All Articles →
               </a>
             </div>
-            <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-              {relatedPosts.map((relatedPost) => (
-                <BlogCard post={relatedPost} />
-              ))}
+            <div class="overflow-hidden border border-border bg-card/60 backdrop-blur-sm shadow-xs">
+              <div class="grid grid-cols-1 md:grid-cols-2">
+                {relatedPosts.map((relatedPost, index) => {
+                  const isLeftCol = index % 2 === 0
+                  const isLastRow =
+                    index >=
+                    relatedPosts.length - (relatedPosts.length % 2 === 0 ? 2 : 1)
+                  const isLastMobile = index === relatedPosts.length - 1
+                  return (
+                    <BlogCard
+                      post={relatedPost}
+                      class={`border-border ${
+                        !isLastMobile ? "border-b" : "border-b-0"
+                      } ${isLeftCol ? "md:border-r" : "md:border-r-0"} ${
+                        isLastRow ? "md:border-b-0" : "md:border-b"
+                      }`}
+                    />
+                  )
+                })}
+              </div>
             </div>
           </section>
         )

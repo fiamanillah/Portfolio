@@ -1,4 +1,4 @@
-import { prisma, Role, ExperienceStatus } from "../src/index";
+import { prisma, Role, ExperienceStatus, SkillStatus } from "../src/index";
 
 async function main() {
   console.log("🌱 Seeding database...");
@@ -633,15 +633,116 @@ async function main() {
     }
   }
 
-  console.log(`✅ Seeded users, subscribers, blog posts, case studies, and experiences successfully:
+  // 7. Seed Skill Categories and Skills
+  const initialSkillCategories = [
+    {
+      slug: "frontend",
+      code: "Frontend",
+      ordinal: "01",
+      suffix: "ST",
+      title: "Frontend & Languages",
+      badge: "Frontend & Languages",
+      icon: "◈",
+      color: "cyan",
+      order: 1,
+      skills: [
+        { name: "HTML / CSS / JS", leftLabel: "Core Web", rightLabel: "DOM Styling", level: 5, tags: ["Core Web", "DOM", "CSS3", "ESNext"], order: 1 },
+        { name: "Typescript / Go", leftLabel: "Languages", rightLabel: "Go Basic", level: 4, tags: ["TypeScript", "Golang", "Type System"], order: 2 },
+        { name: "React / Next.js", leftLabel: "Core Stack", rightLabel: "SSR Ready", level: 5, tags: ["React 19", "Next.js", "App Router", "SSR"], order: 3 },
+        { name: "Tailwind / Shadcn UI", leftLabel: "Atomic CSS", rightLabel: "Systemic Design", level: 5, tags: ["TailwindCSS", "Shadcn", "Design Systems"], order: 4 },
+        { name: "Redux / WebSockets", leftLabel: "State Mgmt", rightLabel: "Realtime", level: 4, tags: ["Redux Toolkit", "WebSockets", "Socket.io", "RTK Query"], order: 5 },
+      ],
+    },
+    {
+      slug: "backend",
+      code: "Backend",
+      ordinal: "02",
+      suffix: "ND",
+      title: "Backend & Data Layer",
+      badge: "Backend & Data Layer",
+      icon: "◉",
+      color: "indigo",
+      order: 2,
+      skills: [
+        { name: "Node / Express", leftLabel: "Runtime", rightLabel: "API Design", level: 5, tags: ["Node.js", "Express", "REST APIs"], order: 1 },
+        { name: "Nest.js", leftLabel: "Architecture", rightLabel: "Scalable API", level: 4, tags: ["NestJS", "TypeScript", "Microservices"], order: 2 },
+        { name: "PostgreSQL / MySQL", leftLabel: "Relational", rightLabel: "Data Integrity", level: 5, tags: ["PostgreSQL", "MySQL", "ACID", "Indexing"], order: 3 },
+        { name: "MongoDB / Redis", leftLabel: "NoSQL", rightLabel: "Caching Layer", level: 4, tags: ["MongoDB", "Redis", "PubSub", "In-Memory"], order: 4 },
+        { name: "Prisma / Mongoose", leftLabel: "ORMs", rightLabel: "Modeling", level: 5, tags: ["Prisma", "Mongoose", "Migrations"], order: 5 },
+      ],
+    },
+    {
+      slug: "infra",
+      code: "Infra",
+      ordinal: "03",
+      suffix: "RD",
+      title: "Operational Flow",
+      badge: "Operational Flow",
+      icon: "✦",
+      color: "gold",
+      order: 3,
+      skills: [
+        { name: "Docker / Nginx", leftLabel: "Containers", rightLabel: "Reverse Proxy", level: 4, tags: ["Docker", "Docker Compose", "Nginx", "Reverse Proxy"], order: 1 },
+        { name: "Linux / VPS", leftLabel: "SysAdmin", rightLabel: "Self-Managed", level: 4, tags: ["Linux", "Ubuntu", "Bash", "Systemd", "VPS"], order: 2 },
+        { name: "AWS / GCP / Git", leftLabel: "Cloud Infrastructure", rightLabel: "CI/CD", level: 4, tags: ["AWS S3", "GCP", "Git", "GitHub Actions", "CI/CD"], order: 3 },
+        { name: "Proxmox / KVM", leftLabel: "Hypervisor", rightLabel: "Virtualization", level: 3, tags: ["Proxmox", "KVM", "Virtualization"], order: 4 },
+        { name: "RabbitMQ / BullMQ", leftLabel: "Message Brokers", rightLabel: "Event Driven", level: 4, tags: ["RabbitMQ", "BullMQ", "Event-Driven", "Task Queues"], order: 5 },
+      ],
+    },
+  ];
+
+  let seededSkillsCount = 0;
+  for (const cat of initialSkillCategories) {
+    const { skills, ...catData } = cat;
+    const categoryRecord = await prisma.skillCategory.upsert({
+      where: { slug: catData.slug },
+      update: {
+        ...catData,
+        status: SkillStatus.PUBLISHED,
+      },
+      create: {
+        ...catData,
+        status: SkillStatus.PUBLISHED,
+      },
+    });
+
+    for (const skill of skills) {
+      const existingSkill = await prisma.skill.findFirst({
+        where: { name: skill.name, categoryId: categoryRecord.id },
+      });
+
+      if (!existingSkill) {
+        await prisma.skill.create({
+          data: {
+            ...skill,
+            categoryId: categoryRecord.id,
+            status: SkillStatus.PUBLISHED,
+          },
+        });
+        seededSkillsCount++;
+      } else {
+        await prisma.skill.update({
+          where: { id: existingSkill.id },
+          data: {
+            ...skill,
+            status: SkillStatus.PUBLISHED,
+          },
+        });
+        seededSkillsCount++;
+      }
+    }
+  }
+
+  console.log(`✅ Seeded users, subscribers, blog posts, case studies, experiences, and skills successfully:
   - Admin: ${adminUser.email} (${adminUser.role})
   - Moderator: ${alexUser.email} (${alexUser.role})
   - User: ${sarahUser.email} (${sarahUser.role})
   - Subscribers: ${sampleSubscribers.length} records
-  - Categories: ${categoriesData.length} records
+  - Categories: ${categoriesData.length} blog categories, ${initialSkillCategories.length} skill categories
   - Blog Posts: ${seededPostsCount} posts migrated
   - Case Studies: ${seededCaseStudiesCount} case studies migrated
   - Experiences: ${seededExperiencesCount} experiences migrated
+  - Skills: ${seededSkillsCount} skills seeded
   `);
 }
 

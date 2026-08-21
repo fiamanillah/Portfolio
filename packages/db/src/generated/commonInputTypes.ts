@@ -521,6 +521,23 @@ export type EnumExperienceStatusWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumExperienceStatusFilter<$PrismaModel>
 }
 
+export type EnumSkillStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.SkillStatus | Prisma.EnumSkillStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.SkillStatus[] | Prisma.ListEnumSkillStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SkillStatus[] | Prisma.ListEnumSkillStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSkillStatusFilter<$PrismaModel> | $Enums.SkillStatus
+}
+
+export type EnumSkillStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.SkillStatus | Prisma.EnumSkillStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.SkillStatus[] | Prisma.ListEnumSkillStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SkillStatus[] | Prisma.ListEnumSkillStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSkillStatusWithAggregatesFilter<$PrismaModel> | $Enums.SkillStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumSkillStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumSkillStatusFilter<$PrismaModel>
+}
+
 export type NestedUuidFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -1008,6 +1025,23 @@ export type NestedEnumExperienceStatusWithAggregatesFilter<$PrismaModel = never>
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumExperienceStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumExperienceStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumSkillStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.SkillStatus | Prisma.EnumSkillStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.SkillStatus[] | Prisma.ListEnumSkillStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SkillStatus[] | Prisma.ListEnumSkillStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSkillStatusFilter<$PrismaModel> | $Enums.SkillStatus
+}
+
+export type NestedEnumSkillStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.SkillStatus | Prisma.EnumSkillStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.SkillStatus[] | Prisma.ListEnumSkillStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SkillStatus[] | Prisma.ListEnumSkillStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSkillStatusWithAggregatesFilter<$PrismaModel> | $Enums.SkillStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumSkillStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumSkillStatusFilter<$PrismaModel>
 }
 
 

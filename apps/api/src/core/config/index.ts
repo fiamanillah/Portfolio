@@ -55,11 +55,8 @@ export const config = {
   plunk: {
     secretKey: process.env.PLUNK_SECRET_KEY || "",
     apiUrl: process.env.PLUNK_API_URL || "https://next-api.useplunk.com",
-    templateId:
-      process.env.PLUNK_TEMPLATE_ID || "bd6771fd-935f-48b8-92f1-3c9ff8368a6b",
-    confirmationTemplateId:
-      process.env.PLUNK_CONFIRMATION_TEMPLATE_ID ||
-      "bd6771fd-935f-48b8-92f1-3c9ff8368a6b",
+    templateId: process.env.PLUNK_TEMPLATE_ID,
+    confirmationTemplateId: process.env.PLUNK_CONFIRMATION_TEMPLATE_ID,
   },
   turnstile: {
     secretKey: process.env.TURNSTILE_SECRET_KEY || "",

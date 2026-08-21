@@ -69,7 +69,9 @@ export const ModelName = {
   Newsletter: 'Newsletter',
   NewsletterSendLog: 'NewsletterSendLog',
   Experience: 'Experience',
-  Resume: 'Resume'
+  Resume: 'Resume',
+  SkillCategory: 'SkillCategory',
+  Skill: 'Skill'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -520,6 +522,45 @@ export const ResumeScalarFieldEnum = {
 } as const
 
 export type ResumeScalarFieldEnum = (typeof ResumeScalarFieldEnum)[keyof typeof ResumeScalarFieldEnum]
+
+
+export const SkillCategoryScalarFieldEnum = {
+  id: 'id',
+  slug: 'slug',
+  code: 'code',
+  title: 'title',
+  badge: 'badge',
+  ordinal: 'ordinal',
+  suffix: 'suffix',
+  icon: 'icon',
+  color: 'color',
+  description: 'description',
+  order: 'order',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SkillCategoryScalarFieldEnum = (typeof SkillCategoryScalarFieldEnum)[keyof typeof SkillCategoryScalarFieldEnum]
+
+
+export const SkillScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  leftLabel: 'leftLabel',
+  rightLabel: 'rightLabel',
+  level: 'level',
+  icon: 'icon',
+  tags: 'tags',
+  featured: 'featured',
+  order: 'order',
+  status: 'status',
+  categoryId: 'categoryId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SkillScalarFieldEnum = (typeof SkillScalarFieldEnum)[keyof typeof SkillScalarFieldEnum]
 
 
 export const SortOrder = {

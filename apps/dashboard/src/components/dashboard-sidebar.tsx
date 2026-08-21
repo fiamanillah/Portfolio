@@ -23,6 +23,7 @@ import {
   Layers,
   Briefcase,
   FileText,
+  Cpu,
 } from "lucide-react"
 
 import {
@@ -87,6 +88,11 @@ const navGroups: NavGroup[] = [
         title: "Case Studies",
         url: "/case-studies",
         icon: Layers,
+      },
+      {
+        title: "Skills & Stack",
+        url: "/skills",
+        icon: Cpu,
       },
       {
         title: "Professional History",

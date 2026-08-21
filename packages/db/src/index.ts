@@ -4,7 +4,7 @@ import { PrismaClient } from "./generated/client";
 
 const connectionString =
   process.env.DATABASE_URL ||
-  "postgresql://fiamanillah:fiamanillah@localhost:5435/portfolio_db?schema=public";
+  "postgresql://fiamanillah:fiamanillah@localhost:5445/portfolio_db?schema=public";
 
 const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
 
