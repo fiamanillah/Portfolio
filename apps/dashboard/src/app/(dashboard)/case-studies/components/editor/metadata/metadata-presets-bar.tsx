@@ -10,7 +10,7 @@ interface MetadataPresetsBarProps {
 }
 
 const PRESETS: CaseStudyMetadataItem[] = [
-  { label: "Role", value: "Backend & DevOps Engineer" },
+  { label: "Role", value: "Full Stack Developer" },
   { label: "Timeline", value: "2025 - 2026" },
   { label: "Client / Company", value: "Enterprise Client" },
   { label: "Domain", value: "Automotive B2B Marketplace" },

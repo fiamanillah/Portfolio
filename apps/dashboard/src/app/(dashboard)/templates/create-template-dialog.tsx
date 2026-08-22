@@ -68,7 +68,7 @@ const STARTER_TEMPLATE = `<!DOCTYPE html>
     <tr>
       <td style="padding: 24px 32px 18px 32px; border-bottom: 1px solid #e2e8f0;">
         <h1 style="color: #0f172a; font-size: 16px; margin: 0 0 4px 0; font-weight: 700;">Fi Amanillah</h1>
-        <p style="color: #64748b; font-size: 12px; margin: 0;">Full-Stack &amp; DevOps Engineer</p>
+        <p style="color: #64748b; font-size: 12px; margin: 0;">Full Stack Developer</p>
       </td>
     </tr>
     <tr>

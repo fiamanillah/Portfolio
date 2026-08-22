@@ -58,7 +58,7 @@ export function mapApiPostToBlogPost(dto: any): BlogPost {
     role:
       dto.author?.role ||
       dto.authorRole ||
-      "Lead Full Stack & Distributed Systems Engineer",
+      "Full Stack Developer",
     avatar: dto.author?.avatar || dto.authorAvatar || "/fi.png",
     twitter: dto.author?.twitter || dto.authorTwitter,
     linkedin: dto.author?.linkedin || dto.authorLinkedin,

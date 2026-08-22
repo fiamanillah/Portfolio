@@ -53,7 +53,7 @@ export const ResumeApi = {
         const item = json.data
         return {
           id: item.id || null,
-          title: item.title || "Full-Stack Developer Resume",
+          title: item.title || "Full Stack Developer Resume",
           version: item.version || "v2.0",
           fileName: item.fileName || "Fi_Amanillah_Resume.pdf",
           fileUrl: item.fileUrl || null,

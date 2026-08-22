@@ -183,7 +183,7 @@ export function renderEmailLayout(
                 <tr>
                   <td>
                     <p style="margin: 0 0 6px 0; font-size: 13px; font-weight: 600; color: #0f172a;">
-                      Fi Amanillah <span style="font-weight: 400; color: #64748b;">&mdash; Full-Stack &amp; DevOps Engineer</span>
+                      Fi Amanillah <span style="font-weight: 400; color: #64748b;">&mdash; Full Stack Developer</span>
                     </p>
                     <p style="margin: 0 0 12px 0; font-size: 12px; color: #64748b;">
                       <a href="https://fi.amanillah.com" style="color: #475569; text-decoration: underline; margin-right: 12px;">Home</a>

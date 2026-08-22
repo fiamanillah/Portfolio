@@ -37,7 +37,7 @@ export const projectsData: Project[] = [
     subtitle: "Real-Time Bidding & Service Marketplace Platform",
     description:
       "A high-performance REST API and bidding engine for a service-based freelance marketplace, utilizing decoupled microservices, containerized services, and tiered subscriptions.",
-    role: "Backend & DevOps",
+    role: "Full Stack Developer",
     impact:
       "Engineered contractor credit/bidding engine with Stripe billing, real-time Socket.io messaging with Redis, and Docker Compose deployment.",
     tech: [
@@ -80,7 +80,7 @@ export const projectsData: Project[] = [
     subtitle: "Healthcare Management & Patient Care Portal",
     description:
       "Comprehensive healthcare management portal featuring multi-role RBAC, real-time clinical team chats, automated alerts, and AI-powered document insight extraction.",
-    role: "Backend Developer",
+    role: "Full Stack Developer",
     impact:
       "Architected OpenAI API health insights worker, WebSocket patient-care chat, SES/Postmark alert dispatch, and Paystack billing.",
     tech: [
@@ -146,7 +146,7 @@ export const projectsData: Project[] = [
     subtitle: "High-throughput asynchronous message consumer",
     description:
       "A lightweight, failure-resilient background queue dispatcher service designed to decouple email, SMS, and web-push notifications from core REST APIs.",
-    role: "Backend Architect",
+    role: "Full Stack Developer",
     impact:
       "Processed thousands of asynchronous notification events daily with automatic retry strategies and dead-letter queue routing.",
     tech: ["Node.js", "RabbitMQ", "Redis", "TypeScript", "AWS SES"],

@@ -22,7 +22,7 @@ http:
         "tags": ["Redis", "TypeScript", "Microservices", "Performance"],
         "author": {
           "name": "Fi Amanillah",
-          "role": "Full Stack & DevOps Engineer"
+          "role": "Full Stack Developer"
         },
         "seo": {
           "metaTitle": "Scaling Distributed Message Queues with Redis Streams & TypeScript | Fi Amanillah",

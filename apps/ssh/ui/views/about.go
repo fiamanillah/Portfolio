@@ -26,7 +26,7 @@ func DrawAbout(width int) string {
 
 	// ── Bio ──────────────────────────────────────────────────────
 	bioLines := []string{
-		"I'm a Full-Stack Developer specializing in building scalable MERN",
+		"I'm a Full Stack Developer specializing in building scalable MERN",
 		"stack, Nest.js, and Next.js applications. I bridge the gap between",
 		"complex event-driven backend architectures and clean, responsive",
 		"frontend design.",
@@ -149,7 +149,7 @@ func DrawAbout(width int) string {
 
 	credentials := []struct{ year, title, detail string }{
 		{"2025", "Full Stack Developer — Softvence Agency", "TypeScript · Express · Prisma · PostgreSQL · Redis · RabbitMQ · Docker"},
-		{"2023", "Self-Taught Full-Stack Developer", "Node.js · React · PostgreSQL · Docker · Go"},
+		{"2023", "Self-Taught Full Stack Developer", "Node.js · React · PostgreSQL · Docker · Go"},
 		{"2022", "Linux & VPS Server Administration", "Nginx · SSL · Process Management"},
 		{"2021", "Web Development Fundamentals", "HTML · CSS · JavaScript · REST APIs"},
 	}

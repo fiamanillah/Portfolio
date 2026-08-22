@@ -47,7 +47,7 @@ export function mapApiCaseStudyToDetail(dto: any): CaseStudyDetail {
         value: m.value,
       }))
     : [
-        { label: "Role", value: dto.role || "Backend Architect" },
+        { label: "Role", value: dto.role || "Full Stack Developer" },
         { label: "Timeline", value: dto.timeline || "2026" },
         { label: "Client / Company", value: dto.client || dto.title },
         {

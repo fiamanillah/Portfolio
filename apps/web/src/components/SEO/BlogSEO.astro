@@ -54,7 +54,7 @@ const title =
     ? `${post.title} | Fi Amanillah`
     : customTitle
       ? `${customTitle} | Fi Amanillah`
-      : "Fi Amanillah | Full Stack & DevOps Engineer")
+      : "Fi Amanillah | Full Stack Developer")
 
 const rawTitle = post ? post.title : customTitle || "Fi Amanillah"
 const description =
@@ -121,7 +121,7 @@ const breadcrumbs: BreadcrumbItem[] =
 
 // Author info from JSON schema
 const authorName = post?.author?.name || "Fi Amanillah"
-const authorRole = post?.author?.role || "Full Stack & DevOps Engineer"
+const authorRole = post?.author?.role || "Full Stack Developer"
 const authorAvatar = post?.author?.avatar
   ? post.author.avatar.startsWith("http")
     ? post.author.avatar

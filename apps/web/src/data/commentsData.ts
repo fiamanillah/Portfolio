@@ -16,7 +16,7 @@ export const DEMO_USERS: AuthUser[] = [
     avatar: "/fi.png",
     role: "Author & Lead Architect",
     badge: "Author",
-    bio: "Full Stack & DevOps Engineer building high-throughput distributed systems.",
+    bio: "Full Stack Developer building high-throughput distributed systems.",
     joinedAt: "2024-01-01",
     location: "Singapore / Remote",
     website: "https://amanillah.dev",

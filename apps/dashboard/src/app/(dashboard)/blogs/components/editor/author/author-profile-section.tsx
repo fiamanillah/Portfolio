@@ -123,7 +123,7 @@ export function AuthorProfileSection({
             Author Role / Title
           </label>
           <Input
-            placeholder="Full Stack & DevOps Engineer"
+            placeholder="Full Stack Developer"
             value={authorRole}
             onChange={(e) => setAuthorRole(e.target.value)}
             className="h-9 border-border/90 bg-background text-xs shadow-xs hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary/20"

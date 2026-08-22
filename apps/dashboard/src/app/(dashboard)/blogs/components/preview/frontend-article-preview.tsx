@@ -173,7 +173,7 @@ export function FrontendArticlePreview({
   const [copiedLink, setCopiedLink] = React.useState(false)
 
   const authorName = post.author?.name || "Fi Amanillah"
-  const authorRole = post.author?.role || "Full Stack & DevOps Engineer"
+  const authorRole = post.author?.role || "Full Stack Developer"
   const authorAvatar = post.author?.avatar || "/fi.png"
   const categoryName = post.category?.name || "Architecture"
   const publishedDate =
@@ -475,7 +475,7 @@ export function FrontendArticlePreview({
                     {authorRole}
                   </p>
                   <p className="pt-2 text-xs leading-relaxed text-muted-foreground/90">
-                    Full Stack Engineer specializing in TypeScript backend
+                    Full Stack Developer specializing in TypeScript backend
                     architecture, event-driven microservices with RabbitMQ &
                     Redis, Prisma ORM tuning, and cloud VPS deployments.
                   </p>

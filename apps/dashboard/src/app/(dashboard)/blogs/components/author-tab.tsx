@@ -78,7 +78,7 @@ export function AuthorTab({
             Author Role / Title
           </label>
           <Input
-            placeholder="Full Stack & DevOps Engineer"
+            placeholder="Full Stack Developer"
             value={authorRole}
             onChange={(e) => setAuthorRole(e.target.value)}
             className="bg-card text-xs"

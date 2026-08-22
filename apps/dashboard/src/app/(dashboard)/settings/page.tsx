@@ -503,7 +503,7 @@ export default function SettingsPage() {
                   <Input
                     value={bio}
                     onChange={(e) => setBio(e.target.value)}
-                    placeholder="Full Stack & DevOps Engineer building distributed systems."
+                    placeholder="Full Stack Developer building distributed systems."
                     className="h-9 text-xs"
                   />
                 </div>

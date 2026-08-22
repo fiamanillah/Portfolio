@@ -156,7 +156,7 @@ export function PostEditorForm({
   const [authorRole, setAuthorRole] = React.useState(
     initialPost?.author?.role ||
       user?.headline ||
-      "Full Stack & DevOps Engineer"
+      "Full Stack Developer"
   )
   const [authorAvatar, setAuthorAvatar] = React.useState(
     initialPost?.author?.avatar || user?.avatar || "/fi.png"
@@ -221,7 +221,7 @@ export function PostEditorForm({
       wordCount: wordCount,
       author: {
         name: authorName || "Fi Amanillah",
-        role: authorRole || "Full Stack & DevOps Engineer",
+        role: authorRole || "Full Stack Developer",
         avatar: authorAvatar || "/fi.png",
         twitter: authorTwitter || "@fiamanillah",
         linkedin: authorLinkedin || "",

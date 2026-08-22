@@ -42,7 +42,7 @@ func DrawHome(width int) string {
 	sb.WriteString(ci)
 	sb.WriteString(styles.StyleHighlight.Render("Fi Amanillah"))
 	sb.WriteString("  ")
-	sb.WriteString(styles.StyleFaint.Render("// Full-Stack Developer"))
+	sb.WriteString(styles.StyleFaint.Render("// Full Stack Developer"))
 	sb.WriteString("\n")
 	sb.WriteString(ci)
 	sb.WriteString(divLine)
@@ -58,7 +58,7 @@ func DrawHome(width int) string {
 	type kv struct{ k, v string }
 	fields := []kv{
 		{"location", `"Dhaka, Bangladesh"`},
-		{"role", `"Full-Stack Developer"`},
+		{"role", `"Full Stack Developer"`},
 		{"experience", `"1+ Years"`},
 		{"specialty", `"Backend & DevOps"`},
 		{"company", `"Softvence Agency"`},

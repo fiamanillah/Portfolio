@@ -562,7 +562,7 @@ export class BlogService {
         categoryId: resolvedCategoryId,
         authorId: user?.id || null,
         authorName: data.author?.name || user?.name || "Fi Amanillah",
-        authorRole: data.author?.role || "Full Stack & DevOps Engineer",
+        authorRole: data.author?.role || "Full Stack Developer",
         authorAvatar: data.author?.avatar || user?.avatar || "/fi.png",
         authorTwitter: data.author?.twitter || null,
         authorLinkedin: data.author?.linkedin || null,
@@ -1253,7 +1253,7 @@ export class BlogService {
 
     // Build Schema.org JSON-LD graph preview
     const authorName = data.author?.name || "Fi Amanillah"
-    const authorRole = data.author?.role || "Full Stack & DevOps Engineer"
+    const authorRole = data.author?.role || "Full Stack Developer"
     const authorAvatar = data.author?.avatar?.startsWith("http")
       ? data.author.avatar
       : `${siteUrl}${data.author?.avatar || "/fi.png"}`
@@ -2274,7 +2274,7 @@ export class BlogService {
             authorRole:
               post.author?.role ||
               admin?.headline ||
-              "Full Stack & DevOps Engineer",
+              "Full Stack Developer",
             authorAvatar: post.author?.avatar || admin?.avatar || "/fi.png",
             authorTwitter: post.author?.twitter || admin?.twitterUrl,
             authorLinkedin: post.author?.linkedin || admin?.linkedinUrl,
@@ -2321,7 +2321,7 @@ export class BlogService {
             authorRole:
               post.author?.role ||
               admin?.headline ||
-              "Full Stack & DevOps Engineer",
+              "Full Stack Developer",
             authorAvatar: post.author?.avatar || admin?.avatar || "/fi.png",
             authorTwitter: post.author?.twitter || admin?.twitterUrl,
             authorLinkedin: post.author?.linkedin || admin?.linkedinUrl,

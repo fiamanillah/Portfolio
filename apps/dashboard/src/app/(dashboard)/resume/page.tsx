@@ -98,7 +98,7 @@ export default function ResumeManagementPage() {
 
   // Upload Modal
   const [isUploadOpen, setIsUploadOpen] = React.useState(false)
-  const [uploadTitle, setUploadTitle] = React.useState("Full-Stack Developer Resume")
+  const [uploadTitle, setUploadTitle] = React.useState("Full Stack Developer Resume")
   const [uploadVersion, setUploadVersion] = React.useState(`v${new Date().getFullYear()}.${new Date().getMonth() + 1}`)
   const [uploadDesc, setUploadDesc] = React.useState("")
   const [uploadIsActive, setUploadIsActive] = React.useState(true)
@@ -623,7 +623,7 @@ export default function ResumeManagementPage() {
                 <Input
                   value={uploadTitle}
                   onChange={(e) => setUploadTitle(e.target.value)}
-                  placeholder="e.g. Full-Stack Developer Resume"
+                  placeholder="e.g. Full Stack Developer Resume"
                   className="h-9 text-xs"
                   required
                 />

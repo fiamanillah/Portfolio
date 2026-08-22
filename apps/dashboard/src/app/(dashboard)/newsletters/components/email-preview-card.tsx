@@ -124,7 +124,7 @@ export function EmailPreviewCard({
 
       <div class="email-footer">
         <p style="margin: 0 0 4px 0; font-size: 13px; font-weight: 600; color: #0f172a;">Fi Amanillah</p>
-        <p style="margin: 0 0 10px 0; font-size: 12px; color: #64748b;">Full-Stack &amp; DevOps Engineer</p>
+        <p style="margin: 0 0 10px 0; font-size: 12px; color: #64748b;">Full Stack Developer</p>
         <p style="margin: 0 0 10px 0;">
           <a href="https://fi.amanillah.com" style="margin-right: 12px; text-decoration: underline;">Home</a>
           <a href="https://fi.amanillah.com/blog" style="margin-right: 12px; text-decoration: underline;">Blog</a>
