@@ -1,9 +1,4 @@
----
-import { ResumeApi } from "@/lib/api/resumeApi"
 
-const resumeData = await ResumeApi.fetchPublicResume()
-const resumeUrl = resumeData.downloadUrl || "/resume"
----
 
 <style>
   @keyframes border-flow {
@@ -188,28 +183,6 @@ const resumeUrl = resumeData.downloadUrl || "/resume"
               class="transition-transform duration-200 group-hover:translate-x-1"
               >↓</span
             >
-          </a>
-          <a
-            href={resumeUrl}
-            target={resumeData.resumeUrl ? "_blank" : undefined}
-            download={resumeData.resumeUrl ? true : undefined}
-            class="group inline-flex items-center gap-2 border border-border bg-card px-5 py-3 text-[0.8rem] font-bold tracking-[0.15em] text-foreground uppercase no-underline transition-all duration-250 hover:border-primary hover:text-primary"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="size-4 text-primary transition-transform duration-200 group-hover:translate-y-0.5"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-              <polyline points="7 10 12 15 17 10"></polyline>
-              <line x1="12" y1="15" x2="12" y2="3"></line>
-            </svg>
-            <span>Download Resume</span>
           </a>
           <a
             href="#contact"

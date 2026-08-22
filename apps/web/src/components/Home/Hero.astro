@@ -132,31 +132,6 @@ const resumeUrl = resumeData.downloadUrl || "/resume"
 
       <!-- Secondary Navigation -->
       <div class="flex flex-wrap items-center gap-4 sm:gap-6">
-        <a
-          href={resumeUrl}
-          target={resumeData.resumeUrl ? "_blank" : undefined}
-          download={resumeData.resumeUrl ? true : undefined}
-          class="group inline-flex items-center gap-2 rounded-lg border-2 border-primary/40 bg-primary/10 px-4 py-2 text-xs font-bold tracking-wider text-primary uppercase transition-all duration-200 hover:border-primary hover:bg-primary hover:text-primary-foreground sm:text-sm"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="size-4 transition-transform duration-200 group-hover:translate-y-0.5"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-            <polyline points="7 10 12 15 17 10"></polyline>
-            <line x1="12" y1="15" x2="12" y2="3"></line>
-          </svg>
-          <span>Download CV</span>
-        </a>
-
-        <div class="hidden h-4 w-px bg-border sm:block"></div>
-
         <div
           class="flex items-center gap-2 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground sm:text-sm"
         >
@@ -281,81 +256,84 @@ const resumeUrl = resumeData.downloadUrl || "/resume"
         </div>
       </div>
 
-      <!-- SSH Connection -->
+      <!-- Curriculum Vitae / Resume Download -->
       <div class="w-full max-w-md space-y-3.5">
         <div class="flex items-center justify-start gap-3 lg:justify-end">
           <div class="h-px w-12 bg-border"></div>
           <span
             class="font-mono text-xs tracking-[0.1em] whitespace-nowrap text-muted-foreground uppercase"
-            >Live SSH CV</span
+            >Curriculum Vitae</span
           >
         </div>
 
         <p
           class="text-left text-xs leading-relaxed text-muted-foreground lg:text-right"
         >
-          Access my interactive retro terminal CV directly from your command
-          line:
+          Download my official resume and verified engineering track record:
         </p>
 
-        <!-- Command Box -->
-        <div
-          class="group relative flex items-center justify-between border border-border bg-background/30 p-3.5 pl-4 font-mono text-sm backdrop-blur-md transition-all duration-300 hover:border-primary/50 hover:bg-background/40"
+        <!-- Resume Download Card -->
+        <a
+          href={resumeUrl}
+          target={resumeData.resumeUrl ? "_blank" : undefined}
+          download={resumeData.resumeUrl ? true : undefined}
+          class="group relative flex items-center justify-between border border-border bg-background/40 p-3.5 px-4 font-mono text-sm backdrop-blur-md transition-all duration-300 hover:border-primary/50 hover:bg-background/60 focus:ring-2 focus:ring-primary/30 focus:outline-none"
         >
-          <!-- Command text -->
-          <div
-            class="scrollbar-none flex items-center gap-2 overflow-x-auto pr-12 whitespace-nowrap select-all"
-          >
-            <span class="text-muted-foreground/40 select-none">$</span>
-            <span class="font-semibold text-primary">ssh</span>
-            <span class="text-muted-foreground">-p 2222</span>
-            <span class="text-foreground">amanillah.com</span>
+          <div class="flex items-center gap-3">
+            <div
+              class="flex size-9 shrink-0 items-center justify-center border border-border bg-background/80 text-primary transition-all duration-300 group-hover:border-primary/40 group-hover:bg-primary group-hover:text-primary-foreground group-hover:scale-105"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="size-4.5 transition-transform duration-300 group-hover:translate-y-0.5"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+            </div>
+            <div class="flex flex-col">
+              <span
+                class="text-xs font-bold tracking-wider text-foreground uppercase transition-colors group-hover:text-primary"
+              >
+                Download Resume (PDF)
+              </span>
+              <span class="font-mono text-[10px] text-muted-foreground">
+                {
+                  resumeData.resumeUrl
+                    ? "Direct Download · Verified Build"
+                    : "Interactive View & Download"
+                }
+              </span>
+            </div>
           </div>
 
-          <!-- Copy button overlay -->
-          <button
-            id="copy-ssh-btn"
-            data-copy-text="ssh -p 2222 amanillah.com"
-            class="absolute right-2 flex h-8 w-8 cursor-pointer items-center justify-center border border-border bg-background/80 text-muted-foreground transition-all duration-200 hover:scale-105 hover:border-primary/30 hover:text-foreground"
-            aria-label="Copy SSH command"
+          <div
+            class="flex h-8 w-8 shrink-0 items-center justify-center border border-border bg-background/80 text-muted-foreground transition-all duration-200 group-hover:border-primary/40 group-hover:text-primary group-hover:translate-x-0.5"
           >
-            <!-- Copy Icon -->
-            <svg
-              id="copy-icon"
-              class="size-4 transition-transform duration-200"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"
-              ></path>
-            </svg>
-            <!-- Success/Check Icon -->
-            <svg
-              id="check-icon"
-              class="hidden size-4 text-emerald-500 transition-transform duration-200"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              stroke-width="2.5"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M5 13l4 4L19 7"></path>
-            </svg>
-          </button>
-        </div>
+            <HugeiconsIcon
+              icon={ArrowUpRight03Icon}
+              className="size-4 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+            />
+          </div>
+        </a>
 
         <div
           class="flex items-center justify-between font-mono text-[10px] text-muted-foreground/50 uppercase"
         >
-          <span>🔐 Secure Connection</span>
-          <span>No installation needed</span>
+          <span>📄 Updated for 2026</span>
+          <a
+            href="/resume"
+            class="transition-colors hover:text-primary hover:underline"
+          >
+            Interactive CV Page →
+          </a>
         </div>
       </div>
 
@@ -458,34 +436,6 @@ const resumeUrl = resumeData.downloadUrl || "/resume"
     checkStickyStates()
   }
 
-  function setupCopySSH() {
-    const btn = document.getElementById("copy-ssh-btn")
-    if (!btn) return
-
-    const copyText =
-      btn.getAttribute("data-copy-text") || "ssh -p 2222 amanillah.com"
-    const copyIcon = document.getElementById("copy-icon")
-    const checkIcon = document.getElementById("check-icon")
-
-    btn.addEventListener("click", async () => {
-      try {
-        await navigator.clipboard.writeText(copyText)
-        if (copyIcon && checkIcon) {
-          copyIcon.classList.add("hidden")
-          checkIcon.classList.remove("hidden")
-          btn.classList.add("border-emerald-500/50", "bg-emerald-500/10")
-
-          setTimeout(() => {
-            checkIcon.classList.add("hidden")
-            copyIcon.classList.remove("hidden")
-            btn.classList.remove("border-emerald-500/50", "bg-emerald-500/10")
-          }, 2000)
-        }
-      } catch (err) {
-        console.error("Failed to copy text: ", err)
-      }
-    })
-  }
 
   let heroTurnstileWidgetId: string | null = null
 
@@ -709,18 +659,15 @@ const resumeUrl = resumeData.downloadUrl || "/resume"
   // Ensure compatibility with Astro's View Transitions if enabled
   document.addEventListener("astro:page-load", () => {
     setupStickyObserver()
-    setupCopySSH()
     setupHeroSubscription()
   })
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", () => {
       setupStickyObserver()
-      setupCopySSH()
       setupHeroSubscription()
     })
   } else {
     setupStickyObserver()
-    setupCopySSH()
     setupHeroSubscription()
   }
 </script>
