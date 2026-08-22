@@ -340,13 +340,14 @@ export class StorageService {
           // If in development mode and bucket creation failed due to token scope,
           // save to local filesystem fallback so the user/developer is never blocked
           if (!config.server.isProduction) {
-            const localDir = path.resolve(
-              process.cwd(),
-              "uploads",
-              path.dirname(key)
-            )
+            const uploadsRoot = path.resolve(process.cwd(), "uploads")
+            const safeKey = path
+              .normalize(key)
+              .replace(/^(\.\.[\/\\])+/, "")
+              .replace(/^[\/\\]+/, "")
+            const localDir = path.resolve(uploadsRoot, path.dirname(safeKey))
             fs.mkdirSync(localDir, { recursive: true })
-            const localFilePath = path.resolve(process.cwd(), "uploads", key)
+            const localFilePath = path.resolve(uploadsRoot, safeKey)
             fs.writeFileSync(localFilePath, buffer)
 
             this.logger.info(

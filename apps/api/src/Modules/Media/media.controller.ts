@@ -311,9 +311,15 @@ export class MediaController extends BaseController {
       throw new BadRequestError("Object key is required")
     }
 
-    const localPath = path.resolve(process.cwd(), "uploads", key)
-    if (fs.existsSync(localPath)) {
-      const ext = path.extname(key).toLowerCase()
+    const uploadsRoot = path.resolve(process.cwd(), "uploads")
+    const safeKey = path
+      .normalize(key)
+      .replace(/^(\.\.[\/\\])+/, "")
+      .replace(/^[\/\\]+/, "")
+
+    const localPath = path.resolve(uploadsRoot, safeKey)
+    if (localPath.startsWith(uploadsRoot) && fs.existsSync(localPath)) {
+      const ext = path.extname(safeKey).toLowerCase()
       const mimeTypes: Record<string, string> = {
         ".png": "image/png",
         ".jpg": "image/jpeg",

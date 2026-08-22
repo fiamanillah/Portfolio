@@ -18,7 +18,7 @@ const { lines = [-0.04, 0, 1, 1.04] } = Astro.props
   const ctx = canvas.getContext("2d")
   if (!ctx) return
 
-  const lineOffsets = lines || [-0.04, 0, 1, 1.04]
+  const lineOffsets = typeof lines !== "undefined" && Array.isArray(lines) ? lines : [-0.04, 0, 1, 1.04]
 
   // --- CONFIG ---
   const LINE_COLOR =

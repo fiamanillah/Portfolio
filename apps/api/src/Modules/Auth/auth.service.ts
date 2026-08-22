@@ -6,6 +6,7 @@ import { AppLogger } from "@workspace/logger"
 import { config } from "@/core/config"
 import {
   AuthenticationError,
+  AuthorizationError,
   BadRequestError,
   ConflictError,
   NotFoundError,
@@ -470,6 +471,16 @@ export class AuthServices {
     ipAddress?: string,
     userAgent?: string
   ) {
+    if (config.server.isProduction) {
+      this.logger.warn("⚡ Unauthorized demo login attempt in production mode", {
+        userId,
+        ipAddress,
+      })
+      throw new AuthorizationError(
+        "Demo login is strictly disabled in production mode."
+      )
+    }
+
     this.logger.info("1-Click Demo Login initiated", { userId })
 
     let email = "alex@chen.io"

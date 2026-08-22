@@ -5,7 +5,7 @@ export interface EmailLayoutOptions {
   subtitle?: string
   badgeLabel?: string
   contentHtml: string
-  previewText: string
+  previewText?: string
   showUnsubscribe?: boolean
   unsubscribeUrl?: string
   manageUrl?: string
@@ -30,7 +30,7 @@ export function renderEmailLayout(
     subtitle,
     badgeLabel,
     contentHtml,
-    previewText,
+    previewText = "",
     showUnsubscribe = false,
     unsubscribeUrl,
     manageUrl,

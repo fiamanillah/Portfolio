@@ -37,7 +37,7 @@ const resumeUrl = resumeData.downloadUrl || "/resume"
     class="z-10 container mx-auto grid grid-cols-1 justify-between gap-12 px-4 lg:grid-cols-2 lg:gap-16 xl:gap-24"
   >
     <!-- Left Side: Main Content -->
-    <div class="flex flex-col justify-center space-y-8">
+    <div class="flex flex-col justify-center space-y-8 max-w-xl">
       <!-- Main Heading -->
       <div class="space-y-4">
         <h1
@@ -64,7 +64,7 @@ const resumeUrl = resumeData.downloadUrl || "/resume"
           />
         </div>
         <p
-          class="text-sm! leading-relaxed font-medium text-balance text-muted-foreground sm:text-base"
+          class="max-w-lg text-sm! leading-relaxed font-medium text-balance text-muted-foreground sm:text-base"
         >
           Full Stack Developer with 1+ year of professional experience building
           scalable MERN stack, Nest.js, and Next.js applications. Specializing
@@ -99,7 +99,7 @@ const resumeUrl = resumeData.downloadUrl || "/resume"
               id="hero-email"
               name="email"
               required
-              placeholder="Work with me: fi@amanillah.com"
+              placeholder="Enter your email to subscribe..."
             />
             <InputGroupAddon align="inline-end">
               <InputGroupButton
@@ -108,7 +108,7 @@ const resumeUrl = resumeData.downloadUrl || "/resume"
                 className="h-8 cursor-pointer px-3 sm:h-10 sm:px-4"
                 variant={"default"}
               >
-                <span id="hero-submit-text">Connect</span>
+                <span id="hero-submit-text">Subscribe</span>
               </InputGroupButton>
             </InputGroupAddon>
           </InputGroup>
@@ -390,10 +390,10 @@ const resumeUrl = resumeData.downloadUrl || "/resume"
     <img
       src="/fi.png"
       alt="Hero Image"
-      class="absolute bottom-0 left-1/2 w-[70%] -translate-x-1/2 object-contain opacity-25 grayscale transition-opacity duration-700 hover:opacity-10 sm:w-[50%] sm:opacity-50 sm:hover:opacity-20 lg:opacity-80 lg:hover:opacity-30"
+      class="pointer-events-none absolute bottom-0 left-1/2 h-[65%] w-auto max-w-none -translate-x-1/2 object-contain opacity-25 grayscale contrast-125 transition-opacity duration-700 select-none sm:h-[75%] sm:opacity-30 lg:left-[54%] lg:h-[82%] lg:opacity-35 xl:left-[52%] xl:h-[88%] [mask-image:radial-gradient(ellipse_at_center,black_55%,transparent_95%)]"
     />
     <div
-      class="absolute inset-0 bg-linear-to-t from-background via-background/0 to-transparent"
+      class="absolute inset-0 bg-linear-to-t from-background via-background/20 to-transparent"
     >
     </div>
   </div>
@@ -535,7 +535,7 @@ const resumeUrl = resumeData.downloadUrl || "/resume"
 
       const originalText = submitText.textContent
       submitBtn.disabled = true
-      submitText.textContent = "Connecting..."
+      submitText.textContent = "Subscribing..."
 
       const apiUrl = import.meta.env.PUBLIC_API_URL || "http://localhost:3040"
 
@@ -557,7 +557,7 @@ const resumeUrl = resumeData.downloadUrl || "/resume"
 
         if (response.ok && data.success) {
           const isAlready = data.data?.alreadySubscribed || false
-          submitText.textContent = isAlready ? "Subscribed!" : "Connected!"
+          submitText.textContent = isAlready ? "Already Subscribed" : "Subscribed!"
           if (statusDiv) {
             statusDiv.classList.remove(
               "hidden",

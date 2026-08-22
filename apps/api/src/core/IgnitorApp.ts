@@ -94,13 +94,11 @@ export class IgnitorApp {
   private setupServerEvents(server: Server, port: number): void {
     server.on("error", (err: NodeJS.ErrnoException) => {
       if (err.code === "EADDRINUSE") {
-        throw new AppError({
-          statusCode: HTTPStatusCode.INTERNAL_SERVER_ERROR,
-          message: `Port ${port} is already in use`,
-          code: "PORT_IN_USE",
-        })
+        this.logger.error(`Port ${port} is already in use. Please terminate existing processes on this port.`)
+      } else {
+        this.logger.error("Server runtime error encountered:", { error: err })
       }
-      throw err
+      process.exit(1)
     })
   }
 

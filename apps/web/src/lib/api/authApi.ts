@@ -42,9 +42,43 @@ export function setStoredAccessToken(token: string | null): void {
   }
 }
 
+let isRefreshing = false
+let refreshPromise: Promise<string | null> | null = null
+
+async function attemptTokenRefresh(): Promise<string | null> {
+  if (isRefreshing && refreshPromise) {
+    return refreshPromise
+  }
+  isRefreshing = true
+  refreshPromise = (async () => {
+    try {
+      const res = await fetch(`${API_BASE_URL}/auth/v1/refresh-token`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+      })
+      const body = await res.json().catch(() => null)
+      if (res.ok && body?.data?.accessToken) {
+        setStoredAccessToken(body.data.accessToken)
+        return body.data.accessToken as string
+      }
+      setStoredAccessToken(null)
+      return null
+    } catch {
+      setStoredAccessToken(null)
+      return null
+    } finally {
+      isRefreshing = false
+      refreshPromise = null
+    }
+  })()
+
+  return refreshPromise
+}
+
 async function request<T>(
   endpoint: string,
-  options: RequestInit = {}
+  options: RequestInit & { _isRetry?: boolean } = {}
 ): Promise<{ success: boolean; data?: T; message?: string; error?: string }> {
   const token = getStoredAccessToken()
   const headers: Record<string, string> = {
@@ -65,6 +99,22 @@ async function request<T>(
       headers,
       credentials: "include",
     })
+
+    // Handle 401 Unauthorized with silent refresh
+    if (
+      res.status === 401 &&
+      !options._isRetry &&
+      !endpoint.includes("/auth/v1/refresh-token") &&
+      !endpoint.includes("/auth/v1/login")
+    ) {
+      const newToken = await attemptTokenRefresh()
+      if (newToken) {
+        return await request<T>(endpoint, {
+          ...options,
+          _isRetry: true,
+        })
+      }
+    }
 
     const body = await res.json().catch(() => null)
 

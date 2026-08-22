@@ -301,47 +301,65 @@ export class BookingService {
     const duration = input.durationMinutes || 30
     const endTime = new Date(startTime.getTime() + duration * 60 * 1000)
 
-    // Check for double booking conflicts in DB
-    const conflict = await prisma.booking.findFirst({
-      where: {
-        status: { in: [BookingStatus.CONFIRMED, BookingStatus.PENDING] },
-        startTime: { lt: endTime },
-        endTime: { gt: startTime },
-      },
+    // 1. Atomically check and reserve the slot in PostgreSQL using a transaction
+    const booking = await prisma.$transaction(async (tx) => {
+      const conflict = await tx.booking.findFirst({
+        where: {
+          status: { in: [BookingStatus.CONFIRMED, BookingStatus.PENDING] },
+          startTime: { lt: endTime },
+          endTime: { gt: startTime },
+        },
+      })
+
+      if (conflict) {
+        throw new ConflictError(
+          "This time slot has just been reserved. Please select another available time."
+        )
+      }
+
+      return await tx.booking.create({
+        data: {
+          guestName: sanitizedName,
+          guestEmail: cleanEmail,
+          guestNotes: sanitizedNotes,
+          meetingType,
+          startTime,
+          endTime,
+          durationMinutes: duration,
+          timezone: input.timezone || "UTC",
+          status: BookingStatus.CONFIRMED,
+        },
+      })
     })
 
-    if (conflict) {
-      throw new ConflictError(
-        "This time slot has just been reserved. Please select another available time."
-      )
-    }
-
-    // 1. Sync with Google Calendar (Create Event + Google Meet Room)
-    const googleResult = await this.googleCalendarService.createCalendarEvent({
-      guestName: sanitizedName,
-      guestEmail: cleanEmail,
-      startTime,
-      endTime,
-      notes: sanitizedNotes,
-      meetingType,
-    })
-
-    // 2. Persist booking to PostgreSQL
-    const booking = await prisma.booking.create({
-      data: {
+    // 2. Sync with Google Calendar (Create Event + Google Meet Room)
+    let googleResult: { googleEventId?: string; googleMeetLink?: string } | null = null
+    try {
+      googleResult = await this.googleCalendarService.createCalendarEvent({
         guestName: sanitizedName,
         guestEmail: cleanEmail,
-        guestNotes: sanitizedNotes,
-        meetingType,
         startTime,
         endTime,
-        durationMinutes: duration,
-        timezone: input.timezone || "UTC",
-        status: BookingStatus.CONFIRMED,
-        googleEventId: googleResult?.googleEventId || null,
-        googleMeetLink: googleResult?.googleMeetLink || null,
-      },
-    })
+        notes: sanitizedNotes,
+        meetingType,
+      })
+
+      if (googleResult?.googleEventId || googleResult?.googleMeetLink) {
+        await prisma.booking.update({
+          where: { id: booking.id },
+          data: {
+            googleEventId: googleResult.googleEventId || null,
+            googleMeetLink: googleResult.googleMeetLink || null,
+          },
+        })
+        booking.googleEventId = googleResult.googleEventId || null
+        booking.googleMeetLink = googleResult.googleMeetLink || null
+      }
+    } catch (gcalErr) {
+      this.logger.warn("Google Calendar sync encountered an issue, proceeding with DB booking", {
+        error: gcalErr,
+      })
+    }
 
     this.logger.info(
       `✔ Booking confirmed: ${booking.guestName} (${booking.guestEmail}) at ${booking.startTime.toISOString()}`,

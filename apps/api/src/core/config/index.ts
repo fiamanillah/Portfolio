@@ -21,6 +21,12 @@ if (result.error) {
 }
 
 // Validate and parse configuration
+if (process.env.NODE_ENV === "production" && !process.env.JWT_SECRET) {
+  throw new Error(
+    "FATAL: JWT_SECRET environment variable is required when running in production mode."
+  )
+}
+
 export const config = {
   server: {
     port: parseInt(process.env.PORT || "3040"),

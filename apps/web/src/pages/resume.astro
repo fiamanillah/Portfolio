@@ -1,5 +1,7 @@
 ---
 import MySiteLayout from "@/layouts/MySiteLayout.astro"
+import SectionDivider from "@/components/SectionDivider.astro"
+import NewsletterSection from "@/components/Newsletter/NewsletterSection.astro"
 import { ResumeApi } from "@/lib/api/resumeApi"
 
 const activeResume = await ResumeApi.fetchActiveResume()
@@ -40,119 +42,205 @@ function formatDate(dateStr: string | null) {
     />
   </Fragment>
 
-  <main class="relative min-h-screen overflow-hidden py-12 sm:py-20" data-grid-cross>
-    <!-- Background Ambient Glow & Diagonal Stripes -->
-    <div class="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+  <style>
+    @keyframes float-glow {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.12; }
+      50% { transform: translate(-50%, -50%) scale(1.18); opacity: 0.22; }
+    }
+    @keyframes blink-cursor {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+    .cursor-blink {
+      animation: blink-cursor 1.1s step-end infinite;
+    }
+    @keyframes slide-up-fade {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .anim-in { animation: slide-up-fade 0.7s ease forwards; }
+    .anim-in-delay { animation: slide-up-fade 0.7s 0.18s ease forwards; opacity: 0; }
+    .anim-in-delay-2 { animation: slide-up-fade 0.7s 0.32s ease forwards; opacity: 0; }
+  </style>
+
+  <!-- Hero Header matching Site-Wide Standards -->
+  <header
+    class="relative overflow-hidden border-b border-border pt-16 pb-16 sm:pt-24"
+    data-grid-cross
+  >
+    <!-- Ambient glows -->
+    <div class="pointer-events-none absolute inset-0 -z-10">
       <div
-        class="absolute top-1/4 left-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 bg-primary/10 blur-[150px]"
-      >
-      </div>
+        class="absolute top-1/2 left-1/4 h-96 w-96 -translate-x-1/2 -translate-y-1/2 animate-[float-glow_8s_ease-in-out_infinite] rounded-full bg-primary/15 blur-[110px]"
+      ></div>
       <div
-        class="absolute bottom-1/4 right-1/4 h-[350px] w-[350px] bg-primary/5 blur-[120px]"
-      >
-      </div>
+        class="absolute top-1/3 right-1/4 h-64 w-64 -translate-x-1/2 -translate-y-1/2 animate-[float-glow_8s_ease-in-out_infinite] rounded-full bg-primary/10 blur-[90px]"
+        style="animation-delay: -4s;"
+      ></div>
     </div>
 
-    <div class="container mx-auto px-4 max-w-6xl">
-      <!-- Section Header -->
-      <div class="mb-10 text-center">
-        <p class="section-label mb-3 inline-flex items-center gap-2 font-mono text-xs text-primary uppercase tracking-widest">
-          <span class="inline-block size-2 rounded-full bg-primary animate-pulse"></span>
-          OFFICIAL_CURRICULUM_VITAE // {activeResume ? activeResume.version : "LATEST_BUILD"}
+    <!-- Diagonal stripe bg overlay -->
+    <div
+      class="diagonal-stripes pointer-events-none absolute inset-0 z-0 bg-background opacity-80"
+      aria-hidden="true"
+    ></div>
+
+    <div class="relative z-10 mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+      <!-- Section label pill -->
+      <div class="anim-in flex justify-center">
+        <p
+          class="mb-5 inline-flex items-center gap-2 border border-primary/25 bg-primary/8 px-4 py-1.5 font-mono text-xs font-semibold tracking-[0.2em] text-primary uppercase"
+        >
+          <span
+            class="h-1.5 w-1.5 animate-pulse rounded-full bg-primary shadow-[0_0_6px_oklch(var(--primary)/80%)]"
+          ></span>
+          CURRICULUM_VITAE // OFFICIAL_RESUME
+          <span class="cursor-blink ml-1 inline-block h-3 w-0.5 bg-primary"></span>
         </p>
-
-        <h1 class="section-title mb-4 text-3xl font-black tracking-tight text-foreground sm:text-4xl md:text-5xl">
-          Curriculum <span class="text-primary font-bold">Vitae</span>
-        </h1>
-
-        <!-- Accent bar -->
-        <div class="accent-bar mx-auto mb-6 w-48 md:w-56"></div>
-
-        <p class="mx-auto max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
-          Detailed overview of my engineering experience, architecture philosophy, production track record, and technical competencies.
-        </p>
-
-        <!-- Document Telemetry Bar -->
-        {activeResume && (
-          <div class="mt-6 flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-xs font-mono">
-            <span class="inline-flex items-center gap-1.5 rounded-full border border-primary/40 bg-primary/10 px-3 py-1 text-primary">
-              <span class="size-1.5 rounded-full bg-primary"></span>
-              VERSION: {activeResume.version}
-            </span>
-
-            <span class="inline-flex items-center gap-1.5 rounded-full border border-border bg-card/80 px-3 py-1 text-muted-foreground">
-              SIZE: {formatBytes(activeResume.fileSize)}
-            </span>
-
-            <span class="inline-flex items-center gap-1.5 rounded-full border border-border bg-card/80 px-3 py-1 text-muted-foreground">
-              RELEASED: {formatDate(activeResume.updatedAt)}
-            </span>
-
-            <span class="inline-flex items-center gap-1.5 rounded-full border border-border bg-card/80 px-3 py-1 text-muted-foreground">
-              DOWNLOADS: {activeResume.downloadCount}
-            </span>
-          </div>
-        )}
-
-        <!-- Top Action Buttons -->
-        {activeResume?.fileUrl ? (
-          <div class="mt-7 flex flex-wrap items-center justify-center gap-3">
-            <a
-              href={activeResume.downloadEndpoint}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="group inline-flex items-center gap-2 rounded-md border-2 border-primary bg-primary px-6 py-3 text-xs font-bold tracking-widest text-primary-foreground uppercase shadow-lg shadow-primary/20 transition-all duration-200 hover:bg-primary/90 hover:shadow-primary/30 active:scale-98"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="size-4 transition-transform duration-200 group-hover:translate-y-0.5"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                <polyline points="7 10 12 15 17 10"></polyline>
-                <line x1="12" y1="15" x2="12" y2="3"></line>
-              </svg>
-              <span>Download PDF Version</span>
-            </a>
-
-            <a
-              href={activeResume.fileUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="group inline-flex items-center gap-2 rounded-md border border-border bg-card px-5 py-3 text-xs font-bold tracking-wider text-foreground uppercase transition-all duration-200 hover:border-primary hover:text-primary"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="size-4"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                <polyline points="15 3 21 3 21 9"></polyline>
-                <line x1="10" y1="14" x2="21" y2="3"></line>
-              </svg>
-              <span>Open in New Tab</span>
-            </a>
-
-            <a
-              href="/#contact"
-              class="group inline-flex items-center gap-2 rounded-md border border-border/80 bg-background/50 px-5 py-3 text-xs font-semibold tracking-wider text-muted-foreground uppercase transition-all duration-200 hover:border-primary hover:text-foreground"
-            >
-              <span>Hire / Get in Touch →</span>
-            </a>
-          </div>
-        ) : null}
       </div>
 
+      <!-- Main heading -->
+      <div class="anim-in-delay text-center">
+        <h1 class="section-title text-foreground">
+          Curriculum <span class="text-primary italic">Vitae</span>
+          <br class="hidden sm:block" />
+          <span class="text-foreground">&amp; Verified Track Record</span>
+        </h1>
+      </div>
+
+      <!-- Accent bar -->
+      <div class="accent-bar mx-auto mt-6 mb-8 w-52 anim-in-delay"></div>
+
+      <!-- Description -->
+      <p
+        class="anim-in-delay mx-auto max-w-2xl text-center text-base leading-relaxed text-muted-foreground sm:text-lg"
+      >
+        Detailed overview of my engineering experience, system architecture track record, verified competencies, and production background.
+      </p>
+
+      <!-- Stats Grid -->
+      {activeResume && (
+        <div
+          class="anim-in-delay-2 mt-12 grid grid-cols-2 sm:grid-cols-4 border border-border/70 bg-card/60 backdrop-blur-sm"
+        >
+          <div
+            class="group relative flex flex-col items-center justify-center border-r border-b sm:border-b-0 border-border/70 p-5 sm:p-7 transition-colors duration-200 hover:bg-primary/5"
+          >
+            <span class="font-mono text-2xl font-black text-primary sm:text-3xl">
+              {activeResume.version}
+            </span>
+            <span
+              class="mt-1.5 font-mono text-[10px] font-semibold tracking-[0.15em] text-muted-foreground uppercase sm:text-xs"
+            >
+              Active Version
+            </span>
+          </div>
+
+          <div
+            class="group relative flex flex-col items-center justify-center sm:border-r border-b sm:border-b-0 border-border/70 p-5 sm:p-7 transition-colors duration-200 hover:bg-primary/5"
+          >
+            <span class="font-mono text-2xl font-black text-primary sm:text-3xl">
+              {formatBytes(activeResume.fileSize)}
+            </span>
+            <span
+              class="mt-1.5 font-mono text-[10px] font-semibold tracking-[0.15em] text-muted-foreground uppercase sm:text-xs"
+            >
+              Document Size
+            </span>
+          </div>
+
+          <div
+            class="group relative flex flex-col items-center justify-center border-r border-border/70 p-5 sm:p-7 transition-colors duration-200 hover:bg-primary/5"
+          >
+            <span class="font-mono text-2xl font-black text-primary sm:text-3xl">
+              {formatDate(activeResume.updatedAt)}
+            </span>
+            <span
+              class="mt-1.5 font-mono text-[10px] font-semibold tracking-[0.15em] text-muted-foreground uppercase sm:text-xs"
+            >
+              Last Updated
+            </span>
+          </div>
+
+          <div
+            class="group relative flex flex-col items-center justify-center p-5 sm:p-7 transition-colors duration-200 hover:bg-primary/5"
+          >
+            <span class="font-mono text-2xl font-black text-primary sm:text-3xl">
+              {activeResume.downloadCount}
+            </span>
+            <span
+              class="mt-1.5 font-mono text-[10px] font-semibold tracking-[0.15em] text-muted-foreground uppercase sm:text-xs"
+            >
+              Downloads
+            </span>
+          </div>
+        </div>
+      )}
+
+      <!-- Action Buttons -->
+      {activeResume?.fileUrl ? (
+        <div class="anim-in-delay-2 mt-8 flex flex-wrap items-center justify-center gap-3">
+          <a
+            href={activeResume.downloadEndpoint}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="group inline-flex items-center gap-2 rounded-md border-2 border-primary bg-primary px-6 py-3 text-xs font-bold tracking-widest text-primary-foreground uppercase shadow-lg shadow-primary/20 transition-all duration-200 hover:bg-primary/90 hover:shadow-primary/30 active:scale-98"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="size-4 transition-transform duration-200 group-hover:translate-y-0.5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            <span>Download PDF Version</span>
+          </a>
+
+          <a
+            href={activeResume.fileUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="group inline-flex items-center gap-2 rounded-md border border-border bg-card px-5 py-3 text-xs font-bold tracking-wider text-foreground uppercase transition-all duration-200 hover:border-primary hover:text-primary"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="size-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+              <polyline points="15 3 21 3 21 9"></polyline>
+              <line x1="10" y1="14" x2="21" y2="3"></line>
+            </svg>
+            <span>Open in New Tab</span>
+          </a>
+
+          <a
+            href="/#contact"
+            class="group inline-flex items-center gap-2 rounded-md border border-border/80 bg-background/50 px-5 py-3 text-xs font-semibold tracking-wider text-muted-foreground uppercase transition-all duration-200 hover:border-primary hover:text-foreground"
+          >
+            <span>Hire / Get in Touch →</span>
+          </a>
+        </div>
+      ) : null}
+    </div>
+  </header>
+
+  <SectionDivider />
+
+  <main class="w-full">
+    <div class="container mx-auto max-w-5xl px-4 py-10 sm:py-12">
       <!-- Main Document Showcase Area -->
       {activeResume?.fileUrl ? (
         <div class="space-y-8">
@@ -210,28 +298,6 @@ function formatDate(dateStr: string | null) {
               >
               </iframe>
             </div>
-
-            <!-- Frame Footer Bar -->
-            <div class="flex flex-col gap-2 border-t border-border bg-muted/20 px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-6">
-              <span class="text-xs text-muted-foreground">
-                Document verified for recruiter review & ATS screening.
-              </span>
-              <div class="flex items-center gap-3">
-                <a
-                  href={activeResume.downloadEndpoint}
-                  class="text-xs font-semibold text-primary hover:underline"
-                >
-                  Download Master PDF
-                </a>
-                <span class="text-muted-foreground">•</span>
-                <a
-                  href="/#experience"
-                  class="text-xs text-muted-foreground hover:text-foreground"
-                >
-                  Interactive Timeline
-                </a>
-              </div>
-            </div>
           </div>
 
           <!-- Document Version Notes / Changelog (if present) -->
@@ -246,36 +312,6 @@ function formatDate(dateStr: string | null) {
               </p>
             </div>
           )}
-
-          <!-- Engineering Competencies & Highlights Grid -->
-          <div class="grid gap-4 sm:grid-cols-3">
-            <div class="rounded-xl border border-border/70 bg-card/60 p-5 backdrop-blur-sm">
-              <div class="mb-2 font-mono text-xs font-bold text-primary">
-                01 // BACKEND ARCHITECTURE
-              </div>
-              <p class="text-xs leading-relaxed text-muted-foreground">
-                Specialized in Nest.js, Express, TypeScript, PostgreSQL, Prisma, Redis caching, and RabbitMQ message queues.
-              </p>
-            </div>
-
-            <div class="rounded-xl border border-border/70 bg-card/60 p-5 backdrop-blur-sm">
-              <div class="mb-2 font-mono text-xs font-bold text-primary">
-                02 // CLOUD & DEVOPS
-              </div>
-              <p class="text-xs leading-relaxed text-muted-foreground">
-                Proficient in Docker containerization, multi-service VPS deployments, Nginx reverse proxies, CI/CD, and Cloudflare R2/S3.
-              </p>
-            </div>
-
-            <div class="rounded-xl border border-border/70 bg-card/60 p-5 backdrop-blur-sm">
-              <div class="mb-2 font-mono text-xs font-bold text-primary">
-                03 // FULL-STACK APPS
-              </div>
-              <p class="text-xs leading-relaxed text-muted-foreground">
-                Modern React, Next.js, Astro, TailwindCSS, Shadcn UI, WebSockets real-time sync, and robust REST APIs.
-              </p>
-            </div>
-          </div>
         </div>
       ) : (
         /* Fallback State if No Active Resume Uploaded */
@@ -328,5 +364,15 @@ function formatDate(dateStr: string | null) {
         </div>
       )}
     </div>
+
+    <SectionDivider />
+
+    <!-- Newsletter & Updates Section -->
+    <NewsletterSection
+      title="Subscribe to Updates & Engineering Insights"
+      subtitle="Get notified about new case studies, system architecture deep dives, and resume updates directly to your inbox."
+      source="resume_page"
+      idPrefix="resume-newsletter"
+    />
   </main>
 </MySiteLayout>

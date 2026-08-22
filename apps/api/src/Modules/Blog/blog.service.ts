@@ -2227,12 +2227,40 @@ export class BlogService {
 
     let count = 0
     try {
-      const files = await fs.readdir(blogPostsDir)
-      for (const file of files) {
-        if (!file.endsWith(".json")) continue
-        const raw = await fs.readFile(path.join(blogPostsDir, file), "utf-8")
-        const post = JSON.parse(raw)
+      let postsToImport: any[] = []
+      try {
+        const files = await fs.readdir(blogPostsDir)
+        for (const file of files) {
+          if (!file.endsWith(".json")) continue
+          const raw = await fs.readFile(path.join(blogPostsDir, file), "utf-8")
+          postsToImport.push(JSON.parse(raw))
+        }
+      } catch {
+        // Fallback default starter blog posts for Docker/production environments
+        postsToImport = [
+          {
+            slug: "building-realtime-bidding-engine-socketio-redis",
+            title: "Architecting a Sub-50ms Real-Time Bidding & Dispatch Engine",
+            subtitle: "Distributed WebSockets, Redis Pub/Sub, and Event Streams",
+            summary: "A deep dive into engineering low-latency bidding architectures using Bun, Socket.IO, and Redis Streams with strict concurrency controls.",
+            content: "# Architecting a Sub-50ms Real-Time Bidding Engine\n\nReal-time bidding platforms demand microsecond precision and absolute consistency across distributed nodes...\n\n```typescript\nconst stream = redis.xread('BLOCK', 0, 'STREAMS', 'bids:stream', '$')\n```",
+            thumbnail: "https://assets.fi.amanillah.com/general/2026/08/bidding-architecture.png",
+            category: "Architecture",
+            tags: ["Redis", "WebSockets", "Bun", "Distributed Systems", "PostgreSQL"],
+            readTime: "7 MIN READ",
+            featured: true,
+            date: "JAN 2026",
+            publishedAt: "2026-01-20T00:00:00.000Z",
+            keyTakeaways: [
+              "Sub-50ms broadcast latency achieved using Redis Streams and Socket.IO adapter",
+              "Optimistic locking guarantees zero double-assignments across competing workers",
+              "Bun runtime cut baseline memory usage by 45% compared to Node.js"
+            ]
+          }
+        ]
+      }
 
+      for (const post of postsToImport) {
         const categoryId = categoryMap.get(post.category?.toLowerCase()) || null
         const wordCount = post.content
           ? post.content.split(/\s+/).filter(Boolean).length
@@ -2240,7 +2268,7 @@ export class BlogService {
         const readTimeMinutes = Math.max(1, Math.ceil(wordCount / 200))
         const publishedAt = post.publishedAt
           ? new Date(post.publishedAt)
-          : new Date("2025-08-01T00:00:00.000Z")
+          : new Date("2026-01-01T00:00:00.000Z")
 
         await prisma.blogPost.upsert({
           where: { slug: post.slug },
@@ -2255,14 +2283,12 @@ export class BlogService {
             readTime: post.readTime || `${readTimeMinutes} MIN READ`,
             readTimeMinutes,
             wordCount,
-            date: post.date || "AUG 2025",
+            date: post.date || "JAN 2026",
             publishedAt,
-            modifiedAt: post.modifiedAt
-              ? new Date(post.modifiedAt)
-              : publishedAt,
+            modifiedAt: post.modifiedAt ? new Date(post.modifiedAt) : publishedAt,
             views: post.views
-              ? (parseInt(post.views.replace(/[^0-9]/g, "")) || 0) *
-                (post.views.includes("k") ? 1000 : 1)
+              ? (parseInt(String(post.views).replace(/[^0-9]/g, "")) || 0) *
+                (String(post.views).includes("k") ? 1000 : 1)
               : 1250,
             likesCount: 42,
             commentsCount: 3,
@@ -2302,14 +2328,12 @@ export class BlogService {
             readTime: post.readTime || `${readTimeMinutes} MIN READ`,
             readTimeMinutes,
             wordCount,
-            date: post.date || "AUG 2025",
+            date: post.date || "JAN 2026",
             publishedAt,
-            modifiedAt: post.modifiedAt
-              ? new Date(post.modifiedAt)
-              : publishedAt,
+            modifiedAt: post.modifiedAt ? new Date(post.modifiedAt) : publishedAt,
             views: post.views
-              ? (parseInt(post.views.replace(/[^0-9]/g, "")) || 0) *
-                (post.views.includes("k") ? 1000 : 1)
+              ? (parseInt(String(post.views).replace(/[^0-9]/g, "")) || 0) *
+                (String(post.views).includes("k") ? 1000 : 1)
               : 1250,
             likesCount: 42,
             commentsCount: 3,
@@ -2346,7 +2370,7 @@ export class BlogService {
 
     return {
       imported: count,
-      message: `Successfully synchronized ${count} local blog posts into PostgreSQL database.`,
+      message: `Successfully synchronized ${count} blog posts into PostgreSQL database.`,
     }
   }
 }

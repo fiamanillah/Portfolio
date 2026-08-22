@@ -74,13 +74,11 @@ const totalTopics = new Set(posts.flatMap((p) => p.tags)).size
     <SectionDivider />
 
     <!-- Newsletter Section -->
-    <div class="container mx-auto px-4 py-8">
-      <NewsletterSection
-        title="Stay Ahead in Engineering Architecture"
-        subtitle="Subscribe to get technical deep-dives, benchmark reports, and new articles delivered directly to your inbox."
-        source="blog_index"
-        idPrefix="blog-page-newsletter"
-      />
-    </div>
+    <NewsletterSection
+      title="Stay Ahead in Engineering Architecture"
+      subtitle="Subscribe to get technical deep-dives, benchmark reports, and new articles delivered directly to your inbox."
+      source="blog_index"
+      idPrefix="blog-page-newsletter"
+    />
   </main>
 </MySiteLayout>

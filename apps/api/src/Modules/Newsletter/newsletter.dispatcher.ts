@@ -47,6 +47,24 @@ export class NewsletterDispatcher {
   }> {
     const { batchSize = 10, batchDelayMs = 150 } = options;
 
+    // Atomically transition status to SENDING if currently DRAFT or SCHEDULED
+    const updated = await prisma.newsletter.updateMany({
+      where: {
+        id: newsletterId,
+        status: { in: ["DRAFT", "SCHEDULED"] },
+      },
+      data: {
+        status: "SENDING",
+      },
+    });
+
+    if (updated.count === 0) {
+      this.logger.warn(
+        `Newsletter ${newsletterId} is already SENDING, SENT, or CANCELLED. Skipping duplicate dispatch.`
+      );
+      return { total: 0, successful: 0, failed: 0 };
+    }
+
     const newsletter = await prisma.newsletter.findUnique({
       where: { id: newsletterId },
     });
@@ -54,14 +72,6 @@ export class NewsletterDispatcher {
     if (!newsletter) {
       throw new Error(`Newsletter ${newsletterId} not found`);
     }
-
-    // Atomically transition status to SENDING
-    await prisma.newsletter.update({
-      where: { id: newsletterId },
-      data: {
-        status: "SENDING",
-      },
-    });
 
     this.logger.info(`Starting broadcast dispatch for newsletter "${newsletter.title}" (${newsletterId})`);
 
@@ -174,7 +184,7 @@ export class NewsletterDispatcher {
               title: renderedSubject,
               badgeLabel: "Newsletter",
               contentHtml: renderedContent,
-              previewText: newsletter.previewText || undefined,
+              previewText: newsletter.previewText || "",
               unsubscribeUrl: unsubUrl,
               showUnsubscribe: true,
             });
@@ -323,7 +333,7 @@ export class NewsletterDispatcher {
           title: renderedSubject,
           badgeLabel: "Test Broadcast",
           contentHtml: renderedContent,
-          previewText: previewText || undefined,
+          previewText: previewText || "",
           unsubscribeUrl: unsubUrl,
           showUnsubscribe: true,
         });

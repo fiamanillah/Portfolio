@@ -4,10 +4,13 @@ import (
 	"encoding/json"
 	"os"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/charmbracelet/bubbles/textinput"
 )
+
+var fileMutex sync.RWMutex
 
 type GuestbookState int
 
@@ -55,11 +58,19 @@ func NewGuestbookModel(filePath string) GuestbookModel {
 }
 
 func (gm *GuestbookModel) LoadEntries() {
+	fileMutex.RLock()
+	defer fileMutex.RUnlock()
+
 	if _, err := os.Stat(gm.FilePath); os.IsNotExist(err) {
 		gm.Entries = []GuestbookEntry{
 			{Name: "Fi Amanillah", Message: "Welcome to my SSH portfolio guestbook! Feel free to leave a note.", Timestamp: time.Now()},
 		}
-		gm.SaveEntries()
+		go func() {
+			fileMutex.Lock()
+			defer fileMutex.Unlock()
+			data, _ := json.MarshalIndent(gm.Entries, "", "  ")
+			_ = os.WriteFile(gm.FilePath, data, 0644)
+		}()
 		return
 	}
 
@@ -87,14 +98,27 @@ func (gm *GuestbookModel) SaveEntries() {
 }
 
 func (gm *GuestbookModel) AddEntry() {
-	if strings.TrimSpace(gm.NameInput.Value()) == "" || strings.TrimSpace(gm.MsgInput.Value()) == "" {
+	name := strings.TrimSpace(gm.NameInput.Value())
+	msg := strings.TrimSpace(gm.MsgInput.Value())
+	if name == "" || msg == "" {
 		return
 	}
 
 	entry := GuestbookEntry{
-		Name:      strings.TrimSpace(gm.NameInput.Value()),
-		Message:   strings.TrimSpace(gm.MsgInput.Value()),
+		Name:      name,
+		Message:   msg,
 		Timestamp: time.Now(),
+	}
+
+	fileMutex.Lock()
+	defer fileMutex.Unlock()
+
+	// Re-read latest on disk before prepending to prevent overwriting other users
+	if data, err := os.ReadFile(gm.FilePath); err == nil {
+		var latest []GuestbookEntry
+		if err := json.Unmarshal(data, &latest); err == nil {
+			gm.Entries = latest
+		}
 	}
 
 	// Prepend to show latest first

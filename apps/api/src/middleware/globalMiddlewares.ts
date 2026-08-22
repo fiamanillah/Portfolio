@@ -36,7 +36,7 @@ export function setupGlobalMiddlewares(app: Express) {
         ) {
           return callback(null, true)
         }
-        return callback(new Error(`CORS blocked for origin: ${origin}`))
+        return callback(null, false)
       },
       credentials: true,
       optionsSuccessStatus: 200,

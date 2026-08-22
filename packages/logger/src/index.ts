@@ -54,6 +54,24 @@ const consoleFormat = printf(
   },
 );
 
+const errorFormatter = format((info) => {
+  if (info instanceof Error) {
+    return Object.assign(
+      {
+        message: info.message,
+        stack: info.stack,
+        name: info.name,
+      },
+      info
+    );
+  }
+  if (info.error instanceof Error) {
+    info.stack = info.error.stack;
+    info.message = info.message || info.error.message;
+  }
+  return info;
+});
+
 export class AppLogger {
   private static instance: Logger;
   private context?: string;
@@ -64,11 +82,13 @@ export class AppLogger {
 
   private static init(): Logger {
     if (!AppLogger.instance) {
+      const logDir = getLogDir();
       AppLogger.instance = createLogger({
         level: process.env.LOG_LEVEL || "debug",
         exitOnError: false,
         format: combine(
           errors({ stack: true }),
+          errorFormatter(),
           timestamp({
             format: () => dateFnsFormat(new Date(), "yyyy-MM-dd HH:mm:ss.SSS"),
           }),
@@ -78,28 +98,28 @@ export class AppLogger {
             format: combine(consoleFormat),
           }),
           new DailyRotateFile({
-            dirname: LOG_DIR,
+            dirname: logDir,
             filename: "app-%DATE%.log",
             datePattern: "YYYY-MM-DD",
             maxFiles: "14d",
             maxSize: "5m",
-            format: combine(json({ space: 2 })),
+            format: combine(errorFormatter(), json({ space: 2 })),
           }),
         ],
         exceptionHandlers: [
           new DailyRotateFile({
-            dirname: LOG_DIR,
+            dirname: logDir,
             filename: "exceptions-%DATE%.log",
             datePattern: "YYYY-MM-DD",
-            format: combine(json({ space: 2 })),
+            format: combine(errorFormatter(), json({ space: 2 })),
           }),
         ],
         rejectionHandlers: [
           new DailyRotateFile({
-            dirname: LOG_DIR,
+            dirname: logDir,
             filename: "rejections-%DATE%.log",
             datePattern: "YYYY-MM-DD",
-            format: combine(json({ space: 2 })),
+            format: combine(errorFormatter(), json({ space: 2 })),
           }),
         ],
       });

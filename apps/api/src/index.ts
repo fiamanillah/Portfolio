@@ -3,6 +3,11 @@ import { IgnitorApp } from "./core/IgnitorApp"
 import { AppLogger } from "@workspace/logger"
 import { config } from "./core/config"
 
+// Global BigInt JSON serialization support
+;(BigInt.prototype as any).toJSON = function () {
+  return Number(this)
+}
+
 // Providers (Infrastructure)
 import { PrismaProvider } from "./providers/PrismaProvider"
 import { R2StorageProvider } from "./providers/R2StorageProvider"
