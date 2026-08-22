@@ -219,7 +219,7 @@ import MySiteLayout from "@/layouts/MySiteLayout.astro"
                   <!-- Turnstile container -->
                   <div
                     id="change-email-turnstile-container"
-                    class="flex justify-center py-1 empty:hidden"
+                    class="flex min-h-[65px] justify-center py-1 empty:hidden"
                   >
                   </div>
 
@@ -331,7 +331,7 @@ import MySiteLayout from "@/layouts/MySiteLayout.astro"
                 <!-- Turnstile container -->
                 <div
                   id="unsub-manual-turnstile-container"
-                  class="flex justify-center py-1 empty:hidden"
+                  class="flex min-h-[65px] justify-center py-1 empty:hidden"
                 >
                 </div>
 
@@ -501,8 +501,12 @@ import MySiteLayout from "@/layouts/MySiteLayout.astro"
             {
               sitekey: turnstileKey,
               theme: "dark",
+              callback: () => {
+                window.dispatchEvent(new CustomEvent("grid-refresh"))
+              },
             }
           )
+          window.dispatchEvent(new CustomEvent("grid-refresh"))
         } catch (err) {
           console.warn("Manual Unsub Turnstile error:", err)
         }
@@ -526,8 +530,12 @@ import MySiteLayout from "@/layouts/MySiteLayout.astro"
             {
               sitekey: turnstileKey,
               theme: "dark",
+              callback: () => {
+                window.dispatchEvent(new CustomEvent("grid-refresh"))
+              },
             }
           )
+          window.dispatchEvent(new CustomEvent("grid-refresh"))
         } catch (err) {
           console.warn("Change Email Turnstile error:", err)
         }

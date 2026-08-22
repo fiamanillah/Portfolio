@@ -336,7 +336,10 @@ import { Icon } from "astro-icon/components"
         </div>
 
         <!-- Cloudflare Turnstile Container -->
-        <div id="turnstile-container" class="flex justify-center empty:hidden">
+        <div
+          id="turnstile-container"
+          class="flex min-h-[65px] justify-center empty:hidden"
+        >
         </div>
 
         <!-- Status Message Banner -->
@@ -476,6 +479,7 @@ import { Icon } from "astro-icon/components"
     } else {
       statusDiv.textContent = message
     }
+    window.dispatchEvent(new CustomEvent("grid-refresh"))
   }
 
   function hideStatus() {
@@ -483,6 +487,7 @@ import { Icon } from "astro-icon/components"
     if (statusDiv) {
       statusDiv.classList.add("hidden")
       statusDiv.innerHTML = ""
+      window.dispatchEvent(new CustomEvent("grid-refresh"))
     }
   }
 
@@ -499,8 +504,12 @@ import { Icon } from "astro-icon/components"
             {
               sitekey: turnstileKey,
               theme: "dark",
+              callback: () => {
+                window.dispatchEvent(new CustomEvent("grid-refresh"))
+              },
             }
           )
+          window.dispatchEvent(new CustomEvent("grid-refresh"))
         } catch (err) {
           console.warn("Turnstile render error:", err)
         }

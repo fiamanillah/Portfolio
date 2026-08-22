@@ -116,7 +116,7 @@ const resumeUrl = resumeData.downloadUrl || "/resume"
           <!-- Cloudflare Turnstile Container -->
           <div
             id="hero-turnstile-container"
-            class="flex justify-start py-1 empty:hidden"
+            class="flex min-h-[65px] justify-start py-1 empty:hidden"
           >
           </div>
 
@@ -502,8 +502,12 @@ const resumeUrl = resumeData.downloadUrl || "/resume"
             {
               sitekey: turnstileKey,
               theme: "dark",
+              callback: () => {
+                window.dispatchEvent(new CustomEvent("grid-refresh"))
+              },
             }
           )
+          window.dispatchEvent(new CustomEvent("grid-refresh"))
         } catch (err) {
           console.warn("Hero Turnstile render error:", err)
         }
