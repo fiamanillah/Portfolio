@@ -8,7 +8,7 @@ const allPosts = await getAllBlogPostsAsync()
 const recentPosts = allPosts.slice(0, 6)
 ---
 
-<section id="blog" class="relative z-10 mx-auto py-16" data-grid-cross>
+<section id="blog" class="relative z-10 mx-auto" data-grid-cross>
   <!-- Header -->
   <div class="relative overflow-hidden text-center">
     <!-- Background Pattern (diagonal stripes themed to site palette) -->
@@ -31,34 +31,36 @@ const recentPosts = allPosts.slice(0, 6)
   </div>
 
   <!-- Blog Cards Grid (2-Column 0-Gap Bordered Grid) -->
-  <div class="container mx-auto mt-8 px-4">
-    {recentPosts.length > 0 ? (
-      <div class="overflow-hidden border border-border bg-card/60 backdrop-blur-sm shadow-xs">
-        <div class="grid grid-cols-1 md:grid-cols-2">
-          {recentPosts.map((post, index) => {
-            const isLeftCol = index % 2 === 0
-            const isLastRow =
-              index >=
-              recentPosts.length - (recentPosts.length % 2 === 0 ? 2 : 1)
-            const isLastMobile = index === recentPosts.length - 1
-            return (
-              <BlogCard
-                post={post}
-                class={`border-border ${
-                  !isLastMobile ? "border-b" : "border-b-0"
-                } ${isLeftCol ? "md:border-r" : "md:border-r-0"} ${
-                  isLastRow ? "md:border-b-0" : "md:border-b"
-                }`}
-              />
-            )
-          })}
+  <div class="container mx-auto">
+    {
+      recentPosts.length > 0 ? (
+        <div class="overflow-hidden border-t-1 border-b-1 bg-card/60 shadow-xs backdrop-blur-sm">
+          <div class="grid grid-cols-1 md:grid-cols-2">
+            {recentPosts.map((post, index) => {
+              const isLeftCol = index % 2 === 0
+              const isLastRow =
+                index >=
+                recentPosts.length - (recentPosts.length % 2 === 0 ? 2 : 1)
+              const isLastMobile = index === recentPosts.length - 1
+              return (
+                <BlogCard
+                  post={post}
+                  class={`border-border ${
+                    !isLastMobile ? "border-b" : "border-b-0"
+                  } ${isLeftCol ? "md:border-r" : "md:border-r-0"} ${
+                    isLastRow ? "md:border-b-0" : "md:border-b"
+                  }`}
+                />
+              )
+            })}
+          </div>
         </div>
-      </div>
-    ) : (
-      <div class="border border-border/80 bg-background/50 p-8 text-center font-mono text-sm text-muted-foreground">
-        No articles published yet. Check back soon!
-      </div>
-    )}
+      ) : (
+        <div class="border border-border/80 bg-background/50 p-8 text-center font-mono text-sm text-muted-foreground">
+          No articles published yet. Check back soon!
+        </div>
+      )
+    }
 
     <!-- View All Articles Footer Button -->
     <div class="mt-12 text-center">
@@ -78,4 +80,3 @@ const recentPosts = allPosts.slice(0, 6)
     </div>
   </div>
 </section>
-

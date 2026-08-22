@@ -2,14 +2,13 @@
 import MySiteLayout from "@/layouts/MySiteLayout.astro"
 import CaseStudySectionTitle from "@/components/CaseStudy/CaseStudySectionTitle.astro"
 import NewsletterSection from "@/components/Newsletter/NewsletterSection.astro"
+import SectionDivider from "@/components/SectionDivider.astro"
 import { Badge } from "@workspace/ui/components/badge"
 import { Button } from "@workspace/ui/components/button"
 import { Icon } from "astro-icon/components"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { ArrowUpRight01Icon, BookOpen01Icon } from "@hugeicons/core-free-icons"
-import {
-  getProjectsWithoutCaseStudy,
-} from "@/data/projects"
+import { getProjectsWithoutCaseStudy } from "@/data/projects"
 import { CaseStudyApi } from "@/lib/api/caseStudyApi"
 
 // Fetch published case studies directly from PostgreSQL API (with local fallback)
@@ -65,7 +64,7 @@ const totalTechCount = new Set(allProjects.flatMap((p) => p.tech)).size
 ---
 
 <MySiteLayout>
-  <div class="relative mx-auto px-4 py-8 sm:px-6 lg:px-8">
+  <div class="relative mx-auto">
     <!-- Hero Header -->
     <header
       class="relative overflow-hidden border-b border-border pt-6 pb-12 text-center sm:pt-10"
@@ -439,7 +438,8 @@ const totalTechCount = new Set(allProjects.flatMap((p) => p.tech)).size
           ))
         }
       </div>
-      <!-- Newsletter Section replacing bottom callout -->
+      <!-- Newsletter Section with SectionDivider -->
+      <SectionDivider class="my-10" />
       <NewsletterSection
         title="Subscribe to Architecture Deep Dives"
         subtitle="Get notified when new technical post-mortems, database design breakdowns, and cloud architecture case studies are published."

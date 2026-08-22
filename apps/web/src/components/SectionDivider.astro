@@ -1,0 +1,32 @@
+---
+// src/components/SectionDivider.astro
+interface Props {
+  class?: string
+}
+
+const { class: className = "" } = Astro.props
+---
+
+<div
+  data-grid-cross
+  class={`relative container mx-auto h-9 sm:h-11 border-t border-b border-border/70 overflow-hidden bg-background/20 backdrop-blur-xs ${className}`}
+  aria-hidden="true"
+>
+  <!-- Corner Brackets (Blueprint cyber aesthetic) -->
+  <div
+    class="pointer-events-none absolute top-1 left-1.5 h-2.5 w-2.5 border-t border-l border-primary/50"
+  >
+  </div>
+  <div
+    class="pointer-events-none absolute top-1 right-1.5 h-2.5 w-2.5 border-t border-r border-primary/50"
+  >
+  </div>
+  <div
+    class="pointer-events-none absolute bottom-1 left-1.5 h-2.5 w-2.5 border-b border-l border-primary/50"
+  >
+  </div>
+  <div
+    class="pointer-events-none absolute bottom-1 right-1.5 h-2.5 w-2.5 border-b border-r border-primary/50"
+  >
+  </div>
+</div>

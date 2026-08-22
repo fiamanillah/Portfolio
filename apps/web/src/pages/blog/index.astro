@@ -4,6 +4,7 @@ import BlogHeader from "@/components/Blog/hero/BlogHeader.astro"
 import BlogFeaturedGrid from "@/components/Blog/featured/BlogFeaturedGrid.astro"
 import BlogExplorer from "@/components/Blog/explorer/BlogExplorer.astro"
 import NewsletterSection from "@/components/Newsletter/NewsletterSection.astro"
+import SectionDivider from "@/components/SectionDivider.astro"
 import BlogSEO from "@/components/SEO/BlogSEO.astro"
 import {
   getAllBlogPostsAsync,
@@ -55,19 +56,25 @@ const totalTopics = new Set(posts.flatMap((p) => p.tags)).size
     totalTopics={totalTopics}
   />
 
+  <SectionDivider />
+
   <main class="w-full">
     <!-- Featured Stories Grid Section -->
-    <div class="container mx-auto px-4 py-12">
+    <div class="container mx-auto px-4 py-8">
       <BlogFeaturedGrid featuredPosts={featuredPosts} />
     </div>
 
+    <SectionDivider />
+
     <!-- Interactive Articles Explorer -->
-    <div class="container mx-auto px-4 pb-12">
+    <div class="container mx-auto px-4 py-8">
       <BlogExplorer initialPosts={posts} categories={categories} />
     </div>
 
+    <SectionDivider />
+
     <!-- Newsletter Section -->
-    <div class="container mx-auto px-4 pb-20">
+    <div class="container mx-auto px-4 py-8">
       <NewsletterSection
         title="Stay Ahead in Engineering Architecture"
         subtitle="Subscribe to get technical deep-dives, benchmark reports, and new articles delivered directly to your inbox."

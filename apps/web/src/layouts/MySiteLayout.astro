@@ -37,13 +37,11 @@ import { AuthModal } from "@/components/auth/AuthModal"
 
     <GridLines lines={[-0.04, 0, 1, 1.04]} />
 
-    <div class="relative z-0 mx-[4%]">
-      <header class="sticky top-0 z-50">
-        <div
-          class="border-grid-line-color container mx-auto border-b bg-background px-4"
-        >
-          <SiteNav />
-        </div>
+    <div class="relative mx-[4%]">
+      <header
+        class="sticky top-0 z-50 container mx-auto border-b border-border/40 bg-background/80 backdrop-blur-md transition-colors duration-200 supports-backdrop-filter:bg-background/60"
+      >
+        <SiteNav />
       </header>
       <main class="relative container mx-auto">
         <slot />
