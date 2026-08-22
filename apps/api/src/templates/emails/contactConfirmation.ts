@@ -44,13 +44,6 @@ export function getContactConfirmationLiquidBody(): string {
     <p style="margin: 0 0 20px 0; color: #64748b; font-size: 13px; line-height: 1.6;">
       If your note is urgent, you can also reply directly to this email.
     </p>
-
-    <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #e2e8f0;">
-      <p style="margin: 0; font-size: 13px; color: #64748b;">
-        Best regards,<br>
-        <strong style="color: #0f172a;">Fi Amanillah</strong>
-      </p>
-    </div>
   `.trim()
 
   const { html } = renderEmailLayout({
@@ -126,13 +119,6 @@ export function renderContactConfirmationEmail(
     <p style="margin: 0 0 20px 0; color: #64748b; font-size: 13px; line-height: 1.6;">
       If your note is urgent, you can also reply directly to this email.
     </p>
-
-    <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #e2e8f0;">
-      <p style="margin: 0; font-size: 13px; color: #64748b;">
-        Best regards,<br>
-        <strong style="color: #0f172a;">Fi Amanillah</strong>
-      </p>
-    </div>
   `.trim()
 
   const { html, listUnsubscribeHeader } = renderEmailLayout({

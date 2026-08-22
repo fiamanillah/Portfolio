@@ -35,7 +35,7 @@ export function getBookingCancellationLiquidBody(): string {
         [CANCELLED SESSION]
       </p>
 
-      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="font-size: 13px; color: #334155; line-height: 1.6;">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="font-size: 13px; color: #334155; line-height: 1.6; border-collapse: collapse;">
         <tr>
           <td width="35%" style="padding: 4px 0; font-weight: 600; color: #64748b;">Topic:</td>
           <td width="65%" style="padding: 4px 0; font-weight: 600; color: #0f172a;">{{ meetingType }}</td>
@@ -52,7 +52,7 @@ export function getBookingCancellationLiquidBody(): string {
     </div>
 
     {% if reason %}
-    <div style="margin: 16px 0; background-color: #ffffff; border: 1px solid #e2e8f0; padding: 14px 16px;">
+    <div style="margin: 16px 0; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 0; padding: 14px 16px;">
       <p style="margin: 0 0 4px 0; font-family: ui-monospace, monospace; font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase;">
         REASON PROVIDED
       </p>
@@ -63,17 +63,10 @@ export function getBookingCancellationLiquidBody(): string {
     <p style="margin: 20px 0 0 0; font-size: 13px; color: #334155; line-height: 1.6;">
       If you would like to reschedule for another time, you are welcome to pick an open slot anytime on the booking calendar:
       <br>
-      <a href="{{ rescheduleUrl | default: 'https://fi.amanillah.com/#book-call' }}" style="display: inline-block; margin-top: 10px; background-color: #0f172a; color: #ffffff; text-decoration: none; font-size: 12px; font-weight: 600; padding: 8px 16px; border-radius: 0;">
+      <a href="{{ rescheduleUrl | default: 'https://fi.amanillah.com/#book-call' }}" style="display: inline-block; margin-top: 10px; background-color: #0f172a; color: #ffffff; text-decoration: none; font-size: 12px; font-weight: 600; padding: 8px 16px; border-radius: 0; border: 1px solid #0f172a;">
         Schedule New Session &rarr;
       </a>
     </p>
-
-    <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #e2e8f0;">
-      <p style="margin: 0; font-size: 13px; color: #64748b;">
-        Best regards,<br>
-        <strong style="color: #0f172a;">Fi Amanillah</strong>
-      </p>
-    </div>
   `.trim()
 
   const { html } = renderEmailLayout({
@@ -98,12 +91,12 @@ export function getHostCancellationNotificationLiquidBody(): string {
     </p>
     
     <p style="margin: 0 0 16px 0; color: #334155; line-height: 1.65;">
-      A scheduled consultation meeting has been cancelled. The calendar event has been deleted and the time slot is now open for new bookings.
+      A scheduled consultation meeting has been cancelled. The calendar event has been removed and the time slot is freed for new bookings.
     </p>
 
     <!-- Details Box -->
-    <div style="margin: 20px 0; background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 20px;">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="font-size: 13px; color: #334155; line-height: 1.6;">
+    <div style="margin: 20px 0; background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 0; padding: 20px;">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="font-size: 13px; color: #334155; line-height: 1.6; border-collapse: collapse;">
         <tr>
           <td width="30%" style="padding: 4px 0; font-weight: 600; color: #64748b;">Attendee:</td>
           <td width="70%" style="padding: 4px 0; font-weight: 600; color: #0f172a;">
@@ -115,8 +108,8 @@ export function getHostCancellationNotificationLiquidBody(): string {
           <td style="padding: 4px 0; color: #0f172a; font-weight: 600;">{{ meetingType }}</td>
         </tr>
         <tr>
-          <td style="padding: 4px 0; font-weight: 600; color: #64748b;">Cancelled Slot:</td>
-          <td style="padding: 4px 0; color: #0f172a; font-weight: 600;">{{ formattedStartTime }} ({{ timezone | default: 'UTC' }})</td>
+          <td style="padding: 4px 0; font-weight: 600; color: #64748b;">Cancelled Time:</td>
+          <td style="padding: 4px 0; color: #0f172a; font-weight: 600;">{{ formattedStartTime }}</td>
         </tr>
         <tr>
           <td style="padding: 4px 0; font-weight: 600; color: #64748b;">Duration:</td>
@@ -126,16 +119,16 @@ export function getHostCancellationNotificationLiquidBody(): string {
     </div>
 
     {% if reason %}
-    <div style="margin: 16px 0; background-color: #ffffff; border: 1px solid #e2e8f0; padding: 14px 16px;">
+    <div style="margin: 16px 0; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 0; padding: 14px 16px;">
       <p style="margin: 0 0 4px 0; font-family: ui-monospace, monospace; font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase;">
-        CANCELLATION REASON GIVEN
+        REASON GIVEN
       </p>
       <p style="margin: 0; font-size: 13px; color: #334155; white-space: pre-wrap;">{{ reason }}</p>
     </div>
     {% endif %}
 
     <div style="margin-top: 24px;">
-      <a href="{{ bookingsPageUrl | default: 'https://admin.fi.amanillah.com/bookings' }}" target="_blank" style="display: inline-block; background-color: #0f172a; color: #ffffff; text-decoration: none; font-size: 13px; font-weight: 600; padding: 10px 20px; border-radius: 0;">
+      <a href="{{ bookingsPageUrl | default: 'https://admin.fi.amanillah.com/bookings' }}" target="_blank" style="display: inline-block; background-color: #0f172a; color: #ffffff; text-decoration: none; font-size: 13px; font-weight: 600; padding: 10px 20px; border-radius: 0; border: 1px solid #0f172a;">
         Open Admin Bookings Dashboard &rarr;
       </a>
     </div>
@@ -144,9 +137,9 @@ export function getHostCancellationNotificationLiquidBody(): string {
   const { html } = renderEmailLayout({
     badgeLabel: "Booking Cancelled",
     title: "Meeting Cancelled",
-    subtitle: "{{ guestName }} cancelled their scheduled consultation",
+    subtitle: "A scheduled session has been cancelled",
     contentHtml,
-    previewText: "{{ guestName }} cancelled their session",
+    previewText: "Meeting with {{ guestName }} has been cancelled.",
     showUnsubscribe: false,
   })
 
@@ -154,7 +147,7 @@ export function getHostCancellationNotificationLiquidBody(): string {
 }
 
 /**
- * Renders the Booking Cancellation email for the attendee.
+ * Renders the Booking Cancellation email for the guest.
  */
 export function renderBookingCancellationEmail(
   options: BookingCancellationOptions
@@ -194,7 +187,7 @@ export function renderBookingCancellationEmail(
         [CANCELLED SESSION]
       </p>
 
-      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="font-size: 13px; color: #334155; line-height: 1.6;">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="font-size: 13px; color: #334155; line-height: 1.6; border-collapse: collapse;">
         <tr>
           <td width="35%" style="padding: 4px 0; font-weight: 600; color: #64748b;">Topic:</td>
           <td width="65%" style="padding: 4px 0; font-weight: 600; color: #0f172a;">${options.meetingType}</td>
@@ -213,7 +206,7 @@ export function renderBookingCancellationEmail(
     ${
       options.reason
         ? `
-    <div style="margin: 16px 0; background-color: #ffffff; border: 1px solid #e2e8f0; padding: 14px 16px;">
+    <div style="margin: 16px 0; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 0; padding: 14px 16px;">
       <p style="margin: 0 0 4px 0; font-family: ui-monospace, monospace; font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase;">
         REASON
       </p>
@@ -226,17 +219,10 @@ export function renderBookingCancellationEmail(
     <p style="margin: 20px 0 0 0; font-size: 13px; color: #334155; line-height: 1.6;">
       Need to reschedule? You can pick a new time slot anytime on the booking calendar:
       <br>
-      <a href="${rescheduleUrl}" style="display: inline-block; margin-top: 10px; background-color: #0f172a; color: #ffffff; text-decoration: none; font-size: 12px; font-weight: 600; padding: 9px 18px; border-radius: 0;">
+      <a href="${rescheduleUrl}" style="display: inline-block; margin-top: 10px; background-color: #0f172a; color: #ffffff; text-decoration: none; font-size: 12px; font-weight: 600; padding: 9px 18px; border-radius: 0; border: 1px solid #0f172a;">
         Schedule New Session &rarr;
       </a>
     </p>
-
-    <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #e2e8f0;">
-      <p style="margin: 0; font-size: 13px; color: #64748b;">
-        Best regards,<br>
-        <strong style="color: #0f172a;">Fi Amanillah</strong>
-      </p>
-    </div>
   `.trim()
 
   const { html, listUnsubscribeHeader } = renderEmailLayout({
@@ -292,8 +278,8 @@ export function renderHostCancellationNotificationEmail(
     </p>
 
     <!-- Details Box -->
-    <div style="margin: 20px 0; background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 20px;">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="font-size: 13px; color: #334155; line-height: 1.6;">
+    <div style="margin: 20px 0; background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 0; padding: 20px;">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="font-size: 13px; color: #334155; line-height: 1.6; border-collapse: collapse;">
         <tr>
           <td width="30%" style="padding: 4px 0; font-weight: 600; color: #64748b;">Attendee:</td>
           <td width="70%" style="padding: 4px 0; font-weight: 600; color: #0f172a;">
@@ -318,7 +304,7 @@ export function renderHostCancellationNotificationEmail(
     ${
       options.reason
         ? `
-    <div style="margin: 16px 0; background-color: #ffffff; border: 1px solid #e2e8f0; padding: 14px 16px;">
+    <div style="margin: 16px 0; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 0; padding: 14px 16px;">
       <p style="margin: 0 0 4px 0; font-family: ui-monospace, monospace; font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase;">
         REASON GIVEN
       </p>
@@ -329,7 +315,7 @@ export function renderHostCancellationNotificationEmail(
     }
 
     <div style="margin-top: 24px;">
-      <a href="${bookingsPageUrl}" target="_blank" style="display: inline-block; background-color: #0f172a; color: #ffffff; text-decoration: none; font-size: 13px; font-weight: 600; padding: 10px 20px; border-radius: 0;">
+      <a href="${bookingsPageUrl}" target="_blank" style="display: inline-block; background-color: #0f172a; color: #ffffff; text-decoration: none; font-size: 13px; font-weight: 600; padding: 10px 20px; border-radius: 0; border: 1px solid #0f172a;">
         Open Admin Bookings Dashboard &rarr;
       </a>
     </div>

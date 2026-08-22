@@ -58,13 +58,6 @@ export function getOtpVerificationLiquidBody(): string {
     <p style="margin: 0 0 20px 0; font-size: 13px; color: #64748b; line-height: 1.6;">
       If you did not make this request, you can safely disregard this email. Your account credentials remain intact.
     </p>
-
-    <div style="margin-top: 28px; padding-top: 16px; border-top: 1px solid #e2e8f0;">
-      <p style="margin: 0; font-size: 13px; color: #64748b;">
-        Best regards,<br>
-        <strong style="color: #0f172a;">Fi Amanillah</strong>
-      </p>
-    </div>
   `.trim()
 
   const { html } = renderEmailLayout({
@@ -158,13 +151,6 @@ export function renderOtpEmail(options: OtpEmailOptions): {
     <p style="margin: 0 0 20px 0; font-size: 13px; color: #64748b; line-height: 1.6;">
       If you did not make this request, you can safely disregard this email. Your account credentials remain intact.
     </p>
-
-    <div style="margin-top: 28px; padding-top: 16px; border-top: 1px solid #e2e8f0;">
-      <p style="margin: 0; font-size: 13px; color: #64748b;">
-        Best regards,<br>
-        <strong style="color: #0f172a;">Fi Amanillah</strong>
-      </p>
-    </div>
   `.trim()
 
   const { html, listUnsubscribeHeader } = renderEmailLayout({

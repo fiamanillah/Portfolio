@@ -11,26 +11,25 @@ import {
   getHostCancellationNotificationLiquidBody,
 } from "./bookingCancellation"
 
-export interface SystemTemplateDefinition {
+export interface DefaultTemplateSeed {
   slug: string
   name: string
   description: string
   subject: string
   body: string
-  from?: string
-  fromName?: string
-  replyTo?: string
-  type: "TRANSACTIONAL" | "MARKETING" | "HEADLESS"
+  fromName: string
+  replyTo: string
+  type: "TRANSACTIONAL" | "HEADLESS" | "MARKETING"
   isSystem: boolean
   sampleData: Record<string, any>
 }
 
-export const SYSTEM_TEMPLATES: SystemTemplateDefinition[] = [
+export const SYSTEM_TEMPLATES: DefaultTemplateSeed[] = [
   {
     slug: "booking-confirmation",
-    name: "Booking Session Confirmation",
+    name: "Booking Attendee Confirmation",
     description:
-      "Automated transactional confirmation email sent to guests after booking a consultation session with Google Meet link and session details.",
+      "Confirmation email sent to attendee with meeting time, calendar invites and cancellation link.",
     subject:
       "[Confirmed] {{ meetingType | default: '1-on-1 Consultation' }} — Fi Amanillah",
     body: getBookingConfirmationLiquidBody(),
@@ -46,7 +45,7 @@ export const SYSTEM_TEMPLATES: SystemTemplateDefinition[] = [
       durationMinutes: 30,
       timezone: "Asia/Dhaka",
       googleMeetLink: "https://meet.google.com/abc-defg-hij",
-      googleCalUrl: "https://calendar.google.com/calendar/render?action=TEMPLATE&text=Consultation",
+      googleCalUrl: "https://calendar.google.com/calendar/render?action=TEMPLATE",
       outlookCalUrl: "https://outlook.live.com/calendar/0/deeplink/compose?path=/calendar/action/compose",
       icsDownloadUrl: "https://fi.amanillah.com/api/v1/booking/ics?token=sample_uuid",
       cancelUrl: "https://fi.amanillah.com/#book-call?cancelToken=sample_uuid",

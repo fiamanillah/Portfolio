@@ -15,7 +15,7 @@ export interface ContactNotificationOptions {
 export function getContactNotificationLiquidBody(): string {
   const contentHtml = `
     <!-- Contact Info Card -->
-    <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-bottom: 20px; background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 0;">
+    <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-bottom: 20px; background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 0; border-collapse: collapse;">
       <tr>
         <td style="padding: 12px 16px; border-bottom: 1px solid #e2e8f0; font-size: 13px;">
           <strong style="font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 11px; color: #64748b; text-transform: uppercase; display: inline-block; width: 100px;">From:</strong>
@@ -51,7 +51,7 @@ export function getContactNotificationLiquidBody(): string {
       </div>
     </div>
 
-    <!-- Direct Reply Action -->
+    <!-- Direct Reply Action Button -->
     <div style="margin-top: 24px; padding-top: 18px; border-top: 1px solid #e2e8f0; text-align: left;">
       <a href="mailto:{{ email }}?subject=Re:%20{{ subject | url_encode }}" style="display: inline-block; background-color: #0f172a; color: #ffffff; font-size: 13px; font-weight: 600; padding: 10px 20px; border-radius: 0; border: 1px solid #0f172a; text-decoration: none;">
         Reply to {{ name }} -&gt;
@@ -90,7 +90,7 @@ export function renderContactNotificationEmail(
 
   const contentHtml = `
     <!-- Contact Info Card -->
-    <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-bottom: 20px; background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 0;">
+    <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-bottom: 20px; background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 0; border-collapse: collapse;">
       <tr>
         <td style="padding: 12px 16px; border-bottom: 1px solid #e2e8f0; font-size: 13px;">
           <strong style="font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 11px; color: #64748b; text-transform: uppercase; display: inline-block; width: 100px;">From:</strong>
@@ -124,7 +124,7 @@ export function renderContactNotificationEmail(
       </div>
     </div>
 
-    <!-- Direct Reply Action -->
+    <!-- Direct Reply Action Button -->
     <div style="margin-top: 24px; padding-top: 18px; border-top: 1px solid #e2e8f0; text-align: left;">
       <a href="mailto:${email}?subject=${encodeURIComponent("Re: " + safeSubject)}" style="display: inline-block; background-color: #0f172a; color: #ffffff; font-size: 13px; font-weight: 600; padding: 10px 20px; border-radius: 0; border: 1px solid #0f172a; text-decoration: none;">
         Reply to ${name} -&gt;

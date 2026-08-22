@@ -79,14 +79,7 @@ export const PRESET_TEMPLATES: PresetTemplate[] = [
   <li>Mitigating connection pool exhaustion during sudden burst traffic.</li>
   <li>Designing idempotent webhooks and at-least-once delivery guarantees.</li>
   <li>Telemetry and tracing configurations with OpenTelemetry.</li>
-</ul>
-
-<div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #e2e8f0;">
-  <p style="margin: 0; font-size: 13px; color: #64748b;">
-    Until next time,<br>
-    <strong style="color: #0f172a;">Fi Amanillah</strong>
-  </p>
-</div>`,
+</ul>`,
   },
   {
     id: "weekly_digest",
@@ -119,14 +112,7 @@ export const PRESET_TEMPLATES: PresetTemplate[] = [
 <ul style="margin: 0 0 20px 0; padding-left: 20px; color: #334155; line-height: 1.65; font-size: 14px;">
   <li><a href="https://fi.amanillah.com" style="color: #0f172a; text-decoration: underline; font-weight: 600;">PostgreSQL Index Tuning</a> — Best practices for composite indexing on high-write tables.</li>
   <li><a href="https://fi.amanillah.com" style="color: #0f172a; text-decoration: underline; font-weight: 600;">Modern CSS & Design Systems</a> — Flat brutalism vs glassmorphism in enterprise consoles.</li>
-</ul>
-
-<div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #e2e8f0;">
-  <p style="margin: 0; font-size: 13px; color: #64748b;">
-    Enjoy your weekend,<br>
-    <strong style="color: #0f172a;">Fi Amanillah</strong>
-  </p>
-</div>`,
+</ul>`,
   },
   {
     id: "case_study_release",
@@ -191,14 +177,7 @@ export const PRESET_TEMPLATES: PresetTemplate[] = [
 
 <p style="margin: 0 0 16px 0; color: #334155; line-height: 1.7;">
   Thank you for being part of this audience and following along with the engineering journey.
-</p>
-
-<div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #e2e8f0;">
-  <p style="margin: 0; font-size: 13px; color: #64748b;">
-    Warm regards,<br>
-    <strong style="color: #0f172a;">Fi Amanillah</strong>
-  </p>
-</div>`,
+</p>`,
   },
 ];
 

@@ -39,7 +39,7 @@ export function getBookingConfirmationLiquidBody(): string {
         [SESSION DETAILS]
       </p>
 
-      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="font-size: 13px; color: #334155; line-height: 1.6;">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="font-size: 13px; color: #334155; line-height: 1.6; border-collapse: collapse;">
         <tr>
           <td width="35%" style="padding: 4px 0; font-weight: 600; color: #64748b;">Topic:</td>
           <td width="65%" style="padding: 4px 0; font-weight: 600; color: #0f172a;">{{ meetingType }}</td>
@@ -64,7 +64,7 @@ export function getBookingConfirmationLiquidBody(): string {
         <p style="margin: 0 0 8px 0; font-size: 12px; font-weight: 600; color: #0f172a;">
           Google Meet Video Link:
         </p>
-        <a href="{{ googleMeetLink }}" target="_blank" style="display: inline-block; background-color: #0f172a; color: #ffffff; text-decoration: none; font-size: 12px; font-weight: 600; padding: 8px 16px; border-radius: 0;">
+        <a href="{{ googleMeetLink }}" target="_blank" style="display: inline-block; background-color: #0f172a; color: #ffffff; text-decoration: none; font-size: 12px; font-weight: 600; padding: 8px 16px; border-radius: 0; border: 1px solid #0f172a;">
           Join Google Meet Room &rarr;
         </a>
       </div>
@@ -72,7 +72,7 @@ export function getBookingConfirmationLiquidBody(): string {
     </div>
 
     <!-- 1-Click Add to Calendar Box -->
-    <div style="margin: 20px 0; background-color: #ffffff; border: 1px solid #e2e8f0; padding: 18px 20px;">
+    <div style="margin: 20px 0; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 0; padding: 18px 20px;">
       <p style="margin: 0 0 10px 0; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 11px; font-weight: 600; color: #0284c7; text-transform: uppercase; letter-spacing: 0.05em;">
         [1-CLICK CALENDAR SYNC]
       </p>
@@ -80,7 +80,7 @@ export function getBookingConfirmationLiquidBody(): string {
         Add this session directly to your preferred calendar:
       </p>
       
-      <table cellpadding="0" cellspacing="0" border="0" style="font-size: 12px;">
+      <table cellpadding="0" cellspacing="0" border="0" style="font-size: 12px; border-collapse: collapse;">
         <tr>
           <td style="padding-right: 8px; padding-bottom: 8px;">
             <a href="{{ googleCalUrl }}" target="_blank" style="display: inline-block; background-color: #f1f5f9; border: 1px solid #cbd5e1; color: #0f172a; text-decoration: none; font-weight: 600; font-size: 11px; padding: 6px 12px; border-radius: 0;">
@@ -102,7 +102,7 @@ export function getBookingConfirmationLiquidBody(): string {
     </div>
 
     {% if guestNotes %}
-    <div style="margin: 16px 0; background-color: #ffffff; border: 1px solid #e2e8f0; padding: 14px 16px;">
+    <div style="margin: 16px 0; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 0; padding: 14px 16px;">
       <p style="margin: 0 0 4px 0; font-family: ui-monospace, monospace; font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase;">
         YOUR AGENDA NOTES
       </p>
@@ -111,17 +111,10 @@ export function getBookingConfirmationLiquidBody(): string {
     {% endif %}
 
     <p style="margin: 20px 0 0 0; font-size: 12px; color: #64748b; line-height: 1.5;">
-      Need to reschedule or cancel? You can manage this meeting anytime at:
+      Need to cancel? You can cancel your booking anytime here:
       <br>
-      <a href="{{ cancelUrl }}" style="color: #ef4444; text-decoration: underline;">Cancel / Manage Booking</a>
+      <a href="{{ cancelUrl }}" style="color: #ef4444; text-decoration: underline;">Cancel this booking</a>
     </p>
-
-    <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #e2e8f0;">
-      <p style="margin: 0; font-size: 13px; color: #64748b;">
-        Looking forward to our session,<br>
-        <strong style="color: #0f172a;">Fi Amanillah</strong>
-      </p>
-    </div>
   `.trim()
 
   const { html } = renderEmailLayout({
@@ -199,7 +192,7 @@ export function renderBookingConfirmationEmail(
         [SESSION DETAILS]
       </p>
 
-      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="font-size: 13px; color: #334155; line-height: 1.6;">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="font-size: 13px; color: #334155; line-height: 1.6; border-collapse: collapse;">
         <tr>
           <td width="35%" style="padding: 4px 0; font-weight: 600; color: #64748b;">Topic:</td>
           <td width="65%" style="padding: 4px 0; font-weight: 600; color: #0f172a;">${options.meetingType}</td>
@@ -222,7 +215,7 @@ export function renderBookingConfirmationEmail(
         <p style="margin: 0 0 8px 0; font-size: 12px; font-weight: 600; color: #0f172a;">
           Google Meet Video Room:
         </p>
-        <a href="${options.googleMeetLink}" target="_blank" style="display: inline-block; background-color: #0f172a; color: #ffffff; text-decoration: none; font-size: 12px; font-weight: 600; padding: 9px 18px; border-radius: 0;">
+        <a href="${options.googleMeetLink}" target="_blank" style="display: inline-block; background-color: #0f172a; color: #ffffff; text-decoration: none; font-size: 12px; font-weight: 600; padding: 9px 18px; border-radius: 0; border: 1px solid #0f172a;">
           Join Google Meet &rarr;
         </a>
       </div>
@@ -232,7 +225,7 @@ export function renderBookingConfirmationEmail(
     </div>
 
     <!-- 1-Click Add to Calendar Box -->
-    <div style="margin: 20px 0; background-color: #ffffff; border: 1px solid #e2e8f0; padding: 18px 20px;">
+    <div style="margin: 20px 0; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 0; padding: 18px 20px;">
       <p style="margin: 0 0 10px 0; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 11px; font-weight: 600; color: #0284c7; text-transform: uppercase; letter-spacing: 0.05em;">
         [1-CLICK CALENDAR SYNC]
       </p>
@@ -240,7 +233,7 @@ export function renderBookingConfirmationEmail(
         Add this session directly to your preferred calendar:
       </p>
       
-      <table cellpadding="0" cellspacing="0" border="0" style="font-size: 12px;">
+      <table cellpadding="0" cellspacing="0" border="0" style="font-size: 12px; border-collapse: collapse;">
         <tr>
           <td style="padding-right: 8px; padding-bottom: 8px;">
             <a href="${calendarLinks.googleCalendarUrl}" target="_blank" style="display: inline-block; background-color: #f1f5f9; border: 1px solid #cbd5e1; color: #0f172a; text-decoration: none; font-weight: 600; font-size: 11px; padding: 6px 12px; border-radius: 0;">
@@ -264,7 +257,7 @@ export function renderBookingConfirmationEmail(
     ${
       options.guestNotes
         ? `
-    <div style="margin: 16px 0; background-color: #ffffff; border: 1px solid #e2e8f0; padding: 14px 16px;">
+    <div style="margin: 16px 0; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 0; padding: 14px 16px;">
       <p style="margin: 0 0 4px 0; font-family: ui-monospace, monospace; font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase;">
         YOUR AGENDA NOTES
       </p>
@@ -279,13 +272,6 @@ export function renderBookingConfirmationEmail(
       <br>
       <a href="${cancelUrl}" style="color: #ef4444; text-decoration: underline;">Cancel this booking</a>
     </p>
-
-    <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #e2e8f0;">
-      <p style="margin: 0; font-size: 13px; color: #64748b;">
-        Looking forward to our session,<br>
-        <strong style="color: #0f172a;">Fi Amanillah</strong>
-      </p>
-    </div>
   `.trim()
 
   const { html, listUnsubscribeHeader } = renderEmailLayout({
@@ -304,4 +290,3 @@ export function renderBookingConfirmationEmail(
     listUnsubscribeHeader,
   }
 }
-

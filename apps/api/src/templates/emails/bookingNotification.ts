@@ -29,8 +29,8 @@ export function getBookingNotificationLiquidBody(): string {
     </p>
 
     <!-- Details Box -->
-    <div style="margin: 20px 0; background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 20px;">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="font-size: 13px; color: #334155; line-height: 1.6;">
+    <div style="margin: 20px 0; background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 0; padding: 20px;">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="font-size: 13px; color: #334155; line-height: 1.6; border-collapse: collapse;">
         <tr>
           <td width="30%" style="padding: 4px 0; font-weight: 600; color: #64748b;">Attendee:</td>
           <td width="70%" style="padding: 4px 0; font-weight: 600; color: #0f172a;">
@@ -62,7 +62,7 @@ export function getBookingNotificationLiquidBody(): string {
     </div>
 
     {% if guestNotes %}
-    <div style="margin: 16px 0; background-color: #ffffff; border: 1px solid #e2e8f0; padding: 14px 16px;">
+    <div style="margin: 16px 0; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 0; padding: 14px 16px;">
       <p style="margin: 0 0 4px 0; font-family: ui-monospace, monospace; font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase;">
         AGENDA / NOTES FROM GUEST
       </p>
@@ -71,7 +71,7 @@ export function getBookingNotificationLiquidBody(): string {
     {% endif %}
 
     <div style="margin-top: 24px;">
-      <a href="{{ bookingsPageUrl | default: 'https://admin.fi.amanillah.com/bookings' }}" target="_blank" style="display: inline-block; background-color: #0f172a; color: #ffffff; text-decoration: none; font-size: 13px; font-weight: 600; padding: 10px 20px; border-radius: 0;">
+      <a href="{{ bookingsPageUrl | default: 'https://admin.fi.amanillah.com/bookings' }}" target="_blank" style="display: inline-block; background-color: #0f172a; color: #ffffff; text-decoration: none; font-size: 13px; font-weight: 600; padding: 10px 20px; border-radius: 0; border: 1px solid #0f172a;">
         Open Admin Bookings Dashboard &rarr;
       </a>
     </div>
@@ -122,8 +122,8 @@ export function renderBookingNotificationEmail(
     </p>
 
     <!-- Details Box -->
-    <div style="margin: 20px 0; background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 20px;">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="font-size: 13px; color: #334155; line-height: 1.6;">
+    <div style="margin: 20px 0; background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 0; padding: 20px;">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="font-size: 13px; color: #334155; line-height: 1.6; border-collapse: collapse;">
         <tr>
           <td width="30%" style="padding: 4px 0; font-weight: 600; color: #64748b;">Attendee:</td>
           <td width="70%" style="padding: 4px 0; font-weight: 600; color: #0f172a;">
@@ -144,8 +144,9 @@ export function renderBookingNotificationEmail(
         </tr>
       </table>
 
-      ${options.googleMeetLink
-      ? `
+      ${
+        options.googleMeetLink
+          ? `
       <div style="margin-top: 14px; padding-top: 12px; border-top: 1px dashed #cbd5e1;">
         <span style="font-size: 12px; font-weight: 600; color: #0f172a;">Google Meet Room: </span>
         <a href="${options.googleMeetLink}" target="_blank" style="font-size: 12px; color: #0284c7; text-decoration: underline; font-family: ui-monospace, monospace;">
@@ -153,24 +154,25 @@ export function renderBookingNotificationEmail(
         </a>
       </div>
       `
-      : ""
-    }
+          : ""
+      }
     </div>
 
-    ${options.guestNotes
-      ? `
-    <div style="margin: 16px 0; background-color: #ffffff; border: 1px solid #e2e8f0; padding: 14px 16px;">
+    ${
+      options.guestNotes
+        ? `
+    <div style="margin: 16px 0; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 0; padding: 14px 16px;">
       <p style="margin: 0 0 4px 0; font-family: ui-monospace, monospace; font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase;">
         AGENDA / NOTES FROM GUEST
       </p>
       <p style="margin: 0; font-size: 13px; color: #334155; white-space: pre-wrap;">${options.guestNotes}</p>
     </div>
     `
-      : ""
+        : ""
     }
 
     <div style="margin-top: 24px;">
-      <a href="${bookingsPageUrl}" target="_blank" style="display: inline-block; background-color: #0f172a; color: #ffffff; text-decoration: none; font-size: 13px; font-weight: 600; padding: 10px 20px; border-radius: 0;">
+      <a href="${bookingsPageUrl}" target="_blank" style="display: inline-block; background-color: #0f172a; color: #ffffff; text-decoration: none; font-size: 13px; font-weight: 600; padding: 10px 20px; border-radius: 0; border: 1px solid #0f172a;">
         Open Admin Bookings Dashboard &rarr;
       </a>
     </div>

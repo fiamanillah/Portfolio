@@ -41,13 +41,6 @@ export function getSubscriptionConfirmationLiquidBody(): string {
         Read Engineering Blog -&gt;
       </a>
     </div>
-
-    <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #e2e8f0;">
-      <p style="margin: 0; font-size: 13px; color: #64748b;">
-        Glad to have you along,<br>
-        <strong style="color: #0f172a;">Fi Amanillah</strong>
-      </p>
-    </div>
   `.trim()
 
   const { html } = renderEmailLayout({
@@ -106,13 +99,6 @@ export function renderSubscriptionConfirmationEmail(
       <a href="https://fi.amanillah.com/blog" style="display: inline-block; background-color: #0f172a; color: #ffffff; font-size: 13px; font-weight: 600; padding: 10px 20px; border-radius: 0; border: 1px solid #0f172a; text-decoration: none;">
         Read Engineering Blog -&gt;
       </a>
-    </div>
-
-    <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #e2e8f0;">
-      <p style="margin: 0; font-size: 13px; color: #64748b;">
-        Glad to have you along,<br>
-        <strong style="color: #0f172a;">Fi Amanillah</strong>
-      </p>
     </div>
   `.trim()
 
