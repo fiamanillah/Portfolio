@@ -1,7 +1,7 @@
 // apps/dashboard/src/lib/api/client.ts
 
 export const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:3030"
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:3040"
 
 export const ACCESS_TOKEN_KEY = "portfolio_access_token"
 export const AUTH_COOKIE_NAME = "auth_token"

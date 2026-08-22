@@ -10,7 +10,7 @@ import type {
 
 const API_BASE_URL =
   (typeof import.meta !== "undefined" && import.meta.env?.PUBLIC_API_URL) ||
-  "http://localhost:3030"
+  "http://localhost:3040"
 
 export interface PublicCaseStudyQuery {
   page?: number

@@ -582,7 +582,7 @@ import { Icon } from "astro-icon/components"
       submitBtn.disabled = true
       submitText.innerHTML = `<span class="animate-pulse">Sending message...</span>`
 
-      const apiUrl = import.meta.env.PUBLIC_API_URL || "http://localhost:3030"
+      const apiUrl = import.meta.env.PUBLIC_API_URL || "http://localhost:3040"
 
       try {
         const response = await fetch(`${apiUrl}/contact/v1/send`, {

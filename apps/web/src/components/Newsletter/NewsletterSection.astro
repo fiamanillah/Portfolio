@@ -370,7 +370,7 @@ const submitTextId = `${idPrefix}-submit-text`
       submitBtn.disabled = true
       submitText.innerHTML = `<span class="animate-pulse">Subscribing...</span>`
 
-      const apiUrl = import.meta.env.PUBLIC_API_URL || "http://localhost:3030"
+      const apiUrl = import.meta.env.PUBLIC_API_URL || "http://localhost:3040"
 
       try {
         const response = await fetch(`${apiUrl}/subscriber/v1/subscribe`, {

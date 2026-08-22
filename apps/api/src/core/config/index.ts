@@ -23,7 +23,7 @@ if (result.error) {
 // Validate and parse configuration
 export const config = {
   server: {
-    port: parseInt(process.env.PORT || "3030"),
+    port: parseInt(process.env.PORT || "3040"),
     env: process.env.NODE_ENV,
     isProduction: process.env.NODE_ENV === "production",
     isDevelopment: process.env.NODE_ENV === "development",

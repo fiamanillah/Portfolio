@@ -583,7 +583,7 @@ const resumeUrl = resumeData.downloadUrl || "/resume"
       submitBtn.disabled = true
       submitText.textContent = "Connecting..."
 
-      const apiUrl = import.meta.env.PUBLIC_API_URL || "http://localhost:3030"
+      const apiUrl = import.meta.env.PUBLIC_API_URL || "http://localhost:3040"
 
       try {
         const response = await fetch(`${apiUrl}/subscriber/v1/subscribe`, {
