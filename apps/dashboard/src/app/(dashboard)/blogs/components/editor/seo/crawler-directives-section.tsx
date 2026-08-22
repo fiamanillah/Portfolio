@@ -11,12 +11,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@workspace/ui/components/select"
+import { FieldError } from "@workspace/ui/components/field"
 import type { BlogArticleType } from "@workspace/shared"
 
 interface CrawlerDirectivesSectionProps {
   slug: string
   canonicalUrl: string
   setCanonicalUrl: (val: string) => void
+  canonicalUrlError?: string
   articleType: BlogArticleType
   setArticleType: (val: BlogArticleType) => void
   noIndex: boolean
@@ -29,6 +31,7 @@ export function CrawlerDirectivesSection({
   slug,
   canonicalUrl,
   setCanonicalUrl,
+  canonicalUrlError,
   articleType,
   setArticleType,
   noIndex,
@@ -48,8 +51,16 @@ export function CrawlerDirectivesSection({
             placeholder={`https://fi.amanillah.com/blog/${slug || "post-slug"}`}
             value={canonicalUrl}
             onChange={(e) => setCanonicalUrl(e.target.value)}
-            className="h-9 border-border/90 bg-background font-mono text-xs shadow-xs hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary/20"
+            className={`h-9 bg-background font-mono text-xs shadow-xs transition-colors ${
+              canonicalUrlError
+                ? "border-destructive focus:border-destructive focus:ring-1 focus:ring-destructive/30"
+                : "border-border/90 hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary/20"
+            }`}
           />
+          {canonicalUrlError && <FieldError errors={canonicalUrlError} />}
+          <p className="text-[10px] text-muted-foreground">
+            Optional. If specified, must start with https:// (e.g. https://fi.amanillah.com/blog/my-post)
+          </p>
         </div>
 
         {/* Schema.org Type */}

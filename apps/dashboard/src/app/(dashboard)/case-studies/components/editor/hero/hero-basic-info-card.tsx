@@ -6,6 +6,7 @@ import { Input } from "@workspace/ui/components/input"
 import { Textarea } from "@workspace/ui/components/textarea"
 import { Label } from "@workspace/ui/components/label"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@workspace/ui/components/card"
+import { FieldError } from "@workspace/ui/components/field"
 
 interface HeroBasicInfoCardProps {
   title: string
@@ -18,6 +19,7 @@ interface HeroBasicInfoCardProps {
   setDescription: (desc: string) => void
   impact: string
   setImpact: (impact: string) => void
+  errors?: Record<string, string>
 }
 
 export function HeroBasicInfoCard({
@@ -31,6 +33,7 @@ export function HeroBasicInfoCard({
   setDescription,
   impact,
   setImpact,
+  errors = {},
 }: HeroBasicInfoCardProps) {
   const handleGenerateSlug = () => {
     if (!title) return
@@ -64,8 +67,11 @@ export function HeroBasicInfoCard({
             onBlur={() => {
               if (!slug) handleGenerateSlug()
             }}
-            className="font-medium text-sm"
+            className={`font-medium text-sm ${
+              errors.title ? "border-destructive focus:border-destructive" : ""
+            }`}
           />
+          {errors.title && <FieldError errors={errors.title} />}
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2">
@@ -85,8 +91,11 @@ export function HeroBasicInfoCard({
               placeholder="e.g. mickanic"
               value={slug}
               onChange={(e) => setSlug(e.target.value)}
-              className="font-mono text-xs"
+              className={`font-mono text-xs ${
+                errors.slug ? "border-destructive focus:border-destructive" : ""
+              }`}
             />
+            {errors.slug && <FieldError errors={errors.slug} />}
           </div>
 
           <div className="space-y-2">
@@ -109,8 +118,13 @@ export function HeroBasicInfoCard({
             rows={3}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="text-sm leading-relaxed"
+            className={`text-sm leading-relaxed ${
+              errors.description
+                ? "border-destructive focus:border-destructive"
+                : ""
+            }`}
           />
+          {errors.description && <FieldError errors={errors.description} />}
         </div>
 
         <div className="space-y-2">

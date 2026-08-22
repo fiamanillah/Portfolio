@@ -21,6 +21,7 @@ import type {
 } from "@workspace/shared"
 import { Badge } from "@workspace/ui/components/badge"
 import { Button } from "@workspace/ui/components/button"
+import { FieldError } from "@workspace/ui/components/field"
 import {
   Dialog,
   DialogContent,
@@ -41,6 +42,10 @@ import {
 import { Textarea } from "@workspace/ui/components/textarea"
 import { Switch } from "@workspace/ui/components/switch"
 import { toast } from "@workspace/ui/components/sonner"
+import {
+  showApiError,
+  validateEmail,
+} from "@/lib/api"
 
 interface EditTemplateDialogProps {
   open: boolean
@@ -83,6 +88,16 @@ export function EditTemplateDialog({
   const [replyTo, setReplyTo] = React.useState("")
   const [body, setBody] = React.useState("")
   const [syncToPlunk, setSyncToPlunk] = React.useState(true)
+  const [fieldErrors, setFieldErrors] = React.useState<Record<string, string>>({})
+
+  const clearFieldError = (key: string) => {
+    setFieldErrors((prev) => {
+      if (!prev[key]) return prev
+      const next = { ...prev }
+      delete next[key]
+      return next
+    })
+  }
 
   const bodyRef = React.useRef<HTMLTextAreaElement>(null)
 
@@ -97,6 +112,7 @@ export function EditTemplateDialog({
       setReplyTo(template.replyTo || "")
       setBody(template.body || "")
       setSyncToPlunk(true)
+      setFieldErrors({})
     }
   }, [template, open])
 
@@ -121,18 +137,46 @@ export function EditTemplateDialog({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
+    // 1. Client-Side Pre-Validation
+    const clientErrors: Record<string, string> = {}
+
     if (!name.trim()) {
-      toast.error("Template name is required")
-      return
+      clientErrors.name = "Template name is required"
     }
 
     if (!subject.trim()) {
-      toast.error("Subject line is required")
-      return
+      clientErrors.subject = "Subject line is required"
     }
 
     if (!body.trim()) {
-      toast.error("HTML body is required")
+      clientErrors.body = "HTML body is required"
+    }
+
+    if (fromEmail.trim()) {
+      const emailVal = validateEmail(fromEmail, "From Email")
+      if (!emailVal.valid && emailVal.error) {
+        clientErrors.from = emailVal.error
+      }
+    }
+
+    if (replyTo.trim()) {
+      const emailVal = validateEmail(replyTo, "Reply-To Email")
+      if (!emailVal.valid && emailVal.error) {
+        clientErrors.replyTo = emailVal.error
+      }
+    }
+
+    if (Object.keys(clientErrors).length > 0) {
+      setFieldErrors(clientErrors)
+      showApiError(
+        {
+          errorIssues: Object.entries(clientErrors).map(([path, message]) => ({
+            path,
+            message,
+          })),
+        },
+        "Validation Failed"
+      )
       return
     }
 
@@ -261,11 +305,15 @@ export function EditTemplateDialog({
                 <Input
                   id="edit-name"
                   value={name}
-                  onChange={(e) => setName(e.target.value)}
+                  onChange={(e) => {
+                    setName(e.target.value)
+                    clearFieldError("name")
+                  }}
                   placeholder="Template name"
-                  className="h-9 text-xs"
+                  className={`h-9 text-xs ${fieldErrors.name ? "border-destructive focus:border-destructive" : ""}`}
                   required
                 />
+                {fieldErrors.name && <FieldError errors={fieldErrors.name} />}
               </div>
 
               <div className="space-y-1.5">
@@ -303,11 +351,15 @@ export function EditTemplateDialog({
                 <Input
                   id="edit-subject"
                   value={subject}
-                  onChange={(e) => setSubject(e.target.value)}
+                  onChange={(e) => {
+                    setSubject(e.target.value)
+                    clearFieldError("subject")
+                  }}
                   placeholder="Subject line with Liquid variables..."
-                  className="h-9 text-xs"
+                  className={`h-9 text-xs ${fieldErrors.subject ? "border-destructive focus:border-destructive" : ""}`}
                   required
                 />
+                {fieldErrors.subject && <FieldError errors={fieldErrors.subject} />}
                 <p className="text-[11px] text-muted-foreground">
                   Liquid variables in the subject line will evaluate at send
                   time (e.g.{" "}
@@ -371,10 +423,14 @@ export function EditTemplateDialog({
                     id="edit-from-email"
                     type="email"
                     value={fromEmail}
-                    onChange={(e) => setFromEmail(e.target.value)}
+                    onChange={(e) => {
+                      setFromEmail(e.target.value)
+                      clearFieldError("from")
+                    }}
                     placeholder="fi@amanillah.com"
-                    className="h-8 bg-background/80 text-xs"
+                    className={`h-8 bg-background/80 text-xs ${fieldErrors.from ? "border-destructive focus:border-destructive" : ""}`}
                   />
+                  {fieldErrors.from && <FieldError errors={fieldErrors.from} />}
                 </div>
                 <div className="space-y-1">
                   <Label
@@ -387,10 +443,14 @@ export function EditTemplateDialog({
                     id="edit-reply-to"
                     type="email"
                     value={replyTo}
-                    onChange={(e) => setReplyTo(e.target.value)}
+                    onChange={(e) => {
+                      setReplyTo(e.target.value)
+                      clearFieldError("replyTo")
+                    }}
                     placeholder="fi@amanillah.com"
-                    className="h-8 bg-background/80 text-xs"
+                    className={`h-8 bg-background/80 text-xs ${fieldErrors.replyTo ? "border-destructive focus:border-destructive" : ""}`}
                   />
+                  {fieldErrors.replyTo && <FieldError errors={fieldErrors.replyTo} />}
                 </div>
               </div>
             </div>
@@ -429,11 +489,15 @@ export function EditTemplateDialog({
                 id="edit-body"
                 ref={bodyRef}
                 value={body}
-                onChange={(e) => setBody(e.target.value)}
-                placeholder="HTML template body with Liquid tags..."
-                className="min-h-[280px] border-zinc-800 bg-zinc-950 p-3 font-mono text-xs leading-relaxed text-zinc-100 selection:bg-primary/30"
+                onChange={(e) => {
+                  setBody(e.target.value)
+                  clearFieldError("body")
+                }}
+                placeholder="Enter valid HTML template with Liquid tags..."
+                className={`min-h-[260px] border-zinc-800 bg-zinc-950 p-3 font-mono text-xs leading-relaxed text-zinc-100 selection:bg-primary/30 ${fieldErrors.body ? "border-destructive focus:border-destructive" : ""}`}
                 required
               />
+              {fieldErrors.body && <FieldError errors={fieldErrors.body} />}
 
               <div className="flex items-center justify-between px-1 text-[11px] text-muted-foreground">
                 <span>

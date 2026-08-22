@@ -17,7 +17,14 @@ import type {
   CreateCaseStudyDTO,
   UpdateCaseStudyDTO,
 } from "@workspace/shared"
-import { CaseStudyApi } from "@/lib/api"
+import {
+  CaseStudyApi,
+  showApiError,
+  extractFieldErrors,
+  validateUrl,
+  validateSlug,
+  cleanUrl,
+} from "@/lib/api"
 import { EditorHeader } from "./header/editor-header"
 import { EditorTabsNav } from "./header/editor-tabs-nav"
 import { HeroTab } from "./hero-tab"
@@ -44,6 +51,41 @@ export function CaseStudyEditorForm({
   const router = useRouter()
   const [activeTab, setActiveTab] = React.useState("hero")
   const [isSaving, setIsSaving] = React.useState(false)
+  const [fieldErrors, setFieldErrors] = React.useState<Record<string, string>>({})
+
+  const clearFieldError = (key: string) => {
+    setFieldErrors((prev) => {
+      if (!prev[key]) return prev
+      const next = { ...prev }
+      delete next[key]
+      const leaf = key.split(".").pop()
+      if (leaf && next[leaf]) delete next[leaf]
+      return next
+    })
+  }
+
+  const getTabForErrorKey = (key: string): string => {
+    if (
+      key.startsWith("seo.") ||
+      key === "canonicalUrl" ||
+      key === "metaTitle" ||
+      key === "metaDescription" ||
+      key === "ogTitle" ||
+      key === "ogDescription" ||
+      key === "ogImage"
+    ) {
+      return "seo"
+    }
+    if (key.startsWith("metadata") || key === "metadata") return "metadata"
+    if (key.startsWith("contextBlocks") || key === "contextBlocks") return "context"
+    if (key.startsWith("architectureLayers") || key === "architectureLayers")
+      return "architecture"
+    if (key.startsWith("features") || key === "features") return "features"
+    if (key.startsWith("metrics") || key === "metrics") return "metrics"
+    if (key.startsWith("postMortem") || key === "postMortem")
+      return "post-mortem"
+    return "hero"
+  }
 
   // 1. General Info
   const [title, setTitle] = React.useState(initialStudy?.title || "")
@@ -120,8 +162,8 @@ export function CaseStudyEditorForm({
       featured,
       pinned,
       techStack,
-      liveUrl: liveUrl.trim() || undefined,
-      githubUrl: githubUrl.trim() || undefined,
+      liveUrl: cleanUrl(liveUrl),
+      githubUrl: cleanUrl(githubUrl),
       image: image.trim(),
       imageLabel: imageLabel.trim() || undefined,
       role: role.trim() || undefined,
@@ -134,24 +176,83 @@ export function CaseStudyEditorForm({
       features,
       metrics,
       postMortem,
-      seo,
+      seo: {
+        ...seo,
+        metaTitle: seo.metaTitle?.trim() || undefined,
+        metaDescription: seo.metaDescription?.trim() || undefined,
+        canonicalUrl: cleanUrl(seo.canonicalUrl),
+        ogTitle: seo.ogTitle?.trim() || undefined,
+        ogDescription: seo.ogDescription?.trim() || undefined,
+        ogImage: seo.ogImage?.trim() || undefined,
+        twitterTitle: seo.twitterTitle?.trim() || undefined,
+        twitterDescription: seo.twitterDescription?.trim() || undefined,
+        twitterImage: seo.twitterImage?.trim() || undefined,
+      },
     }
   }
 
   const handleSave = async (overrideStatus?: CaseStudyStatus) => {
+    // 1. Client-Side Pre-Validation
+    const clientErrors: Record<string, string> = {}
+
     if (!title.trim()) {
-      toast.error("Case study title is required.")
-      setActiveTab("hero")
-      return
+      clientErrors.title = "Case study title is required"
+    } else if (title.trim().length < 3) {
+      clientErrors.title = "Title must be at least 3 characters"
     }
+
     if (!description.trim()) {
-      toast.error("Summary description is required.")
-      setActiveTab("hero")
-      return
+      clientErrors.description = "Summary description is required"
+    } else if (description.trim().length < 10) {
+      clientErrors.description = "Description must be at least 10 characters"
     }
+
     if (!image.trim()) {
-      toast.error("Cover image artwork is required.")
-      setActiveTab("hero")
+      clientErrors.image = "Cover image artwork is required"
+    }
+
+    if (slug.trim()) {
+      const slugValidation = validateSlug(slug, "URL Slug")
+      if (!slugValidation.valid && slugValidation.error) {
+        clientErrors.slug = slugValidation.error
+      }
+    }
+
+    if (liveUrl.trim()) {
+      const liveValidation = validateUrl(liveUrl, "Live Demo URL")
+      if (!liveValidation.valid && liveValidation.error) {
+        clientErrors.liveUrl = liveValidation.error
+      }
+    }
+
+    if (githubUrl.trim()) {
+      const gitValidation = validateUrl(githubUrl, "GitHub URL")
+      if (!gitValidation.valid && gitValidation.error) {
+        clientErrors.githubUrl = gitValidation.error
+      }
+    }
+
+    if (seo.canonicalUrl?.trim()) {
+      const canonValidation = validateUrl(seo.canonicalUrl, "Canonical URL")
+      if (!canonValidation.valid && canonValidation.error) {
+        clientErrors["seo.canonicalUrl"] = canonValidation.error
+        clientErrors.canonicalUrl = canonValidation.error
+      }
+    }
+
+    if (Object.keys(clientErrors).length > 0) {
+      setFieldErrors(clientErrors)
+      const firstErrorKey = Object.keys(clientErrors)[0] || "title"
+      setActiveTab(getTabForErrorKey(firstErrorKey))
+      showApiError(
+        {
+          errorIssues: Object.entries(clientErrors).map(([path, message]) => ({
+            path,
+            message,
+          })),
+        },
+        "Validation Failed"
+      )
       return
     }
 
@@ -165,6 +266,7 @@ export function CaseStudyEditorForm({
           payload as UpdateCaseStudyDTO
         )
         if (res.success && res.data) {
+          setFieldErrors({})
           toast.success(
             overrideStatus === "PUBLISHED"
               ? "Case study published successfully!"
@@ -172,11 +274,16 @@ export function CaseStudyEditorForm({
           )
           router.push(onSuccessRedirect)
         } else {
-          toast.error(res.message || "Failed to update case study")
+          showApiError(res, "Failed to update case study")
+          const extracted = extractFieldErrors(res)
+          setFieldErrors(extracted)
+          const firstKey = Object.keys(extracted)[0]
+          if (firstKey) setActiveTab(getTabForErrorKey(firstKey))
         }
       } else {
         const res = await CaseStudyApi.create(payload as CreateCaseStudyDTO)
         if (res.success && res.data) {
+          setFieldErrors({})
           toast.success(
             overrideStatus === "PUBLISHED"
               ? "Case study published successfully!"
@@ -184,11 +291,15 @@ export function CaseStudyEditorForm({
           )
           router.push(onSuccessRedirect)
         } else {
-          toast.error(res.message || "Failed to create case study")
+          showApiError(res, "Failed to create case study")
+          const extracted = extractFieldErrors(res)
+          setFieldErrors(extracted)
+          const firstKey = Object.keys(extracted)[0]
+          if (firstKey) setActiveTab(getTabForErrorKey(firstKey))
         }
       }
     } catch (err: any) {
-      toast.error(err?.message || "An unexpected error occurred while saving")
+      showApiError(err, "An unexpected error occurred while saving")
     } finally {
       setIsSaving(false)
     }
@@ -288,6 +399,7 @@ export function CaseStudyEditorForm({
             setImpact={setImpact}
             techStack={techStack}
             setTechStack={setTechStack}
+            errors={fieldErrors}
           />
         </TabsContent>
 
@@ -339,6 +451,7 @@ export function CaseStudyEditorForm({
             image={image}
             seo={seo}
             setSeo={setSeo}
+            errors={fieldErrors}
           />
         </TabsContent>
 

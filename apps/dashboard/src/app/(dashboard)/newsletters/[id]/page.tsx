@@ -25,7 +25,7 @@ import type {
   NewsletterDetail,
   NewsletterSpamReport,
 } from "@workspace/shared";
-import { NewsletterApi } from "@/lib/api";
+import { NewsletterApi, showApiError } from "@/lib/api";
 import { CampaignComposer } from "../components/campaign-composer";
 import { AudienceSelector } from "../components/audience-selector";
 import { EmailPreviewCard } from "../components/email-preview-card";
@@ -147,21 +147,33 @@ export default function NewsletterDetailPage() {
 
   // Save changes
   const handleSave = async () => {
-    if (!id || !title.trim() || !subject.trim() || !content.trim()) {
-      toast.error("Missing required fields");
+    if (!id) return;
+    if (!title.trim()) {
+      toast.error("Campaign title is required");
+      setActiveTab("composer");
+      return;
+    }
+    if (!subject.trim()) {
+      toast.error("Subject line is required");
+      setActiveTab("composer");
+      return;
+    }
+    if (!content.trim()) {
+      toast.error("Campaign content is required");
+      setActiveTab("composer");
       return;
     }
 
     try {
       setIsSaving(true);
       const res = await NewsletterApi.update(id, {
-        title,
-        subject,
-        previewText: previewText || undefined,
+        title: title.trim(),
+        subject: subject.trim(),
+        previewText: previewText.trim() || undefined,
         content,
-        senderName: senderName || undefined,
-        senderEmail: senderEmail || undefined,
-        replyTo: replyTo || undefined,
+        senderName: senderName.trim() || undefined,
+        senderEmail: senderEmail.trim() || undefined,
+        replyTo: replyTo.trim() || undefined,
         targetAudience,
         includedSources,
         includedEmails,
@@ -173,10 +185,10 @@ export default function NewsletterDetailPage() {
         setCampaign(res.data);
         toast.success("Campaign updated successfully!");
       } else {
-        toast.error("Save failed", { description: res.error });
+        showApiError(res, "Failed to update campaign");
       }
     } catch (err: any) {
-      toast.error("Error saving campaign", { description: err?.message });
+      showApiError(err, "Error saving campaign");
     } finally {
       setIsSaving(false);
     }
@@ -195,12 +207,10 @@ export default function NewsletterDetailPage() {
         setIsSendConfirmOpen(false);
         fetchCampaign();
       } else {
-        toast.error("Failed to start broadcast", { description: res.error });
+        showApiError(res, "Failed to start broadcast");
       }
     } catch (err: any) {
-      toast.error("Error broadcasting campaign", {
-        description: err?.message,
-      });
+      showApiError(err, "Error broadcasting campaign");
     } finally {
       setIsSendingImmediate(false);
     }
@@ -214,10 +224,10 @@ export default function NewsletterDetailPage() {
         setCampaign(res.data);
         toast.success("Campaign schedule cancelled.");
       } else {
-        toast.error("Cancellation failed", { description: res.error });
+        showApiError(res, "Cancellation failed");
       }
     } catch (err: any) {
-      toast.error("Error cancelling", { description: err?.message });
+      showApiError(err, "Error cancelling campaign schedule");
     }
   };
 

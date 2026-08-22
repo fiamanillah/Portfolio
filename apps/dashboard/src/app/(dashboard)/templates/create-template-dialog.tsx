@@ -15,6 +15,7 @@ import {
 import type { CreateTemplateDTO, EmailTemplateType } from "@workspace/shared"
 import { Badge } from "@workspace/ui/components/badge"
 import { Button } from "@workspace/ui/components/button"
+import { FieldError } from "@workspace/ui/components/field"
 import {
   Dialog,
   DialogContent,
@@ -35,6 +36,11 @@ import {
 import { Textarea } from "@workspace/ui/components/textarea"
 import { Switch } from "@workspace/ui/components/switch"
 import { toast } from "@workspace/ui/components/sonner"
+import {
+  showApiError,
+  validateSlug,
+  validateEmail,
+} from "@/lib/api"
 
 interface CreateTemplateDialogProps {
   open: boolean
@@ -120,6 +126,16 @@ export function CreateTemplateDialog({
   const [replyTo, setReplyTo] = React.useState("fi@amanillah.com")
   const [body, setBody] = React.useState(STARTER_TEMPLATE)
   const [syncToPlunk, setSyncToPlunk] = React.useState(true)
+  const [fieldErrors, setFieldErrors] = React.useState<Record<string, string>>({})
+
+  const clearFieldError = (key: string) => {
+    setFieldErrors((prev) => {
+      if (!prev[key]) return prev
+      const next = { ...prev }
+      delete next[key]
+      return next
+    })
+  }
 
   const bodyRef = React.useRef<HTMLTextAreaElement>(null)
 
@@ -148,6 +164,7 @@ export function CreateTemplateDialog({
     setReplyTo("fi@amanillah.com")
     setBody(STARTER_TEMPLATE)
     setSyncToPlunk(true)
+    setFieldErrors({})
   }
 
   const insertVariable = (token: string) => {
@@ -169,18 +186,53 @@ export function CreateTemplateDialog({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
+    // 1. Client-Side Pre-Validation
+    const clientErrors: Record<string, string> = {}
+
     if (!name.trim()) {
-      toast.error("Template name is required")
-      return
+      clientErrors.name = "Template name is required"
     }
 
     if (!subject.trim()) {
-      toast.error("Subject line is required")
-      return
+      clientErrors.subject = "Subject line is required"
     }
 
     if (!body.trim()) {
-      toast.error("HTML body is required")
+      clientErrors.body = "HTML body is required"
+    }
+
+    if (slug.trim()) {
+      const slugVal = validateSlug(slug, "Slug")
+      if (!slugVal.valid && slugVal.error) {
+        clientErrors.slug = slugVal.error
+      }
+    }
+
+    if (fromEmail.trim()) {
+      const emailVal = validateEmail(fromEmail, "From Email")
+      if (!emailVal.valid && emailVal.error) {
+        clientErrors.from = emailVal.error
+      }
+    }
+
+    if (replyTo.trim()) {
+      const emailVal = validateEmail(replyTo, "Reply-To Email")
+      if (!emailVal.valid && emailVal.error) {
+        clientErrors.replyTo = emailVal.error
+      }
+    }
+
+    if (Object.keys(clientErrors).length > 0) {
+      setFieldErrors(clientErrors)
+      showApiError(
+        {
+          errorIssues: Object.entries(clientErrors).map(([path, message]) => ({
+            path,
+            message,
+          })),
+        },
+        "Validation Failed"
+      )
       return
     }
 
@@ -238,11 +290,15 @@ export function CreateTemplateDialog({
                 <Input
                   id="create-name"
                   value={name}
-                  onChange={(e) => setName(e.target.value)}
+                  onChange={(e) => {
+                    setName(e.target.value)
+                    clearFieldError("name")
+                  }}
                   placeholder="e.g. Monthly Tech Digest"
-                  className="h-9 text-xs"
+                  className={`h-9 text-xs ${fieldErrors.name ? "border-destructive focus:border-destructive" : ""}`}
                   required
                 />
+                {fieldErrors.name && <FieldError errors={fieldErrors.name} />}
               </div>
 
               <div className="space-y-1.5 md:col-span-1">
@@ -255,10 +311,12 @@ export function CreateTemplateDialog({
                   onChange={(e) => {
                     setIsSlugManuallyEdited(true)
                     setSlug(e.target.value)
+                    clearFieldError("slug")
                   }}
                   placeholder="e.g. monthly-tech-digest"
-                  className="h-9 font-mono text-xs"
+                  className={`h-9 font-mono text-xs ${fieldErrors.slug ? "border-destructive focus:border-destructive" : ""}`}
                 />
+                {fieldErrors.slug && <FieldError errors={fieldErrors.slug} />}
               </div>
 
               <div className="space-y-1.5 md:col-span-1">
@@ -299,11 +357,15 @@ export function CreateTemplateDialog({
                 <Input
                   id="create-subject"
                   value={subject}
-                  onChange={(e) => setSubject(e.target.value)}
+                  onChange={(e) => {
+                    setSubject(e.target.value)
+                    clearFieldError("subject")
+                  }}
                   placeholder="e.g. New Post: Scaling Microservices with Bun & Go — {{ name }}"
-                  className="h-9 text-xs"
+                  className={`h-9 text-xs ${fieldErrors.subject ? "border-destructive focus:border-destructive" : ""}`}
                   required
                 />
+                {fieldErrors.subject && <FieldError errors={fieldErrors.subject} />}
                 <p className="text-[11px] text-muted-foreground">
                   You can use dynamic Liquid variables inside subject lines like{" "}
                   <code className="font-mono text-primary">{`{{ name }}`}</code>
@@ -366,10 +428,14 @@ export function CreateTemplateDialog({
                     id="create-from-email"
                     type="email"
                     value={fromEmail}
-                    onChange={(e) => setFromEmail(e.target.value)}
+                    onChange={(e) => {
+                      setFromEmail(e.target.value)
+                      clearFieldError("from")
+                    }}
                     placeholder="fi@amanillah.com"
-                    className="h-8 bg-background/80 text-xs"
+                    className={`h-8 bg-background/80 text-xs ${fieldErrors.from ? "border-destructive focus:border-destructive" : ""}`}
                   />
+                  {fieldErrors.from && <FieldError errors={fieldErrors.from} />}
                 </div>
                 <div className="space-y-1">
                   <Label
@@ -382,10 +448,14 @@ export function CreateTemplateDialog({
                     id="create-reply-to"
                     type="email"
                     value={replyTo}
-                    onChange={(e) => setReplyTo(e.target.value)}
+                    onChange={(e) => {
+                      setReplyTo(e.target.value)
+                      clearFieldError("replyTo")
+                    }}
                     placeholder="fi@amanillah.com"
-                    className="h-8 bg-background/80 text-xs"
+                    className={`h-8 bg-background/80 text-xs ${fieldErrors.replyTo ? "border-destructive focus:border-destructive" : ""}`}
                   />
+                  {fieldErrors.replyTo && <FieldError errors={fieldErrors.replyTo} />}
                 </div>
               </div>
             </div>
@@ -424,11 +494,15 @@ export function CreateTemplateDialog({
                 id="create-body"
                 ref={bodyRef}
                 value={body}
-                onChange={(e) => setBody(e.target.value)}
+                onChange={(e) => {
+                  setBody(e.target.value)
+                  clearFieldError("body")
+                }}
                 placeholder="Enter valid HTML template with Liquid tags..."
-                className="min-h-[260px] border-zinc-800 bg-zinc-950 p-3 font-mono text-xs leading-relaxed text-zinc-100 selection:bg-primary/30"
+                className={`min-h-[260px] border-zinc-800 bg-zinc-950 p-3 font-mono text-xs leading-relaxed text-zinc-100 selection:bg-primary/30 ${fieldErrors.body ? "border-destructive focus:border-destructive" : ""}`}
                 required
               />
+              {fieldErrors.body && <FieldError errors={fieldErrors.body} />}
 
               <div className="flex items-center justify-between px-1 text-[11px] text-muted-foreground">
                 <span>

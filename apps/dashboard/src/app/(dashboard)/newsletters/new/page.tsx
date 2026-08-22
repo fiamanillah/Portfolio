@@ -18,7 +18,7 @@ import type {
   AudienceType,
   NewsletterSpamReport,
 } from "@workspace/shared";
-import { NewsletterApi } from "@/lib/api";
+import { NewsletterApi, showApiError, validateEmail } from "@/lib/api";
 import { PRESET_TEMPLATES } from "../components/preset-templates-modal";
 import { CampaignComposer } from "../components/campaign-composer";
 import { AudienceSelector } from "../components/audience-selector";
@@ -38,12 +38,12 @@ export default function NewNewsletterPage() {
 
   // Form State
   const [title, setTitle] = React.useState("");
-  const [subject, setSubject] = React.useState("");
-  const [previewText, setPreviewText] = React.useState("");
-  const [content, setContent] = React.useState("");
-  const [senderName, setSenderName] = React.useState("");
-  const [senderEmail, setSenderEmail] = React.useState("");
-  const [replyTo, setReplyTo] = React.useState("");
+  const [subject, setSubject] = React.useState(defaultTpl.defaultSubject);
+  const [previewText, setPreviewText] = React.useState(defaultTpl.defaultPreview);
+  const [content, setContent] = React.useState(defaultTpl.defaultContent);
+  const [senderName, setSenderName] = React.useState("Fi Amanillah");
+  const [senderEmail, setSenderEmail] = React.useState("fi@amanillah.com");
+  const [replyTo, setReplyTo] = React.useState("fi@amanillah.com");
 
   // Audience State
   const [targetAudience, setTargetAudience] =
@@ -53,17 +53,15 @@ export default function NewNewsletterPage() {
   const [excludedEmails, setExcludedEmails] = React.useState<string[]>([]);
   const [excludedSources, setExcludedSources] = React.useState<string[]>([]);
 
-  // Deliverability State
+  // UI State
+  const [activeTab, setActiveTab] = React.useState("compose");
+  const [isSaving, setIsSaving] = React.useState(false);
+  const [isTestSendOpen, setIsTestSendOpen] = React.useState(false);
   const [spamReport, setSpamReport] =
     React.useState<NewsletterSpamReport | null>(null);
   const [isAuditingSpam, setIsAuditingSpam] = React.useState(false);
 
-  // Modals & Submitting
-  const [isTestSendOpen, setIsTestSendOpen] = React.useState(false);
-  const [isSaving, setIsSaving] = React.useState(false);
-  const [activeTab, setActiveTab] = React.useState("composer");
-
-  // Trigger Anti-Spam audit when content changes
+  // Anti-Spam audit on change
   const runSpamAudit = React.useCallback(async () => {
     if (!subject.trim() || !content.trim()) return;
     try {
@@ -92,23 +90,48 @@ export default function NewNewsletterPage() {
   }, [runSpamAudit]);
 
   const handleSaveDraft = async () => {
-    if (!title.trim() || !subject.trim() || !content.trim()) {
-      toast.error("Required fields missing", {
-        description: "Please provide a title, subject line, and body content.",
-      });
+    if (!title.trim()) {
+      toast.error("Campaign title is required");
+      setActiveTab("compose");
       return;
+    }
+    if (!subject.trim()) {
+      toast.error("Subject line is required");
+      setActiveTab("compose");
+      return;
+    }
+    if (!content.trim()) {
+      toast.error("Campaign content is required");
+      setActiveTab("compose");
+      return;
+    }
+
+    if (senderEmail.trim()) {
+      const emailVal = validateEmail(senderEmail, "Sender Email");
+      if (!emailVal.valid && emailVal.error) {
+        toast.error(emailVal.error);
+        return;
+      }
+    }
+
+    if (replyTo.trim()) {
+      const emailVal = validateEmail(replyTo, "Reply-To Email");
+      if (!emailVal.valid && emailVal.error) {
+        toast.error(emailVal.error);
+        return;
+      }
     }
 
     try {
       setIsSaving(true);
       const res = await NewsletterApi.create({
-        title,
-        subject,
-        previewText: previewText || undefined,
+        title: title.trim(),
+        subject: subject.trim(),
+        previewText: previewText.trim() || undefined,
         content,
-        senderName: senderName || undefined,
-        senderEmail: senderEmail || undefined,
-        replyTo: replyTo || undefined,
+        senderName: senderName.trim() || undefined,
+        senderEmail: senderEmail.trim() || undefined,
+        replyTo: replyTo.trim() || undefined,
         targetAudience,
         includedSources,
         includedEmails,
@@ -122,10 +145,10 @@ export default function NewNewsletterPage() {
         });
         router.push(`/newsletters/${res.data.id}`);
       } else {
-        toast.error("Failed to create campaign", { description: res.error });
+        showApiError(res, "Failed to create campaign");
       }
     } catch (err: any) {
-      toast.error("Error creating campaign", { description: err?.message });
+      showApiError(err, "Error creating campaign");
     } finally {
       setIsSaving(false);
     }

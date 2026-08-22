@@ -29,6 +29,7 @@ import {
 } from "@workspace/ui/components/select"
 import { Badge } from "@workspace/ui/components/badge"
 import { toast } from "@workspace/ui/components/sonner"
+import { FieldError } from "@workspace/ui/components/field"
 import {
   Plus,
   Trash2,
@@ -47,12 +48,19 @@ import type {
   ExperienceStatus,
   ExperienceStatItem,
 } from "@workspace/shared"
-import { ExperienceApi } from "@/lib/api"
+import {
+  ExperienceApi,
+  showApiError,
+  extractFieldErrors,
+  validateUrl,
+  cleanUrl,
+} from "@/lib/api"
 
 interface ExperienceFormDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  experience: ExperienceDTO | null
+  experience?: ExperienceDTO | null
+  isEdit?: boolean
   onSuccess: () => void
 }
 
@@ -92,19 +100,29 @@ export function ExperienceFormDialog({
   open,
   onOpenChange,
   experience,
+  isEdit = false,
   onSuccess,
 }: ExperienceFormDialogProps) {
-  const isEdit = !!experience
   const [activeTab, setActiveTab] = React.useState("basics")
   const [isSubmitting, setIsSubmitting] = React.useState(false)
+  const [fieldErrors, setFieldErrors] = React.useState<Record<string, string>>({})
 
-  // Form States
+  const clearFieldError = (key: string) => {
+    setFieldErrors((prev) => {
+      if (!prev[key]) return prev
+      const next = { ...prev }
+      delete next[key]
+      return next
+    })
+  }
+
+  // 1. Basics
   const [company, setCompany] = React.useState("")
   const [companyUrl, setCompanyUrl] = React.useState("")
   const [role, setRole] = React.useState("")
   const [titleLines, setTitleLines] = React.useState<string[]>([])
   const [newTitleLine, setNewTitleLine] = React.useState("")
-  const [location, setLocation] = React.useState("")
+  const [location, setLocation] = React.useState("Remote")
   const [employmentType, setEmploymentType] = React.useState("Full-Time")
   const [year, setYear] = React.useState("")
   const [period, setPeriod] = React.useState("")
@@ -113,29 +131,33 @@ export function ExperienceFormDialog({
   const [featured, setFeatured] = React.useState(true)
   const [order, setOrder] = React.useState(0)
 
-  // Rich Content States
+  // 2. Highlights & Description
   const [description, setDescription] = React.useState("")
   const [highlights, setHighlights] = React.useState<string[]>([])
   const [newHighlight, setNewHighlight] = React.useState("")
+
+  // 3. Technologies
   const [technologies, setTechnologies] = React.useState<string[]>([])
   const [newTech, setNewTech] = React.useState("")
+
+  // 4. Stats & Takeaways
   const [stats, setStats] = React.useState<ExperienceStatItem[]>([])
   const [newStatLabel, setNewStatLabel] = React.useState("")
   const [newStatValue, setNewStatValue] = React.useState("")
   const [learned, setLearned] = React.useState("")
 
-  // Reset or Populate form on open/change
+  // Load data when opening/editing
   React.useEffect(() => {
-    if (experience) {
+    if (experience && isEdit) {
       setCompany(experience.company || "")
       setCompanyUrl(experience.companyUrl || "")
       setRole(experience.role || "")
       setTitleLines(experience.title || [])
-      setLocation(experience.location || "")
+      setLocation(experience.location || "Remote")
       setEmploymentType(experience.employmentType || "Full-Time")
       setYear(experience.year || "")
       setPeriod(experience.period || "")
-      setIsCurrent(experience.isCurrent ?? false)
+      setIsCurrent(Boolean(experience.isCurrent))
       setStatus(experience.status || "PUBLISHED")
       setFeatured(experience.featured ?? true)
       setOrder(experience.order ?? 0)
@@ -149,10 +171,10 @@ export function ExperienceFormDialog({
       setCompanyUrl("")
       setRole("")
       setTitleLines([])
-      setLocation("Dhaka, Bangladesh · Remote-Friendly")
+      setLocation("Remote")
       setEmploymentType("Full-Time")
       setYear(new Date().getFullYear().toString())
-      setPeriod("PRESENT // 1 MO")
+      setPeriod("Present")
       setIsCurrent(true)
       setStatus("PUBLISHED")
       setFeatured(true)
@@ -163,20 +185,9 @@ export function ExperienceFormDialog({
       setStats([])
       setLearned("")
     }
+    setFieldErrors({})
     setActiveTab("basics")
-  }, [experience, open])
-
-  // Handlers for dynamic lists
-  const handleAddTitleLine = () => {
-    if (newTitleLine.trim()) {
-      setTitleLines([...titleLines, newTitleLine.trim()])
-      setNewTitleLine("")
-    }
-  }
-
-  const handleRemoveTitleLine = (index: number) => {
-    setTitleLines(titleLines.filter((_, i) => i !== index))
-  }
+  }, [experience, isEdit, open])
 
   const handleAutoSplitRole = () => {
     if (!role.trim()) return
@@ -186,6 +197,17 @@ export function ExperienceFormDialog({
     } else {
       setTitleLines([role.trim()])
     }
+  }
+
+  const handleAddTitleLine = () => {
+    if (newTitleLine.trim()) {
+      setTitleLines([...titleLines, newTitleLine.trim()])
+      setNewTitleLine("")
+    }
+  }
+
+  const handleRemoveTitleLine = (index: number) => {
+    setTitleLines(titleLines.filter((_, i) => i !== index))
   }
 
   const handleAddHighlight = () => {
@@ -199,11 +221,13 @@ export function ExperienceFormDialog({
     setHighlights(highlights.filter((_, i) => i !== index))
   }
 
-  const handleAddTech = (techToAdd: string) => {
-    const trimmed = techToAdd.trim()
-    if (trimmed && !technologies.includes(trimmed)) {
-      setTechnologies([...technologies, trimmed])
-      setNewTech("")
+  const handleAddTech = (techToAdd?: string) => {
+    const target = (techToAdd ?? newTech).trim()
+    if (target && !technologies.includes(target)) {
+      setTechnologies([...technologies, target])
+      if (!techToAdd) {
+        setNewTech("")
+      }
     }
   }
 
@@ -229,24 +253,47 @@ export function ExperienceFormDialog({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
+    // 1. Client-Side Pre-Validation
+    const clientErrors: Record<string, string> = {}
+
     if (!company.trim()) {
-      toast.error("Company name is required")
-      setActiveTab("basics")
-      return
+      clientErrors.company = "Company name is required"
     }
     if (!role.trim()) {
-      toast.error("Role is required")
-      setActiveTab("basics")
-      return
+      clientErrors.role = "Role is required"
     }
     if (!period.trim() || !year.trim()) {
-      toast.error("Year and Period are required")
-      setActiveTab("basics")
-      return
+      clientErrors.year = "Year and Period are required"
     }
     if (!description.trim()) {
-      toast.error("Description is required")
-      setActiveTab("description")
+      clientErrors.description = "Description is required (minimum 5 characters)"
+    } else if (description.trim().length < 5) {
+      clientErrors.description = "Description must be at least 5 characters"
+    }
+
+    if (companyUrl.trim()) {
+      const urlValidation = validateUrl(companyUrl, "Company Website URL")
+      if (!urlValidation.valid && urlValidation.error) {
+        clientErrors.companyUrl = urlValidation.error
+      }
+    }
+
+    if (Object.keys(clientErrors).length > 0) {
+      setFieldErrors(clientErrors)
+      if (clientErrors.description) {
+        setActiveTab("description")
+      } else {
+        setActiveTab("basics")
+      }
+      showApiError(
+        {
+          errorIssues: Object.entries(clientErrors).map(([path, message]) => ({
+            path,
+            message,
+          })),
+        },
+        "Validation Failed"
+      )
       return
     }
 
@@ -264,7 +311,7 @@ export function ExperienceFormDialog({
 
       const payload: CreateExperienceDTO = {
         company: company.trim(),
-        companyUrl: companyUrl.trim() || undefined,
+        companyUrl: cleanUrl(companyUrl),
         role: role.trim(),
         title: finalTitle,
         location: location.trim() || "Remote",
@@ -285,24 +332,40 @@ export function ExperienceFormDialog({
       if (isEdit && experience) {
         const res = await ExperienceApi.update(experience.id, payload)
         if (res.success) {
+          setFieldErrors({})
           toast.success("Experience updated successfully")
           onOpenChange(false)
           onSuccess()
         } else {
-          toast.error(res.message || "Failed to update experience")
+          showApiError(res, "Failed to update experience")
+          const extracted = extractFieldErrors(res)
+          setFieldErrors(extracted)
+          if (extracted.description) {
+            setActiveTab("description")
+          } else {
+            setActiveTab("basics")
+          }
         }
       } else {
         const res = await ExperienceApi.create(payload)
         if (res.success) {
+          setFieldErrors({})
           toast.success("Experience created successfully")
           onOpenChange(false)
           onSuccess()
         } else {
-          toast.error(res.message || "Failed to create experience")
+          showApiError(res, "Failed to create experience")
+          const extracted = extractFieldErrors(res)
+          setFieldErrors(extracted)
+          if (extracted.description) {
+            setActiveTab("description")
+          } else {
+            setActiveTab("basics")
+          }
         }
       }
-    } catch {
-      toast.error("An unexpected error occurred")
+    } catch (err: any) {
+      showApiError(err, "An unexpected error occurred")
     } finally {
       setIsSubmitting(false)
     }
@@ -355,9 +418,14 @@ export function ExperienceFormDialog({
                     id="company"
                     placeholder="e.g. Softvence Agency"
                     value={company}
-                    onChange={(e) => setCompany(e.target.value)}
+                    onChange={(e) => {
+                      setCompany(e.target.value)
+                      clearFieldError("company")
+                    }}
+                    className={fieldErrors.company ? "border-destructive focus:border-destructive" : ""}
                     required
                   />
+                  {fieldErrors.company && <FieldError errors={fieldErrors.company} />}
                 </div>
 
                 <div className="space-y-2">
@@ -369,8 +437,13 @@ export function ExperienceFormDialog({
                     type="url"
                     placeholder="https://example.com"
                     value={companyUrl}
-                    onChange={(e) => setCompanyUrl(e.target.value)}
+                    onChange={(e) => {
+                      setCompanyUrl(e.target.value)
+                      clearFieldError("companyUrl")
+                    }}
+                    className={fieldErrors.companyUrl ? "border-destructive focus:border-destructive" : ""}
                   />
+                  {fieldErrors.companyUrl && <FieldError errors={fieldErrors.companyUrl} />}
                 </div>
 
                 <div className="space-y-2 sm:col-span-2">
@@ -392,9 +465,14 @@ export function ExperienceFormDialog({
                     id="role"
                     placeholder="e.g. FULL STACK DEVELOPER"
                     value={role}
-                    onChange={(e) => setRole(e.target.value)}
+                    onChange={(e) => {
+                      setRole(e.target.value)
+                      clearFieldError("role")
+                    }}
+                    className={fieldErrors.role ? "border-destructive focus:border-destructive" : ""}
                     required
                   />
+                  {fieldErrors.role && <FieldError errors={fieldErrors.role} />}
                 </div>
 
                 {/* Split title lines */}
@@ -453,9 +531,14 @@ export function ExperienceFormDialog({
                     id="year"
                     placeholder="e.g. 2025"
                     value={year}
-                    onChange={(e) => setYear(e.target.value)}
+                    onChange={(e) => {
+                      setYear(e.target.value)
+                      clearFieldError("year")
+                    }}
+                    className={fieldErrors.year ? "border-destructive focus:border-destructive" : ""}
                     required
                   />
+                  {fieldErrors.year && <FieldError errors={fieldErrors.year} />}
                 </div>
 
                 <div className="space-y-2">
@@ -466,9 +549,14 @@ export function ExperienceFormDialog({
                     id="period"
                     placeholder="e.g. PRESENT // 14 MO"
                     value={period}
-                    onChange={(e) => setPeriod(e.target.value)}
+                    onChange={(e) => {
+                      setPeriod(e.target.value)
+                      clearFieldError("period")
+                    }}
+                    className={fieldErrors.period ? "border-destructive focus:border-destructive" : ""}
                     required
                   />
+                  {fieldErrors.period && <FieldError errors={fieldErrors.period} />}
                 </div>
 
                 <div className="space-y-2">
@@ -567,9 +655,14 @@ export function ExperienceFormDialog({
                   rows={4}
                   placeholder="Architected type-safe backend systems with TypeScript, Express.js..."
                   value={description}
-                  onChange={(e) => setDescription(e.target.value)}
+                  onChange={(e) => {
+                    setDescription(e.target.value)
+                    clearFieldError("description")
+                  }}
+                  className={fieldErrors.description ? "border-destructive focus:border-destructive" : ""}
                   required
                 />
+                {fieldErrors.description && <FieldError errors={fieldErrors.description} />}
               </div>
 
               <div className="space-y-3">

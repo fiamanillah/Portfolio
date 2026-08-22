@@ -38,19 +38,40 @@ const tocItems: TocItem[] =
           </span>
         </summary>
         <nav class="mt-3 border-t border-border/60 pt-3">
-          <ul class="space-y-0.5">
-            {tocItems.map((item) => (
-              <li>
-                <a
-                  href={`#${item.id}`}
-                  class={`toc-mobile-link block py-1.5 text-xs text-muted-foreground transition-colors hover:text-foreground ${
-                    item.depth === 3 ? "pl-5 text-muted-foreground/80" : "pl-2 font-medium"
-                  }`}
+          <ul class="space-y-1.5">
+            {tocItems.map((item, index) => {
+              const depth = item.depth ?? 2
+              const prevItem = index > 0 ? tocItems[index - 1] : null
+              const isFirstH2AfterH3 =
+                depth === 2 && prevItem && (prevItem.depth ?? 2) === 3
+              const isTopLevelAfterTopLevel =
+                depth === 2 && prevItem && (prevItem.depth ?? 2) === 2
+
+              return (
+                <li
+                  class={
+                    index === 0
+                      ? ""
+                      : isFirstH2AfterH3
+                        ? "mt-3 pt-2 border-t border-border/40"
+                        : isTopLevelAfterTopLevel
+                          ? "mt-2"
+                          : "mt-1"
+                  }
                 >
-                  {item.title}
-                </a>
-              </li>
-            ))}
+                  <a
+                    href={`#${item.id}`}
+                    class={`toc-mobile-link block py-1.5 text-xs leading-snug transition-colors hover:text-foreground ${
+                      depth === 3
+                        ? "pl-5 text-muted-foreground/80"
+                        : "pl-2 font-medium text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    {item.title}
+                  </a>
+                </li>
+              )
+            })}
           </ul>
         </nav>
       </details>
@@ -85,9 +106,24 @@ const tocItems: TocItem[] =
             <ul id="toc-list" class="relative m-0 list-none p-0">
               {tocItems.map((item, index) => {
                 const depth = item.depth ?? 2
+                const isSubItem = depth === 3
+                const prevItem = index > 0 ? tocItems[index - 1] : null
+                const isFirstH2AfterH3 =
+                  depth === 2 && prevItem && (prevItem.depth ?? 2) === 3
+                const isTopLevelAfterTopLevel =
+                  depth === 2 && prevItem && (prevItem.depth ?? 2) === 2
+
                 return (
                   <li
-                    class="toc-item relative"
+                    class={`toc-item relative ${
+                      index === 0
+                        ? ""
+                        : isFirstH2AfterH3
+                          ? "mt-3.5"
+                          : isTopLevelAfterTopLevel
+                            ? "mt-2.5"
+                            : "mt-1.5"
+                    }`}
                     data-index={index}
                     data-depth={depth}
                     style={`--toc-index: ${index};`}
@@ -95,11 +131,11 @@ const tocItems: TocItem[] =
                     <a
                       href={`#${item.id}`}
                       data-toc-link={item.id}
-                      class={`toc-link block py-1 text-[13px] leading-snug transition-colors duration-200 select-none ${
-                        depth === 3
-                          ? "pl-8 text-muted-foreground/75 hover:text-foreground"
-                          : "pl-5 font-normal text-muted-foreground hover:text-foreground"
-                      } ${index === 0 ? "toc-active text-foreground font-medium" : ""}`}
+                      class={`toc-link block py-1.5 leading-[1.35] transition-colors duration-200 select-none ${
+                        isSubItem
+                          ? "pl-8 text-xs text-muted-foreground/75 hover:text-foreground"
+                          : "pl-5 text-[13px] font-medium text-muted-foreground hover:text-foreground"
+                      } ${index === 0 ? "toc-active text-foreground font-semibold" : ""}`}
                     >
                       {item.title}
                     </a>
@@ -335,15 +371,17 @@ const tocItems: TocItem[] =
           tocLinks.forEach((link) => {
             const targetId = link.getAttribute("data-toc-link")
             if (targetId === activeId) {
-              link.classList.add("toc-active", "text-foreground", "font-medium")
+              link.classList.add("toc-active", "text-foreground", "font-semibold")
               link.classList.remove("text-muted-foreground", "text-muted-foreground/75")
             } else {
-              link.classList.remove("toc-active", "text-foreground", "font-medium")
+              link.classList.remove("toc-active", "text-foreground", "font-semibold")
               const depth = link.closest<HTMLElement>(".toc-item")?.dataset.depth
               if (depth === "3") {
                 link.classList.add("text-muted-foreground/75")
+                link.classList.remove("font-semibold")
               } else {
-                link.classList.add("text-muted-foreground")
+                link.classList.add("text-muted-foreground", "font-medium")
+                link.classList.remove("font-semibold")
               }
             }
           })

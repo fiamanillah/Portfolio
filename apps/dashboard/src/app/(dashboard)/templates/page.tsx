@@ -29,7 +29,7 @@ import type {
   TemplateSyncStatus,
   UpdateTemplateDTO,
 } from "@workspace/shared"
-import { TemplateApi } from "@/lib/api"
+import { TemplateApi, showApiError } from "@/lib/api"
 import { Badge } from "@workspace/ui/components/badge"
 import { Button } from "@workspace/ui/components/button"
 import {
@@ -191,11 +191,11 @@ export default function TemplatesPage() {
         fetchStats()
         return true
       } else {
-        toast.error(res.error || "Failed to create template")
+        showApiError(res, "Failed to create template")
         return false
       }
     } catch (err: any) {
-      toast.error(err?.message || "An unexpected error occurred")
+      showApiError(err, "An unexpected error occurred")
       return false
     } finally {
       setIsProcessing(false)
@@ -212,11 +212,11 @@ export default function TemplatesPage() {
         fetchStats()
         return true
       } else {
-        toast.error(res.error || "Failed to update template")
+        showApiError(res, "Failed to update template")
         return false
       }
     } catch (err: any) {
-      toast.error(err?.message || "An unexpected error occurred")
+      showApiError(err, "An unexpected error occurred")
       return false
     } finally {
       setIsProcessing(false)

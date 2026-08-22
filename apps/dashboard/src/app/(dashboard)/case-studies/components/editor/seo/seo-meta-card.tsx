@@ -8,6 +8,7 @@ import { Button } from "@workspace/ui/components/button"
 import { Label } from "@workspace/ui/components/label"
 import { Badge } from "@workspace/ui/components/badge"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@workspace/ui/components/card"
+import { FieldError } from "@workspace/ui/components/field"
 import type { CaseStudySeo } from "@workspace/shared"
 
 interface SeoMetaCardProps {
@@ -16,6 +17,7 @@ interface SeoMetaCardProps {
   description: string
   seo: CaseStudySeo
   onUpdate: (field: keyof CaseStudySeo, value: any) => void
+  errors?: Record<string, string>
 }
 
 export function SeoMetaCard({
@@ -24,6 +26,7 @@ export function SeoMetaCard({
   description,
   seo,
   onUpdate,
+  errors = {},
 }: SeoMetaCardProps) {
   const [keywordInput, setKeywordInput] = React.useState("")
 
@@ -65,8 +68,15 @@ export function SeoMetaCard({
             placeholder={title || "Title | Case Study"}
             value={seo.metaTitle || ""}
             onChange={(e) => onUpdate("metaTitle", e.target.value)}
-            className="text-xs h-8"
+            className={`text-xs h-8 ${
+              errors["seo.metaTitle"] || errors.metaTitle
+                ? "border-destructive focus:border-destructive"
+                : ""
+            }`}
           />
+          {(errors["seo.metaTitle"] || errors.metaTitle) && (
+            <FieldError errors={errors["seo.metaTitle"] || errors.metaTitle} />
+          )}
         </div>
 
         <div className="space-y-1.5">
@@ -82,8 +92,17 @@ export function SeoMetaCard({
             rows={3}
             value={seo.metaDescription || ""}
             onChange={(e) => onUpdate("metaDescription", e.target.value)}
-            className="text-xs leading-relaxed"
+            className={`text-xs leading-relaxed ${
+              errors["seo.metaDescription"] || errors.metaDescription
+                ? "border-destructive focus:border-destructive"
+                : ""
+            }`}
           />
+          {(errors["seo.metaDescription"] || errors.metaDescription) && (
+            <FieldError
+              errors={errors["seo.metaDescription"] || errors.metaDescription}
+            />
+          )}
         </div>
 
         <div className="space-y-1.5">
@@ -93,8 +112,20 @@ export function SeoMetaCard({
             placeholder={`https://fi.amanillah.com/case-study/${slug || "my-study"}`}
             value={seo.canonicalUrl || ""}
             onChange={(e) => onUpdate("canonicalUrl", e.target.value)}
-            className="text-xs font-mono h-8"
+            className={`text-xs font-mono h-8 ${
+              errors["seo.canonicalUrl"] || errors.canonicalUrl
+                ? "border-destructive focus:border-destructive"
+                : ""
+            }`}
           />
+          {(errors["seo.canonicalUrl"] || errors.canonicalUrl) && (
+            <FieldError
+              errors={errors["seo.canonicalUrl"] || errors.canonicalUrl}
+            />
+          )}
+          <p className="text-[10px] text-muted-foreground">
+            Optional. If entered, must start with https:// (e.g. https://fi.amanillah.com/case-study/my-study)
+          </p>
         </div>
 
         <div className="space-y-2 pt-2 border-t border-border/40">

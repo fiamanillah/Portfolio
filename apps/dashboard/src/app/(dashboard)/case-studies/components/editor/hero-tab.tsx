@@ -45,6 +45,7 @@ interface HeroTabProps {
   setImpact: (impact: string) => void
   techStack: string[]
   setTechStack: (tech: string[]) => void
+  errors?: Record<string, string>
 }
 
 export function HeroTab({
@@ -84,6 +85,7 @@ export function HeroTab({
   setImpact,
   techStack,
   setTechStack,
+  errors = {},
 }: HeroTabProps) {
   return (
     <div className="grid gap-6 lg:grid-cols-12">
@@ -100,6 +102,7 @@ export function HeroTab({
           setDescription={setDescription}
           impact={impact}
           setImpact={setImpact}
+          errors={errors}
         />
 
         <HeroProjectMetaCard
@@ -113,6 +116,7 @@ export function HeroTab({
           setLiveUrl={setLiveUrl}
           githubUrl={githubUrl}
           setGithubUrl={setGithubUrl}
+          errors={errors}
         />
 
         <HeroTechStackCard

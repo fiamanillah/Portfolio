@@ -21,6 +21,7 @@ import {
   SelectValue,
 } from "@workspace/ui/components/select"
 import { toast } from "@workspace/ui/components/sonner"
+import { FieldError } from "@workspace/ui/components/field"
 import { Loader2, Plus, X, Star } from "lucide-react"
 import type {
   SkillDTO,
@@ -28,7 +29,13 @@ import type {
   CreateSkillDTO,
   SkillStatus,
 } from "@workspace/shared"
-import { SkillApi } from "@/lib/api"
+import {
+  SkillApi,
+  showApiError,
+  extractFieldErrors,
+  validateUrl,
+  cleanUrl,
+} from "@/lib/api"
 
 interface SkillFormDialogProps {
   open: boolean
@@ -59,6 +66,16 @@ export function SkillFormDialog({
   const [status, setStatus] = React.useState<SkillStatus>("PUBLISHED")
   const [order, setOrder] = React.useState<number>(0)
   const [isSubmitting, setIsSubmitting] = React.useState(false)
+  const [fieldErrors, setFieldErrors] = React.useState<Record<string, string>>({})
+
+  const clearFieldError = (key: string) => {
+    setFieldErrors((prev) => {
+      if (!prev[key]) return prev
+      const next = { ...prev }
+      delete next[key]
+      return next
+    })
+  }
 
   // Hydrate form fields when editingSkill changes or modal opens
   React.useEffect(() => {
@@ -86,6 +103,7 @@ export function SkillFormDialog({
       setOrder(0)
     }
     setTagInput("")
+    setFieldErrors({})
   }, [editingSkill, open, categories])
 
   const handleAddTag = () => {
@@ -103,8 +121,31 @@ export function SkillFormDialog({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
+    // 1. Client-Side Pre-Validation
+    const clientErrors: Record<string, string> = {}
+
     if (!name.trim()) {
-      toast.error("Skill name is required")
+      clientErrors.name = "Skill name is required"
+    }
+
+    if (icon.trim() && (icon.startsWith("http://") || icon.startsWith("https://"))) {
+      const urlValidation = validateUrl(icon, "Icon URL")
+      if (!urlValidation.valid && urlValidation.error) {
+        clientErrors.icon = urlValidation.error
+      }
+    }
+
+    if (Object.keys(clientErrors).length > 0) {
+      setFieldErrors(clientErrors)
+      showApiError(
+        {
+          errorIssues: Object.entries(clientErrors).map(([path, message]) => ({
+            path,
+            message,
+          })),
+        },
+        "Validation Failed"
+      )
       return
     }
 
@@ -116,7 +157,7 @@ export function SkillFormDialog({
         leftLabel: leftLabel.trim() || null,
         rightLabel: rightLabel.trim() || null,
         level,
-        icon: icon.trim() || null,
+        icon: cleanUrl(icon) || icon.trim() || null,
         tags,
         featured,
         status,
@@ -126,24 +167,28 @@ export function SkillFormDialog({
       if (isEditing && editingSkill) {
         const res = await SkillApi.update(editingSkill.id, payload)
         if (res.success) {
+          setFieldErrors({})
           toast.success("Skill updated successfully")
           onOpenChange(false)
           onSuccess()
         } else {
-          toast.error(res.message || "Failed to update skill")
+          showApiError(res, "Failed to update skill")
+          setFieldErrors(extractFieldErrors(res))
         }
       } else {
         const res = await SkillApi.create(payload)
         if (res.success) {
+          setFieldErrors({})
           toast.success("Skill created successfully")
           onOpenChange(false)
           onSuccess()
         } else {
-          toast.error(res.message || "Failed to create skill")
+          showApiError(res, "Failed to create skill")
+          setFieldErrors(extractFieldErrors(res))
         }
       }
-    } catch (error) {
-      toast.error("An unexpected error occurred while saving skill")
+    } catch (err: any) {
+      showApiError(err, "An unexpected error occurred")
     } finally {
       setIsSubmitting(false)
     }
@@ -171,9 +216,14 @@ export function SkillFormDialog({
               id="skill-name"
               placeholder="e.g. React / Next.js, Node / Express, Docker / Nginx"
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={(e) => {
+                setName(e.target.value)
+                clearFieldError("name")
+              }}
+              className={fieldErrors.name ? "border-destructive focus:border-destructive" : ""}
               required
             />
+            {fieldErrors.name && <FieldError errors={fieldErrors.name} />}
           </div>
 
           {/* Category Allocation */}

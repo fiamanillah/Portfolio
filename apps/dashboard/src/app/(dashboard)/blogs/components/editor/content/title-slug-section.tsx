@@ -6,6 +6,7 @@ import { Input } from "@workspace/ui/components/input"
 import { Textarea } from "@workspace/ui/components/textarea"
 import { Button } from "@workspace/ui/components/button"
 import { toast } from "@workspace/ui/components/sonner"
+import { FieldError } from "@workspace/ui/components/field"
 
 interface TitleSlugSectionProps {
   title: string
@@ -16,6 +17,7 @@ interface TitleSlugSectionProps {
   setSlug: (val: string) => void
   summary: string
   setSummary: (val: string) => void
+  errors?: Record<string, string>
 }
 
 export function TitleSlugSection({
@@ -27,6 +29,7 @@ export function TitleSlugSection({
   setSlug,
   summary,
   setSummary,
+  errors = {},
 }: TitleSlugSectionProps) {
   const generateSlug = () => {
     if (!title.trim()) {
@@ -57,9 +60,14 @@ export function TitleSlugSection({
           placeholder="e.g. Building High-Concurrency WebSocket Gateways in TypeScript"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="h-11 border-border/90 bg-background text-base font-bold shadow-xs hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary/20 sm:text-lg"
+          className={`h-11 bg-background text-base font-bold shadow-xs transition-colors sm:text-lg ${
+            errors.title
+              ? "border-destructive focus:border-destructive focus:ring-1 focus:ring-destructive/30"
+              : "border-border/90 hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary/20"
+          }`}
           required
         />
+        {errors.title && <FieldError errors={errors.title} />}
       </div>
 
       {/* Subtitle */}
@@ -91,7 +99,13 @@ export function TitleSlugSection({
             <Sparkles className="h-3 w-3" /> Auto-generate
           </Button>
         </div>
-        <div className="flex items-center rounded-lg border border-border/90 bg-background px-3 py-1 shadow-xs focus-within:border-primary focus-within:ring-1 focus-within:ring-primary/20 hover:border-primary/50">
+        <div
+          className={`flex items-center rounded-lg bg-background px-3 py-1 shadow-xs transition-colors ${
+            errors.slug
+              ? "border border-destructive focus-within:border-destructive focus-within:ring-1 focus-within:ring-destructive/30"
+              : "border border-border/90 hover:border-primary/50 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary/20"
+          }`}
+        >
           <span className="font-mono text-xs text-muted-foreground/70 select-none">
             fi.amanillah.com/blog/
           </span>
@@ -109,6 +123,7 @@ export function TitleSlugSection({
             className="flex-1 border-0 bg-transparent px-1 py-1 font-mono text-xs text-foreground outline-none"
           />
         </div>
+        {errors.slug && <FieldError errors={errors.slug} />}
       </div>
 
       {/* Summary Excerpt */}
@@ -132,9 +147,14 @@ export function TitleSlugSection({
           value={summary}
           onChange={(e) => setSummary(e.target.value)}
           rows={3}
-          className="border-border/90 bg-background text-xs leading-relaxed shadow-xs hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary/20"
+          className={`bg-background text-xs leading-relaxed shadow-xs transition-colors ${
+            errors.summary
+              ? "border-destructive focus:border-destructive focus:ring-1 focus:ring-destructive/30"
+              : "border-border/90 hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary/20"
+          }`}
           required
         />
+        {errors.summary && <FieldError errors={errors.summary} />}
       </div>
     </div>
   )

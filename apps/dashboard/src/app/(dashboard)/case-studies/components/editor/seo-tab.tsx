@@ -14,6 +14,7 @@ interface SeoTabProps {
   image: string
   seo: CaseStudySeo
   setSeo: (seo: CaseStudySeo) => void
+  errors?: Record<string, string>
 }
 
 export function SeoTab({
@@ -23,6 +24,7 @@ export function SeoTab({
   image,
   seo,
   setSeo,
+  errors = {},
 }: SeoTabProps) {
   const handleUpdate = (field: keyof CaseStudySeo, value: any) => {
     setSeo({ ...seo, [field]: value })
@@ -45,6 +47,7 @@ export function SeoTab({
           description={description}
           seo={seo}
           onUpdate={handleUpdate}
+          errors={errors}
         />
 
         <SeoSocialCard

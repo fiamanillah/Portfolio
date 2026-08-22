@@ -13,6 +13,7 @@ import { Input } from "@workspace/ui/components/input"
 import { Label } from "@workspace/ui/components/label"
 import { Badge } from "@workspace/ui/components/badge"
 import { toast } from "@workspace/ui/components/sonner"
+import { FieldError } from "@workspace/ui/components/field"
 import {
   Plus,
   Trash2,
@@ -28,7 +29,12 @@ import type {
   CreateSkillCategoryDTO,
   UpdateSkillCategoryDTO,
 } from "@workspace/shared"
-import { SkillApi } from "@/lib/api"
+import {
+  SkillApi,
+  showApiError,
+  extractFieldErrors,
+  validateSlug,
+} from "@/lib/api"
 
 interface CategoryManagerDialogProps {
   open: boolean
@@ -57,6 +63,16 @@ export function CategoryManagerDialog({
   const [icon, setIcon] = React.useState("◈")
   const [order, setOrder] = React.useState(0)
   const [isSubmitting, setIsSubmitting] = React.useState(false)
+  const [fieldErrors, setFieldErrors] = React.useState<Record<string, string>>({})
+
+  const clearFieldError = (key: string) => {
+    setFieldErrors((prev) => {
+      if (!prev[key]) return prev
+      const next = { ...prev }
+      delete next[key]
+      return next
+    })
+  }
 
   const resetForm = () => {
     setSlug("")
@@ -70,6 +86,7 @@ export function CategoryManagerDialog({
     setOrder(0)
     setIsCreating(false)
     setEditingId(null)
+    setFieldErrors({})
   }
 
   const startEdit = (cat: SkillCategoryDTO) => {
@@ -84,11 +101,39 @@ export function CategoryManagerDialog({
     setColor(cat.color || "blue")
     setIcon(cat.icon || "◈")
     setOrder(cat.order || 0)
+    setFieldErrors({})
   }
 
   const handleSave = async () => {
-    if (!code.trim() || !title.trim() || !slug.trim()) {
-      toast.error("Code, Title, and Slug are required")
+    // 1. Client-Side Pre-Validation
+    const clientErrors: Record<string, string> = {}
+
+    if (!code.trim()) {
+      clientErrors.code = "Category code is required"
+    }
+    if (!title.trim()) {
+      clientErrors.title = "Category title is required"
+    }
+    if (!slug.trim()) {
+      clientErrors.slug = "Category slug is required"
+    } else {
+      const slugVal = validateSlug(slug, "Slug")
+      if (!slugVal.valid && slugVal.error) {
+        clientErrors.slug = slugVal.error
+      }
+    }
+
+    if (Object.keys(clientErrors).length > 0) {
+      setFieldErrors(clientErrors)
+      showApiError(
+        {
+          errorIssues: Object.entries(clientErrors).map(([path, message]) => ({
+            path,
+            message,
+          })),
+        },
+        "Validation Failed"
+      )
       return
     }
 
@@ -108,11 +153,13 @@ export function CategoryManagerDialog({
         }
         const res = await SkillApi.updateCategory(editingId, payload)
         if (res.success) {
+          setFieldErrors({})
           toast.success("Category updated successfully")
           resetForm()
           onSuccess()
         } else {
-          toast.error(res.message || "Failed to update category")
+          showApiError(res, "Failed to update category")
+          setFieldErrors(extractFieldErrors(res))
         }
       } else {
         const payload: CreateSkillCategoryDTO = {
@@ -129,15 +176,17 @@ export function CategoryManagerDialog({
         }
         const res = await SkillApi.createCategory(payload)
         if (res.success) {
+          setFieldErrors({})
           toast.success("Category created successfully")
           resetForm()
           onSuccess()
         } else {
-          toast.error(res.message || "Failed to create category")
+          showApiError(res, "Failed to create category")
+          setFieldErrors(extractFieldErrors(res))
         }
       }
-    } catch {
-      toast.error("An unexpected error occurred while saving category")
+    } catch (err: any) {
+      showApiError(err, "An unexpected error occurred while saving category")
     } finally {
       setIsSubmitting(false)
     }
@@ -154,10 +203,10 @@ export function CategoryManagerDialog({
         toast.success(`Deleted category "${catTitle}"`)
         onSuccess()
       } else {
-        toast.error(res.message || "Failed to delete category")
+        showApiError(res, "Failed to delete category")
       }
-    } catch {
-      toast.error("Failed to delete category")
+    } catch (err: any) {
+      showApiError(err, "Failed to delete category")
     }
   }
 
@@ -218,45 +267,56 @@ export function CategoryManagerDialog({
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <div className="space-y-1">
                   <Label className="text-xs font-semibold text-muted-foreground uppercase">
-                    Code (Short Heading)
+                    Code (Short Heading) *
                   </Label>
                   <Input
                     placeholder="e.g. Frontend, Backend, Infra"
                     value={code}
                     onChange={(e) => {
                       setCode(e.target.value)
+                      clearFieldError("code")
                       if (!editingId && !slug) {
                         setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9]+/g, "-"))
                       }
                     }}
+                    className={fieldErrors.code ? "border-destructive focus:border-destructive" : ""}
                   />
+                  {fieldErrors.code && <FieldError errors={fieldErrors.code} />}
                 </div>
 
                 <div className="space-y-1">
                   <Label className="text-xs font-semibold text-muted-foreground uppercase">
-                    Slug (URL / DB Key)
+                    Slug (URL / DB Key) *
                   </Label>
                   <Input
                     placeholder="e.g. frontend, backend"
                     value={slug}
-                    onChange={(e) => setSlug(e.target.value)}
+                    onChange={(e) => {
+                      setSlug(e.target.value)
+                      clearFieldError("slug")
+                    }}
+                    className={fieldErrors.slug ? "border-destructive focus:border-destructive" : ""}
                   />
+                  {fieldErrors.slug && <FieldError errors={fieldErrors.slug} />}
                 </div>
               </div>
 
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <div className="space-y-1">
                   <Label className="text-xs font-semibold text-muted-foreground uppercase">
-                    Section Title
+                    Section Title *
                   </Label>
                   <Input
                     placeholder="e.g. Frontend & Languages"
                     value={title}
                     onChange={(e) => {
                       setTitle(e.target.value)
+                      clearFieldError("title")
                       if (!badge) setBadge(e.target.value)
                     }}
+                    className={fieldErrors.title ? "border-destructive focus:border-destructive" : ""}
                   />
+                  {fieldErrors.title && <FieldError errors={fieldErrors.title} />}
                 </div>
 
                 <div className="space-y-1">

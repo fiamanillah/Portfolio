@@ -14,7 +14,14 @@ import type {
   UpdateBlogPostDTO,
   SeoAnalysisResult,
 } from "@workspace/shared"
-import { BlogApi } from "@/lib/api"
+import {
+  BlogApi,
+  showApiError,
+  extractFieldErrors,
+  validateUrl,
+  validateSlug,
+  cleanUrl,
+} from "@/lib/api"
 import { useAuth } from "@/providers/auth-provider"
 
 // Editor Subcomponents
@@ -173,6 +180,57 @@ export function PostEditorForm({
 
   const [activeTab, setActiveTab] = React.useState("content")
   const [isSubmitting, setIsSubmitting] = React.useState(false)
+  const [fieldErrors, setFieldErrors] = React.useState<Record<string, string>>({})
+
+  const clearFieldError = (fieldKey: string) => {
+    setFieldErrors((prev) => {
+      if (!prev[fieldKey]) return prev
+      const next = { ...prev }
+      delete next[fieldKey]
+      // Also delete without prefix if nested
+      const leaf = fieldKey.split(".").pop()
+      if (leaf && next[leaf]) delete next[leaf]
+      return next
+    })
+  }
+
+  const getTabForErrorKey = (key: string): string => {
+    if (
+      key.startsWith("seo.") ||
+      key === "canonicalUrl" ||
+      key === "metaTitle" ||
+      key === "metaDescription" ||
+      key === "articleType" ||
+      key === "ogTitle" ||
+      key === "ogDescription"
+    ) {
+      return "seo"
+    }
+    if (
+      key.startsWith("author.") ||
+      key === "authorName" ||
+      key === "authorAvatar" ||
+      key === "authorRole" ||
+      key === "authorTwitter" ||
+      key === "authorLinkedin" ||
+      key === "authorGithub"
+    ) {
+      return "author"
+    }
+    if (key === "thumbnail" || key === "ogImage" || key === "twitterImage") {
+      return "media"
+    }
+    if (
+      key === "publishedAt" ||
+      key === "scheduledAt" ||
+      key === "status" ||
+      key === "dateDisplay" ||
+      key === "readTimeOverride"
+    ) {
+      return "publishing"
+    }
+    return "content"
+  }
 
   // Live Word Count & Reading Time
   const wordCount = React.useMemo(() => {
@@ -311,7 +369,7 @@ export function PostEditorForm({
         seo: {
           metaTitle: metaTitle || undefined,
           metaDescription: metaDescription || undefined,
-          canonicalUrl: canonicalUrl || undefined,
+          canonicalUrl: cleanUrl(canonicalUrl),
           articleType,
           noIndex,
           noFollow,
@@ -363,19 +421,67 @@ export function PostEditorForm({
   const handleSubmit = async (e?: React.FormEvent) => {
     if (e) e.preventDefault()
 
+    // 1. Client-Side Pre-Validation
+    const clientErrors: Record<string, string> = {}
+
     if (!title.trim()) {
-      toast.error("Article title is required")
-      setActiveTab("content")
-      return
+      clientErrors.title = "Article title is required"
+    } else if (title.trim().length < 3) {
+      clientErrors.title = "Title must be at least 3 characters"
     }
+
     if (!summary.trim()) {
-      toast.error("Summary excerpt is required")
-      setActiveTab("content")
-      return
+      clientErrors.summary = "Summary excerpt is required"
+    } else if (summary.trim().length < 10) {
+      clientErrors.summary = "Summary must be at least 10 characters"
     }
+
     if (!content.trim()) {
-      toast.error("Article content body cannot be empty")
-      setActiveTab("content")
+      clientErrors.content = "Article content body cannot be empty"
+    } else if (content.trim().length < 10) {
+      clientErrors.content = "Content must be at least 10 characters"
+    }
+
+    if (slug.trim()) {
+      const slugValidation = validateSlug(slug, "URL Slug")
+      if (!slugValidation.valid && slugValidation.error) {
+        clientErrors.slug = slugValidation.error
+      }
+    }
+
+    if (canonicalUrl.trim()) {
+      const canonValidation = validateUrl(canonicalUrl, "Canonical URL")
+      if (!canonValidation.valid && canonValidation.error) {
+        clientErrors["seo.canonicalUrl"] = canonValidation.error
+        clientErrors.canonicalUrl = canonValidation.error
+      }
+    }
+
+    if (metaTitle.trim() && metaTitle.trim().length > 120) {
+      clientErrors["seo.metaTitle"] = "Meta title cannot exceed 120 characters"
+      clientErrors.metaTitle = "Meta title cannot exceed 120 characters"
+    }
+
+    if (metaDescription.trim() && metaDescription.trim().length > 500) {
+      clientErrors["seo.metaDescription"] =
+        "Meta description cannot exceed 500 characters"
+      clientErrors.metaDescription =
+        "Meta description cannot exceed 500 characters"
+    }
+
+    if (Object.keys(clientErrors).length > 0) {
+      setFieldErrors(clientErrors)
+      const firstErrorKey = Object.keys(clientErrors)[0] || "title"
+      setActiveTab(getTabForErrorKey(firstErrorKey))
+      showApiError(
+        {
+          errorIssues: Object.entries(clientErrors).map(([path, message]) => ({
+            path,
+            message,
+          })),
+        },
+        "Validation Failed"
+      )
       return
     }
 
@@ -415,7 +521,7 @@ export function PostEditorForm({
           metaTitle: metaTitle.trim() || undefined,
           metaDescription: metaDescription.trim() || undefined,
           metaKeywords: selectedTags,
-          canonicalUrl: canonicalUrl.trim() || undefined,
+          canonicalUrl: cleanUrl(canonicalUrl),
           articleType,
           noIndex,
           noFollow,
@@ -435,24 +541,34 @@ export function PostEditorForm({
           payload as UpdateBlogPostDTO
         )
         if (res.success && res.data) {
+          setFieldErrors({})
           toast.success(`Updated '${title}' successfully`)
           router.push(onSuccessRedirect)
           router.refresh()
         } else {
-          toast.error(res.message || "Failed to update article")
+          showApiError(res, "Failed to update article")
+          const extracted = extractFieldErrors(res)
+          setFieldErrors(extracted)
+          const firstKey = Object.keys(extracted)[0]
+          if (firstKey) setActiveTab(getTabForErrorKey(firstKey))
         }
       } else {
         const res = await BlogApi.create(payload)
         if (res.success && res.data) {
+          setFieldErrors({})
           toast.success(`Created '${title}' successfully`)
           router.push(onSuccessRedirect)
           router.refresh()
         } else {
-          toast.error(res.message || "Failed to create article")
+          showApiError(res, "Failed to create article")
+          const extracted = extractFieldErrors(res)
+          setFieldErrors(extracted)
+          const firstKey = Object.keys(extracted)[0]
+          if (firstKey) setActiveTab(getTabForErrorKey(firstKey))
         }
       }
     } catch (err: any) {
-      toast.error(err?.message || "An unexpected error occurred")
+      showApiError(err, "An unexpected error occurred")
     } finally {
       setIsSubmitting(false)
     }
@@ -495,13 +611,23 @@ export function PostEditorForm({
             >
               <TitleSlugSection
                 title={title}
-                setTitle={setTitle}
+                setTitle={(val) => {
+                  setTitle(val)
+                  clearFieldError("title")
+                }}
                 subtitle={subtitle}
                 setSubtitle={setSubtitle}
                 slug={slug}
-                setSlug={setSlug}
+                setSlug={(val) => {
+                  setSlug(val)
+                  clearFieldError("slug")
+                }}
                 summary={summary}
-                setSummary={setSummary}
+                setSummary={(val) => {
+                  setSummary(val)
+                  clearFieldError("summary")
+                }}
+                errors={fieldErrors}
               />
 
               <CategoryTagSection
@@ -527,10 +653,18 @@ export function PostEditorForm({
                 </label>
                 <MarkdownEditor
                   value={content}
-                  onChange={setContent}
+                  onChange={(val) => {
+                    setContent(val)
+                    clearFieldError("content")
+                  }}
                   wordCount={wordCount}
                   readTime={calculatedReadTime}
                 />
+                {fieldErrors.content && (
+                  <p className="font-mono text-xs text-destructive">
+                    ⚠ {fieldErrors.content}
+                  </p>
+                )}
               </div>
             </TabsContent>
 
@@ -543,15 +677,37 @@ export function PostEditorForm({
                 title={title}
                 summary={summary}
                 metaTitle={metaTitle}
-                setMetaTitle={setMetaTitle}
+                setMetaTitle={(val) => {
+                  setMetaTitle(val)
+                  clearFieldError("seo.metaTitle")
+                  clearFieldError("metaTitle")
+                }}
+                metaTitleError={
+                  fieldErrors["seo.metaTitle"] || fieldErrors.metaTitle
+                }
                 metaDescription={metaDescription}
-                setMetaDescription={setMetaDescription}
+                setMetaDescription={(val) => {
+                  setMetaDescription(val)
+                  clearFieldError("seo.metaDescription")
+                  clearFieldError("metaDescription")
+                }}
+                metaDescriptionError={
+                  fieldErrors["seo.metaDescription"] ||
+                  fieldErrors.metaDescription
+                }
               />
 
               <CrawlerDirectivesSection
                 slug={slug}
                 canonicalUrl={canonicalUrl}
-                setCanonicalUrl={setCanonicalUrl}
+                setCanonicalUrl={(val) => {
+                  setCanonicalUrl(val)
+                  clearFieldError("seo.canonicalUrl")
+                  clearFieldError("canonicalUrl")
+                }}
+                canonicalUrlError={
+                  fieldErrors["seo.canonicalUrl"] || fieldErrors.canonicalUrl
+                }
                 articleType={articleType}
                 setArticleType={setArticleType}
                 noIndex={noIndex}

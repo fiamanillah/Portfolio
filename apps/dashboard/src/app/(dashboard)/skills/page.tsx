@@ -22,7 +22,7 @@ import type {
   SkillCategoryDTO,
   SkillStatus,
 } from "@workspace/shared"
-import { SkillApi } from "@/lib/api"
+import { SkillApi, showApiError } from "@/lib/api"
 import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"
 import { Badge } from "@workspace/ui/components/badge"
@@ -182,10 +182,10 @@ export default function SkillsPage() {
         loadSkills()
         loadStats()
       } else {
-        toast.error(res.message || "Failed to duplicate skill")
+        showApiError(res, "Failed to duplicate skill")
       }
-    } catch {
-      toast.error("Error duplicating skill")
+    } catch (err: any) {
+      showApiError(err, "Error duplicating skill")
     }
   }
 
@@ -200,10 +200,10 @@ export default function SkillsPage() {
         loadSkills()
         loadStats()
       } else {
-        toast.error(res.message || "Failed to update status")
+        showApiError(res, "Failed to update status")
       }
-    } catch {
-      toast.error("Error updating skill status")
+    } catch (err: any) {
+      showApiError(err, "Error updating skill status")
     }
   }
 
@@ -232,7 +232,7 @@ export default function SkillsPage() {
           loadStats()
           loadCategories()
         } else {
-          toast.error(res.message || "Failed to delete skills")
+          showApiError(res, "Failed to delete skills")
         }
       } else if (deletingSkill) {
         const res = await SkillApi.delete(deletingSkill.id)
@@ -244,11 +244,11 @@ export default function SkillsPage() {
           loadStats()
           loadCategories()
         } else {
-          toast.error(res.message || "Failed to delete skill")
+          showApiError(res, "Failed to delete skill")
         }
       }
-    } catch {
-      toast.error("Error deleting skill(s)")
+    } catch (err: any) {
+      showApiError(err, "Error deleting skill(s)")
     } finally {
       setIsDeleting(false)
     }
@@ -268,10 +268,10 @@ export default function SkillsPage() {
         loadSkills()
         loadStats()
       } else {
-        toast.error(res.message || "Failed to bulk update status")
+        showApiError(res, "Failed to bulk update status")
       }
-    } catch {
-      toast.error("Error updating skills")
+    } catch (err: any) {
+      showApiError(err, "Error updating skills")
     }
   }
 
@@ -289,10 +289,10 @@ export default function SkillsPage() {
         loadStats()
         loadCategories()
       } else {
-        toast.error(res.message || "Failed to seed default skills")
+        showApiError(res, "Failed to seed default skills")
       }
-    } catch {
-      toast.error("Error seeding default skills")
+    } catch (err: any) {
+      showApiError(err, "Error seeding default skills")
     } finally {
       setIsSeeding(false)
     }

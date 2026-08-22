@@ -33,11 +33,39 @@ export function setStoredAccessToken(token: string | null): void {
   }
 }
 
+export interface ApiValidationIssue {
+  path: string
+  message: string
+  code?: string
+}
+
+export interface ApiErrorDetails {
+  issues?: ApiValidationIssue[]
+  invalidFields?: number
+  [key: string]: any
+}
+
+export interface ApiErrorBody {
+  message: string
+  code?: string
+  statusCode?: number
+  timestamp?: string
+  requestId?: string
+  details?: ApiErrorDetails
+  stack?: string
+}
+
 export interface ApiResponse<T> {
   success: boolean
   data?: T
   message?: string
   error?: string
+  errorCode?: string
+  errorDetails?: ApiErrorDetails
+  errorIssues?: ApiValidationIssue[]
+  errorObj?: ApiErrorBody
+  statusCode?: number
+  requestId?: string
   pagination?: {
     total: number
     page: number
@@ -126,16 +154,72 @@ export async function request<T>(
     const body = await res.json().catch(() => null)
 
     if (!res.ok) {
-      const errMsg =
+      const errorObj: ApiErrorBody | undefined =
+        body?.error && typeof body.error === "object"
+          ? body.error
+          : typeof body === "object" && body !== null
+            ? (body as ApiErrorBody)
+            : undefined
+
+      const errorIssues: ApiValidationIssue[] | undefined =
+        errorObj?.details?.issues || body?.details?.issues
+
+      const rawMsg =
+        errorObj?.message ||
         body?.message ||
-        body?.error?.message ||
         `Request failed with status ${res.status}`
-      return { success: false, error: errMsg, message: errMsg }
+
+      let formattedErrorMsg = rawMsg
+      if (errorIssues && errorIssues.length > 0) {
+        const issuesSummary = errorIssues
+          .map((iss) => (iss.path ? `${iss.path}: ${iss.message}` : iss.message))
+          .join("; ")
+        formattedErrorMsg = `${rawMsg} (${issuesSummary})`
+      }
+
+      return {
+        success: false,
+        error: formattedErrorMsg,
+        message: formattedErrorMsg,
+        errorCode: errorObj?.code || body?.code,
+        errorDetails: errorObj?.details || body?.details,
+        errorIssues,
+        errorObj,
+        statusCode: res.status,
+        requestId: errorObj?.requestId || body?.requestId,
+      }
     }
 
     if (body && typeof body === "object") {
+      if (body.success === false) {
+        const errorObj =
+          body.error && typeof body.error === "object" ? body.error : body
+        const errorIssues: ApiValidationIssue[] | undefined =
+          errorObj?.details?.issues || body?.details?.issues
+        const rawMsg = errorObj?.message || body.message || "Operation failed"
+        let formattedErrorMsg = rawMsg
+        if (errorIssues && errorIssues.length > 0) {
+          const issuesSummary = errorIssues
+            .map((iss) => (iss.path ? `${iss.path}: ${iss.message}` : iss.message))
+            .join("; ")
+          formattedErrorMsg = `${rawMsg} (${issuesSummary})`
+        }
+
+        return {
+          success: false,
+          error: formattedErrorMsg,
+          message: formattedErrorMsg,
+          errorCode: errorObj?.code || body.code,
+          errorDetails: errorObj?.details || body.details,
+          errorIssues,
+          errorObj,
+          statusCode: res.status,
+          requestId: errorObj?.requestId || body?.requestId,
+        }
+      }
+
       return {
-        success: body.success !== false,
+        success: true,
         data: (body.data !== undefined ? body.data : body) as T,
         pagination: body.pagination || body.meta?.pagination,
         stats: body.stats,
@@ -147,6 +231,11 @@ export async function request<T>(
     return { success: true, data: body as T }
   } catch (err: any) {
     const errMsg = err?.message || "Network error. Please try again."
-    return { success: false, error: errMsg, message: errMsg }
+    return {
+      success: false,
+      error: errMsg,
+      message: errMsg,
+      errorCode: "NETWORK_ERROR",
+    }
   }
 }

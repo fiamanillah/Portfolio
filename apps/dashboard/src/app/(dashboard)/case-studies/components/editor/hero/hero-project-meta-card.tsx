@@ -5,6 +5,7 @@ import { User, Calendar, Building, Globe, FolderGit2 } from "lucide-react"
 import { Input } from "@workspace/ui/components/input"
 import { Label } from "@workspace/ui/components/label"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@workspace/ui/components/card"
+import { FieldError } from "@workspace/ui/components/field"
 
 interface HeroProjectMetaCardProps {
   role: string
@@ -17,6 +18,7 @@ interface HeroProjectMetaCardProps {
   setLiveUrl: (url: string) => void
   githubUrl: string
   setGithubUrl: (url: string) => void
+  errors?: Record<string, string>
 }
 
 export function HeroProjectMetaCard({
@@ -30,6 +32,7 @@ export function HeroProjectMetaCard({
   setLiveUrl,
   githubUrl,
   setGithubUrl,
+  errors = {},
 }: HeroProjectMetaCardProps) {
   return (
     <Card className="border-border bg-card">
@@ -93,8 +96,11 @@ export function HeroProjectMetaCard({
               placeholder="https://mickanic.ca/"
               value={liveUrl}
               onChange={(e) => setLiveUrl(e.target.value)}
-              className="text-xs font-mono"
+              className={`text-xs font-mono ${
+                errors.liveUrl ? "border-destructive focus:border-destructive" : ""
+              }`}
             />
+            {errors.liveUrl && <FieldError errors={errors.liveUrl} />}
           </div>
 
           <div className="space-y-2">
@@ -106,8 +112,13 @@ export function HeroProjectMetaCard({
               placeholder="https://github.com/..."
               value={githubUrl}
               onChange={(e) => setGithubUrl(e.target.value)}
-              className="text-xs font-mono"
+              className={`text-xs font-mono ${
+                errors.githubUrl
+                  ? "border-destructive focus:border-destructive"
+                  : ""
+              }`}
             />
+            {errors.githubUrl && <FieldError errors={errors.githubUrl} />}
           </div>
         </div>
       </CardContent>

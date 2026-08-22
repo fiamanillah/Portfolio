@@ -63,35 +63,35 @@
   <div class="container mx-auto px-4">
     <!-- Main Grid -->
     <div
-      class="grid grid-cols-1 items-center gap-12 lg:grid-cols-[1fr_1.15fr] lg:gap-20"
+      class="grid grid-cols-1 items-stretch gap-10 lg:grid-cols-2 lg:gap-14 xl:gap-20"
     >
       <!-- Left Column: Interactive Terminal -->
       <div
-        class="about-left flex flex-col gap-5 opacity-0 [&.is-visible]:animate-[slide-in-left_700ms_ease_forwards]"
+        class="about-left flex flex-col h-full opacity-0 [&.is-visible]:animate-[slide-in-left_700ms_ease_forwards]"
       >
         <!-- Terminal Window -->
-        <div class="relative overflow-hidden border border-border bg-card">
+        <div class="relative flex flex-col h-full overflow-hidden border border-border bg-card">
           <!-- Corner brackets -->
           <div
-            class="pointer-events-none absolute top-0 left-0 z-10 h-4.5 w-4.5 border-t-[1.5px] border-l-[1.5px] border-primary/60"
+            class="pointer-events-none absolute top-0 left-0 z-10 h-4 w-4 border-t-[1.5px] border-l-[1.5px] border-primary/60"
           >
           </div>
           <div
-            class="pointer-events-none absolute top-0 right-0 z-10 h-4.5 w-4.5 border-t-[1.5px] border-r-[1.5px] border-primary/60"
+            class="pointer-events-none absolute top-0 right-0 z-10 h-4 w-4 border-t-[1.5px] border-r-[1.5px] border-primary/60"
           >
           </div>
           <div
-            class="pointer-events-none absolute bottom-0 left-0 z-10 h-4.5 w-4.5 border-b-[1.5px] border-l-[1.5px] border-primary/60"
+            class="pointer-events-none absolute bottom-0 left-0 z-10 h-4 w-4 border-b-[1.5px] border-l-[1.5px] border-primary/60"
           >
           </div>
           <div
-            class="pointer-events-none absolute right-0 bottom-0 z-10 h-4.5 w-4.5 border-r-[1.5px] border-b-[1.5px] border-primary/60"
+            class="pointer-events-none absolute right-0 bottom-0 z-10 h-4 w-4 border-r-[1.5px] border-b-[1.5px] border-primary/60"
           >
           </div>
 
           <!-- Terminal Header Bar -->
           <div
-            class="flex items-center justify-between border-b border-border bg-card px-4 py-2.5"
+            class="flex items-center justify-between border-b border-border bg-card px-4 py-3"
           >
             <div class="flex items-center gap-1.5">
               <div class="h-2.5 w-2.5 rounded-full bg-rose-500/80"></div>
@@ -99,16 +99,19 @@
               <div class="h-2.5 w-2.5 rounded-full bg-emerald-500/80"></div>
             </div>
             <span
-              class="font-mono text-xs tracking-[0.1em] text-muted-foreground/60 uppercase"
+              class="font-mono text-xs tracking-[0.1em] text-muted-foreground/70 uppercase"
               >fi@portfolio — ~/about</span
             >
-            <div class="flex items-center gap-2"></div>
+            <span class="font-mono text-[10px] text-emerald-400 font-semibold tracking-wider flex items-center gap-1.5">
+              <span class="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              ONLINE
+            </span>
           </div>
 
           <!-- Terminal Body -->
           <div
             id="about-terminal"
-            class="relative h-105 cursor-text overflow-y-auto p-5 font-mono text-[12px] leading-[1.7]"
+            class="relative flex-1 min-h-[340px] max-h-[420px] cursor-text overflow-y-auto p-5 font-mono text-[12px] leading-[1.7]"
           >
             <!-- Output area -->
             <div id="terminal-output" class="space-y-1"></div>
@@ -136,6 +139,22 @@
             </div>
           </div>
 
+          <!-- Terminal Quick Run Buttons -->
+          <div class="flex flex-wrap items-center gap-1.5 border-t border-border bg-card/80 px-4 py-2.5 font-mono text-[11px]">
+            <span class="text-[10px] text-muted-foreground/60 uppercase tracking-wider mr-1 select-none">Quick Run:</span>
+            {
+              ["whoami", "skills", "projects", "contact", "neofetch", "clear"].map((cmd) => (
+                <button
+                  type="button"
+                  data-cmd={cmd}
+                  class="terminal-chip rounded-none border border-border/80 bg-background/80 px-2 py-0.5 text-muted-foreground transition hover:border-primary hover:bg-primary/10 hover:text-primary cursor-pointer active:scale-95"
+                >
+                  {cmd}
+                </button>
+              ))
+            }
+          </div>
+
           <!-- Scanline overlay -->
           <div
             class="pointer-events-none absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,oklch(0_0_0/0.03)_2px,oklch(0_0_0/0.03)_4px)]"
@@ -146,49 +165,62 @@
 
       <!-- Right Column: Content -->
       <div
-        class="about-right flex flex-col gap-8 opacity-0 [&.is-visible]:animate-[slide-in-right_700ms_ease_forwards] [&.is-visible]:delay-150"
+        class="about-right flex flex-col justify-between gap-6 opacity-0 [&.is-visible]:animate-[slide-in-right_700ms_ease_forwards] [&.is-visible]:delay-150"
       >
-        <!-- Heading -->
-        <div class="space-y-4">
+        <!-- Heading & Label -->
+        <div class="space-y-2">
+          <p class="section-label">Identity & System Architecture</p>
           <h2 class="section-title text-foreground">
-            I architect systems and build
-            <em class="text-primary"> seamless digital experiences.</em>
+            I architect systems and build <br class="hidden sm:inline" />
+            <span class="text-primary">seamless digital experiences.</span>
           </h2>
-          <div class="h-px w-16 bg-primary/40"></div>
+          <div class="h-0.5 w-16 bg-primary/60"></div>
         </div>
 
-        <!-- Body Paragraph -->
-        <div class="flex flex-col gap-5">
-          <p class="max-w-[56ch] text-sm leading-[1.85] text-muted-foreground">
-            I'm a Full Stack Developer specializing in building scalable MERN
-            stack, Nest.js, and Next.js applications. I bridge the gap between
-            complex event-driven backend architectures and clean, responsive
-            frontend design.
+        <!-- Body Paragraphs -->
+        <div class="space-y-4 text-sm leading-relaxed text-muted-foreground sm:text-base">
+          <p>
+            I'm a <strong class="font-semibold text-foreground">Full Stack Developer</strong> specializing in building scalable <strong class="text-foreground">MERN stack</strong>, <strong class="text-foreground">Nest.js</strong>, and <strong class="text-foreground">Next.js</strong> applications. I bridge the gap between complex event-driven backend architectures and clean, responsive frontend design.
           </p>
-          <p class="max-w-[56ch] text-sm leading-[1.85] text-muted-foreground">
-            Currently focused on high-performance REST APIs, real-time
-            WebSockets integration, message queues (RabbitMQ, Redis), and DevOps
-            pipeline containerization with Docker.
+          <p>
+            Currently focused on high-performance <strong class="text-foreground">REST APIs</strong>, real-time <strong class="text-foreground">WebSockets</strong> integration, message queues (<span class="font-mono text-xs text-primary font-semibold">RabbitMQ</span>, <span class="font-mono text-xs text-primary font-semibold">Redis</span>), and DevOps pipeline containerization with <span class="font-mono text-xs text-primary font-semibold">Docker</span>.
           </p>
+        </div>
+
+        <!-- Key Focus Badges / Spec Strip -->
+        <div class="grid grid-cols-1 gap-2.5 sm:grid-cols-3 font-mono">
+          <div class="border border-border/80 bg-card/40 p-3 backdrop-blur-xs">
+            <span class="text-[10px] text-muted-foreground uppercase tracking-wider block">Backend Core</span>
+            <span class="text-xs font-bold text-foreground mt-0.5 block">Nest.js · REST APIs</span>
+          </div>
+          <div class="border border-border/80 bg-card/40 p-3 backdrop-blur-xs">
+            <span class="text-[10px] text-muted-foreground uppercase tracking-wider block">Real-time & Queues</span>
+            <span class="text-xs font-bold text-foreground mt-0.5 block">RabbitMQ · Redis</span>
+          </div>
+          <div class="border border-border/80 bg-card/40 p-3 backdrop-blur-xs">
+            <span class="text-[10px] text-muted-foreground uppercase tracking-wider block">DevOps & Cloud</span>
+            <span class="text-xs font-bold text-foreground mt-0.5 block">Docker · CI/CD VPS</span>
+          </div>
         </div>
 
         <!-- CTA row -->
-        <div class="flex flex-wrap items-center gap-4 pt-2">
+        <div class="flex flex-wrap items-center gap-4 pt-1">
           <a
             href="#work"
-            class="group inline-flex items-center gap-2 border border-primary/30 bg-primary/10 px-6 py-3 text-[0.8rem] font-bold tracking-[0.15em] text-primary uppercase no-underline transition-all duration-250 hover:border-primary hover:bg-primary hover:text-primary-foreground"
+            class="group inline-flex items-center gap-2 border border-primary/50 bg-primary/10 px-6 py-3 font-mono text-xs font-bold tracking-widest text-primary uppercase no-underline transition-all duration-200 hover:border-primary hover:bg-primary hover:text-primary-foreground"
           >
-            <span>View My Work</span>
+            <span>View Featured Work</span>
             <span
-              class="transition-transform duration-200 group-hover:translate-x-1"
+              class="transition-transform duration-200 group-hover:translate-y-0.5"
               >↓</span
             >
           </a>
           <a
             href="#contact"
-            class="text-xs font-medium text-muted-foreground transition-colors hover:text-foreground"
-            >Get in touch →</a
+            class="inline-flex items-center gap-1.5 font-mono text-xs font-medium text-muted-foreground transition-colors hover:text-foreground"
           >
+            <span>Get in touch →</span>
+          </a>
         </div>
       </div>
     </div>
@@ -417,6 +449,19 @@
     // Click anywhere in terminal to focus input
     terminal!.addEventListener("click", () => {
       input!.focus()
+    })
+
+    // Clickable quick command chips
+    const chips = document.querySelectorAll(".terminal-chip")
+    chips.forEach((chip) => {
+      chip.addEventListener("click", (e) => {
+        e.stopPropagation()
+        const cmd = chip.getAttribute("data-cmd")
+        if (cmd) {
+          processCommand(cmd)
+          input!.focus()
+        }
+      })
     })
 
     // Auto-type intro sequence

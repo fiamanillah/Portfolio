@@ -30,7 +30,7 @@ import { Textarea } from "@workspace/ui/components/textarea"
 import { Badge } from "@workspace/ui/components/badge"
 import { toast } from "@workspace/ui/components/sonner"
 import type { BlogCategoryDTO, BlogTagDTO } from "@workspace/shared"
-import { BlogApi } from "@/lib/api"
+import { BlogApi, showApiError } from "@/lib/api"
 
 interface CategoryTagDialogProps {
   open: boolean
@@ -161,7 +161,7 @@ export function CategoryTagDialog({
           loadData()
           onUpdated?.()
         } else {
-          toast.error(res.message || "Failed to update category")
+          showApiError(res, "Failed to update category")
         }
       } else {
         const res = await BlogApi.createCategory({
@@ -176,11 +176,11 @@ export function CategoryTagDialog({
           loadData()
           onUpdated?.()
         } else {
-          toast.error(res.message || "Failed to create category")
+          showApiError(res, "Failed to create category")
         }
       }
     } catch (err: any) {
-      toast.error(err?.message || "Failed to save category")
+      showApiError(err, "Failed to save category")
     } finally {
       setIsSubmittingCat(false)
     }
@@ -189,11 +189,10 @@ export function CategoryTagDialog({
   const handleDeleteCategory = async (cat: BlogCategoryDTO) => {
     if (
       !confirm(
-        `Delete category '${cat.name}'? Posts will remain but will have no category.`
+        `Are you sure you want to delete category '${cat.name}'? Posts in this category will become unassigned.`
       )
-    ) {
+    )
       return
-    }
 
     try {
       const res = await BlogApi.deleteCategory(cat.id)
@@ -202,10 +201,10 @@ export function CategoryTagDialog({
         loadData()
         onUpdated?.()
       } else {
-        toast.error(res.message || "Failed to delete category")
+        showApiError(res, "Failed to delete category")
       }
-    } catch {
-      toast.error("Failed to delete category")
+    } catch (err: any) {
+      showApiError(err, "Failed to delete category")
     }
   }
 
@@ -233,7 +232,7 @@ export function CategoryTagDialog({
           loadData()
           onUpdated?.()
         } else {
-          toast.error(res.message || "Failed to update tag")
+          showApiError(res, "Failed to update tag")
         }
       } else {
         const res = await BlogApi.createTag({
@@ -249,11 +248,11 @@ export function CategoryTagDialog({
           loadData()
           onUpdated?.()
         } else {
-          toast.error(res.message || "Failed to create tag")
+          showApiError(res, "Failed to create tag")
         }
       }
     } catch (err: any) {
-      toast.error(err?.message || "Failed to save tag")
+      showApiError(err, "Failed to save tag")
     } finally {
       setIsSubmittingTag(false)
     }
@@ -267,10 +266,10 @@ export function CategoryTagDialog({
         loadData()
         onUpdated?.()
       } else {
-        toast.error(res.message || "Failed to delete tag")
+        showApiError(res, "Failed to delete tag")
       }
-    } catch {
-      toast.error("Failed to delete tag")
+    } catch (err: any) {
+      showApiError(err, "Failed to delete tag")
     }
   }
 

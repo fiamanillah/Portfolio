@@ -1,17 +1,18 @@
-"use client"
-
 import * as React from "react"
 import { Search } from "lucide-react"
 import { Input } from "@workspace/ui/components/input"
 import { Textarea } from "@workspace/ui/components/textarea"
+import { FieldError } from "@workspace/ui/components/field"
 
 interface MetaTagsSectionProps {
   title: string
   summary: string
   metaTitle: string
   setMetaTitle: (val: string) => void
+  metaTitleError?: string
   metaDescription: string
   setMetaDescription: (val: string) => void
+  metaDescriptionError?: string
 }
 
 export function MetaTagsSection({
@@ -19,8 +20,10 @@ export function MetaTagsSection({
   summary,
   metaTitle,
   setMetaTitle,
+  metaTitleError,
   metaDescription,
   setMetaDescription,
+  metaDescriptionError,
 }: MetaTagsSectionProps) {
   const effectiveTitle = metaTitle || title
   const effectiveDesc = metaDescription || summary
@@ -54,8 +57,13 @@ export function MetaTagsSection({
           }
           value={metaTitle}
           onChange={(e) => setMetaTitle(e.target.value)}
-          className="h-9 border-border/90 bg-background text-xs shadow-xs hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary/20"
+          className={`h-9 bg-background text-xs shadow-xs transition-colors ${
+            metaTitleError
+              ? "border-destructive focus:border-destructive focus:ring-1 focus:ring-destructive/30"
+              : "border-border/90 hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary/20"
+          }`}
         />
+        {metaTitleError && <FieldError errors={metaTitleError} />}
         <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted/60">
           <div
             className={`h-full transition-all ${
@@ -98,8 +106,13 @@ export function MetaTagsSection({
           value={metaDescription}
           onChange={(e) => setMetaDescription(e.target.value)}
           rows={3}
-          className="border-border/90 bg-background text-xs leading-relaxed shadow-xs hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary/20"
+          className={`bg-background text-xs leading-relaxed shadow-xs transition-colors ${
+            metaDescriptionError
+              ? "border-destructive focus:border-destructive focus:ring-1 focus:ring-destructive/30"
+              : "border-border/90 hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary/20"
+          }`}
         />
+        {metaDescriptionError && <FieldError errors={metaDescriptionError} />}
         <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted/60">
           <div
             className={`h-full transition-all ${
