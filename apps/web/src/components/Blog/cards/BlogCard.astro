@@ -6,6 +6,7 @@ import {
   FavouriteIcon,
   Comment01Icon,
   ViewIcon,
+  Clock01Icon,
 } from "@hugeicons/core-free-icons"
 
 interface Props {
@@ -23,70 +24,63 @@ const { post, isInitiallyVisible = true, class: className = "" } = Astro.props
   data-title={post.title.toLowerCase()}
   data-summary={(post.summary || "").toLowerCase()}
   data-tags={(post.tags || []).join(",").toLowerCase()}
-  class={`group relative flex flex-col sm:flex-row items-stretch overflow-hidden bg-card/60 backdrop-blur-sm transition-all duration-300 hover:bg-card/90 hover:shadow-[0_0_24px_-4px_oklch(var(--primary)/15%),inset_0_0_0_1px_oklch(var(--primary)/35%)] ${
+  class={`group relative flex flex-col overflow-hidden bg-background border-border transition-all duration-300 hover:bg-card/60 hover:shadow-[0_0_0_1px_oklch(var(--primary)/20%),0_4px_24px_-4px_oklch(var(--primary)/10%)] ${
     isInitiallyVisible ? "flex" : "hidden"
   } ${className}`}
 >
-  {/* Cyberpunk corner brackets on all 4 corners with neon glow expansion */}
-  <div
-    class="pointer-events-none absolute top-2 left-2 z-30 h-2.5 w-2.5 border-t-[1.5px] border-l-[1.5px] border-border/80 transition-all duration-300 group-hover:h-3.5 group-hover:w-3.5 group-hover:border-primary group-hover:shadow-[0_0_8px_oklch(var(--primary)/60%)]"
-  >
-  </div>
-  <div
-    class="pointer-events-none absolute top-2 right-2 z-30 h-2.5 w-2.5 border-t-[1.5px] border-r-[1.5px] border-border/80 transition-all duration-300 group-hover:h-3.5 group-hover:w-3.5 group-hover:border-primary group-hover:shadow-[0_0_8px_oklch(var(--primary)/60%)]"
-  >
-  </div>
-  <div
-    class="pointer-events-none absolute bottom-2 left-2 z-30 h-2.5 w-2.5 border-b-[1.5px] border-l-[1.5px] border-border/80 transition-all duration-300 group-hover:h-3.5 group-hover:w-3.5 group-hover:border-primary group-hover:shadow-[0_0_8px_oklch(var(--primary)/60%)]"
-  >
-  </div>
-  <div
-    class="pointer-events-none absolute right-2 bottom-2 z-30 h-2.5 w-2.5 border-r-[1.5px] border-b-[1.5px] border-border/80 transition-all duration-300 group-hover:h-3.5 group-hover:w-3.5 group-hover:border-primary group-hover:shadow-[0_0_8px_oklch(var(--primary)/60%)]"
-  >
-  </div>
+  {/* Corner brackets — site-standard */}
 
-  {/* Left: 16:9 Thumbnail with scanline overlay, light sweep, and category badge */}
+  {/* Thumbnail */}
   <div
-    class="relative aspect-[16/9] w-full sm:w-[160px] md:w-[155px] lg:w-[185px] xl:w-[200px] shrink-0 overflow-hidden border-b sm:border-b-0 sm:border-r border-border bg-muted/30 before:pointer-events-none before:absolute before:inset-0 before:z-10 before:bg-[linear-gradient(105deg,transparent_40%,oklch(var(--primary)/15%)_50%,transparent_60%)] before:bg-size-[200%_100%] before:transition-all before:duration-700 hover:before:bg-position-[-100%_0] after:pointer-events-none after:absolute after:inset-0 after:bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(0,0,0,0.04)_2px,rgba(0,0,0,0.04)_4px)] after:opacity-60 after:transition-opacity after:duration-400 group-hover:after:opacity-0"
+    class="relative aspect-[16/9] w-full overflow-hidden bg-muted/30
+      before:pointer-events-none before:absolute before:inset-0 before:z-10
+      before:bg-[linear-gradient(105deg,transparent_40%,oklch(var(--primary)/12%)_50%,transparent_60%)]
+      before:bg-[length:200%_100%] before:transition-all before:duration-700
+      hover:before:bg-[-100%_0]
+      after:pointer-events-none after:absolute after:inset-0
+      after:bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(0,0,0,0.04)_2px,rgba(0,0,0,0.04)_4px)]
+      after:opacity-60 after:transition-opacity after:duration-400
+      group-hover:after:opacity-0"
   >
     <img
       src={post.thumbnail}
       alt={post.title}
-      class="h-full w-full object-cover grayscale-[15%] transition-all duration-700 ease-out group-hover:scale-105 group-hover:grayscale-0"
+      class="h-full w-full object-cover grayscale transition-all duration-700 ease-out group-hover:scale-105 group-hover:grayscale-0"
       loading="lazy"
     />
+    <!-- Gradient overlay -->
     <div
-      class="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/70 via-transparent to-transparent sm:bg-gradient-to-r sm:from-transparent sm:to-background/30"
-    >
-    </div>
+      class="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/80 via-background/20 to-transparent"
+    ></div>
 
-    {/* Subtle category badge overlay on thumbnail */}
-    <div class="absolute top-2.5 left-2.5 z-20">
+    <!-- Category badge -->
+    <div class="absolute bottom-3 left-3 z-20">
       <span
-        class="inline-flex items-center gap-1.5 border border-primary/40 bg-background/90 px-2 py-0.5 font-mono text-[9px] font-bold text-primary uppercase shadow-xs backdrop-blur-md"
+        class="inline-flex items-center gap-1.5 border border-primary/40 bg-background/90 px-2.5 py-1 font-mono text-[10px] font-bold text-primary uppercase shadow-xs backdrop-blur-md"
       >
         <span
-          class="h-1.5 w-1.5 rounded-full bg-primary shadow-[0_0_6px_oklch(var(--primary))]"
+          class="h-1.5 w-1.5 rounded-full bg-primary shadow-[0_0_5px_oklch(var(--primary)/80%)]"
         ></span>
         {post.category}
       </span>
     </div>
   </div>
 
-  {/* Right: Content Section */}
-  <div class="flex min-w-0 flex-1 flex-col justify-between p-4 sm:p-5">
+  {/* Content */}
+  <div class="flex flex-1 flex-col justify-between p-5">
     <div>
-      {/* Date & Read Time */}
+      {/* Meta row: date + read time */}
       <div
-        class="flex items-center justify-between gap-2 font-mono text-[10px] sm:text-[11px] tracking-wider text-muted-foreground uppercase"
+        class="flex items-center justify-between font-mono text-[10px] tracking-wider text-muted-foreground uppercase"
       >
-        <div class="flex min-w-0 items-center gap-1.5">
-          <span class="text-primary/70">//</span>
-          <span class="truncate">{post.date}</span>
-        </div>
+        <span class="flex items-center gap-1.5">
+          <span class="text-primary/60">//</span>
+          <span>{post.date}</span>
+        </span>
         {
           post.readTime && (
-            <span class="shrink-0 rounded-xs border border-border/80 bg-muted/40 px-1.5 py-0.5 font-mono text-[9px] text-muted-foreground">
+            <span class="flex items-center gap-1 border border-border/70 bg-muted/30 px-2 py-0.5 text-[9px]">
+              <HugeiconsIcon icon={Clock01Icon} className="size-2.5 text-primary/60" />
               {post.readTime}
             </span>
           )
@@ -95,7 +89,7 @@ const { post, isInitiallyVisible = true, class: className = "" } = Astro.props
 
       {/* Title */}
       <h3
-        class="mt-2 line-clamp-2 text-sm leading-snug font-bold tracking-tight text-foreground transition-colors duration-200 group-hover:text-primary sm:text-base md:text-lg"
+        class="mt-3 line-clamp-2 text-base font-black leading-snug tracking-tight text-foreground transition-colors duration-200 group-hover:text-primary sm:text-lg"
       >
         <a href={`/blog/${post.slug}`} class="focus:outline-none">
           <span class="absolute inset-0 z-10" aria-hidden="true"></span>
@@ -105,17 +99,17 @@ const { post, isInitiallyVisible = true, class: className = "" } = Astro.props
 
       {/* Summary */}
       <p
-        class="mt-1.5 line-clamp-2 text-xs leading-relaxed text-muted-foreground sm:text-sm"
+        class="mt-2 line-clamp-2 text-xs leading-relaxed text-muted-foreground sm:text-sm"
       >
         {post.summary}
       </p>
 
-      {/* Topic Tags */}
+      {/* Tags */}
       {
         post.tags && post.tags.length > 0 && (
-          <div class="mt-2.5 flex flex-wrap gap-1">
+          <div class="mt-3 flex flex-wrap gap-1">
             {post.tags.slice(0, 3).map((tag) => (
-              <span class="inline-flex items-center border border-border/80 bg-muted/30 px-1.5 py-0.5 font-mono text-[9px] font-medium text-muted-foreground transition-colors group-hover:border-primary/40 group-hover:text-foreground">
+              <span class="inline-flex items-center border border-border/70 bg-muted/20 px-2 py-0.5 font-mono text-[9px] font-medium text-muted-foreground transition-colors group-hover:border-primary/30 group-hover:text-foreground">
                 #{tag}
               </span>
             ))}
@@ -124,9 +118,9 @@ const { post, isInitiallyVisible = true, class: className = "" } = Astro.props
       }
     </div>
 
-    {/* Footer: Author Info & Stats */}
+    {/* Footer */}
     <div
-      class="mt-3.5 flex items-center justify-between gap-2 border-t border-border/50 pt-2.5"
+      class="mt-4 flex items-center justify-between gap-2 border-t border-border/40 pt-3"
     >
       {/* Author */}
       <div class="flex min-w-0 items-center gap-2">
@@ -135,10 +129,10 @@ const { post, isInitiallyVisible = true, class: className = "" } = Astro.props
             <img
               src={post.author.avatar}
               alt={post.author.name}
-              class="h-5 w-5 shrink-0 rounded-full border border-primary/40 object-cover shadow-[0_0_6px_oklch(var(--primary)/20%)]"
+              class="h-6 w-6 shrink-0 rounded-full border border-primary/30 object-cover shadow-[0_0_6px_oklch(var(--primary)/15%)]"
             />
           ) : (
-            <div class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-primary/40 bg-primary/10 font-mono text-[9px] font-bold text-primary">
+            <div class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-primary/30 bg-primary/10 font-mono text-[10px] font-bold text-primary">
               {post.author.name.charAt(0)}
             </div>
           )
@@ -150,7 +144,7 @@ const { post, isInitiallyVisible = true, class: className = "" } = Astro.props
         </span>
       </div>
 
-      {/* Stats Bar & Arrow indicator */}
+      {/* Stats + arrow */}
       <div class="flex shrink-0 items-center gap-2.5 font-mono text-[10px]">
         {
           post.views && (
@@ -158,10 +152,7 @@ const { post, isInitiallyVisible = true, class: className = "" } = Astro.props
               class="inline-flex items-center gap-1 text-muted-foreground transition-colors group-hover:text-foreground"
               title={`${post.views} views`}
             >
-              <HugeiconsIcon
-                icon={ViewIcon}
-                className="size-3 text-primary/70"
-              />
+              <HugeiconsIcon icon={ViewIcon} className="size-3 text-primary/60" />
               <span>{formatViewsCount(post.views)}</span>
             </span>
           )
@@ -169,12 +160,13 @@ const { post, isInitiallyVisible = true, class: className = "" } = Astro.props
         {
           post.likesCount !== undefined && (
             <span
-              class="inline-flex items-center gap-1 text-rose-400/80 transition-colors group-hover:text-rose-400"
+              class="inline-flex items-center gap-1 text-rose-400/70 transition-colors group-hover:text-rose-400"
               title={`${post.likesCount} likes`}
             >
               <HugeiconsIcon
                 icon={FavouriteIcon}
-                className="size-3 fill-rose-400/30 text-rose-400"
+                className="size-3 fill-rose-400/25 text-rose-400"
+               
               />
               <span>{post.likesCount}</span>
             </span>
@@ -183,7 +175,7 @@ const { post, isInitiallyVisible = true, class: className = "" } = Astro.props
         {
           post.commentsCount !== undefined && (
             <span
-              class="inline-flex items-center gap-1 text-primary/80 transition-colors group-hover:text-primary"
+              class="inline-flex items-center gap-1 text-primary/70 transition-colors group-hover:text-primary"
               title={`${post.commentsCount} comments`}
             >
               <HugeiconsIcon icon={Comment01Icon} className="size-3" />

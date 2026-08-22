@@ -20,30 +20,27 @@ const secondaryFeatured = featuredPosts.slice(1, 4)
 
 {
   featuredPosts.length > 0 && (
-    <section class="mb-16">
-      {/* Section Sub-Header */}
-      <div class="mb-6 flex items-center justify-between border-b border-border/60 pb-3">
-        <div class="flex items-center gap-2">
-          <span class="inline-block h-2 w-2 animate-pulse rounded-full bg-primary shadow-[0_0_8px_oklch(var(--primary)/70%)]" />
-          <h2 class="font-mono text-xs font-bold tracking-widest text-primary uppercase">
-            // FEATURED STORIES & TOP PICKS ({featuredPosts.length})
+    <section class="mb-20">
+      {/* Section header — matches site-standard Work.astro pattern */}
+      <div class="relative mb-10 overflow-hidden text-center">
+        <div
+          class="diagonal-stripes pointer-events-none absolute inset-0 z-10 bg-background"
+          aria-hidden="true"
+        />
+        <div class="relative z-10 py-8">
+          <p class="section-label">Editor's picks &amp; top reads</p>
+          <h2 class="section-title text-foreground">
+            Featured <span class="text-primary">/</span> Stories
           </h2>
+          <div class="accent-bar mx-auto mt-4 mb-0 w-48" />
         </div>
-        <span class="hidden font-mono text-xs text-muted-foreground sm:inline">
-          HAND-PICKED ARCHITECTURE WRITEUPS
-        </span>
       </div>
 
-      {/* 0-Gap Grid Container */}
-      <div class="overflow-hidden border border-border bg-card/60 backdrop-blur-sm shadow-sm transition-all duration-300">
+      {/* Grid container — no outer border, gap-px creates dividers */}
+      <div class="overflow-hidden border border-border bg-border shadow-sm transition-all duration-300">
         {secondaryFeatured.length === 0 ? (
           /* Single Featured Post Full-Width */
           <article class="group relative flex flex-col lg:flex-row items-stretch overflow-hidden transition-all duration-300 hover:bg-card/90 hover:shadow-[inset_0_0_0_1px_oklch(var(--primary)/35%)]">
-            {/* Cyberpunk corner brackets on all 4 corners */}
-            <div class="pointer-events-none absolute top-2.5 left-2.5 z-30 h-3 w-3 border-t-[1.5px] border-l-[1.5px] border-border/80 transition-all duration-300 group-hover:h-4 group-hover:w-4 group-hover:border-primary group-hover:shadow-[0_0_8px_oklch(var(--primary)/60%)]" />
-            <div class="pointer-events-none absolute top-2.5 right-2.5 z-30 h-3 w-3 border-t-[1.5px] border-r-[1.5px] border-border/80 transition-all duration-300 group-hover:h-4 group-hover:w-4 group-hover:border-primary group-hover:shadow-[0_0_8px_oklch(var(--primary)/60%)]" />
-            <div class="pointer-events-none absolute bottom-2.5 left-2.5 z-30 h-3 w-3 border-b-[1.5px] border-l-[1.5px] border-border/80 transition-all duration-300 group-hover:h-4 group-hover:w-4 group-hover:border-primary group-hover:shadow-[0_0_8px_oklch(var(--primary)/60%)]" />
-            <div class="pointer-events-none absolute right-2.5 bottom-2.5 z-30 h-3 w-3 border-r-[1.5px] border-b-[1.5px] border-border/80 transition-all duration-300 group-hover:h-4 group-hover:w-4 group-hover:border-primary group-hover:shadow-[0_0_8px_oklch(var(--primary)/60%)]" />
 
             <div class="relative aspect-[16/9] w-full lg:w-3/5 overflow-hidden border-b lg:border-b-0 lg:border-r border-border bg-muted/30 before:pointer-events-none before:absolute before:inset-0 before:z-10 before:bg-[linear-gradient(105deg,transparent_40%,oklch(var(--primary)/15%)_50%,transparent_60%)] before:bg-size-[200%_100%] before:transition-all before:duration-700 hover:before:bg-position-[-100%_0] after:pointer-events-none after:absolute after:inset-0 after:bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(0,0,0,0.04)_2px,rgba(0,0,0,0.04)_4px)] after:opacity-60 after:transition-opacity after:duration-400 group-hover:after:opacity-0">
               <img
@@ -146,11 +143,6 @@ const secondaryFeatured = featuredPosts.slice(1, 4)
           <div class="grid grid-cols-1 lg:grid-cols-12 items-stretch">
             {/* Left Column: Primary Featured Post */}
             <article class="group relative flex flex-col justify-between lg:col-span-6 xl:col-span-6 overflow-hidden transition-all duration-300 hover:bg-card/90 hover:shadow-[inset_0_0_0_1px_oklch(var(--primary)/35%)]">
-              {/* Cyberpunk corner brackets on all 4 corners */}
-              <div class="pointer-events-none absolute top-2.5 left-2.5 z-30 h-3 w-3 border-t-[1.5px] border-l-[1.5px] border-border/80 transition-all duration-300 group-hover:h-4 group-hover:w-4 group-hover:border-primary group-hover:shadow-[0_0_8px_oklch(var(--primary)/60%)]" />
-              <div class="pointer-events-none absolute top-2.5 right-2.5 z-30 h-3 w-3 border-t-[1.5px] border-r-[1.5px] border-border/80 transition-all duration-300 group-hover:h-4 group-hover:w-4 group-hover:border-primary group-hover:shadow-[0_0_8px_oklch(var(--primary)/60%)]" />
-              <div class="pointer-events-none absolute bottom-2.5 left-2.5 z-30 h-3 w-3 border-b-[1.5px] border-l-[1.5px] border-border/80 transition-all duration-300 group-hover:h-4 group-hover:w-4 group-hover:border-primary group-hover:shadow-[0_0_8px_oklch(var(--primary)/60%)]" />
-              <div class="pointer-events-none absolute right-2.5 bottom-2.5 z-30 h-3 w-3 border-r-[1.5px] border-b-[1.5px] border-border/80 transition-all duration-300 group-hover:h-4 group-hover:w-4 group-hover:border-primary group-hover:shadow-[0_0_8px_oklch(var(--primary)/60%)]" />
 
               <div>
                 {/* Large landscape thumbnail (16:9) with scanline and shimmer */}
@@ -258,11 +250,6 @@ const secondaryFeatured = featuredPosts.slice(1, 4)
             <div class="flex flex-col lg:col-span-6 xl:col-span-6 border-t lg:border-t-0 lg:border-l border-border divide-y divide-border">
               {secondaryFeatured.map((post) => (
                 <article class="group relative flex flex-1 flex-col sm:flex-row items-stretch overflow-hidden transition-all duration-300 hover:bg-card/90 hover:shadow-[inset_0_0_0_1px_oklch(var(--primary)/35%)]">
-                  {/* Cyberpunk corner brackets on all 4 corners */}
-                  <div class="pointer-events-none absolute top-2 left-2 z-30 h-2.5 w-2.5 border-t-[1.5px] border-l-[1.5px] border-border/80 transition-all duration-300 group-hover:h-3.5 group-hover:w-3.5 group-hover:border-primary group-hover:shadow-[0_0_8px_oklch(var(--primary)/60%)]" />
-                  <div class="pointer-events-none absolute top-2 right-2 z-30 h-2.5 w-2.5 border-t-[1.5px] border-r-[1.5px] border-border/80 transition-all duration-300 group-hover:h-3.5 group-hover:w-3.5 group-hover:border-primary group-hover:shadow-[0_0_8px_oklch(var(--primary)/60%)]" />
-                  <div class="pointer-events-none absolute bottom-2 left-2 z-30 h-2.5 w-2.5 border-b-[1.5px] border-l-[1.5px] border-border/80 transition-all duration-300 group-hover:h-3.5 group-hover:w-3.5 group-hover:border-primary group-hover:shadow-[0_0_8px_oklch(var(--primary)/60%)]" />
-                  <div class="pointer-events-none absolute right-2 bottom-2 z-30 h-2.5 w-2.5 border-r-[1.5px] border-b-[1.5px] border-border/80 transition-all duration-300 group-hover:h-3.5 group-hover:w-3.5 group-hover:border-primary group-hover:shadow-[0_0_8px_oklch(var(--primary)/60%)]" />
 
                   {/* 16:9 Thumbnail on Left with scanline and shimmer */}
                   <div class="relative aspect-[16/9] w-full sm:w-[150px] md:w-[170px] lg:w-[190px] shrink-0 border-b sm:border-b-0 sm:border-r border-border overflow-hidden bg-muted/30 before:pointer-events-none before:absolute before:inset-0 before:z-10 before:bg-[linear-gradient(105deg,transparent_40%,oklch(var(--primary)/15%)_50%,transparent_60%)] before:bg-size-[200%_100%] before:transition-all before:duration-700 hover:before:bg-position-[-100%_0] after:pointer-events-none after:absolute after:inset-0 after:bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(0,0,0,0.04)_2px,rgba(0,0,0,0.04)_4px)] after:opacity-60 after:transition-opacity after:duration-400 group-hover:after:opacity-0">

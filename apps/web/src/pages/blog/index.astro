@@ -55,15 +55,19 @@ const totalTopics = new Set(posts.flatMap((p) => p.tags)).size
     totalTopics={totalTopics}
   />
 
-  <main class="container mx-auto px-4 py-12">
-    <!-- Featured Stories Grid Section (Displays database featured articles in a grid) -->
-    <BlogFeaturedGrid featuredPosts={featuredPosts} />
+  <main class="w-full">
+    <!-- Featured Stories Grid Section -->
+    <div class="container mx-auto px-4 py-12">
+      <BlogFeaturedGrid featuredPosts={featuredPosts} />
+    </div>
 
-    <!-- Interactive Articles Explorer (Instant Category Filtering & Pagination backed by DB) -->
-    <BlogExplorer initialPosts={posts} categories={categories} />
+    <!-- Interactive Articles Explorer -->
+    <div class="container mx-auto px-4 pb-12">
+      <BlogExplorer initialPosts={posts} categories={categories} />
+    </div>
 
     <!-- Newsletter Section -->
-    <div class="mt-20">
+    <div class="container mx-auto px-4 pb-20">
       <NewsletterSection
         title="Stay Ahead in Engineering Architecture"
         subtitle="Subscribe to get technical deep-dives, benchmark reports, and new articles delivered directly to your inbox."

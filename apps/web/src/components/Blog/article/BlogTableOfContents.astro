@@ -31,23 +31,23 @@ const tocItems: TocItem[] =
     <div class="h-full w-full">
       {/* Mobile Collapsible TOC */}
       <details class="group mb-8 border border-border bg-background/80 p-4 lg:hidden">
-        <summary class="flex cursor-pointer items-center justify-between font-mono text-xs font-bold tracking-widest text-primary uppercase select-none">
-          <span>// TABLE OF CONTENTS ({tocItems.length})</span>
-          <span class="transition-transform duration-200 group-open:rotate-180">
+        <summary class="flex cursor-pointer items-center justify-between text-sm font-semibold text-foreground select-none">
+          <span>On this page</span>
+          <span class="text-muted-foreground transition-transform duration-200 group-open:rotate-180">
             ↓
           </span>
         </summary>
         <nav class="mt-3 border-t border-border/60 pt-3">
-          <ul class="space-y-2 font-mono text-xs text-muted-foreground">
+          <ul class="space-y-0.5">
             {tocItems.map((item) => (
-              <li
-                class={item.depth === 3 ? "border-l border-border/40 pl-3" : ""}
-              >
+              <li>
                 <a
                   href={`#${item.id}`}
-                  class="toc-mobile-link block border-l border-transparent py-1 pl-2 transition-colors hover:text-primary"
+                  class={`toc-mobile-link block py-1.5 text-xs text-muted-foreground transition-colors hover:text-foreground ${
+                    item.depth === 3 ? "pl-5 text-muted-foreground/80" : "pl-2 font-medium"
+                  }`}
                 >
-                  {item.depth === 3 ? "↳ " : "→ "} {item.title}
+                  {item.title}
                 </a>
               </li>
             ))}
@@ -56,82 +56,59 @@ const tocItems: TocItem[] =
       </details>
 
       {/* Desktop Sticky Right Sidebar TOC */}
-      <div class="toc-container sticky top-24 hidden border border-border/80 bg-background/80 p-6 backdrop-blur-md transition-all duration-300 lg:block">
-        {/* Cyberpunk corner brackets */}
-        <div class="pointer-events-none absolute top-2 left-2 z-10 h-3 w-3 border-t border-l border-border" />
-        <div class="pointer-events-none absolute top-2 right-2 z-10 h-3 w-3 border-t border-r border-border" />
-        <div class="pointer-events-none absolute bottom-2 left-2 z-10 h-3 w-3 border-b border-l border-border" />
-        <div class="pointer-events-none absolute right-2 bottom-2 z-10 h-3 w-3 border-r border-b border-border" />
-
-        <div class="mb-4 flex items-center justify-between border-b border-border/60 pb-3">
-          <h3 class="font-mono text-xs font-bold tracking-widest text-primary uppercase">
-            // TABLE OF CONTENTS
-          </h3>
-          <span class="font-mono text-[10px] text-muted-foreground">
-            {tocItems.length} SECTIONS
-          </span>
-        </div>
+      <div class="toc-container sticky top-24 hidden lg:block">
+        <p class="mb-4 text-sm font-semibold tracking-tight text-foreground select-none">
+          On this page
+        </p>
 
         <nav aria-label="Table of Contents" class="toc-nav-scrollable">
-          <ul id="toc-list" class="relative space-y-1 font-mono text-xs">
-            {tocItems.map((item, index) => (
-              <li
-                class={`toc-item ${item.depth === 3 ? "pl-3" : ""}`}
-                style={`--toc-index: ${index};`}
-              >
-                <a
-                  href={`#${item.id}`}
-                  data-toc-link={item.id}
-                  class={`toc-link group relative flex items-center justify-between rounded-sm px-3 py-2 text-muted-foreground transition-all duration-300 ease-out hover:bg-muted/40 hover:text-foreground ${
-                    index === 0
-                      ? "toc-active border-l-2 border-primary bg-primary/10 font-bold text-primary"
-                      : ""
-                  }`}
-                >
-                  <span
-                    class={`line-clamp-2 transition-colors ${item.depth === 3 ? "text-[11px] opacity-80" : ""}`}
-                  >
-                    {item.depth === 3 ? "↳ " : ""}
-                    {item.title}
-                  </span>
-                  <span class="ml-2 shrink-0 text-[10px] opacity-40 transition-opacity group-hover:opacity-100">
-                    #0{index + 1}
-                  </span>
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
-
-        {/* Reading Progress Section */}
-        <div class="mt-5 space-y-3 border-t border-border/60 pt-4">
-          {/* Progress Bar */}
-          <div class="space-y-1.5">
-            <div class="flex items-center justify-between font-mono text-[10px] text-muted-foreground">
-              <span>READING PROGRESS</span>
-              <span
-                id="toc-progress-pct"
-                class="font-bold text-primary tabular-nums"
-              >
-                0%
-              </span>
-            </div>
-            <div class="h-1 w-full overflow-hidden rounded-full bg-border/40">
-              <div
-                id="toc-progress-bar"
-                class="h-full rounded-full bg-primary transition-[width] duration-300 ease-out"
-                style="width: 0%"
+          <div class="toc-rail-wrapper relative">
+            {/* Continuous SVG Rail Line with Dynamic Bevel/Tilt */}
+            <svg
+              id="toc-svg"
+              class="pointer-events-none absolute top-0 left-0 h-full w-[40px] overflow-visible"
+              aria-hidden="true"
+            >
+              <path
+                id="toc-bg-path"
+                class="toc-bg-path"
+                fill="none"
               />
-            </div>
-          </div>
+              <path
+                id="toc-active-path"
+                class="toc-active-path"
+                fill="none"
+              />
+            </svg>
 
-          <a
-            href="#article-top"
-            class="toc-mobile-link flex items-center justify-center gap-1.5 py-1 font-mono text-[11px] text-muted-foreground transition-all duration-200 hover:-translate-y-0.5 hover:text-primary"
-          >
-            ↑ BACK TO TOP
-          </a>
-        </div>
+            {/* TOC Item List */}
+            <ul id="toc-list" class="relative m-0 list-none p-0">
+              {tocItems.map((item, index) => {
+                const depth = item.depth ?? 2
+                return (
+                  <li
+                    class="toc-item relative"
+                    data-index={index}
+                    data-depth={depth}
+                    style={`--toc-index: ${index};`}
+                  >
+                    <a
+                      href={`#${item.id}`}
+                      data-toc-link={item.id}
+                      class={`toc-link block py-1 text-[13px] leading-snug transition-colors duration-200 select-none ${
+                        depth === 3
+                          ? "pl-8 text-muted-foreground/75 hover:text-foreground"
+                          : "pl-5 font-normal text-muted-foreground hover:text-foreground"
+                      } ${index === 0 ? "toc-active text-foreground font-medium" : ""}`}
+                    >
+                      {item.title}
+                    </a>
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
+        </nav>
       </div>
     </div>
   )
@@ -142,7 +119,7 @@ const tocItems: TocItem[] =
   @keyframes toc-fade-in {
     from {
       opacity: 0;
-      transform: translateX(12px);
+      transform: translateX(6px);
     }
     to {
       opacity: 1;
@@ -152,59 +129,168 @@ const tocItems: TocItem[] =
 
   .toc-item {
     opacity: 0;
-    animation: toc-fade-in 0.4s ease-out forwards;
-    animation-delay: calc(var(--toc-index, 0) * 0.06s + 0.3s);
+    animation: toc-fade-in 0.3s ease-out forwards;
+    animation-delay: calc(var(--toc-index, 0) * 0.04s + 0.1s);
   }
 
-  /* Active link glow effect */
+  /* SVG Base Rail Styling */
+  .toc-bg-path {
+    stroke: oklch(var(--border) / 0.55);
+    stroke-width: 1.5px;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  /* SVG Active Sliding Indicator Styling */
+  .toc-active-path {
+    stroke: oklch(var(--primary));
+    stroke-width: 2px;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    filter: drop-shadow(0 0 4px oklch(var(--primary) / 0.45));
+    transition:
+      stroke-dashoffset 0.32s cubic-bezier(0.4, 0, 0.2, 1),
+      stroke-dasharray 0.32s cubic-bezier(0.4, 0, 0.2, 1),
+      opacity 0.2s ease;
+  }
+
+  /* Active text highlight */
   .toc-link.toc-active {
-    box-shadow: 0 0 12px oklch(var(--primary) / 10%);
+    color: oklch(var(--foreground));
   }
 
-  /* Scrollable TOC for many sections */
+  /* Scrollable TOC container */
   .toc-nav-scrollable {
-    max-height: calc(100vh - 340px);
+    max-height: calc(100vh - 180px);
     overflow-y: auto;
-    scrollbar-width: thin;
-    scrollbar-color: oklch(var(--primary) / 30%) transparent;
+    scrollbar-width: none;
   }
 
   .toc-nav-scrollable::-webkit-scrollbar {
-    width: 3px;
-  }
-
-  .toc-nav-scrollable::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  .toc-nav-scrollable::-webkit-scrollbar-thumb {
-    background: oklch(var(--primary) / 30%);
-    border-radius: 100px;
-  }
-
-  /* Container subtle border glow on scroll */
-  .toc-container {
-    transition:
-      border-color 0.3s ease,
-      box-shadow 0.3s ease;
-  }
-
-  .toc-container.toc-scrolled {
-    border-color: oklch(var(--primary) / 25%);
-    box-shadow: 0 0 20px oklch(var(--primary) / 5%);
+    display: none;
   }
 </style>
 
 <script>
-  // Scrollspy, Smooth Scroll, & Reading Progress Script
   function initTocBehavior() {
-    const tocLinks = document.querySelectorAll("[data-toc-link]")
+    const tocLinks = Array.from(
+      document.querySelectorAll<HTMLAnchorElement>("[data-toc-link]")
+    )
     const sections = document.querySelectorAll("[data-article-section]")
-    const progressBar = document.getElementById("toc-progress-bar")
-    const progressPct = document.getElementById("toc-progress-pct")
-    const tocContainer = document.querySelector(".toc-container")
+    const bgPath = document.getElementById("toc-bg-path") as SVGPathElement | null
+    const activePath = document.getElementById("toc-active-path") as SVGPathElement | null
+    const wrapper = document.querySelector<HTMLElement>(".toc-rail-wrapper")
+    const items = Array.from(document.querySelectorAll<HTMLElement>(".toc-item"))
 
-    if (!tocLinks.length || !sections.length) return
+    if (!tocLinks.length || !sections.length || !bgPath || !activePath || !wrapper || items.length === 0) {
+      return
+    }
+
+    const X_H2 = 2
+    const X_H3 = 16
+
+    // Helper to find path length at a specific Y coordinate using binary search
+    function getPathLengthAtY(pathEl: SVGPathElement, targetY: number, totalLen: number): number {
+      if (totalLen <= 0) return 0
+      let low = 0
+      let high = totalLen
+      for (let i = 0; i < 24; i++) {
+        const mid = (low + high) / 2
+        const pt = pathEl.getPointAtLength(mid)
+        if (pt.y < targetY) {
+          low = mid
+        } else {
+          high = mid
+        }
+      }
+      return (low + high) / 2
+    }
+
+    // Build the SVG path that traces H2 and H3 items with smooth S-curves for bevel/tilt
+    function buildSvgRail() {
+      if (!bgPath || !activePath || items.length === 0) return
+
+      let d = ""
+
+      for (let i = 0; i < items.length; i++) {
+        const item = items[i]
+        const depth = Number(item.dataset.depth || 2)
+        const currX = depth === 3 ? X_H3 : X_H2
+        const itemTop = item.offsetTop
+        const itemHeight = item.offsetHeight
+        const itemBottom = itemTop + itemHeight
+
+        if (i === 0) {
+          d += `M ${currX} ${itemTop + 2}`
+        }
+
+        if (i < items.length - 1) {
+          const next = items[i + 1]
+          const nextDepth = Number(next.dataset.depth || 2)
+          const nextX = nextDepth === 3 ? X_H3 : X_H2
+          const nextTop = next.offsetTop
+
+          if (currX === nextX) {
+            // Same level — straight vertical line to the next item
+            d += ` L ${currX} ${nextTop}`
+          } else {
+            // Level change — smooth tilted S-curve transition between items
+            const y1 = itemBottom - 2
+            const y2 = nextTop + 2
+            const midY = (y1 + y2) / 2
+            d += ` L ${currX} ${y1}`
+            d += ` C ${currX} ${midY}, ${nextX} ${midY}, ${nextX} ${y2}`
+          }
+        } else {
+          // Last item — straight line to bottom of item
+          d += ` L ${currX} ${itemBottom - 2}`
+        }
+      }
+
+      bgPath.setAttribute("d", d)
+      activePath.setAttribute("d", d)
+
+      updateActiveIndicator()
+    }
+
+    // Update active sliding indicator along the SVG path
+    function updateActiveIndicator() {
+      if (!bgPath || !activePath) return
+
+      const activeLink = document.querySelector<HTMLAnchorElement>(".toc-link.toc-active")
+      if (!activeLink) {
+        activePath.style.opacity = "0"
+        return
+      }
+
+      const activeItem = activeLink.closest<HTMLElement>(".toc-item")
+      if (!activeItem) return
+
+      const totalLen = bgPath.getTotalLength()
+      if (totalLen <= 0) return
+
+      const topY = activeItem.offsetTop + 1
+      const bottomY = activeItem.offsetTop + activeItem.offsetHeight - 1
+
+      const startDist = getPathLengthAtY(bgPath, topY, totalLen)
+      const endDist = getPathLengthAtY(bgPath, bottomY, totalLen)
+      const segLen = Math.max(endDist - startDist, 14)
+
+      activePath.style.strokeDasharray = `${segLen} ${totalLen}`
+      activePath.style.strokeDashoffset = `-${startDist}`
+      activePath.style.opacity = "1"
+    }
+
+    // Initialize rail path after layout stabilizes
+    requestAnimationFrame(() => {
+      buildSvgRail()
+    })
+
+    // ResizeObserver to rebuild path if dimensions shift
+    const resizeObserver = new ResizeObserver(() => {
+      buildSvgRail()
+    })
+    resizeObserver.observe(wrapper)
 
     // --- Smooth scroll on TOC link click ---
     tocLinks.forEach((link) => {
@@ -215,13 +301,12 @@ const tocItems: TocItem[] =
         const target = document.getElementById(targetId)
         if (target) {
           target.scrollIntoView({ behavior: "smooth", block: "start" })
-          // Update URL hash without jumping
           history.replaceState(null, "", `#${targetId}`)
         }
       })
     })
 
-    // Mobile TOC links also get smooth scroll
+    // Mobile TOC links smooth scroll
     document.querySelectorAll(".toc-mobile-link").forEach((link) => {
       link.addEventListener("click", (e) => {
         const href = link.getAttribute("href")
@@ -238,7 +323,7 @@ const tocItems: TocItem[] =
     // --- Scrollspy with IntersectionObserver ---
     const observerOptions = {
       root: null,
-      rootMargin: "-20% 0px -50% 0px",
+      rootMargin: "-15% 0px -50% 0px",
       threshold: 0,
     }
 
@@ -250,95 +335,40 @@ const tocItems: TocItem[] =
           tocLinks.forEach((link) => {
             const targetId = link.getAttribute("data-toc-link")
             if (targetId === activeId) {
-              link.classList.add(
-                "toc-active",
-                "bg-primary/10",
-                "border-l-2",
-                "border-primary",
-                "text-primary",
-                "font-bold"
-              )
-              link.classList.remove("text-muted-foreground")
-
-              // Scroll TOC item into view if needed
-              const tocNav = link.closest(".toc-nav-scrollable")
-              if (tocNav) {
-                const linkEl = link as HTMLElement
-                const navEl = tocNav as HTMLElement
-                const linkTop = linkEl.offsetTop - navEl.offsetTop
-                const navScroll = navEl.scrollTop
-                const navHeight = navEl.clientHeight
-                if (
-                  linkTop < navScroll ||
-                  linkTop > navScroll + navHeight - 40
-                ) {
-                  navEl.scrollTo({
-                    top: linkTop - navHeight / 3,
-                    behavior: "smooth",
-                  })
-                }
-              }
+              link.classList.add("toc-active", "text-foreground", "font-medium")
+              link.classList.remove("text-muted-foreground", "text-muted-foreground/75")
             } else {
-              link.classList.remove(
-                "toc-active",
-                "bg-primary/10",
-                "border-l-2",
-                "border-primary",
-                "text-primary",
-                "font-bold"
-              )
-              link.classList.add("text-muted-foreground")
+              link.classList.remove("toc-active", "text-foreground", "font-medium")
+              const depth = link.closest<HTMLElement>(".toc-item")?.dataset.depth
+              if (depth === "3") {
+                link.classList.add("text-muted-foreground/75")
+              } else {
+                link.classList.add("text-muted-foreground")
+              }
             }
           })
+
+          updateActiveIndicator()
+
+          // Scroll TOC item into view inside the sticky container if needed
+          const activeLink = document.querySelector<HTMLAnchorElement>(".toc-link.toc-active")
+          const tocNav = activeLink?.closest<HTMLElement>(".toc-nav-scrollable")
+          if (activeLink && tocNav) {
+            const linkTop = activeLink.offsetTop - tocNav.offsetTop
+            const navScroll = tocNav.scrollTop
+            const navHeight = tocNav.clientHeight
+            if (linkTop < navScroll || linkTop > navScroll + navHeight - 40) {
+              tocNav.scrollTo({
+                top: linkTop - navHeight / 3,
+                behavior: "smooth",
+              })
+            }
+          }
         }
       })
     }, observerOptions)
 
     sections.forEach((section) => observer.observe(section))
-
-    // --- Reading Progress Bar ---
-    function updateProgress() {
-      const article = document.querySelector("article")
-      if (!article || !progressBar || !progressPct) return
-
-      const articleRect = article.getBoundingClientRect()
-      const articleTop = articleRect.top + window.scrollY
-      const articleHeight = article.scrollHeight
-      const windowHeight = window.innerHeight
-      const scrollY = window.scrollY
-
-      // Calculate how far we've scrolled through the article
-      const scrolled = scrollY - articleTop + windowHeight * 0.3
-      const total = articleHeight - windowHeight * 0.5
-      const progress = Math.max(0, Math.min(100, (scrolled / total) * 100))
-
-      progressBar.style.width = `${progress}%`
-      progressPct.textContent = `${Math.round(progress)}%`
-
-      // Add subtle glow to TOC container when scrolled
-      if (tocContainer) {
-        if (progress > 5 && progress < 100) {
-          tocContainer.classList.add("toc-scrolled")
-        } else {
-          tocContainer.classList.remove("toc-scrolled")
-        }
-      }
-    }
-
-    // Throttled scroll handler
-    let ticking = false
-    window.addEventListener("scroll", () => {
-      if (!ticking) {
-        requestAnimationFrame(() => {
-          updateProgress()
-          ticking = false
-        })
-        ticking = true
-      }
-    })
-
-    // Initial progress calculation
-    updateProgress()
   }
 
   if (document.readyState === "loading") {

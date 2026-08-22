@@ -19,47 +19,46 @@ const initialTo = Math.min(postsPerPage, totalCount)
 ---
 
 <div
-  class={`my-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-b border-border/40 pb-4 ${className}`}
+  class={`relative mb-8 overflow-hidden text-center ${className}`}
 >
-  <!-- Left Side: Section Monospace Title & Category Indicator -->
-  <div class="flex flex-wrap items-center gap-3">
-    <div class="flex items-center gap-2">
-      <span
-        class="inline-block h-2 w-2 animate-pulse rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.7)]"
-      ></span>
-      <h2
-        data-journal-title
-        class="font-mono text-xs font-bold tracking-widest text-foreground uppercase"
-      >
-        {
-          activeCategory !== "all"
-            ? `// ARTICLES JOURNAL [${activeCategory.toUpperCase()}]`
-            : "// ARTICLES JOURNAL"
-        }
-      </h2>
-    </div>
+  <!-- Diagonal stripe background -->
+  <div
+    class="diagonal-stripes pointer-events-none absolute inset-0 z-10 bg-background"
+    aria-hidden="true"
+  ></div>
 
+  <div class="relative z-10 py-8">
+    <p class="section-label">Browse &amp; discover</p>
+    <h2 class="section-title text-foreground">
+      <span
+        data-journal-title
+        class="text-foreground"
+      >
+        All{" "}
+        <span class="text-primary">/</span>{" "}
+        Articles
+      </span>
+    </h2>
+    <div class="accent-bar mx-auto mt-4 mb-0 w-48"></div>
+  </div>
+
+  <!-- Live count badge (floating bottom right of header) -->
+  <div class="relative z-20 mb-4 flex items-center justify-center gap-3">
     <span
-      data-active-category-badge
-      class="inline-flex items-center gap-1 border border-primary/30 bg-primary/10 px-2 py-0.5 font-mono text-[10px] font-semibold text-primary uppercase"
+      class="inline-flex items-center gap-1.5 border border-primary/30 bg-primary/8 px-3 py-1 font-mono text-[10px] font-semibold text-primary uppercase"
     >
       <Icon name="mdi:tag-outline" class="size-3" />
       <span data-active-category-text>{activeCategory.toUpperCase()}</span>
     </span>
-  </div>
-
-  <!-- Right Side: Live Count Summary -->
-  <div class="flex items-center gap-2 font-mono text-xs text-muted-foreground">
-    <Icon
-      name="mdi:newspaper-variant-outline"
-      class="size-3.5 text-primary/70"
-    />
-    <span data-showing-count>
-      {
-        totalCount > 0
-          ? `SHOWING 1-${initialTo} OF ${totalCount} ARTICLES`
-          : "0 ARTICLES AVAILABLE"
-      }
+    <span class="flex items-center gap-1.5 font-mono text-[10px] text-muted-foreground">
+      <Icon name="mdi:newspaper-variant-outline" class="size-3.5 text-primary/60" />
+      <span data-showing-count>
+        {
+          totalCount > 0
+            ? `SHOWING 1-${initialTo} OF ${totalCount} ARTICLES`
+            : "0 ARTICLES AVAILABLE"
+        }
+      </span>
     </span>
   </div>
 </div>
