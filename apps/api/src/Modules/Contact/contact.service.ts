@@ -273,6 +273,8 @@ export class ContactService {
     try {
       const plunkPayload: Record<string, any> = {
         to: recipientEmail,
+        from: recipientEmail,
+        name: "Portfolio Notification",
         reply: payload.email,
         subject: emailSubject,
         body: emailBody,
@@ -382,6 +384,8 @@ export class ContactService {
     try {
       const plunkPayload: Record<string, any> = {
         to: payload.email,
+        from: recipientEmail,
+        name: "Fi Amanillah",
         reply: recipientEmail,
         subject: emailSubject,
         body: emailBody,

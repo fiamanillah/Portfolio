@@ -14,3 +14,4 @@ export * from "./newsletter";
 export * from "./experience";
 export * from "./resume";
 export * from "./skill";
+export * from "./booking";

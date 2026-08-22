@@ -95,6 +95,7 @@ model User {
   reviewedReports        CommentReport[]   @relation("ReviewedByUser")
   uploadedMedia          MediaFile[]
   caseStudies            CaseStudy[]
+  googleCalendarAccount  GoogleCalendarAccount?
 
   @@index([email])
   @@index([username])
@@ -653,5 +654,75 @@ model Skill {
   @@index([status, order])
   @@index([featured])
   @@index([createdAt])
+}
+
+// ==========================================
+// Booking & Google Calendar Integration Models
+// ==========================================
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  RESCHEDULED
+  COMPLETED
+}
+
+model GoogleCalendarAccount {
+  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId       String    @unique @db.Uuid
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken  String    @db.Text
+  refreshToken String    @db.Text
+  tokenExpiry  DateTime
+  calendarId   String    @default("primary")
+  email        String
+  isActive     Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @default(now()) @updatedAt
+
+  @@index([userId])
+}
+
+model BookingAvailability {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  dayOfWeek       Int      // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+  startTime       String   // e.g. "09:00"
+  endTime         String   // e.g. "17:00"
+  isActive        Boolean  @default(true)
+  slotDuration    Int      @default(30) // minutes
+  bufferTime      Int      @default(15) // buffer minutes between meetings
+  timezone        String   @default("UTC")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @default(now()) @updatedAt
+
+  @@unique([dayOfWeek])
+  @@index([dayOfWeek, isActive])
+}
+
+model Booking {
+  id                String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  guestName         String
+  guestEmail        String
+  guestNotes        String?       @db.Text
+  meetingType       String        @default("1-on-1 Consultation")
+  startTime         DateTime
+  endTime           DateTime
+  durationMinutes   Int           @default(30)
+  timezone          String        @default("UTC")
+  status            BookingStatus @default(CONFIRMED)
+  
+  // Google Calendar Integration Details
+  googleEventId     String?       @unique
+  googleMeetLink    String?
+  cancellationToken String        @unique @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @default(now()) @updatedAt
+
+  @@index([startTime, endTime])
+  @@index([guestEmail])
+  @@index([status])
+  @@index([cancellationToken])
 }
 

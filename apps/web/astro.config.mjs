@@ -19,6 +19,15 @@ export default defineConfig({
   },
   vite: {
     plugins: [tailwindcss()],
+    resolve: {
+      dedupe: ["react", "react-dom"],
+    },
+    optimizeDeps: {
+      include: ["react", "react-dom", "react/jsx-runtime"],
+    },
+    ssr: {
+      noExternal: ["@workspace/ui", "@workspace/shared"],
+    },
   },
   integrations: [react(), icon()],
 })

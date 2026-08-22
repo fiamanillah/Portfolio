@@ -97,6 +97,20 @@ export const config = {
       .map((t) => t.trim())
       .filter(Boolean),
   },
+  google: {
+    clientId: process.env.GOOGLE_CLIENT_ID || "",
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+    redirectUri:
+      process.env.GOOGLE_REDIRECT_URI ||
+      "http://localhost:3040/booking/v1/google/callback",
+  },
+  booking: {
+    adminEmail: process.env.BOOKING_NOTIFICATION_EMAIL || process.env.CONTACT_RECIPIENT_EMAIL || "fi@amanillah.dev",
+    rateLimitWindowMs: parseInt(
+      process.env.BOOKING_RATE_LIMIT_WINDOW_MS || "3600000"
+    ), // 1 hour
+    rateLimitMax: parseInt(process.env.BOOKING_RATE_LIMIT_MAX || "10"), // 10 bookings / IP / hour
+  },
 }
 
 export default config

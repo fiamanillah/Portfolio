@@ -18,6 +18,20 @@ import {
   getOtpVerificationLiquidBody,
   renderOtpEmail,
 } from "@/templates/emails/otpVerification"
+import {
+  getBookingConfirmationLiquidBody,
+  renderBookingConfirmationEmail,
+} from "@/templates/emails/bookingConfirmation"
+import {
+  getBookingNotificationLiquidBody,
+  renderBookingNotificationEmail,
+} from "@/templates/emails/bookingNotification"
+import {
+  getBookingCancellationLiquidBody,
+  getHostCancellationNotificationLiquidBody,
+  renderBookingCancellationEmail,
+  renderHostCancellationNotificationEmail,
+} from "@/templates/emails/bookingCancellation"
 import { SYSTEM_TEMPLATES } from "@/templates/emails/defaultTemplates"
 import { TemplateRenderer } from "@/services/TemplateRenderer"
 
@@ -39,6 +53,8 @@ describe("Flat White-Themed Email Templates & Templating System", () => {
       expect(html).toContain("<!DOCTYPE html>")
       expect(html).toContain("Fi Amanillah")
       expect(html).toContain("fi.amanillah.com")
+      expect(html).toContain("https://assets.fi.amanillah.com/general/2026/08/logo-25d8b825.png")
+      expect(html).toContain('alt="Fi Amanillah"')
       expect(html).toContain("This is test content.")
       expect(html).toContain("background-color: #f8fafc")
       expect(html).toContain("background-color: #ffffff")
@@ -276,9 +292,104 @@ describe("Flat White-Themed Email Templates & Templating System", () => {
     })
   })
 
+  describe("Booking Email Templates", () => {
+    it("should render booking confirmation email cleanly with Meet and cancel links", () => {
+      const res = renderBookingConfirmationEmail({
+        guestName: "Alex Rivera",
+        guestEmail: "alex@example.com",
+        meetingType: "1-on-1 Consultation",
+        startTime: new Date("2026-08-25T14:00:00Z"),
+        endTime: new Date("2026-08-25T14:30:00Z"),
+        durationMinutes: 30,
+        timezone: "UTC",
+        googleMeetLink: "https://meet.google.com/abc-defg-hij",
+        cancellationToken: "550e8400-e29b-41d4-a716-446655440000",
+        guestNotes: "Looking forward to speaking about cloud architecture.",
+        webUrl: "https://fi.amanillah.com",
+      })
+
+      expect(res.subject).toContain("1-on-1 Consultation")
+      expect(res.subject).toContain("Fi Amanillah")
+      expect(res.html).toContain("Alex Rivera")
+      expect(res.html).toContain("https://meet.google.com/abc-defg-hij")
+      expect(res.html).toContain("550e8400-e29b-41d4-a716-446655440000")
+      expect(res.html).toContain("border-radius: 0")
+      expect(res.html).not.toMatch(emojiRegex)
+    })
+
+    it("should render booking host notification email cleanly", () => {
+      const res = renderBookingNotificationEmail({
+        guestName: "Elena Rostova",
+        guestEmail: "elena@example.com",
+        meetingType: "Architecture Review",
+        startTime: new Date("2026-08-25T15:00:00Z"),
+        endTime: new Date("2026-08-25T15:45:00Z"),
+        durationMinutes: 45,
+        timezone: "UTC",
+        googleMeetLink: "https://meet.google.com/xyz-uvwx-rst",
+        bookingId: "booking_123",
+        dashboardUrl: "https://admin.fi.amanillah.com",
+      })
+
+      expect(res.subject).toContain("Elena Rostova")
+      expect(res.subject).toContain("Architecture Review")
+      expect(res.html).toContain("Elena Rostova")
+      expect(res.html).toContain("elena@example.com")
+      expect(res.html).toContain("https://admin.fi.amanillah.com/bookings")
+      expect(res.html).toContain("border-radius: 0")
+    })
+
+    it("should render booking cancellation email cleanly", () => {
+      const res = renderBookingCancellationEmail({
+        guestName: "Alex Rivera",
+        guestEmail: "alex@example.com",
+        meetingType: "1-on-1 Consultation",
+        startTime: new Date("2026-08-25T14:00:00Z"),
+        endTime: new Date("2026-08-25T14:30:00Z"),
+        durationMinutes: 30,
+        timezone: "UTC",
+        reason: "Scheduling conflict.",
+        webUrl: "https://fi.amanillah.com",
+      })
+
+      expect(res.subject).toContain("[Cancelled]")
+      expect(res.subject).toContain("1-on-1 Consultation")
+      expect(res.html).toContain("Alex Rivera")
+      expect(res.html).toContain("Scheduling conflict.")
+      expect(res.html).toContain("Schedule New Session")
+      expect(res.html).toContain("border-radius: 0")
+      expect(res.html).not.toMatch(emojiRegex)
+    })
+
+    it("should render host booking cancellation notification email cleanly", () => {
+      const res = renderHostCancellationNotificationEmail({
+        guestName: "Alex Rivera",
+        guestEmail: "alex@example.com",
+        meetingType: "1-on-1 Consultation",
+        startTime: new Date("2026-08-25T14:00:00Z"),
+        endTime: new Date("2026-08-25T14:30:00Z"),
+        durationMinutes: 30,
+        timezone: "UTC",
+        reason: "Client had an urgent conflict.",
+        cancelledBy: "guest",
+        bookingId: "booking_123",
+        dashboardUrl: "https://admin.fi.amanillah.com",
+      })
+
+      expect(res.subject).toContain("[Cancelled Booking]")
+      expect(res.subject).toContain("Alex Rivera")
+      expect(res.html).toContain("Alex Rivera")
+      expect(res.html).toContain("alex@example.com")
+      expect(res.html).toContain("Client had an urgent conflict.")
+      expect(res.html).toContain("https://admin.fi.amanillah.com/bookings")
+      expect(res.html).toContain("border-radius: 0")
+      expect(res.html).not.toMatch(emojiRegex)
+    })
+  })
+
   describe("System Default Templates Definitions (defaultTemplates.ts)", () => {
-    it("should ensure all 6 SYSTEM_TEMPLATES render without error", async () => {
-      expect(SYSTEM_TEMPLATES.length).toBe(6)
+    it("should ensure all 10 SYSTEM_TEMPLATES render without error", async () => {
+      expect(SYSTEM_TEMPLATES.length).toBe(10)
 
       for (const tpl of SYSTEM_TEMPLATES) {
         expect(tpl.subject).not.toMatch(emojiRegex)

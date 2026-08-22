@@ -417,7 +417,10 @@ export const ModelName = {
   Experience: 'Experience',
   Resume: 'Resume',
   SkillCategory: 'SkillCategory',
-  Skill: 'Skill'
+  Skill: 'Skill',
+  GoogleCalendarAccount: 'GoogleCalendarAccount',
+  BookingAvailability: 'BookingAvailability',
+  Booking: 'Booking'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -433,7 +436,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "contactSubmission" | "subscriber" | "emailTemplate" | "user" | "otpVerification" | "refreshToken" | "blogCategory" | "blogTag" | "blogPost" | "blogReaction" | "comment" | "commentReaction" | "commentReport" | "mediaFile" | "caseStudy" | "newsletter" | "newsletterSendLog" | "experience" | "resume" | "skillCategory" | "skill"
+    modelProps: "contactSubmission" | "subscriber" | "emailTemplate" | "user" | "otpVerification" | "refreshToken" | "blogCategory" | "blogTag" | "blogPost" | "blogReaction" | "comment" | "commentReaction" | "commentReport" | "mediaFile" | "caseStudy" | "newsletter" | "newsletterSendLog" | "experience" | "resume" | "skillCategory" | "skill" | "googleCalendarAccount" | "bookingAvailability" | "booking"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1991,6 +1994,228 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    GoogleCalendarAccount: {
+      payload: Prisma.$GoogleCalendarAccountPayload<ExtArgs>
+      fields: Prisma.GoogleCalendarAccountFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.GoogleCalendarAccountFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GoogleCalendarAccountPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.GoogleCalendarAccountFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GoogleCalendarAccountPayload>
+        }
+        findFirst: {
+          args: Prisma.GoogleCalendarAccountFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GoogleCalendarAccountPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.GoogleCalendarAccountFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GoogleCalendarAccountPayload>
+        }
+        findMany: {
+          args: Prisma.GoogleCalendarAccountFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GoogleCalendarAccountPayload>[]
+        }
+        create: {
+          args: Prisma.GoogleCalendarAccountCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GoogleCalendarAccountPayload>
+        }
+        createMany: {
+          args: Prisma.GoogleCalendarAccountCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.GoogleCalendarAccountCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GoogleCalendarAccountPayload>[]
+        }
+        delete: {
+          args: Prisma.GoogleCalendarAccountDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GoogleCalendarAccountPayload>
+        }
+        update: {
+          args: Prisma.GoogleCalendarAccountUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GoogleCalendarAccountPayload>
+        }
+        deleteMany: {
+          args: Prisma.GoogleCalendarAccountDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.GoogleCalendarAccountUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.GoogleCalendarAccountUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GoogleCalendarAccountPayload>[]
+        }
+        upsert: {
+          args: Prisma.GoogleCalendarAccountUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GoogleCalendarAccountPayload>
+        }
+        aggregate: {
+          args: Prisma.GoogleCalendarAccountAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateGoogleCalendarAccount>
+        }
+        groupBy: {
+          args: Prisma.GoogleCalendarAccountGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.GoogleCalendarAccountGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.GoogleCalendarAccountCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.GoogleCalendarAccountCountAggregateOutputType> | number
+        }
+      }
+    }
+    BookingAvailability: {
+      payload: Prisma.$BookingAvailabilityPayload<ExtArgs>
+      fields: Prisma.BookingAvailabilityFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.BookingAvailabilityFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingAvailabilityPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.BookingAvailabilityFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingAvailabilityPayload>
+        }
+        findFirst: {
+          args: Prisma.BookingAvailabilityFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingAvailabilityPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.BookingAvailabilityFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingAvailabilityPayload>
+        }
+        findMany: {
+          args: Prisma.BookingAvailabilityFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingAvailabilityPayload>[]
+        }
+        create: {
+          args: Prisma.BookingAvailabilityCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingAvailabilityPayload>
+        }
+        createMany: {
+          args: Prisma.BookingAvailabilityCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.BookingAvailabilityCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingAvailabilityPayload>[]
+        }
+        delete: {
+          args: Prisma.BookingAvailabilityDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingAvailabilityPayload>
+        }
+        update: {
+          args: Prisma.BookingAvailabilityUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingAvailabilityPayload>
+        }
+        deleteMany: {
+          args: Prisma.BookingAvailabilityDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.BookingAvailabilityUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.BookingAvailabilityUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingAvailabilityPayload>[]
+        }
+        upsert: {
+          args: Prisma.BookingAvailabilityUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingAvailabilityPayload>
+        }
+        aggregate: {
+          args: Prisma.BookingAvailabilityAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateBookingAvailability>
+        }
+        groupBy: {
+          args: Prisma.BookingAvailabilityGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BookingAvailabilityGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.BookingAvailabilityCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BookingAvailabilityCountAggregateOutputType> | number
+        }
+      }
+    }
+    Booking: {
+      payload: Prisma.$BookingPayload<ExtArgs>
+      fields: Prisma.BookingFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.BookingFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.BookingFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPayload>
+        }
+        findFirst: {
+          args: Prisma.BookingFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.BookingFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPayload>
+        }
+        findMany: {
+          args: Prisma.BookingFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPayload>[]
+        }
+        create: {
+          args: Prisma.BookingCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPayload>
+        }
+        createMany: {
+          args: Prisma.BookingCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.BookingCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPayload>[]
+        }
+        delete: {
+          args: Prisma.BookingDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPayload>
+        }
+        update: {
+          args: Prisma.BookingUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPayload>
+        }
+        deleteMany: {
+          args: Prisma.BookingDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.BookingUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.BookingUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPayload>[]
+        }
+        upsert: {
+          args: Prisma.BookingUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPayload>
+        }
+        aggregate: {
+          args: Prisma.BookingAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateBooking>
+        }
+        groupBy: {
+          args: Prisma.BookingGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BookingGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.BookingCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BookingCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -2503,6 +2728,59 @@ export const SkillScalarFieldEnum = {
 export type SkillScalarFieldEnum = (typeof SkillScalarFieldEnum)[keyof typeof SkillScalarFieldEnum]
 
 
+export const GoogleCalendarAccountScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  accessToken: 'accessToken',
+  refreshToken: 'refreshToken',
+  tokenExpiry: 'tokenExpiry',
+  calendarId: 'calendarId',
+  email: 'email',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type GoogleCalendarAccountScalarFieldEnum = (typeof GoogleCalendarAccountScalarFieldEnum)[keyof typeof GoogleCalendarAccountScalarFieldEnum]
+
+
+export const BookingAvailabilityScalarFieldEnum = {
+  id: 'id',
+  dayOfWeek: 'dayOfWeek',
+  startTime: 'startTime',
+  endTime: 'endTime',
+  isActive: 'isActive',
+  slotDuration: 'slotDuration',
+  bufferTime: 'bufferTime',
+  timezone: 'timezone',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BookingAvailabilityScalarFieldEnum = (typeof BookingAvailabilityScalarFieldEnum)[keyof typeof BookingAvailabilityScalarFieldEnum]
+
+
+export const BookingScalarFieldEnum = {
+  id: 'id',
+  guestName: 'guestName',
+  guestEmail: 'guestEmail',
+  guestNotes: 'guestNotes',
+  meetingType: 'meetingType',
+  startTime: 'startTime',
+  endTime: 'endTime',
+  durationMinutes: 'durationMinutes',
+  timezone: 'timezone',
+  status: 'status',
+  googleEventId: 'googleEventId',
+  googleMeetLink: 'googleMeetLink',
+  cancellationToken: 'cancellationToken',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BookingScalarFieldEnum = (typeof BookingScalarFieldEnum)[keyof typeof BookingScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -2808,6 +3086,20 @@ export type EnumSkillStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$Pris
 export type ListEnumSkillStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SkillStatus[]'>
     
 
+
+/**
+ * Reference to a field of type 'BookingStatus'
+ */
+export type EnumBookingStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BookingStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'BookingStatus[]'
+ */
+export type ListEnumBookingStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BookingStatus[]'>
+    
+
 /**
  * Batch Payload for updateMany & deleteMany & createMany
  */
@@ -2980,6 +3272,9 @@ export type GlobalOmitConfig = {
   resume?: Prisma.ResumeOmit
   skillCategory?: Prisma.SkillCategoryOmit
   skill?: Prisma.SkillOmit
+  googleCalendarAccount?: Prisma.GoogleCalendarAccountOmit
+  bookingAvailability?: Prisma.BookingAvailabilityOmit
+  booking?: Prisma.BookingOmit
 }
 
 /* Types for Logging */

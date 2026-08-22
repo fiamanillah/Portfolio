@@ -146,3 +146,18 @@ export type SkillCategory = Prisma.SkillCategoryModel
  * 
  */
 export type Skill = Prisma.SkillModel
+/**
+ * Model GoogleCalendarAccount
+ * 
+ */
+export type GoogleCalendarAccount = Prisma.GoogleCalendarAccountModel
+/**
+ * Model BookingAvailability
+ * 
+ */
+export type BookingAvailability = Prisma.BookingAvailabilityModel
+/**
+ * Model Booking
+ * 
+ */
+export type Booking = Prisma.BookingModel

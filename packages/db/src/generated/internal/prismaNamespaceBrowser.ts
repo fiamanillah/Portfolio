@@ -71,7 +71,10 @@ export const ModelName = {
   Experience: 'Experience',
   Resume: 'Resume',
   SkillCategory: 'SkillCategory',
-  Skill: 'Skill'
+  Skill: 'Skill',
+  GoogleCalendarAccount: 'GoogleCalendarAccount',
+  BookingAvailability: 'BookingAvailability',
+  Booking: 'Booking'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -561,6 +564,59 @@ export const SkillScalarFieldEnum = {
 } as const
 
 export type SkillScalarFieldEnum = (typeof SkillScalarFieldEnum)[keyof typeof SkillScalarFieldEnum]
+
+
+export const GoogleCalendarAccountScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  accessToken: 'accessToken',
+  refreshToken: 'refreshToken',
+  tokenExpiry: 'tokenExpiry',
+  calendarId: 'calendarId',
+  email: 'email',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type GoogleCalendarAccountScalarFieldEnum = (typeof GoogleCalendarAccountScalarFieldEnum)[keyof typeof GoogleCalendarAccountScalarFieldEnum]
+
+
+export const BookingAvailabilityScalarFieldEnum = {
+  id: 'id',
+  dayOfWeek: 'dayOfWeek',
+  startTime: 'startTime',
+  endTime: 'endTime',
+  isActive: 'isActive',
+  slotDuration: 'slotDuration',
+  bufferTime: 'bufferTime',
+  timezone: 'timezone',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BookingAvailabilityScalarFieldEnum = (typeof BookingAvailabilityScalarFieldEnum)[keyof typeof BookingAvailabilityScalarFieldEnum]
+
+
+export const BookingScalarFieldEnum = {
+  id: 'id',
+  guestName: 'guestName',
+  guestEmail: 'guestEmail',
+  guestNotes: 'guestNotes',
+  meetingType: 'meetingType',
+  startTime: 'startTime',
+  endTime: 'endTime',
+  durationMinutes: 'durationMinutes',
+  timezone: 'timezone',
+  status: 'status',
+  googleEventId: 'googleEventId',
+  googleMeetLink: 'googleMeetLink',
+  cancellationToken: 'cancellationToken',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BookingScalarFieldEnum = (typeof BookingScalarFieldEnum)[keyof typeof BookingScalarFieldEnum]
 
 
 export const SortOrder = {

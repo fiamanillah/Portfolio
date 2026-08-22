@@ -9,6 +9,7 @@ export interface EmailLayoutOptions {
   unsubscribeUrl?: string
   manageUrl?: string
   showUnsubscribe?: boolean
+  headExtraHtml?: string
 }
 
 export interface EmailLayoutResult {
@@ -18,7 +19,7 @@ export interface EmailLayoutResult {
 
 /**
  * Clean, Minimalist & Flat White-Themed Email Layout matching Fi Amanillah's Portfolio.
- * 0 rounded corners, uniform 1px borders, high-contrast typography, and resilient HTML tables.
+ * Features retina-ready brand logo, 0 rounded corners, uniform 1px borders, high-contrast typography, and resilient HTML tables.
  */
 export function renderEmailLayout(
   options: EmailLayoutOptions
@@ -32,6 +33,7 @@ export function renderEmailLayout(
     unsubscribeUrl,
     manageUrl,
     showUnsubscribe = true,
+    headExtraHtml = "",
   } = options
 
   const fontSans =
@@ -43,19 +45,19 @@ export function renderEmailLayout(
   if (showUnsubscribe) {
     if (unsubscribeUrl) {
       footerLinksHtml = `
-        <p style="margin: 14px 0 0 0; font-size: 12px; color: #64748b; line-height: 1.5;">
-          You received this email because you subscribed or submitted a message on <a href="https://fi.amanillah.com" style="color: #0f172a; text-decoration: underline;">fi.amanillah.com</a>.
+        <p style="margin: 10px 0 0 0; font-size: 11px; color: #94a3b8; line-height: 1.5;">
+          You received this email because you subscribed or submitted a message on <a href="https://fi.amanillah.com" style="color: #64748b; text-decoration: underline;">fi.amanillah.com</a>.
         </p>
-        <p style="margin: 6px 0 0 0; font-size: 12px; color: #64748b;">
-          <a href="${unsubscribeUrl}" style="color: #0f172a; text-decoration: underline;">Unsubscribe</a>
-          ${manageUrl ? `&nbsp;&nbsp;·&nbsp;&nbsp;<a href="${manageUrl}" style="color: #64748b; text-decoration: underline;">Preferences</a>` : ""}
+        <p style="margin: 4px 0 0 0; font-size: 11px; color: #94a3b8;">
+          <a href="${unsubscribeUrl}" style="color: #64748b; text-decoration: underline;">Unsubscribe</a>
+          ${manageUrl ? `&nbsp;&nbsp;&middot;&nbsp;&nbsp;<a href="${manageUrl}" style="color: #64748b; text-decoration: underline;">Preferences</a>` : ""}
         </p>
       `
     } else {
       footerLinksHtml = `
-        <p style="margin: 14px 0 0 0; font-size: 12px; color: #64748b; line-height: 1.5;">
-          This is a transactional transmission from <a href="https://fi.amanillah.com" style="color: #0f172a; text-decoration: underline;">fi.amanillah.com</a>.
-          If you did not make this request, you can safely disregard it.
+        <p style="margin: 10px 0 0 0; font-size: 11px; color: #94a3b8; line-height: 1.5;">
+          This is an automated transmission from <a href="https://fi.amanillah.com" style="color: #64748b; text-decoration: underline;">fi.amanillah.com</a>.
+          If you did not initiate this request, you can safely disregard it.
         </p>
       `
     }
@@ -69,6 +71,7 @@ export function renderEmailLayout(
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>${title}</title>
+  ${headExtraHtml}
   <!--[if mso]>
   <noscript>
     <xml>
@@ -112,25 +115,28 @@ export function renderEmailLayout(
         <!-- Main Email Container Card -->
         <table class="email-container" role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="max-width: 580px; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 0;">
           
-          <!-- Header Bar with Brand and Monospace Badge -->
+          <!-- Header Bar with Hosted Logo and Monospace Badge -->
           <tr>
-            <td class="email-header" style="padding: 24px 32px 18px 32px; border-bottom: 1px solid #e2e8f0;">
+            <td class="email-header" style="padding: 22px 32px 18px 32px; border-bottom: 1px solid #e2e8f0;">
               <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0">
                 <tr>
                   <td align="left" style="vertical-align: middle;">
                     <table role="presentation" border="0" cellspacing="0" cellpadding="0">
                       <tr>
-                        <td style="vertical-align: middle;">
-                          <a href="https://fi.amanillah.com" style="text-decoration: none; display: inline-flex; align-items: center;">
-                            <span style="font-family: ${fontSans}; font-size: 15px; font-weight: 700; color: #0f172a; letter-spacing: -0.01em;">
-                              Fi Amanillah
-                            </span>
+                        <td style="vertical-align: middle; padding-right: 12px;">
+                          <a href="https://fi.amanillah.com" target="_blank" style="text-decoration: none; display: block;">
+                            <img 
+                              src="https://assets.fi.amanillah.com/general/2026/08/logo-25d8b825.png" 
+                              alt="Fi Amanillah" 
+                              height="26" 
+                              style="display: block; height: 26px; width: auto; max-height: 26px; border: 0; outline: none; text-decoration: none; -ms-interpolation-mode: bicubic;" 
+                            />
                           </a>
                         </td>
                         ${
                           badgeLabel
-                            ? `<td style="padding-left: 10px; vertical-align: middle;">
-                                <span style="font-family: ${fontMono}; font-size: 11px; font-weight: 600; color: #475569; background-color: #f1f5f9; border: 1px solid #e2e8f0; padding: 2px 6px; border-radius: 0; display: inline-block; text-transform: uppercase; letter-spacing: 0.04em;">
+                            ? `<td style="vertical-align: middle;">
+                                <span style="font-family: ${fontMono}; font-size: 10px; font-weight: 700; color: #475569; background-color: #f1f5f9; border: 1px solid #e2e8f0; padding: 2px 7px; border-radius: 0; display: inline-block; text-transform: uppercase; letter-spacing: 0.05em;">
                                   ${badgeLabel}
                                 </span>
                               </td>`
@@ -140,8 +146,8 @@ export function renderEmailLayout(
                     </table>
                   </td>
                   <td align="right" style="vertical-align: middle;">
-                    <a href="https://fi.amanillah.com" style="font-family: ${fontMono}; font-size: 12px; color: #64748b; text-decoration: none; font-weight: 500;">
-                      fi.amanillah.com
+                    <a href="https://fi.amanillah.com" target="_blank" style="font-family: ${fontMono}; font-size: 11px; color: #94a3b8; text-decoration: none; font-weight: 500;">
+                      fi.amanillah.com &rarr;
                     </a>
                   </td>
                 </tr>
@@ -170,23 +176,20 @@ export function renderEmailLayout(
             </td>
           </tr>
 
-          <!-- Clean Minimal Footer -->
+          <!-- Clean Unified Footer -->
           <tr>
-            <td class="email-footer" style="padding: 20px 32px; background-color: #f8fafc; border-top: 1px solid #e2e8f0; text-align: left;">
+            <td class="email-footer" style="padding: 22px 32px; background-color: #f8fafc; border-top: 1px solid #e2e8f0; text-align: left;">
               <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0">
                 <tr>
                   <td>
-                    <p style="margin: 0 0 4px 0; font-size: 13px; font-weight: 600; color: #0f172a;">
-                      Fi Amanillah
+                    <p style="margin: 0 0 6px 0; font-size: 13px; font-weight: 600; color: #0f172a;">
+                      Fi Amanillah <span style="font-weight: 400; color: #64748b;">&mdash; Full-Stack &amp; DevOps Engineer</span>
                     </p>
-                    <p style="margin: 0 0 10px 0; font-size: 12px; color: #64748b;">
-                      Full-Stack &amp; DevOps Engineer
-                    </p>
-                    <p style="margin: 0; font-size: 12px; color: #64748b;">
-                      <a href="https://fi.amanillah.com" style="color: #64748b; text-decoration: underline; margin-right: 12px;">Home</a>
-                      <a href="https://fi.amanillah.com/blog" style="color: #64748b; text-decoration: underline; margin-right: 12px;">Blog</a>
-                      <a href="https://github.com/fiamanillah" style="color: #64748b; text-decoration: underline; margin-right: 12px;">GitHub</a>
-                      <a href="https://www.linkedin.com/in/fi-amanillah/" style="color: #64748b; text-decoration: underline;">LinkedIn</a>
+                    <p style="margin: 0 0 12px 0; font-size: 12px; color: #64748b;">
+                      <a href="https://fi.amanillah.com" style="color: #475569; text-decoration: underline; margin-right: 12px;">Home</a>
+                      <a href="https://fi.amanillah.com/blog" style="color: #475569; text-decoration: underline; margin-right: 12px;">Blog</a>
+                      <a href="https://github.com/fiamanillah" style="color: #475569; text-decoration: underline; margin-right: 12px;">GitHub</a>
+                      <a href="https://www.linkedin.com/in/fi-amanillah/" style="color: #475569; text-decoration: underline;">LinkedIn</a>
                     </p>
                     ${footerLinksHtml}
                   </td>

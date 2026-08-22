@@ -24,6 +24,7 @@ import {
   Briefcase,
   FileText,
   Cpu,
+  CalendarCheck,
 } from "lucide-react"
 
 import {
@@ -119,7 +120,12 @@ const navGroups: NavGroup[] = [
   {
     label: "Audience & Access",
     items: [
-       {
+      {
+        title: "Bookings",
+        url: "/bookings",
+        icon: CalendarCheck,
+      },
+      {
         title: "Newsletters",
         url: "/newsletters",
         icon: Mail,

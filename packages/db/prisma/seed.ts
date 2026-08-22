@@ -733,7 +733,32 @@ async function main() {
     }
   }
 
-  console.log(`✅ Seeded users, subscribers, blog posts, case studies, experiences, and skills successfully:
+  // 8. Seed Default Booking Availability (Mon-Fri 09:00 - 17:00)
+  for (let day = 0; day <= 6; day++) {
+    const isWeekday = day >= 1 && day <= 5;
+    await prisma.bookingAvailability.upsert({
+      where: { dayOfWeek: day },
+      update: {
+        isActive: isWeekday,
+        startTime: "09:00",
+        endTime: "17:00",
+        slotDuration: 30,
+        bufferTime: 15,
+        timezone: "UTC",
+      },
+      create: {
+        dayOfWeek: day,
+        isActive: isWeekday,
+        startTime: "09:00",
+        endTime: "17:00",
+        slotDuration: 30,
+        bufferTime: 15,
+        timezone: "UTC",
+      },
+    });
+  }
+
+  console.log(`✅ Seeded users, subscribers, blog posts, case studies, experiences, skills, and booking availability successfully:
   - Admin: ${adminUser.email} (${adminUser.role})
   - Moderator: ${alexUser.email} (${alexUser.role})
   - User: ${sarahUser.email} (${sarahUser.role})
@@ -743,6 +768,7 @@ async function main() {
   - Case Studies: ${seededCaseStudiesCount} case studies migrated
   - Experiences: ${seededExperiencesCount} experiences migrated
   - Skills: ${seededSkillsCount} skills seeded
+  - Booking Availability: Initialized for 7 days (Mon-Fri active)
   `);
 }
 

@@ -20,6 +20,7 @@ import { NewsletterModule } from "./Modules/Newsletter/NewsletterModule"
 import { ExperienceModule } from "./Modules/Experience/ExperienceModule"
 import { ResumeModule } from "./Modules/Resume/ResumeModule"
 import { SkillModule } from "./Modules/Skill/SkillModule"
+import { BookingModule } from "./Modules/Booking/BookingModule"
 
 // Modules (Business Logic)
 
@@ -52,6 +53,7 @@ async function bootstrap() {
     app.registerModule(new ExperienceModule())
     app.registerModule(new ResumeModule())
     app.registerModule(new SkillModule())
+    app.registerModule(new BookingModule())
     logger.info("✔ All modules registered successfully")
 
     // 4. Spark the server!

@@ -1,6 +1,6 @@
 "use client"
 
-import React from "react"
+import React, { useState, useEffect } from "react"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,7 +15,7 @@ export function ModeToggle() {
   const STORAGE_KEY = "ui-theme"
 
   // 1. Use a lazy initializer function to read the DOM only once during initial setup.
-  const [theme, setThemeState] = React.useState<
+  const [theme, setThemeState] = useState<
     "theme-light" | "dark" | "system"
   >(() => {
     // We check typeof document to ensure this doesn't crash during SSR (Next.js/Astro/etc)
@@ -28,7 +28,7 @@ export function ModeToggle() {
   })
 
   // 2. This effect safely updates the DOM whenever the user changes the theme state.
-  React.useEffect(() => {
+  useEffect(() => {
     const isDark =
       theme === "dark" ||
       (theme === "system" &&

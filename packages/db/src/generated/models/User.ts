@@ -344,6 +344,7 @@ export type UserWhereInput = {
   reviewedReports?: Prisma.CommentReportListRelationFilter
   uploadedMedia?: Prisma.MediaFileListRelationFilter
   caseStudies?: Prisma.CaseStudyListRelationFilter
+  googleCalendarAccount?: Prisma.XOR<Prisma.GoogleCalendarAccountNullableScalarRelationFilter, Prisma.GoogleCalendarAccountWhereInput> | null
 }
 
 export type UserOrderByWithRelationInput = {
@@ -381,6 +382,7 @@ export type UserOrderByWithRelationInput = {
   reviewedReports?: Prisma.CommentReportOrderByRelationAggregateInput
   uploadedMedia?: Prisma.MediaFileOrderByRelationAggregateInput
   caseStudies?: Prisma.CaseStudyOrderByRelationAggregateInput
+  googleCalendarAccount?: Prisma.GoogleCalendarAccountOrderByWithRelationInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -421,6 +423,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   reviewedReports?: Prisma.CommentReportListRelationFilter
   uploadedMedia?: Prisma.MediaFileListRelationFilter
   caseStudies?: Prisma.CaseStudyListRelationFilter
+  googleCalendarAccount?: Prisma.XOR<Prisma.GoogleCalendarAccountNullableScalarRelationFilter, Prisma.GoogleCalendarAccountWhereInput> | null
 }, "id" | "email" | "username">
 
 export type UserOrderByWithAggregationInput = {
@@ -518,6 +521,7 @@ export type UserCreateInput = {
   reviewedReports?: Prisma.CommentReportCreateNestedManyWithoutReviewedByInput
   uploadedMedia?: Prisma.MediaFileCreateNestedManyWithoutUploaderInput
   caseStudies?: Prisma.CaseStudyCreateNestedManyWithoutAuthorInput
+  googleCalendarAccount?: Prisma.GoogleCalendarAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -555,6 +559,7 @@ export type UserUncheckedCreateInput = {
   reviewedReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReviewedByInput
   uploadedMedia?: Prisma.MediaFileUncheckedCreateNestedManyWithoutUploaderInput
   caseStudies?: Prisma.CaseStudyUncheckedCreateNestedManyWithoutAuthorInput
+  googleCalendarAccount?: Prisma.GoogleCalendarAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -592,6 +597,7 @@ export type UserUpdateInput = {
   reviewedReports?: Prisma.CommentReportUpdateManyWithoutReviewedByNestedInput
   uploadedMedia?: Prisma.MediaFileUpdateManyWithoutUploaderNestedInput
   caseStudies?: Prisma.CaseStudyUpdateManyWithoutAuthorNestedInput
+  googleCalendarAccount?: Prisma.GoogleCalendarAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -629,6 +635,7 @@ export type UserUncheckedUpdateInput = {
   reviewedReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReviewedByNestedInput
   uploadedMedia?: Prisma.MediaFileUncheckedUpdateManyWithoutUploaderNestedInput
   caseStudies?: Prisma.CaseStudyUncheckedUpdateManyWithoutAuthorNestedInput
+  googleCalendarAccount?: Prisma.GoogleCalendarAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -965,6 +972,20 @@ export type UserUpdateOneWithoutCaseStudiesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCaseStudiesInput, Prisma.UserUpdateWithoutCaseStudiesInput>, Prisma.UserUncheckedUpdateWithoutCaseStudiesInput>
 }
 
+export type UserCreateNestedOneWithoutGoogleCalendarAccountInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutGoogleCalendarAccountInput, Prisma.UserUncheckedCreateWithoutGoogleCalendarAccountInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutGoogleCalendarAccountInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutGoogleCalendarAccountNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutGoogleCalendarAccountInput, Prisma.UserUncheckedCreateWithoutGoogleCalendarAccountInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutGoogleCalendarAccountInput
+  upsert?: Prisma.UserUpsertWithoutGoogleCalendarAccountInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutGoogleCalendarAccountInput, Prisma.UserUpdateWithoutGoogleCalendarAccountInput>, Prisma.UserUncheckedUpdateWithoutGoogleCalendarAccountInput>
+}
+
 export type UserCreateWithoutOtpsInput = {
   id?: string
   email: string
@@ -999,6 +1020,7 @@ export type UserCreateWithoutOtpsInput = {
   reviewedReports?: Prisma.CommentReportCreateNestedManyWithoutReviewedByInput
   uploadedMedia?: Prisma.MediaFileCreateNestedManyWithoutUploaderInput
   caseStudies?: Prisma.CaseStudyCreateNestedManyWithoutAuthorInput
+  googleCalendarAccount?: Prisma.GoogleCalendarAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutOtpsInput = {
@@ -1035,6 +1057,7 @@ export type UserUncheckedCreateWithoutOtpsInput = {
   reviewedReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReviewedByInput
   uploadedMedia?: Prisma.MediaFileUncheckedCreateNestedManyWithoutUploaderInput
   caseStudies?: Prisma.CaseStudyUncheckedCreateNestedManyWithoutAuthorInput
+  googleCalendarAccount?: Prisma.GoogleCalendarAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutOtpsInput = {
@@ -1087,6 +1110,7 @@ export type UserUpdateWithoutOtpsInput = {
   reviewedReports?: Prisma.CommentReportUpdateManyWithoutReviewedByNestedInput
   uploadedMedia?: Prisma.MediaFileUpdateManyWithoutUploaderNestedInput
   caseStudies?: Prisma.CaseStudyUpdateManyWithoutAuthorNestedInput
+  googleCalendarAccount?: Prisma.GoogleCalendarAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutOtpsInput = {
@@ -1123,6 +1147,7 @@ export type UserUncheckedUpdateWithoutOtpsInput = {
   reviewedReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReviewedByNestedInput
   uploadedMedia?: Prisma.MediaFileUncheckedUpdateManyWithoutUploaderNestedInput
   caseStudies?: Prisma.CaseStudyUncheckedUpdateManyWithoutAuthorNestedInput
+  googleCalendarAccount?: Prisma.GoogleCalendarAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutRefreshTokensInput = {
@@ -1159,6 +1184,7 @@ export type UserCreateWithoutRefreshTokensInput = {
   reviewedReports?: Prisma.CommentReportCreateNestedManyWithoutReviewedByInput
   uploadedMedia?: Prisma.MediaFileCreateNestedManyWithoutUploaderInput
   caseStudies?: Prisma.CaseStudyCreateNestedManyWithoutAuthorInput
+  googleCalendarAccount?: Prisma.GoogleCalendarAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutRefreshTokensInput = {
@@ -1195,6 +1221,7 @@ export type UserUncheckedCreateWithoutRefreshTokensInput = {
   reviewedReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReviewedByInput
   uploadedMedia?: Prisma.MediaFileUncheckedCreateNestedManyWithoutUploaderInput
   caseStudies?: Prisma.CaseStudyUncheckedCreateNestedManyWithoutAuthorInput
+  googleCalendarAccount?: Prisma.GoogleCalendarAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutRefreshTokensInput = {
@@ -1247,6 +1274,7 @@ export type UserUpdateWithoutRefreshTokensInput = {
   reviewedReports?: Prisma.CommentReportUpdateManyWithoutReviewedByNestedInput
   uploadedMedia?: Prisma.MediaFileUpdateManyWithoutUploaderNestedInput
   caseStudies?: Prisma.CaseStudyUpdateManyWithoutAuthorNestedInput
+  googleCalendarAccount?: Prisma.GoogleCalendarAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRefreshTokensInput = {
@@ -1283,6 +1311,7 @@ export type UserUncheckedUpdateWithoutRefreshTokensInput = {
   reviewedReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReviewedByNestedInput
   uploadedMedia?: Prisma.MediaFileUncheckedUpdateManyWithoutUploaderNestedInput
   caseStudies?: Prisma.CaseStudyUncheckedUpdateManyWithoutAuthorNestedInput
+  googleCalendarAccount?: Prisma.GoogleCalendarAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutPostsInput = {
@@ -1319,6 +1348,7 @@ export type UserCreateWithoutPostsInput = {
   reviewedReports?: Prisma.CommentReportCreateNestedManyWithoutReviewedByInput
   uploadedMedia?: Prisma.MediaFileCreateNestedManyWithoutUploaderInput
   caseStudies?: Prisma.CaseStudyCreateNestedManyWithoutAuthorInput
+  googleCalendarAccount?: Prisma.GoogleCalendarAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutPostsInput = {
@@ -1355,6 +1385,7 @@ export type UserUncheckedCreateWithoutPostsInput = {
   reviewedReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReviewedByInput
   uploadedMedia?: Prisma.MediaFileUncheckedCreateNestedManyWithoutUploaderInput
   caseStudies?: Prisma.CaseStudyUncheckedCreateNestedManyWithoutAuthorInput
+  googleCalendarAccount?: Prisma.GoogleCalendarAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutPostsInput = {
@@ -1407,6 +1438,7 @@ export type UserUpdateWithoutPostsInput = {
   reviewedReports?: Prisma.CommentReportUpdateManyWithoutReviewedByNestedInput
   uploadedMedia?: Prisma.MediaFileUpdateManyWithoutUploaderNestedInput
   caseStudies?: Prisma.CaseStudyUpdateManyWithoutAuthorNestedInput
+  googleCalendarAccount?: Prisma.GoogleCalendarAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPostsInput = {
@@ -1443,6 +1475,7 @@ export type UserUncheckedUpdateWithoutPostsInput = {
   reviewedReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReviewedByNestedInput
   uploadedMedia?: Prisma.MediaFileUncheckedUpdateManyWithoutUploaderNestedInput
   caseStudies?: Prisma.CaseStudyUncheckedUpdateManyWithoutAuthorNestedInput
+  googleCalendarAccount?: Prisma.GoogleCalendarAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutBlogReactionsInput = {
@@ -1479,6 +1512,7 @@ export type UserCreateWithoutBlogReactionsInput = {
   reviewedReports?: Prisma.CommentReportCreateNestedManyWithoutReviewedByInput
   uploadedMedia?: Prisma.MediaFileCreateNestedManyWithoutUploaderInput
   caseStudies?: Prisma.CaseStudyCreateNestedManyWithoutAuthorInput
+  googleCalendarAccount?: Prisma.GoogleCalendarAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutBlogReactionsInput = {
@@ -1515,6 +1549,7 @@ export type UserUncheckedCreateWithoutBlogReactionsInput = {
   reviewedReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReviewedByInput
   uploadedMedia?: Prisma.MediaFileUncheckedCreateNestedManyWithoutUploaderInput
   caseStudies?: Prisma.CaseStudyUncheckedCreateNestedManyWithoutAuthorInput
+  googleCalendarAccount?: Prisma.GoogleCalendarAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutBlogReactionsInput = {
@@ -1567,6 +1602,7 @@ export type UserUpdateWithoutBlogReactionsInput = {
   reviewedReports?: Prisma.CommentReportUpdateManyWithoutReviewedByNestedInput
   uploadedMedia?: Prisma.MediaFileUpdateManyWithoutUploaderNestedInput
   caseStudies?: Prisma.CaseStudyUpdateManyWithoutAuthorNestedInput
+  googleCalendarAccount?: Prisma.GoogleCalendarAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutBlogReactionsInput = {
@@ -1603,6 +1639,7 @@ export type UserUncheckedUpdateWithoutBlogReactionsInput = {
   reviewedReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReviewedByNestedInput
   uploadedMedia?: Prisma.MediaFileUncheckedUpdateManyWithoutUploaderNestedInput
   caseStudies?: Prisma.CaseStudyUncheckedUpdateManyWithoutAuthorNestedInput
+  googleCalendarAccount?: Prisma.GoogleCalendarAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCommentsInput = {
@@ -1639,6 +1676,7 @@ export type UserCreateWithoutCommentsInput = {
   reviewedReports?: Prisma.CommentReportCreateNestedManyWithoutReviewedByInput
   uploadedMedia?: Prisma.MediaFileCreateNestedManyWithoutUploaderInput
   caseStudies?: Prisma.CaseStudyCreateNestedManyWithoutAuthorInput
+  googleCalendarAccount?: Prisma.GoogleCalendarAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCommentsInput = {
@@ -1675,6 +1713,7 @@ export type UserUncheckedCreateWithoutCommentsInput = {
   reviewedReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReviewedByInput
   uploadedMedia?: Prisma.MediaFileUncheckedCreateNestedManyWithoutUploaderInput
   caseStudies?: Prisma.CaseStudyUncheckedCreateNestedManyWithoutAuthorInput
+  googleCalendarAccount?: Prisma.GoogleCalendarAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCommentsInput = {
@@ -1727,6 +1766,7 @@ export type UserUpdateWithoutCommentsInput = {
   reviewedReports?: Prisma.CommentReportUpdateManyWithoutReviewedByNestedInput
   uploadedMedia?: Prisma.MediaFileUpdateManyWithoutUploaderNestedInput
   caseStudies?: Prisma.CaseStudyUpdateManyWithoutAuthorNestedInput
+  googleCalendarAccount?: Prisma.GoogleCalendarAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCommentsInput = {
@@ -1763,6 +1803,7 @@ export type UserUncheckedUpdateWithoutCommentsInput = {
   reviewedReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReviewedByNestedInput
   uploadedMedia?: Prisma.MediaFileUncheckedUpdateManyWithoutUploaderNestedInput
   caseStudies?: Prisma.CaseStudyUncheckedUpdateManyWithoutAuthorNestedInput
+  googleCalendarAccount?: Prisma.GoogleCalendarAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCommentReactionsInput = {
@@ -1799,6 +1840,7 @@ export type UserCreateWithoutCommentReactionsInput = {
   reviewedReports?: Prisma.CommentReportCreateNestedManyWithoutReviewedByInput
   uploadedMedia?: Prisma.MediaFileCreateNestedManyWithoutUploaderInput
   caseStudies?: Prisma.CaseStudyCreateNestedManyWithoutAuthorInput
+  googleCalendarAccount?: Prisma.GoogleCalendarAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCommentReactionsInput = {
@@ -1835,6 +1877,7 @@ export type UserUncheckedCreateWithoutCommentReactionsInput = {
   reviewedReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReviewedByInput
   uploadedMedia?: Prisma.MediaFileUncheckedCreateNestedManyWithoutUploaderInput
   caseStudies?: Prisma.CaseStudyUncheckedCreateNestedManyWithoutAuthorInput
+  googleCalendarAccount?: Prisma.GoogleCalendarAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCommentReactionsInput = {
@@ -1887,6 +1930,7 @@ export type UserUpdateWithoutCommentReactionsInput = {
   reviewedReports?: Prisma.CommentReportUpdateManyWithoutReviewedByNestedInput
   uploadedMedia?: Prisma.MediaFileUpdateManyWithoutUploaderNestedInput
   caseStudies?: Prisma.CaseStudyUpdateManyWithoutAuthorNestedInput
+  googleCalendarAccount?: Prisma.GoogleCalendarAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCommentReactionsInput = {
@@ -1923,6 +1967,7 @@ export type UserUncheckedUpdateWithoutCommentReactionsInput = {
   reviewedReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReviewedByNestedInput
   uploadedMedia?: Prisma.MediaFileUncheckedUpdateManyWithoutUploaderNestedInput
   caseStudies?: Prisma.CaseStudyUncheckedUpdateManyWithoutAuthorNestedInput
+  googleCalendarAccount?: Prisma.GoogleCalendarAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCommentReportsInput = {
@@ -1959,6 +2004,7 @@ export type UserCreateWithoutCommentReportsInput = {
   reviewedReports?: Prisma.CommentReportCreateNestedManyWithoutReviewedByInput
   uploadedMedia?: Prisma.MediaFileCreateNestedManyWithoutUploaderInput
   caseStudies?: Prisma.CaseStudyCreateNestedManyWithoutAuthorInput
+  googleCalendarAccount?: Prisma.GoogleCalendarAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCommentReportsInput = {
@@ -1995,6 +2041,7 @@ export type UserUncheckedCreateWithoutCommentReportsInput = {
   reviewedReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReviewedByInput
   uploadedMedia?: Prisma.MediaFileUncheckedCreateNestedManyWithoutUploaderInput
   caseStudies?: Prisma.CaseStudyUncheckedCreateNestedManyWithoutAuthorInput
+  googleCalendarAccount?: Prisma.GoogleCalendarAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCommentReportsInput = {
@@ -2036,6 +2083,7 @@ export type UserCreateWithoutReviewedReportsInput = {
   commentReports?: Prisma.CommentReportCreateNestedManyWithoutReporterInput
   uploadedMedia?: Prisma.MediaFileCreateNestedManyWithoutUploaderInput
   caseStudies?: Prisma.CaseStudyCreateNestedManyWithoutAuthorInput
+  googleCalendarAccount?: Prisma.GoogleCalendarAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutReviewedReportsInput = {
@@ -2072,6 +2120,7 @@ export type UserUncheckedCreateWithoutReviewedReportsInput = {
   commentReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReporterInput
   uploadedMedia?: Prisma.MediaFileUncheckedCreateNestedManyWithoutUploaderInput
   caseStudies?: Prisma.CaseStudyUncheckedCreateNestedManyWithoutAuthorInput
+  googleCalendarAccount?: Prisma.GoogleCalendarAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutReviewedReportsInput = {
@@ -2124,6 +2173,7 @@ export type UserUpdateWithoutCommentReportsInput = {
   reviewedReports?: Prisma.CommentReportUpdateManyWithoutReviewedByNestedInput
   uploadedMedia?: Prisma.MediaFileUpdateManyWithoutUploaderNestedInput
   caseStudies?: Prisma.CaseStudyUpdateManyWithoutAuthorNestedInput
+  googleCalendarAccount?: Prisma.GoogleCalendarAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCommentReportsInput = {
@@ -2160,6 +2210,7 @@ export type UserUncheckedUpdateWithoutCommentReportsInput = {
   reviewedReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReviewedByNestedInput
   uploadedMedia?: Prisma.MediaFileUncheckedUpdateManyWithoutUploaderNestedInput
   caseStudies?: Prisma.CaseStudyUncheckedUpdateManyWithoutAuthorNestedInput
+  googleCalendarAccount?: Prisma.GoogleCalendarAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutReviewedReportsInput = {
@@ -2207,6 +2258,7 @@ export type UserUpdateWithoutReviewedReportsInput = {
   commentReports?: Prisma.CommentReportUpdateManyWithoutReporterNestedInput
   uploadedMedia?: Prisma.MediaFileUpdateManyWithoutUploaderNestedInput
   caseStudies?: Prisma.CaseStudyUpdateManyWithoutAuthorNestedInput
+  googleCalendarAccount?: Prisma.GoogleCalendarAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutReviewedReportsInput = {
@@ -2243,6 +2295,7 @@ export type UserUncheckedUpdateWithoutReviewedReportsInput = {
   commentReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReporterNestedInput
   uploadedMedia?: Prisma.MediaFileUncheckedUpdateManyWithoutUploaderNestedInput
   caseStudies?: Prisma.CaseStudyUncheckedUpdateManyWithoutAuthorNestedInput
+  googleCalendarAccount?: Prisma.GoogleCalendarAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutUploadedMediaInput = {
@@ -2279,6 +2332,7 @@ export type UserCreateWithoutUploadedMediaInput = {
   commentReports?: Prisma.CommentReportCreateNestedManyWithoutReporterInput
   reviewedReports?: Prisma.CommentReportCreateNestedManyWithoutReviewedByInput
   caseStudies?: Prisma.CaseStudyCreateNestedManyWithoutAuthorInput
+  googleCalendarAccount?: Prisma.GoogleCalendarAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutUploadedMediaInput = {
@@ -2315,6 +2369,7 @@ export type UserUncheckedCreateWithoutUploadedMediaInput = {
   commentReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReporterInput
   reviewedReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReviewedByInput
   caseStudies?: Prisma.CaseStudyUncheckedCreateNestedManyWithoutAuthorInput
+  googleCalendarAccount?: Prisma.GoogleCalendarAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutUploadedMediaInput = {
@@ -2367,6 +2422,7 @@ export type UserUpdateWithoutUploadedMediaInput = {
   commentReports?: Prisma.CommentReportUpdateManyWithoutReporterNestedInput
   reviewedReports?: Prisma.CommentReportUpdateManyWithoutReviewedByNestedInput
   caseStudies?: Prisma.CaseStudyUpdateManyWithoutAuthorNestedInput
+  googleCalendarAccount?: Prisma.GoogleCalendarAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUploadedMediaInput = {
@@ -2403,6 +2459,7 @@ export type UserUncheckedUpdateWithoutUploadedMediaInput = {
   commentReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReporterNestedInput
   reviewedReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReviewedByNestedInput
   caseStudies?: Prisma.CaseStudyUncheckedUpdateManyWithoutAuthorNestedInput
+  googleCalendarAccount?: Prisma.GoogleCalendarAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCaseStudiesInput = {
@@ -2439,6 +2496,7 @@ export type UserCreateWithoutCaseStudiesInput = {
   commentReports?: Prisma.CommentReportCreateNestedManyWithoutReporterInput
   reviewedReports?: Prisma.CommentReportCreateNestedManyWithoutReviewedByInput
   uploadedMedia?: Prisma.MediaFileCreateNestedManyWithoutUploaderInput
+  googleCalendarAccount?: Prisma.GoogleCalendarAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCaseStudiesInput = {
@@ -2475,6 +2533,7 @@ export type UserUncheckedCreateWithoutCaseStudiesInput = {
   commentReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReporterInput
   reviewedReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReviewedByInput
   uploadedMedia?: Prisma.MediaFileUncheckedCreateNestedManyWithoutUploaderInput
+  googleCalendarAccount?: Prisma.GoogleCalendarAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCaseStudiesInput = {
@@ -2527,6 +2586,7 @@ export type UserUpdateWithoutCaseStudiesInput = {
   commentReports?: Prisma.CommentReportUpdateManyWithoutReporterNestedInput
   reviewedReports?: Prisma.CommentReportUpdateManyWithoutReviewedByNestedInput
   uploadedMedia?: Prisma.MediaFileUpdateManyWithoutUploaderNestedInput
+  googleCalendarAccount?: Prisma.GoogleCalendarAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCaseStudiesInput = {
@@ -2563,6 +2623,171 @@ export type UserUncheckedUpdateWithoutCaseStudiesInput = {
   commentReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReporterNestedInput
   reviewedReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReviewedByNestedInput
   uploadedMedia?: Prisma.MediaFileUncheckedUpdateManyWithoutUploaderNestedInput
+  googleCalendarAccount?: Prisma.GoogleCalendarAccountUncheckedUpdateOneWithoutUserNestedInput
+}
+
+export type UserCreateWithoutGoogleCalendarAccountInput = {
+  id?: string
+  email: string
+  username: string
+  name: string
+  password: string
+  avatar?: string | null
+  resumeUrl?: string | null
+  role?: $Enums.Role
+  headline?: string | null
+  badge?: string | null
+  bio?: string | null
+  location?: string | null
+  website?: string | null
+  githubUrl?: string | null
+  twitterUrl?: string | null
+  linkedinUrl?: string | null
+  pronouns?: string | null
+  customStatus?: string | null
+  isEmailVerified?: boolean
+  subscribedToNewsletter?: boolean
+  twoFactorEnabled?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  otps?: Prisma.OtpVerificationCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  posts?: Prisma.BlogPostCreateNestedManyWithoutAuthorInput
+  blogReactions?: Prisma.BlogReactionCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  commentReactions?: Prisma.CommentReactionCreateNestedManyWithoutUserInput
+  commentReports?: Prisma.CommentReportCreateNestedManyWithoutReporterInput
+  reviewedReports?: Prisma.CommentReportCreateNestedManyWithoutReviewedByInput
+  uploadedMedia?: Prisma.MediaFileCreateNestedManyWithoutUploaderInput
+  caseStudies?: Prisma.CaseStudyCreateNestedManyWithoutAuthorInput
+}
+
+export type UserUncheckedCreateWithoutGoogleCalendarAccountInput = {
+  id?: string
+  email: string
+  username: string
+  name: string
+  password: string
+  avatar?: string | null
+  resumeUrl?: string | null
+  role?: $Enums.Role
+  headline?: string | null
+  badge?: string | null
+  bio?: string | null
+  location?: string | null
+  website?: string | null
+  githubUrl?: string | null
+  twitterUrl?: string | null
+  linkedinUrl?: string | null
+  pronouns?: string | null
+  customStatus?: string | null
+  isEmailVerified?: boolean
+  subscribedToNewsletter?: boolean
+  twoFactorEnabled?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  otps?: Prisma.OtpVerificationUncheckedCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  posts?: Prisma.BlogPostUncheckedCreateNestedManyWithoutAuthorInput
+  blogReactions?: Prisma.BlogReactionUncheckedCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  commentReactions?: Prisma.CommentReactionUncheckedCreateNestedManyWithoutUserInput
+  commentReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReporterInput
+  reviewedReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReviewedByInput
+  uploadedMedia?: Prisma.MediaFileUncheckedCreateNestedManyWithoutUploaderInput
+  caseStudies?: Prisma.CaseStudyUncheckedCreateNestedManyWithoutAuthorInput
+}
+
+export type UserCreateOrConnectWithoutGoogleCalendarAccountInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutGoogleCalendarAccountInput, Prisma.UserUncheckedCreateWithoutGoogleCalendarAccountInput>
+}
+
+export type UserUpsertWithoutGoogleCalendarAccountInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutGoogleCalendarAccountInput, Prisma.UserUncheckedUpdateWithoutGoogleCalendarAccountInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutGoogleCalendarAccountInput, Prisma.UserUncheckedCreateWithoutGoogleCalendarAccountInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutGoogleCalendarAccountInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutGoogleCalendarAccountInput, Prisma.UserUncheckedUpdateWithoutGoogleCalendarAccountInput>
+}
+
+export type UserUpdateWithoutGoogleCalendarAccountInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resumeUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  headline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  badge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  githubUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twitterUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  linkedinUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  subscribedToNewsletter?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  otps?: Prisma.OtpVerificationUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  posts?: Prisma.BlogPostUpdateManyWithoutAuthorNestedInput
+  blogReactions?: Prisma.BlogReactionUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  commentReactions?: Prisma.CommentReactionUpdateManyWithoutUserNestedInput
+  commentReports?: Prisma.CommentReportUpdateManyWithoutReporterNestedInput
+  reviewedReports?: Prisma.CommentReportUpdateManyWithoutReviewedByNestedInput
+  uploadedMedia?: Prisma.MediaFileUpdateManyWithoutUploaderNestedInput
+  caseStudies?: Prisma.CaseStudyUpdateManyWithoutAuthorNestedInput
+}
+
+export type UserUncheckedUpdateWithoutGoogleCalendarAccountInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resumeUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  headline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  badge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  githubUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twitterUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  linkedinUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  subscribedToNewsletter?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  otps?: Prisma.OtpVerificationUncheckedUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  posts?: Prisma.BlogPostUncheckedUpdateManyWithoutAuthorNestedInput
+  blogReactions?: Prisma.BlogReactionUncheckedUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  commentReactions?: Prisma.CommentReactionUncheckedUpdateManyWithoutUserNestedInput
+  commentReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReporterNestedInput
+  reviewedReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReviewedByNestedInput
+  uploadedMedia?: Prisma.MediaFileUncheckedUpdateManyWithoutUploaderNestedInput
+  caseStudies?: Prisma.CaseStudyUncheckedUpdateManyWithoutAuthorNestedInput
 }
 
 
@@ -2712,6 +2937,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   reviewedReports?: boolean | Prisma.User$reviewedReportsArgs<ExtArgs>
   uploadedMedia?: boolean | Prisma.User$uploadedMediaArgs<ExtArgs>
   caseStudies?: boolean | Prisma.User$caseStudiesArgs<ExtArgs>
+  googleCalendarAccount?: boolean | Prisma.User$googleCalendarAccountArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -2808,6 +3034,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   reviewedReports?: boolean | Prisma.User$reviewedReportsArgs<ExtArgs>
   uploadedMedia?: boolean | Prisma.User$uploadedMediaArgs<ExtArgs>
   caseStudies?: boolean | Prisma.User$caseStudiesArgs<ExtArgs>
+  googleCalendarAccount?: boolean | Prisma.User$googleCalendarAccountArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -2826,6 +3053,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     reviewedReports: Prisma.$CommentReportPayload<ExtArgs>[]
     uploadedMedia: Prisma.$MediaFilePayload<ExtArgs>[]
     caseStudies: Prisma.$CaseStudyPayload<ExtArgs>[]
+    googleCalendarAccount: Prisma.$GoogleCalendarAccountPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -3256,6 +3484,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   reviewedReports<T extends Prisma.User$reviewedReportsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$reviewedReportsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommentReportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   uploadedMedia<T extends Prisma.User$uploadedMediaArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$uploadedMediaArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MediaFilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   caseStudies<T extends Prisma.User$caseStudiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$caseStudiesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CaseStudyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  googleCalendarAccount<T extends Prisma.User$googleCalendarAccountArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$googleCalendarAccountArgs<ExtArgs>>): Prisma.Prisma__GoogleCalendarAccountClient<runtime.Types.Result.GetResult<Prisma.$GoogleCalendarAccountPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3939,6 +4168,25 @@ export type User$caseStudiesArgs<ExtArgs extends runtime.Types.Extensions.Intern
   take?: number
   skip?: number
   distinct?: Prisma.CaseStudyScalarFieldEnum | Prisma.CaseStudyScalarFieldEnum[]
+}
+
+/**
+ * User.googleCalendarAccount
+ */
+export type User$googleCalendarAccountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the GoogleCalendarAccount
+   */
+  select?: Prisma.GoogleCalendarAccountSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the GoogleCalendarAccount
+   */
+  omit?: Prisma.GoogleCalendarAccountOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.GoogleCalendarAccountInclude<ExtArgs> | null
+  where?: Prisma.GoogleCalendarAccountWhereInput
 }
 
 /**

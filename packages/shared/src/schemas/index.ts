@@ -13,3 +13,4 @@ export * from "./newsletter.schema";
 export * from "./experience.schema";
 export * from "./resume.schema";
 export * from "./skill.schema";
+export * from "./booking.schema";

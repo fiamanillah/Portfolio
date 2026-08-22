@@ -4,6 +4,12 @@ import { getContactNotificationLiquidBody } from "./contactNotification"
 import { getSubscriptionConfirmationLiquidBody } from "./subscriptionConfirmation"
 import { getNewsletterBroadcastLiquidBody } from "./newsletterBroadcast"
 import { getOtpVerificationLiquidBody } from "./otpVerification"
+import { getBookingConfirmationLiquidBody } from "./bookingConfirmation"
+import { getBookingNotificationLiquidBody } from "./bookingNotification"
+import {
+  getBookingCancellationLiquidBody,
+  getHostCancellationNotificationLiquidBody,
+} from "./bookingCancellation"
 
 export interface SystemTemplateDefinition {
   slug: string
@@ -20,6 +26,103 @@ export interface SystemTemplateDefinition {
 }
 
 export const SYSTEM_TEMPLATES: SystemTemplateDefinition[] = [
+  {
+    slug: "booking-confirmation",
+    name: "Booking Session Confirmation",
+    description:
+      "Automated transactional confirmation email sent to guests after booking a consultation session with Google Meet link and session details.",
+    subject:
+      "[Confirmed] {{ meetingType | default: '1-on-1 Consultation' }} — Fi Amanillah",
+    body: getBookingConfirmationLiquidBody(),
+    fromName: "Fi Amanillah",
+    replyTo: "fi@amanillah.com",
+    type: "HEADLESS",
+    isSystem: true,
+    sampleData: {
+      guestName: "Alex Mercer",
+      guestEmail: "alex.mercer@example.com",
+      meetingType: "Full Stack Architecture & Cloud Scaling",
+      formattedStartTime: "Mon, Aug 24, 2026, 6:30 PM",
+      durationMinutes: 30,
+      timezone: "Asia/Dhaka",
+      googleMeetLink: "https://meet.google.com/abc-defg-hij",
+      googleCalUrl: "https://calendar.google.com/calendar/render?action=TEMPLATE&text=Consultation",
+      outlookCalUrl: "https://outlook.live.com/calendar/0/deeplink/compose?path=/calendar/action/compose",
+      icsDownloadUrl: "https://fi.amanillah.com/api/v1/booking/ics?token=sample_uuid",
+      cancelUrl: "https://fi.amanillah.com/#book-call?cancelToken=sample_uuid",
+      guestNotes: "Looking forward to discussing database migration strategies.",
+    },
+  },
+  {
+    slug: "booking-notification",
+    name: "Booking Host Admin Notification",
+    description:
+      "Instant notification email dispatched to portfolio owner whenever a new consultation is booked.",
+    subject:
+      "[New Booking] {{ guestName }} booked \"{{ meetingType }}\"",
+    body: getBookingNotificationLiquidBody(),
+    fromName: "Fi Amanillah Portfolio",
+    replyTo: "fi@amanillah.com",
+    type: "TRANSACTIONAL",
+    isSystem: true,
+    sampleData: {
+      guestName: "Alex Mercer",
+      guestEmail: "alex.mercer@example.com",
+      meetingType: "Full Stack Architecture & Cloud Scaling",
+      formattedStartTime: "Mon, Aug 24, 2026, 6:30 PM",
+      durationMinutes: 30,
+      timezone: "Asia/Dhaka",
+      googleMeetLink: "https://meet.google.com/abc-defg-hij",
+      bookingsPageUrl: "https://admin.fi.amanillah.com/bookings",
+      guestNotes: "Looking forward to discussing database migration strategies.",
+    },
+  },
+  {
+    slug: "booking-cancellation",
+    name: "Booking Cancellation Notice",
+    description:
+      "Cancellation notice dispatched to guest when a scheduled meeting is cancelled.",
+    subject:
+      "[Cancelled] {{ meetingType | default: '1-on-1 Consultation' }} — Fi Amanillah",
+    body: getBookingCancellationLiquidBody(),
+    fromName: "Fi Amanillah",
+    replyTo: "fi@amanillah.com",
+    type: "HEADLESS",
+    isSystem: true,
+    sampleData: {
+      guestName: "Alex Mercer",
+      guestEmail: "alex.mercer@example.com",
+      meetingType: "Full Stack Architecture & Cloud Scaling",
+      formattedStartTime: "Mon, Aug 24, 2026, 6:30 PM",
+      durationMinutes: 30,
+      timezone: "Asia/Dhaka",
+      reason: "Conflict with another scheduled session.",
+      rescheduleUrl: "https://fi.amanillah.com/#book-call",
+    },
+  },
+  {
+    slug: "booking-cancellation-admin",
+    name: "Booking Host Cancellation Alert",
+    description:
+      "Instant notification email dispatched to portfolio owner whenever an appointment is cancelled.",
+    subject:
+      "[Cancelled Booking] {{ guestName }} cancelled \"{{ meetingType }}\"",
+    body: getHostCancellationNotificationLiquidBody(),
+    fromName: "Fi Amanillah Portfolio",
+    replyTo: "fi@amanillah.com",
+    type: "TRANSACTIONAL",
+    isSystem: true,
+    sampleData: {
+      guestName: "Alex Mercer",
+      guestEmail: "alex.mercer@example.com",
+      meetingType: "Full Stack Architecture & Cloud Scaling",
+      formattedStartTime: "Mon, Aug 24, 2026, 6:30 PM",
+      durationMinutes: 30,
+      timezone: "Asia/Dhaka",
+      reason: "Conflict with another scheduled session.",
+      bookingsPageUrl: "https://admin.fi.amanillah.com/bookings",
+    },
+  },
   {
     slug: "contact-confirmation",
     name: "Contact Form Confirmation",
