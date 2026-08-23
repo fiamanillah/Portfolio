@@ -21,10 +21,25 @@ if (result.error) {
 }
 
 // Validate and parse configuration
-if (process.env.NODE_ENV === "production" && !process.env.JWT_SECRET) {
-  throw new Error(
-    "FATAL: JWT_SECRET environment variable is required when running in production mode."
-  )
+if (process.env.NODE_ENV === "production") {
+  const jwtSecret = process.env.JWT_SECRET
+  if (!jwtSecret) {
+    throw new Error(
+      "FATAL: JWT_SECRET environment variable is required when running in production mode."
+    )
+  }
+  const placeholders = [
+    "your-secret-key-here",
+    "change-me",
+    "secret",
+    "jwt-secret",
+    "portfolio-auth-jwt-secret",
+  ]
+  if (placeholders.includes(jwtSecret.toLowerCase())) {
+    throw new Error(
+      "FATAL: JWT_SECRET is set to a placeholder value. Generate a secure random secret for production."
+    )
+  }
 }
 
 export const config = {

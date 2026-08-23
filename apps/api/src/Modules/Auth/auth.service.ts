@@ -111,7 +111,12 @@ export class AuthServices {
     ipAddress?: string,
     userAgent?: string
   ): Promise<AuthTokens> {
-    const secret = config.security.jwt.secret || "portfolio-auth-jwt-secret"
+    const secret = config.security.jwt.secret
+    if (!secret) {
+      throw new Error(
+        "FATAL: JWT_SECRET is not configured. Cannot generate auth tokens."
+      )
+    }
     const expiresIn = config.security.jwt.expiresIn || "1d"
 
     const accessToken = jwt.sign(
@@ -833,7 +838,12 @@ export class AuthServices {
       )
     }
 
-    const secret = config.security.jwt.secret || "portfolio-auth-jwt-secret"
+    const secret = config.security.jwt.secret
+    if (!secret) {
+      throw new AuthenticationError(
+        "Authentication system is misconfigured."
+      )
+    }
     const expiresIn = config.security.jwt.expiresIn || "1d"
 
     const accessToken = jwt.sign(

@@ -66,10 +66,15 @@ export class ContactController extends BaseController {
         ipAddress: clientIp,
       })
 
-      await this.contactService.sendContactEmail(formattedPayload)
-
-      // ── Stage 5b: Send Confirmation Email to Submitter ────────────
-      await this.contactService.sendConfirmationEmail(formattedPayload)
+      // Fire-and-forget: Send admin notification and confirmation emails in background
+      // This prevents Plunk API latency from blocking the user's response
+      Promise.all([
+        this.contactService.sendContactEmail(formattedPayload),
+        this.contactService.sendConfirmationEmail(formattedPayload),
+      ]).catch((emailErr) => {
+        // Log but don't crash — the submission is already saved
+        console.error("Background email delivery error:", emailErr)
+      })
 
       this.sendResponse(
         req,

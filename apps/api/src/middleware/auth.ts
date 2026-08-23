@@ -53,7 +53,12 @@ export async function authenticate(
       )
     }
 
-    const secret = config.security.jwt.secret || "portfolio-auth-jwt-secret"
+    const secret = config.security.jwt.secret
+    if (!secret) {
+      throw new AuthenticationError(
+        "Authentication system is misconfigured. Please contact support."
+      )
+    }
     let decoded: JwtTokenPayload
 
     try {
@@ -120,7 +125,8 @@ export async function optionalAuth(
       return next()
     }
 
-    const secret = config.security.jwt.secret || "portfolio-auth-jwt-secret"
+    const secret = config.security.jwt.secret
+    if (!secret) return next() // Skip optional auth if JWT not configured
     const decoded = jwt.verify(token, secret, {
       issuer: config.security.jwt.issuer,
     }) as JwtTokenPayload

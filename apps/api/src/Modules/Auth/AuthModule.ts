@@ -1,4 +1,5 @@
 // src/Modules/Auth/AuthModule.ts
+import rateLimit from "express-rate-limit"
 import { BaseModule } from "@/core/BaseModule"
 import { AppLogger } from "@workspace/logger"
 import { AuthServices } from "./auth.service"
@@ -38,9 +39,61 @@ export class AuthModule extends BaseModule {
   protected async setupRoutes(): Promise<void> {
     const controller = this.getController<AuthController>("AuthController")
 
+    // ── Rate Limiters ────────────────────────────────────────────────
+    const loginLimiter = rateLimit({
+      windowMs: 15 * 60 * 1000, // 15 minutes
+      max: 10,
+      standardHeaders: true,
+      legacyHeaders: false,
+      message: {
+        success: false,
+        message: "Too many sign-in attempts. Please try again in 15 minutes.",
+        code: "RATE_LIMIT_EXCEEDED",
+      },
+    })
+
+    const registerLimiter = rateLimit({
+      windowMs: 60 * 60 * 1000, // 1 hour
+      max: 5,
+      standardHeaders: true,
+      legacyHeaders: false,
+      message: {
+        success: false,
+        message:
+          "Too many registration attempts. Please try again in an hour.",
+        code: "RATE_LIMIT_EXCEEDED",
+      },
+    })
+
+    const passwordResetLimiter = rateLimit({
+      windowMs: 60 * 60 * 1000, // 1 hour
+      max: 5,
+      standardHeaders: true,
+      legacyHeaders: false,
+      message: {
+        success: false,
+        message:
+          "Too many password reset attempts. Please try again in an hour.",
+        code: "RATE_LIMIT_EXCEEDED",
+      },
+    })
+
+    const otpResendLimiter = rateLimit({
+      windowMs: 5 * 60 * 1000, // 5 minutes
+      max: 3,
+      standardHeaders: true,
+      legacyHeaders: false,
+      message: {
+        success: false,
+        message: "Too many OTP requests. Please wait a few minutes.",
+        code: "RATE_LIMIT_EXCEEDED",
+      },
+    })
+
     // POST /auth/v1/register/initiate
     this.router.post(
       "/register/initiate",
+      registerLimiter,
       validateRequest(initiateRegisterSchema),
       controller.initiateRegistration.bind(controller)
     )
@@ -48,6 +101,7 @@ export class AuthModule extends BaseModule {
     // POST /auth/v1/register/verify-otp
     this.router.post(
       "/register/verify-otp",
+      registerLimiter,
       validateRequest(verifyRegisterOtpSchema),
       controller.verifyRegisterOtp.bind(controller)
     )
@@ -55,6 +109,7 @@ export class AuthModule extends BaseModule {
     // POST /auth/v1/login
     this.router.post(
       "/login",
+      loginLimiter,
       validateRequest(loginSchema),
       controller.login.bind(controller)
     )
@@ -69,6 +124,7 @@ export class AuthModule extends BaseModule {
     // POST /auth/v1/forgot-password
     this.router.post(
       "/forgot-password",
+      passwordResetLimiter,
       validateRequest(forgotPasswordSchema),
       controller.forgotPassword.bind(controller)
     )
@@ -76,6 +132,7 @@ export class AuthModule extends BaseModule {
     // POST /auth/v1/verify-reset-otp
     this.router.post(
       "/verify-reset-otp",
+      passwordResetLimiter,
       validateRequest(verifyResetOtpSchema),
       controller.verifyResetOtp.bind(controller)
     )
@@ -83,6 +140,7 @@ export class AuthModule extends BaseModule {
     // POST /auth/v1/reset-password
     this.router.post(
       "/reset-password",
+      passwordResetLimiter,
       validateRequest(resetPasswordSchema),
       controller.resetPassword.bind(controller)
     )
@@ -90,6 +148,7 @@ export class AuthModule extends BaseModule {
     // POST /auth/v1/resend-otp
     this.router.post(
       "/resend-otp",
+      otpResendLimiter,
       validateRequest(resendOtpSchema),
       controller.resendOtp.bind(controller)
     )

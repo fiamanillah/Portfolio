@@ -11,6 +11,7 @@ import { errorHandler } from "./errors/errorHandler"
 import { notFoundHandler } from "@/middleware/notFound"
 import { setupGlobalMiddlewares } from "@/middleware/globalMiddlewares"
 import { sortModulesByDependencies } from "@/utils/moduleSorter"
+import { stopCleanupScheduler } from "@/utils/dbCleanupScheduler"
 import { Server } from "http"
 
 export class IgnitorApp {
@@ -60,12 +61,27 @@ export class IgnitorApp {
         }
       }
 
-      this.app.get("/health", (req, res) => {
-        res.status(200).json({
-          status: "healthy",
-          timestamp: new Date().toISOString(),
-          uptime: process.uptime(),
-        })
+      this.app.get("/health", async (req, res) => {
+        try {
+          const prismaClient = this.context.getService("prisma")
+          await prismaClient.$queryRaw`SELECT 1`
+          res.status(200).json({
+            status: "healthy",
+            database: "connected",
+            timestamp: new Date().toISOString(),
+            uptime: process.uptime(),
+          })
+        } catch (dbError) {
+          this.logger.error("Health check failed — database unreachable", {
+            error: dbError,
+          })
+          res.status(503).json({
+            status: "unhealthy",
+            database: "disconnected",
+            timestamp: new Date().toISOString(),
+            uptime: process.uptime(),
+          })
+        }
       })
 
       // 4. Global 404 and Error Handlers (MUST be last)
@@ -147,7 +163,10 @@ export class IgnitorApp {
       }
     }
 
-    // 2. Shutdown infrastructure (Disconnect Prisma, Redis, etc.)
+    // 2. Shutdown background schedulers
+    stopCleanupScheduler()
+
+    // 3. Shutdown infrastructure (Disconnect Prisma, Redis, etc.)
     await this.context.shutdown()
     this.logger.info("✔ Application shutdown complete")
   }

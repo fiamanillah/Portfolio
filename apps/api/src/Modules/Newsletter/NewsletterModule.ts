@@ -46,6 +46,11 @@ export class NewsletterModule extends BaseModule {
     this.logger.info("✔ Newsletter module initialized and background scheduler started");
   }
 
+  protected async cleanup(): Promise<void> {
+    NewsletterScheduler.stop();
+    await super.cleanup();
+  }
+
   protected async setupRoutes(): Promise<void> {
     const controller =
       this.getController<NewsletterController>("NewsletterController");

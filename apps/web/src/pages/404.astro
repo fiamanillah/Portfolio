@@ -1,37 +1,167 @@
 ---
 import MySiteLayout from "@/layouts/MySiteLayout.astro"
+import { HugeiconsIcon } from "@hugeicons/react"
+import {
+  Home01Icon,
+  ArrowLeft02Icon,
+  Briefcase01Icon,
+  BookOpen01Icon,
+  DocumentCodeIcon,
+} from "@hugeicons/core-free-icons"
 ---
 
 <MySiteLayout>
+  <Fragment slot="head">
+    <title>404: Page Not Found | Fi Amanillah</title>
+    <meta
+      name="description"
+      content="The page you are looking for does not exist on Fi Amanillah's website."
+    />
+    <meta name="robots" content="noindex, follow" />
+    <meta property="og:title" content="404: Page Not Found | Fi Amanillah" />
+    <meta
+      property="og:description"
+      content="The requested page could not be found."
+    />
+  </Fragment>
+
   <section
-    class="flex min-h-[calc(100vh-6rem)] flex-col items-center justify-center px-6 py-24 text-center sm:px-10"
+    class="relative z-10 flex min-h-[calc(100svh-14rem)] flex-col items-center justify-center px-4 py-16 text-center sm:py-24"
   >
-    <span
-      class="text-sm font-semibold tracking-[0.35em] text-muted-foreground uppercase"
-      >Page not found</span
-    >
-    <h1 class="mt-6 text-6xl font-black sm:text-7xl">404</h1>
-    <p
-      class="mt-6 max-w-2xl text-lg leading-8 text-muted-foreground sm:text-xl"
-    >
-      The page you are looking for does not exist, or it has been moved.
-      Let&apos;s get you back on track.
-    </p>
+    <!-- Background Ambient Glow -->
+    <div class="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
+      <div
+        class="absolute top-1/2 left-1/2 h-80 w-80 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/10 blur-[120px]"
+      >
+      </div>
+    </div>
+
+    <!-- Status Pill -->
     <div
-      class="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center"
+      class="inline-flex items-center gap-2 border border-primary/25 bg-primary/8 px-3.5 py-1.5 font-mono text-xs font-semibold tracking-widest text-primary uppercase shadow-[0_0_12px_oklch(var(--primary)/12%)]"
     >
+      <span class="h-1.5 w-1.5 rounded-full bg-primary animate-pulse"></span>
+      <span>404 // NOT_FOUND</span>
+      <span class="ml-0.5 inline-block h-3 w-0.5 animate-pulse bg-primary"></span>
+    </div>
+
+    <!-- 404 Large Numeric Display with Cyber Brackets -->
+    <div class="relative mt-8 inline-block">
+      <div
+        class="pointer-events-none absolute -top-3 -left-3 h-4 w-4 border-t-2 border-l-2 border-primary/50"
+        aria-hidden="true"
+      >
+      </div>
+      <div
+        class="pointer-events-none absolute -top-3 -right-3 h-4 w-4 border-t-2 border-r-2 border-primary/50"
+        aria-hidden="true"
+      >
+      </div>
+      <div
+        class="pointer-events-none absolute -bottom-3 -left-3 h-4 w-4 border-b-2 border-l-2 border-primary/50"
+        aria-hidden="true"
+      >
+      </div>
+      <div
+        class="pointer-events-none absolute -bottom-3 -right-3 h-4 w-4 border-b-2 border-r-2 border-primary/50"
+        aria-hidden="true"
+      >
+      </div>
+
+      <h1
+        class="font-mono text-7xl font-black tracking-tight text-foreground sm:text-8xl md:text-9xl select-none"
+      >
+        <span>4</span><span class="text-primary drop-shadow-[0_0_24px_oklch(var(--primary)/40%)]">0</span><span>4</span>
+      </h1>
+    </div>
+
+    <!-- Heading -->
+    <h2
+      class="mt-6 font-mono text-2xl font-bold uppercase tracking-tight text-foreground sm:text-3xl"
+    >
+      Page Not Found
+    </h2>
+
+    <div class="accent-bar mx-auto mt-3 mb-4 w-32"></div>
+
+    <!-- Description -->
+    <p
+      class="max-w-md text-sm leading-relaxed text-muted-foreground sm:text-base"
+    >
+      The page you are looking for does not exist or has been moved. Let's get you back on track.
+    </p>
+
+    <!-- Action Buttons -->
+    <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
       <a
         href="/"
-        class="rounded-full bg-accent px-6 py-3 text-sm font-semibold text-accent-foreground transition hover:bg-accent/90 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+        class="inline-flex cursor-pointer items-center justify-center gap-2 border border-primary bg-primary px-5 py-2.5 font-mono text-xs font-bold uppercase tracking-wider text-primary-foreground shadow-[0_0_16px_oklch(var(--primary)/25%)] transition-all duration-200 hover:bg-primary/90 hover:shadow-[0_0_24px_oklch(var(--primary)/45%)] focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
       >
-        Go home
+        <HugeiconsIcon icon={Home01Icon} className="size-4" aria-hidden="true" />
+        <span>Return Home</span>
       </a>
-      <a
-        href="/components"
-        class="rounded-full border border-border px-6 py-3 text-sm font-semibold text-foreground transition hover:border-primary hover:text-primary focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+
+      <button
+        type="button"
+        id="go-back-btn"
+        class="inline-flex cursor-pointer items-center justify-center gap-2 border border-border bg-card/80 px-5 py-2.5 font-mono text-xs font-bold uppercase tracking-wider text-foreground transition-all duration-200 hover:border-primary/60 hover:bg-primary/10 hover:text-primary focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
       >
-        View components
+        <HugeiconsIcon icon={ArrowLeft02Icon} className="size-4" aria-hidden="true" />
+        <span>Go Back</span>
+      </button>
+    </div>
+
+    <!-- Helpful Quick Links -->
+    <div
+      class="mt-10 flex flex-wrap items-center justify-center gap-4 text-xs font-mono text-muted-foreground"
+    >
+      <span class="text-muted-foreground/60">Quick Links:</span>
+      <a
+        href="/case-study"
+        class="flex items-center gap-1.5 transition-colors hover:text-primary"
+      >
+        <HugeiconsIcon icon={Briefcase01Icon} className="size-3.5" aria-hidden="true" />
+        <span>Case Studies</span>
+      </a>
+      <span class="text-border/80">•</span>
+      <a
+        href="/blog"
+        class="flex items-center gap-1.5 transition-colors hover:text-primary"
+      >
+        <HugeiconsIcon icon={BookOpen01Icon} className="size-3.5" aria-hidden="true" />
+        <span>Blog</span>
+      </a>
+      <span class="text-border/80">•</span>
+      <a
+        href="/resume"
+        class="flex items-center gap-1.5 transition-colors hover:text-primary"
+      >
+        <HugeiconsIcon icon={DocumentCodeIcon} className="size-3.5" aria-hidden="true" />
+        <span>Resume</span>
       </a>
     </div>
   </section>
 </MySiteLayout>
+
+<script>
+  function setupBackButton() {
+    const backBtn = document.getElementById("go-back-btn")
+    if (backBtn && backBtn.dataset.bound !== "true") {
+      backBtn.dataset.bound = "true"
+      backBtn.addEventListener("click", () => {
+        if (window.history.length > 1) {
+          window.history.back()
+        } else {
+          window.location.href = "/"
+        }
+      })
+    }
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", setupBackButton)
+  } else {
+    setupBackButton()
+  }
+  document.addEventListener("astro:page-load", setupBackButton)
+</script>

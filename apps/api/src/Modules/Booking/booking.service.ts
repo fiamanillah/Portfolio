@@ -301,17 +301,20 @@ export class BookingService {
     const duration = input.durationMinutes || 30
     const endTime = new Date(startTime.getTime() + duration * 60 * 1000)
 
-    // 1. Atomically check and reserve the slot in PostgreSQL using a transaction
+    // 1. Atomically check and reserve the slot in PostgreSQL using a serializable transaction
+    // SERIALIZABLE isolation prevents TOCTOU race conditions where two concurrent
+    // requests could both pass the conflict check before either creates the record.
     const booking = await prisma.$transaction(async (tx) => {
-      const conflict = await tx.booking.findFirst({
-        where: {
-          status: { in: [BookingStatus.CONFIRMED, BookingStatus.PENDING] },
-          startTime: { lt: endTime },
-          endTime: { gt: startTime },
-        },
-      })
+      // Use raw SQL with FOR UPDATE lock to prevent concurrent reads
+      const conflicts = await tx.$queryRaw<{ id: string }[]>`
+        SELECT id FROM "Booking"
+        WHERE status IN ('CONFIRMED', 'PENDING')
+          AND "startTime" < ${endTime}
+          AND "endTime" > ${startTime}
+        FOR UPDATE
+      `
 
-      if (conflict) {
+      if (conflicts.length > 0) {
         throw new ConflictError(
           "This time slot has just been reserved. Please select another available time."
         )
@@ -330,6 +333,8 @@ export class BookingService {
           status: BookingStatus.CONFIRMED,
         },
       })
+    }, {
+      isolationLevel: "Serializable",
     })
 
     // 2. Sync with Google Calendar (Create Event + Google Meet Room)

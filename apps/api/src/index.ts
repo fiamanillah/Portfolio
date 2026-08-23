@@ -2,6 +2,7 @@
 import { IgnitorApp } from "./core/IgnitorApp"
 import { AppLogger } from "@workspace/logger"
 import { config } from "./core/config"
+import { startCleanupScheduler } from "./utils/dbCleanupScheduler"
 
 // Global BigInt JSON serialization support
 ;(BigInt.prototype as any).toJSON = function () {
@@ -65,6 +66,9 @@ async function bootstrap() {
     await app.spark(config.server.port)
 
     logger.info("✷ Ignitor sparked successfully")
+
+    // 5. Start background cleanup scheduler for expired OTPs and refresh tokens
+    startCleanupScheduler()
   } catch (error) {
     // Centralized Bootstrap Error Handling
     logger.error("⬤ Failed to initialize application:", {
@@ -75,6 +79,22 @@ async function bootstrap() {
     process.exit(1)
   }
 }
+
+// Global crash safety handlers
+process.on("unhandledRejection", (reason, promise) => {
+  logger.error("⬤ Unhandled Promise Rejection detected:", {
+    reason: reason instanceof Error ? reason.message : String(reason),
+    stack: reason instanceof Error ? reason.stack : undefined,
+  })
+})
+
+process.on("uncaughtException", (error) => {
+  logger.error("⬤ Uncaught Exception — initiating emergency shutdown:", {
+    error: error instanceof Error ? error.message : String(error),
+    stack: error instanceof Error ? error.stack : undefined,
+  })
+  process.exit(1)
+})
 
 // Start the application
 bootstrap().catch((err) => {
