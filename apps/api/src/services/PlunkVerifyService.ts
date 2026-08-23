@@ -35,7 +35,10 @@ export class PlunkVerifyService {
       trimmed.includes("yourturnstile") ||
       trimmed.includes("placeholder") ||
       trimmed.includes("change-me") ||
-      trimmed.startsWith("plunk_sk_your")
+      trimmed.startsWith("plunk_sk_your") ||
+      trimmed.startsWith("1x0000") ||
+      trimmed.startsWith("2x0000") ||
+      trimmed.startsWith("3x0000")
     )
   }
 

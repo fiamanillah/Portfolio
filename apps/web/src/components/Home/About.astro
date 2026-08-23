@@ -1,16 +1,10 @@
-
+---
+// src/components/Home/About.astro
+import { ArrowDown01Icon, ArrowRight01Icon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
+---
 
 <style>
-  @keyframes border-flow {
-    0%,
-    100% {
-      opacity: 0.3;
-    }
-    50% {
-      opacity: 1;
-    }
-  }
-
   @keyframes float-glow {
     0%,
     100% {
@@ -19,108 +13,135 @@
     }
     50% {
       transform: translate(-50%, -50%) scale(1.15);
-      opacity: 0.2;
+      opacity: 0.22;
     }
   }
 
-  @keyframes slide-in-left {
-    from {
-      opacity: 0;
-      transform: translateX(-20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
+  .about-reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition:
+      opacity 600ms cubic-bezier(0.16, 1, 0.3, 1),
+      transform 600ms cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  @keyframes slide-in-right {
-    from {
-      opacity: 0;
-      transform: translateX(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
+  .about-reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Spec Card Hover Effects */
+  .spec-card {
+    transition:
+      border-color 250ms ease,
+      background-color 250ms ease,
+      transform 250ms ease,
+      box-shadow 250ms ease;
+  }
+
+  .spec-card:hover {
+    border-color: oklch(var(--primary) / 60%);
+    background-color: oklch(var(--card) / 80%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px -8px oklch(var(--primary) / 15%);
+  }
+
+  /* Custom terminal scroll styling */
+  .terminal-screen::-webkit-scrollbar {
+    width: 5px;
+  }
+  .terminal-screen::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .terminal-screen::-webkit-scrollbar-thumb {
+    background: oklch(var(--border) / 80%);
+    border-radius: 2px;
+  }
+  .terminal-screen::-webkit-scrollbar-thumb:hover {
+    background: oklch(var(--primary) / 60%);
   }
 </style>
 
-<section id="about" class="relative z-10 overflow-hidden py-28" data-grid-cross>
+<section id="about" class="relative z-10 overflow-hidden py-20 lg:py-28" data-grid-cross>
   <!-- Ambient background glow -->
-  <div class="pointer-events-none absolute inset-0 -z-10">
+  <div class="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
     <div
-      class="absolute top-1/2 left-1/3 h-125 w-125 -translate-x-1/2 -translate-y-1/2 animate-[float-glow_6s_ease-in-out_infinite] rounded-full bg-primary/15 blur-[120px]"
+      class="absolute top-1/3 left-1/4 h-120 w-120 -translate-x-1/2 -translate-y-1/2 animate-[float-glow_8s_ease-in-out_infinite] rounded-full bg-primary/12 blur-[130px]"
     >
     </div>
     <div
-      class="absolute top-2/3 right-1/4 h-75 w-75 -translate-x-1/2 -translate-y-1/2 animate-[float-glow_6s_ease-in-out_infinite] rounded-full bg-primary/10 blur-[100px]"
-      style="animation-delay: -3s;"
+      class="absolute top-2/3 right-1/4 h-96 w-96 -translate-x-1/2 -translate-y-1/2 animate-[float-glow_8s_ease-in-out_infinite] rounded-full bg-primary/8 blur-[110px]"
+      style="animation-delay: -4s;"
     >
     </div>
   </div>
 
   <div class="container mx-auto px-4">
-    <!-- Main Grid -->
-    <div
-      class="grid grid-cols-1 items-stretch gap-10 lg:grid-cols-2 lg:gap-14 xl:gap-20"
-    >
-      <!-- Left Column: Interactive Terminal -->
-      <div
-        class="about-left flex flex-col h-full opacity-0 [&.is-visible]:animate-[slide-in-left_700ms_ease_forwards]"
-      >
-        <!-- Terminal Window -->
-        <div class="relative flex flex-col h-full overflow-hidden border border-border bg-card">
-          <!-- Corner brackets -->
-          <div
-            class="pointer-events-none absolute top-0 left-0 z-10 h-4 w-4 border-t-[1.5px] border-l-[1.5px] border-primary/60"
-          >
-          </div>
-          <div
-            class="pointer-events-none absolute top-0 right-0 z-10 h-4 w-4 border-t-[1.5px] border-r-[1.5px] border-primary/60"
-          >
-          </div>
-          <div
-            class="pointer-events-none absolute bottom-0 left-0 z-10 h-4 w-4 border-b-[1.5px] border-l-[1.5px] border-primary/60"
-          >
-          </div>
-          <div
-            class="pointer-events-none absolute right-0 bottom-0 z-10 h-4 w-4 border-r-[1.5px] border-b-[1.5px] border-primary/60"
-          >
-          </div>
+    <!-- Section Top Header Bar -->
+    <div class="about-reveal mb-10 lg:mb-14">
+      <div class="flex flex-wrap items-center justify-between gap-4 border-b border-border/80 pb-5">
+        <div class="flex items-center gap-3">
+          <span class="inline-flex items-center gap-1.5 border border-primary/30 bg-primary/10 px-2.5 py-1 font-mono text-[11px] font-bold tracking-wider text-primary uppercase">
+            <span class="h-1.5 w-1.5 rounded-full bg-primary animate-pulse"></span>
+            Identity & System Architecture
+          </span>
+          <span class="hidden font-mono text-xs text-muted-foreground/60 sm:inline">// 01_PROFILE</span>
+        </div>
 
-          <!-- Terminal Header Bar -->
-          <div
-            class="flex items-center justify-between border-b border-border bg-card px-4 py-3"
-          >
-            <div class="flex items-center gap-1.5">
-              <div class="h-2.5 w-2.5 rounded-full bg-rose-500/80"></div>
-              <div class="h-2.5 w-2.5 rounded-full bg-amber-500/80"></div>
-              <div class="h-2.5 w-2.5 rounded-full bg-emerald-500/80"></div>
+        <div class="flex items-center gap-2 font-mono text-[11px] text-muted-foreground">
+          <span class="relative flex h-2 w-2">
+            <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
+            <span class="relative inline-flex h-2 w-2 rounded-full bg-emerald-500"></span>
+          </span>
+          <span class="text-foreground/90 font-medium">AVAILABLE FOR FULL-STACK CONTRACTS</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Grid: Interactive Console (Left) + Architectural Story (Right) -->
+    <div class="grid grid-cols-1 items-stretch gap-10 lg:grid-cols-12 lg:gap-10 xl:gap-14">
+      
+      <!-- LEFT COLUMN: Interactive System Console (5 cols on lg) -->
+      <div class="about-reveal lg:col-span-5 flex flex-col h-full" style="transition-delay: 100ms;">
+        <div class="relative flex flex-col h-full overflow-hidden border border-border bg-card/70 backdrop-blur-md shadow-xl transition-all duration-300">
+          
+          <!-- Corner Tech Accents -->
+          <div class="pointer-events-none absolute top-0 left-0 z-20 h-3 w-3 border-t-2 border-l-2 border-primary/70"></div>
+          <div class="pointer-events-none absolute top-0 right-0 z-20 h-3 w-3 border-t-2 border-r-2 border-primary/70"></div>
+          <div class="pointer-events-none absolute bottom-0 left-0 z-20 h-3 w-3 border-b-2 border-l-2 border-primary/70"></div>
+          <div class="pointer-events-none absolute right-0 bottom-0 z-20 h-3 w-3 border-r-2 border-b-2 border-primary/70"></div>
+
+          <!-- Terminal Window Header -->
+          <div class="flex items-center justify-between border-b border-border/80 bg-muted/40 px-4 py-3 select-none">
+            <div class="flex items-center gap-2">
+              <div class="flex items-center gap-1.5">
+                <span class="h-2.5 w-2.5 rounded-full bg-rose-500/80 inline-block"></span>
+                <span class="h-2.5 w-2.5 rounded-full bg-amber-500/80 inline-block"></span>
+                <span class="h-2.5 w-2.5 rounded-full bg-emerald-500/80 inline-block"></span>
+              </div>
+              <span class="font-mono text-[11px] font-semibold text-muted-foreground/80 tracking-wide ml-2">
+                fi@core:~/architecture
+              </span>
             </div>
-            <span
-              class="font-mono text-xs tracking-[0.1em] text-muted-foreground/70 uppercase"
-              >fi@portfolio — ~/about</span
-            >
-            <span class="font-mono text-[10px] text-emerald-400 font-semibold tracking-wider flex items-center gap-1.5">
+            
+            <div class="flex items-center gap-1.5 font-mono text-[10px] text-emerald-400 font-semibold tracking-wider bg-emerald-500/10 px-2 py-0.5 border border-emerald-500/20">
               <span class="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-              ONLINE
-            </span>
+              SYS_OK
+            </div>
           </div>
 
-          <!-- Terminal Body -->
+          <!-- Terminal Screen / Output Canvas -->
           <div
             id="about-terminal"
-            class="relative flex-1 min-h-[340px] max-h-[420px] cursor-text overflow-y-auto p-5 font-mono text-[12px] leading-[1.7]"
+            class="terminal-screen relative flex-1 min-h-[340px] max-h-[440px] cursor-text overflow-y-auto bg-background/80 p-4 sm:p-5 font-mono text-[12px] leading-[1.7]"
           >
-            <!-- Output area -->
-            <div id="terminal-output" class="space-y-1"></div>
+            <!-- Terminal Output Rows -->
+            <div id="terminal-output" class="space-y-1.5"></div>
 
-            <!-- Input line -->
-            <div class="mt-1 flex items-center gap-0">
-              <span class="shrink-0 text-muted-foreground/50 select-none"
-                >~/fi $&nbsp;</span
-              >
+            <!-- Terminal Interactive Input -->
+            <div class="mt-2 flex items-center gap-1.5 pt-1">
+              <span class="shrink-0 text-primary font-bold select-none">➜</span>
+              <span class="shrink-0 text-muted-foreground/70 select-none">~/fi $</span>
               <div class="relative flex-1">
                 <input
                   id="terminal-input"
@@ -129,99 +150,174 @@
                   spellcheck="false"
                   autocomplete="off"
                   autocapitalize="off"
+                  aria-label="Interactive Terminal Command Input"
                 />
-                <!-- Custom blinking cursor -->
+                <!-- Glowing Blinking Cursor -->
                 <span
                   id="terminal-cursor"
-                  class="pointer-events-none absolute top-0 left-0 inline-block h-[1.2em] w-1 animate-pulse bg-primary"
+                  class="pointer-events-none absolute top-0 left-0 inline-block h-[1.2em] w-1.5 animate-pulse bg-primary"
                 ></span>
               </div>
             </div>
           </div>
 
-          <!-- Terminal Quick Run Buttons -->
-          <div class="flex flex-wrap items-center gap-1.5 border-t border-border bg-card/80 px-4 py-2.5 font-mono text-[11px]">
-            <span class="text-[10px] text-muted-foreground/60 uppercase tracking-wider mr-1 select-none">Quick Run:</span>
-            {
-              ["whoami", "skills", "projects", "contact", "neofetch", "clear"].map((cmd) => (
-                <button
-                  type="button"
-                  data-cmd={cmd}
-                  class="terminal-chip rounded-none border border-border/80 bg-background/80 px-2 py-0.5 text-muted-foreground transition hover:border-primary hover:bg-primary/10 hover:text-primary cursor-pointer active:scale-95"
-                >
-                  {cmd}
-                </button>
-              ))
-            }
+          <!-- Quick Run Buttons / Interactive Strip -->
+          <div class="border-t border-border/80 bg-muted/20 p-3">
+            <div class="flex items-center justify-between gap-2 mb-2">
+              <span class="font-mono text-[10px] font-semibold text-muted-foreground uppercase tracking-widest select-none">
+                Interactive Quick Run:
+              </span>
+              <span class="font-mono text-[10px] text-muted-foreground/60 hidden sm:inline">
+                Click chips or type commands
+              </span>
+            </div>
+            <div class="flex flex-wrap items-center gap-1.5">
+              {
+                ["whoami", "skills", "projects", "contact", "neofetch", "clear"].map((cmd) => (
+                  <button
+                    type="button"
+                    data-cmd={cmd}
+                    class="terminal-chip group inline-flex items-center gap-1 border border-border bg-card px-2.5 py-1 font-mono text-[11px] text-foreground/80 transition-all duration-200 hover:border-primary hover:bg-primary/10 hover:text-primary active:scale-95 cursor-pointer"
+                  >
+                    <span class="text-primary/60 text-[10px] group-hover:text-primary">#</span>
+                    <span>{cmd}</span>
+                  </button>
+                ))
+              }
+            </div>
           </div>
 
-          <!-- Scanline overlay -->
+          <!-- Subtle scanline texture -->
           <div
-            class="pointer-events-none absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,oklch(0_0_0/0.03)_2px,oklch(0_0_0/0.03)_4px)]"
+            class="pointer-events-none absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,oklch(0_0_0/0.02)_2px,oklch(0_0_0/0.02)_4px)]"
+            aria-hidden="true"
           >
           </div>
         </div>
       </div>
 
-      <!-- Right Column: Content -->
-      <div
-        class="about-right flex flex-col justify-between gap-6 opacity-0 [&.is-visible]:animate-[slide-in-right_700ms_ease_forwards] [&.is-visible]:delay-150"
-      >
-        <!-- Heading & Label -->
-        <div class="space-y-2">
-          <p class="section-label">Identity & System Architecture</p>
-          <h2 class="section-title text-foreground">
-            I architect systems and build <br class="hidden sm:inline" />
-            <span class="text-primary">seamless digital experiences.</span>
-          </h2>
-          <div class="h-0.5 w-16 bg-primary/60"></div>
-        </div>
-
-        <!-- Body Paragraphs -->
-        <div class="space-y-4 text-sm leading-relaxed text-muted-foreground sm:text-base">
-          <p>
-            I'm a <strong class="font-semibold text-foreground">Full Stack Developer</strong> specializing in building scalable <strong class="text-foreground">MERN stack</strong>, <strong class="text-foreground">Nest.js</strong>, and <strong class="text-foreground">Next.js</strong> applications. I bridge the gap between complex event-driven backend architectures and clean, responsive frontend design.
-          </p>
-          <p>
-            Currently focused on high-performance <strong class="text-foreground">REST APIs</strong>, real-time <strong class="text-foreground">WebSockets</strong> integration, message queues (<span class="font-mono text-xs text-primary font-semibold">RabbitMQ</span>, <span class="font-mono text-xs text-primary font-semibold">Redis</span>), and DevOps pipeline containerization with <span class="font-mono text-xs text-primary font-semibold">Docker</span>.
-          </p>
-        </div>
-
-        <!-- Key Focus Badges / Spec Strip -->
-        <div class="grid grid-cols-1 gap-2.5 sm:grid-cols-3 font-mono">
-          <div class="border border-border/80 bg-card/40 p-3 backdrop-blur-xs">
-            <span class="text-[10px] text-muted-foreground uppercase tracking-wider block">Backend Core</span>
-            <span class="text-xs font-bold text-foreground mt-0.5 block">Nest.js · REST APIs</span>
+      <!-- RIGHT COLUMN: Narrative & Architecture Spec Bento (7 cols on lg) -->
+      <div class="about-reveal lg:col-span-7 flex flex-col justify-between gap-8" style="transition-delay: 200ms;">
+        
+        <!-- Main Headline & Bio Narrative -->
+        <div class="space-y-5">
+          <div class="space-y-3">
+            <h2 class="section-title text-foreground">
+              I architect systems and build <br class="hidden sm:inline" />
+              <span class="text-primary">seamless digital experiences.</span>
+            </h2>
+            <div class="accent-bar w-24"></div>
           </div>
-          <div class="border border-border/80 bg-card/40 p-3 backdrop-blur-xs">
-            <span class="text-[10px] text-muted-foreground uppercase tracking-wider block">Real-time & Queues</span>
-            <span class="text-xs font-bold text-foreground mt-0.5 block">RabbitMQ · Redis</span>
-          </div>
-          <div class="border border-border/80 bg-card/40 p-3 backdrop-blur-xs">
-            <span class="text-[10px] text-muted-foreground uppercase tracking-wider block">DevOps & Cloud</span>
-            <span class="text-xs font-bold text-foreground mt-0.5 block">Docker · CI/CD VPS</span>
+
+          <div class="space-y-3.5 text-sm leading-relaxed text-muted-foreground sm:text-base">
+            <p>
+              I'm a <strong class="font-semibold text-foreground">Full Stack Developer</strong> specializing in building scalable <strong class="text-foreground">MERN stack</strong>, <strong class="text-foreground">Nest.js</strong>, and <strong class="text-foreground">Next.js</strong> applications. I bridge the gap between complex event-driven backend architectures and clean, responsive frontend design.
+            </p>
+            <p>
+              Currently focused on high-performance <strong class="text-foreground">REST APIs</strong>, real-time <strong class="text-foreground">WebSockets</strong> integration, message queues (<span class="font-mono text-xs font-semibold text-primary">RabbitMQ</span>, <span class="font-mono text-xs font-semibold text-primary">Redis</span>), and DevOps pipeline containerization with <span class="font-mono text-xs font-semibold text-primary">Docker</span>.
+            </p>
           </div>
         </div>
 
-        <!-- CTA row -->
-        <div class="flex flex-wrap items-center gap-4 pt-1">
+        <!-- 3 Architectural Spec Cards (Clean Bento Strip) -->
+        <div class="grid grid-cols-1 gap-3.5 sm:grid-cols-3">
+          
+          <!-- Spec Card 1: Backend Core -->
+          <div class="spec-card group relative flex flex-col justify-between border border-border bg-card/40 p-4 backdrop-blur-xs">
+            <div class="space-y-2">
+              <div class="flex items-center justify-between border-b border-border/60 pb-2">
+                <span class="font-mono text-[10px] font-bold tracking-widest text-primary uppercase">
+                  01 / CORE
+                </span>
+                <span class="h-1.5 w-1.5 rounded-full bg-primary/60"></span>
+              </div>
+              <div>
+                <h3 class="font-mono text-xs font-bold text-foreground group-hover:text-primary transition-colors">
+                  Backend Core
+                </h3>
+                <p class="font-mono text-xs text-muted-foreground mt-0.5 font-medium">
+                  Nest.js · REST APIs
+                </p>
+              </div>
+            </div>
+            <p class="mt-3 text-[11px] leading-relaxed text-muted-foreground/80">
+              High-throughput microservices, type-safe API contracts, and clean domain boundaries.
+            </p>
+          </div>
+
+          <!-- Spec Card 2: Real-time & Queues -->
+          <div class="spec-card group relative flex flex-col justify-between border border-border bg-card/40 p-4 backdrop-blur-xs">
+            <div class="space-y-2">
+              <div class="flex items-center justify-between border-b border-border/60 pb-2">
+                <span class="font-mono text-[10px] font-bold tracking-widest text-primary uppercase">
+                  02 / EVENTS
+                </span>
+                <span class="h-1.5 w-1.5 rounded-full bg-primary/60"></span>
+              </div>
+              <div>
+                <h3 class="font-mono text-xs font-bold text-foreground group-hover:text-primary transition-colors">
+                  Real-time & Queues
+                </h3>
+                <p class="font-mono text-xs text-muted-foreground mt-0.5 font-medium">
+                  RabbitMQ · Redis
+                </p>
+              </div>
+            </div>
+            <p class="mt-3 text-[11px] leading-relaxed text-muted-foreground/80">
+              Decoupled worker queues, pub/sub event streaming, and low-latency cache tiers.
+            </p>
+          </div>
+
+          <!-- Spec Card 3: DevOps & Cloud -->
+          <div class="spec-card group relative flex flex-col justify-between border border-border bg-card/40 p-4 backdrop-blur-xs">
+            <div class="space-y-2">
+              <div class="flex items-center justify-between border-b border-border/60 pb-2">
+                <span class="font-mono text-[10px] font-bold tracking-widest text-primary uppercase">
+                  03 / INFRA
+                </span>
+                <span class="h-1.5 w-1.5 rounded-full bg-primary/60"></span>
+              </div>
+              <div>
+                <h3 class="font-mono text-xs font-bold text-foreground group-hover:text-primary transition-colors">
+                  DevOps & Cloud
+                </h3>
+                <p class="font-mono text-xs text-muted-foreground mt-0.5 font-medium">
+                  Docker · CI/CD VPS
+                </p>
+              </div>
+            </div>
+            <p class="mt-3 text-[11px] leading-relaxed text-muted-foreground/80">
+              Isolated container builds, automated deployment pipelines, and hardened Linux hosting.
+            </p>
+          </div>
+
+        </div>
+
+        <!-- Action CTAs Bar -->
+        <div class="flex flex-wrap items-center gap-4 pt-2">
           <a
             href="#work"
-            class="group inline-flex items-center gap-2 border border-primary/50 bg-primary/10 px-6 py-3 font-mono text-xs font-bold tracking-widest text-primary uppercase no-underline transition-all duration-200 hover:border-primary hover:bg-primary hover:text-primary-foreground"
+            class="group inline-flex items-center gap-2.5 border border-primary/60 bg-primary/10 px-6 py-3 font-mono text-xs font-bold tracking-widest text-primary uppercase no-underline transition-all duration-300 hover:border-primary hover:bg-primary hover:text-primary-foreground hover:shadow-[0_0_20px_oklch(var(--primary)/0.25)]"
           >
             <span>View Featured Work</span>
-            <span
-              class="transition-transform duration-200 group-hover:translate-y-0.5"
-              >↓</span
-            >
+            <HugeiconsIcon
+              icon={ArrowDown01Icon}
+              className="size-4 transition-transform duration-200 group-hover:translate-y-0.5"
+            />
           </a>
+
           <a
             href="#contact"
-            class="inline-flex items-center gap-1.5 font-mono text-xs font-medium text-muted-foreground transition-colors hover:text-foreground"
+            class="group inline-flex items-center gap-2 border border-border bg-card/60 px-5 py-3 font-mono text-xs font-semibold tracking-wider text-foreground no-underline transition-all duration-200 hover:border-primary/60 hover:bg-primary/5 hover:text-primary"
           >
-            <span>Get in touch →</span>
+            <span>Get in touch</span>
+            <HugeiconsIcon
+              icon={ArrowRight01Icon}
+              className="size-4 transition-transform duration-200 group-hover:translate-x-0.5"
+            />
           </a>
         </div>
+
       </div>
     </div>
   </div>
@@ -229,10 +325,8 @@
 
 <script>
   function setupAboutObserver() {
-    const aboutLeft = document.querySelector(".about-left")
-    const aboutRight = document.querySelector(".about-right")
-
-    if (!aboutLeft || !aboutRight) return
+    const reveals = document.querySelectorAll(".about-reveal")
+    if (!reveals.length) return
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -244,19 +338,16 @@
         })
       },
       {
-        threshold: 0.15,
-        rootMargin: "0px 0px -60px 0px",
+        threshold: 0.12,
+        rootMargin: "0px 0px -40px 0px",
       }
     )
 
-    observer.observe(aboutLeft)
-    observer.observe(aboutRight)
+    reveals.forEach((el) => observer.observe(el))
   }
 
   function setupTerminal() {
-    const input = document.getElementById(
-      "terminal-input"
-    ) as HTMLInputElement | null
+    const input = document.getElementById("terminal-input") as HTMLInputElement | null
     const output = document.getElementById("terminal-output")
     const terminal = document.getElementById("about-terminal")
     const cursor = document.getElementById("terminal-cursor")
@@ -266,95 +357,116 @@
     const history: string[] = []
     let historyIndex = -1
 
-    // Command definitions
+    // Command definitions with styled output
     const commands: Record<string, () => string> = {
       help: () =>
-        `<span class="text-primary">Available commands:</span>
-  <span class="text-foreground">whoami</span>      <span class="text-muted-foreground">— who is Fi Amanillah?</span>
-  <span class="text-foreground">skills</span>      <span class="text-muted-foreground">— list tech stack</span>
-  <span class="text-foreground">resume</span>      <span class="text-muted-foreground">— download / view CV</span>
-  <span class="text-foreground">projects</span>    <span class="text-muted-foreground">— recent project stats</span>
-  <span class="text-foreground">contact</span>     <span class="text-muted-foreground">— how to reach me</span>
-  <span class="text-foreground">experience</span>  <span class="text-muted-foreground">— work timeline</span>
-  <span class="text-foreground">neofetch</span>    <span class="text-muted-foreground">— system info</span>
-  <span class="text-foreground">date</span>        <span class="text-muted-foreground">— current date/time</span>
-  <span class="text-foreground">uptime</span>      <span class="text-muted-foreground">— how long I've been coding</span>
-  <span class="text-foreground">clear</span>       <span class="text-muted-foreground">— clear terminal</span>`,
-
-      resume: () =>
-        `<span class="text-primary font-semibold">// CURRICULUM VITAE</span>
-  <span class="text-foreground">Accessing official resume...</span>
-  <span class="text-muted-foreground">Download link:</span> <a href="/resume" target="_blank" class="text-primary underline underline-offset-2 hover:text-foreground">Click here to open / download Resume</a>`,
+        `<div class="space-y-1 text-muted-foreground">
+  <div class="text-primary font-bold">// AVAILABLE COMMANDS</div>
+  <div class="grid grid-cols-1 gap-1 pt-1">
+    <div><span class="text-foreground font-semibold">whoami</span>      <span class="text-muted-foreground/80">— who is Fi Amanillah?</span></div>
+    <div><span class="text-foreground font-semibold">skills</span>      <span class="text-muted-foreground/80">— view technical stack & tools</span></div>
+    <div><span class="text-foreground font-semibold">projects</span>    <span class="text-muted-foreground/80">— active systems & architecture</span></div>
+    <div><span class="text-foreground font-semibold">experience</span>  <span class="text-muted-foreground/80">— professional track record</span></div>
+    <div><span class="text-foreground font-semibold">contact</span>     <span class="text-muted-foreground/80">— get direct transmission links</span></div>
+    <div><span class="text-foreground font-semibold">neofetch</span>    <span class="text-muted-foreground/80">— system & runtime specs</span></div>
+    <div><span class="text-foreground font-semibold">clear</span>       <span class="text-muted-foreground/80">— clear console display</span></div>
+  </div>
+</div>`,
 
       whoami: () =>
-        `<span class="text-primary">→</span> <span class="text-foreground font-semibold">Fi Amanillah</span>
-<span class="text-primary">→</span> <span class="text-muted-foreground">Full Stack Developer</span>
-<span class="text-primary">→</span> <span class="text-muted-foreground">Specializes in event-driven systems & real-time features</span>
-<span class="text-primary">→</span> <span class="text-muted-foreground">Loves clean code & server stability</span>
-<span class="text-primary">→</span> <span class="text-muted-foreground">Currently building:</span> <span class="text-foreground">scalable microservices</span>`,
+        `<div class="space-y-1">
+  <div class="text-foreground font-bold text-sm">Fi Amanillah</div>
+  <div class="text-primary font-semibold text-xs">Full Stack Developer & System Architect</div>
+  <div class="text-muted-foreground text-xs leading-relaxed mt-1">
+    Specializing in scalable MERN, Nest.js & Next.js architectures. Expert in bridging event-driven backends with clean, responsive user interfaces.
+  </div>
+  <div class="text-[11px] text-muted-foreground/70 pt-1">
+    📍 Dhaka, Bangladesh · ⚡ 1+ Years Professional Experience
+  </div>
+</div>`,
 
       skills: () =>
-        `<span class="text-primary font-semibold">// FRONTEND</span>
-  <span class="text-muted-foreground">React · Next.js · TypeScript · Tailwind · Redux · WebSockets · Shadcn UI</span>
-
-<span class="text-primary font-semibold">// BACKEND</span>
-  <span class="text-muted-foreground">Node.js · Nest.js · Express · PostgreSQL · MongoDB · Redis · Prisma · Mongoose</span>
-
-<span class="text-primary font-semibold">// DEVOPS & INFRA</span>
-  <span class="text-muted-foreground">Docker · RabbitMQ · AWS · GCP · Nginx · Linux VPS · Proxmox · KVM · CI/CD</span>`,
+        `<div class="space-y-2">
+  <div>
+    <span class="text-primary font-bold text-xs">// BACKEND CORE</span>
+    <div class="text-foreground text-xs">Nest.js · Node.js · Express · REST APIs · Microservices · PostgreSQL · MongoDB · Redis</div>
+  </div>
+  <div>
+    <span class="text-primary font-bold text-xs">// REAL-TIME & QUEUES</span>
+    <div class="text-foreground text-xs">RabbitMQ · WebSockets · Redis Pub/Sub · Event-Driven Architecture</div>
+  </div>
+  <div>
+    <span class="text-primary font-bold text-xs">// FRONTEND & UI</span>
+    <div class="text-foreground text-xs">React · Next.js · TypeScript · Tailwind CSS · Shadcn UI · State Management</div>
+  </div>
+  <div>
+    <span class="text-primary font-bold text-xs">// DEVOPS & INFRA</span>
+    <div class="text-foreground text-xs">Docker · Linux VPS · Nginx · CI/CD Pipelines · Proxmox · Server Hardening</div>
+  </div>
+</div>`,
 
       projects: () =>
-        `<span class="text-foreground font-semibold">Mickanic</span>   <span class="text-muted-foreground">— Freelance marketplace API & credit engine</span>
-<span class="text-foreground font-semibold">Moja Cares</span> <span class="text-muted-foreground">— Healthcare insights & Care team messaging</span>
-<span class="text-foreground font-semibold">Deployments</span> <span class="text-muted-foreground">— Multi-service Docker containerization on VPS</span>`,
+        `<div class="space-y-1.5">
+  <div class="text-primary font-bold text-xs">// FEATURED ARCHITECTURES</div>
+  <div>
+    <span class="text-foreground font-bold">Mickanic</span> <span class="text-muted-foreground">— Freelance platform API, credit engine & microservice billing</span>
+  </div>
+  <div>
+    <span class="text-foreground font-bold">Moja Cares</span> <span class="text-muted-foreground">— Healthcare insights & real-time provider messaging</span>
+  </div>
+  <div>
+    <span class="text-foreground font-bold">Containerized VPS</span> <span class="text-muted-foreground">— Multi-service Docker orchestrations & zero-downtime Nginx routing</span>
+  </div>
+</div>`,
 
       contact: () =>
-        `<span class="text-primary">📧 Email:</span>    <span class="text-foreground">fi@amanillah.com</span>
-<span class="text-primary">🔗 GitHub:</span>   <a href="https://github.com/fiamanillah" target="_blank" class="text-foreground underline underline-offset-2 hover:text-primary transition-colors">github.com/fiamanillah</a>
-<span class="text-primary">💼 LinkedIn:</span> <a href="https://www.linkedin.com/in/fi-amanillah/" target="_blank" class="text-foreground underline underline-offset-2 hover:text-primary transition-colors">linkedin.com/in/fi-amanillah</a>
-<span class="text-primary">👥 Facebook:</span> <a href="https://www.facebook.com/fiamanillah.b2" target="_blank" class="text-foreground underline underline-offset-2 hover:text-primary transition-colors">facebook.com/fiamanillah.b2</a>
-<span class="text-primary">🤖 Reddit:</span>   <a href="https://www.reddit.com/user/FiAmanillahBitu/" target="_blank" class="text-foreground underline underline-offset-2 hover:text-primary transition-colors">u/FiAmanillahBitu</a>`,
+        `<div class="space-y-1">
+  <div class="text-primary font-bold text-xs">// TRANSMISSION CHANNELS</div>
+  <div class="grid grid-cols-1 gap-1 text-xs">
+    <div><span class="text-muted-foreground">Email:</span> <span class="text-foreground font-medium">fi@amanillah.com</span></div>
+    <div><span class="text-muted-foreground">GitHub:</span> <a href="https://github.com/fiamanillah" target="_blank" class="text-primary underline hover:text-foreground">github.com/fiamanillah</a></div>
+    <div><span class="text-muted-foreground">LinkedIn:</span> <a href="https://www.linkedin.com/in/fi-amanillah/" target="_blank" class="text-primary underline hover:text-foreground">linkedin.com/in/fi-amanillah</a></div>
+    <div><span class="text-muted-foreground">Facebook:</span> <a href="https://www.facebook.com/fiamanillah.b2" target="_blank" class="text-primary underline hover:text-foreground">facebook.com/fiamanillah.b2</a></div>
+  </div>
+</div>`,
 
       experience: () =>
-        `<span class="text-primary font-semibold">1+ years</span> <span class="text-muted-foreground">of professional experience</span>
-
-<span class="text-foreground">▸ Full Stack Developer @ Softvence Agency (05/2025 - Present)</span>
-  <span class="text-muted-foreground">· Architected type-safe Nest.js/Express backend APIs</span>
-  <span class="text-muted-foreground">· Integrated Redis cache & RabbitMQ to decouple worker queues</span>
-  <span class="text-muted-foreground">· Built WebSocket real-time chat & billing via Stripe/Paystack</span>`,
-
-      date: () => {
-        const now = new Date()
-        return `<span class="text-foreground">${now.toLocaleString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit", second: "2-digit" })}</span>`
-      },
-
-      uptime: () => {
-        const start = new Date("2025-05-01")
-        const now = new Date()
-        const diff = now.getTime() - start.getTime()
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24))
-        const hours = Math.floor(
-          (diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-        )
-        return `<span class="text-foreground">up ${days} days, ${hours} hours</span> <span class="text-muted-foreground">— since going professional</span>`
-      },
+        `<div class="space-y-1.5">
+  <div class="text-primary font-bold text-xs">// WORK TIMELINE</div>
+  <div class="text-foreground font-semibold">Full Stack Developer @ Softvence Agency (05/2025 - Present)</div>
+  <div class="text-muted-foreground text-xs leading-relaxed">
+    • Architected type-safe Nest.js/Express backend APIs<br/>
+    • Integrated Redis caching & RabbitMQ to decouple worker queues<br/>
+    • Built WebSocket real-time chat & billing via Stripe/Paystack
+  </div>
+</div>`,
 
       neofetch: () =>
-        `<span class="text-primary">        ╭──────────╮</span>
-<span class="text-primary">        │  ██████  │</span>     <span class="text-foreground font-semibold">fi@portfolio</span>
-<span class="text-primary">        │  ██  ██  │</span>     <span class="text-muted-foreground">───────────────</span>
-<span class="text-primary">        │  ██████  │</span>     <span class="text-primary">OS:</span> <span class="text-muted-foreground">Web v2026</span>
-<span class="text-primary">        │  ██      │</span>     <span class="text-primary">Host:</span> <span class="text-muted-foreground">Dhaka, Bangladesh</span>
-<span class="text-primary">        │  ██      │</span>     <span class="text-primary">Uptime:</span> <span class="text-muted-foreground">1+ years</span>
-<span class="text-primary">        ╰──────────╯</span>     <span class="text-primary">Stack:</span> <span class="text-muted-foreground">MERN, Nest.js, Docker</span>
-                         <span class="text-primary">Editor:</span> <span class="text-muted-foreground">VS Code</span>
-                         <span class="text-primary">Coffee:</span> <span class="text-muted-foreground">∞</span>`,
+        `<div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+  <div class="text-primary font-mono select-none">
+    ╭──────────╮<br/>
+    │  ██████  │  <span class="text-foreground font-bold">fi@portfolio</span><br/>
+    │  ██  ██  │  <span class="text-muted-foreground">────────────</span><br/>
+    │  ██████  │  <span class="text-primary">OS:</span> <span class="text-muted-foreground">Web v2026</span><br/>
+    │  ██      │  <span class="text-primary">Host:</span> <span class="text-muted-foreground">Dhaka, BD</span><br/>
+    │  ██      │  <span class="text-primary">Status:</span> <span class="text-emerald-400">Ready</span><br/>
+    ╰──────────╯
+  </div>
+  <div class="space-y-0.5 text-muted-foreground font-mono text-[11px]">
+    <div><span class="text-primary">Runtime:</span> Bun & Node.js</div>
+    <div><span class="text-primary">Architecture:</span> Event-Driven MERN & Nest</div>
+    <div><span class="text-primary">Queues:</span> RabbitMQ · Redis</div>
+    <div><span class="text-primary">DevOps:</span> Docker · Linux VPS</div>
+    <div><span class="text-primary">Uptime:</span> 100% Operational</div>
+  </div>
+</div>`,
 
       clear: () => "__CLEAR__",
     }
 
     function addOutput(html: string) {
       const line = document.createElement("div")
+      line.className = "py-0.5"
       line.innerHTML = html
       output!.appendChild(line)
       terminal!.scrollTop = terminal!.scrollHeight
@@ -363,14 +475,12 @@
     function processCommand(cmd: string) {
       const trimmed = cmd.trim().toLowerCase()
 
-      // Echo the command
+      // Echo command line
       addOutput(
-        `<span class="text-muted-foreground/50">~/fi $</span> <span class="text-foreground font-semibold">${cmd}</span>`
+        `<div class="flex items-center gap-1.5 text-xs"><span class="text-primary font-bold select-none">➜</span> <span class="text-muted-foreground/70 font-mono select-none">~/fi $</span> <span class="text-foreground font-semibold">${cmd}</span></div>`
       )
 
-      if (trimmed === "") {
-        return
-      }
+      if (trimmed === "") return
 
       if (trimmed === "clear") {
         output!.innerHTML = ""
@@ -381,22 +491,19 @@
       if (handler) {
         const result = handler()
         if (result !== "__CLEAR__") {
-          addOutput(
-            `<div class="pl-0 py-1 text-muted-foreground whitespace-pre">${result}</div>`
-          )
+          addOutput(`<div class="pl-3 border-l border-primary/30 py-1 my-1">${result}</div>`)
         }
       } else {
         addOutput(
-          `<span class="text-destructive">command not found:</span> <span class="text-foreground">${trimmed}</span>
-<span class="text-muted-foreground">Type</span> <span class="text-primary">help</span> <span class="text-muted-foreground">for available commands.</span>`
+          `<div class="text-destructive text-xs">command not found: <span class="text-foreground font-mono">${trimmed}</span></div>
+           <div class="text-muted-foreground text-[11px]">Type <span class="text-primary font-semibold">help</span> for available commands.</div>`
         )
       }
     }
 
-    // Update cursor position
+    // Dynamic Cursor Tracking
     function updateCursor() {
       const text = input!.value
-      // Measure text width using a temp span
       const measure = document.createElement("span")
       measure.style.font = getComputedStyle(input!).font
       measure.style.visibility = "hidden"
@@ -446,12 +553,12 @@
       }
     })
 
-    // Click anywhere in terminal to focus input
-    terminal!.addEventListener("click", () => {
-      input!.focus()
+    // Focus input on terminal container click
+    terminal.addEventListener("click", () => {
+      input.focus()
     })
 
-    // Clickable quick command chips
+    // Quick Command Buttons
     const chips = document.querySelectorAll(".terminal-chip")
     chips.forEach((chip) => {
       chip.addEventListener("click", (e) => {
@@ -459,43 +566,42 @@
         const cmd = chip.getAttribute("data-cmd")
         if (cmd) {
           processCommand(cmd)
-          input!.focus()
+          input.focus()
         }
       })
     })
 
-    // Auto-type intro sequence
+    // Typing Intro Simulation
     const introSequence = async () => {
-      const typeCmd = async (cmd: string, delay: number = 60) => {
+      const typeCmd = async (cmd: string, delay = 50) => {
         for (const char of cmd) {
-          input!.value += char
+          input.value += char
           updateCursor()
-          await new Promise((r) => setTimeout(r, delay + Math.random() * 40))
+          await new Promise((r) => setTimeout(r, delay + Math.random() * 30))
         }
-        await new Promise((r) => setTimeout(r, 300))
-        processCommand(input!.value)
-        input!.value = ""
+        await new Promise((r) => setTimeout(r, 250))
+        processCommand(input.value)
+        input.value = ""
         updateCursor()
       }
 
-      await new Promise((r) => setTimeout(r, 1200))
+      await new Promise((r) => setTimeout(r, 800))
       await typeCmd("whoami")
-      await new Promise((r) => setTimeout(r, 600))
-      await typeCmd("help")
     }
 
-    // Only run intro if terminal is freshly mounted (no prior output)
-    if (output!.children.length === 0) {
+    if (output.children.length === 0) {
       introSequence()
     }
 
     updateCursor()
   }
 
+  // Lifecycle Bindings
   document.addEventListener("astro:page-load", () => {
     setupAboutObserver()
     setupTerminal()
   })
+
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", () => {
       setupAboutObserver()

@@ -52,9 +52,9 @@ export class ContactService {
   ): Promise<boolean> {
     const secretKey = config.turnstile.secretKey
 
-    if (this.isPlaceholderKey(secretKey)) {
+    if (this.isPlaceholderKey(secretKey) || config.server.isDevelopment) {
       this.logger.warn(
-        "⚠️ TURNSTILE_SECRET_KEY missing or placeholder. Bypassing Turnstile verification in dev/demo mode."
+        "⚠️ TURNSTILE_SECRET_KEY missing, test key, or running in development mode. Bypassing Turnstile verification in dev/demo mode."
       )
       return true
     }

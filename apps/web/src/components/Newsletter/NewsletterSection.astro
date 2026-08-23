@@ -1,5 +1,4 @@
 ---
-import { Input } from "@workspace/ui/components/input"
 import { Icon } from "astro-icon/components"
 
 interface Props {
@@ -12,7 +11,7 @@ interface Props {
 
 const {
   title = "Subscribe to Tech Stories & Insights",
-  subtitle = "Stories on AI advancements, semiconductor and hardware market shifts, emerging tech trends, and modern software engineering delivered directly to your inbox.",
+  subtitle = "Stories on AI advancements, semiconductor shifts, emerging tech trends, and modern software engineering delivered directly to your inbox.",
   source = "newsletter_section",
   idPrefix = "newsletter",
   className = "",
@@ -29,7 +28,6 @@ const submitTextId = `${idPrefix}-submit-text`
 ---
 
 <style>
-  /* Subtle shimmer on submit hover */
   @keyframes shimmer-x {
     0% {
       background-position: -200% center;
@@ -53,10 +51,10 @@ const submitTextId = `${idPrefix}-submit-text`
 
 <section
   id={idPrefix}
-  class={`relative z-10 container mx-auto overflow-hidden border-b border-border bg-card/60 backdrop-blur-xs ${className}`}
+  class={`relative z-10 container mx-auto overflow-hidden border-b border-border bg-card/60 py-14 sm:py-18 md:py-20 backdrop-blur-xs ${className}`}
   data-grid-cross
 >
-  <!-- Background Stripes & Glow -->
+  <!-- Background Stripes & Ambient Glow -->
   <div
     class="diagonal-stripes pointer-events-none absolute inset-0 z-0 bg-background opacity-60"
     aria-hidden="true"
@@ -65,47 +63,36 @@ const submitTextId = `${idPrefix}-submit-text`
 
   <div class="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
     <div
-      class="absolute top-1/2 left-1/2 h-36 w-72 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/10 blur-[90px]"
+      class="absolute top-1/2 left-1/2 h-44 w-80 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/10 blur-[90px]"
     >
     </div>
   </div>
 
-  <!-- Corner Brackets -->
-  <div
-    class="pointer-events-none absolute top-3 left-3 h-4 w-4 border-t-2 border-l-2 border-primary/40"
-  >
-  </div>
-  <div
-    class="pointer-events-none absolute top-3 right-3 h-4 w-4 border-t-2 border-r-2 border-primary/40"
-  >
-  </div>
-  <div
-    class="pointer-events-none absolute bottom-3 left-3 h-4 w-4 border-b-2 border-l-2 border-primary/40"
-  >
-  </div>
-  <div
-    class="pointer-events-none absolute right-3 bottom-3 h-4 w-4 border-r-2 border-b-2 border-primary/40"
-  >
-  </div>
-
-  <div class="relative z-10 p-6 sm:p-8 md:p-12">
+  <div class="relative z-10 px-4 sm:px-6">
     <!-- Header -->
     <div class="mx-auto max-w-2xl text-center">
-      <p
-        class="section-label mb-3 inline-block rounded-xs border border-primary/20 bg-primary/5 px-3 py-1 font-mono text-xs font-semibold tracking-wider text-primary uppercase"
+      <!-- Minimalist Micro Badge -->
+      <div
+        class="mb-3.5 inline-flex items-center gap-2 rounded-full border border-primary/25 bg-primary/5 px-3 py-1 font-mono text-[11px] font-medium tracking-wider text-primary uppercase"
       >
-        [ TECH DISPATCH // STORIES & INSIGHTS ]
-      </p>
+        <span class="relative flex size-2">
+          <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75"></span>
+          <span class="relative inline-flex size-2 rounded-full bg-primary"></span>
+        </span>
+        <span>Tech Dispatch // Insights</span>
+      </div>
 
+      <!-- Title -->
       <h2
-        class="text-2xl font-bold tracking-tight text-foreground sm:text-3xl md:text-4xl"
+        class="text-2xl font-bold tracking-tight text-foreground sm:text-3xl md:text-4xl text-balance"
       >
         {title}
       </h2>
 
-      <div class="accent-bar mx-auto my-4 w-32"></div>
+      <div class="accent-bar mx-auto my-3.5 w-24"></div>
 
-      <p class="text-sm leading-relaxed text-muted-foreground sm:text-base">
+      <!-- Subtitle -->
+      <p class="mx-auto max-w-lg text-sm leading-relaxed text-muted-foreground sm:text-base">
         {subtitle}
       </p>
     </div>
@@ -116,7 +103,7 @@ const submitTextId = `${idPrefix}-submit-text`
         id={formId}
         data-source={source}
         data-prefix={idPrefix}
-        class="flex flex-col gap-4"
+        class="flex flex-col gap-3"
       >
         <!-- Honeypot Trap (Hidden visually & from screen readers) -->
         <div
@@ -133,29 +120,60 @@ const submitTextId = `${idPrefix}-submit-text`
           />
         </div>
 
-        <div class="grid grid-cols-1 gap-4 sm:grid-cols-12">
-          <!-- Optional Name -->
-          <div class="sm:col-span-4">
-            <Input
+        <!-- Minimal Unified Input Bar -->
+        <div
+          class="group/bar relative flex flex-col items-stretch border border-border/80 bg-background/80 p-1.5 backdrop-blur-md transition-all duration-300 hover:border-primary/40 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20 focus-within:shadow-[0_0_25px_oklch(var(--primary)/0.12)] sm:flex-row sm:items-center"
+        >
+          <!-- Optional Name Field -->
+          <div
+            class="relative flex items-center border-b border-border/50 px-2 py-1 sm:w-44 sm:border-b-0 sm:border-r sm:py-0"
+          >
+            <Icon
+              name="mdi:account-outline"
+              class="size-4 shrink-0 text-muted-foreground/60 transition-colors group-focus-within/bar:text-primary/70"
+            />
+            <input
               type="text"
               id={nameInputId}
               name="name"
-              placeholder="Your Name (optional)"
-              className="h-11 w-full rounded-none border border-border bg-background/80 px-3 font-mono text-sm text-foreground transition-all duration-200 outline-none placeholder:text-muted-foreground/50 focus-visible:border-primary focus-visible:bg-primary/5 focus-visible:ring-0"
+              placeholder="Name (optional)"
+              class="h-10 w-full bg-transparent px-2.5 font-mono text-xs text-foreground outline-none placeholder:text-muted-foreground/50 sm:h-11 sm:text-sm"
             />
           </div>
 
-          <!-- Email Field -->
-          <div class="sm:col-span-8">
-            <Input
+          <!-- Email Field (Required) -->
+          <div class="relative flex flex-1 items-center px-2 py-1 sm:py-0">
+            <Icon
+              name="mdi:email-outline"
+              class="size-4 shrink-0 text-muted-foreground/60 transition-colors group-focus-within/bar:text-primary/70"
+            />
+            <input
               type="email"
               id={emailInputId}
               name="email"
               required
-              placeholder="Enter your email for weekly tech dispatches..."
-              className="h-11 w-full rounded-none border border-border bg-background/80 px-3 font-mono text-sm text-foreground transition-all duration-200 outline-none placeholder:text-muted-foreground/50 focus-visible:border-primary focus-visible:bg-primary/5 focus-visible:ring-0"
+              placeholder="Enter your email address..."
+              class="h-10 w-full bg-transparent px-2.5 font-mono text-xs text-foreground outline-none placeholder:text-muted-foreground/50 sm:h-11 sm:text-sm"
             />
           </div>
+
+          <!-- Submit Button -->
+          <button
+            type="submit"
+            id={submitBtnId}
+            class="btn-shimmer group/btn relative inline-flex h-10 shrink-0 cursor-pointer items-center justify-center gap-2 border border-primary bg-primary px-6 font-mono text-xs font-bold tracking-wider text-primary-foreground uppercase transition-all duration-200 hover:brightness-110 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60 sm:h-11"
+          >
+            <span
+              id={submitTextId}
+              class="flex items-center gap-2 transition-transform duration-200"
+            >
+              Subscribe
+              <Icon
+                name="mdi:arrow-right"
+                class="size-4 transition-transform duration-200 group-hover/btn:translate-x-1"
+              />
+            </span>
+          </button>
         </div>
 
         <!-- Cloudflare Turnstile Container -->
@@ -168,40 +186,22 @@ const submitTextId = `${idPrefix}-submit-text`
         <!-- Status Message Alert -->
         <div
           id={statusId}
-          class="hidden rounded-none border p-3 font-mono text-xs leading-relaxed transition-all"
+          class="hidden border p-3 font-mono text-xs leading-relaxed transition-all"
           role="alert"
         >
         </div>
 
-        <!-- Submit Button -->
-        <button
-          type="submit"
-          id={submitBtnId}
-          class="btn-shimmer group/btn relative inline-flex h-11 w-full items-center justify-center gap-2 border border-primary bg-primary px-6 font-mono text-xs font-bold tracking-[0.15em] text-primary-foreground uppercase transition-all duration-300 hover:shadow-[0_0_20px_oklch(var(--primary)/0.4)] disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto sm:self-center"
+        <!-- Clean Subtext with Unsubscribe Anytime -->
+        <div
+          class="mt-3.5 flex items-center justify-center gap-2 font-mono text-[11px] text-muted-foreground/75 sm:text-xs"
         >
-          <span
-            id={submitTextId}
-            class="flex items-center gap-2 transition-transform duration-200"
-          >
-            Subscribe Now
-            <Icon
-              name="mdi:send-outline"
-              class="size-4 transition-transform group-hover/btn:translate-x-1"
-            />
-          </span>
-        </button>
+          <Icon
+            name="mdi:shield-check-outline"
+            class="size-3.5 shrink-0 text-primary/75 sm:size-4"
+          />
+          <span>Zero spam. Unsubscribe anytime with 1-click.</span>
+        </div>
       </form>
-
-      <!-- Subtext -->
-      <div
-        class="mt-4 flex items-center justify-center gap-2 font-mono text-[11px] text-muted-foreground/70"
-      >
-        <Icon
-          name="mdi:shield-check-outline"
-          class="size-3.5 text-primary/70"
-        />
-        <span>Zero spam. Unsubscribe anytime with 1-click.</span>
-      </div>
     </div>
   </div>
 </section>
@@ -345,10 +345,16 @@ const submitTextId = `${idPrefix}-submit-text`
     emailInput?.addEventListener("click", initNewsletterTurnstileOnDemand, {
       once: true,
     })
+    emailInput?.addEventListener("input", initNewsletterTurnstileOnDemand, {
+      once: true,
+    })
     nameInput?.addEventListener("focus", initNewsletterTurnstileOnDemand, {
       once: true,
     })
     nameInput?.addEventListener("click", initNewsletterTurnstileOnDemand, {
+      once: true,
+    })
+    nameInput?.addEventListener("input", initNewsletterTurnstileOnDemand, {
       once: true,
     })
     formElement.addEventListener(
@@ -356,6 +362,19 @@ const submitTextId = `${idPrefix}-submit-text`
       initNewsletterTurnstileOnDemand,
       { once: true }
     )
+
+    if ("IntersectionObserver" in window) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          if (entries[0]?.isIntersecting) {
+            initNewsletterTurnstileOnDemand()
+            observer.disconnect()
+          }
+        },
+        { rootMargin: "300px" }
+      )
+      observer.observe(formElement)
+    }
 
     formElement.addEventListener("submit", async (e) => {
       e.preventDefault()

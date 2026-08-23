@@ -501,16 +501,32 @@ const resumeUrl = resumeData.downloadUrl || "/resume"
     if (form.dataset.bound === "true") return
     form.dataset.bound = "true"
 
-    // Lazy load Turnstile on interaction
+    // Lazy load Turnstile on interaction / view
     emailInput?.addEventListener("focus", initHeroTurnstileOnDemand, {
       once: true,
     })
     emailInput?.addEventListener("click", initHeroTurnstileOnDemand, {
       once: true,
     })
+    emailInput?.addEventListener("input", initHeroTurnstileOnDemand, {
+      once: true,
+    })
     form.addEventListener("mouseenter", initHeroTurnstileOnDemand, {
       once: true,
     })
+
+    if ("IntersectionObserver" in window) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          if (entries[0]?.isIntersecting) {
+            initHeroTurnstileOnDemand()
+            observer.disconnect()
+          }
+        },
+        { rootMargin: "300px" }
+      )
+      observer.observe(form)
+    }
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault()
