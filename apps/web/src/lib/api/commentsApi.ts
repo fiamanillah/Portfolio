@@ -44,6 +44,8 @@ export interface PaginatedCommentsResponse {
 export interface GuestCommentPayload {
   guestName: string
   guestEmail?: string
+  captchaToken?: string
+  hp_field?: string
 }
 
 /**
@@ -141,15 +143,14 @@ export const CommentsApi = {
       if (token) headers["Authorization"] = `Bearer ${token}`
 
       const isGuest = !token && "guestName" in author
+      const guestData = isGuest ? (author as GuestCommentPayload) : undefined
       const bodyPayload = {
         slug,
         content,
-        guestName: isGuest
-          ? (author as GuestCommentPayload).guestName
-          : undefined,
-        guestEmail: isGuest
-          ? (author as GuestCommentPayload).guestEmail
-          : undefined,
+        guestName: guestData?.guestName,
+        guestEmail: guestData?.guestEmail,
+        captchaToken: guestData?.captchaToken,
+        hp_field: guestData?.hp_field,
       }
 
       const res = await fetch(
@@ -223,16 +224,15 @@ export const CommentsApi = {
       if (token) headers["Authorization"] = `Bearer ${token}`
 
       const isGuest = !token && "guestName" in author
+      const guestData = isGuest ? (author as GuestCommentPayload) : undefined
       const bodyPayload = {
         slug,
         content,
         parentId,
-        guestName: isGuest
-          ? (author as GuestCommentPayload).guestName
-          : undefined,
-        guestEmail: isGuest
-          ? (author as GuestCommentPayload).guestEmail
-          : undefined,
+        guestName: guestData?.guestName,
+        guestEmail: guestData?.guestEmail,
+        captchaToken: guestData?.captchaToken,
+        hp_field: guestData?.hp_field,
       }
 
       const res = await fetch(

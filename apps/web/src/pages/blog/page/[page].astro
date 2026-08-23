@@ -123,7 +123,7 @@ const nextPageUrl =
     </header>
 
     <!-- Category Filter Bar -->
-    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="container mx-auto">
       <BlogCategoryFilter
         categories={categories}
         activeCategory="all"
@@ -134,12 +134,12 @@ const nextPageUrl =
     </div>
 
     <!-- Articles Grid Section (9 posts per page) -->
-    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="container mx-auto">
       {
         posts.length > 0 ? (
-          <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div class="grid grid-cols-1 border-t border-l border-border sm:grid-cols-2 lg:grid-cols-3">
             {posts.map((post) => (
-              <BlogCard post={post} class="border border-border" />
+              <BlogCard post={post} class="border-r border-b border-border" />
             ))}
           </div>
         ) : (

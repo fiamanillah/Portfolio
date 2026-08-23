@@ -34,9 +34,9 @@ const recentPosts = allPosts.slice(0, 6)
   <div class="container mx-auto">
     {
       recentPosts.length > 0 ? (
-        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div class="grid grid-cols-1 border-t border-l border-border sm:grid-cols-2 lg:grid-cols-3">
           {recentPosts.map((post) => (
-            <BlogCard post={post} class="border border-border" />
+            <BlogCard post={post} class="border-r border-b border-border" />
           ))}
         </div>
       ) : (

@@ -1,4 +1,5 @@
 // src/Modules/Comment/comment.service.ts
+import axios from "axios"
 import {
   PrismaClient,
   CommentStatus,
@@ -7,10 +8,13 @@ import {
   Role,
 } from "@workspace/db"
 import { AppLogger } from "@workspace/logger"
+import { config } from "@/core/config"
+import { PlunkVerifyService } from "@/services/PlunkVerifyService"
 import {
   NotFoundError,
   BadRequestError,
   AuthorizationError,
+  ExternalServiceError,
 } from "@/core/errors/AppError"
 import type {
   CreateCommentDTO,
@@ -36,6 +40,118 @@ export class CommentService {
   private logger = new AppLogger("CommentService")
 
   constructor(private readonly prisma: PrismaClient) {}
+
+  private isPlaceholderKey(key?: string): boolean {
+    return PlunkVerifyService.isPlaceholderKey(key)
+  }
+
+  /**
+   * Stage 1: Honeypot Trap Evaluation (Bot Defense)
+   */
+  public isHoneypotTriggered(hp_field?: string): boolean {
+    if (hp_field && hp_field.trim().length > 0) {
+      this.logger.warn("⚡ Honeypot trap triggered on comment by bot")
+      return true
+    }
+    return false
+  }
+
+  /**
+   * Stage 2: Cloudflare Turnstile Token Verification
+   */
+  public async verifyTurnstileToken(
+    token?: string,
+    clientIp?: string
+  ): Promise<boolean> {
+    const secretKey = config.turnstile.secretKey
+
+    if (this.isPlaceholderKey(secretKey) || config.server.isDevelopment) {
+      this.logger.warn(
+        "⚠️ TURNSTILE_SECRET_KEY missing, test key, or running in development mode. Bypassing Turnstile verification in dev mode."
+      )
+      return true
+    }
+
+    if (!token) {
+      this.logger.warn("CAPTCHA token missing from guest comment payload")
+      return false
+    }
+
+    try {
+      const response = await axios.post(
+        "https://challenges.cloudflare.com/turnstile/v0/siteverify",
+        new URLSearchParams({
+          secret: secretKey,
+          response: token,
+          ...(clientIp ? { remoteip: clientIp } : {}),
+        }).toString(),
+        {
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          timeout: 5000,
+        }
+      )
+
+      const data = response.data
+      if (!data.success) {
+        this.logger.warn(
+          "Cloudflare Turnstile comment token verification failed",
+          {
+            errorCodes: data["error-codes"],
+          }
+        )
+        return false
+      }
+
+      this.logger.info(
+        "✔ Cloudflare Turnstile guest comment verification successful"
+      )
+      return true
+    } catch (error) {
+      this.logger.error("Error connecting to Cloudflare Turnstile API", {
+        error,
+      })
+      throw new ExternalServiceError(
+        "Failed to verify security token with Cloudflare"
+      )
+    }
+  }
+
+  /**
+   * Generate a realistic simulated comment response when a bot is caught in the honeypot
+   */
+  public generateFakeGuestComment(
+    dto: CreateCommentDTO,
+    slug: string
+  ): BlogComment {
+    const fakeId = `guest-comment-${Date.now()}`
+    return {
+      id: fakeId,
+      postId: fakeId,
+      postSlug: slug,
+      postTitle: slug,
+      slug: slug,
+      author: {
+        name: dto.guestName || "Anonymous Guest",
+        email: dto.guestEmail || undefined,
+        avatar: "/fi.png",
+        badge: "Guest",
+        role: "Reader",
+      },
+      content: dto.content,
+      status: CommentStatus.APPROVED,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      likes: 0,
+      isLiked: false,
+      isPinned: false,
+      parentId: dto.parentId || null,
+      replies: [],
+      repliesCount: 0,
+      reportsCount: 0,
+    }
+  }
 
   /**
    * Helper to format author details from User relation or guest fields
@@ -311,6 +427,27 @@ export class CommentService {
 
     if (!post) {
       throw new NotFoundError(`Blog post with slug '${dto.slug}' not found`)
+    }
+
+    // ── Bot Defense for Guest Submissions ─────────────────────────────
+    if (!user) {
+      // 1. Stage 1: Honeypot Silent Trap Check
+      if (this.isHoneypotTriggered(dto.hp_field)) {
+        this.logger.info("Fake comment response returned for honeypot trigger")
+        return this.generateFakeGuestComment(dto, post.slug)
+      }
+
+      // 2. Stage 2: Cloudflare Turnstile CAPTCHA Verification
+      const isCaptchaValid = await this.verifyTurnstileToken(
+        dto.captchaToken,
+        ipAddress
+      )
+
+      if (!isCaptchaValid) {
+        throw new BadRequestError(
+          "Security verification failed. Please complete the CAPTCHA and try again."
+        )
+      }
     }
 
     // Validate parent comment if this is a reply

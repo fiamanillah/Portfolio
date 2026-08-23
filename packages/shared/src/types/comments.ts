@@ -28,6 +28,13 @@ export type ResolveCommentReportDTO = z.input<typeof resolveCommentReportSchema>
 export type BulkCommentStatusDTO = z.input<typeof bulkCommentStatusSchema>;
 export type BulkCommentDeleteDTO = z.input<typeof bulkCommentDeleteSchema>;
 
+export interface GuestCommentPayload {
+  guestName: string;
+  guestEmail?: string;
+  captchaToken?: string;
+  hp_field?: string;
+}
+
 export interface ListPublicCommentsQueryDTO {
   page?: number;
   limit?: number;

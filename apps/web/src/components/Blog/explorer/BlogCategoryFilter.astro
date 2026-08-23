@@ -1,5 +1,6 @@
 ---
 import { getCategorySlug } from "@/data/blogPosts"
+import { Icon } from "astro-icon/components"
 
 interface CategoryItem {
   id?: string
@@ -15,114 +16,150 @@ interface Props {
   baseUrl?: string
   showAllOption?: boolean
   allUrl?: string
+  class?: string
 }
 
 const {
-  categories,
+  categories = [],
   activeCategory = "",
   baseUrl = "/blog/category",
   showAllOption = true,
   allUrl = "/blog/page/1",
+  class: className = "",
 } = Astro.props
+
+const filteredCategories = categories.filter((c) => c.name.toLowerCase() !== "all")
+const totalPostCount = categories.reduce((sum, c) => (c.name.toLowerCase() !== "all" ? sum + (c.count || 0) : sum), 0)
 ---
 
 <div
-  class="my-4 flex flex-wrap items-center justify-between gap-3 border-b border-border/50 pb-4"
+  class={`border-b border-border/70 bg-card/30 backdrop-blur-md p-4 sm:p-5 transition-colors ${className}`}
 >
-  <div class="flex items-center gap-2">
-    <span
-      class="font-mono text-xs font-semibold tracking-wider text-muted-foreground uppercase"
+  <!-- Toolbar Header: Section Identifier & RSS Feed Action -->
+  <div class="flex flex-wrap items-center justify-between gap-3 border-b border-border/40 pb-3">
+    <div class="flex items-center gap-2">
+      <span class="h-1.5 w-1.5 animate-pulse rounded-full bg-primary shadow-[0_0_6px_oklch(var(--primary))]"></span>
+      <span class="font-mono text-xs font-bold tracking-[0.18em] text-foreground uppercase">
+        Explore <span class="text-primary">/</span> Topics
+      </span>
+      <span class="hidden font-mono text-[10px] text-muted-foreground/60 sm:inline">
+        // {filteredCategories.length} CATEGORIES
+      </span>
+    </div>
+
+    <!-- RSS Feed Button -->
+    <a
+      href="/rss.xml"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="group/rss inline-flex items-center gap-1.5 border border-orange-500/35 bg-orange-500/10 px-2.5 py-1 font-mono text-[11px] font-semibold text-orange-400 backdrop-blur-sm transition-all duration-200 hover:border-orange-500/70 hover:bg-orange-500/20 hover:shadow-[0_0_12px_rgba(249,115,22,0.25)]"
+      title="Subscribe via RSS Feed (XML)"
     >
-      EXPLORE BY TOPIC:
-    </span>
+      <Icon name="mdi:rss" class="size-3.5 text-orange-400 transition-transform duration-200 group-hover/rss:scale-110" />
+      <span>RSS Feed // XML</span>
+    </a>
   </div>
 
-  <div class="flex flex-wrap items-center gap-2">
+  <!-- Category Pills Group -->
+  <div class="mt-3.5 flex flex-wrap items-center gap-2 sm:gap-2.5">
     {
       showAllOption && (
         <a href={allUrl} class="focus:outline-none">
           <button
             type="button"
-            class={`flex cursor-pointer items-center gap-2 border px-3.5 py-1.5 font-mono text-xs transition-all duration-200 ${
+            class={`group/btn flex cursor-pointer items-center gap-1.5 border px-3 py-1.5 font-mono text-xs transition-all duration-200 select-none ${
               activeCategory.toLowerCase() === "all" || !activeCategory
-                ? "border-primary bg-primary/10 font-bold text-primary shadow-[0_0_12px_oklch(var(--primary)/15%)]"
-                : "border-border bg-background/50 text-muted-foreground hover:border-primary/40 hover:text-foreground"
+                ? "border-primary bg-primary/15 font-bold text-primary shadow-[0_0_14px_oklch(var(--primary)/20%)] ring-1 ring-primary/40"
+                : "border-border/80 bg-background/80 text-muted-foreground hover:border-primary/50 hover:bg-card hover:text-foreground shadow-2xs"
             }`}
           >
             <span>All Articles</span>
+            {totalPostCount > 0 && (
+              <span
+                class={`inline-flex h-4 min-w-[1.25rem] items-center justify-center rounded-xs px-1 font-mono text-[10px] transition-colors ${
+                  activeCategory.toLowerCase() === "all" || !activeCategory
+                    ? "bg-primary font-bold text-primary-foreground"
+                    : "bg-muted/80 text-muted-foreground group-hover/btn:bg-muted group-hover/btn:text-foreground"
+                }`}
+              >
+                {totalPostCount}
+              </span>
+            )}
           </button>
         </a>
       )
     }
-    {
-      categories
-        .filter((c) => c.name.toLowerCase() !== "all")
-        .map((cat) => {
-          const catSlug = getCategorySlug(cat)
-          const isActive =
-            activeCategory.toLowerCase() === cat.name.toLowerCase() ||
-            activeCategory.toLowerCase() === catSlug.toLowerCase()
-          const targetUrl = `${baseUrl}/${catSlug}`
-          const catColor =
-            cat.color && cat.color.startsWith("#") ? cat.color : undefined
 
-          return (
-            <a href={targetUrl} class="focus:outline-none">
-              <button
-                type="button"
-                style={
-                  catColor && isActive
+    {
+      filteredCategories.map((cat) => {
+        const catSlug = getCategorySlug(cat)
+        const isActive =
+          activeCategory.toLowerCase() === cat.name.toLowerCase() ||
+          activeCategory.toLowerCase() === catSlug.toLowerCase()
+        const targetUrl = `${baseUrl}/${catSlug}`
+        const catColor =
+          cat.color && cat.color.startsWith("#") ? cat.color : undefined
+
+        return (
+          <a href={targetUrl} class="focus:outline-none">
+            <button
+              type="button"
+              style={
+                catColor && isActive
+                  ? {
+                      borderColor: catColor,
+                      backgroundColor: `${catColor}1c`,
+                      color: catColor,
+                      boxShadow: `0 0 14px ${catColor}35`,
+                    }
+                  : catColor
                     ? {
-                        borderColor: catColor,
-                        backgroundColor: `${catColor}1a`,
-                        color: catColor,
-                        boxShadow: `0 0 12px ${catColor}33`,
+                        borderColor: `${catColor}40`,
                       }
-                    : catColor
-                      ? {
-                          borderColor: `${catColor}30`,
-                        }
-                      : undefined
-                }
-                class={`flex cursor-pointer items-center gap-2 border px-3.5 py-1.5 font-mono text-xs transition-all duration-200 ${
-                  isActive && !catColor
-                    ? "border-primary bg-primary/10 font-bold text-primary shadow-[0_0_12px_oklch(var(--primary)/15%)]"
-                    : !isActive && !catColor
-                      ? "border-border bg-background/50 text-muted-foreground hover:border-primary/40 hover:text-foreground"
-                      : "bg-background/50 text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                {catColor && (
-                  <span
-                    class="h-1.5 w-1.5 shrink-0 rounded-full"
-                    style={{
-                      backgroundColor: catColor,
-                      boxShadow: `0 0 5px ${catColor}`,
-                    }}
-                  />
-                )}
-                <span>{cat.name}</span>
+                    : undefined
+              }
+              class={`group/btn flex cursor-pointer items-center gap-1.5 border px-3 py-1.5 font-mono text-xs transition-all duration-200 select-none ${
+                isActive && !catColor
+                  ? "border-primary bg-primary/15 font-bold text-primary shadow-[0_0_14px_oklch(var(--primary)/20%)] ring-1 ring-primary/40"
+                  : !isActive && !catColor
+                    ? "border-border/80 bg-background/80 text-muted-foreground hover:border-primary/50 hover:bg-card hover:text-foreground shadow-2xs"
+                    : "bg-background/80 text-muted-foreground hover:text-foreground shadow-2xs"
+              }`}
+            >
+              {catColor && (
+                <span
+                  class="h-1.5 w-1.5 shrink-0 rounded-full"
+                  style={{
+                    backgroundColor: catColor,
+                    boxShadow: `0 0 6px ${catColor}`,
+                  }}
+                />
+              )}
+              <span>{cat.name}</span>
+              {cat.count > 0 && (
                 <span
                   style={
                     isActive && catColor
                       ? {
                           backgroundColor: catColor,
-                          color: "#fff",
+                          color: "#ffffff",
                         }
                       : undefined
                   }
-                  class={`inline-flex h-4 min-w-[1.25rem] items-center justify-center rounded-sm px-1 font-mono text-[10px] ${
+                  class={`inline-flex h-4 min-w-[1.25rem] items-center justify-center rounded-xs px-1 font-mono text-[10px] transition-colors ${
                     isActive && !catColor
                       ? "bg-primary font-bold text-primary-foreground"
-                      : "bg-muted text-muted-foreground"
+                      : "bg-muted/80 text-muted-foreground group-hover/btn:bg-muted group-hover/btn:text-foreground"
                   }`}
                 >
                   {cat.count}
                 </span>
-              </button>
-            </a>
-          )
-        })
+              )}
+            </button>
+          </a>
+        )
+      })
     }
   </div>
 </div>
+

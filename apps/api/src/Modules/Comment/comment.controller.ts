@@ -76,7 +76,10 @@ export class CommentController extends BaseController {
       const body = (req.validatedBody || req.body) as CreateCommentDTO
       const user = req.user
       const ipAddress =
-        (req.headers["x-forwarded-for"] as string) || req.socket.remoteAddress
+        (req.headers["x-forwarded-for"] as string)?.split(",")[0]?.trim() ||
+        req.socket.remoteAddress ||
+        req.ip ||
+        ""
       const userAgent = req.headers["user-agent"]
 
       const comment = await this.commentService.createComment(

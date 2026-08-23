@@ -1,4 +1,4 @@
-import { useState, useRef, type FormEvent } from "react"
+import { useState, useRef, useCallback, useEffect, type FormEvent } from "react"
 import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"
 import { Textarea } from "@workspace/ui/components/textarea"
@@ -17,12 +17,13 @@ import {
   ArrowTurnBackwardIcon,
   Loading03Icon,
   UserIcon,
+  Shield01Icon,
 } from "@hugeicons/core-free-icons"
 import type { GuestCommentPayload } from "@/lib/api/commentsApi"
 
 interface CommentComposerProps {
   postSlug?: string
-  onSubmit: (content: string, guestInfo?: GuestCommentPayload) => void
+  onSubmit: (content: string, guestInfo?: GuestCommentPayload) => Promise<void> | void
   onOpenAuth: () => void
   isReply?: boolean
   replyToName?: string
@@ -43,10 +44,95 @@ export function CommentComposer({
   const [guestMode, setGuestMode] = useState(false)
   const [guestName, setGuestName] = useState("")
   const [guestEmail, setGuestEmail] = useState("")
+  const [captchaToken, setCaptchaToken] = useState("")
+  const [hpField, setHpField] = useState("")
   const [composerError, setComposerError] = useState<string | null>(null)
   const [guestNameError, setGuestNameError] = useState<string | null>(null)
+  const [turnstileError, setTurnstileError] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
+
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const turnstileContainerRef = useRef<HTMLDivElement | null>(null)
+  const turnstileWidgetIdRef = useRef<string | null>(null)
+
+  // Initialize Cloudflare Turnstile for Guest Comments
+  const initTurnstile = useCallback(() => {
+    const siteKey =
+      (typeof import.meta !== "undefined" &&
+        import.meta.env?.PUBLIC_TURNSTILE_SITE_KEY) ||
+      "1x00000000000000000000AA"
+
+    if (typeof window === "undefined" || !turnstileContainerRef.current) return
+
+    const renderWidget = () => {
+      if (
+        (window as any).turnstile &&
+        turnstileContainerRef.current &&
+        turnstileWidgetIdRef.current === null
+      ) {
+        try {
+          const id = (window as any).turnstile.render(
+            turnstileContainerRef.current,
+            {
+              sitekey: siteKey,
+              theme: "auto",
+              callback: (token: string) => {
+                setCaptchaToken(token)
+                setTurnstileError(null)
+                window.dispatchEvent(new CustomEvent("grid-refresh"))
+              },
+              "expired-callback": () => {
+                setCaptchaToken("")
+                window.dispatchEvent(new CustomEvent("grid-refresh"))
+              },
+              "error-callback": () => {
+                setCaptchaToken("")
+                window.dispatchEvent(new CustomEvent("grid-refresh"))
+              },
+            }
+          )
+          turnstileWidgetIdRef.current = id
+          window.dispatchEvent(new CustomEvent("grid-refresh"))
+        } catch (e) {
+          console.warn("Turnstile comment init warning:", e)
+        }
+      }
+    }
+
+    if ((window as any).turnstile) {
+      renderWidget()
+    } else {
+      let script = document.getElementById(
+        "cf-turnstile-script"
+      ) as HTMLScriptElement | null
+      if (!script) {
+        script = document.createElement("script")
+        script.id = "cf-turnstile-script"
+        script.src =
+          "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
+        script.async = true
+        script.defer = true
+        document.head.appendChild(script)
+      }
+      script.addEventListener("load", renderWidget, { once: true })
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!isAuthenticated && guestMode) {
+      const timer = setTimeout(initTurnstile, 60)
+      return () => clearTimeout(timer)
+    } else {
+      if (turnstileWidgetIdRef.current !== null && (window as any).turnstile) {
+        try {
+          (window as any).turnstile.remove(turnstileWidgetIdRef.current)
+        } catch {}
+        turnstileWidgetIdRef.current = null
+      }
+      setCaptchaToken("")
+      setTurnstileError(null)
+    }
+  }, [isAuthenticated, guestMode, initTurnstile])
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
@@ -72,6 +158,15 @@ export function CommentComposer({
         return
       }
       setGuestNameError(null)
+
+      const siteKey =
+        typeof import.meta !== "undefined" &&
+        import.meta.env?.PUBLIC_TURNSTILE_SITE_KEY
+      if (siteKey && !captchaToken) {
+        setTurnstileError("Please complete the security check before submitting")
+        return
+      }
+      setTurnstileError(null)
     }
 
     setComposerError(null)
@@ -83,14 +178,29 @@ export function CommentComposer({
         await onSubmit(trimmed, {
           guestName: guestName.trim(),
           guestEmail: guestEmail.trim() || undefined,
+          captchaToken: captchaToken || undefined,
+          hp_field: hpField || undefined,
         })
       }
       setContent("")
+      setHpField("")
+      if (turnstileWidgetIdRef.current !== null && (window as any).turnstile) {
+        try {
+          (window as any).turnstile.reset(turnstileWidgetIdRef.current)
+        } catch {}
+      }
+      setCaptchaToken("")
       toast.success(isReply ? "Reply posted!" : "Comment published!", {
         description: "Your perspective has been added to the discussion.",
       })
     } catch {
       toast.error("Failed to post comment. Please try again.")
+      if (turnstileWidgetIdRef.current !== null && (window as any).turnstile) {
+        try {
+          (window as any).turnstile.reset(turnstileWidgetIdRef.current)
+        } catch {}
+      }
+      setCaptchaToken("")
     } finally {
       setIsSubmitting(false)
     }
@@ -289,6 +399,24 @@ export function CommentComposer({
         </div>
       )}
 
+      {/* Invisible Honeypot Anti-Spam Field */}
+      {!isAuthenticated && guestMode && (
+        <div className="hidden" aria-hidden="true" style={{ display: "none" }}>
+          <label htmlFor={`guest_hp_field_${isReply ? "reply_" : "main"}`}>
+            Leave this field blank
+          </label>
+          <input
+            id={`guest_hp_field_${isReply ? "reply_" : "main"}`}
+            type="text"
+            name="hp_field"
+            tabIndex={-1}
+            autoComplete="off"
+            value={hpField}
+            onChange={(e) => setHpField(e.target.value)}
+          />
+        </div>
+      )}
+
       {/* Editor Box */}
       <Field data-invalid={!!composerError}>
         <div className="relative border border-border bg-background/90 transition-colors focus-within:border-primary/60">
@@ -346,6 +474,29 @@ export function CommentComposer({
         </div>
         <FieldError errors={composerError ?? undefined} />
       </Field>
+
+      {/* Cloudflare Turnstile Bot Defense for Guests */}
+      {!isAuthenticated && guestMode && (
+        <div className="border border-border/60 bg-muted/10 p-2.5">
+          <div className="mb-1.5 flex items-center justify-between">
+            <span className="inline-flex items-center gap-1 font-mono text-[10px] font-semibold text-muted-foreground uppercase">
+              <HugeiconsIcon icon={Shield01Icon} className="size-3 text-primary" />
+              Bot Defense Verification
+            </span>
+            <span className="font-mono text-[9px] text-primary/80">
+              Cloudflare Turnstile
+            </span>
+          </div>
+          <div className="flex min-h-[65px] items-center justify-center py-1">
+            <div ref={turnstileContainerRef} />
+          </div>
+          {turnstileError && (
+            <p className="mt-1 text-center font-mono text-[10px] text-destructive">
+              {turnstileError}
+            </p>
+          )}
+        </div>
+      )}
 
       {/* Actions */}
       <div className="flex items-center justify-between pt-1">

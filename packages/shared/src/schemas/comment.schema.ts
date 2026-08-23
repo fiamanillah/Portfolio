@@ -34,6 +34,8 @@ export const postCommentSchema = z.object({
   parentId: z.string().uuid("Invalid parent comment ID format").optional().nullable(),
   guestName: z.string().min(2, "Name must be at least 2 characters").max(60).optional().nullable(),
   guestEmail: z.string().email("Invalid email format").optional().nullable(),
+  captchaToken: z.string().optional(),
+  hp_field: z.string().optional(),
 });
 
 export const createCommentSchema = postCommentSchema;
