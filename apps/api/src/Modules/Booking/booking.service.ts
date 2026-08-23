@@ -398,7 +398,10 @@ export class BookingService {
     const secretKey = config.plunk.secretKey
     const adminEmail = config.booking.adminEmail || config.contact.recipientEmail
     const webUrl = config.site.webUrl || "https://fi.amanillah.com"
-    const senderEmail = config.contact.recipientEmail || "fi@amanillah.com"
+    const senderEmail = config.email.bookingFrom || "bookings@mail.amanillah.com"
+    const hostSenderEmail = config.email.systemFrom || "system@mail.amanillah.com"
+    const organizerEmail = config.email.personalEmail || "fi@amanillah.com"
+    const replyToEmail = config.email.replyTo || "fi@amanillah.com"
     const senderName = "Fi Amanillah"
     const hostSenderName = "Fi Amanillah Portfolio"
 
@@ -465,7 +468,7 @@ export class BookingService {
       description: `1-on-1 Consultation Session.\n\nGoogle Meet: ${booking.googleMeetLink || "Online Room"}\nNotes: ${booking.guestNotes || "None"}`,
       location: booking.googleMeetLink || "Google Meet Video Call",
       organizerName: senderName,
-      organizerEmail: senderEmail,
+      organizerEmail: organizerEmail,
       attendeeName: booking.guestName,
       attendeeEmail: booking.guestEmail,
     })
@@ -494,7 +497,7 @@ export class BookingService {
         to: booking.guestEmail,
         from: senderEmail,
         name: senderName,
-        reply: adminEmail,
+        reply: replyToEmail,
         subject: guestEmailContent.subject,
         body: guestEmailContent.html,
         attachments: [
@@ -570,7 +573,7 @@ export class BookingService {
     try {
       const hostPayload: Record<string, any> = {
         to: adminEmail,
-        from: senderEmail,
+        from: hostSenderEmail,
         name: hostSenderName,
         reply: booking.guestEmail,
         subject: hostEmailContent.subject,
@@ -725,7 +728,10 @@ export class BookingService {
     const secretKey = config.plunk.secretKey
     const adminEmail = config.booking.adminEmail || config.contact.recipientEmail
     const webUrl = config.site.webUrl || "https://fi.amanillah.com"
-    const senderEmail = config.contact.recipientEmail || "fi@amanillah.com"
+    const senderEmail = config.email.bookingFrom || "bookings@mail.amanillah.com"
+    const hostSenderEmail = config.email.systemFrom || "system@mail.amanillah.com"
+    const organizerEmail = config.email.personalEmail || "fi@amanillah.com"
+    const replyToEmail = config.email.replyTo || "fi@amanillah.com"
     const senderName = "Fi Amanillah"
     const hostSenderName = "Fi Amanillah Portfolio"
 
@@ -787,7 +793,7 @@ export class BookingService {
       summary: `CANCELLED: ${booking.meetingType} with Fi Amanillah`,
       description: `The meeting session has been cancelled.${reason ? `\nReason: ${reason}` : ""}`,
       organizerName: senderName,
-      organizerEmail: senderEmail,
+      organizerEmail: organizerEmail,
       attendeeName: booking.guestName,
       attendeeEmail: booking.guestEmail,
     })
@@ -808,7 +814,7 @@ export class BookingService {
         to: booking.guestEmail,
         from: senderEmail,
         name: senderName,
-        reply: adminEmail,
+        reply: replyToEmail,
         subject: guestEmailContent.subject,
         body: guestEmailContent.html,
         attachments: [
@@ -866,7 +872,7 @@ export class BookingService {
     try {
       const hostPayload: Record<string, any> = {
         to: adminEmail,
-        from: senderEmail,
+        from: hostSenderEmail,
         name: hostSenderName,
         reply: booking.guestEmail,
         subject: hostEmailContent.subject,

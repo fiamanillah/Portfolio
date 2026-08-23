@@ -427,7 +427,7 @@ export function EditTemplateDialog({
                       setFromEmail(e.target.value)
                       clearFieldError("from")
                     }}
-                    placeholder="fi@amanillah.com"
+                    placeholder="hello@mail.amanillah.com"
                     className={`h-8 bg-background/80 text-xs ${fieldErrors.from ? "border-destructive focus:border-destructive" : ""}`}
                   />
                   {fieldErrors.from && <FieldError errors={fieldErrors.from} />}

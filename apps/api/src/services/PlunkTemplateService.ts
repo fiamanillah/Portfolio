@@ -87,10 +87,13 @@ export class PlunkTemplateService {
         body: payload.body,
         from:
           payload.from ||
-          config.contact.recipientEmail ||
-          "fi@amanillah.com",
+          config.email.transactionalFrom ||
+          "hello@mail.amanillah.com",
         fromName: payload.fromName || "Fi Amanillah",
-        replyTo: payload.replyTo || config.contact.recipientEmail,
+        replyTo:
+          payload.replyTo ||
+          config.email.replyTo ||
+          "fi@amanillah.com",
         type: payload.type || "MARKETING",
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
@@ -356,8 +359,9 @@ export class PlunkTemplateService {
 
     try {
       const senderFrom =
-        from || config.contact.recipientEmail || "fi@amanillah.com"
+        from || config.email.transactionalFrom || "hello@mail.amanillah.com"
       const senderName = fromName || "Fi Amanillah"
+      const replyToAddress = reply || config.email.replyTo || "fi@amanillah.com"
 
       const payload: Record<string, any> = {
         to,
@@ -367,7 +371,7 @@ export class PlunkTemplateService {
         ...(subject ? { subject } : {}),
         ...(body ? { body } : {}),
         ...(data ? { data } : {}),
-        ...(reply ? { reply } : {}),
+        reply: replyToAddress,
         ...(headers ? { headers } : {}),
       }
 

@@ -866,9 +866,9 @@ export class SubscriberService {
     try {
       const plunkPayload: Record<string, any> = {
         to: email,
-        from: recipientEmail,
+        from: config.email.newsletterFrom,
         name: "Fi Amanillah",
-        reply: recipientEmail,
+        reply: config.email.replyTo,
         subject: emailSubject,
         body: emailBody,
         data: {

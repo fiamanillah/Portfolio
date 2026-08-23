@@ -47,7 +47,8 @@ export function EmailPreviewCard({
     "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace";
 
   const renderedSenderName = senderName || "Fi Amanillah";
-  const renderedSenderEmail = senderEmail || "fi@amanillah.com";
+  const renderedSenderEmail =
+    senderEmail || "newsletter@newsletter.amanillah.com";
 
   // Simulate liquid variable interpolation for preview
   const interpolatedSubject = (subject || "Untitled Newsletter Subject")

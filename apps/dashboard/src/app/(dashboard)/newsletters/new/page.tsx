@@ -42,7 +42,9 @@ export default function NewNewsletterPage() {
   const [previewText, setPreviewText] = React.useState(defaultTpl.defaultPreview);
   const [content, setContent] = React.useState(defaultTpl.defaultContent);
   const [senderName, setSenderName] = React.useState("Fi Amanillah");
-  const [senderEmail, setSenderEmail] = React.useState("fi@amanillah.com");
+  const [senderEmail, setSenderEmail] = React.useState(
+    "newsletter@newsletter.amanillah.com"
+  );
   const [replyTo, setReplyTo] = React.useState("fi@amanillah.com");
 
   // Audience State

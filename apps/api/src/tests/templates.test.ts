@@ -411,6 +411,14 @@ describe("Flat White-Themed Email Templates & Templating System", () => {
           /border-(left|right|top|bottom):\s*[2-9]/
         )
         expect(rendered.body).not.toMatch(emojiRegex)
+
+        // Verify sender and reply-to domain isolation
+        expect(tpl.replyTo).toBe("fi@amanillah.com")
+        expect(tpl.from).toBeDefined()
+        expect(
+          tpl.from?.endsWith("@mail.amanillah.com") ||
+            tpl.from?.endsWith("@newsletter.amanillah.com")
+        ).toBe(true)
       }
     })
   })

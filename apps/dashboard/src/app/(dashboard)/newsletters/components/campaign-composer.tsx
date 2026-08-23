@@ -233,7 +233,7 @@ export function CampaignComposer({
                   <Input
                     id="sender-email"
                     type="email"
-                    placeholder="fi@amanillah.com"
+                    placeholder="newsletter@newsletter.amanillah.com"
                     value={senderEmail}
                     onChange={(e) => onChangeSenderEmail(e.target.value)}
                     className="h-8 text-xs"

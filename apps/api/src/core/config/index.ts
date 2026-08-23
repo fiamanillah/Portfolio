@@ -70,6 +70,17 @@ export const config = {
   site: {
     webUrl: process.env.PUBLIC_WEB_URL || "https://fi.amanillah.com",
   },
+  email: {
+    personalEmail: process.env.PERSONAL_EMAIL || "fi@amanillah.com",
+    replyTo: process.env.DEFAULT_REPLY_TO_EMAIL || "fi@amanillah.com",
+    transactionalFrom:
+      process.env.TRANSACTIONAL_FROM_EMAIL || "hello@mail.amanillah.com",
+    systemFrom: process.env.SYSTEM_FROM_EMAIL || "system@mail.amanillah.com",
+    authFrom: process.env.AUTH_FROM_EMAIL || "auth@mail.amanillah.com",
+    bookingFrom: process.env.BOOKING_FROM_EMAIL || "bookings@mail.amanillah.com",
+    newsletterFrom:
+      process.env.NEWSLETTER_FROM_EMAIL || "newsletter@newsletter.amanillah.com",
+  },
   contact: {
     recipientEmail: process.env.CONTACT_RECIPIENT_EMAIL || "fi@amanillah.com",
     rateLimitWindowMs: parseInt(
@@ -111,7 +122,10 @@ export const config = {
       "http://localhost:3040/booking/v1/google/callback",
   },
   booking: {
-    adminEmail: process.env.BOOKING_NOTIFICATION_EMAIL || process.env.CONTACT_RECIPIENT_EMAIL || "fi@amanillah.dev",
+    adminEmail:
+      process.env.BOOKING_NOTIFICATION_EMAIL ||
+      process.env.CONTACT_RECIPIENT_EMAIL ||
+      "fi@amanillah.com",
     rateLimitWindowMs: parseInt(
       process.env.BOOKING_RATE_LIMIT_WINDOW_MS || "3600000"
     ), // 1 hour

@@ -129,10 +129,11 @@ export class NewsletterDispatcher {
 
     const senderFrom =
       newsletter.senderEmail ||
-      config.contact.recipientEmail ||
-      "fi@amanillah.com";
+      config.email.newsletterFrom ||
+      "newsletter@newsletter.amanillah.com";
     const senderName = newsletter.senderName || "Fi Amanillah";
-    const replyTo = newsletter.replyTo || config.contact.recipientEmail;
+    const replyTo =
+      newsletter.replyTo || config.email.replyTo || "fi@amanillah.com";
 
     // 3. Process in batches with throttling
     for (let i = 0; i < recipients.length; i += batchSize) {
@@ -306,7 +307,9 @@ export class NewsletterDispatcher {
     let failed = 0;
 
     const from =
-      senderEmail || config.contact.recipientEmail || "fi@amanillah.com";
+      senderEmail ||
+      config.email.newsletterFrom ||
+      "newsletter@newsletter.amanillah.com";
     const fromName = senderName || "Fi Amanillah (Test)";
 
     for (const email of testEmails) {

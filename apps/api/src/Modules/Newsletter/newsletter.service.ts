@@ -336,10 +336,13 @@ export class NewsletterService {
         body: payload.content,
         from:
           payload.senderEmail ||
-          config.contact.recipientEmail ||
-          "fi@amanillah.com",
+          config.email.newsletterFrom ||
+          "newsletter@newsletter.amanillah.com",
         fromName: payload.senderName || "Fi Amanillah",
-        replyTo: payload.replyTo || config.contact.recipientEmail,
+        replyTo:
+          payload.replyTo ||
+          config.email.replyTo ||
+          "fi@amanillah.com",
         type: "MARKETING",
         audienceType:
           payload.targetAudience === "SEGMENT" ? "SEGMENT" : "ALL",
@@ -455,10 +458,13 @@ export class NewsletterService {
           body: updatedContent,
           from:
             updatedSenderEmail ||
-            config.contact.recipientEmail ||
-            "fi@amanillah.com",
+            config.email.newsletterFrom ||
+            "newsletter@newsletter.amanillah.com",
           fromName: updatedSenderName || "Fi Amanillah",
-          replyTo: updatedReplyTo || config.contact.recipientEmail,
+          replyTo:
+            updatedReplyTo ||
+            config.email.replyTo ||
+            "fi@amanillah.com",
           type: "MARKETING",
           audienceType: updatedAudience === "SEGMENT" ? "SEGMENT" : "ALL",
         });
@@ -470,10 +476,13 @@ export class NewsletterService {
           body: updatedContent,
           from:
             updatedSenderEmail ||
-            config.contact.recipientEmail ||
-            "fi@amanillah.com",
+            config.email.newsletterFrom ||
+            "newsletter@newsletter.amanillah.com",
           fromName: updatedSenderName || "Fi Amanillah",
-          replyTo: updatedReplyTo || config.contact.recipientEmail,
+          replyTo:
+            updatedReplyTo ||
+            config.email.replyTo ||
+            "fi@amanillah.com",
           type: "MARKETING",
           audienceType: updatedAudience === "SEGMENT" ? "SEGMENT" : "ALL",
         });
@@ -857,10 +866,13 @@ export class NewsletterService {
         body: record.content,
         from:
           record.senderEmail ||
-          config.contact.recipientEmail ||
-          "fi@amanillah.com",
+          config.email.newsletterFrom ||
+          "newsletter@newsletter.amanillah.com",
         fromName: record.senderName || "Fi Amanillah",
-        replyTo: record.replyTo || config.contact.recipientEmail,
+        replyTo:
+          record.replyTo ||
+          config.email.replyTo ||
+          "fi@amanillah.com",
         type: "MARKETING",
         audienceType: record.targetAudience === "SEGMENT" ? "SEGMENT" : "ALL",
       });

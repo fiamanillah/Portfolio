@@ -17,6 +17,7 @@ export interface DefaultTemplateSeed {
   description: string
   subject: string
   body: string
+  from?: string
   fromName: string
   replyTo: string
   type: "TRANSACTIONAL" | "HEADLESS" | "MARKETING"
@@ -33,6 +34,7 @@ export const SYSTEM_TEMPLATES: DefaultTemplateSeed[] = [
     subject:
       "[Confirmed] {{ meetingType | default: '1-on-1 Consultation' }} — Fi Amanillah",
     body: getBookingConfirmationLiquidBody(),
+    from: "bookings@mail.amanillah.com",
     fromName: "Fi Amanillah",
     replyTo: "fi@amanillah.com",
     type: "HEADLESS",
@@ -60,6 +62,7 @@ export const SYSTEM_TEMPLATES: DefaultTemplateSeed[] = [
     subject:
       "[New Booking] {{ guestName }} booked \"{{ meetingType }}\"",
     body: getBookingNotificationLiquidBody(),
+    from: "system@mail.amanillah.com",
     fromName: "Fi Amanillah Portfolio",
     replyTo: "fi@amanillah.com",
     type: "TRANSACTIONAL",
@@ -84,6 +87,7 @@ export const SYSTEM_TEMPLATES: DefaultTemplateSeed[] = [
     subject:
       "[Cancelled] {{ meetingType | default: '1-on-1 Consultation' }} — Fi Amanillah",
     body: getBookingCancellationLiquidBody(),
+    from: "bookings@mail.amanillah.com",
     fromName: "Fi Amanillah",
     replyTo: "fi@amanillah.com",
     type: "HEADLESS",
@@ -107,6 +111,7 @@ export const SYSTEM_TEMPLATES: DefaultTemplateSeed[] = [
     subject:
       "[Cancelled Booking] {{ guestName }} cancelled \"{{ meetingType }}\"",
     body: getHostCancellationNotificationLiquidBody(),
+    from: "system@mail.amanillah.com",
     fromName: "Fi Amanillah Portfolio",
     replyTo: "fi@amanillah.com",
     type: "TRANSACTIONAL",
@@ -129,6 +134,7 @@ export const SYSTEM_TEMPLATES: DefaultTemplateSeed[] = [
       "Confirmation email sent automatically to users who submit the contact form with a summary copy of their message.",
     subject: "[Confirmation] Thank you for getting in touch - Fi Amanillah",
     body: getContactConfirmationLiquidBody(),
+    from: "hello@mail.amanillah.com",
     fromName: "Fi Amanillah",
     replyTo: "fi@amanillah.com",
     type: "HEADLESS",
@@ -153,6 +159,7 @@ export const SYSTEM_TEMPLATES: DefaultTemplateSeed[] = [
     subject:
       "[Portfolio Contact] {{ subject | default: 'New Submission' }} — from {{ name }}",
     body: getContactNotificationLiquidBody(),
+    from: "system@mail.amanillah.com",
     fromName: "Portfolio Notification",
     replyTo: "fi@amanillah.com",
     type: "TRANSACTIONAL",
@@ -173,6 +180,7 @@ export const SYSTEM_TEMPLATES: DefaultTemplateSeed[] = [
       "Welcome email sent to newly subscribed visitors with unsubscribe link and engineering blog highlights.",
     subject: "You are subscribed — Fi Amanillah",
     body: getSubscriptionConfirmationLiquidBody(),
+    from: "newsletter@newsletter.amanillah.com",
     fromName: "Fi Amanillah",
     replyTo: "fi@amanillah.com",
     type: "HEADLESS",
@@ -193,6 +201,7 @@ export const SYSTEM_TEMPLATES: DefaultTemplateSeed[] = [
     subject:
       "{{ title | default: 'New Post: Scaling Real-Time WebSockets' }} — Fi Amanillah",
     body: getNewsletterBroadcastLiquidBody(),
+    from: "newsletter@newsletter.amanillah.com",
     fromName: "Fi Amanillah",
     replyTo: "fi@amanillah.com",
     type: "MARKETING",
@@ -221,6 +230,7 @@ export const SYSTEM_TEMPLATES: DefaultTemplateSeed[] = [
       "Single-use 6-digit verification passcode dispatched to newly registering visitors to activate their account.",
     subject: "[{{ code }}] Your Email Verification Code — Fi Amanillah",
     body: getOtpVerificationLiquidBody(),
+    from: "auth@mail.amanillah.com",
     fromName: "Fi Amanillah",
     replyTo: "fi@amanillah.com",
     type: "HEADLESS",
@@ -240,6 +250,7 @@ export const SYSTEM_TEMPLATES: DefaultTemplateSeed[] = [
       "Security passcode dispatched when a user initiates a password reset request.",
     subject: "[{{ code }}] Password Reset Code — Fi Amanillah",
     body: getOtpVerificationLiquidBody(),
+    from: "auth@mail.amanillah.com",
     fromName: "Fi Amanillah",
     replyTo: "fi@amanillah.com",
     type: "HEADLESS",

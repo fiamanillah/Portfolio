@@ -109,9 +109,15 @@ export class PlunkCampaignService {
         description: payload.description,
         subject: payload.subject,
         body: payload.body,
-        from: payload.from || config.contact.recipientEmail || "fi@amanillah.com",
+        from:
+          payload.from ||
+          config.email.newsletterFrom ||
+          "newsletter@newsletter.amanillah.com",
         fromName: payload.fromName || "Fi Amanillah",
-        replyTo: payload.replyTo || config.contact.recipientEmail,
+        replyTo:
+          payload.replyTo ||
+          config.email.replyTo ||
+          "fi@amanillah.com",
         type: payload.type || "MARKETING",
         status: "DRAFT",
         audienceType: payload.audienceType || "ALL",
@@ -195,7 +201,7 @@ export class PlunkCampaignService {
         name: "Simulated Campaign",
         subject: "Simulated Campaign Subject",
         body: "<p>Simulated Campaign Content</p>",
-        from: config.contact.recipientEmail || "fi@amanillah.com",
+        from: config.email.newsletterFrom || "newsletter@newsletter.amanillah.com",
         type: "MARKETING",
         status: "DRAFT",
         audienceType: "ALL",
@@ -289,9 +295,15 @@ export class PlunkCampaignService {
         description: payload.description,
         subject: payload.subject || "Updated Subject",
         body: payload.body || "<p>Updated Body</p>",
-        from: payload.from || config.contact.recipientEmail || "fi@amanillah.com",
-        fromName: payload.fromName,
-        replyTo: payload.replyTo,
+        from:
+          payload.from ||
+          config.email.newsletterFrom ||
+          "newsletter@newsletter.amanillah.com",
+        fromName: payload.fromName || "Fi Amanillah",
+        replyTo:
+          payload.replyTo ||
+          config.email.replyTo ||
+          "fi@amanillah.com",
         type: payload.type || "MARKETING",
         status: "DRAFT",
         audienceType: payload.audienceType || "ALL",
@@ -360,7 +372,7 @@ export class PlunkCampaignService {
         name: "Simulated Sent Campaign",
         subject: "Simulated Subject",
         body: "<p>Simulated Body</p>",
-        from: config.contact.recipientEmail || "fi@amanillah.com",
+        from: config.email.newsletterFrom || "newsletter@newsletter.amanillah.com",
         type: "MARKETING",
         status: isScheduled ? "SCHEDULED" : "SENDING",
         audienceType: "ALL",
@@ -415,7 +427,7 @@ export class PlunkCampaignService {
         name: "Cancelled Campaign",
         subject: "Cancelled Subject",
         body: "<p>Cancelled</p>",
-        from: config.contact.recipientEmail || "fi@amanillah.com",
+        from: config.email.newsletterFrom || "newsletter@newsletter.amanillah.com",
         type: "MARKETING",
         status: "CANCELLED",
         audienceType: "ALL",
@@ -464,7 +476,7 @@ export class PlunkCampaignService {
         name: "Copy of Campaign",
         subject: "Copy of Campaign Subject",
         body: "<p>Copy of Body</p>",
-        from: config.contact.recipientEmail || "fi@amanillah.com",
+        from: config.email.newsletterFrom || "newsletter@newsletter.amanillah.com",
         type: "MARKETING",
         status: "DRAFT",
         audienceType: "ALL",

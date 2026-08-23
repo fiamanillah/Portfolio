@@ -270,6 +270,9 @@ export class AuthServices {
     try {
       await PlunkTemplateService.sendWithTemplate({
         to: email,
+        from: config.email.authFrom,
+        fromName: "Fi Amanillah",
+        reply: config.email.replyTo,
         subject: rendered.subject,
         body: rendered.html,
       })
@@ -616,6 +619,9 @@ export class AuthServices {
     try {
       await PlunkTemplateService.sendWithTemplate({
         to: email,
+        from: config.email.authFrom,
+        fromName: "Fi Amanillah",
+        reply: config.email.replyTo,
         subject: rendered.subject,
         body: rendered.html,
       })
@@ -791,6 +797,9 @@ export class AuthServices {
     try {
       await PlunkTemplateService.sendWithTemplate({
         to: email,
+        from: config.email.authFrom,
+        fromName: "Fi Amanillah",
+        reply: config.email.replyTo,
         subject: rendered.subject,
         body: rendered.html,
       })
