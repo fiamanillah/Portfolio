@@ -3,6 +3,7 @@
 import * as React from "react"
 import { useRouter } from "next/navigation"
 import { Tabs, TabsContent } from "@workspace/ui/components/tabs"
+import { Button } from "@workspace/ui/components/button"
 import { toast } from "@workspace/ui/components/sonner"
 import type {
   BlogPostDTO,
@@ -597,6 +598,7 @@ export function PostEditorForm({
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           {/* Navigation Bar */}
           <EditorTabsNav
+            activeTab={activeTab}
             seoAnalysis={seoAnalysis}
             hasCoverImage={Boolean(thumbnail)}
             hasRequiredContent={Boolean(title && summary && content)}
@@ -666,9 +668,64 @@ export function PostEditorForm({
                   </p>
                 )}
               </div>
+
+              {/* Step Navigation Footer */}
+              <div className="flex items-center justify-between border-t border-border/80 pt-6">
+                <div className="text-xs text-muted-foreground">
+                  Step 1 of 6: Basic details & article body
+                </div>
+                <Button
+                  type="button"
+                  onClick={() => setActiveTab("media")}
+                  className="gap-2"
+                >
+                  <span>Next: 02. Media & Hero</span>
+                  <span>→</span>
+                </Button>
+              </div>
             </TabsContent>
 
-            {/* TAB 2: SEO & Previews */}
+            {/* TAB 2: Media & Hero */}
+            <TabsContent
+              value="media"
+              className="m-0 space-y-6 focus-visible:outline-hidden"
+            >
+              <CoverImageSection
+                thumbnail={thumbnail}
+                setThumbnail={setThumbnail}
+              />
+
+              <SocialImagesSection
+                coverImage={thumbnail}
+                ogImage={ogImage}
+                setOgImage={setOgImage}
+                twitterImage={twitterImage}
+                setTwitterImage={setTwitterImage}
+              />
+
+              {/* Step Navigation Footer */}
+              <div className="flex items-center justify-between border-t border-border/80 pt-6">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setActiveTab("content")}
+                  className="gap-2"
+                >
+                  <span>←</span>
+                  <span>Back: 01. Content</span>
+                </Button>
+                <Button
+                  type="button"
+                  onClick={() => setActiveTab("seo")}
+                  className="gap-2"
+                >
+                  <span>Next: 03. SEO & Previews</span>
+                  <span>→</span>
+                </Button>
+              </div>
+            </TabsContent>
+
+            {/* TAB 3: SEO & Previews */}
             <TabsContent
               value="seo"
               className="m-0 space-y-6 focus-visible:outline-hidden"
@@ -729,9 +786,30 @@ export function PostEditorForm({
                   og={seoAnalysis?.previews.openGraph}
                 />
               </div>
+
+              {/* Step Navigation Footer */}
+              <div className="flex items-center justify-between border-t border-border/80 pt-6">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setActiveTab("media")}
+                  className="gap-2"
+                >
+                  <span>←</span>
+                  <span>Back: 02. Media</span>
+                </Button>
+                <Button
+                  type="button"
+                  onClick={() => setActiveTab("publishing")}
+                  className="gap-2"
+                >
+                  <span>Next: 04. Publishing & Schedule</span>
+                  <span>→</span>
+                </Button>
+              </div>
             </TabsContent>
 
-            {/* TAB 3: Publishing & Schedule */}
+            {/* TAB 4: Publishing & Schedule */}
             <TabsContent
               value="publishing"
               className="m-0 space-y-6 focus-visible:outline-hidden"
@@ -760,25 +838,27 @@ export function PostEditorForm({
                 pinned={pinned}
                 setPinned={setPinned}
               />
-            </TabsContent>
 
-            {/* TAB 4: Media & Hero */}
-            <TabsContent
-              value="media"
-              className="m-0 space-y-6 focus-visible:outline-hidden"
-            >
-              <CoverImageSection
-                thumbnail={thumbnail}
-                setThumbnail={setThumbnail}
-              />
-
-              <SocialImagesSection
-                coverImage={thumbnail}
-                ogImage={ogImage}
-                setOgImage={setOgImage}
-                twitterImage={twitterImage}
-                setTwitterImage={setTwitterImage}
-              />
+              {/* Step Navigation Footer */}
+              <div className="flex items-center justify-between border-t border-border/80 pt-6">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setActiveTab("seo")}
+                  className="gap-2"
+                >
+                  <span>←</span>
+                  <span>Back: 03. SEO</span>
+                </Button>
+                <Button
+                  type="button"
+                  onClick={() => setActiveTab("author")}
+                  className="gap-2"
+                >
+                  <span>Next: 05. Author Persona</span>
+                  <span>→</span>
+                </Button>
+              </div>
             </TabsContent>
 
             {/* TAB 5: Author Persona */}
@@ -804,6 +884,27 @@ export function PostEditorForm({
                 authorGithub={authorGithub}
                 setAuthorGithub={setAuthorGithub}
               />
+
+              {/* Step Navigation Footer */}
+              <div className="flex items-center justify-between border-t border-border/80 pt-6">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setActiveTab("publishing")}
+                  className="gap-2"
+                >
+                  <span>←</span>
+                  <span>Back: 04. Publishing</span>
+                </Button>
+                <Button
+                  type="button"
+                  onClick={() => setActiveTab("preview")}
+                  className="gap-2"
+                >
+                  <span>Next: 06. Live Website Preview</span>
+                  <span>→</span>
+                </Button>
+              </div>
             </TabsContent>
 
             {/* TAB 6: LIVE WEBSITE PREVIEW */}
@@ -823,6 +924,28 @@ export function PostEditorForm({
               </div>
 
               <FrontendArticlePreview post={previewPostData} />
+
+              {/* Step Navigation Footer */}
+              <div className="flex items-center justify-between border-t border-border/80 pt-6">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setActiveTab("author")}
+                  className="gap-2"
+                >
+                  <span>←</span>
+                  <span>Back: 05. Author Persona</span>
+                </Button>
+                <Button
+                  type="button"
+                  onClick={() => handleSubmit()}
+                  disabled={isSubmitting}
+                  className="gap-2 font-bold shadow-md"
+                >
+                  <span>{isEdit ? "Update Article" : "Publish / Save Article"}</span>
+                  <span>✓</span>
+                </Button>
+              </div>
             </TabsContent>
           </div>
         </Tabs>

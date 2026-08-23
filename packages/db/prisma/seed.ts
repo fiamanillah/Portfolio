@@ -237,12 +237,13 @@ async function main() {
 
   // 5. Seed Blog Categories
   const categoriesData = [
-    { name: "WebSockets", slug: "websockets", description: "Real-time communication, pub/sub architectures, and bidirectional streams", color: "blue", order: 1 },
-    { name: "Architecture", slug: "architecture", description: "Distributed systems, microservices design, and high-throughput scaling", color: "emerald", order: 2 },
-    { name: "Database", slug: "database", description: "PostgreSQL, Redis, caching layers, and database query optimization", color: "amber", order: 3 },
-    { name: "Performance", slug: "performance", description: "Latency reduction, load testing, memory profiling, and edge computing", color: "purple", order: 4 },
-    { name: "DevOps", slug: "devops", description: "Docker, CI/CD automation, VPS provisioning, and cloud orchestration", color: "rose", order: 5 },
-    { name: "Security", slug: "security", description: "API security, authentication, artifact signing, and zero-trust systems", color: "cyan", order: 6 },
+    { name: "AI & Intelligence", slug: "ai-intelligence", description: "AI breakthroughs, LLMs, neural networks, agentic computing, and research", color: "purple", order: 1 },
+    { name: "Hardware & Chips", slug: "hardware-chips", description: "Semiconductor markets, silicon manufacturing, GPU architectures, and compute hardware", color: "cyan", order: 2 },
+    { name: "Tech Trends", slug: "tech-trends", description: "Emerging technological advancements, tech industry stories, and market analyses", color: "blue", order: 3 },
+    { name: "Software Engineering", slug: "software-engineering", description: "Modern full-stack engineering, TypeScript ecosystems, clean design, and frameworks", color: "emerald", order: 4 },
+    { name: "System Architecture", slug: "architecture", description: "Distributed systems, event-driven architectures, and high-throughput scaling", color: "amber", order: 5 },
+    { name: "DevOps & Cloud", slug: "devops-cloud", description: "Docker, CI/CD pipelines, cloud infrastructure, and VPS deployments", color: "rose", order: 6 },
+    { name: "Security", slug: "security", description: "API security, authentication, artifact signing, and zero-trust systems", color: "red", order: 7 },
   ];
 
   const categoryMap = new Map<string, string>();

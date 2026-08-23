@@ -1,6 +1,7 @@
 ---
 import "@workspace/ui/globals.css"
 import GridLines from "@/components/GridLines.astro"
+import MouseGlow from "@/components/MouseGlow.astro"
 import SiteNav from "@/components/site-nav.astro"
 import ThemeScript from "@/components/ThemeScript.astro"
 import Footer from "@/components/footer.astro"
@@ -17,23 +18,21 @@ import { AuthModal } from "@/components/auth/AuthModal"
     <link
       rel="alternate"
       type="application/rss+xml"
-      title="Fi Amanillah | Engineering Blog"
+      title="Fi Amanillah | Tech, AI & Engineering Journal"
       href="/rss.xml"
     />
     <ThemeScript />
     <slot name="head">
-      <title>Fi Amanillah | Full Stack Developer</title>
+      <title>Fi Amanillah | Software Engineer & Tech Explorer</title>
       <meta
         name="description"
-        content="Portfolio & Engineering Blog of Fi Amanillah — Full Stack Developer."
+        content="Portfolio, Tech Stories & Engineering Journal of Fi Amanillah — Software Engineer & Technology Enthusiast."
       />
     </slot>
   </head>
   <body class="min-h-svh overflow-x-hidden bg-background text-foreground">
-    <!-- GridLines renders a fixed full-viewport canvas — no wrapper needed -->
-    <div id="mouse-glow" class="pointer-events-none fixed inset-0 -z-20">
-      <div id="glow-ball" class="mouse-glow-ball"></div>
-    </div>
+    <!-- Smooth hardware-accelerated viewport-tracked cursor glow -->
+    <MouseGlow />
 
     <GridLines lines={[-0.04, 0, 1, 1.04]} />
 
@@ -51,22 +50,5 @@ import { AuthModal } from "@/components/auth/AuthModal"
     <Toaster client:load />
     <AuthModal client:load />
     <Footer />
-
-    <script>
-      const glowBall = document.getElementById("glow-ball")
-      const mouseGlow = document.getElementById("mouse-glow")
-
-      if (glowBall && mouseGlow) {
-        window.addEventListener("pointermove", (event) => {
-          glowBall.style.left = `${event.clientX}px`
-          glowBall.style.top = `${event.clientY + window.scrollY}px`
-          glowBall.style.opacity = "1"
-        })
-
-        window.addEventListener("pointerleave", () => {
-          glowBall.style.opacity = "0"
-        })
-      }
-    </script>
   </body>
 </html>

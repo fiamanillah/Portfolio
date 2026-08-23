@@ -1403,7 +1403,7 @@ export class BlogService {
         name: data.name,
         slug,
         description: data.description || null,
-        color: data.color || "blue",
+        color: data.color || "#3b82f6",
         icon: data.icon || null,
         order: data.order || 0,
       },
@@ -1839,15 +1839,16 @@ export class BlogService {
    * Get public categories with active published counts
    */
   public async getPublicCategories(): Promise<
-    Array<{ name: string; slug: string; color?: string | null; count: number }>
+    Array<{ id?: string; name: string; slug: string; color?: string | null; count: number }>
   > {
     const now = new Date()
     const categories = await prisma.blogCategory.findMany({
-      orderBy: { order: "asc" },
       select: {
+        id: true,
         name: true,
         slug: true,
         color: true,
+        order: true,
         _count: {
           select: {
             posts: {
@@ -1865,13 +1866,31 @@ export class BlogService {
       where: { status: "PUBLISHED", publishedAt: { lte: now } },
     })
 
-    return [
-      { name: "All", slug: "all", color: "blue", count: totalPublished },
-      ...categories.map((c) => ({
+    // Rank categories by most published posts first (descending), secondary sort by order/name
+    const sortedCategories = categories
+      .map((c) => ({
+        id: c.id,
         name: c.name,
         slug: c.slug,
         color: c.color,
+        order: c.order,
         count: c._count.posts,
+      }))
+      .sort((a, b) => {
+        if (b.count !== a.count) {
+          return b.count - a.count
+        }
+        return a.order - b.order || a.name.localeCompare(b.name)
+      })
+
+    return [
+      { id: "all", name: "All", slug: "all", color: "#3b82f6", count: totalPublished },
+      ...sortedCategories.map(({ id, name, slug, color, count }) => ({
+        id,
+        name,
+        slug,
+        color,
+        count,
       })),
     ]
   }

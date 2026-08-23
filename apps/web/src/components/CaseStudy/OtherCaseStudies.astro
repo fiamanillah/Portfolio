@@ -11,13 +11,15 @@ interface Props {
 const { currentSlug } = Astro.props as Props
 
 const fetchedStudies = await CaseStudyApi.fetchAllCaseStudies()
-const allCaseStudies = fetchedStudies.map((p) => ({
+const allCaseStudies = fetchedStudies.map((p, idx) => ({
   slug: p.slug,
-  title: p.title,
+  title: p.title.includes("—") ? p.title.split("—")[0]?.trim() : p.title,
+  subtitle: p.title.includes("—") ? p.title.split("—")[1]?.trim() : undefined,
   description: p.description,
   href: `/case-study/${p.slug}`,
   image: p.image,
   techStack: (p.techStack || []).slice(0, 4),
+  index: String(idx + 1).padStart(2, "0"),
 }))
 
 const otherStudies = allCaseStudies.filter(
@@ -27,56 +29,74 @@ const otherStudies = allCaseStudies.filter(
 
 {
   otherStudies.length > 0 && (
-    <section class="space-y-6">
-      <CaseStudySectionTitle label="[ MORE // CASE_STUDIES ]" />
+    <section class="space-y-8">
+      <CaseStudySectionTitle label="[ SEC_06 // MORE_ARCHITECTURAL_DEEP_DIVES ]" />
 
-      <div class="px-5 md:px-6 lg:px-8">
+      <div class="px-4 sm:px-6 lg:px-8">
         <div class="grid gap-6 md:grid-cols-2">
           {otherStudies.map((study) => (
             <a
               href={study.href}
-              class="group flex flex-col overflow-hidden rounded-lg border border-border/70 bg-card/40 transition-colors duration-200 hover:border-border"
+              class="group relative flex flex-col overflow-hidden border border-border bg-card/50 transition-all duration-300 hover:border-primary/50 hover:bg-card/80 hover:shadow-[0_0_0_1px_oklch(var(--primary)/15%),0_8px_24px_-8px_oklch(var(--primary)/10%)]"
             >
-              {/* Thumbnail */}
-              <div class="relative aspect-video w-full overflow-hidden border-b border-border/40">
+              {/* Corner brackets */}
+              <div class="pointer-events-none absolute top-2 left-2 z-20 h-3 w-3 border-t-[1.5px] border-l-[1.5px] border-border transition-colors group-hover:border-primary" />
+              <div class="pointer-events-none absolute top-2 right-2 z-20 h-3 w-3 border-t-[1.5px] border-r-[1.5px] border-border transition-colors group-hover:border-primary" />
+              <div class="pointer-events-none absolute bottom-2 left-2 z-20 h-3 w-3 border-b-[1.5px] border-l-[1.5px] border-border transition-colors group-hover:border-primary" />
+              <div class="pointer-events-none absolute right-2 bottom-2 z-20 h-3 w-3 border-r-[1.5px] border-b-[1.5px] border-border transition-colors group-hover:border-primary" />
+
+              {/* Thumbnail with scanline layer */}
+              <div class="relative aspect-video w-full overflow-hidden border-b border-border bg-muted/30 before:pointer-events-none before:absolute before:inset-0 before:z-10 before:bg-[linear-gradient(105deg,transparent_40%,oklch(var(--primary)/10%)_50%,transparent_60%)] before:bg-[length:200%_100%] after:pointer-events-none after:absolute after:inset-0 after:bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(0,0,0,0.04)_2px,rgba(0,0,0,0.04)_4px)]">
                 <img
                   src={study.image}
                   alt={study.title}
-                  class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-102"
+                  class="h-full w-full object-cover grayscale-[15%] transition-all duration-500 ease-out group-hover:scale-105 group-hover:grayscale-0"
+                  loading="lazy"
                 />
+                <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-transparent" />
+                <div class="absolute top-3 left-3 z-20">
+                  <span class="inline-flex items-center gap-1.5 border border-primary/50 bg-background/90 px-2 py-0.5 font-mono text-[9px] font-bold text-primary uppercase shadow-xs backdrop-blur-md">
+                    <span class="h-1 w-1 rounded-full bg-primary shadow-[0_0_4px_oklch(var(--primary))]" />
+                    SYS_{study.index}
+                  </span>
+                </div>
               </div>
 
-              {/* Content */}
-              <div class="flex flex-1 flex-col gap-4 p-5">
-                <div class="flex-1 space-y-2">
-                  <h3 class="text-base font-bold tracking-tight text-foreground transition-colors duration-200 group-hover:text-primary sm:text-lg">
+              {/* Content Area */}
+              <div class="flex flex-1 flex-col justify-between gap-4 p-5 sm:p-6">
+                <div class="space-y-2">
+                  <h3 class="text-lg font-bold tracking-tight text-foreground transition-colors duration-200 group-hover:text-primary sm:text-xl">
                     {study.title}
                   </h3>
-                  <p class="line-clamp-2 text-xs leading-relaxed text-muted-foreground">
+                  {study.subtitle && (
+                    <p class="font-mono text-xs font-semibold text-primary/80">
+                      // {study.subtitle}
+                    </p>
+                  )}
+                  <p class="line-clamp-2 text-xs leading-relaxed text-muted-foreground sm:text-sm">
                     {study.description}
                   </p>
                 </div>
 
-                {/* Tech stack tags */}
+                {/* Tech tags */}
                 {study.techStack && study.techStack.length > 0 && (
-                  <div class="flex flex-wrap gap-1.5">
+                  <div class="flex flex-wrap gap-1.5 pt-1">
                     {study.techStack.map((tech) => (
-                      <span class="rounded border border-border/50 bg-muted/30 px-2 py-0.5 font-mono text-[10px] tracking-wide text-muted-foreground">
+                      <span class="border border-border/80 bg-muted/20 px-2 py-0.5 font-mono text-[10px] text-muted-foreground transition-colors group-hover:border-primary/40 group-hover:text-foreground">
                         {tech}
                       </span>
                     ))}
                   </div>
                 )}
 
-                {/* View link */}
-                <div class="flex items-center gap-2 border-t border-border/40 pt-3">
-                  <span class="h-px w-4 bg-primary/40" />
-                  <span class="font-mono text-[10px] tracking-[0.15em] text-muted-foreground uppercase transition-colors duration-200 group-hover:text-primary">
-                    View Case Study
+                {/* Bottom link bar */}
+                <div class="flex items-center justify-between border-t border-border/40 pt-3">
+                  <span class="font-mono text-xs font-semibold tracking-wider text-muted-foreground uppercase transition-colors duration-200 group-hover:text-primary">
+                    Read Deep Dive
                   </span>
                   <HugeiconsIcon
                     icon={ArrowUpRight01Icon}
-                    className="size-3 text-muted-foreground transition-colors duration-200 group-hover:text-primary"
+                    className="size-4 text-primary transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
                   />
                 </div>
               </div>

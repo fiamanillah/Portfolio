@@ -1,0 +1,333 @@
+---
+import CaseStudyFilterBar from "./CaseStudyFilterBar.astro"
+import CaseStudyEmptyState from "./CaseStudyEmptyState.astro"
+import CaseStudyCard from "../cards/CaseStudyCard.astro"
+import ProjectCard from "../cards/ProjectCard.astro"
+import CaseStudySectionTitle from "../CaseStudySectionTitle.astro"
+
+interface Props {
+  caseStudies: any[]
+  standardProjects: any[]
+}
+
+const { caseStudies, standardProjects } = Astro.props
+
+const allProjects = [...caseStudies, ...standardProjects]
+
+const categories = [
+  { id: "all", label: "All Systems", count: allProjects.length },
+  { id: "case-study", label: "Deep-Dive Case Studies", count: caseStudies.length },
+  { id: "project-only", label: "Architecture Starters", count: standardProjects.length },
+]
+
+// Extract top 10 unique popular tech tags
+const allTechs = Array.from(
+  new Set(allProjects.flatMap((p) => p.tech || []))
+).slice(0, 10)
+---
+
+<div class="cs-explorer-container relative w-full space-y-12">
+  <!-- Interactive Filter Toolbar -->
+  <CaseStudyFilterBar
+    categories={categories}
+    techTags={allTechs}
+    totalItems={allProjects.length}
+  />
+
+  <!-- Case Studies Group (Deep Dives) -->
+  <section class="space-y-8 transition-opacity duration-300" id="cs-deep-dives-group">
+    <CaseStudySectionTitle label="[ DEEP_DIVE // SYSTEM_CASE_STUDIES ]" />
+
+    <div class="grid gap-8" id="cs-deep-dives-grid">
+      {
+        caseStudies.map((project) => (
+          <CaseStudyCard project={project} />
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- Additional Engineered Systems & Boilerplates -->
+  {
+    standardProjects.length > 0 && (
+      <section class="space-y-8 transition-opacity duration-300" id="cs-additional-projects-group">
+        <CaseStudySectionTitle label="[ ADDITIONAL // ARCHITECTURAL_STARTERS & SERVICES ]" />
+
+        <div class="grid gap-6 md:grid-cols-2" id="cs-additional-projects-grid">
+          {standardProjects.map((project) => (
+            <ProjectCard project={project} />
+          ))}
+        </div>
+      </section>
+    )
+  }
+
+  <!-- Empty State (Shown when no cards match filters) -->
+  <CaseStudyEmptyState suggestedTech={allTechs.slice(0, 6)} />
+</div>
+
+<!-- Interactive Client-Side Filtering & Search Script -->
+<script>
+  function setupCaseStudyExplorer() {
+    const searchInput = document.querySelector<HTMLInputElement>("[data-cs-search-input]")
+    const clearSearchBtn = document.querySelector<HTMLButtonElement>("[data-cs-search-clear]")
+    const categoryBtns = document.querySelectorAll<HTMLButtonElement>("[data-cs-filter]")
+    const techChips = document.querySelectorAll<HTMLButtonElement>("[data-cs-tech-chip]")
+    const clearTechBtn = document.querySelector<HTMLButtonElement>("[data-cs-clear-tech]")
+    const emptyState = document.querySelector<HTMLElement>("[data-cs-empty-state]")
+    const resetAllBtn = document.querySelector<HTMLButtonElement>("[data-cs-reset-all-btn]")
+    const visibleCountEl = document.querySelector<HTMLElement>("[data-cs-visible-count]")
+    
+    const deepDivesGroup = document.getElementById("cs-deep-dives-group")
+    const additionalGroup = document.getElementById("cs-additional-projects-group")
+    const allCards = document.querySelectorAll<HTMLElement>(".project-card")
+
+    let activeCategory = "all"
+    let activeTech: string | null = null
+    let searchQuery = ""
+
+    function applyFilters() {
+      let visibleCount = 0
+      let visibleDeepDives = 0
+      let visibleAdditional = 0
+
+      allCards.forEach((card) => {
+        const category = card.getAttribute("data-category") || ""
+        const title = card.getAttribute("data-title") || ""
+        const tech = card.getAttribute("data-tech") || ""
+        const textContent = card.innerText.toLowerCase()
+
+        // 1. Category check
+        const matchesCategory =
+          activeCategory === "all" || category === activeCategory
+
+        // 2. Tech tag check
+        const matchesTech =
+          !activeTech || tech.includes(activeTech.toLowerCase())
+
+        // 3. Search query check
+        const query = searchQuery.trim().toLowerCase()
+        const matchesSearch =
+          !query ||
+          title.includes(query) ||
+          tech.includes(query) ||
+          textContent.includes(query)
+
+        const isVisible = matchesCategory && matchesTech && matchesSearch
+
+        if (isVisible) {
+          card.style.display = ""
+          visibleCount++
+          if (category === "case-study") visibleDeepDives++
+          if (category === "project-only") visibleAdditional++
+        } else {
+          card.style.display = "none"
+        }
+      })
+
+      // Section group visibility
+      if (deepDivesGroup) {
+        deepDivesGroup.style.display = visibleDeepDives > 0 ? "" : "none"
+      }
+      if (additionalGroup) {
+        additionalGroup.style.display = visibleAdditional > 0 ? "" : "none"
+      }
+
+      // Empty State
+      if (emptyState) {
+        emptyState.style.display = visibleCount === 0 ? "block" : "none"
+      }
+
+      // Update visible count counter
+      if (visibleCountEl) {
+        visibleCountEl.textContent = String(visibleCount)
+      }
+
+      // Update tech clear button state
+      if (clearTechBtn) {
+        clearTechBtn.style.display = activeTech ? "inline-block" : "none"
+      }
+    }
+
+    // Category button click handlers
+    categoryBtns.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const filter = btn.getAttribute("data-cs-filter") || "all"
+        activeCategory = filter
+
+        categoryBtns.forEach((b) => {
+          b.classList.remove(
+            "active",
+            "border-primary",
+            "bg-primary/10",
+            "font-bold",
+            "text-primary",
+            "shadow-[0_0_14px_oklch(var(--primary)/20%)]"
+          )
+          b.classList.add(
+            "border-border",
+            "bg-background/50",
+            "text-muted-foreground"
+          )
+          b.setAttribute("aria-selected", "false")
+          b.setAttribute("tabindex", "-1")
+        })
+
+        btn.classList.add(
+          "active",
+          "border-primary",
+          "bg-primary/10",
+          "font-bold",
+          "text-primary",
+          "shadow-[0_0_14px_oklch(var(--primary)/20%)]"
+        )
+        btn.classList.remove(
+          "border-border",
+          "bg-background/50",
+          "text-muted-foreground"
+        )
+        btn.setAttribute("aria-selected", "true")
+        btn.setAttribute("tabindex", "0")
+
+        applyFilters()
+      })
+    })
+
+    // Search input handler
+    if (searchInput) {
+      searchInput.addEventListener("input", (e) => {
+        searchQuery = (e.target as HTMLInputElement).value
+        if (clearSearchBtn) {
+          clearSearchBtn.style.display = searchQuery.length > 0 ? "block" : "none"
+        }
+        applyFilters()
+      })
+
+      // Keyboard shortcut '/' to focus search
+      window.addEventListener("keydown", (e) => {
+        if (
+          e.key === "/" &&
+          document.activeElement !== searchInput &&
+          !(document.activeElement instanceof HTMLInputElement || document.activeElement instanceof HTMLTextAreaElement)
+        ) {
+          e.preventDefault()
+          searchInput.focus()
+        }
+      })
+    }
+
+    // Clear search button
+    if (clearSearchBtn && searchInput) {
+      clearSearchBtn.addEventListener("click", () => {
+        searchInput.value = ""
+        searchQuery = ""
+        clearSearchBtn.style.display = "none"
+        searchInput.focus()
+        applyFilters()
+      })
+    }
+
+    // Tech chip buttons
+    techChips.forEach((chip) => {
+      chip.addEventListener("click", () => {
+        const tech = chip.getAttribute("data-cs-tech-chip")
+        if (activeTech === tech) {
+          activeTech = null
+          chip.classList.remove("border-primary", "bg-primary/15", "text-primary", "font-bold")
+        } else {
+          techChips.forEach((c) =>
+            c.classList.remove("border-primary", "bg-primary/15", "text-primary", "font-bold")
+          )
+          activeTech = tech
+          chip.classList.add("border-primary", "bg-primary/15", "text-primary", "font-bold")
+        }
+        applyFilters()
+      })
+    })
+
+    // Clear tech button
+    if (clearTechBtn) {
+      clearTechBtn.addEventListener("click", () => {
+        activeTech = null
+        techChips.forEach((c) =>
+          c.classList.remove("border-primary", "bg-primary/15", "text-primary", "font-bold")
+        )
+        applyFilters()
+      })
+    }
+
+    // Reset All button
+    function resetAll() {
+      activeCategory = "all"
+      activeTech = null
+      searchQuery = ""
+      if (searchInput) {
+        searchInput.value = ""
+      }
+      if (clearSearchBtn) {
+        clearSearchBtn.style.display = "none"
+      }
+      techChips.forEach((c) =>
+        c.classList.remove("border-primary", "bg-primary/15", "text-primary", "font-bold")
+      )
+      categoryBtns.forEach((b, idx) => {
+        if (idx === 0) {
+          b.classList.add(
+            "active",
+            "border-primary",
+            "bg-primary/10",
+            "font-bold",
+            "text-primary",
+            "shadow-[0_0_14px_oklch(var(--primary)/20%)]"
+          )
+          b.classList.remove("border-border", "bg-background/50", "text-muted-foreground")
+          b.setAttribute("aria-selected", "true")
+        } else {
+          b.classList.remove(
+            "active",
+            "border-primary",
+            "bg-primary/10",
+            "font-bold",
+            "text-primary",
+            "shadow-[0_0_14px_oklch(var(--primary)/20%)]"
+          )
+          b.classList.add("border-border", "bg-background/50", "text-muted-foreground")
+          b.setAttribute("aria-selected", "false")
+        }
+      })
+      applyFilters()
+    }
+
+    if (resetAllBtn) {
+      resetAllBtn.addEventListener("click", resetAll)
+    }
+
+    // Suggested chips in empty state
+    const suggestedChips = document.querySelectorAll<HTMLButtonElement>("[data-cs-suggested-chip]")
+    suggestedChips.forEach((chip) => {
+      chip.addEventListener("click", () => {
+        const tech = chip.getAttribute("data-cs-suggested-chip")
+        if (searchInput) {
+          searchInput.value = ""
+          searchQuery = ""
+        }
+        activeTech = tech
+        techChips.forEach((c) => {
+          if (c.getAttribute("data-cs-tech-chip") === tech) {
+            c.classList.add("border-primary", "bg-primary/15", "text-primary", "font-bold")
+          } else {
+            c.classList.remove("border-primary", "bg-primary/15", "text-primary", "font-bold")
+          }
+        })
+        applyFilters()
+      })
+    })
+  }
+
+  document.addEventListener("astro:page-load", setupCaseStudyExplorer)
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", setupCaseStudyExplorer)
+  } else {
+    setupCaseStudyExplorer()
+  }
+</script>

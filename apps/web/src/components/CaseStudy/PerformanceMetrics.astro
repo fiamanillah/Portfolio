@@ -13,21 +13,35 @@ interface Props {
 const { metrics } = Astro.props as Props
 ---
 
-<section class="space-y-6">
-  <CaseStudySectionTitle label="[ SEC_04 // PERFORMANCE_METRICS ]" />
+<section class="space-y-8">
+  <CaseStudySectionTitle label="[ SEC_04 // PRODUCTION_BENCHMARKS_&_TELEMETRY ]" />
 
-  <div class="px-5 md:px-6 lg:px-8">
+  <div class="px-4 sm:px-6 lg:px-8">
     <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
       {
-        metrics.map((metric) => (
-          <article class="group flex flex-col items-center justify-center rounded-lg border border-border/70 bg-card/40 p-6 text-center transition-colors duration-200 hover:border-border">
+        metrics.map((metric, idx) => (
+          <article class="group relative flex flex-col items-center justify-center overflow-hidden border border-border bg-card/50 p-6 sm:p-8 text-center transition-all duration-300 hover:border-primary/50 hover:bg-card/80 hover:shadow-[0_0_0_1px_oklch(var(--primary)/15%)]">
+            {/* Corner brackets */}
+            <div class="pointer-events-none absolute top-2 left-2 z-10 h-3 w-3 border-t-[1.5px] border-l-[1.5px] border-border transition-colors group-hover:border-primary" />
+            <div class="pointer-events-none absolute top-2 right-2 z-10 h-3 w-3 border-t-[1.5px] border-r-[1.5px] border-border transition-colors group-hover:border-primary" />
+            <div class="pointer-events-none absolute bottom-2 left-2 z-10 h-3 w-3 border-b-[1.5px] border-l-[1.5px] border-border transition-colors group-hover:border-primary" />
+            <div class="pointer-events-none absolute right-2 bottom-2 z-10 h-3 w-3 border-r-[1.5px] border-b-[1.5px] border-border transition-colors group-hover:border-primary" />
+
             <div class="flex flex-col items-center gap-3">
-              <p class="text-4xl font-black tracking-tighter text-foreground transition-colors duration-200 group-hover:text-primary sm:text-5xl">
+              {/* Telemetry Index Pill */}
+              <span class="font-mono text-[9px] font-bold tracking-widest text-muted-foreground/60 uppercase">
+                TELEMETRY_0{idx + 1}
+              </span>
+
+              {/* Big Metric Value */}
+              <p class="font-mono text-4xl font-black tracking-tight text-foreground transition-colors duration-200 group-hover:text-primary sm:text-5xl">
                 {metric.value}
               </p>
+
+              {/* Label with accent bar */}
               <div class="flex flex-col items-center gap-2">
-                <div class="h-px w-6 bg-primary/40" />
-                <p class="font-mono text-[10px] tracking-[0.18em] text-muted-foreground uppercase">
+                <div class="h-px w-8 bg-primary/40 transition-all duration-300 group-hover:w-16 group-hover:bg-primary" />
+                <p class="font-mono text-xs font-semibold tracking-wider text-muted-foreground uppercase">
                   {metric.label}
                 </p>
               </div>

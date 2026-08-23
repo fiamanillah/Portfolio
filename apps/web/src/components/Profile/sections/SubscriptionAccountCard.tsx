@@ -84,8 +84,8 @@ export function SubscriptionAccountCard({
         {/* 1. Newsletter & Updates */}
         <ProfileSectionCard
           id="section-subscription"
-          title="Newsletter & Engineering Updates"
-          description="Manage recurring email dispatches and architectural breakdown notifications."
+          title="Newsletter & Tech Dispatches"
+          description="Manage recurring email dispatches on AI, semiconductor trends, hardware markets, and modern engineering."
         >
           <div className="space-y-3">
             <div className="flex items-start justify-between gap-4">
@@ -104,12 +104,12 @@ export function SubscriptionAccountCard({
                       icon={Notification01Icon}
                       className="size-3.5 text-primary"
                     />
-                    <span>Technical Newsletter & Case Studies</span>
+                    <span>Tech Stories, AI & Engineering Dispatches</span>
                   </label>
                 </div>
                 <p className="pl-5 text-xs leading-relaxed text-muted-foreground">
-                  Deep dives on distributed systems, WebSockets, benchmarks, and
-                  DevOps architectures sent to{" "}
+                  Curated stories on AI breakthroughs, hardware market trends,
+                  chip innovations, and engineering practices sent to{" "}
                   <span className="font-mono font-medium text-foreground">
                     {user.email}
                   </span>

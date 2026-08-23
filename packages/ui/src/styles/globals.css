@@ -177,7 +177,7 @@
   #mouse-glow {
     position: fixed;
     inset: 0;
-    z-index: -1;
+    z-index: 0;
     pointer-events: none;
     overflow: hidden;
   }
@@ -186,35 +186,63 @@
     position: absolute;
     top: 0;
     left: 0;
-    width: 10rem;
-    height: 10rem;
-    transform: translate(-50%, -50%);
-    background: radial-gradient(circle,
-        oklch(var(--primary) / 0.5) 0%,
-        oklch(var(--primary) / 0.28) 20%,
-        oklch(var(--primary) / 0.12) 35%,
-        transparent 65%);
-    filter: blur(6rem);
+    width: 24rem;
+    height: 24rem;
+    border-radius: 50%;
+    transform: translate3d(-1000px, -1000px, 0) translate(-50%, -50%);
+    background: radial-gradient(
+      circle,
+      oklch(var(--primary) / 0.06) 0%,
+      oklch(var(--primary) / 0.025) 30%,
+      oklch(var(--primary) / 0.006) 55%,
+      transparent 70%
+    );
     opacity: 0;
-    transition: opacity 180ms ease;
-    mix-blend-mode: screen;
+    transition: opacity 350ms ease;
     pointer-events: none;
     will-change: transform, opacity;
-    box-shadow:
-      0 0 6rem oklch(var(--primary) / 0.35),
-      0 0 14rem oklch(var(--primary) / 0.18);
+  }
+
+  .dark .mouse-glow-ball {
+    mix-blend-mode: screen;
+    background: radial-gradient(
+      circle,
+      oklch(var(--primary) / 0.08) 0%,
+      oklch(var(--primary) / 0.035) 30%,
+      oklch(var(--primary) / 0.008) 55%,
+      transparent 70%
+    );
   }
 
   .mouse-glow-ball::after {
     content: "";
     position: absolute;
-    inset: 25%;
+    inset: 35%;
     border-radius: 50%;
-    background: radial-gradient(circle,
-        oklch(var(--primary) / 0.9) 0%,
-        oklch(var(--primary) / 0.35) 85%,
-        transparent 100%);
+    background: radial-gradient(
+      circle,
+      oklch(var(--primary) / 0.09) 0%,
+      oklch(var(--primary) / 0.03) 50%,
+      transparent 80%
+    );
     pointer-events: none;
+    filter: blur(16px);
+    transition: transform 250ms ease, opacity 250ms ease;
+  }
+
+  .mouse-glow-ball.is-hovering {
+    background: radial-gradient(
+      circle,
+      oklch(var(--primary) / 0.11) 0%,
+      oklch(var(--primary) / 0.05) 32%,
+      oklch(var(--primary) / 0.012) 58%,
+      transparent 72%
+    );
+  }
+
+  .mouse-glow-ball.is-hovering::after {
+    transform: scale(1.15);
+    opacity: 0.8;
   }
 
   .diagonal-stripes {

@@ -1,13 +1,9 @@
 ---
 import MySiteLayout from "@/layouts/MySiteLayout.astro"
-import CaseStudySectionTitle from "@/components/CaseStudy/CaseStudySectionTitle.astro"
+import CaseStudyHeader from "@/components/CaseStudy/hero/CaseStudyHeader.astro"
+import CaseStudyExplorer from "@/components/CaseStudy/explorer/CaseStudyExplorer.astro"
 import NewsletterSection from "@/components/Newsletter/NewsletterSection.astro"
 import SectionDivider from "@/components/SectionDivider.astro"
-import { Badge } from "@workspace/ui/components/badge"
-import { Button } from "@workspace/ui/components/button"
-import { Icon } from "astro-icon/components"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { ArrowUpRight01Icon, BookOpen01Icon } from "@hugeicons/core-free-icons"
 import { getProjectsWithoutCaseStudy } from "@/data/projects"
 import { CaseStudyApi } from "@/lib/api/caseStudyApi"
 
@@ -59,466 +55,57 @@ const caseStudies = fetchedCaseStudies.map((study, idx) => {
 
 const standardProjects = getProjectsWithoutCaseStudy()
 const allProjects = [...caseStudies, ...standardProjects]
-
 const totalTechCount = new Set(allProjects.flatMap((p) => p.tech)).size
 ---
 
 <MySiteLayout>
-  <div class="relative mx-auto">
-    <!-- Hero Header -->
-    <header
-      class="relative overflow-hidden border-b border-border pt-6 pb-12 text-center sm:pt-10"
-    >
-      <!-- Background Diagonal Pattern -->
-      <div
-        class="diagonal-stripes pointer-events-none absolute inset-0 z-0 bg-background opacity-80"
-        aria-hidden="true"
-      >
-      </div>
+  <!-- SEO Head Slot -->
+  <Fragment slot="head">
+    <title>Technical Case Studies & System Architecture | Fi Amanillah</title>
+    <meta
+      name="description"
+      content="In-depth architectural breakdowns, database schema designs, event-driven pipelines, and production engineering post-mortems across full-stack applications."
+    />
+    <meta property="og:title" content="Technical Case Studies & Architecture | Fi Amanillah" />
+    <meta
+      property="og:description"
+      content="Explore full-stack architectural deep dives, real-time microservices, database optimizations, and system post-mortems."
+    />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Technical Case Studies & Architecture | Fi Amanillah" />
+    <meta
+      name="twitter:description"
+      content="Explore full-stack architectural deep dives, real-time microservices, database optimizations, and system post-mortems."
+    />
+  </Fragment>
 
-      <div class="relative z-10 mx-auto max-w-4xl">
-        <!-- Monospace Section Tag -->
-        <p
-          class="section-label mb-3 inline-block rounded-sm border border-primary/20 bg-primary/5 px-3 py-1 font-mono text-xs font-semibold tracking-wider text-primary uppercase"
-        >
-          [ ARCHITECTURE // CASE_STUDIES ]
-        </p>
+  <!-- Hero Header with Live Aggregated Metrics -->
+  <CaseStudyHeader
+    totalCaseStudies={caseStudies.length}
+    totalProjects={standardProjects.length}
+    totalTechCount={totalTechCount}
+  />
 
-        <h1
-          class="text-3xl font-black tracking-tight text-foreground sm:text-4xl md:text-5xl"
-        >
-          Technical <span class="text-primary">Case Studies</span> & Projects
-        </h1>
+  <SectionDivider />
 
-        <!-- Accent Bar -->
-        <div class="accent-bar mx-auto mt-4 mb-6 w-48"></div>
-
-        <p
-          class="mx-auto max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg"
-        >
-          In-depth architectural breakdowns, database schema designs,
-          event-driven pipelines, and production engineering metrics across my
-          full-stack projects.
-        </p>
-
-        <!-- Stats Overview Bar -->
-        <div
-          class="mt-8 grid grid-cols-2 gap-4 border-t border-b border-border/80 py-4 sm:grid-cols-3"
-        >
-          <div class="flex flex-col items-center justify-center p-2">
-            <span
-              class="font-mono text-2xl font-black text-primary sm:text-3xl"
-            >
-              {caseStudies.length}
-            </span>
-            <span
-              class="text-xs font-medium tracking-wide text-muted-foreground uppercase"
-            >
-              Deep-Dive Case Studies
-            </span>
-          </div>
-
-          <div class="flex flex-col items-center justify-center p-2">
-            <span
-              class="font-mono text-2xl font-black text-primary sm:text-3xl"
-            >
-              {standardProjects.length}
-            </span>
-            <span
-              class="text-xs font-medium tracking-wide text-muted-foreground uppercase"
-            >
-              Additional Projects
-            </span>
-          </div>
-
-          <div
-            class="col-span-2 flex flex-col items-center justify-center p-2 sm:col-span-1"
-          >
-            <span
-              class="font-mono text-2xl font-black text-primary sm:text-3xl"
-            >
-              {totalTechCount}+
-            </span>
-            <span
-              class="text-xs font-medium tracking-wide text-muted-foreground uppercase"
-            >
-              Technologies Utilized
-            </span>
-          </div>
-        </div>
-      </div>
-    </header>
-
-    <!-- Interactive Category Filter Bar -->
-    <section
-      class="mt-8 flex flex-wrap items-center justify-between gap-4 border-b border-border pb-4"
-    >
-      <div class="flex items-center gap-2">
-        <span
-          class="font-mono text-xs tracking-widest text-muted-foreground uppercase"
-        >
-          Filter:
-        </span>
-        <div class="flex flex-wrap gap-2" id="filter-buttons">
-          <button
-            data-filter="all"
-            class="filter-btn active-filter inline-flex items-center gap-1.5 rounded-md border border-primary bg-primary/10 px-3 py-1.5 text-xs font-semibold text-primary transition-all hover:bg-primary/20"
-          >
-            All Work ({allProjects.length})
-          </button>
-          <button
-            data-filter="case-study"
-            class="filter-btn inline-flex items-center gap-1.5 rounded-md border border-border bg-background px-3 py-1.5 text-xs font-medium text-muted-foreground transition-all hover:border-primary/50 hover:text-foreground"
-          >
-            <HugeiconsIcon icon={BookOpen01Icon} className="size-3.5" />
-            Case Studies ({caseStudies.length})
-          </button>
-          <button
-            data-filter="project-only"
-            class="filter-btn inline-flex items-center gap-1.5 rounded-md border border-border bg-background px-3 py-1.5 text-xs font-medium text-muted-foreground transition-all hover:border-primary/50 hover:text-foreground"
-          >
-            <Icon name="mdi:code-tags" class="size-4 text-primary" />
-            Other Projects ({standardProjects.length})
-          </button>
-        </div>
-      </div>
-
-      <div class="hidden font-mono text-xs text-muted-foreground sm:block">
-        Showing all engineered solutions & post-mortems
-      </div>
-    </section>
-
-    <!-- Case Studies Section (Primary Deep Dives) -->
-    <section class="mt-12 space-y-8" id="case-studies-group">
-      <CaseStudySectionTitle label="[ DEEP_DIVE // CASE_STUDIES ]" />
-
-      <div class="grid gap-8">
-        {
-          caseStudies.map((project) => (
-            <article
-              class="project-card group relative flex flex-col overflow-hidden rounded-xl border border-border bg-card/70 shadow-sm transition-all duration-300 hover:border-primary/40 hover:shadow-md lg:grid lg:grid-cols-12 lg:items-stretch"
-              data-category="case-study"
-            >
-              {/* Corner Bracket Accents */}
-              <div class="pointer-events-none absolute top-0 left-0 h-4 w-4 border-t-2 border-l-2 border-primary/40 transition-all duration-300 group-hover:h-6 group-hover:w-6 group-hover:border-primary" />
-              <div class="pointer-events-none absolute top-0 right-0 h-4 w-4 border-t-2 border-r-2 border-primary/40 transition-all duration-300 group-hover:h-6 group-hover:w-6 group-hover:border-primary" />
-              <div class="pointer-events-none absolute bottom-0 left-0 h-4 w-4 border-b-2 border-l-2 border-primary/40 transition-all duration-300 group-hover:h-6 group-hover:w-6 group-hover:border-primary" />
-              <div class="pointer-events-none absolute right-0 bottom-0 h-4 w-4 border-r-2 border-b-2 border-primary/40 transition-all duration-300 group-hover:h-6 group-hover:w-6 group-hover:border-primary" />
-
-              {/* Media Preview Banner (Fills complete card height on large screens) */}
-              <div class="relative min-h-[240px] w-full overflow-hidden border-b border-border bg-muted/40 lg:col-span-5 lg:h-full lg:min-h-full lg:border-r lg:border-b-0">
-                <img
-                  src={project.img}
-                  alt={project.title}
-                  class="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-                <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-
-                <div class="absolute top-3 left-3 flex flex-wrap gap-2">
-                  <span class="inline-flex items-center gap-1 rounded bg-primary/90 px-2 py-0.5 font-mono text-[10px] font-bold tracking-wider text-primary-foreground uppercase shadow-xs">
-                    Case Study
-                  </span>
-                  <span class="rounded bg-black/70 px-2 py-0.5 font-mono text-[10px] text-white/90 backdrop-blur-xs">
-                    {project.year}
-                  </span>
-                </div>
-
-                <div class="absolute right-3 bottom-3 left-3 flex items-center justify-between text-white">
-                  <span class="font-mono text-xs font-semibold tracking-wider text-white/90 uppercase">
-                    {project.role}
-                  </span>
-                  <span class="rounded-full border border-emerald-500/30 bg-emerald-500/20 px-2.5 py-0.5 font-mono text-[10px] font-medium text-emerald-300">
-                    {project.status}
-                  </span>
-                </div>
-              </div>
-
-              {/* Content Area (Clean, balanced layout) */}
-              <div class="flex flex-1 flex-col justify-between p-5 sm:p-6 lg:col-span-7 lg:p-7">
-                <div class="space-y-3.5">
-                  <div class="flex items-start justify-between gap-3">
-                    <div>
-                      <h2 class="text-xl font-bold tracking-tight text-foreground transition-colors duration-200 group-hover:text-primary sm:text-2xl">
-                        {project.title}
-                      </h2>
-                      {project.subtitle && (
-                        <p class="mt-0.5 font-mono text-xs font-semibold tracking-wide text-primary/90 uppercase">
-                          {project.subtitle}
-                        </p>
-                      )}
-                    </div>
-                    <span class="font-mono text-xs font-bold tracking-widest text-muted-foreground/70">
-                      #{project.index}
-                    </span>
-                  </div>
-
-                  <p class="line-clamp-3 text-xs leading-relaxed text-muted-foreground sm:text-sm">
-                    {project.description}
-                  </p>
-
-                  {/* Impact summary (sleek inline callout) */}
-                  <div class="flex items-start gap-2.5 rounded-r-md border-l-2 border-primary/70 bg-muted/30 px-3 py-2">
-                    <Icon
-                      name="mdi:chart-line-variant"
-                      class="mt-0.5 size-4 shrink-0 text-primary"
-                    />
-                    <p class="text-xs leading-snug font-medium text-foreground/90">
-                      <span class="font-semibold text-primary">Impact:</span>{" "}
-                      {project.impact}
-                    </p>
-                  </div>
-
-                  {/* Key Metrics snippet (compact specs bar) */}
-                  {project.metrics && project.metrics.length > 0 && (
-                    <div class="flex flex-wrap items-center gap-x-4 gap-y-1 border-y border-border/50 py-2 font-mono text-xs">
-                      {project.metrics.map((m) => (
-                        <div class="flex items-center gap-1.5">
-                          <span class="font-bold text-primary">{m.value}</span>
-                          <span class="text-[11px] text-muted-foreground">
-                            {m.label}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* Tech Stack Badges (Filtered key techs) */}
-                  <div class="flex flex-wrap items-center gap-1.5 pt-0.5">
-                    {project.tech.slice(0, 7).map((t) => (
-                      <Badge
-                        variant="outline"
-                        className="font-mono text-[10px] px-2 py-0.5"
-                      >
-                        {t}
-                      </Badge>
-                    ))}
-                    {project.tech.length > 7 && (
-                      <span class="pl-1 font-mono text-[10px] text-muted-foreground">
-                        +{project.tech.length - 7} more
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                {/* Action Links */}
-                <div class="mt-5 flex flex-wrap items-center gap-3 border-t border-border/50 pt-4">
-                  <a href={project.links.caseStudy}>
-                    <Button size="sm" className="gap-1.5 font-medium">
-                      Read Full Case Study
-                      <HugeiconsIcon
-                        icon={ArrowUpRight01Icon}
-                        className="size-3.5"
-                      />
-                    </Button>
-                  </a>
-
-                  {project.links.live && project.links.live !== "#" && (
-                    <a
-                      href={project.links.live}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="gap-1.5 text-xs"
-                      >
-                        Live App ↗
-                      </Button>
-                    </a>
-                  )}
-                </div>
-              </div>
-            </article>
-          ))
-        }
-      </div>
-    </section>
-
-    <!-- Additional Projects Section (Without Case Studies) -->
-    <section class="mt-16 space-y-8" id="other-projects-group">
-      <CaseStudySectionTitle
-        label="[ ADDITIONAL // PROJECTS & BOILERPLATES ]"
+  <main class="w-full">
+    <!-- Interactive Case Study & Projects Explorer -->
+    <div class="container mx-auto">
+      <CaseStudyExplorer
+        caseStudies={caseStudies}
+        standardProjects={standardProjects}
       />
+    </div>
 
-      <div class="grid gap-6 md:grid-cols-2">
-        {
-          standardProjects.map((project) => (
-            <article
-              class="project-card group relative flex flex-col justify-between overflow-hidden rounded-lg border border-border bg-card/50 p-6 transition-all duration-300 hover:border-primary/30 hover:bg-card/80"
-              data-category="project-only"
-            >
-              {/* Corner Bracket Accents */}
-              <div class="pointer-events-none absolute top-0 left-0 h-3 w-3 border-t-[1.5px] border-l-[1.5px] border-primary/30" />
-              <div class="pointer-events-none absolute top-0 right-0 h-3 w-3 border-t-[1.5px] border-r-[1.5px] border-primary/30" />
-              <div class="pointer-events-none absolute bottom-0 left-0 h-3 w-3 border-b-[1.5px] border-l-[1.5px] border-primary/30" />
-              <div class="pointer-events-none absolute right-0 bottom-0 h-3 w-3 border-r-[1.5px] border-b-[1.5px] border-primary/30" />
+    <SectionDivider class="mt-16" />
 
-              <div class="space-y-3">
-                <div class="flex items-start justify-between gap-4">
-                  <div>
-                    <span class="font-mono text-[10px] font-bold tracking-widest text-muted-foreground uppercase">
-                      Project #{project.index} • {project.year}
-                    </span>
-                    <h3 class="mt-1 text-xl font-bold tracking-tight text-foreground transition-colors group-hover:text-primary">
-                      {project.title}
-                    </h3>
-                  </div>
-                  <span class="rounded bg-muted/60 px-2 py-0.5 font-mono text-[10px] text-muted-foreground">
-                    {project.role}
-                  </span>
-                </div>
-
-                {project.subtitle && (
-                  <p class="font-mono text-xs font-medium text-primary/90">
-                    {project.subtitle}
-                  </p>
-                )}
-
-                <p class="text-sm leading-relaxed text-muted-foreground">
-                  {project.description}
-                </p>
-
-                {/* Highlights list if available */}
-                {project.highlights && (
-                  <ul class="space-y-1 pt-1">
-                    {project.highlights.map((h) => (
-                      <li class="flex items-center gap-2 text-xs text-muted-foreground">
-                        <span class="h-1 w-1 rounded-full bg-primary/60" />
-                        <span>{h}</span>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-
-                {/* Tech stack */}
-                <div class="flex flex-wrap gap-1 pt-2">
-                  {project.tech.map((t) => (
-                    <span class="rounded border border-border bg-muted/30 px-2 py-0.5 font-mono text-[10px] text-muted-foreground">
-                      {t}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              {/* Action buttons */}
-              <div class="mt-6 flex items-center gap-3 border-t border-border/40 pt-4">
-                {project.links.github && (
-                  <a
-                    href={project.links.github}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="gap-1.5 text-xs"
-                    >
-                      View Source Code ↗
-                    </Button>
-                  </a>
-                )}
-                {project.links.live && project.links.live !== "#" && (
-                  <a
-                    href={project.links.live}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="gap-1.5 text-xs"
-                    >
-                      Live Demo ↗
-                    </Button>
-                  </a>
-                )}
-              </div>
-            </article>
-          ))
-        }
-      </div>
-      <!-- Newsletter Section with SectionDivider -->
-      <SectionDivider class="mt-10" />
-      <NewsletterSection
-        title="Subscribe to Architecture Deep Dives"
-        subtitle="Get notified when new technical post-mortems, database design breakdowns, and cloud architecture case studies are published."
-        source="case_study_list"
-        idPrefix="cs-list-newsletter"
-      />
-    </section>
-  </div>
-
-  <!-- Client Script for Filtering Cards -->
-  <script>
-    function setupFilterObserver() {
-      const filterBtns = document.querySelectorAll(".filter-btn")
-      const projectCards = document.querySelectorAll(".project-card")
-      const caseStudiesGroup = document.getElementById("case-studies-group")
-      const otherProjectsGroup = document.getElementById("other-projects-group")
-
-      filterBtns.forEach((btn) => {
-        btn.addEventListener("click", () => {
-          const filter = btn.getAttribute("data-filter")
-
-          // Update active button styles
-          filterBtns.forEach((b) => {
-            b.classList.remove(
-              "active-filter",
-              "border-primary",
-              "bg-primary/10",
-              "text-primary"
-            )
-            b.classList.add(
-              "border-border",
-              "bg-background",
-              "text-muted-foreground"
-            )
-          })
-
-          btn.classList.add(
-            "active-filter",
-            "border-primary",
-            "bg-primary/10",
-            "text-primary"
-          )
-          btn.classList.remove(
-            "border-border",
-            "bg-background",
-            "text-muted-foreground"
-          )
-
-          // Filter cards visibility
-          if (filter === "all") {
-            projectCards.forEach((c) => ((c as HTMLElement).style.display = ""))
-            if (caseStudiesGroup) caseStudiesGroup.style.display = ""
-            if (otherProjectsGroup) otherProjectsGroup.style.display = ""
-          } else if (filter === "case-study") {
-            projectCards.forEach((c) => {
-              const cat = c.getAttribute("data-category")
-              ;(c as HTMLElement).style.display =
-                cat === "case-study" ? "" : "none"
-            })
-            if (caseStudiesGroup) caseStudiesGroup.style.display = ""
-            if (otherProjectsGroup) otherProjectsGroup.style.display = "none"
-          } else if (filter === "project-only") {
-            projectCards.forEach((c) => {
-              const cat = c.getAttribute("data-category")
-              ;(c as HTMLElement).style.display =
-                cat === "project-only" ? "" : "none"
-            })
-            if (caseStudiesGroup) caseStudiesGroup.style.display = "none"
-            if (otherProjectsGroup) otherProjectsGroup.style.display = ""
-          }
-        })
-      })
-    }
-
-    document.addEventListener("astro:page-load", setupFilterObserver)
-    if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", setupFilterObserver)
-    } else {
-      setupFilterObserver()
-    }
-  </script>
+    <!-- Newsletter Section -->
+    <NewsletterSection
+      title="Subscribe to Tech & Architecture Insights"
+      subtitle="Get notified when new technical post-mortems, hardware benchmarks, and software architecture case studies are published."
+      source="case_study_list"
+      idPrefix="cs-list-newsletter"
+    />
+  </main>
 </MySiteLayout>

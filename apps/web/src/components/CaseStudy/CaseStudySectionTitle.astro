@@ -1,35 +1,27 @@
 ---
-import { Clock01Icon } from "@hugeicons/core-free-icons"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { Badge } from "@workspace/ui/components/badge"
-
 interface Props {
   label?: string
-  icon?: typeof Clock01Icon
-  lineClass?: string
-  badgeClass?: string
-  iconClass?: string
+  class?: string
 }
 
 const {
   label = "[ SEC_01 // CONTEXT_&_PROBLEM ]",
-  icon = Clock01Icon,
-  lineClass = "bg-border",
-  badgeClass = "border-border bg-background",
-  iconClass = "text-primary",
+  class: className = "",
 } = Astro.props as Props
 ---
 
-<div class={`relative h-px w-full ${lineClass}`}>
-  <Badge
-    variant="outline"
-    className={`absolute -top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transform ${badgeClass} px-7`}
+<div class={`relative my-8 flex items-center justify-center ${className}`}>
+  <!-- Background Accent Line -->
+  <div
+    class="absolute inset-0 flex items-center"
+    aria-hidden="true"
   >
-    <HugeiconsIcon
-      icon={icon}
-      className={`size-4 ${iconClass}`}
-      aria-hidden="true"
-    />
-    {label}
-  </Badge>
+    <div class="w-full border-t border-border/80"></div>
+  </div>
+
+  <!-- Center Pill Badge -->
+  <div class="relative z-10 flex items-center gap-2 border border-primary/40 bg-background px-4 py-1 font-mono text-xs font-semibold tracking-wider text-primary uppercase shadow-[0_0_12px_oklch(var(--primary)/15%)] backdrop-blur-md">
+    <span class="h-1.5 w-1.5 animate-pulse rounded-full bg-primary shadow-[0_0_6px_oklch(var(--primary))]"></span>
+    <span>{label}</span>
+  </div>
 </div>

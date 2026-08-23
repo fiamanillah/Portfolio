@@ -7,8 +7,11 @@ import {
 } from "@hugeicons/core-free-icons"
 
 interface CategoryItem {
+  id?: string
   name: string
   count: number
+  slug?: string
+  color?: string
 }
 
 interface Props {
@@ -24,9 +27,7 @@ const {
 } = Astro.props
 ---
 
-<div
-  class={`w-full border-b border-border/60 pb-6 pt-2 space-y-4 ${className}`}
->
+<div class={`w-full border-b border-border/60 pb-6 p-6 space-y-4 ${className}`}>
   <div
     class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between"
   >
@@ -51,6 +52,8 @@ const {
             const isActive =
               activeCategory.toLowerCase() === cat.name.toLowerCase() ||
               (isAll && activeCategory.toLowerCase() === "all")
+            const catColor =
+              cat.color && cat.color.startsWith("#") ? cat.color : undefined
 
             return (
               <button
@@ -60,17 +63,50 @@ const {
                 data-category-name={cat.name}
                 aria-selected={isActive ? "true" : "false"}
                 tabindex={isActive ? 0 : -1}
+                style={
+                  catColor && isActive
+                    ? {
+                        borderColor: catColor,
+                        backgroundColor: `${catColor}1a`,
+                        color: catColor,
+                        boxShadow: `0 0 14px ${catColor}33`,
+                      }
+                    : catColor
+                      ? {
+                          borderColor: `${catColor}35`,
+                        }
+                      : undefined
+                }
                 class={`group/btn category-btn flex cursor-pointer items-center gap-2 rounded-none border px-3 py-1.5 font-mono text-xs transition-all duration-200 select-none focus-visible:ring-1 focus-visible:ring-primary focus-visible:outline-none ${
-                  isActive
+                  isActive && !catColor
                     ? "active border-primary bg-primary/10 font-bold text-primary shadow-[0_0_14px_oklch(var(--primary)/20%)]"
-                    : "border-border bg-background/50 text-muted-foreground hover:border-primary/40 hover:bg-background/80 hover:text-foreground"
+                    : !isActive && !catColor
+                      ? "border-border bg-background/50 text-muted-foreground hover:border-primary/40 hover:bg-background/80 hover:text-foreground"
+                      : "bg-background/50 text-muted-foreground hover:bg-background/80 hover:text-foreground"
                 }`}
               >
+                {!isAll && catColor && (
+                  <span
+                    class="h-1.5 w-1.5 shrink-0 rounded-full"
+                    style={{
+                      backgroundColor: catColor,
+                      boxShadow: `0 0 5px ${catColor}`,
+                    }}
+                  />
+                )}
                 <span class="tracking-wide">{cat.name}</span>
                 <span
                   data-category-count
+                  style={
+                    isActive && catColor
+                      ? {
+                          backgroundColor: catColor,
+                          color: "#fff",
+                        }
+                      : undefined
+                  }
                   class={`inline-flex h-4 min-w-[1.25rem] items-center justify-center rounded-xs px-1.5 font-mono text-[10px] transition-colors ${
-                    isActive
+                    isActive && !catColor
                       ? "bg-primary font-bold text-primary-foreground"
                       : "bg-muted text-muted-foreground group-hover/btn:bg-muted/80 group-hover/btn:text-foreground"
                   }`}
@@ -101,7 +137,7 @@ const {
           id="blog-search-input"
           type="text"
           data-blog-search-input
-          placeholder="Search articles, keywords (/)..."
+          placeholder="Search tech stories, hardware, AI, engineering (/)..."
           autocomplete="off"
           class="w-full bg-transparent py-1.5 pr-8 pl-2 font-sans text-xs text-foreground placeholder:text-muted-foreground/60 focus:outline-none"
         />

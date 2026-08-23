@@ -54,14 +54,14 @@ const title =
     ? `${post.title} | Fi Amanillah`
     : customTitle
       ? `${customTitle} | Fi Amanillah`
-      : "Fi Amanillah | Full Stack Developer")
+      : "Fi Amanillah | Tech Insights, AI & Software Engineering")
 
 const rawTitle = post ? post.title : customTitle || "Fi Amanillah"
 const description =
   post?.seo?.metaDescription ||
   post?.summary ||
   customDescription ||
-  "Engineering Blog, System Architecture & DevOps guides by Fi Amanillah."
+  "Tech stories, AI advancements, semiconductor & hardware markets, and software engineering insights by Fi Amanillah."
 const relativeUrl = post
   ? `/blog/${post.slug}`
   : customUrl || Astro.url.pathname
@@ -88,7 +88,13 @@ const imageType = absoluteImageUrl.endsWith(".png")
 const category = post?.category || customCategory || "Technology"
 const tags = post?.seo?.keywords ||
   post?.tags ||
-  customTags || ["Software Engineering", "Full Stack", "DevOps"]
+  customTags || [
+    "Technology",
+    "Artificial Intelligence",
+    "Semiconductors",
+    "Hardware Market",
+    "Software Engineering",
+  ]
 const keywords = tags.join(", ")
 
 const publishedTime = post
@@ -121,7 +127,7 @@ const breadcrumbs: BreadcrumbItem[] =
 
 // Author info from JSON schema
 const authorName = post?.author?.name || "Fi Amanillah"
-const authorRole = post?.author?.role || "Full Stack Developer"
+const authorRole = post?.author?.role || "Software Engineer & Tech Analyst"
 const authorAvatar = post?.author?.avatar
   ? post.author.avatar.startsWith("http")
     ? post.author.avatar

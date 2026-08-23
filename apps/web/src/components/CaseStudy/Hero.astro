@@ -1,7 +1,6 @@
 ---
 import {
   ArrowUpRight01Icon,
-  Folder01Icon,
   Github,
   Clock01Icon,
   UserIcon,
@@ -33,7 +32,6 @@ interface Props {
 const {
   title = "Mickanic — Real-Time Bidding & Service Marketplace Platform",
   description = "I architected a service-based marketplace using Next.js and Bun, integrating real-time bidding, Socket.io messaging, and tiered Stripe subscriptions, all backed by a robust PostgreSQL and RabbitMQ infrastructure.",
-  status = "Status: Completed",
   techStack = [
     "Next.js 16",
     "Bun",
@@ -61,149 +59,169 @@ const {
     },
   ],
 } = Astro.props as Props
+
+// Extract clean title and subtitle if dash is present
+const cleanTitle = title.includes("—") ? title.split("—")[0]?.trim() : title
+const cleanSubtitle = title.includes("—")
+  ? title.split("—")[1]?.trim()
+  : undefined
 ---
 
-<!-- Hero Section: Main project introduction and metadata display -->
-<article data-grid-cross class="relative w-full overflow-hidden">
-  <!-- Header: Project title and status indicator -->
-  <header
-    class="relative flex items-center justify-between border-b border-border px-5 py-3.5 md:px-6 lg:px-8"
-  >
-    <span
-      class="flex items-center gap-2 font-mono text-xs tracking-widest text-primary uppercase"
-    >
-      <HugeiconsIcon icon={Folder01Icon} className="size-3.5" />
-      <span>PROJECT_INIT //</span>
-    </span>
-    <div class="flex items-center gap-3">
-      <!-- Live indicator -->
-      <span class="flex items-center gap-1.5">
-        <span class="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500"
-        ></span>
-        <span
-          class="font-mono text-[9px] tracking-[0.15em] text-muted-foreground/60 uppercase"
-          >Active</span
-        >
-      </span>
-      <Badge variant="outline" aria-label="Project Status">
-        {status}
-      </Badge>
-    </div>
-  </header>
-
-  <!-- Main Content: Project title, description, tech stack, and call-to-action buttons -->
+<!-- Detail Page Hero Section: Blueprint Showcase, Description & Metadata Grid -->
+<article
+  data-grid-cross
+  class="relative w-full overflow-hidden border-b border-border bg-background"
+>
+  <!-- Main Hero Layout -->
   <section
-    class="flex flex-col gap-8 px-5 py-8 md:flex-row md:items-start md:gap-12 md:px-6 lg:px-8"
+    class="grid gap-10 px-5 py-10 md:px-8 lg:grid-cols-12 lg:items-center lg:gap-12"
   >
-    <!-- Project Description -->
-    <div class="flex flex-1 flex-col justify-between gap-8">
+    <!-- Left Column: Title, Subtitle, Description, Tech Stack, CTAs -->
+    <div class="flex flex-col justify-between gap-8 lg:col-span-6">
       <div class="space-y-4">
-        <h1
-          class="text-3xl leading-tight font-black tracking-tight text-foreground sm:text-4xl"
-        >
-          {title}
-        </h1>
+        <div>
+          <h1
+            class="text-3xl leading-tight font-black tracking-tight text-foreground sm:text-4xl lg:text-5xl"
+          >
+            {cleanTitle}
+          </h1>
+          {
+            cleanSubtitle && (
+              <p class="mt-2 font-mono text-sm font-semibold tracking-wide text-primary sm:text-base">
+                // {cleanSubtitle}
+              </p>
+            )
+          }
+        </div>
 
-        <p class="max-w-[58ch] text-sm leading-[1.85] text-muted-foreground">
+        <p class="text-sm leading-relaxed text-muted-foreground sm:text-base">
           {description}
         </p>
       </div>
 
-      <!-- Tech Stack & Actions -->
-      <div class="flex flex-col gap-5">
-        <!-- Technology Stack Badges -->
-        <div class="space-y-2">
-          <span
-            class="font-mono text-[9px] tracking-[0.2em] text-muted-foreground/60 uppercase"
-          >
-            // Tech_Stack
-          </span>
-          <nav aria-label="Technology Stack" class="flex flex-wrap gap-2">
-            {
-              techStack.map((tech) => (
-                <Badge variant="outline">
-                  <span class="mr-1.5 h-1.5 w-1.5 rounded-full bg-primary/70" />
-                  {tech}
-                </Badge>
-              ))
-            }
-          </nav>
-        </div>
-
-        <!-- Call-to-Action Buttons -->
-        {
-          ((githubUrl && githubUrl !== "#") ||
-            (liveUrl && liveUrl !== "#")) && (
-            <div class="flex flex-wrap gap-3">
-              {githubUrl && githubUrl !== "#" && (
-                <a
-                  href={githubUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="View repository"
-                >
-                  <Button variant="outline" size="lg">
-                    <HugeiconsIcon icon={Github} className="size-4" />
-                    <span>GitHub Repo</span>
-                  </Button>
-                </a>
-              )}
-              {liveUrl && liveUrl !== "#" && (
-                <a
-                  href={liveUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Open live demo"
-                >
-                  <Button variant="default" size="lg">
-                    <HugeiconsIcon
-                      icon={ArrowUpRight01Icon}
-                      className="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-                    />
-                    <span>Live Demo</span>
-                  </Button>
-                </a>
-              )}
-            </div>
-          )
-        }
+      <!-- Tech Stack Badges -->
+      <div class="space-y-2.5">
+        <span
+          class="font-mono text-[10px] font-semibold tracking-[0.2em] text-muted-foreground uppercase"
+        >
+          // PRODUCTION_TECH_STACK
+        </span>
+        <nav aria-label="Technology Stack" class="flex flex-wrap gap-1.5">
+          {
+            techStack.map((tech) => (
+              <Badge
+                variant="outline"
+                className="font-mono text-xs px-2.5 py-1 transition-colors hover:border-primary/50"
+              >
+                <span class="mr-1.5 h-1.5 w-1.5 rounded-full bg-primary" />
+                {tech}
+              </Badge>
+            ))
+          }
+        </nav>
       </div>
+
+      <!-- Call-to-Action Buttons -->
+      {
+        ((githubUrl && githubUrl !== "#") || (liveUrl && liveUrl !== "#")) && (
+          <div class="flex flex-wrap items-center gap-3 pt-2">
+            {liveUrl && liveUrl !== "#" && (
+              <a
+                href={liveUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Open live application"
+              >
+                <Button size="lg" className="gap-2 font-medium shadow-sm">
+                  <HugeiconsIcon
+                    icon={ArrowUpRight01Icon}
+                    className="size-4"
+                  />
+                  <span>Live Production App</span>
+                </Button>
+              </a>
+            )}
+
+            {githubUrl && githubUrl !== "#" && (
+              <a
+                href={githubUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="View source repository"
+              >
+                <Button variant="outline" size="lg" className="gap-2">
+                  <HugeiconsIcon icon={Github} className="size-4" />
+                  <span>View Repository</span>
+                </Button>
+              </a>
+            )}
+          </div>
+        )
+      }
     </div>
 
-    <!-- Hero Image: Project showcase visual -->
-    <figure class="relative flex-1 shrink-0 md:max-w-[55%]">
-      <div class="overflow-hidden rounded-lg border border-border/80 shadow-sm">
+    <!-- Right Column: Visual Blueprint Preview Container -->
+    <figure class="relative lg:col-span-6">
+      {/* Outer corner brackets */}
+      <div
+        class="pointer-events-none absolute -top-1.5 -left-1.5 z-20 h-4 w-4 border-t-2 border-l-2 border-primary/60"
+      >
+      </div>
+      <div
+        class="pointer-events-none absolute -top-1.5 -right-1.5 z-20 h-4 w-4 border-t-2 border-r-2 border-primary/60"
+      >
+      </div>
+      <div
+        class="pointer-events-none absolute -bottom-1.5 -left-1.5 z-20 h-4 w-4 border-b-2 border-l-2 border-primary/60"
+      >
+      </div>
+      <div
+        class="pointer-events-none absolute -bottom-1.5 -right-1.5 z-20 h-4 w-4 border-r-2 border-b-2 border-primary/60"
+      >
+      </div>
+
+      <div
+        class="relative aspect-[16/10] w-full overflow-hidden border border-border bg-muted/30 shadow-lg before:pointer-events-none before:absolute before:inset-0 before:z-10 before:bg-[linear-gradient(105deg,transparent_40%,oklch(var(--primary)/12%)_50%,transparent_60%)] before:bg-[length:200%_100%] after:pointer-events-none after:absolute after:inset-0 after:bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(0,0,0,0.04)_2px,rgba(0,0,0,0.04)_4px)]"
+      >
         <img
           src={image}
-          alt={`Project showcase thumbnail for ${title}`}
-          class="aspect-video w-full object-cover"
+          alt={`System Architecture Blueprint for ${title}`}
+          class="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
         />
       </div>
-      <!-- Image label -->
+
       <figcaption
-        class="mt-1.5 flex items-center gap-1 font-mono text-[9px] tracking-[0.15em] text-muted-foreground/50 uppercase"
+        class="mt-2 flex items-center justify-between font-mono text-[10px] text-muted-foreground/70 uppercase"
       >
-        <span class="h-px w-4 bg-primary/40"></span>
-        <span>{imageLabel}</span>
+        <span class="flex items-center gap-1.5">
+          <span class="h-px w-4 bg-primary/60"></span>
+          <span>{imageLabel}</span>
+        </span>
+        <span>VERIFIED_ARCH</span>
       </figcaption>
     </figure>
   </section>
 
-  <!-- Metadata Grid: Project details (role, timeline, client, domain) -->
-  <div class="grid grid-cols-2 border-t border-border md:grid-cols-4">
+  <!-- 4-Column Metadata Bento Grid -->
+  <div class="grid grid-cols-2 border-t border-border sm:grid-cols-4">
     {
       metadata.map(({ label, value, icon }, i) => (
         <div
-          class={`group relative border-border p-4 transition-colors hover:bg-muted/20 sm:p-5 ${i % 2 === 0 ? "border-r" : ""} ${i < 2 ? "border-b" : ""} md:border-r md:border-b-0 md:last:border-r-0`}
+          class={`group relative border-border p-4.5 transition-colors hover:bg-primary/5 sm:p-6 ${
+            i % 2 === 0 ? "border-r" : ""
+          } ${i < 2 ? "border-b" : ""} sm:border-r sm:border-b-0 sm:last:border-r-0`}
         >
-          <dl class="flex flex-col gap-2">
-            <dt class="flex items-center gap-1.5 font-mono text-[9px] tracking-[0.2em] text-muted-foreground/60 uppercase">
+          <dl class="flex flex-col gap-1.5">
+            <dt class="flex items-center gap-1.5 font-mono text-[10px] font-semibold tracking-[0.2em] text-muted-foreground uppercase">
               {icon && (
-                <HugeiconsIcon icon={icon} className="size-2.5 shrink-0" />
+                <HugeiconsIcon
+                  icon={icon}
+                  className="size-3 text-primary/80 shrink-0"
+                />
               )}
               {label}
             </dt>
-            <dd class="text-sm font-semibold tracking-tight text-foreground">
+            <dd class="text-sm font-bold tracking-tight text-foreground sm:text-base">
               {value}
             </dd>
           </dl>

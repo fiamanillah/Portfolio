@@ -56,7 +56,7 @@ const popularCategoryNames = categories
   >
     <div
       data-cards-grid
-      class="grid grid-cols-1 gap-px bg-border sm:grid-cols-2 lg:grid-cols-3"
+      class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
     >
       {
         posts.map((post, index) => {
@@ -64,7 +64,7 @@ const popularCategoryNames = categories
             <BlogCard
               post={post}
               isInitiallyVisible={index < postsPerPage}
-              class="bg-background"
+              class="border border-border"
             />
           )
         })
@@ -253,9 +253,9 @@ const popularCategoryNames = categories
         if (searchQuery) {
           journalTitle.innerHTML = `Search <span class="text-primary">/</span> Results`
         } else if (activeCategory !== "all") {
-          journalTitle.innerHTML = `${activeCategory.charAt(0).toUpperCase() + activeCategory.slice(1)} <span class="text-primary">/</span> Articles`
+          journalTitle.innerHTML = `${activeCategory.charAt(0).toUpperCase() + activeCategory.slice(1)} <span class="text-primary">/</span> Stories`
         } else {
-          journalTitle.innerHTML = `All <span class="text-primary">/</span> Articles`
+          journalTitle.innerHTML = `All <span class="text-primary">/</span> Tech Articles & Stories`
         }
       }
 

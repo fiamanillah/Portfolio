@@ -5,8 +5,10 @@ import ContextSection from "@/components/CaseStudy/ContextSection.astro"
 import KeyFeatures from "@/components/CaseStudy/KeyFeatures.astro"
 import PerformanceMetrics from "@/components/CaseStudy/PerformanceMetrics.astro"
 import Hero from "@/components/CaseStudy/Hero.astro"
+import CaseStudyNav from "@/components/CaseStudy/detail/CaseStudyNav.astro"
 import OtherCaseStudies from "@/components/CaseStudy/OtherCaseStudies.astro"
 import NewsletterSection from "@/components/Newsletter/NewsletterSection.astro"
+import SectionDivider from "@/components/SectionDivider.astro"
 import MySiteLayout from "@/layouts/MySiteLayout.astro"
 import type { CaseStudyDetail } from "@/data/caseStudies"
 import { CaseStudyApi } from "@/lib/api/caseStudyApi"
@@ -18,7 +20,11 @@ export async function getStaticPaths() {
       const full = await CaseStudyApi.fetchCaseStudyBySlug(study.slug, false)
       return {
         params: { slug: study.slug },
-        props: { caseStudy: full?.caseStudy || study },
+        props: {
+          caseStudy: full?.caseStudy || study,
+          prevCaseStudy: full?.prevCaseStudy || null,
+          nextCaseStudy: full?.nextCaseStudy || null,
+        },
       }
     })
   )
@@ -27,65 +33,205 @@ export async function getStaticPaths() {
 
 interface Props {
   caseStudy?: CaseStudyDetail
+  prevCaseStudy?: CaseStudyDetail | null
+  nextCaseStudy?: CaseStudyDetail | null
 }
 
 const { slug } = Astro.params
 let caseStudy = Astro.props.caseStudy
+let prevCaseStudy = Astro.props.prevCaseStudy
+let nextCaseStudy = Astro.props.nextCaseStudy
 
 // On-demand fetch fallback for dynamic rendering or newly created case studies
 if ((!caseStudy || !caseStudy.contextBlocks?.length) && slug) {
   const result = await CaseStudyApi.fetchCaseStudyBySlug(slug)
   if (result) {
     caseStudy = result.caseStudy
+    prevCaseStudy = result.prevCaseStudy
+    nextCaseStudy = result.nextCaseStudy
+  }
+}
+
+// Fallback adjacent calculation if not populated from API
+if ((!prevCaseStudy || !nextCaseStudy) && caseStudy) {
+  const allStudies = await CaseStudyApi.fetchAllCaseStudies()
+  const currentIdx = allStudies.findIndex((s) => s.slug === caseStudy!.slug)
+  if (currentIdx !== -1) {
+    if (!prevCaseStudy && currentIdx > 0) {
+      prevCaseStudy = allStudies[currentIdx - 1]
+    }
+    if (!nextCaseStudy && currentIdx < allStudies.length - 1) {
+      nextCaseStudy = allStudies[currentIdx + 1]
+    }
   }
 }
 
 if (!caseStudy) {
   return Astro.redirect("/404")
 }
+
+const roleMeta = (caseStudy.metadata || []).find((m) => m.label.toLowerCase().includes("role"))?.value || "Full-Stack Architect"
 ---
 
 <MySiteLayout>
-  <Hero
-    title={caseStudy.title}
-    description={caseStudy.description}
-    status={caseStudy.status}
-    techStack={caseStudy.techStack}
-    liveUrl={caseStudy.liveUrl}
-    githubUrl={caseStudy.githubUrl}
-    image={caseStudy.image}
-    imageLabel={caseStudy.imageLabel}
-    metadata={caseStudy.metadata}
-  />
+  <!-- SEO & Schema Markup Injection -->
+  <Fragment slot="head">
+    <title>{caseStudy.title} | Technical Case Study</title>
+    <meta name="description" content={caseStudy.description} />
+    <meta property="og:title" content={`${caseStudy.title} | Fi Amanillah`} />
+    <meta property="og:description" content={caseStudy.description} />
+    <meta property="og:image" content={caseStudy.image} />
+    <meta property="og:type" content="article" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={`${caseStudy.title} | Fi Amanillah`} />
+    <meta name="twitter:description" content={caseStudy.description} />
+    <meta name="twitter:image" content={caseStudy.image} />
+  </Fragment>
 
-  <div class="w-full space-y-16 pt-10 pb-24">
-    {caseStudy.contextBlocks && caseStudy.contextBlocks.length > 0 && (
-      <ContextSection blocks={caseStudy.contextBlocks} />
-    )}
-
-    {caseStudy.architectureLayers && caseStudy.architectureLayers.length > 0 && (
-      <ArchitectureTopology layers={caseStudy.architectureLayers} />
-    )}
-
-    {caseStudy.features && caseStudy.features.length > 0 && (
-      <KeyFeatures features={caseStudy.features} />
-    )}
-
-    {caseStudy.metrics && caseStudy.metrics.length > 0 && (
-      <PerformanceMetrics metrics={caseStudy.metrics} />
-    )}
-
-    {caseStudy.postMortem && caseStudy.postMortem.length > 0 && (
-      <ArchitecturalPostMortem items={caseStudy.postMortem} />
-    )}
-
-    <OtherCaseStudies currentSlug={caseStudy.slug} />
-
-    <NewsletterSection
-      title="Never Miss an Architecture Breakdown"
-      subtitle="Subscribe to receive future post-mortems, DevOps automation guides, and system design patterns directly in your inbox."
-      source="case_study_detail"
-      idPrefix="cs-detail-newsletter"
-    />
+  <!-- Reading Progress Bar (Fixed on scroll) -->
+  <div
+    id="cs-progress-track"
+    class="fixed right-0 left-0 z-40 h-[3px] bg-border/20"
+    style="top: 0; opacity: 0;"
+  >
+    <div
+      id="cs-reading-progress"
+      class="h-full bg-primary shadow-[0_0_8px_oklch(var(--primary))] transition-[width] duration-150 ease-out"
+      style="width: 0%"
+    >
+    </div>
   </div>
+
+  <!-- Breadcrumb Navigation Bar -->
+  <nav
+    aria-label="Breadcrumbs"
+    class="border-b border-border/60 bg-background/50 py-3.5"
+  >
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div
+        class="flex flex-wrap items-center gap-2 font-mono text-xs text-muted-foreground"
+      >
+        <a href="/" class="transition-colors hover:text-foreground">Home</a>
+        <span>/</span>
+        <a href="/case-study" class="transition-colors hover:text-foreground">Case Studies</a>
+        <span>/</span>
+        <span class="max-w-xs truncate font-semibold text-primary"
+          >{caseStudy.title.split("—")[0]?.trim()}</span
+        >
+      </div>
+    </div>
+  </nav>
+
+  <main class="w-full">
+    <!-- Hero Header with Blueprint Showcase & System Metadata Grid -->
+    <Hero
+      title={caseStudy.title}
+      description={caseStudy.description}
+      status={caseStudy.status}
+      techStack={caseStudy.techStack}
+      liveUrl={caseStudy.liveUrl}
+      githubUrl={caseStudy.githubUrl}
+      image={caseStudy.image}
+      imageLabel={caseStudy.imageLabel}
+      metadata={caseStudy.metadata}
+    />
+
+    <!-- Architectural Deep Dive Content Sections -->
+    <div class="w-full space-y-16 pt-12 pb-24">
+      {caseStudy.contextBlocks && caseStudy.contextBlocks.length > 0 && (
+        <ContextSection blocks={caseStudy.contextBlocks} />
+      )}
+
+      {caseStudy.architectureLayers && caseStudy.architectureLayers.length > 0 && (
+        <ArchitectureTopology layers={caseStudy.architectureLayers} />
+      )}
+
+      {caseStudy.features && caseStudy.features.length > 0 && (
+        <KeyFeatures features={caseStudy.features} />
+      )}
+
+      {caseStudy.metrics && caseStudy.metrics.length > 0 && (
+        <PerformanceMetrics metrics={caseStudy.metrics} />
+      )}
+
+      {caseStudy.postMortem && caseStudy.postMortem.length > 0 && (
+        <ArchitecturalPostMortem items={caseStudy.postMortem} />
+      )}
+
+      <!-- Adjacent Case Study Navigation -->
+      <div class="px-4 sm:px-6 lg:px-8">
+        <CaseStudyNav
+          prevStudy={
+            prevCaseStudy
+              ? {
+                  slug: prevCaseStudy.slug,
+                  title: prevCaseStudy.title.split("—")[0]?.trim(),
+                  image: prevCaseStudy.image,
+                  role: roleMeta,
+                }
+              : null
+          }
+          nextStudy={
+            nextCaseStudy
+              ? {
+                  slug: nextCaseStudy.slug,
+                  title: nextCaseStudy.title.split("—")[0]?.trim(),
+                  image: nextCaseStudy.image,
+                  role: roleMeta,
+                }
+              : null
+          }
+        />
+      </div>
+
+      <!-- Other Case Studies Showcase Grid -->
+      <OtherCaseStudies currentSlug={caseStudy.slug} />
+
+      <SectionDivider />
+
+      <!-- Newsletter Section -->
+      <NewsletterSection
+        title="Never Miss a Tech & Architecture Dispatch"
+        subtitle="Subscribe to receive future tech breakdowns, hardware stories, AI insights, and system design patterns directly in your inbox."
+        source="case_study_detail"
+        idPrefix="cs-detail-newsletter"
+      />
+    </div>
+  </main>
 </MySiteLayout>
+
+<!-- Client Script for Scroll Progress Bar -->
+<script>
+  function setupReadingProgress() {
+    function updateProgress() {
+      const track = document.getElementById("cs-progress-track")
+      const bar = document.getElementById("cs-reading-progress")
+      if (!track || !bar) return
+
+      const scrollTop = window.scrollY || document.documentElement.scrollTop
+      const scrollHeight =
+        document.documentElement.scrollHeight -
+        document.documentElement.clientHeight
+
+      if (scrollHeight > 0) {
+        const progress = Math.min(100, Math.max(0, (scrollTop / scrollHeight) * 100))
+        bar.style.width = `${progress}%`
+        if (scrollTop > 80) {
+          track.style.opacity = "1"
+        } else {
+          track.style.opacity = "0"
+        }
+      }
+    }
+
+    window.addEventListener("scroll", updateProgress, { passive: true })
+    updateProgress()
+  }
+
+  document.addEventListener("astro:page-load", setupReadingProgress)
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", setupReadingProgress)
+  } else {
+    setupReadingProgress()
+  }
+</script>

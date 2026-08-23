@@ -16,6 +16,10 @@ interface Props {
 }
 
 const { post, isInitiallyVisible = true, class: className = "" } = Astro.props
+const catColor =
+  post.categoryColor && post.categoryColor.startsWith("#")
+    ? post.categoryColor
+    : undefined
 ---
 
 <article
@@ -56,9 +60,27 @@ const { post, isInitiallyVisible = true, class: className = "" } = Astro.props
     <!-- Category badge -->
     <div class="absolute bottom-3 left-3 z-20">
       <span
+        style={
+          catColor
+            ? {
+                borderColor: `${catColor}60`,
+                backgroundColor: `${catColor}18`,
+                color: catColor,
+                boxShadow: `0 0 10px ${catColor}25`,
+              }
+            : undefined
+        }
         class="inline-flex items-center gap-1.5 border border-primary/40 bg-background/90 px-2.5 py-1 font-mono text-[10px] font-bold text-primary uppercase shadow-xs backdrop-blur-md"
       >
         <span
+          style={
+            catColor
+              ? {
+                  backgroundColor: catColor,
+                  boxShadow: `0 0 6px ${catColor}`,
+                }
+              : undefined
+          }
           class="h-1.5 w-1.5 rounded-full bg-primary shadow-[0_0_5px_oklch(var(--primary)/80%)]"
         ></span>
         {post.category}

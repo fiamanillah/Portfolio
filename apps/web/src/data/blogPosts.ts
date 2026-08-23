@@ -21,11 +21,12 @@ export interface BlogSEOData {
 }
 
 export type BlogCategory =
-  | "Architecture"
-  | "Database"
-  | "Performance"
-  | "WebSockets"
-  | "DevOps"
+  | "AI & Intelligence"
+  | "Hardware & Chips"
+  | "Tech Trends"
+  | "Software Engineering"
+  | "System Architecture"
+  | "DevOps & Cloud"
   | "Security"
   | string
 
@@ -36,6 +37,8 @@ export interface BlogPost {
   subtitle?: string
   summary: string
   category: BlogCategory
+  categoryColor?: string
+  categorySlug?: string
   tags: string[]
   publishedAt: string
   modifiedAt?: string
@@ -150,7 +153,7 @@ export async function getFeaturedBlogPostsAsync(): Promise<BlogPost[]> {
  * Fetch categories with published article counts directly from the backend API / Database
  */
 export async function getBlogCategoriesAsync(): Promise<
-  { name: string; count: number; slug?: string }[]
+  { id?: string; name: string; count: number; slug?: string; color?: string }[]
 > {
   try {
     const categories = await BlogApi.fetchPublicCategories()
@@ -160,7 +163,7 @@ export async function getBlogCategoriesAsync(): Promise<
   } catch (err) {
     console.error("Failed to fetch blog categories from API:", err)
   }
-  return [{ name: "All", count: 0 }]
+  return [{ id: "all", name: "All", count: 0, slug: "all", color: "#3b82f6" }]
 }
 
 /**

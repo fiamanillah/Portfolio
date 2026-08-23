@@ -58,7 +58,7 @@ export function mapApiPostToBlogPost(dto: any): BlogPost {
     role:
       dto.author?.role ||
       dto.authorRole ||
-      "Full Stack Developer",
+      "Software Engineer & Tech Writer",
     avatar: dto.author?.avatar || dto.authorAvatar || "/fi.png",
     twitter: dto.author?.twitter || dto.authorTwitter,
     linkedin: dto.author?.linkedin || dto.authorLinkedin,
@@ -78,7 +78,10 @@ export function mapApiPostToBlogPost(dto: any): BlogPost {
 
   const categoryName = (dto.category?.name ||
     dto.categoryName ||
-    "Architecture") as BlogCategory
+    "Technology") as BlogCategory
+
+  const categoryColor = dto.category?.color || dto.categoryColor || "#3b82f6"
+  const categorySlug = dto.category?.slug || dto.categorySlug || ""
 
   return {
     id: dto.id || dto.slug,
@@ -87,6 +90,8 @@ export function mapApiPostToBlogPost(dto: any): BlogPost {
     subtitle: dto.subtitle || undefined,
     summary: dto.summary,
     category: categoryName,
+    categoryColor,
+    categorySlug,
     tags: Array.isArray(dto.tags) ? dto.tags : [],
     publishedAt: dto.publishedAt || dto.createdAt || new Date().toISOString(),
     modifiedAt: dto.modifiedAt || dto.updatedAt,
@@ -213,7 +218,7 @@ export const BlogApi = {
    * Fetch categories with published post counts
    */
   async fetchPublicCategories(): Promise<
-    { name: string; count: number; slug?: string }[]
+    { id?: string; name: string; count: number; slug?: string; color?: string }[]
   > {
     try {
       const res = await fetch(`${API_BASE_URL}/blogs/v1/public/categories`, {
@@ -226,9 +231,11 @@ export const BlogApi = {
           const nonAllCategories = body.data
             .filter((c: any) => c.name && c.name.toLowerCase() !== "all")
             .map((c: any) => ({
+              id: c.id,
               name: c.name,
               count: typeof c.count === "number" ? c.count : 0,
               slug: c.slug,
+              color: c.color || "#3b82f6",
             }))
           const existingAll = body.data.find(
             (c: any) => c.name && c.name.toLowerCase() === "all"
@@ -239,7 +246,7 @@ export const BlogApi = {
               : nonAllCategories.reduce((acc: number, c: any) => acc + c.count, 0)
 
           return [
-            { name: "All", count: totalPublished, slug: "all" },
+            { id: "all", name: "All", count: totalPublished, slug: "all", color: "#3b82f6" },
             ...nonAllCategories,
           ]
         }
@@ -248,7 +255,7 @@ export const BlogApi = {
       console.error("Failed to fetch public categories from API:", err)
     }
 
-    return [{ name: "All", count: 0, slug: "all" }]
+    return [{ id: "all", name: "All", count: 0, slug: "all", color: "#3b82f6" }]
   },
 
   /**

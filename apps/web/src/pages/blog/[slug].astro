@@ -133,26 +133,13 @@ const relatedPosts =
                 View All Articles →
               </a>
             </div>
-            <div class="overflow-hidden border border-border bg-card/60 backdrop-blur-sm shadow-xs">
-              <div class="grid grid-cols-1 md:grid-cols-2">
-                {relatedPosts.map((relatedPost, index) => {
-                  const isLeftCol = index % 2 === 0
-                  const isLastRow =
-                    index >=
-                    relatedPosts.length - (relatedPosts.length % 2 === 0 ? 2 : 1)
-                  const isLastMobile = index === relatedPosts.length - 1
-                  return (
-                    <BlogCard
-                      post={relatedPost}
-                      class={`border-border ${
-                        !isLastMobile ? "border-b" : "border-b-0"
-                      } ${isLeftCol ? "md:border-r" : "md:border-r-0"} ${
-                        isLastRow ? "md:border-b-0" : "md:border-b"
-                      }`}
-                    />
-                  )
-                })}
-              </div>
+            <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+              {relatedPosts.map((relatedPost) => (
+                <BlogCard
+                  post={relatedPost}
+                  class="border border-border"
+                />
+              ))}
             </div>
           </section>
         )
@@ -162,7 +149,7 @@ const relatedPosts =
       <div class="blog-bottom-animate mt-16 pb-12">
         <NewsletterSection
           title="Enjoyed this Article?"
-          subtitle="Get notified as soon as new system architecture breakdowns and performance guides are published."
+          subtitle="Get notified as soon as new tech deep dives, AI analyses, semiconductor market stories, and engineering guides are published."
           source="blog_detail"
           idPrefix="blog-detail-newsletter"
         />

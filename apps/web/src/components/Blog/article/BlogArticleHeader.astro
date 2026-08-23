@@ -21,6 +21,10 @@ const siteUrl = (
   "https://fi.amanillah.com"
 ).replace(/\/$/, "")
 const articleUrl = `${siteUrl}/blog/${post.slug}`
+const catColor =
+  post.categoryColor && post.categoryColor.startsWith("#")
+    ? post.categoryColor
+    : undefined
 ---
 
 <header id="article-top" class="border-b border-border/80 pb-8 text-left">
@@ -30,8 +34,27 @@ const articleUrl = `${siteUrl}/blog/${post.slug}`
       href={`/blog?category=${encodeURIComponent(post.category.toLowerCase())}`}
     >
       <span
-        class="inline-flex items-center border border-primary/40 bg-primary/10 px-2.5 py-1 font-mono text-xs font-semibold text-primary uppercase transition-colors hover:border-primary"
+        style={
+          catColor
+            ? {
+                borderColor: `${catColor}60`,
+                backgroundColor: `${catColor}18`,
+                color: catColor,
+                boxShadow: `0 0 10px ${catColor}25`,
+              }
+            : undefined
+        }
+        class="inline-flex items-center gap-1.5 border border-primary/40 bg-primary/10 px-2.5 py-1 font-mono text-xs font-semibold text-primary uppercase transition-colors hover:border-primary"
       >
+        {catColor && (
+          <span
+            class="h-1.5 w-1.5 shrink-0 rounded-full"
+            style={{
+              backgroundColor: catColor,
+              boxShadow: `0 0 5px ${catColor}`,
+            }}
+          />
+        )}
         {post.category}
       </span>
     </a>

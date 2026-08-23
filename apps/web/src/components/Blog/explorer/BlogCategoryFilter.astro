@@ -1,7 +1,10 @@
 ---
 interface CategoryItem {
+  id?: string
   name: string
   count: number
+  slug?: string
+  color?: string
 }
 
 interface Props {
@@ -27,26 +30,61 @@ const { categories, activeCategory = "All", baseUrl = "/blog" } = Astro.props
   <div class="flex flex-wrap items-center gap-2">
     {
       categories.map((cat) => {
+        const isAll = cat.name.toLowerCase() === "all"
         const isActive = activeCategory.toLowerCase() === cat.name.toLowerCase()
-        const targetUrl =
-          cat.name.toLowerCase() === "all"
-            ? baseUrl
-            : `${baseUrl}?category=${encodeURIComponent(cat.name.toLowerCase())}`
+        const targetUrl = isAll
+          ? baseUrl
+          : `${baseUrl}?category=${encodeURIComponent(cat.name.toLowerCase())}`
+        const catColor =
+          cat.color && cat.color.startsWith("#") ? cat.color : undefined
 
         return (
           <a href={targetUrl} class="focus:outline-none">
             <button
               type="button"
+              style={
+                catColor && isActive
+                  ? {
+                      borderColor: catColor,
+                      backgroundColor: `${catColor}1a`,
+                      color: catColor,
+                      boxShadow: `0 0 12px ${catColor}33`,
+                    }
+                  : catColor
+                    ? {
+                        borderColor: `${catColor}30`,
+                      }
+                    : undefined
+              }
               class={`flex cursor-pointer items-center gap-2 border px-3.5 py-1.5 font-mono text-xs transition-all duration-200 ${
-                isActive
+                isActive && !catColor
                   ? "border-primary bg-primary/10 font-bold text-primary shadow-[0_0_12px_oklch(var(--primary)/15%)]"
-                  : "border-border bg-background/50 text-muted-foreground hover:border-primary/40 hover:text-foreground"
+                  : !isActive && !catColor
+                    ? "border-border bg-background/50 text-muted-foreground hover:border-primary/40 hover:text-foreground"
+                    : "bg-background/50 text-muted-foreground hover:text-foreground"
               }`}
             >
+              {!isAll && catColor && (
+                <span
+                  class="h-1.5 w-1.5 shrink-0 rounded-full"
+                  style={{
+                    backgroundColor: catColor,
+                    boxShadow: `0 0 5px ${catColor}`,
+                  }}
+                />
+              )}
               <span>{cat.name}</span>
               <span
+                style={
+                  isActive && catColor
+                    ? {
+                        backgroundColor: catColor,
+                        color: "#fff",
+                      }
+                    : undefined
+                }
                 class={`inline-flex h-4 min-w-[1.25rem] items-center justify-center rounded-sm px-1 font-mono text-[10px] ${
-                  isActive
+                  isActive && !catColor
                     ? "bg-primary font-bold text-primary-foreground"
                     : "bg-muted text-muted-foreground"
                 }`}

@@ -6,6 +6,7 @@ import {
   FavouriteIcon,
   Comment01Icon,
   ViewIcon,
+  Clock01Icon,
 } from "@hugeicons/core-free-icons"
 
 interface Props {
@@ -20,114 +21,309 @@ const secondaryFeatured = featuredPosts.slice(1, 4)
 
 {
   featuredPosts.length > 0 && (
-    <section class="mb-20">
-      {/* Section header — matches site-standard Work.astro pattern */}
-      <div class="relative mb-10 overflow-hidden text-center">
+    <section>
+      {/* Section header — matching site architectural aesthetic */}
+      <div class="relative overflow-hidden text-center">
         <div
           class="diagonal-stripes pointer-events-none absolute inset-0 z-10 bg-background"
           aria-hidden="true"
         />
-        <div class="relative z-10 py-8">
-          <p class="section-label">Editor's picks &amp; top reads</p>
+        <div class="relative z-10 py-6">
+          <p class="section-label mb-2">Editor's Picks &amp; Deep-Dives</p>
           <h2 class="section-title text-foreground">
             Featured <span class="text-primary">/</span> Stories
           </h2>
-          <div class="accent-bar mx-auto mt-4 mb-0 w-48" />
+          <div class="accent-bar mx-auto mt-3 mb-0 w-48" />
         </div>
       </div>
 
-      {/* Grid container — no outer border, gap-px creates dividers */}
-      <div class="overflow-hidden border border-border bg-border shadow-sm transition-all duration-300">
-        {secondaryFeatured.length === 0 ? (
-          /* Single Featured Post Full-Width */
-          <article class="group relative flex flex-col lg:flex-row items-stretch overflow-hidden transition-all duration-300 hover:bg-card/90 hover:shadow-[inset_0_0_0_1px_oklch(var(--primary)/35%)]">
+      {/* Grid Container without artificial background fills */}
+      {featuredPosts.length === 1 ? (
+        /* CASE 1: Single Featured Post — Wide Hero Banner */
+        <article class="group relative flex flex-col overflow-hidden border border-border bg-background transition-all duration-300 hover:border-primary/50 hover:bg-card/40 hover:shadow-[0_0_0_1px_oklch(var(--primary)/20%),0_8px_32px_-8px_oklch(var(--primary)/12%)] lg:flex-row">
+          {/* Corner brackets */}
+          <div class="pointer-events-none absolute top-2 left-2 z-20 h-3 w-3 border-t-[1.5px] border-l-[1.5px] border-primary/40 transition-all duration-300 group-hover:h-4 group-hover:w-4 group-hover:border-primary" />
+          <div class="pointer-events-none absolute top-2 right-2 z-20 h-3 w-3 border-t-[1.5px] border-r-[1.5px] border-primary/40 transition-all duration-300 group-hover:h-4 group-hover:w-4 group-hover:border-primary" />
+          <div class="pointer-events-none absolute bottom-2 left-2 z-20 h-3 w-3 border-b-[1.5px] border-l-[1.5px] border-primary/40 transition-all duration-300 group-hover:h-4 group-hover:w-4 group-hover:border-primary" />
+          <div class="pointer-events-none absolute right-2 bottom-2 z-20 h-3 w-3 border-r-[1.5px] border-b-[1.5px] border-primary/40 transition-all duration-300 group-hover:h-4 group-hover:w-4 group-hover:border-primary" />
 
-            <div class="relative aspect-[16/9] w-full lg:w-3/5 overflow-hidden border-b lg:border-b-0 lg:border-r border-border bg-muted/30 before:pointer-events-none before:absolute before:inset-0 before:z-10 before:bg-[linear-gradient(105deg,transparent_40%,oklch(var(--primary)/15%)_50%,transparent_60%)] before:bg-size-[200%_100%] before:transition-all before:duration-700 hover:before:bg-position-[-100%_0] after:pointer-events-none after:absolute after:inset-0 after:bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(0,0,0,0.04)_2px,rgba(0,0,0,0.04)_4px)] after:opacity-60 after:transition-opacity after:duration-400 group-hover:after:opacity-0">
-              <img
-                src={primaryFeatured.thumbnail}
-                alt={primaryFeatured.title}
-                class="h-full w-full object-cover grayscale-[10%] transition-all duration-700 ease-out group-hover:scale-105 group-hover:grayscale-0"
-                loading="eager"
-              />
-              <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/70 via-transparent to-transparent lg:bg-gradient-to-r lg:from-transparent lg:to-background/40" />
-              <div class="absolute top-3 left-3 z-20">
-                <span class="inline-flex items-center gap-1.5 border border-primary/40 bg-background/90 px-2 py-0.5 font-mono text-[9px] font-bold text-primary uppercase shadow-xs backdrop-blur-md">
-                  <span class="h-1.5 w-1.5 rounded-full bg-primary shadow-[0_0_6px_oklch(var(--primary))]" />
-                  {primaryFeatured.category}
+          {/* Image */}
+          <div class="relative aspect-[16/9] w-full overflow-hidden border-border bg-muted/30 before:pointer-events-none before:absolute before:inset-0 before:z-10 before:bg-[linear-gradient(105deg,transparent_40%,oklch(var(--primary)/15%)_50%,transparent_60%)] before:bg-[length:200%_100%] before:transition-all before:duration-700 after:pointer-events-none after:absolute after:inset-0 after:bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(0,0,0,0.04)_2px,rgba(0,0,0,0.04)_4px)] after:opacity-60 hover:before:bg-[-100%_0] lg:w-3/5 lg:border-r">
+            <img
+              src={primaryFeatured.thumbnail}
+              alt={primaryFeatured.title}
+              class="h-full w-full object-cover grayscale-[15%] transition-all duration-700 ease-out group-hover:scale-105 group-hover:grayscale-0"
+              loading="eager"
+            />
+            <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent lg:bg-gradient-to-r lg:from-transparent lg:to-background/50" />
+
+            <div class="absolute top-4 left-4 z-20 flex items-center gap-2">
+              <span class="inline-flex items-center gap-1.5 border border-primary/50 bg-background/90 px-2.5 py-1 font-mono text-[10px] font-bold text-primary uppercase shadow-xs backdrop-blur-md">
+                <span class="h-1.5 w-1.5 animate-pulse rounded-full bg-primary shadow-[0_0_6px_oklch(var(--primary))]" />
+                ⚡ LEAD STORY
+              </span>
+              <span
+                style={
+                  primaryFeatured.categoryColor && primaryFeatured.categoryColor.startsWith("#")
+                    ? {
+                        borderColor: `${primaryFeatured.categoryColor}60`,
+                        backgroundColor: `${primaryFeatured.categoryColor}18`,
+                        color: primaryFeatured.categoryColor,
+                      }
+                    : undefined
+                }
+                class="inline-flex items-center border border-border bg-background/80 px-2 py-1 font-mono text-[10px] font-semibold text-muted-foreground uppercase backdrop-blur-md"
+              >
+                {primaryFeatured.category}
+              </span>
+            </div>
+          </div>
+
+          {/* Details */}
+          <div class="flex flex-1 flex-col justify-between p-6 sm:p-8 lg:p-10">
+            <div>
+              <div class="flex items-center justify-between gap-2 font-mono text-xs tracking-wider text-muted-foreground uppercase">
+                <div class="flex items-center gap-1.5">
+                  <span class="text-primary/70">//</span>
+                  <span>{primaryFeatured.date}</span>
+                </div>
+                {primaryFeatured.readTime && (
+                  <span class="flex items-center gap-1 border border-border/80 bg-muted/30 px-2 py-0.5 text-[10px]">
+                    <HugeiconsIcon
+                      icon={Clock01Icon}
+                      className="size-3 text-primary/70"
+                    />
+                    {primaryFeatured.readTime}
+                  </span>
+                )}
+              </div>
+
+              <h3 class="mt-4 text-2xl font-black tracking-tight text-foreground transition-colors duration-200 group-hover:text-primary sm:text-3xl lg:text-4xl">
+                <a
+                  href={`/blog/${primaryFeatured.slug}`}
+                  class="focus:outline-none"
+                >
+                  <span class="absolute inset-0 z-10" aria-hidden="true" />
+                  {primaryFeatured.title}
+                </a>
+              </h3>
+
+              <p class="mt-4 text-sm leading-relaxed text-muted-foreground sm:text-base">
+                {primaryFeatured.summary}
+              </p>
+
+              {primaryFeatured.tags && primaryFeatured.tags.length > 0 && (
+                <div class="mt-4 flex flex-wrap gap-1.5">
+                  {primaryFeatured.tags.map((tag) => (
+                    <span class="inline-flex items-center border border-border/80 bg-muted/20 px-2 py-0.5 font-mono text-[10px] font-medium text-muted-foreground transition-colors group-hover:border-primary/40 group-hover:text-foreground">
+                      #{tag}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Author & Stats Footer */}
+            <div class="mt-8 flex flex-wrap items-center justify-between gap-4 border-t border-border/50 pt-4">
+              <div class="flex items-center gap-3">
+                {primaryFeatured.author.avatar ? (
+                  <img
+                    src={primaryFeatured.author.avatar}
+                    alt={primaryFeatured.author.name}
+                    class="h-7 w-7 rounded-full border border-primary/40 object-cover shadow-[0_0_6px_oklch(var(--primary)/20%)]"
+                  />
+                ) : (
+                  <div class="flex h-7 w-7 items-center justify-center rounded-full border border-primary/40 bg-primary/10 font-mono text-xs font-bold text-primary">
+                    {primaryFeatured.author.name.charAt(0)}
+                  </div>
+                )}
+                <span class="font-mono text-xs font-semibold text-foreground transition-colors group-hover:text-primary sm:text-sm">
+                  {primaryFeatured.author.name}
+                </span>
+              </div>
+
+              <div class="flex items-center gap-3 font-mono text-xs">
+                {primaryFeatured.views && (
+                  <span
+                    class="inline-flex items-center gap-1 text-muted-foreground transition-colors group-hover:text-foreground"
+                    title={`${primaryFeatured.views} views`}
+                  >
+                    <HugeiconsIcon
+                      icon={ViewIcon}
+                      className="size-3.5 text-primary/70"
+                    />
+                    <span>{formatViewsCount(primaryFeatured.views)}</span>
+                  </span>
+                )}
+                {primaryFeatured.likesCount !== undefined && (
+                  <span
+                    class="inline-flex items-center gap-1 text-rose-400/80 transition-colors group-hover:text-rose-400"
+                    title={`${primaryFeatured.likesCount} likes`}
+                  >
+                    <HugeiconsIcon
+                      icon={FavouriteIcon}
+                      className="size-3.5 fill-rose-400/30 text-rose-400"
+                    />
+                    <span>{primaryFeatured.likesCount}</span>
+                  </span>
+                )}
+                {primaryFeatured.commentsCount !== undefined && (
+                  <span
+                    class="inline-flex items-center gap-1 text-primary/80 transition-colors group-hover:text-primary"
+                    title={`${primaryFeatured.commentsCount} comments`}
+                  >
+                    <HugeiconsIcon icon={Comment01Icon} className="size-3.5" />
+                    <span>{primaryFeatured.commentsCount}</span>
+                  </span>
+                )}
+                <span class="text-primary transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
+                  ↗
                 </span>
               </div>
             </div>
-            <div class="flex flex-1 flex-col justify-between p-6 sm:p-8 lg:p-10">
-              <div>
+          </div>
+        </article>
+      ) : (
+        /* CASE 2: Multiple Featured Posts (1 Hero Story + Right Stack) */
+        <div class="grid grid-cols-1 items-stretch gap-6 lg:grid-cols-12">
+          {/* Left Column: Primary Featured Story */}
+          <article class="group relative flex flex-col justify-between overflow-hidden border border-border bg-background transition-all duration-300 hover:border-primary/50 hover:bg-card/40 hover:shadow-[0_0_0_1px_oklch(var(--primary)/20%),0_8px_32px_-8px_oklch(var(--primary)/12%)] lg:col-span-7">
+            {/* Corner brackets */}
+            <div class="pointer-events-none absolute top-2 left-2 z-20 h-3 w-3 border-t-[1.5px] border-l-[1.5px] border-primary/40 transition-all duration-300 group-hover:h-4 group-hover:w-4 group-hover:border-primary" />
+            <div class="pointer-events-none absolute top-2 right-2 z-20 h-3 w-3 border-t-[1.5px] border-r-[1.5px] border-primary/40 transition-all duration-300 group-hover:h-4 group-hover:w-4 group-hover:border-primary" />
+            <div class="pointer-events-none absolute bottom-2 left-2 z-20 h-3 w-3 border-b-[1.5px] border-l-[1.5px] border-primary/40 transition-all duration-300 group-hover:h-4 group-hover:w-4 group-hover:border-primary" />
+            <div class="pointer-events-none absolute right-2 bottom-2 z-20 h-3 w-3 border-r-[1.5px] border-b-[1.5px] border-primary/40 transition-all duration-300 group-hover:h-4 group-hover:w-4 group-hover:border-primary" />
+
+            <div>
+              {/* Thumbnail */}
+              <div class="relative aspect-[16/9] w-full overflow-hidden border-b border-border bg-muted/30 before:pointer-events-none before:absolute before:inset-0 before:z-10 before:bg-[linear-gradient(105deg,transparent_40%,oklch(var(--primary)/15%)_50%,transparent_60%)] before:bg-[length:200%_100%] before:transition-all before:duration-700 after:pointer-events-none after:absolute after:inset-0 after:bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(0,0,0,0.04)_2px,rgba(0,0,0,0.04)_4px)] after:opacity-60 hover:before:bg-[-100%_0]">
+                <img
+                  src={primaryFeatured.thumbnail}
+                  alt={primaryFeatured.title}
+                  class="h-full w-full object-cover grayscale-[15%] transition-all duration-700 ease-out group-hover:scale-105 group-hover:grayscale-0"
+                  loading="eager"
+                />
+                <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
+                <div class="absolute top-3 left-3 z-20 flex items-center gap-2">
+                  <span class="inline-flex items-center gap-1.5 border border-primary/50 bg-background/90 px-2 py-0.5 font-mono text-[9px] font-bold text-primary uppercase shadow-xs backdrop-blur-md">
+                    <span class="h-1.5 w-1.5 animate-pulse rounded-full bg-primary shadow-[0_0_6px_oklch(var(--primary))]" />
+                    ⚡ LEAD STORY
+                  </span>
+                  <span
+                    style={
+                      primaryFeatured.categoryColor && primaryFeatured.categoryColor.startsWith("#")
+                        ? {
+                            borderColor: `${primaryFeatured.categoryColor}60`,
+                            backgroundColor: `${primaryFeatured.categoryColor}18`,
+                            color: primaryFeatured.categoryColor,
+                          }
+                        : undefined
+                    }
+                    class="inline-flex items-center border border-border bg-background/80 px-2 py-0.5 font-mono text-[9px] font-semibold text-muted-foreground uppercase backdrop-blur-md"
+                  >
+                    {primaryFeatured.category}
+                  </span>
+                </div>
+              </div>
+
+              {/* Content */}
+              <div class="p-6 sm:p-7">
                 <div class="flex items-center justify-between gap-2 font-mono text-xs tracking-wider text-muted-foreground uppercase">
                   <div class="flex items-center gap-1.5">
                     <span class="text-primary/70">//</span>
                     <span>{primaryFeatured.date}</span>
                   </div>
                   {primaryFeatured.readTime && (
-                    <span class="rounded-xs border border-border/80 bg-muted/40 px-1.5 py-0.5 font-mono text-[9px] text-muted-foreground">
+                    <span class="flex items-center gap-1 border border-border/80 bg-muted/30 px-2 py-0.5 text-[9px]">
+                      <HugeiconsIcon
+                        icon={Clock01Icon}
+                        className="size-2.5 text-primary/70"
+                      />
                       {primaryFeatured.readTime}
                     </span>
                   )}
                 </div>
 
-                <h3 class="mt-4 text-2xl font-bold tracking-tight text-foreground transition-colors duration-200 group-hover:text-primary sm:text-3xl lg:text-4xl">
-                  <a href={`/blog/${primaryFeatured.slug}`} class="focus:outline-none">
+                <h3 class="mt-3 text-xl font-black tracking-tight text-foreground transition-colors duration-200 group-hover:text-primary sm:text-2xl lg:text-3xl">
+                  <a
+                    href={`/blog/${primaryFeatured.slug}`}
+                    class="focus:outline-none"
+                  >
                     <span class="absolute inset-0 z-10" aria-hidden="true" />
                     {primaryFeatured.title}
                   </a>
                 </h3>
 
-                <p class="mt-4 text-sm leading-relaxed text-muted-foreground sm:text-base">
+                <p class="mt-3 line-clamp-3 text-sm leading-relaxed text-muted-foreground">
                   {primaryFeatured.summary}
                 </p>
 
                 {primaryFeatured.tags && primaryFeatured.tags.length > 0 && (
-                  <div class="mt-4 flex flex-wrap gap-1.5">
-                    {primaryFeatured.tags.map((tag) => (
-                      <span class="inline-flex items-center border border-border/80 bg-muted/30 px-2 py-0.5 font-mono text-[10px] font-medium text-muted-foreground transition-colors group-hover:border-primary/40 group-hover:text-foreground">
+                  <div class="mt-3.5 flex flex-wrap gap-1">
+                    {primaryFeatured.tags.slice(0, 3).map((tag) => (
+                      <span class="inline-flex items-center border border-border/80 bg-muted/20 px-1.5 py-0.5 font-mono text-[9px] font-medium text-muted-foreground transition-colors group-hover:border-primary/40 group-hover:text-foreground">
                         #{tag}
                       </span>
                     ))}
                   </div>
                 )}
               </div>
+            </div>
 
-              {/* Author & Stats Footer */}
-              <div class="mt-8 flex flex-wrap items-center justify-between gap-4 border-t border-border/50 pt-4">
-                <div class="flex items-center gap-3">
+            {/* Author & Stats at bottom */}
+            <div class="p-6 pt-0 sm:p-7 sm:pt-0">
+              <div class="flex flex-wrap items-center justify-between gap-3 border-t border-border/50 pt-4">
+                <div class="flex items-center gap-2.5">
                   {primaryFeatured.author.avatar ? (
                     <img
                       src={primaryFeatured.author.avatar}
                       alt={primaryFeatured.author.name}
-                      class="h-7 w-7 rounded-full border border-primary/40 object-cover shadow-[0_0_6px_oklch(var(--primary)/20%)]"
+                      class="h-6 w-6 rounded-full border border-primary/40 object-cover shadow-[0_0_6px_oklch(var(--primary)/20%)]"
                     />
                   ) : (
-                    <div class="flex h-7 w-7 items-center justify-center rounded-full border border-primary/40 bg-primary/10 font-mono text-xs font-bold text-primary">
+                    <div class="flex h-6 w-6 items-center justify-center rounded-full border border-primary/40 bg-primary/10 font-mono text-[10px] font-bold text-primary">
                       {primaryFeatured.author.name.charAt(0)}
                     </div>
                   )}
-                  <span class="font-mono text-xs sm:text-sm font-semibold text-foreground transition-colors group-hover:text-primary">
+                  <span class="font-mono text-xs font-semibold text-foreground transition-colors group-hover:text-primary sm:text-sm">
                     {primaryFeatured.author.name}
                   </span>
                 </div>
 
                 <div class="flex items-center gap-3 font-mono text-xs">
                   {primaryFeatured.views && (
-                    <span class="inline-flex items-center gap-1 text-muted-foreground transition-colors group-hover:text-foreground" title={`${primaryFeatured.views} views`}>
-                      <HugeiconsIcon icon={ViewIcon} className="size-3.5 text-primary/70" />
+                    <span
+                      class="inline-flex items-center gap-1 text-muted-foreground transition-colors group-hover:text-foreground"
+                      title={`${primaryFeatured.views} views`}
+                    >
+                      <HugeiconsIcon
+                        icon={ViewIcon}
+                        className="size-3.5 text-primary/70"
+                      />
                       <span>{formatViewsCount(primaryFeatured.views)}</span>
                     </span>
                   )}
                   {primaryFeatured.likesCount !== undefined && (
-                    <span class="inline-flex items-center gap-1 text-rose-400/80 transition-colors group-hover:text-rose-400" title={`${primaryFeatured.likesCount} likes`}>
-                      <HugeiconsIcon icon={FavouriteIcon} className="size-3.5 fill-rose-400/30 text-rose-400" />
+                    <span
+                      class="inline-flex items-center gap-1 text-rose-400/80 transition-colors group-hover:text-rose-400"
+                      title={`${primaryFeatured.likesCount} likes`}
+                    >
+                      <HugeiconsIcon
+                        icon={FavouriteIcon}
+                        className="size-3.5 fill-rose-400/30 text-rose-400"
+                      />
                       <span>{primaryFeatured.likesCount}</span>
                     </span>
                   )}
                   {primaryFeatured.commentsCount !== undefined && (
-                    <span class="inline-flex items-center gap-1 text-primary/80 transition-colors group-hover:text-primary" title={`${primaryFeatured.commentsCount} comments`}>
-                      <HugeiconsIcon icon={Comment01Icon} className="size-3.5" />
+                    <span
+                      class="inline-flex items-center gap-1 text-primary/80 transition-colors group-hover:text-primary"
+                      title={`${primaryFeatured.commentsCount} comments`}
+                    >
+                      <HugeiconsIcon
+                        icon={Comment01Icon}
+                        className="size-3.5"
+                      />
                       <span>{primaryFeatured.commentsCount}</span>
                     </span>
                   )}
@@ -138,223 +334,131 @@ const secondaryFeatured = featuredPosts.slice(1, 4)
               </div>
             </div>
           </article>
-        ) : (
-          /* 2-Column Split: Left (Primary) + Right (3 Stacked Rows) */
-          <div class="grid grid-cols-1 lg:grid-cols-12 items-stretch">
-            {/* Left Column: Primary Featured Post */}
-            <article class="group relative flex flex-col justify-between lg:col-span-6 xl:col-span-6 overflow-hidden transition-all duration-300 hover:bg-card/90 hover:shadow-[inset_0_0_0_1px_oklch(var(--primary)/35%)]">
 
-              <div>
-                {/* Large landscape thumbnail (16:9) with scanline and shimmer */}
-                <div class="relative aspect-[16/9] w-full overflow-hidden border-b border-border bg-muted/30 before:pointer-events-none before:absolute before:inset-0 before:z-10 before:bg-[linear-gradient(105deg,transparent_40%,oklch(var(--primary)/15%)_50%,transparent_60%)] before:bg-size-[200%_100%] before:transition-all before:duration-700 hover:before:bg-position-[-100%_0] after:pointer-events-none after:absolute after:inset-0 after:bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(0,0,0,0.04)_2px,rgba(0,0,0,0.04)_4px)] after:opacity-60 after:transition-opacity after:duration-400 group-hover:after:opacity-0">
+          {/* Right Column: Stack of Secondary Featured Posts */}
+          <div class="flex flex-col gap-4 lg:col-span-5">
+            {secondaryFeatured.map((post, idx) => (
+              <article class="group relative flex flex-1 flex-col items-stretch overflow-hidden border border-border bg-background transition-all duration-300 hover:border-primary/50 hover:bg-card/40 hover:shadow-[0_0_0_1px_oklch(var(--primary)/15%)] sm:flex-row">
+                {/* Corner accent marker */}
+                <span class="pointer-events-none absolute top-1 right-2 font-mono text-[10px] text-muted-foreground/40 transition-colors group-hover:text-primary/70">
+                  {String(idx + 2).padStart(2, "0")}
+                </span>
+
+                {/* 16:9 Thumbnail on Left */}
+                <div class="relative aspect-[16/9] w-full shrink-0 overflow-hidden border-b border-border bg-muted/30 before:pointer-events-none before:absolute before:inset-0 before:z-10 before:bg-[linear-gradient(105deg,transparent_40%,oklch(var(--primary)/15%)_50%,transparent_60%)] before:bg-[length:200%_100%] before:transition-all before:duration-700 after:pointer-events-none after:absolute after:inset-0 after:bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(0,0,0,0.04)_2px,rgba(0,0,0,0.04)_4px)] after:opacity-60 hover:before:bg-[-100%_0] sm:w-[140px] sm:border-r sm:border-b-0 md:w-[160px]">
                   <img
-                    src={primaryFeatured.thumbnail}
-                    alt={primaryFeatured.title}
-                    class="h-full w-full object-cover grayscale-[10%] transition-all duration-700 ease-out group-hover:scale-105 group-hover:grayscale-0"
-                    loading="eager"
+                    src={post.thumbnail}
+                    alt={post.title}
+                    class="h-full w-full object-cover grayscale-[15%] transition-all duration-500 ease-out group-hover:scale-105 group-hover:grayscale-0"
+                    loading="lazy"
                   />
-                  <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/70 via-transparent to-transparent" />
-                  <div class="absolute top-3 left-3 z-20">
-                    <span class="inline-flex items-center gap-1.5 border border-primary/40 bg-background/90 px-2 py-0.5 font-mono text-[9px] font-bold text-primary uppercase shadow-xs backdrop-blur-md">
-                      <span class="h-1.5 w-1.5 rounded-full bg-primary shadow-[0_0_6px_oklch(var(--primary))]" />
-                      {primaryFeatured.category}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Primary Content Details */}
-                <div class="p-6 sm:p-8">
-                  <div class="flex items-center justify-between gap-2 font-mono text-xs tracking-wider text-muted-foreground uppercase">
-                    <div class="flex items-center gap-1.5">
-                      <span class="text-primary/70">//</span>
-                      <span>{primaryFeatured.date}</span>
-                    </div>
-                    {primaryFeatured.readTime && (
-                      <span class="rounded-xs border border-border/80 bg-muted/40 px-1.5 py-0.5 font-mono text-[9px] text-muted-foreground">
-                        {primaryFeatured.readTime}
-                      </span>
-                    )}
-                  </div>
-
-                  <h3 class="mt-3 text-xl font-bold tracking-tight text-foreground transition-colors duration-200 group-hover:text-primary sm:text-2xl lg:text-3xl">
-                    <a href={`/blog/${primaryFeatured.slug}`} class="focus:outline-none">
-                      <span class="absolute inset-0 z-10" aria-hidden="true" />
-                      {primaryFeatured.title}
-                    </a>
-                  </h3>
-
-                  <p class="mt-3 text-sm leading-relaxed text-muted-foreground line-clamp-3">
-                    {primaryFeatured.summary}
-                  </p>
-
-                  {primaryFeatured.tags && primaryFeatured.tags.length > 0 && (
-                    <div class="mt-3.5 flex flex-wrap gap-1">
-                      {primaryFeatured.tags.slice(0, 3).map((tag) => (
-                        <span class="inline-flex items-center border border-border/80 bg-muted/30 px-1.5 py-0.5 font-mono text-[9px] font-medium text-muted-foreground transition-colors group-hover:border-primary/40 group-hover:text-foreground">
-                          #{tag}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Author & Stats at bottom */}
-              <div class="p-6 pt-0 sm:p-8 sm:pt-0">
-                <div class="flex flex-wrap items-center justify-between gap-3 border-t border-border/50 pt-4">
-                  <div class="flex items-center gap-3">
-                    {primaryFeatured.author.avatar ? (
-                      <img
-                        src={primaryFeatured.author.avatar}
-                        alt={primaryFeatured.author.name}
-                        class="h-6 w-6 rounded-full border border-primary/40 object-cover shadow-[0_0_6px_oklch(var(--primary)/20%)]"
+                  <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/70 via-transparent to-transparent sm:bg-gradient-to-r sm:from-transparent sm:to-background/40" />
+                  <div class="absolute bottom-2 left-2 z-20">
+                    <span
+                      style={
+                        post.categoryColor && post.categoryColor.startsWith("#")
+                          ? {
+                              borderColor: `${post.categoryColor}60`,
+                              backgroundColor: `${post.categoryColor}18`,
+                              color: post.categoryColor,
+                            }
+                          : undefined
+                      }
+                      class="inline-flex items-center gap-1 border border-primary/40 bg-background/90 px-1.5 py-0.5 font-mono text-[9px] font-semibold text-primary uppercase shadow-xs backdrop-blur-md"
+                    >
+                      <span
+                        style={
+                          post.categoryColor && post.categoryColor.startsWith("#")
+                            ? {
+                                backgroundColor: post.categoryColor,
+                                boxShadow: `0 0 4px ${post.categoryColor}`,
+                              }
+                            : undefined
+                        }
+                        class="h-1 w-1 rounded-full bg-primary shadow-[0_0_4px_oklch(var(--primary))]"
                       />
-                    ) : (
-                      <div class="flex h-6 w-6 items-center justify-center rounded-full border border-primary/40 bg-primary/10 font-mono text-[10px] font-bold text-primary">
-                        {primaryFeatured.author.name.charAt(0)}
-                      </div>
-                    )}
-                    <span class="font-mono text-xs sm:text-sm font-semibold text-foreground transition-colors group-hover:text-primary">
-                      {primaryFeatured.author.name}
-                    </span>
-                  </div>
-
-                  <div class="flex items-center gap-3 font-mono text-xs">
-                    {primaryFeatured.views && (
-                      <span class="inline-flex items-center gap-1 text-muted-foreground transition-colors group-hover:text-foreground" title={`${primaryFeatured.views} views`}>
-                        <HugeiconsIcon icon={ViewIcon} className="size-3.5 text-primary/70" />
-                        <span>{formatViewsCount(primaryFeatured.views)}</span>
-                      </span>
-                    )}
-                    {primaryFeatured.likesCount !== undefined && (
-                      <span class="inline-flex items-center gap-1 text-rose-400/80 transition-colors group-hover:text-rose-400" title={`${primaryFeatured.likesCount} likes`}>
-                        <HugeiconsIcon icon={FavouriteIcon} className="size-3.5 fill-rose-400/30 text-rose-400" />
-                        <span>{primaryFeatured.likesCount}</span>
-                      </span>
-                    )}
-                    {primaryFeatured.commentsCount !== undefined && (
-                      <span class="inline-flex items-center gap-1 text-primary/80 transition-colors group-hover:text-primary" title={`${primaryFeatured.commentsCount} comments`}>
-                        <HugeiconsIcon icon={Comment01Icon} className="size-3.5" />
-                        <span>{primaryFeatured.commentsCount}</span>
-                      </span>
-                    )}
-                    <span class="text-primary transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
-                      ↗
+                      {post.category}
                     </span>
                   </div>
                 </div>
-              </div>
-            </article>
 
-            {/* Right Column: Stacked Secondary Featured Posts */}
-            <div class="flex flex-col lg:col-span-6 xl:col-span-6 border-t lg:border-t-0 lg:border-l border-border divide-y divide-border">
-              {secondaryFeatured.map((post) => (
-                <article class="group relative flex flex-1 flex-col sm:flex-row items-stretch overflow-hidden transition-all duration-300 hover:bg-card/90 hover:shadow-[inset_0_0_0_1px_oklch(var(--primary)/35%)]">
-
-                  {/* 16:9 Thumbnail on Left with scanline and shimmer */}
-                  <div class="relative aspect-[16/9] w-full sm:w-[150px] md:w-[170px] lg:w-[190px] shrink-0 border-b sm:border-b-0 sm:border-r border-border overflow-hidden bg-muted/30 before:pointer-events-none before:absolute before:inset-0 before:z-10 before:bg-[linear-gradient(105deg,transparent_40%,oklch(var(--primary)/15%)_50%,transparent_60%)] before:bg-size-[200%_100%] before:transition-all before:duration-700 hover:before:bg-position-[-100%_0] after:pointer-events-none after:absolute after:inset-0 after:bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(0,0,0,0.04)_2px,rgba(0,0,0,0.04)_4px)] after:opacity-60 after:transition-opacity after:duration-400 group-hover:after:opacity-0">
-                    <img
-                      src={post.thumbnail}
-                      alt={post.title}
-                      class="h-full w-full object-cover grayscale-[10%] transition-all duration-500 ease-out group-hover:scale-105 group-hover:grayscale-0"
-                      loading="lazy"
-                    />
-                    <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/70 via-transparent to-transparent sm:bg-gradient-to-r sm:from-transparent sm:to-background/30" />
-                    <div class="absolute top-2 left-2 z-20">
-                      <span class="inline-flex items-center gap-1 border border-primary/40 bg-background/90 px-1.5 py-0.5 font-mono text-[9px] font-semibold text-primary uppercase shadow-xs backdrop-blur-md">
-                        <span class="h-1 w-1 rounded-full bg-primary shadow-[0_0_4px_oklch(var(--primary))]" />
-                        {post.category}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Details on Right */}
-                  <div class="flex flex-1 flex-col justify-between p-4 sm:p-5 min-w-0">
-                    <div>
-                      <div class="flex items-center justify-between gap-2 font-mono text-[10px] sm:text-[11px] tracking-wider text-muted-foreground uppercase">
-                        <div class="flex items-center min-w-0 truncate gap-1">
-                          <span class="text-primary/70">//</span>
-                          <span class="truncate">{post.date}</span>
-                        </div>
-                        {post.readTime && (
-                          <span class="shrink-0 rounded-xs border border-border/80 bg-muted/40 px-1.5 py-0.5 font-mono text-[9px] text-muted-foreground">
-                            {post.readTime}
-                          </span>
-                        )}
+                {/* Details on Right */}
+                <div class="flex min-w-0 flex-1 flex-col justify-between p-4">
+                  <div>
+                    <div class="flex items-center justify-between gap-2 font-mono text-[10px] tracking-wider text-muted-foreground uppercase">
+                      <div class="flex min-w-0 items-center gap-1 truncate">
+                        <span class="text-primary/70">//</span>
+                        <span class="truncate">{post.date}</span>
                       </div>
-
-                      <h4 class="mt-1.5 text-sm sm:text-base font-bold tracking-tight text-foreground transition-colors duration-200 group-hover:text-primary line-clamp-2 leading-snug">
-                        <a href={`/blog/${post.slug}`} class="focus:outline-none">
-                          <span class="absolute inset-0 z-10" aria-hidden="true" />
-                          {post.title}
-                        </a>
-                      </h4>
-
-                      <p class="mt-1 text-xs leading-relaxed text-muted-foreground line-clamp-2">
-                        {post.summary}
-                      </p>
-
-                      {post.tags && post.tags.length > 0 && (
-                        <div class="mt-2 flex flex-wrap gap-1">
-                          {post.tags.slice(0, 2).map((tag) => (
-                            <span class="inline-flex items-center border border-border/80 bg-muted/30 px-1.5 py-0.5 font-mono text-[9px] font-medium text-muted-foreground transition-colors group-hover:border-primary/40 group-hover:text-foreground">
-                              #{tag}
-                            </span>
-                          ))}
-                        </div>
+                      {post.readTime && (
+                        <span class="flex shrink-0 items-center gap-0.5 border border-border/80 bg-muted/30 px-1.5 py-0.5 text-[9px]">
+                          <HugeiconsIcon
+                            icon={Clock01Icon}
+                            className="size-2 text-primary/70"
+                          />
+                          {post.readTime}
+                        </span>
                       )}
                     </div>
 
-                    {/* Author & Stats Footer */}
-                    <div class="mt-3 flex items-center justify-between gap-2 border-t border-border/50 pt-2">
-                      <div class="flex min-w-0 items-center gap-2">
-                        {post.author.avatar ? (
-                          <img
-                            src={post.author.avatar}
-                            alt={post.author.name}
-                            class="h-4.5 w-4.5 rounded-full border border-primary/40 object-cover shadow-[0_0_4px_oklch(var(--primary)/20%)]"
-                          />
-                        ) : (
-                          <div class="flex h-4.5 w-4.5 items-center justify-center rounded-full border border-primary/40 bg-primary/10 font-mono text-[9px] font-bold text-primary">
-                            {post.author.name.charAt(0)}
-                          </div>
-                        )}
-                        <span class="font-mono text-xs font-semibold text-foreground transition-colors group-hover:text-primary truncate">
-                          {post.author.name}
-                        </span>
-                      </div>
+                    <h4 class="mt-1.5 line-clamp-2 text-sm leading-snug font-bold tracking-tight text-foreground transition-colors duration-200 group-hover:text-primary sm:text-base">
+                      <a href={`/blog/${post.slug}`} class="focus:outline-none">
+                        <span
+                          class="absolute inset-0 z-10"
+                          aria-hidden="true"
+                        />
+                        {post.title}
+                      </a>
+                    </h4>
 
-                      <div class="flex items-center gap-2 font-mono text-[10px]">
-                        {post.views && (
-                          <span class="inline-flex items-center gap-1 text-muted-foreground transition-colors group-hover:text-foreground" title={`${post.views} views`}>
-                            <HugeiconsIcon icon={ViewIcon} className="size-3 text-primary/70" />
-                            <span>{formatViewsCount(post.views)}</span>
-                          </span>
-                        )}
-                        {post.likesCount !== undefined && (
-                          <span class="inline-flex items-center gap-1 text-rose-400/80 transition-colors group-hover:text-rose-400" title={`${post.likesCount} likes`}>
-                            <HugeiconsIcon icon={FavouriteIcon} className="size-3 fill-rose-400/30 text-rose-400" />
-                            <span>{post.likesCount}</span>
-                          </span>
-                        )}
-                        {post.commentsCount !== undefined && (
-                          <span class="inline-flex items-center gap-1 text-primary/80 transition-colors group-hover:text-primary" title={`${post.commentsCount} comments`}>
-                            <HugeiconsIcon icon={Comment01Icon} className="size-3" />
-                            <span>{post.commentsCount}</span>
-                          </span>
-                        )}
-                        <span class="text-primary transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
-                          ↗
+                    <p class="mt-1 line-clamp-2 text-xs leading-relaxed text-muted-foreground">
+                      {post.summary}
+                    </p>
+                  </div>
+
+                  {/* Author & Stats Footer */}
+                  <div class="mt-3 flex items-center justify-between gap-2 border-t border-border/50 pt-2">
+                    <div class="flex min-w-0 items-center gap-1.5">
+                      {post.author.avatar ? (
+                        <img
+                          src={post.author.avatar}
+                          alt={post.author.name}
+                          class="h-4.5 w-4.5 rounded-full border border-primary/40 object-cover"
+                        />
+                      ) : (
+                        <div class="flex h-4.5 w-4.5 items-center justify-center rounded-full border border-primary/40 bg-primary/10 font-mono text-[9px] font-bold text-primary">
+                          {post.author.name.charAt(0)}
+                        </div>
+                      )}
+                      <span class="truncate font-mono text-xs font-semibold text-foreground transition-colors group-hover:text-primary">
+                        {post.author.name}
+                      </span>
+                    </div>
+
+                    <div class="flex items-center gap-2 font-mono text-[10px]">
+                      {post.views && (
+                        <span
+                          class="inline-flex items-center gap-1 text-muted-foreground transition-colors group-hover:text-foreground"
+                          title={`${post.views} views`}
+                        >
+                          <HugeiconsIcon
+                            icon={ViewIcon}
+                            className="size-3 text-primary/70"
+                          />
+                          <span>{formatViewsCount(post.views)}</span>
                         </span>
-                      </div>
+                      )}
+                      <span class="text-primary transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
+                        ↗
+                      </span>
                     </div>
                   </div>
-                </article>
-              ))}
-            </div>
+                </div>
+              </article>
+            ))}
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </section>
   )
 }

@@ -18,32 +18,40 @@ interface Props {
 const { features } = Astro.props as Props
 ---
 
-<section class="space-y-6">
-  <CaseStudySectionTitle label="[ SEC_03 // KEY_FEATURES ]" />
+<section class="space-y-8">
+  <CaseStudySectionTitle label="[ SEC_03 // CORE_CAPABILITIES_&_IMPLEMENTATION ]" />
 
-  <div class="space-y-8 px-5 md:px-6 lg:px-8">
+  <div class="space-y-8 px-4 sm:px-6 lg:px-8">
     {
       features.map((feature, index) => {
         return (
-          <article class="group overflow-hidden rounded-lg border border-border/70 bg-card/40 transition-colors duration-200 hover:border-border">
+          <article class="group relative overflow-hidden border border-border bg-card/50 transition-all duration-300 hover:border-primary/50 hover:bg-card/80 hover:shadow-[0_0_0_1px_oklch(var(--primary)/15%)]">
+            {/* Corner brackets */}
+            <div class="pointer-events-none absolute top-2 left-2 z-20 h-3 w-3 border-t-[1.5px] border-l-[1.5px] border-border transition-colors group-hover:border-primary" />
+            <div class="pointer-events-none absolute top-2 right-2 z-20 h-3 w-3 border-t-[1.5px] border-r-[1.5px] border-border transition-colors group-hover:border-primary" />
+            <div class="pointer-events-none absolute bottom-2 left-2 z-20 h-3 w-3 border-b-[1.5px] border-l-[1.5px] border-border transition-colors group-hover:border-primary" />
+            <div class="pointer-events-none absolute right-2 bottom-2 z-20 h-3 w-3 border-r-[1.5px] border-b-[1.5px] border-border transition-colors group-hover:border-primary" />
+
             <div class="grid lg:grid-cols-12 lg:items-stretch">
-              {/* Content Side */}
+              {/* Content Column */}
               <div class="flex flex-col justify-between gap-6 p-6 sm:p-8 lg:col-span-6">
                 <div class="space-y-4">
                   {/* Meta Header */}
-                  <div class="flex items-center gap-3">
-                    <span class="font-mono text-xs font-semibold text-primary">
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
-                    <span class="text-xs text-muted-foreground/40">•</span>
-                    <span class="font-mono text-xs tracking-wider text-muted-foreground uppercase">
-                      {feature.mediaLabel || feature.mediaType}
-                    </span>
+                  <div class="flex items-center justify-between border-b border-border/50 pb-3">
+                    <div class="flex items-center gap-2 font-mono text-xs">
+                      <span class="font-bold text-primary">
+                        FEATURE_{String(index + 1).padStart(2, "0")}
+                      </span>
+                      <span class="text-muted-foreground/40">•</span>
+                      <span class="text-muted-foreground tracking-wider uppercase">
+                        {feature.mediaLabel || feature.mediaType}
+                      </span>
+                    </div>
                   </div>
 
                   {/* Title & Description */}
                   <div class="space-y-2">
-                    <h3 class="text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+                    <h3 class="text-xl font-bold tracking-tight text-foreground transition-colors group-hover:text-primary sm:text-2xl">
                       {feature.title}
                     </h3>
                     <p class="text-sm leading-relaxed text-muted-foreground">
@@ -51,13 +59,13 @@ const { features } = Astro.props as Props
                     </p>
                   </div>
 
-                  {/* Highlights List */}
+                  {/* Highlights Checklist */}
                   {feature.highlights && feature.highlights.length > 0 && (
-                    <ul class="space-y-2 pt-1">
+                    <ul class="space-y-2 pt-2">
                       {feature.highlights.map((highlight) => (
                         <li class="flex items-start gap-2.5 text-xs text-muted-foreground">
-                          <span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary/70" />
-                          <span>{highlight}</span>
+                          <span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary shadow-[0_0_4px_oklch(var(--primary))]" />
+                          <span class="leading-relaxed">{highlight}</span>
                         </li>
                       ))}
                     </ul>
@@ -66,22 +74,23 @@ const { features } = Astro.props as Props
 
                 {/* Tech Tags */}
                 {feature.tags && feature.tags.length > 0 && (
-                  <div class="flex flex-wrap gap-2 pt-2">
+                  <div class="flex flex-wrap gap-1.5 border-t border-border/40 pt-4">
                     {feature.tags.map((tag) => (
-                      <span class="rounded-md border border-border/50 bg-muted/40 px-2.5 py-1 font-mono text-xs text-muted-foreground">
-                        {tag}
+                      <span class="border border-border/80 bg-muted/30 px-2 py-0.5 font-mono text-[10px] font-medium text-muted-foreground transition-colors group-hover:border-primary/40 group-hover:text-foreground">
+                        #{tag}
                       </span>
                     ))}
                   </div>
                 )}
               </div>
 
-              {/* Image Side */}
-              <div class="relative min-h-[260px] overflow-hidden bg-muted/20 lg:col-span-6">
+              {/* Image Viewport Column */}
+              <div class="relative min-h-[260px] overflow-hidden border-t border-border bg-muted/20 before:pointer-events-none before:absolute before:inset-0 before:z-10 before:bg-[linear-gradient(105deg,transparent_40%,oklch(var(--primary)/10%)_50%,transparent_60%)] before:bg-[length:200%_100%] after:pointer-events-none after:absolute after:inset-0 after:bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(0,0,0,0.04)_2px,rgba(0,0,0,0.04)_4px)] lg:col-span-6 lg:border-t-0 lg:border-l">
                 <img
                   src={feature.media}
                   alt={feature.mediaLabel || feature.title}
-                  class="h-full w-full object-cover object-top"
+                  class="h-full w-full object-cover object-top grayscale-[10%] transition-transform duration-700 group-hover:scale-105 group-hover:grayscale-0"
+                  loading="lazy"
                 />
               </div>
             </div>

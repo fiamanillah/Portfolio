@@ -1,0 +1,277 @@
+---
+import { Badge } from "@workspace/ui/components/badge"
+import { Button } from "@workspace/ui/components/button"
+import { Icon } from "astro-icon/components"
+import { HugeiconsIcon } from "@hugeicons/react"
+import {
+  ArrowUpRight01Icon,
+  BookOpen01Icon,
+  Github,
+  Globe02Icon,
+  Layers01Icon,
+} from "@hugeicons/core-free-icons"
+
+interface MetricItem {
+  value: string
+  label: string
+}
+
+interface CaseStudyCardProps {
+  id: string
+  slug: string
+  title: string
+  subtitle?: string
+  description: string
+  role: string
+  impact: string
+  tech: string[]
+  links: {
+    live?: string
+    github?: string
+    caseStudy: string
+  }
+  img: string
+  index: string
+  status: string
+  year: string
+  metrics?: MetricItem[]
+  highlights?: string[]
+}
+
+interface Props {
+  project: CaseStudyCardProps
+  viewMode?: "grid" | "list"
+}
+
+const { project } = Astro.props
+---
+
+<article
+  class="project-card group relative flex flex-col overflow-hidden border border-border bg-background transition-all duration-300 hover:border-primary/50 hover:bg-card/40 hover:shadow-[0_0_0_1px_oklch(var(--primary)/20%),0_8px_32px_-8px_oklch(var(--primary)/12%)] lg:grid lg:grid-cols-12 lg:items-stretch"
+  data-category="case-study"
+  data-title={project.title.toLowerCase()}
+  data-tech={project.tech.join(" ").toLowerCase()}
+>
+  {/* Corner Bracket Accents */}
+  <div
+    class="pointer-events-none absolute top-2 left-2 z-20 h-3 w-3 border-t-[1.5px] border-l-[1.5px] border-primary/40 transition-all duration-300 group-hover:h-5 group-hover:w-5 group-hover:border-primary"
+  >
+  </div>
+  <div
+    class="pointer-events-none absolute top-2 right-2 z-20 h-3 w-3 border-t-[1.5px] border-r-[1.5px] border-primary/40 transition-all duration-300 group-hover:h-5 group-hover:w-5 group-hover:border-primary"
+  >
+  </div>
+  <div
+    class="pointer-events-none absolute bottom-2 left-2 z-20 h-3 w-3 border-b-[1.5px] border-l-[1.5px] border-primary/40 transition-all duration-300 group-hover:h-5 group-hover:w-5 group-hover:border-primary"
+  >
+  </div>
+  <div
+    class="pointer-events-none absolute right-2 bottom-2 z-20 h-3 w-3 border-r-[1.5px] border-b-[1.5px] border-primary/40 transition-all duration-300 group-hover:h-5 group-hover:w-5 group-hover:border-primary"
+  >
+  </div>
+
+  {/* Media Preview Banner */}
+  <div
+    class="relative aspect-[16/10] w-full shrink-0 overflow-hidden border-b border-border bg-muted/30 before:pointer-events-none before:absolute before:inset-0 before:z-10 before:bg-[linear-gradient(105deg,transparent_40%,oklch(var(--primary)/15%)_50%,transparent_60%)] before:bg-[length:200%_100%] before:transition-all before:duration-700 after:pointer-events-none after:absolute after:inset-0 after:bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(0,0,0,0.04)_2px,rgba(0,0,0,0.04)_4px)] after:opacity-60 hover:before:bg-[-100%_0] lg:col-span-5 lg:h-full lg:aspect-auto lg:border-r lg:border-b-0"
+  >
+    <img
+      src={project.img}
+      alt={project.title}
+      class="h-full w-full object-cover grayscale-[15%] transition-all duration-700 ease-out group-hover:scale-105 group-hover:grayscale-0"
+      loading="lazy"
+    />
+    <div
+      class="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-transparent lg:bg-gradient-to-r lg:from-transparent lg:to-background/60"
+    >
+    </div>
+
+    {/* Floating Badges */}
+    <div class="absolute top-3.5 left-3.5 z-20 flex flex-wrap items-center gap-2">
+      <span
+        class="inline-flex items-center gap-1.5 border border-primary/50 bg-background/90 px-2.5 py-1 font-mono text-[10px] font-bold text-primary uppercase shadow-xs backdrop-blur-md"
+      >
+        <span
+          class="h-1.5 w-1.5 animate-pulse rounded-full bg-primary shadow-[0_0_6px_oklch(var(--primary))]"
+        ></span>
+        ⚡ DEEP DIVE #{project.index}
+      </span>
+      <span
+        class="inline-flex items-center border border-border bg-background/80 px-2 py-1 font-mono text-[10px] font-semibold text-muted-foreground uppercase backdrop-blur-md"
+      >
+        {project.year}
+      </span>
+    </div>
+
+    <div
+      class="absolute right-3.5 bottom-3.5 left-3.5 z-20 flex items-center justify-between font-mono text-xs"
+    >
+      <span
+        class="inline-flex items-center gap-1.5 rounded-sm bg-black/60 px-2 py-0.5 text-[10px] font-semibold tracking-wider text-white/90 uppercase backdrop-blur-md"
+      >
+        <HugeiconsIcon icon={Layers01Icon} className="size-3 text-primary" />
+        {project.role}
+      </span>
+      <span
+        class="rounded-full border border-emerald-500/30 bg-emerald-500/20 px-2.5 py-0.5 text-[10px] font-medium text-emerald-300 backdrop-blur-md"
+      >
+        {project.status}
+      </span>
+    </div>
+  </div>
+
+  {/* Content Area */}
+  <div class="flex flex-1 flex-col justify-between p-6 sm:p-7 lg:col-span-7 lg:p-8">
+    <div class="space-y-4">
+      {/* Title & Index Header */}
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <h2
+            class="text-xl font-bold tracking-tight text-foreground transition-colors duration-200 group-hover:text-primary sm:text-2xl"
+          >
+            <a href={project.links.caseStudy} class="focus:outline-none">
+              {project.title}
+            </a>
+          </h2>
+          {
+            project.subtitle && (
+              <p class="mt-1 font-mono text-xs font-semibold tracking-wide text-primary/90">
+                // {project.subtitle}
+              </p>
+            )
+          }
+        </div>
+        <span
+          class="font-mono text-xs font-bold tracking-widest text-muted-foreground/60"
+        >
+          SYS_{project.index}
+        </span>
+      </div>
+
+      <p class="text-xs leading-relaxed text-muted-foreground sm:text-sm">
+        {project.description}
+      </p>
+
+      {/* Impact summary callout */}
+      <div
+        class="flex items-start gap-2.5 rounded-r-md border-l-2 border-primary bg-primary/5 px-3.5 py-2.5 transition-colors group-hover:bg-primary/8"
+      >
+        <Icon
+          name="mdi:chart-line-variant"
+          class="mt-0.5 size-4 shrink-0 text-primary"
+        />
+        <p class="text-xs leading-snug font-medium text-foreground/90">
+          <span class="font-semibold text-primary">Architecture Impact:</span>{" "}
+          {project.impact}
+        </p>
+      </div>
+
+      {/* Production Telemetry Metrics Bar */}
+      {
+        project.metrics && project.metrics.length > 0 && (
+          <div class="grid grid-cols-3 gap-2 border-y border-border/60 py-2.5 font-mono text-xs">
+            {project.metrics.map((m) => (
+              <div class="flex flex-col items-start sm:flex-row sm:items-center sm:gap-1.5">
+                <span class="font-bold text-primary">{m.value}</span>
+                <span class="text-[10px] text-muted-foreground tracking-tight truncate">
+                  {m.label}
+                </span>
+              </div>
+            ))}
+          </div>
+        )
+      }
+
+      {/* Highlights checklist if available */}
+      {
+        project.highlights && project.highlights.length > 0 && (
+          <ul class="space-y-1.5 pt-0.5">
+            {project.highlights.slice(0, 2).map((h) => (
+              <li class="flex items-center gap-2 text-xs text-muted-foreground">
+                <span class="h-1.5 w-1.5 rounded-full bg-primary/70 shadow-[0_0_4px_oklch(var(--primary))]" />
+                <span class="line-clamp-1">{h}</span>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+
+      {/* Tech Stack Badges */}
+      <div class="flex flex-wrap items-center gap-1.5 pt-1">
+        {
+          project.tech.slice(0, 8).map((t) => (
+            <Badge
+              variant="outline"
+              className="font-mono text-[10px] px-2 py-0.5 transition-colors group-hover:border-primary/40"
+            >
+              {t}
+            </Badge>
+          ))
+        }
+        {
+          project.tech.length > 8 && (
+            <span class="pl-1 font-mono text-[10px] text-muted-foreground">
+              +{project.tech.length - 8} more
+            </span>
+          )
+        }
+      </div>
+    </div>
+
+    {/* Action Links Bar */}
+    <div
+      class="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-border/60 pt-4"
+    >
+      <div class="flex flex-wrap items-center gap-3">
+        <a href={project.links.caseStudy}>
+          <Button size="sm" className="gap-1.5 font-medium shadow-xs">
+            <HugeiconsIcon icon={BookOpen01Icon} className="size-3.5" />
+            Read Case Study
+            <HugeiconsIcon icon={ArrowUpRight01Icon} className="size-3.5" />
+          </Button>
+        </a>
+
+        {
+          project.links.live && project.links.live !== "#" && (
+            <a
+              href={project.links.live}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Button
+                variant="outline"
+                size="sm"
+                className="gap-1.5 text-xs transition-colors hover:border-primary/60 hover:text-primary"
+              >
+                <HugeiconsIcon icon={Globe02Icon} className="size-3.5" />
+                Live Demo ↗
+              </Button>
+            </a>
+          )
+        }
+
+        {
+          project.links.github && project.links.github !== "#" && (
+            <a
+              href={project.links.github}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Button
+                variant="outline"
+                size="sm"
+                className="gap-1.5 text-xs transition-colors hover:border-primary/60 hover:text-primary"
+              >
+                <HugeiconsIcon icon={Github} className="size-3.5" />
+                Code ↗
+              </Button>
+            </a>
+          )
+        }
+      </div>
+
+      <span class="font-mono text-[10px] text-muted-foreground/60">
+        READ_TIME // ~5 MIN
+      </span>
+    </div>
+  </div>
+</article>

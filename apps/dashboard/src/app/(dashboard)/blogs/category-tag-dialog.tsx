@@ -38,43 +38,32 @@ interface CategoryTagDialogProps {
   onUpdated?: () => void
 }
 
-const COLOR_OPTIONS = [
-  {
-    name: "Blue",
-    value: "blue",
-    class: "bg-blue-500/10 text-blue-500 border-blue-500/20",
-  },
-  {
-    name: "Emerald",
-    value: "emerald",
-    class: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20",
-  },
-  {
-    name: "Amber",
-    value: "amber",
-    class: "bg-amber-500/10 text-amber-500 border-amber-500/20",
-  },
-  {
-    name: "Purple",
-    value: "purple",
-    class: "bg-purple-500/10 text-purple-500 border-purple-500/20",
-  },
-  {
-    name: "Rose",
-    value: "rose",
-    class: "bg-rose-500/10 text-rose-500 border-rose-500/20",
-  },
-  {
-    name: "Cyan",
-    value: "cyan",
-    class: "bg-cyan-500/10 text-cyan-500 border-cyan-500/20",
-  },
-  {
-    name: "Indigo",
-    value: "indigo",
-    class: "bg-indigo-500/10 text-indigo-500 border-indigo-500/20",
-  },
+const COLOR_PRESETS = [
+  { name: "Blue", hex: "#3b82f6" },
+  { name: "Emerald", hex: "#10b981" },
+  { name: "Amber", hex: "#f59e0b" },
+  { name: "Purple", hex: "#8b5cf6" },
+  { name: "Rose", hex: "#f43f5e" },
+  { name: "Cyan", hex: "#06b6d4" },
+  { name: "Indigo", hex: "#6366f1" },
+  { name: "Orange", hex: "#f97316" },
+  { name: "Fuchsia", hex: "#d946ef" },
+  { name: "Teal", hex: "#14b8a6" },
+  { name: "Lime", hex: "#84cc16" },
+  { name: "Sky", hex: "#0ea5e9" },
 ]
+
+function normalizeColor(color?: string | null): string {
+  if (!color) return "#3b82f6"
+  const clean = color.trim()
+  const preset = COLOR_PRESETS.find(
+    (p) => p.name.toLowerCase() === clean.toLowerCase()
+  )
+  if (preset) return preset.hex
+  if (clean.startsWith("#")) return clean
+  if (/^[0-9A-Fa-f]{6}$/.test(clean)) return `#${clean}`
+  return clean
+}
 
 export function CategoryTagDialog({
   open,
@@ -90,7 +79,7 @@ export function CategoryTagDialog({
     React.useState<BlogCategoryDTO | null>(null)
   const [catName, setCatName] = React.useState("")
   const [catSlug, setCatSlug] = React.useState("")
-  const [catColor, setCatColor] = React.useState("blue")
+  const [catColor, setCatColor] = React.useState("#3b82f6")
   const [catDesc, setCatDesc] = React.useState("")
   const [isSubmittingCat, setIsSubmittingCat] = React.useState(false)
 
@@ -127,7 +116,7 @@ export function CategoryTagDialog({
     setEditingCategory(cat)
     setCatName(cat.name)
     setCatSlug(cat.slug)
-    setCatColor(cat.color || "blue")
+    setCatColor(normalizeColor(cat.color))
     setCatDesc(cat.description || "")
   }
 
@@ -135,7 +124,7 @@ export function CategoryTagDialog({
     setEditingCategory(null)
     setCatName("")
     setCatSlug("")
-    setCatColor("blue")
+    setCatColor("#3b82f6")
     setCatDesc("")
   }
 
@@ -148,11 +137,12 @@ export function CategoryTagDialog({
 
     setIsSubmittingCat(true)
     try {
+      const normalizedHex = normalizeColor(catColor)
       if (editingCategory) {
         const res = await BlogApi.updateCategory(editingCategory.id, {
           name: catName.trim(),
           slug: catSlug.trim() || undefined,
-          color: catColor,
+          color: normalizedHex,
           description: catDesc.trim() || undefined,
         })
         if (res.success) {
@@ -167,7 +157,7 @@ export function CategoryTagDialog({
         const res = await BlogApi.createCategory({
           name: catName.trim(),
           slug: catSlug.trim() || undefined,
-          color: catColor,
+          color: normalizedHex,
           description: catDesc.trim() || undefined,
         })
         if (res.success) {
@@ -273,6 +263,8 @@ export function CategoryTagDialog({
     }
   }
 
+  const activeColorHex = normalizeColor(catColor)
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[88vh] w-[95vw] max-w-4xl overflow-y-auto border border-border/80 bg-card p-6 shadow-2xl sm:min-w-[700px] md:min-w-[800px]">
@@ -283,7 +275,7 @@ export function CategoryTagDialog({
           </DialogTitle>
           <DialogDescription className="text-xs text-muted-foreground">
             Organize your technical blog posts with taxonomies, topics, and
-            colored category tags.
+            custom colored category tags.
           </DialogDescription>
         </DialogHeader>
 
@@ -310,7 +302,7 @@ export function CategoryTagDialog({
             {/* Create / Edit Form */}
             <form
               onSubmit={handleSaveCategory}
-              className="space-y-3 rounded-xl border border-border/80 bg-background/80 p-4 shadow-xs"
+              className="space-y-4 rounded-xl border border-border/80 bg-background/80 p-4 shadow-xs"
             >
               <div className="flex items-center justify-between">
                 <span className="flex items-center gap-1.5 text-sm font-bold">
@@ -336,7 +328,7 @@ export function CategoryTagDialog({
                 )}
               </div>
 
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 <div className="space-y-1">
                   <label className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
                     Name *
@@ -372,28 +364,88 @@ export function CategoryTagDialog({
                   />
                 </div>
 
-                <div className="space-y-1">
-                  <label className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
-                    Color Accent
-                  </label>
-                  <div className="flex items-center gap-1 pt-1.5">
-                    {COLOR_OPTIONS.map((c) => (
-                      <button
-                        key={c.value}
-                        type="button"
-                        onClick={() => setCatColor(c.value)}
-                        className={`h-6 w-6 rounded-full border-2 transition-transform ${
-                          catColor === c.value
-                            ? "scale-110 border-primary"
-                            : "border-transparent opacity-70 hover:opacity-100"
-                        }`}
-                        title={c.name}
-                      >
-                        <span
-                          className={`block h-full w-full rounded-full ${c.class.split(" ")[0].replace("/10", "")}`}
-                        />
-                      </button>
-                    ))}
+                <div className="space-y-1 sm:col-span-2 lg:col-span-1">
+                  <div className="flex items-center justify-between">
+                    <label className="flex items-center gap-1 text-xs font-semibold tracking-wider text-muted-foreground uppercase">
+                      <Palette className="h-3 w-3 text-primary" /> Color Accent
+                    </label>
+                    <span className="font-mono text-[11px] text-muted-foreground">
+                      {activeColorHex}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {/* Native / Custom Color Picker */}
+                    <div className="relative flex items-center">
+                      <input
+                        type="color"
+                        value={activeColorHex}
+                        onChange={(e) => setCatColor(e.target.value)}
+                        className="h-9 w-9 cursor-pointer rounded-md border border-border bg-background p-0.5"
+                        title="Pick custom color"
+                      />
+                    </div>
+                    {/* Hex text input */}
+                    <Input
+                      placeholder="#3b82f6"
+                      value={catColor}
+                      onChange={(e) => setCatColor(e.target.value)}
+                      className="h-9 font-mono text-xs hover:border-primary/50 focus:border-primary"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Color Presets Palette + Live Preview */}
+              <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border/60 bg-muted/20 p-2.5">
+                <div className="flex flex-wrap items-center gap-1.5">
+                  <span className="mr-1 text-[11px] font-medium text-muted-foreground">
+                    Presets:
+                  </span>
+                  {COLOR_PRESETS.map((c) => (
+                    <button
+                      key={c.name}
+                      type="button"
+                      onClick={() => setCatColor(c.hex)}
+                      className={`relative flex h-6 w-6 items-center justify-center rounded-full border-2 transition-transform ${
+                        activeColorHex.toLowerCase() === c.hex.toLowerCase()
+                          ? "scale-115 border-primary shadow-xs"
+                          : "border-transparent opacity-80 hover:scale-105 hover:opacity-100"
+                      }`}
+                      title={c.name}
+                    >
+                      <span
+                        className="block h-full w-full rounded-full"
+                        style={{ backgroundColor: c.hex }}
+                      />
+                      {activeColorHex.toLowerCase() === c.hex.toLowerCase() && (
+                        <Check className="absolute h-3 w-3 text-white drop-shadow-md" />
+                      )}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Live Preview Chip */}
+                <div className="flex items-center gap-2">
+                  <span className="text-[11px] font-medium text-muted-foreground">
+                    Preview:
+                  </span>
+                  <div
+                    className="inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1 font-mono text-xs font-semibold"
+                    style={{
+                      backgroundColor: `${activeColorHex}15`,
+                      borderColor: `${activeColorHex}50`,
+                      color: activeColorHex,
+                      boxShadow: `0 0 10px ${activeColorHex}20`,
+                    }}
+                  >
+                    <span
+                      className="h-2 w-2 rounded-full"
+                      style={{
+                        backgroundColor: activeColorHex,
+                        boxShadow: `0 0 6px ${activeColorHex}`,
+                      }}
+                    />
+                    <span>{catName.trim() || "Category Preview"}</span>
                   </div>
                 </div>
               </div>
@@ -436,49 +488,59 @@ export function CategoryTagDialog({
                 <div className="col-span-2 text-right">Actions</div>
               </div>
               <div className="divide-y divide-border/60">
-                {categories.map((cat) => (
-                  <div
-                    key={cat.id}
-                    className="grid grid-cols-12 items-center p-3 text-xs hover:bg-muted/20"
-                  >
-                    <div className="col-span-4 flex items-center gap-2">
-                      <span
-                        className={`h-2.5 w-2.5 rounded-full ${
-                          COLOR_OPTIONS.find((c) => c.value === cat.color)
-                            ?.class.split(" ")[0]
-                            .replace("/10", "") || "bg-primary"
-                        }`}
-                      />
-                      <span className="font-semibold text-foreground">
-                        {cat.name}
-                      </span>
+                {categories.map((cat) => {
+                  const catHex = normalizeColor(cat.color)
+                  return (
+                    <div
+                      key={cat.id}
+                      className="grid grid-cols-12 items-center p-3 text-xs hover:bg-muted/20"
+                    >
+                      <div className="col-span-4 flex items-center gap-2">
+                        <span
+                          className="h-3 w-3 shrink-0 rounded-full border border-black/20"
+                          style={{
+                            backgroundColor: catHex,
+                            boxShadow: `0 0 6px ${catHex}60`,
+                          }}
+                        />
+                        <span
+                          className="inline-flex items-center rounded-sm px-2 py-0.5 font-semibold"
+                          style={{
+                            backgroundColor: `${catHex}15`,
+                            color: catHex,
+                            border: `1px solid ${catHex}35`,
+                          }}
+                        >
+                          {cat.name}
+                        </span>
+                      </div>
+                      <div className="col-span-3 truncate font-mono text-muted-foreground">
+                        {cat.slug}
+                      </div>
+                      <div className="col-span-3 truncate text-muted-foreground">
+                        {cat.description || "—"}
+                      </div>
+                      <div className="col-span-2 flex items-center justify-end gap-1">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleStartEditCategory(cat)}
+                          className="h-7 w-7"
+                        >
+                          <Edit2 className="h-3.5 w-3.5" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleDeleteCategory(cat)}
+                          className="h-7 w-7 text-destructive"
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </Button>
+                      </div>
                     </div>
-                    <div className="col-span-3 truncate font-mono text-muted-foreground">
-                      {cat.slug}
-                    </div>
-                    <div className="col-span-3 truncate text-muted-foreground">
-                      {cat.description || "—"}
-                    </div>
-                    <div className="col-span-2 flex items-center justify-end gap-1">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleStartEditCategory(cat)}
-                        className="h-7 w-7"
-                      >
-                        <Edit2 className="h-3.5 w-3.5" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleDeleteCategory(cat)}
-                        className="h-7 w-7 text-destructive"
-                      >
-                        <Trash2 className="h-3.5 w-3.5" />
-                      </Button>
-                    </div>
-                  </div>
-                ))}
+                  )
+                })}
               </div>
             </div>
           </TabsContent>

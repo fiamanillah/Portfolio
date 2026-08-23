@@ -26,13 +26,25 @@ interface CategoryTagSectionProps {
   onOpenTaxonomyManager?: () => void
 }
 
-const CATEGORY_COLORS: Record<string, string> = {
-  websockets: "#3b82f6",
-  architecture: "#10b981",
-  database: "#f59e0b",
-  performance: "#8b5cf6",
-  devops: "#f43f5e",
-  security: "#06b6d4",
+function getCategoryDotColor(color?: string | null): string {
+  if (!color) return "#3b82f6"
+  const clean = color.trim()
+  if (clean.startsWith("#")) return clean
+  const presetMap: Record<string, string> = {
+    blue: "#3b82f6",
+    emerald: "#10b981",
+    amber: "#f59e0b",
+    purple: "#8b5cf6",
+    rose: "#f43f5e",
+    cyan: "#06b6d4",
+    indigo: "#6366f1",
+    orange: "#f97316",
+    fuchsia: "#d946ef",
+    teal: "#14b8a6",
+    lime: "#84cc16",
+    sky: "#0ea5e9",
+  }
+  return presetMap[clean.toLowerCase()] || clean
 }
 
 export function CategoryTagSection({
@@ -107,20 +119,23 @@ export function CategoryTagSection({
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="none">-- No Category --</SelectItem>
-            {categories.map((cat) => (
-              <SelectItem key={cat.id} value={cat.id}>
-                <div className="flex items-center gap-2">
-                  <span
-                    className="h-2 w-2 rounded-full"
-                    style={{
-                      backgroundColor:
-                        CATEGORY_COLORS[cat.slug.toLowerCase()] || "#10b981",
-                    }}
-                  />
-                  <span>{cat.name}</span>
-                </div>
-              </SelectItem>
-            ))}
+            {categories.map((cat) => {
+              const dotColor = getCategoryDotColor(cat.color)
+              return (
+                <SelectItem key={cat.id} value={cat.id}>
+                  <div className="flex items-center gap-2">
+                    <span
+                      className="h-2 w-2 rounded-full"
+                      style={{
+                        backgroundColor: dotColor,
+                        boxShadow: `0 0 4px ${dotColor}80`,
+                      }}
+                    />
+                    <span>{cat.name}</span>
+                  </div>
+                </SelectItem>
+              )
+            })}
           </SelectContent>
         </Select>
       </div>

@@ -402,7 +402,7 @@ export default function BookingSection() {
   // Render: Main 2-Step Booking Layout
   // ─────────────────────────────────────────────────────────────────────────
   return (
-    <div className="relative w-full overflow-hidden rounded-2xl border border-border bg-card shadow-2xl">
+    <div className="relative w-full overflow-hidden rounded-2xl border border-border shadow-2xl">
       {/* ── Top Bar: 2-Step Navigation ───────────────────────────────── */}
       <div className="border-b border-border px-5 py-3.5 sm:px-6">
         <div className="flex items-center gap-2 font-mono text-[11px]">

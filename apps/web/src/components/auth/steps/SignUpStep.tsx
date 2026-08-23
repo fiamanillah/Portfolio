@@ -220,11 +220,11 @@ export function SignUpStep({
                 icon={Notification01Icon}
                 className="inline size-3 text-primary"
               />
-              Subscribe to Updates & Newsletter
+              Subscribe to Tech Stories &amp; Newsletter
             </FieldLabel>
             <FieldDescription>
-              Receive deep-dive architectural breakdowns, system case studies,
-              and engineering updates.
+              Receive curated dispatches on AI breakthroughs, hardware &amp;
+              semiconductor markets, and modern software engineering.
             </FieldDescription>
           </FieldContent>
         </Field>

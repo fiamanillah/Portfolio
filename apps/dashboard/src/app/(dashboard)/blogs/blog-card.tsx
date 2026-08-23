@@ -127,7 +127,22 @@ export function BlogCard({
           {post.category && (
             <Badge
               variant="outline"
-              className={`text-[11px] font-medium backdrop-blur-md ${catColor}`}
+              style={{
+                backgroundColor: post.category.color && post.category.color.startsWith("#")
+                  ? `${post.category.color}25`
+                  : undefined,
+                borderColor: post.category.color && post.category.color.startsWith("#")
+                  ? `${post.category.color}60`
+                  : undefined,
+                color: post.category.color && post.category.color.startsWith("#")
+                  ? post.category.color
+                  : undefined,
+              }}
+              className={`text-[11px] font-semibold backdrop-blur-md ${
+                !post.category.color || !post.category.color.startsWith("#")
+                  ? catColor
+                  : ""
+              }`}
             >
               {post.category.name}
             </Badge>

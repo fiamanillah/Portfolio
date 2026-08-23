@@ -1,0 +1,112 @@
+---
+// src/components/MouseGlow.astro
+---
+
+<div id="mouse-glow" class="pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden="true">
+  <div id="glow-ball" class="mouse-glow-ball"></div>
+</div>
+
+<script>
+  let activeAnimationId: number | null = null
+  let isPointerActive = false
+  let currentX = -1000
+  let currentY = -1000
+  let targetX = -1000
+  let targetY = -1000
+  let isHovering = false
+
+  function initMouseGlow() {
+    const glowBall = document.getElementById("glow-ball")
+    const mouseGlow = document.getElementById("mouse-glow")
+    if (!glowBall || !mouseGlow) return
+
+    // Disable on non-fine pointer devices (touchscreens / mobile)
+    if (window.matchMedia && !window.matchMedia("(pointer: fine)").matches) {
+      glowBall.style.opacity = "0"
+      return
+    }
+
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    const lerpFactor = prefersReducedMotion ? 1 : 0.16
+
+    function render() {
+      currentX += (targetX - currentX) * lerpFactor
+      currentY += (targetY - currentY) * lerpFactor
+
+      glowBall!.style.transform = `translate3d(${currentX}px, ${currentY}px, 0) translate(-50%, -50%)`
+
+      // If pointer is moving or position has not converged, continue RAF loop
+      if (
+        isPointerActive ||
+        Math.abs(targetX - currentX) >= 0.1 ||
+        Math.abs(targetY - currentY) >= 0.1
+      ) {
+        activeAnimationId = requestAnimationFrame(render)
+      } else {
+        activeAnimationId = null
+      }
+    }
+
+    function startAnimation() {
+      if (!activeAnimationId) {
+        activeAnimationId = requestAnimationFrame(render)
+      }
+    }
+
+    function handlePointerMove(e: PointerEvent) {
+      if (e.pointerType === "touch") return
+
+      // Use viewport coordinates directly — never add scrollY since container is position:fixed
+      targetX = e.clientX
+      targetY = e.clientY
+
+      if (!isPointerActive) {
+        isPointerActive = true
+        glowBall!.style.opacity = "1"
+        if (currentX === -1000 && currentY === -1000) {
+          currentX = targetX
+          currentY = targetY
+        }
+      }
+
+      // Check for interactive elements to provide subtle visual reactive feedback
+      const targetElement = e.target as HTMLElement | null
+      const interactiveEl = targetElement?.closest?.(
+        'a, button, input, textarea, select, [role="button"], .cursor-pointer, [data-glow-interactive]'
+      )
+
+      const shouldHover = Boolean(interactiveEl)
+      if (shouldHover !== isHovering) {
+        isHovering = shouldHover
+        glowBall!.classList.toggle("is-hovering", isHovering)
+      }
+
+      startAnimation()
+    }
+
+    function handlePointerLeave() {
+      isPointerActive = false
+      if (glowBall) {
+        glowBall.style.opacity = "0"
+        glowBall.classList.remove("is-hovering")
+      }
+      isHovering = false
+    }
+
+    function handleWindowBlur() {
+      handlePointerLeave()
+    }
+
+    window.addEventListener("pointermove", handlePointerMove, { passive: true })
+    document.documentElement.addEventListener("pointerleave", handlePointerLeave, { passive: true })
+    window.addEventListener("blur", handleWindowBlur)
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initMouseGlow, { once: true })
+  } else {
+    initMouseGlow()
+  }
+
+  document.addEventListener("astro:page-load", initMouseGlow)
+</script>

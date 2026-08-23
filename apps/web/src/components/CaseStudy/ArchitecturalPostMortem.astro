@@ -1,5 +1,10 @@
 ---
 import CaseStudySectionTitle from "@/components/CaseStudy/CaseStudySectionTitle.astro"
+import { HugeiconsIcon } from "@hugeicons/react"
+import {
+  Alert02Icon,
+  CheckmarkCircle02Icon,
+} from "@hugeicons/core-free-icons"
 
 interface PostMortemEntry {
   heading: string
@@ -20,75 +25,79 @@ interface Props {
 const { items } = Astro.props as Props
 ---
 
-<section class="space-y-6">
-  <CaseStudySectionTitle label="[ SEC_05 // ARCHITECTURAL_POST_MORTEM ]" />
+<section class="space-y-8">
+  <CaseStudySectionTitle label="[ SEC_05 // POST_MORTEM_&_TRADE_OFF_ANALYSIS ]" />
 
-  <div class="px-5 md:px-6 lg:px-8">
+  <div class="px-4 sm:px-6 lg:px-8">
     <div class="grid gap-6 md:grid-cols-2">
       {
-        items.map((item, index) => (
-          <article class="group rounded-lg border border-border/70 bg-card/40 p-6 transition-colors duration-200 hover:border-border">
-            <div class="flex items-center gap-3 border-b border-border/40 pb-4">
-              <span
-                class={`flex h-6 w-6 shrink-0 items-center justify-center rounded border ${index % 2 === 0 ? "border-destructive/40 bg-destructive/10 text-destructive" : "border-primary/40 bg-primary/10 text-primary"}`}
-              >
-                {index % 2 === 0 ? (
-                  <svg
-                    class="h-3.5 w-3.5"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    aria-hidden="true"
-                  >
-                    <path d="M12 9v4" />
-                    <path d="M12 17h.01" />
-                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
-                  </svg>
-                ) : (
-                  <svg
-                    class="h-3.5 w-3.5"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    aria-hidden="true"
-                  >
-                    <path d="M20 6 9 17l-5-5" />
-                  </svg>
-                )}
-              </span>
-              <h3 class="text-lg font-bold tracking-tight text-foreground transition-colors duration-200 group-hover:text-primary sm:text-xl">
-                {item.title}
-              </h3>
-            </div>
+        items.map((item, index) => {
+          const isCritical = index % 2 === 0
+          return (
+            <article class="group relative flex flex-col justify-between overflow-hidden border border-border bg-card/50 p-6 sm:p-7 transition-all duration-300 hover:border-primary/50 hover:bg-card/80 hover:shadow-[0_0_0_1px_oklch(var(--primary)/15%)]">
+              {/* Corner brackets */}
+              <div class="pointer-events-none absolute top-2 left-2 z-10 h-3 w-3 border-t-[1.5px] border-l-[1.5px] border-border transition-colors group-hover:border-primary" />
+              <div class="pointer-events-none absolute top-2 right-2 z-10 h-3 w-3 border-t-[1.5px] border-r-[1.5px] border-border transition-colors group-hover:border-primary" />
+              <div class="pointer-events-none absolute bottom-2 left-2 z-10 h-3 w-3 border-b-[1.5px] border-l-[1.5px] border-border transition-colors group-hover:border-primary" />
+              <div class="pointer-events-none absolute right-2 bottom-2 z-10 h-3 w-3 border-r-[1.5px] border-b-[1.5px] border-border transition-colors group-hover:border-primary" />
 
-            <div class="mt-5 space-y-4">
-              {(
-                item.entries ??
-                (item.body ? [{ heading: "Summary", detail: item.body }] : [])
-              ).map((entry) => (
-                <article class="space-y-1.5 border-l-2 border-primary/40 pl-3.5">
-                  <h4 class="font-mono text-[11px] font-semibold tracking-wider text-foreground uppercase">
-                    // {entry.heading}
-                  </h4>
-                  <p class="text-xs leading-relaxed text-muted-foreground">
-                    {entry.detail}
-                  </p>
-                  {entry.code && (
-                    <code class="mt-2 block rounded border border-border/50 bg-muted/30 px-3 py-2 font-mono text-[11px] text-foreground">
-                      {entry.code}
-                    </code>
-                  )}
-                </article>
-              ))}
-            </div>
-          </article>
-        ))
+              <div>
+                {/* Header */}
+                <div class="flex items-center justify-between border-b border-border/50 pb-4">
+                  <div class="flex items-center gap-3">
+                    <span
+                      class={`flex h-7 w-7 shrink-0 items-center justify-center rounded-sm border ${
+                        isCritical
+                          ? "border-amber-500/40 bg-amber-500/10 text-amber-400"
+                          : "border-primary/40 bg-primary/10 text-primary"
+                      }`}
+                    >
+                      <HugeiconsIcon
+                        icon={isCritical ? Alert02Icon : CheckmarkCircle02Icon}
+                        className="size-4"
+                      />
+                    </span>
+                    <h3 class="text-base font-bold tracking-tight text-foreground transition-colors group-hover:text-primary sm:text-lg">
+                      {item.title}
+                    </h3>
+                  </div>
+
+                  <span class="font-mono text-[10px] tracking-widest text-muted-foreground/60 uppercase">
+                    AUDIT_0{index + 1}
+                  </span>
+                </div>
+
+                {/* Body / Entries List */}
+                <div class="mt-5 space-y-4">
+                  {(
+                    item.entries ??
+                    (item.body ? [{ heading: "Engineering Root Cause & Resolution", detail: item.body }] : [])
+                  ).map((entry) => (
+                    <div class="space-y-1.5 border-l-2 border-primary/50 pl-3.5">
+                      <h4 class="font-mono text-xs font-bold tracking-wider text-primary uppercase">
+                        // {entry.heading}
+                      </h4>
+                      <p class="text-xs leading-relaxed text-muted-foreground">
+                        {entry.detail}
+                      </p>
+                      {entry.code && (
+                        <div class="mt-2.5 overflow-x-auto rounded-sm border border-border/80 bg-muted/40 p-3 font-mono text-[11px] text-foreground shadow-xs">
+                          <code>{entry.code}</code>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Status Footer */}
+              <div class="mt-6 flex items-center justify-between border-t border-border/40 pt-3 font-mono text-[10px] text-muted-foreground/60 uppercase">
+                <span>SEVERITY: {isCritical ? "HIGH // RESOLVED" : "MODERATE // OPTIMIZED"}</span>
+                <span>STATUS: CLOSED</span>
+              </div>
+            </article>
+          )
+        })
       }
     </div>
   </div>

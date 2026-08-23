@@ -31,17 +31,18 @@ const totalTopics = new Set(posts.flatMap((p) => p.tags)).size
   <!-- SEO & Schema markup for Blog Index -->
   <Fragment slot="head">
     <BlogSEO
-      title="Engineering Blog & System Architecture Deep Dives"
-      description="In-depth technical articles, performance benchmarks, real-time microservices architecture, and DevOps guides by Fi Amanillah."
+      title="Technology Journal, AI Stories & Engineering Insights"
+      description="In-depth technology writeups, AI breakthroughs, semiconductor & hardware market trends, and software engineering deep dives by Fi Amanillah."
       type="website"
       url="/blog"
       tags={[
+        "Technology",
+        "Artificial Intelligence",
+        "Semiconductors",
+        "Hardware Market",
         "Software Engineering",
         "System Architecture",
-        "Microservices",
-        "Redis",
-        "TypeScript",
-        "DevOps",
+        "Tech Trends",
       ]}
     />
   </Fragment>
@@ -60,14 +61,14 @@ const totalTopics = new Set(posts.flatMap((p) => p.tags)).size
 
   <main class="w-full">
     <!-- Featured Stories Grid Section -->
-    <div class="container mx-auto px-4 py-8">
+    <div class="container mx-auto">
       <BlogFeaturedGrid featuredPosts={featuredPosts} />
     </div>
 
     <SectionDivider />
 
     <!-- Interactive Articles Explorer -->
-    <div class="container mx-auto px-4 py-8">
+    <div class="container mx-auto">
       <BlogExplorer initialPosts={posts} categories={categories} />
     </div>
 
@@ -75,8 +76,8 @@ const totalTopics = new Set(posts.flatMap((p) => p.tags)).size
 
     <!-- Newsletter Section -->
     <NewsletterSection
-      title="Stay Ahead in Engineering Architecture"
-      subtitle="Subscribe to get technical deep-dives, benchmark reports, and new articles delivered directly to your inbox."
+      title="Stay Ahead in Tech, AI & Engineering"
+      subtitle="Subscribe to get tech stories, AI breakthroughs, semiconductor & hardware market updates, and engineering insights delivered directly to your inbox."
       source="blog_index"
       idPrefix="blog-page-newsletter"
     />

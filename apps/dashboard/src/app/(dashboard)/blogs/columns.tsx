@@ -170,11 +170,18 @@ export function getBlogColumns({
           return (
             <span className="text-xs text-muted-foreground italic">None</span>
           )
-        const colorClass =
-          CATEGORY_COLORS[cat.slug?.toLowerCase()] ||
-          "bg-primary/10 text-primary border-primary/20"
+        const hex =
+          cat.color && cat.color.startsWith("#") ? cat.color : "#3b82f6"
         return (
-          <Badge variant="outline" className={colorClass}>
+          <Badge
+            variant="outline"
+            style={{
+              backgroundColor: `${hex}18`,
+              borderColor: `${hex}45`,
+              color: hex,
+            }}
+            className="text-xs font-semibold"
+          >
             {cat.name}
           </Badge>
         )

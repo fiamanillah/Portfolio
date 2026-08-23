@@ -352,6 +352,7 @@ export function CaseStudyEditorForm({
       {/* 2. Main Tabbed Navigation & Forms */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
         <EditorTabsNav
+          activeTab={activeTab}
           metadataCount={metadata.length}
           contextCount={contextBlocks.length}
           architectureCount={architectureLayers.length}
@@ -361,7 +362,7 @@ export function CaseStudyEditorForm({
         />
 
         {/* Tab 1: Hero */}
-        <TabsContent value="hero">
+        <TabsContent value="hero" className="space-y-6">
           <HeroTab
             title={title}
             setTitle={setTitle}
@@ -401,49 +402,177 @@ export function CaseStudyEditorForm({
             setTechStack={setTechStack}
             errors={fieldErrors}
           />
+
+          <div className="flex items-center justify-between rounded-xl border border-border/80 bg-card p-4 shadow-xs">
+            <div className="text-xs text-muted-foreground">
+              Step 1 of 9: Hero Artwork & High-Level Metadata
+            </div>
+            <button
+              type="button"
+              onClick={() => setActiveTab("metadata")}
+              className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground shadow-xs hover:bg-primary/90"
+            >
+              <span>Next: 02. Metadata</span>
+              <span>→</span>
+            </button>
+          </div>
         </TabsContent>
 
         {/* Tab 2: Metadata */}
-        <TabsContent value="metadata">
+        <TabsContent value="metadata" className="space-y-6">
           <MetadataTab metadata={metadata} setMetadata={setMetadata} />
+
+          <div className="flex items-center justify-between rounded-xl border border-border/80 bg-card p-4 shadow-xs">
+            <button
+              type="button"
+              onClick={() => setActiveTab("hero")}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-4 py-2 text-xs font-medium text-muted-foreground hover:bg-muted hover:text-foreground"
+            >
+              <span>←</span>
+              <span>Back: 01. Overview</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab("context")}
+              className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground shadow-xs hover:bg-primary/90"
+            >
+              <span>Next: 03. Context</span>
+              <span>→</span>
+            </button>
+          </div>
         </TabsContent>
 
         {/* Tab 3: Context */}
-        <TabsContent value="context">
+        <TabsContent value="context" className="space-y-6">
           <ContextTab
             contextBlocks={contextBlocks}
             setContextBlocks={setContextBlocks}
           />
+
+          <div className="flex items-center justify-between rounded-xl border border-border/80 bg-card p-4 shadow-xs">
+            <button
+              type="button"
+              onClick={() => setActiveTab("metadata")}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-4 py-2 text-xs font-medium text-muted-foreground hover:bg-muted hover:text-foreground"
+            >
+              <span>←</span>
+              <span>Back: 02. Metadata</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab("architecture")}
+              className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground shadow-xs hover:bg-primary/90"
+            >
+              <span>Next: 04. Architecture</span>
+              <span>→</span>
+            </button>
+          </div>
         </TabsContent>
 
         {/* Tab 4: Architecture */}
-        <TabsContent value="architecture">
+        <TabsContent value="architecture" className="space-y-6">
           <ArchitectureTab
             architectureLayers={architectureLayers}
             setArchitectureLayers={setArchitectureLayers}
           />
+
+          <div className="flex items-center justify-between rounded-xl border border-border/80 bg-card p-4 shadow-xs">
+            <button
+              type="button"
+              onClick={() => setActiveTab("context")}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-4 py-2 text-xs font-medium text-muted-foreground hover:bg-muted hover:text-foreground"
+            >
+              <span>←</span>
+              <span>Back: 03. Context</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab("features")}
+              className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground shadow-xs hover:bg-primary/90"
+            >
+              <span>Next: 05. Features</span>
+              <span>→</span>
+            </button>
+          </div>
         </TabsContent>
 
         {/* Tab 5: Features */}
-        <TabsContent value="features">
+        <TabsContent value="features" className="space-y-6">
           <FeaturesTab features={features} setFeatures={setFeatures} />
+
+          <div className="flex items-center justify-between rounded-xl border border-border/80 bg-card p-4 shadow-xs">
+            <button
+              type="button"
+              onClick={() => setActiveTab("architecture")}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-4 py-2 text-xs font-medium text-muted-foreground hover:bg-muted hover:text-foreground"
+            >
+              <span>←</span>
+              <span>Back: 04. Architecture</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab("metrics")}
+              className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground shadow-xs hover:bg-primary/90"
+            >
+              <span>Next: 06. Metrics</span>
+              <span>→</span>
+            </button>
+          </div>
         </TabsContent>
 
         {/* Tab 6: Metrics */}
-        <TabsContent value="metrics">
+        <TabsContent value="metrics" className="space-y-6">
           <MetricsTab metrics={metrics} setMetrics={setMetrics} />
+
+          <div className="flex items-center justify-between rounded-xl border border-border/80 bg-card p-4 shadow-xs">
+            <button
+              type="button"
+              onClick={() => setActiveTab("features")}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-4 py-2 text-xs font-medium text-muted-foreground hover:bg-muted hover:text-foreground"
+            >
+              <span>←</span>
+              <span>Back: 05. Features</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab("post-mortem")}
+              className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground shadow-xs hover:bg-primary/90"
+            >
+              <span>Next: 07. Post-Mortem</span>
+              <span>→</span>
+            </button>
+          </div>
         </TabsContent>
 
         {/* Tab 7: Post-Mortem */}
-        <TabsContent value="post-mortem">
+        <TabsContent value="post-mortem" className="space-y-6">
           <PostMortemTab
             postMortem={postMortem}
             setPostMortem={setPostMortem}
           />
+
+          <div className="flex items-center justify-between rounded-xl border border-border/80 bg-card p-4 shadow-xs">
+            <button
+              type="button"
+              onClick={() => setActiveTab("metrics")}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-4 py-2 text-xs font-medium text-muted-foreground hover:bg-muted hover:text-foreground"
+            >
+              <span>←</span>
+              <span>Back: 06. Metrics</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab("seo")}
+              className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground shadow-xs hover:bg-primary/90"
+            >
+              <span>Next: 08. SEO & Social</span>
+              <span>→</span>
+            </button>
+          </div>
         </TabsContent>
 
         {/* Tab 8: SEO */}
-        <TabsContent value="seo">
+        <TabsContent value="seo" className="space-y-6">
           <SeoTab
             title={title}
             slug={slug}
@@ -453,11 +582,60 @@ export function CaseStudyEditorForm({
             setSeo={setSeo}
             errors={fieldErrors}
           />
+
+          <div className="flex items-center justify-between rounded-xl border border-border/80 bg-card p-4 shadow-xs">
+            <button
+              type="button"
+              onClick={() => setActiveTab("post-mortem")}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-4 py-2 text-xs font-medium text-muted-foreground hover:bg-muted hover:text-foreground"
+            >
+              <span>←</span>
+              <span>Back: 07. Post-Mortem</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab("preview")}
+              className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground shadow-xs hover:bg-primary/90"
+            >
+              <span>Next: 09. Live Preview</span>
+              <span>→</span>
+            </button>
+          </div>
         </TabsContent>
 
         {/* Tab 9: Live Preview */}
-        <TabsContent value="preview">
+        <TabsContent value="preview" className="space-y-6">
           <FrontendCaseStudyPreview caseStudy={previewObject} />
+
+          <div className="flex items-center justify-between rounded-xl border border-border/80 bg-card p-4 shadow-xs">
+            <button
+              type="button"
+              onClick={() => setActiveTab("seo")}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-4 py-2 text-xs font-medium text-muted-foreground hover:bg-muted hover:text-foreground"
+            >
+              <span>←</span>
+              <span>Back: 08. SEO & Social</span>
+            </button>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => handleSave("DRAFT")}
+                disabled={isSaving}
+                className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-4 py-2 text-xs font-medium text-foreground hover:bg-muted"
+              >
+                Save Draft
+              </button>
+              <button
+                type="button"
+                onClick={() => handleSave(status === "DRAFT" ? "PUBLISHED" : status)}
+                disabled={isSaving}
+                className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-xs font-bold text-primary-foreground shadow-md hover:bg-primary/90"
+              >
+                <span>{isEdit ? "Update Case Study" : "Publish Case Study"}</span>
+                <span>✓</span>
+              </button>
+            </div>
+          </div>
         </TabsContent>
       </Tabs>
     </div>

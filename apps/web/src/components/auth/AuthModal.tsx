@@ -342,7 +342,7 @@ export function AuthModal({
         setStoredUser(res.data.user)
         if (subscribeNewsletter) {
           toast.success(`Account Verified & Activated!`, {
-            description: `Welcome, ${res.data.user.name}! You're also subscribed to newsletters and architectural updates.`,
+            description: `Welcome, ${res.data.user.name}! You're also subscribed to tech stories, AI updates, and engineering insights.`,
           })
         } else {
           toast.success(`Account Verified & Activated!`, {

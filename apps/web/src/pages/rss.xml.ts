@@ -21,9 +21,9 @@ export const GET: APIRoute = async (context) => {
   })
 
   return rss({
-    title: "Fi Amanillah — Engineering & Architecture Blog",
+    title: "Fi Amanillah — Technology, AI & Engineering Journal",
     description:
-      "Deep dives into high-throughput systems, distributed microservices, database optimization, Redis streaming, and modern DevOps pipelines.",
+      "Tech stories, AI breakthroughs, semiconductor & hardware market analyses, emerging tech trends, and modern software architecture by Fi Amanillah.",
     site,
     items: sortedPosts.map((post) => ({
       title: post.title,

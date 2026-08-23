@@ -75,7 +75,7 @@ export const createBlogCategorySchema = z.object({
     .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Slug must contain only lowercase alphanumeric characters and hyphens")
     .optional(),
   description: z.string().max(300).optional().nullable(),
-  color: z.string().max(30).optional().default("blue"),
+  color: z.string().max(50).optional().default("#3b82f6"),
   icon: z.string().max(50).optional().nullable(),
   order: z.number().int().optional().default(0),
 });

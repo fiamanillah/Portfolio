@@ -1,0 +1,101 @@
+---
+import { HugeiconsIcon } from "@hugeicons/react"
+import { ArrowLeft01Icon, ArrowRight01Icon } from "@hugeicons/core-free-icons"
+
+interface AdjacentStudy {
+  slug: string
+  title: string
+  image?: string
+  role?: string
+}
+
+interface Props {
+  prevStudy?: AdjacentStudy | null
+  nextStudy?: AdjacentStudy | null
+}
+
+const { prevStudy, nextStudy } = Astro.props
+---
+
+{
+  (prevStudy || nextStudy) && (
+    <nav
+      aria-label="Case Study Navigation"
+      class="my-12 grid grid-cols-1 gap-6 border-t border-border/80 pt-8 sm:grid-cols-2"
+    >
+      {/* Previous Case Study Link */}
+      {prevStudy ? (
+        <a
+          href={`/case-study/${prevStudy.slug}`}
+          class="group relative flex items-center gap-4 border border-border bg-background/60 p-4 transition-all duration-200 hover:border-primary/40 hover:bg-background/90"
+        >
+          <div class="pointer-events-none absolute top-1.5 left-1.5 h-2.5 w-2.5 border-t border-l border-border transition-colors group-hover:border-primary" />
+          <div class="pointer-events-none absolute right-1.5 bottom-1.5 h-2.5 w-2.5 border-r border-b border-border transition-colors group-hover:border-primary" />
+
+          {prevStudy.image && (
+            <div class="relative h-14 w-20 shrink-0 overflow-hidden border border-border/60 bg-muted/30">
+              <img
+                src={prevStudy.image}
+                alt={prevStudy.title}
+                class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+              />
+            </div>
+          )}
+
+          <div class="min-w-0 flex-1">
+            <span class="inline-flex items-center gap-1 font-mono text-[10px] tracking-widest text-muted-foreground uppercase transition-colors group-hover:text-primary">
+              <HugeiconsIcon icon={ArrowLeft01Icon} className="size-3" />
+              PREVIOUS DEEP DIVE
+            </span>
+            <h4 class="truncate text-sm font-bold text-foreground transition-colors group-hover:text-primary">
+              {prevStudy.title}
+            </h4>
+            {prevStudy.role && (
+              <span class="font-mono text-[10px] text-muted-foreground">
+                {prevStudy.role}
+              </span>
+            )}
+          </div>
+        </a>
+      ) : (
+        <div class="hidden sm:block" />
+      )}
+
+      {/* Next Case Study Link */}
+      {nextStudy && (
+        <a
+          href={`/case-study/${nextStudy.slug}`}
+          class="group relative flex items-center justify-between gap-4 border border-border bg-background/60 p-4 text-right transition-all duration-200 hover:border-primary/40 hover:bg-background/90"
+        >
+          <div class="pointer-events-none absolute top-1.5 right-1.5 h-2.5 w-2.5 border-t border-r border-border transition-colors group-hover:border-primary" />
+          <div class="pointer-events-none absolute bottom-1.5 left-1.5 h-2.5 w-2.5 border-b border-l border-border transition-colors group-hover:border-primary" />
+
+          <div class="min-w-0 flex-1">
+            <span class="inline-flex items-center justify-end gap-1 font-mono text-[10px] tracking-widest text-muted-foreground uppercase transition-colors group-hover:text-primary">
+              NEXT DEEP DIVE
+              <HugeiconsIcon icon={ArrowRight01Icon} className="size-3" />
+            </span>
+            <h4 class="truncate text-sm font-bold text-foreground transition-colors group-hover:text-primary">
+              {nextStudy.title}
+            </h4>
+            {nextStudy.role && (
+              <span class="font-mono text-[10px] text-muted-foreground">
+                {nextStudy.role}
+              </span>
+            )}
+          </div>
+
+          {nextStudy.image && (
+            <div class="relative h-14 w-20 shrink-0 overflow-hidden border border-border/60 bg-muted/30">
+              <img
+                src={nextStudy.image}
+                alt={nextStudy.title}
+                class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+              />
+            </div>
+          )}
+        </a>
+      )}
+    </nav>
+  )
+}
