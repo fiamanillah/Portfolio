@@ -138,10 +138,25 @@ export function getCaseStudyColumns({
                 >
                   {study.title}
                 </span>
+                {study.projectType === "PROJECT" ? (
+                  <Badge
+                    variant="outline"
+                    className="border-purple-500/30 bg-purple-500/10 px-1 py-0 font-mono text-[9px] text-purple-400"
+                  >
+                    Project
+                  </Badge>
+                ) : (
+                  <Badge
+                    variant="outline"
+                    className="border-primary/30 bg-primary/10 px-1 py-0 font-mono text-[9px] text-primary"
+                  >
+                    Deep Dive
+                  </Badge>
+                )}
                 {study.featured && (
                   <Badge
                     variant="outline"
-                    className="border-primary/30 bg-primary/10 px-1 py-0 text-[10px] text-primary"
+                    className="border-amber-500/30 bg-amber-500/10 px-1 py-0 text-[10px] text-amber-500"
                   >
                     <Sparkles className="mr-0.5 size-2.5" /> Featured
                   </Badge>

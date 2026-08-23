@@ -390,12 +390,18 @@ enum CaseStudyStatus {
   ARCHIVED
 }
 
+enum CaseStudyType {
+  CASE_STUDY
+  PROJECT
+}
+
 model CaseStudy {
   id                 String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   slug               String          @unique
   title              String
   subtitle           String?
   description        String          @db.Text
+  projectType        CaseStudyType   @default(CASE_STUDY)
   status             CaseStudyStatus @default(DRAFT)
   projectStatus      String          @default("Status: Completed")
   order              Int             @default(0)
@@ -410,6 +416,7 @@ model CaseStudy {
   timeline           String?
   client             String?
   impact             String?         @db.Text
+  highlights         String[]        @default([])
   views              Int             @default(0)
   likesCount         Int             @default(0)
   publishedAt        DateTime?
@@ -450,6 +457,7 @@ model CaseStudy {
   updatedAt          DateTime        @default(now()) @updatedAt
 
   @@index([slug])
+  @@index([projectType, status])
   @@index([status, publishedAt])
   @@index([featured])
   @@index([order])

@@ -50,12 +50,18 @@ export interface CaseStudyDetail {
   slug: string
   title: string
   description: string
+  projectType?: "CASE_STUDY" | "PROJECT"
   status: string
   techStack: string[]
   liveUrl?: string
   githubUrl?: string
   image: string
   imageLabel?: string
+  role?: string
+  timeline?: string
+  client?: string
+  impact?: string
+  highlights?: string[]
   metadata?: CaseStudyMetadata[]
   contextBlocks: ContextBlock[]
   architectureLayers: ArchitectureLayer[]
@@ -63,3 +69,4 @@ export interface CaseStudyDetail {
   metrics: PerformanceMetric[]
   postMortem: PostMortemSection[]
 }
+

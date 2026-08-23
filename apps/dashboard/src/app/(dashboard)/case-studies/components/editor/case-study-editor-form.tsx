@@ -7,6 +7,7 @@ import { toast } from "@workspace/ui/components/sonner"
 import type {
   CaseStudyDTO,
   CaseStudyStatus,
+  CaseStudyType,
   CaseStudyMetadataItem,
   ContextBlock,
   ArchitectureLayer,
@@ -92,6 +93,9 @@ export function CaseStudyEditorForm({
   const [subtitle, setSubtitle] = React.useState(initialStudy?.subtitle || "")
   const [slug, setSlug] = React.useState(initialStudy?.slug || "")
   const [description, setDescription] = React.useState(initialStudy?.description || "")
+  const [projectType, setProjectType] = React.useState<CaseStudyType>(
+    initialStudy?.projectType || "CASE_STUDY"
+  )
   const [status, setStatus] = React.useState<CaseStudyStatus>(
     initialStudy?.status || "DRAFT"
   )
@@ -111,6 +115,9 @@ export function CaseStudyEditorForm({
   const [timeline, setTimeline] = React.useState(initialStudy?.timeline || "")
   const [client, setClient] = React.useState(initialStudy?.client || "")
   const [impact, setImpact] = React.useState(initialStudy?.impact || "")
+  const [highlights, setHighlights] = React.useState<string[]>(
+    initialStudy?.highlights || []
+  )
   const [techStack, setTechStack] = React.useState<string[]>(
     initialStudy?.techStack || []
   )
@@ -156,6 +163,7 @@ export function CaseStudyEditorForm({
       subtitle: subtitle.trim() || undefined,
       slug: slug.trim() || undefined,
       description: description.trim(),
+      projectType,
       status: finalStatus,
       projectStatus: projectStatus.trim(),
       order,
@@ -170,6 +178,7 @@ export function CaseStudyEditorForm({
       timeline: timeline.trim() || undefined,
       client: client.trim() || undefined,
       impact: impact.trim() || undefined,
+      highlights,
       metadata,
       contextBlocks,
       architectureLayers,
@@ -196,7 +205,7 @@ export function CaseStudyEditorForm({
     const clientErrors: Record<string, string> = {}
 
     if (!title.trim()) {
-      clientErrors.title = "Case study title is required"
+      clientErrors.title = "Project / Case Study title is required"
     } else if (title.trim().length < 3) {
       clientErrors.title = "Title must be at least 3 characters"
     }
@@ -226,104 +235,114 @@ export function CaseStudyEditorForm({
     }
 
     if (githubUrl.trim()) {
-      const gitValidation = validateUrl(githubUrl, "GitHub URL")
-      if (!gitValidation.valid && gitValidation.error) {
-        clientErrors.githubUrl = gitValidation.error
+      const githubValidation = validateUrl(githubUrl, "GitHub URL")
+      if (!githubValidation.valid && githubValidation.error) {
+        clientErrors.githubUrl = githubValidation.error
       }
     }
 
-    if (seo.canonicalUrl?.trim()) {
+    if (seo.canonicalUrl && seo.canonicalUrl.trim()) {
       const canonValidation = validateUrl(seo.canonicalUrl, "Canonical URL")
       if (!canonValidation.valid && canonValidation.error) {
         clientErrors["seo.canonicalUrl"] = canonValidation.error
-        clientErrors.canonicalUrl = canonValidation.error
       }
     }
 
     if (Object.keys(clientErrors).length > 0) {
       setFieldErrors(clientErrors)
-      const firstErrorKey = Object.keys(clientErrors)[0] || "title"
-      setActiveTab(getTabForErrorKey(firstErrorKey))
-      showApiError(
-        {
-          errorIssues: Object.entries(clientErrors).map(([path, message]) => ({
-            path,
-            message,
-          })),
-        },
-        "Validation Failed"
-      )
+      const firstKey = Object.keys(clientErrors)[0]
+      if (firstKey) {
+        const targetTab = getTabForErrorKey(firstKey)
+        setActiveTab(targetTab)
+        toast.error(`Please fix validation error: ${clientErrors[firstKey]}`)
+      }
       return
     }
 
+    setFieldErrors({})
     setIsSaving(true)
-    const payload = buildPayload(overrideStatus)
 
     try {
+      const payload = buildPayload(overrideStatus)
+
       if (isEdit && initialStudy?.id) {
-        const res = await CaseStudyApi.update(
-          initialStudy.id,
-          payload as UpdateCaseStudyDTO
-        )
+        const res = await CaseStudyApi.update(initialStudy.id, payload as UpdateCaseStudyDTO)
         if (res.success && res.data) {
-          setFieldErrors({})
           toast.success(
             overrideStatus === "PUBLISHED"
-              ? "Case study published successfully!"
-              : "Case study updated successfully!"
+              ? "Project published successfully"
+              : "Project changes saved"
           )
           router.push(onSuccessRedirect)
+          router.refresh()
         } else {
-          showApiError(res, "Failed to update case study")
-          const extracted = extractFieldErrors(res)
-          setFieldErrors(extracted)
-          const firstKey = Object.keys(extracted)[0]
-          if (firstKey) setActiveTab(getTabForErrorKey(firstKey))
+          showApiError(res, "Failed to update project")
+          const fErrors = extractFieldErrors(res)
+          if (Object.keys(fErrors).length > 0) {
+            setFieldErrors(fErrors)
+            const firstKey = Object.keys(fErrors)[0]
+            if (firstKey) setActiveTab(getTabForErrorKey(firstKey))
+          }
         }
       } else {
         const res = await CaseStudyApi.create(payload as CreateCaseStudyDTO)
         if (res.success && res.data) {
-          setFieldErrors({})
           toast.success(
             overrideStatus === "PUBLISHED"
-              ? "Case study published successfully!"
-              : "Case study created as draft!"
+              ? "Project created & published successfully"
+              : "Draft created successfully"
           )
           router.push(onSuccessRedirect)
+          router.refresh()
         } else {
-          showApiError(res, "Failed to create case study")
-          const extracted = extractFieldErrors(res)
-          setFieldErrors(extracted)
-          const firstKey = Object.keys(extracted)[0]
-          if (firstKey) setActiveTab(getTabForErrorKey(firstKey))
+          showApiError(res, "Failed to create project")
+          const fErrors = extractFieldErrors(res)
+          if (Object.keys(fErrors).length > 0) {
+            setFieldErrors(fErrors)
+            const firstKey = Object.keys(fErrors)[0]
+            if (firstKey) setActiveTab(getTabForErrorKey(firstKey))
+          }
         }
       }
-    } catch (err: any) {
-      showApiError(err, "An unexpected error occurred while saving")
+    } catch (err) {
+      toast.error("An unexpected network error occurred while saving")
     } finally {
       setIsSaving(false)
     }
   }
 
-  const previewObject: Partial<CaseStudyDTO> = {
-    title,
-    subtitle,
-    slug,
-    description,
+  // Construct mock preview object for FrontendCaseStudyPreview component
+  const previewObject: CaseStudyDTO = {
+    id: initialStudy?.id || "preview-id",
+    slug: slug || "preview-slug",
+    title: title || "Untitled Project",
+    subtitle: subtitle || null,
+    description: description || "No description provided yet.",
+    projectType,
     status,
-    projectStatus,
+    projectStatus: projectStatus || "Status: Completed",
     order,
     featured,
     pinned,
     techStack,
-    liveUrl,
-    githubUrl,
-    image,
-    imageLabel,
-    role,
-    timeline,
-    client,
-    impact,
+    liveUrl: liveUrl || null,
+    githubUrl: githubUrl || null,
+    image: image || "/assets/images/mickanic-cover.png",
+    imageLabel: imageLabel || null,
+    role: role || null,
+    timeline: timeline || null,
+    client: client || null,
+    impact: impact || null,
+    highlights,
+    views: initialStudy?.views ?? 1250,
+    likesCount: initialStudy?.likesCount ?? 42,
+    publishedAt: initialStudy?.publishedAt || new Date().toISOString(),
+    authorName: initialStudy?.authorName || "Fi Amanillah",
+    authorRole: initialStudy?.authorRole || "Author & Lead Architect",
+    authorAvatar: initialStudy?.authorAvatar || "/fi.png",
+    authorTwitter: initialStudy?.authorTwitter || "https://x.com/fiamanillah",
+    authorLinkedin: initialStudy?.authorLinkedin || "https://linkedin.com/in/fiamanillah",
+    authorGithub: initialStudy?.authorGithub || "https://github.com/fiamanillah",
     metadata,
     contextBlocks,
     architectureLayers,
@@ -331,11 +350,16 @@ export function CaseStudyEditorForm({
     metrics,
     postMortem,
     seo,
+    metaKeywords: seo.metaKeywords || [],
+    createdAt: initialStudy?.createdAt || new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
   }
+
+  const isProject = projectType === "PROJECT"
 
   return (
     <div className="space-y-6">
-      {/* 1. Header Bar with Save & Actions */}
+      {/* 1. Header with Actions & Status */}
       <EditorHeader
         isEdit={isEdit}
         title={title}
@@ -344,14 +368,13 @@ export function CaseStudyEditorForm({
         isSaving={isSaving}
         onBack={() => router.push(onSuccessRedirect)}
         onSaveDraft={() => handleSave("DRAFT")}
-        onPublishOrSave={() =>
-          handleSave(status === "DRAFT" ? "PUBLISHED" : status)
-        }
+        onPublishOrSave={() => handleSave(isEdit ? status : "PUBLISHED")}
       />
 
       {/* 2. Main Tabbed Navigation & Forms */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
         <EditorTabsNav
+          projectType={projectType}
           activeTab={activeTab}
           metadataCount={metadata.length}
           contextCount={contextBlocks.length}
@@ -361,7 +384,7 @@ export function CaseStudyEditorForm({
           postMortemCount={postMortem.length}
         />
 
-        {/* Tab 1: Hero */}
+        {/* Tab 1: Hero / Overview */}
         <TabsContent value="hero" className="space-y-6">
           <HeroTab
             title={title}
@@ -372,6 +395,8 @@ export function CaseStudyEditorForm({
             setSlug={setSlug}
             description={description}
             setDescription={setDescription}
+            projectType={projectType}
+            setProjectType={setProjectType}
             status={status}
             setStatus={setStatus}
             projectStatus={projectStatus}
@@ -398,6 +423,8 @@ export function CaseStudyEditorForm({
             setClient={setClient}
             impact={impact}
             setImpact={setImpact}
+            highlights={highlights}
+            setHighlights={setHighlights}
             techStack={techStack}
             setTechStack={setTechStack}
             errors={fieldErrors}
@@ -405,20 +432,22 @@ export function CaseStudyEditorForm({
 
           <div className="flex items-center justify-between rounded-xl border border-border/80 bg-card p-4 shadow-xs">
             <div className="text-xs text-muted-foreground">
-              Step 1 of 9: Hero Artwork & High-Level Metadata
+              {isProject
+                ? "Step 1 of 3: Project Artwork, Details & Highlights"
+                : "Step 1 of 9: Hero Artwork & High-Level Metadata"}
             </div>
             <button
               type="button"
-              onClick={() => setActiveTab("metadata")}
+              onClick={() => setActiveTab(isProject ? "seo" : "metadata")}
               className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground shadow-xs hover:bg-primary/90"
             >
-              <span>Next: 02. Metadata</span>
+              <span>{isProject ? "Next: 02. SEO & Social" : "Next: 02. Metadata"}</span>
               <span>→</span>
             </button>
           </div>
         </TabsContent>
 
-        {/* Tab 2: Metadata */}
+        {/* Tab 2: Metadata (Deep Dive only) */}
         <TabsContent value="metadata" className="space-y-6">
           <MetadataTab metadata={metadata} setMetadata={setMetadata} />
 
@@ -442,7 +471,7 @@ export function CaseStudyEditorForm({
           </div>
         </TabsContent>
 
-        {/* Tab 3: Context */}
+        {/* Tab 3: Context (Deep Dive only) */}
         <TabsContent value="context" className="space-y-6">
           <ContextTab
             contextBlocks={contextBlocks}
@@ -469,7 +498,7 @@ export function CaseStudyEditorForm({
           </div>
         </TabsContent>
 
-        {/* Tab 4: Architecture */}
+        {/* Tab 4: Architecture (Deep Dive only) */}
         <TabsContent value="architecture" className="space-y-6">
           <ArchitectureTab
             architectureLayers={architectureLayers}
@@ -496,7 +525,7 @@ export function CaseStudyEditorForm({
           </div>
         </TabsContent>
 
-        {/* Tab 5: Features */}
+        {/* Tab 5: Features (Deep Dive only) */}
         <TabsContent value="features" className="space-y-6">
           <FeaturesTab features={features} setFeatures={setFeatures} />
 
@@ -520,7 +549,7 @@ export function CaseStudyEditorForm({
           </div>
         </TabsContent>
 
-        {/* Tab 6: Metrics */}
+        {/* Tab 6: Metrics (Deep Dive only) */}
         <TabsContent value="metrics" className="space-y-6">
           <MetricsTab metrics={metrics} setMetrics={setMetrics} />
 
@@ -544,7 +573,7 @@ export function CaseStudyEditorForm({
           </div>
         </TabsContent>
 
-        {/* Tab 7: Post-Mortem */}
+        {/* Tab 7: Post-Mortem (Deep Dive only) */}
         <TabsContent value="post-mortem" className="space-y-6">
           <PostMortemTab
             postMortem={postMortem}
@@ -586,18 +615,18 @@ export function CaseStudyEditorForm({
           <div className="flex items-center justify-between rounded-xl border border-border/80 bg-card p-4 shadow-xs">
             <button
               type="button"
-              onClick={() => setActiveTab("post-mortem")}
+              onClick={() => setActiveTab(isProject ? "hero" : "post-mortem")}
               className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-4 py-2 text-xs font-medium text-muted-foreground hover:bg-muted hover:text-foreground"
             >
               <span>←</span>
-              <span>Back: 07. Post-Mortem</span>
+              <span>{isProject ? "Back: 01. Project Details" : "Back: 07. Post-Mortem"}</span>
             </button>
             <button
               type="button"
               onClick={() => setActiveTab("preview")}
               className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground shadow-xs hover:bg-primary/90"
             >
-              <span>Next: 09. Live Preview</span>
+              <span>{isProject ? "Next: 03. Live Preview" : "Next: 09. Live Preview"}</span>
               <span>→</span>
             </button>
           </div>
@@ -614,7 +643,7 @@ export function CaseStudyEditorForm({
               className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-4 py-2 text-xs font-medium text-muted-foreground hover:bg-muted hover:text-foreground"
             >
               <span>←</span>
-              <span>Back: 08. SEO & Social</span>
+              <span>{isProject ? "Back: 02. SEO & Social" : "Back: 08. SEO & Social"}</span>
             </button>
             <div className="flex items-center gap-2">
               <button
@@ -631,7 +660,7 @@ export function CaseStudyEditorForm({
                 disabled={isSaving}
                 className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-xs font-bold text-primary-foreground shadow-md hover:bg-primary/90"
               >
-                <span>{isEdit ? "Update Case Study" : "Publish Case Study"}</span>
+                <span>{isEdit ? "Update Project" : "Publish Project"}</span>
                 <span>✓</span>
               </button>
             </div>

@@ -2,6 +2,7 @@
 import type { z } from "zod";
 import type {
   caseStudyStatusEnumSchema,
+  caseStudyTypeEnumSchema,
   caseStudyMetadataItemSchema,
   contextBlockSchema,
   architectureItemSchema,
@@ -22,6 +23,7 @@ import type {
 } from "../schemas/caseStudy.schema";
 
 export type CaseStudyStatus = z.infer<typeof caseStudyStatusEnumSchema>;
+export type CaseStudyType = z.infer<typeof caseStudyTypeEnumSchema>;
 export type CaseStudyMetadataItem = z.infer<typeof caseStudyMetadataItemSchema>;
 export type ContextBlock = z.infer<typeof contextBlockSchema>;
 export type ArchitectureItem = z.infer<typeof architectureItemSchema>;
@@ -47,6 +49,7 @@ export interface CaseStudyDTO {
   title: string;
   subtitle?: string | null;
   description: string;
+  projectType: CaseStudyType;
   status: CaseStudyStatus;
   projectStatus: string;
   order: number;
@@ -61,6 +64,7 @@ export interface CaseStudyDTO {
   timeline?: string | null;
   client?: string | null;
   impact?: string | null;
+  highlights: string[];
   views: number;
   likesCount: number;
   publishedAt?: string | null;
@@ -81,7 +85,7 @@ export interface CaseStudyDTO {
   seo?: CaseStudySeo;
   metaTitle?: string | null;
   metaDescription?: string | null;
-  metaKeywords: string[];
+  metaKeywords?: string[];
   ogTitle?: string | null;
   ogDescription?: string | null;
   ogImage?: string | null;
@@ -101,6 +105,7 @@ export interface CaseStudyListItemDTO {
   title: string;
   subtitle?: string | null;
   description: string;
+  projectType: CaseStudyType;
   status: CaseStudyStatus;
   projectStatus: string;
   order: number;
@@ -115,6 +120,7 @@ export interface CaseStudyListItemDTO {
   timeline?: string | null;
   client?: string | null;
   impact?: string | null;
+  highlights: string[];
   metadata?: CaseStudyMetadataItem[];
   contextBlocks?: ContextBlock[];
   architectureLayers?: ArchitectureLayer[];

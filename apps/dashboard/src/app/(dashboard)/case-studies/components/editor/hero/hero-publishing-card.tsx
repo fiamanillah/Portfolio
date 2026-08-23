@@ -1,7 +1,5 @@
-"use client"
-
 import * as React from "react"
-import { Sparkles, Pin } from "lucide-react"
+import { Sparkles, Pin, BookOpen, Layers } from "lucide-react"
 import { Input } from "@workspace/ui/components/input"
 import { Label } from "@workspace/ui/components/label"
 import { Switch } from "@workspace/ui/components/switch"
@@ -13,9 +11,11 @@ import {
   SelectValue,
 } from "@workspace/ui/components/select"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@workspace/ui/components/card"
-import type { CaseStudyStatus } from "@workspace/shared"
+import type { CaseStudyStatus, CaseStudyType } from "@workspace/shared"
 
 interface HeroPublishingCardProps {
+  projectType: CaseStudyType
+  setProjectType: (type: CaseStudyType) => void
   status: CaseStudyStatus
   setStatus: (status: CaseStudyStatus) => void
   projectStatus: string
@@ -29,6 +29,8 @@ interface HeroPublishingCardProps {
 }
 
 export function HeroPublishingCard({
+  projectType,
+  setProjectType,
   status,
   setStatus,
   projectStatus,
@@ -44,14 +46,48 @@ export function HeroPublishingCard({
     <Card className="border-border bg-card">
       <CardHeader className="pb-4">
         <CardTitle className="text-base font-bold">
-          Lifecycle & Visibility
+          Type & Visibility
         </CardTitle>
         <CardDescription className="text-xs">
-          Publishing state, display order sequence, and home showcase flags.
+          Select project depth mode, publishing state, and display order.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
+        {/* Project Type Selector */}
         <div className="space-y-2">
+          <Label htmlFor="cs-project-type" className="text-xs font-semibold">
+            Showcase Depth Mode
+          </Label>
+          <Select
+            value={projectType}
+            onValueChange={(val: any) => setProjectType(val as CaseStudyType)}
+          >
+            <SelectTrigger id="cs-project-type" className="text-xs font-medium">
+              <SelectValue placeholder="Select type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="CASE_STUDY" className="text-xs">
+                <div className="flex items-center gap-1.5 font-medium">
+                  <BookOpen className="size-3.5 text-primary" />
+                  <span>🔬 Deep-Dive Case Study</span>
+                </div>
+              </SelectItem>
+              <SelectItem value="PROJECT" className="text-xs">
+                <div className="flex items-center gap-1.5 font-medium">
+                  <Layers className="size-3.5 text-purple-400" />
+                  <span>⚡ Quick Project Showcase</span>
+                </div>
+              </SelectItem>
+            </SelectContent>
+          </Select>
+          <p className="text-[10px] text-muted-foreground">
+            {projectType === "CASE_STUDY"
+              ? "Full 9-tab architectural breakdown with dedicated case study URL."
+              : "Streamlined 3-step project card with direct GitHub/Live links."}
+          </p>
+        </div>
+
+        <div className="space-y-2 pt-2 border-t border-border/60">
           <Label htmlFor="cs-status" className="text-xs">
             Publication Status
           </Label>
@@ -124,7 +160,7 @@ export function HeroPublishingCard({
               <Pin className="size-3 text-blue-500" /> Pinned Project
             </Label>
             <p className="text-[10px] text-muted-foreground">
-              Pin to top of case study index
+              Pin to top of portfolio index
             </p>
           </div>
           <Switch
@@ -137,3 +173,4 @@ export function HeroPublishingCard({
     </Card>
   )
 }
+

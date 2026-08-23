@@ -44,6 +44,7 @@ export type CaseStudyMinAggregateOutputType = {
   title: string | null
   subtitle: string | null
   description: string | null
+  projectType: $Enums.CaseStudyType | null
   status: $Enums.CaseStudyStatus | null
   projectStatus: string | null
   order: number | null
@@ -87,6 +88,7 @@ export type CaseStudyMaxAggregateOutputType = {
   title: string | null
   subtitle: string | null
   description: string | null
+  projectType: $Enums.CaseStudyType | null
   status: $Enums.CaseStudyStatus | null
   projectStatus: string | null
   order: number | null
@@ -130,6 +132,7 @@ export type CaseStudyCountAggregateOutputType = {
   title: number
   subtitle: number
   description: number
+  projectType: number
   status: number
   projectStatus: number
   order: number
@@ -144,6 +147,7 @@ export type CaseStudyCountAggregateOutputType = {
   timeline: number
   client: number
   impact: number
+  highlights: number
   views: number
   likesCount: number
   publishedAt: number
@@ -196,6 +200,7 @@ export type CaseStudyMinAggregateInputType = {
   title?: true
   subtitle?: true
   description?: true
+  projectType?: true
   status?: true
   projectStatus?: true
   order?: true
@@ -239,6 +244,7 @@ export type CaseStudyMaxAggregateInputType = {
   title?: true
   subtitle?: true
   description?: true
+  projectType?: true
   status?: true
   projectStatus?: true
   order?: true
@@ -282,6 +288,7 @@ export type CaseStudyCountAggregateInputType = {
   title?: true
   subtitle?: true
   description?: true
+  projectType?: true
   status?: true
   projectStatus?: true
   order?: true
@@ -296,6 +303,7 @@ export type CaseStudyCountAggregateInputType = {
   timeline?: true
   client?: true
   impact?: true
+  highlights?: true
   views?: true
   likesCount?: true
   publishedAt?: true
@@ -421,6 +429,7 @@ export type CaseStudyGroupByOutputType = {
   title: string
   subtitle: string | null
   description: string
+  projectType: $Enums.CaseStudyType
   status: $Enums.CaseStudyStatus
   projectStatus: string
   order: number
@@ -435,6 +444,7 @@ export type CaseStudyGroupByOutputType = {
   timeline: string | null
   client: string | null
   impact: string | null
+  highlights: string[]
   views: number
   likesCount: number
   publishedAt: Date | null
@@ -496,6 +506,7 @@ export type CaseStudyWhereInput = {
   title?: Prisma.StringFilter<"CaseStudy"> | string
   subtitle?: Prisma.StringNullableFilter<"CaseStudy"> | string | null
   description?: Prisma.StringFilter<"CaseStudy"> | string
+  projectType?: Prisma.EnumCaseStudyTypeFilter<"CaseStudy"> | $Enums.CaseStudyType
   status?: Prisma.EnumCaseStudyStatusFilter<"CaseStudy"> | $Enums.CaseStudyStatus
   projectStatus?: Prisma.StringFilter<"CaseStudy"> | string
   order?: Prisma.IntFilter<"CaseStudy"> | number
@@ -510,6 +521,7 @@ export type CaseStudyWhereInput = {
   timeline?: Prisma.StringNullableFilter<"CaseStudy"> | string | null
   client?: Prisma.StringNullableFilter<"CaseStudy"> | string | null
   impact?: Prisma.StringNullableFilter<"CaseStudy"> | string | null
+  highlights?: Prisma.StringNullableListFilter<"CaseStudy">
   views?: Prisma.IntFilter<"CaseStudy"> | number
   likesCount?: Prisma.IntFilter<"CaseStudy"> | number
   publishedAt?: Prisma.DateTimeNullableFilter<"CaseStudy"> | Date | string | null
@@ -549,6 +561,7 @@ export type CaseStudyOrderByWithRelationInput = {
   title?: Prisma.SortOrder
   subtitle?: Prisma.SortOrderInput | Prisma.SortOrder
   description?: Prisma.SortOrder
+  projectType?: Prisma.SortOrder
   status?: Prisma.SortOrder
   projectStatus?: Prisma.SortOrder
   order?: Prisma.SortOrder
@@ -563,6 +576,7 @@ export type CaseStudyOrderByWithRelationInput = {
   timeline?: Prisma.SortOrderInput | Prisma.SortOrder
   client?: Prisma.SortOrderInput | Prisma.SortOrder
   impact?: Prisma.SortOrderInput | Prisma.SortOrder
+  highlights?: Prisma.SortOrder
   views?: Prisma.SortOrder
   likesCount?: Prisma.SortOrder
   publishedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -605,6 +619,7 @@ export type CaseStudyWhereUniqueInput = Prisma.AtLeast<{
   title?: Prisma.StringFilter<"CaseStudy"> | string
   subtitle?: Prisma.StringNullableFilter<"CaseStudy"> | string | null
   description?: Prisma.StringFilter<"CaseStudy"> | string
+  projectType?: Prisma.EnumCaseStudyTypeFilter<"CaseStudy"> | $Enums.CaseStudyType
   status?: Prisma.EnumCaseStudyStatusFilter<"CaseStudy"> | $Enums.CaseStudyStatus
   projectStatus?: Prisma.StringFilter<"CaseStudy"> | string
   order?: Prisma.IntFilter<"CaseStudy"> | number
@@ -619,6 +634,7 @@ export type CaseStudyWhereUniqueInput = Prisma.AtLeast<{
   timeline?: Prisma.StringNullableFilter<"CaseStudy"> | string | null
   client?: Prisma.StringNullableFilter<"CaseStudy"> | string | null
   impact?: Prisma.StringNullableFilter<"CaseStudy"> | string | null
+  highlights?: Prisma.StringNullableListFilter<"CaseStudy">
   views?: Prisma.IntFilter<"CaseStudy"> | number
   likesCount?: Prisma.IntFilter<"CaseStudy"> | number
   publishedAt?: Prisma.DateTimeNullableFilter<"CaseStudy"> | Date | string | null
@@ -658,6 +674,7 @@ export type CaseStudyOrderByWithAggregationInput = {
   title?: Prisma.SortOrder
   subtitle?: Prisma.SortOrderInput | Prisma.SortOrder
   description?: Prisma.SortOrder
+  projectType?: Prisma.SortOrder
   status?: Prisma.SortOrder
   projectStatus?: Prisma.SortOrder
   order?: Prisma.SortOrder
@@ -672,6 +689,7 @@ export type CaseStudyOrderByWithAggregationInput = {
   timeline?: Prisma.SortOrderInput | Prisma.SortOrder
   client?: Prisma.SortOrderInput | Prisma.SortOrder
   impact?: Prisma.SortOrderInput | Prisma.SortOrder
+  highlights?: Prisma.SortOrder
   views?: Prisma.SortOrder
   likesCount?: Prisma.SortOrder
   publishedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -718,6 +736,7 @@ export type CaseStudyScalarWhereWithAggregatesInput = {
   title?: Prisma.StringWithAggregatesFilter<"CaseStudy"> | string
   subtitle?: Prisma.StringNullableWithAggregatesFilter<"CaseStudy"> | string | null
   description?: Prisma.StringWithAggregatesFilter<"CaseStudy"> | string
+  projectType?: Prisma.EnumCaseStudyTypeWithAggregatesFilter<"CaseStudy"> | $Enums.CaseStudyType
   status?: Prisma.EnumCaseStudyStatusWithAggregatesFilter<"CaseStudy"> | $Enums.CaseStudyStatus
   projectStatus?: Prisma.StringWithAggregatesFilter<"CaseStudy"> | string
   order?: Prisma.IntWithAggregatesFilter<"CaseStudy"> | number
@@ -732,6 +751,7 @@ export type CaseStudyScalarWhereWithAggregatesInput = {
   timeline?: Prisma.StringNullableWithAggregatesFilter<"CaseStudy"> | string | null
   client?: Prisma.StringNullableWithAggregatesFilter<"CaseStudy"> | string | null
   impact?: Prisma.StringNullableWithAggregatesFilter<"CaseStudy"> | string | null
+  highlights?: Prisma.StringNullableListFilter<"CaseStudy">
   views?: Prisma.IntWithAggregatesFilter<"CaseStudy"> | number
   likesCount?: Prisma.IntWithAggregatesFilter<"CaseStudy"> | number
   publishedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"CaseStudy"> | Date | string | null
@@ -770,6 +790,7 @@ export type CaseStudyCreateInput = {
   title: string
   subtitle?: string | null
   description: string
+  projectType?: $Enums.CaseStudyType
   status?: $Enums.CaseStudyStatus
   projectStatus?: string
   order?: number
@@ -784,6 +805,7 @@ export type CaseStudyCreateInput = {
   timeline?: string | null
   client?: string | null
   impact?: string | null
+  highlights?: Prisma.CaseStudyCreatehighlightsInput | string[]
   views?: number
   likesCount?: number
   publishedAt?: Date | string | null
@@ -822,6 +844,7 @@ export type CaseStudyUncheckedCreateInput = {
   title: string
   subtitle?: string | null
   description: string
+  projectType?: $Enums.CaseStudyType
   status?: $Enums.CaseStudyStatus
   projectStatus?: string
   order?: number
@@ -836,6 +859,7 @@ export type CaseStudyUncheckedCreateInput = {
   timeline?: string | null
   client?: string | null
   impact?: string | null
+  highlights?: Prisma.CaseStudyCreatehighlightsInput | string[]
   views?: number
   likesCount?: number
   publishedAt?: Date | string | null
@@ -874,6 +898,7 @@ export type CaseStudyUpdateInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   subtitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.StringFieldUpdateOperationsInput | string
+  projectType?: Prisma.EnumCaseStudyTypeFieldUpdateOperationsInput | $Enums.CaseStudyType
   status?: Prisma.EnumCaseStudyStatusFieldUpdateOperationsInput | $Enums.CaseStudyStatus
   projectStatus?: Prisma.StringFieldUpdateOperationsInput | string
   order?: Prisma.IntFieldUpdateOperationsInput | number
@@ -888,6 +913,7 @@ export type CaseStudyUpdateInput = {
   timeline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   client?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   impact?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  highlights?: Prisma.CaseStudyUpdatehighlightsInput | string[]
   views?: Prisma.IntFieldUpdateOperationsInput | number
   likesCount?: Prisma.IntFieldUpdateOperationsInput | number
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -926,6 +952,7 @@ export type CaseStudyUncheckedUpdateInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   subtitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.StringFieldUpdateOperationsInput | string
+  projectType?: Prisma.EnumCaseStudyTypeFieldUpdateOperationsInput | $Enums.CaseStudyType
   status?: Prisma.EnumCaseStudyStatusFieldUpdateOperationsInput | $Enums.CaseStudyStatus
   projectStatus?: Prisma.StringFieldUpdateOperationsInput | string
   order?: Prisma.IntFieldUpdateOperationsInput | number
@@ -940,6 +967,7 @@ export type CaseStudyUncheckedUpdateInput = {
   timeline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   client?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   impact?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  highlights?: Prisma.CaseStudyUpdatehighlightsInput | string[]
   views?: Prisma.IntFieldUpdateOperationsInput | number
   likesCount?: Prisma.IntFieldUpdateOperationsInput | number
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -978,6 +1006,7 @@ export type CaseStudyCreateManyInput = {
   title: string
   subtitle?: string | null
   description: string
+  projectType?: $Enums.CaseStudyType
   status?: $Enums.CaseStudyStatus
   projectStatus?: string
   order?: number
@@ -992,6 +1021,7 @@ export type CaseStudyCreateManyInput = {
   timeline?: string | null
   client?: string | null
   impact?: string | null
+  highlights?: Prisma.CaseStudyCreatehighlightsInput | string[]
   views?: number
   likesCount?: number
   publishedAt?: Date | string | null
@@ -1030,6 +1060,7 @@ export type CaseStudyUpdateManyMutationInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   subtitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.StringFieldUpdateOperationsInput | string
+  projectType?: Prisma.EnumCaseStudyTypeFieldUpdateOperationsInput | $Enums.CaseStudyType
   status?: Prisma.EnumCaseStudyStatusFieldUpdateOperationsInput | $Enums.CaseStudyStatus
   projectStatus?: Prisma.StringFieldUpdateOperationsInput | string
   order?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1044,6 +1075,7 @@ export type CaseStudyUpdateManyMutationInput = {
   timeline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   client?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   impact?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  highlights?: Prisma.CaseStudyUpdatehighlightsInput | string[]
   views?: Prisma.IntFieldUpdateOperationsInput | number
   likesCount?: Prisma.IntFieldUpdateOperationsInput | number
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1081,6 +1113,7 @@ export type CaseStudyUncheckedUpdateManyInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   subtitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.StringFieldUpdateOperationsInput | string
+  projectType?: Prisma.EnumCaseStudyTypeFieldUpdateOperationsInput | $Enums.CaseStudyType
   status?: Prisma.EnumCaseStudyStatusFieldUpdateOperationsInput | $Enums.CaseStudyStatus
   projectStatus?: Prisma.StringFieldUpdateOperationsInput | string
   order?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1095,6 +1128,7 @@ export type CaseStudyUncheckedUpdateManyInput = {
   timeline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   client?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   impact?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  highlights?: Prisma.CaseStudyUpdatehighlightsInput | string[]
   views?: Prisma.IntFieldUpdateOperationsInput | number
   likesCount?: Prisma.IntFieldUpdateOperationsInput | number
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1143,6 +1177,7 @@ export type CaseStudyCountOrderByAggregateInput = {
   title?: Prisma.SortOrder
   subtitle?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  projectType?: Prisma.SortOrder
   status?: Prisma.SortOrder
   projectStatus?: Prisma.SortOrder
   order?: Prisma.SortOrder
@@ -1157,6 +1192,7 @@ export type CaseStudyCountOrderByAggregateInput = {
   timeline?: Prisma.SortOrder
   client?: Prisma.SortOrder
   impact?: Prisma.SortOrder
+  highlights?: Prisma.SortOrder
   views?: Prisma.SortOrder
   likesCount?: Prisma.SortOrder
   publishedAt?: Prisma.SortOrder
@@ -1201,6 +1237,7 @@ export type CaseStudyMaxOrderByAggregateInput = {
   title?: Prisma.SortOrder
   subtitle?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  projectType?: Prisma.SortOrder
   status?: Prisma.SortOrder
   projectStatus?: Prisma.SortOrder
   order?: Prisma.SortOrder
@@ -1244,6 +1281,7 @@ export type CaseStudyMinOrderByAggregateInput = {
   title?: Prisma.SortOrder
   subtitle?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  projectType?: Prisma.SortOrder
   status?: Prisma.SortOrder
   projectStatus?: Prisma.SortOrder
   order?: Prisma.SortOrder
@@ -1333,8 +1371,16 @@ export type CaseStudyCreatetechStackInput = {
   set: string[]
 }
 
+export type CaseStudyCreatehighlightsInput = {
+  set: string[]
+}
+
 export type CaseStudyCreatemetaKeywordsInput = {
   set: string[]
+}
+
+export type EnumCaseStudyTypeFieldUpdateOperationsInput = {
+  set?: $Enums.CaseStudyType
 }
 
 export type EnumCaseStudyStatusFieldUpdateOperationsInput = {
@@ -1342,6 +1388,11 @@ export type EnumCaseStudyStatusFieldUpdateOperationsInput = {
 }
 
 export type CaseStudyUpdatetechStackInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
+export type CaseStudyUpdatehighlightsInput = {
   set?: string[]
   push?: string | string[]
 }
@@ -1357,6 +1408,7 @@ export type CaseStudyCreateWithoutAuthorInput = {
   title: string
   subtitle?: string | null
   description: string
+  projectType?: $Enums.CaseStudyType
   status?: $Enums.CaseStudyStatus
   projectStatus?: string
   order?: number
@@ -1371,6 +1423,7 @@ export type CaseStudyCreateWithoutAuthorInput = {
   timeline?: string | null
   client?: string | null
   impact?: string | null
+  highlights?: Prisma.CaseStudyCreatehighlightsInput | string[]
   views?: number
   likesCount?: number
   publishedAt?: Date | string | null
@@ -1408,6 +1461,7 @@ export type CaseStudyUncheckedCreateWithoutAuthorInput = {
   title: string
   subtitle?: string | null
   description: string
+  projectType?: $Enums.CaseStudyType
   status?: $Enums.CaseStudyStatus
   projectStatus?: string
   order?: number
@@ -1422,6 +1476,7 @@ export type CaseStudyUncheckedCreateWithoutAuthorInput = {
   timeline?: string | null
   client?: string | null
   impact?: string | null
+  highlights?: Prisma.CaseStudyCreatehighlightsInput | string[]
   views?: number
   likesCount?: number
   publishedAt?: Date | string | null
@@ -1488,6 +1543,7 @@ export type CaseStudyScalarWhereInput = {
   title?: Prisma.StringFilter<"CaseStudy"> | string
   subtitle?: Prisma.StringNullableFilter<"CaseStudy"> | string | null
   description?: Prisma.StringFilter<"CaseStudy"> | string
+  projectType?: Prisma.EnumCaseStudyTypeFilter<"CaseStudy"> | $Enums.CaseStudyType
   status?: Prisma.EnumCaseStudyStatusFilter<"CaseStudy"> | $Enums.CaseStudyStatus
   projectStatus?: Prisma.StringFilter<"CaseStudy"> | string
   order?: Prisma.IntFilter<"CaseStudy"> | number
@@ -1502,6 +1558,7 @@ export type CaseStudyScalarWhereInput = {
   timeline?: Prisma.StringNullableFilter<"CaseStudy"> | string | null
   client?: Prisma.StringNullableFilter<"CaseStudy"> | string | null
   impact?: Prisma.StringNullableFilter<"CaseStudy"> | string | null
+  highlights?: Prisma.StringNullableListFilter<"CaseStudy">
   views?: Prisma.IntFilter<"CaseStudy"> | number
   likesCount?: Prisma.IntFilter<"CaseStudy"> | number
   publishedAt?: Prisma.DateTimeNullableFilter<"CaseStudy"> | Date | string | null
@@ -1540,6 +1597,7 @@ export type CaseStudyCreateManyAuthorInput = {
   title: string
   subtitle?: string | null
   description: string
+  projectType?: $Enums.CaseStudyType
   status?: $Enums.CaseStudyStatus
   projectStatus?: string
   order?: number
@@ -1554,6 +1612,7 @@ export type CaseStudyCreateManyAuthorInput = {
   timeline?: string | null
   client?: string | null
   impact?: string | null
+  highlights?: Prisma.CaseStudyCreatehighlightsInput | string[]
   views?: number
   likesCount?: number
   publishedAt?: Date | string | null
@@ -1591,6 +1650,7 @@ export type CaseStudyUpdateWithoutAuthorInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   subtitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.StringFieldUpdateOperationsInput | string
+  projectType?: Prisma.EnumCaseStudyTypeFieldUpdateOperationsInput | $Enums.CaseStudyType
   status?: Prisma.EnumCaseStudyStatusFieldUpdateOperationsInput | $Enums.CaseStudyStatus
   projectStatus?: Prisma.StringFieldUpdateOperationsInput | string
   order?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1605,6 +1665,7 @@ export type CaseStudyUpdateWithoutAuthorInput = {
   timeline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   client?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   impact?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  highlights?: Prisma.CaseStudyUpdatehighlightsInput | string[]
   views?: Prisma.IntFieldUpdateOperationsInput | number
   likesCount?: Prisma.IntFieldUpdateOperationsInput | number
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1642,6 +1703,7 @@ export type CaseStudyUncheckedUpdateWithoutAuthorInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   subtitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.StringFieldUpdateOperationsInput | string
+  projectType?: Prisma.EnumCaseStudyTypeFieldUpdateOperationsInput | $Enums.CaseStudyType
   status?: Prisma.EnumCaseStudyStatusFieldUpdateOperationsInput | $Enums.CaseStudyStatus
   projectStatus?: Prisma.StringFieldUpdateOperationsInput | string
   order?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1656,6 +1718,7 @@ export type CaseStudyUncheckedUpdateWithoutAuthorInput = {
   timeline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   client?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   impact?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  highlights?: Prisma.CaseStudyUpdatehighlightsInput | string[]
   views?: Prisma.IntFieldUpdateOperationsInput | number
   likesCount?: Prisma.IntFieldUpdateOperationsInput | number
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1693,6 +1756,7 @@ export type CaseStudyUncheckedUpdateManyWithoutAuthorInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   subtitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.StringFieldUpdateOperationsInput | string
+  projectType?: Prisma.EnumCaseStudyTypeFieldUpdateOperationsInput | $Enums.CaseStudyType
   status?: Prisma.EnumCaseStudyStatusFieldUpdateOperationsInput | $Enums.CaseStudyStatus
   projectStatus?: Prisma.StringFieldUpdateOperationsInput | string
   order?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1707,6 +1771,7 @@ export type CaseStudyUncheckedUpdateManyWithoutAuthorInput = {
   timeline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   client?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   impact?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  highlights?: Prisma.CaseStudyUpdatehighlightsInput | string[]
   views?: Prisma.IntFieldUpdateOperationsInput | number
   likesCount?: Prisma.IntFieldUpdateOperationsInput | number
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1746,6 +1811,7 @@ export type CaseStudySelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   title?: boolean
   subtitle?: boolean
   description?: boolean
+  projectType?: boolean
   status?: boolean
   projectStatus?: boolean
   order?: boolean
@@ -1760,6 +1826,7 @@ export type CaseStudySelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   timeline?: boolean
   client?: boolean
   impact?: boolean
+  highlights?: boolean
   views?: boolean
   likesCount?: boolean
   publishedAt?: boolean
@@ -1799,6 +1866,7 @@ export type CaseStudySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   title?: boolean
   subtitle?: boolean
   description?: boolean
+  projectType?: boolean
   status?: boolean
   projectStatus?: boolean
   order?: boolean
@@ -1813,6 +1881,7 @@ export type CaseStudySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   timeline?: boolean
   client?: boolean
   impact?: boolean
+  highlights?: boolean
   views?: boolean
   likesCount?: boolean
   publishedAt?: boolean
@@ -1852,6 +1921,7 @@ export type CaseStudySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   title?: boolean
   subtitle?: boolean
   description?: boolean
+  projectType?: boolean
   status?: boolean
   projectStatus?: boolean
   order?: boolean
@@ -1866,6 +1936,7 @@ export type CaseStudySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   timeline?: boolean
   client?: boolean
   impact?: boolean
+  highlights?: boolean
   views?: boolean
   likesCount?: boolean
   publishedAt?: boolean
@@ -1905,6 +1976,7 @@ export type CaseStudySelectScalar = {
   title?: boolean
   subtitle?: boolean
   description?: boolean
+  projectType?: boolean
   status?: boolean
   projectStatus?: boolean
   order?: boolean
@@ -1919,6 +1991,7 @@ export type CaseStudySelectScalar = {
   timeline?: boolean
   client?: boolean
   impact?: boolean
+  highlights?: boolean
   views?: boolean
   likesCount?: boolean
   publishedAt?: boolean
@@ -1951,7 +2024,7 @@ export type CaseStudySelectScalar = {
   updatedAt?: boolean
 }
 
-export type CaseStudyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slug" | "title" | "subtitle" | "description" | "status" | "projectStatus" | "order" | "featured" | "pinned" | "techStack" | "liveUrl" | "githubUrl" | "image" | "imageLabel" | "role" | "timeline" | "client" | "impact" | "views" | "likesCount" | "publishedAt" | "authorId" | "authorName" | "authorRole" | "authorAvatar" | "authorTwitter" | "authorLinkedin" | "authorGithub" | "metadata" | "contextBlocks" | "architectureLayers" | "features" | "metrics" | "postMortem" | "metaTitle" | "metaDescription" | "metaKeywords" | "ogTitle" | "ogDescription" | "ogImage" | "twitterCard" | "twitterTitle" | "twitterDescription" | "twitterImage" | "canonicalUrl" | "structuredData" | "createdAt" | "updatedAt", ExtArgs["result"]["caseStudy"]>
+export type CaseStudyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slug" | "title" | "subtitle" | "description" | "projectType" | "status" | "projectStatus" | "order" | "featured" | "pinned" | "techStack" | "liveUrl" | "githubUrl" | "image" | "imageLabel" | "role" | "timeline" | "client" | "impact" | "highlights" | "views" | "likesCount" | "publishedAt" | "authorId" | "authorName" | "authorRole" | "authorAvatar" | "authorTwitter" | "authorLinkedin" | "authorGithub" | "metadata" | "contextBlocks" | "architectureLayers" | "features" | "metrics" | "postMortem" | "metaTitle" | "metaDescription" | "metaKeywords" | "ogTitle" | "ogDescription" | "ogImage" | "twitterCard" | "twitterTitle" | "twitterDescription" | "twitterImage" | "canonicalUrl" | "structuredData" | "createdAt" | "updatedAt", ExtArgs["result"]["caseStudy"]>
 export type CaseStudyInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   author?: boolean | Prisma.CaseStudy$authorArgs<ExtArgs>
 }
@@ -1973,6 +2046,7 @@ export type $CaseStudyPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     title: string
     subtitle: string | null
     description: string
+    projectType: $Enums.CaseStudyType
     status: $Enums.CaseStudyStatus
     projectStatus: string
     order: number
@@ -1987,6 +2061,7 @@ export type $CaseStudyPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     timeline: string | null
     client: string | null
     impact: string | null
+    highlights: string[]
     views: number
     likesCount: number
     publishedAt: Date | null
@@ -2446,6 +2521,7 @@ export interface CaseStudyFieldRefs {
   readonly title: Prisma.FieldRef<"CaseStudy", 'String'>
   readonly subtitle: Prisma.FieldRef<"CaseStudy", 'String'>
   readonly description: Prisma.FieldRef<"CaseStudy", 'String'>
+  readonly projectType: Prisma.FieldRef<"CaseStudy", 'CaseStudyType'>
   readonly status: Prisma.FieldRef<"CaseStudy", 'CaseStudyStatus'>
   readonly projectStatus: Prisma.FieldRef<"CaseStudy", 'String'>
   readonly order: Prisma.FieldRef<"CaseStudy", 'Int'>
@@ -2460,6 +2536,7 @@ export interface CaseStudyFieldRefs {
   readonly timeline: Prisma.FieldRef<"CaseStudy", 'String'>
   readonly client: Prisma.FieldRef<"CaseStudy", 'String'>
   readonly impact: Prisma.FieldRef<"CaseStudy", 'String'>
+  readonly highlights: Prisma.FieldRef<"CaseStudy", 'String[]'>
   readonly views: Prisma.FieldRef<"CaseStudy", 'Int'>
   readonly likesCount: Prisma.FieldRef<"CaseStudy", 'Int'>
   readonly publishedAt: Prisma.FieldRef<"CaseStudy", 'DateTime'>

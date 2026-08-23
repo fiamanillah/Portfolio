@@ -97,16 +97,31 @@ export function CaseStudyCard({
           </Badge>
         </div>
 
-        {study.featured && (
-          <div className="absolute top-2.5 left-2.5">
+        <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5">
+          {study.projectType === "PROJECT" ? (
+            <Badge
+              variant="outline"
+              className="backdrop-blur-md border-purple-500/40 bg-purple-950/70 text-purple-300 font-mono text-[9px] px-1.5 py-0.5"
+            >
+              ⚡ Project
+            </Badge>
+          ) : (
+            <Badge
+              variant="outline"
+              className="backdrop-blur-md border-primary/40 bg-background/80 text-primary font-mono text-[9px] px-1.5 py-0.5"
+            >
+              🔬 Deep Dive
+            </Badge>
+          )}
+          {study.featured && (
             <Badge
               variant="default"
               className="bg-primary/90 text-primary-foreground backdrop-blur-md px-1.5 py-0.5 text-[10px]"
             >
               <Sparkles className="mr-1 size-2.5" /> Featured
             </Badge>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
       {/* Body Content */}

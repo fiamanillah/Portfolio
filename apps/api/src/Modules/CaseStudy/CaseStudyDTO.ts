@@ -1,6 +1,7 @@
 // src/Modules/CaseStudy/CaseStudyDTO.ts
 export {
   caseStudyStatusEnumSchema,
+  caseStudyTypeEnumSchema,
   caseStudyMetadataItemSchema,
   contextBlockSchema,
   architectureItemSchema,
@@ -22,6 +23,7 @@ export {
 
 export type {
   CaseStudyStatus,
+  CaseStudyType,
   CaseStudyMetadataItem,
   ContextBlock,
   ArchitectureItem,
@@ -44,3 +46,4 @@ export type {
   BulkCaseStudyDeleteDTO,
   ReorderCaseStudiesDTO,
 } from "@workspace/shared";
+

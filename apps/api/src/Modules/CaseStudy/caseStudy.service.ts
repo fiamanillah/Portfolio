@@ -118,6 +118,7 @@ export class CaseStudyService {
       title: cs.title,
       subtitle: cs.subtitle || null,
       description: cs.description,
+      projectType: (cs.projectType as any) || "CASE_STUDY",
       status: cs.status as CaseStudyStatus,
       projectStatus: cs.projectStatus || "Status: Completed",
       order: cs.order,
@@ -132,6 +133,7 @@ export class CaseStudyService {
       timeline: cs.timeline || null,
       client: cs.client || null,
       impact: cs.impact || null,
+      highlights: Array.isArray(cs.highlights) ? cs.highlights : [],
       views: cs.views ?? 0,
       likesCount: cs.likesCount ?? 0,
       publishedAt: cs.publishedAt ? cs.publishedAt.toISOString() : null,
@@ -202,6 +204,7 @@ export class CaseStudyService {
       title: cs.title,
       subtitle: cs.subtitle || null,
       description: cs.description,
+      projectType: (cs.projectType as any) || "CASE_STUDY",
       status: cs.status as CaseStudyStatus,
       projectStatus: cs.projectStatus || "Status: Completed",
       order: cs.order,
@@ -216,6 +219,7 @@ export class CaseStudyService {
       timeline: cs.timeline || null,
       client: cs.client || null,
       impact: cs.impact || null,
+      highlights: Array.isArray(cs.highlights) ? cs.highlights : [],
       metadata: Array.isArray(cs.metadata) ? cs.metadata : [],
       contextBlocks: Array.isArray(cs.contextBlocks) ? cs.contextBlocks : [],
       architectureLayers: Array.isArray(cs.architectureLayers)
@@ -310,6 +314,10 @@ export class CaseStudyService {
     const skip = (page - 1) * limit;
 
     const where: any = {};
+
+    if (query.projectType) {
+      where.projectType = query.projectType;
+    }
 
     if (query.status) {
       where.status = query.status;
@@ -462,6 +470,7 @@ export class CaseStudyService {
         title: payload.title.trim(),
         subtitle: payload.subtitle?.trim() || null,
         description: payload.description.trim(),
+        projectType: (payload.projectType as any) || "CASE_STUDY",
         status: (payload.status as CaseStudyStatus) || CaseStudyStatus.DRAFT,
         projectStatus: payload.projectStatus?.trim() || "Status: Completed",
         order,
@@ -476,6 +485,7 @@ export class CaseStudyService {
         timeline: payload.timeline?.trim() || null,
         client: payload.client?.trim() || null,
         impact: payload.impact?.trim() || null,
+        highlights: payload.highlights || [],
         publishedAt,
         authorId,
         authorName,
@@ -558,6 +568,7 @@ export class CaseStudyService {
         ...(payload.title !== undefined && { title: payload.title.trim() }),
         ...(payload.subtitle !== undefined && { subtitle: payload.subtitle?.trim() || null }),
         ...(payload.description !== undefined && { description: payload.description.trim() }),
+        ...(payload.projectType !== undefined && { projectType: payload.projectType as any }),
         ...(payload.status !== undefined && { status: payload.status as CaseStudyStatus }),
         ...(payload.projectStatus !== undefined && { projectStatus: payload.projectStatus.trim() }),
         ...(payload.order !== undefined && { order: payload.order }),
@@ -572,6 +583,7 @@ export class CaseStudyService {
         ...(payload.timeline !== undefined && { timeline: payload.timeline?.trim() || null }),
         ...(payload.client !== undefined && { client: payload.client?.trim() || null }),
         ...(payload.impact !== undefined && { impact: payload.impact?.trim() || null }),
+        ...(payload.highlights !== undefined && { highlights: payload.highlights }),
         ...(payload.views !== undefined && { views: payload.views }),
         ...(payload.likesCount !== undefined && { likesCount: payload.likesCount }),
         publishedAt,
@@ -667,6 +679,7 @@ export class CaseStudyService {
         title: `${original.title} (Copy)`,
         subtitle: original.subtitle,
         description: original.description,
+        projectType: original.projectType,
         status: CaseStudyStatus.DRAFT,
         projectStatus: original.projectStatus,
         order: nextOrder,
@@ -681,6 +694,7 @@ export class CaseStudyService {
         timeline: original.timeline,
         client: original.client,
         impact: original.impact,
+        highlights: original.highlights || [],
         views: 0,
         likesCount: 0,
         publishedAt: null,
@@ -781,6 +795,7 @@ export class CaseStudyService {
         title: "Mickanic — Real-Time Bidding & Service Marketplace Platform",
         subtitle: "Real-Time Bidding & Service Marketplace Platform",
         description: "I architected a service-based marketplace using Next.js 16 and Bun, integrating real-time bidding, Socket.io messaging, and tiered Stripe subscriptions, backed by PostgreSQL and RabbitMQ.",
+        projectType: "CASE_STUDY" as const,
         status: CaseStudyStatus.PUBLISHED,
         projectStatus: "Status: Completed",
         order: 1,
@@ -795,6 +810,11 @@ export class CaseStudyService {
         timeline: "2025 - 2026",
         client: "Mickanic",
         impact: "Engineered contractor credit/bidding engine with Stripe billing, real-time Socket.io messaging with Redis, and Docker Compose deployment.",
+        highlights: [
+          "Real-Time Socket.IO messaging with typing indicators",
+          "Event-driven RabbitMQ worker queue for async notifications",
+          "Tiered Stripe contractor subscription billing",
+        ],
         views: 2840,
         likesCount: 98,
         publishedAt: new Date("2026-01-15T00:00:00.000Z"),
@@ -835,6 +855,7 @@ export class CaseStudyService {
         title: "Moja Cares — Healthcare Management & Patient Care Portal",
         subtitle: "Healthcare Management & Patient Care Portal",
         description: "Comprehensive healthcare management portal featuring multi-role RBAC, real-time clinical team chats, automated alerts, AI-powered document insight extraction, and Paystack billing integration.",
+        projectType: "CASE_STUDY" as const,
         status: CaseStudyStatus.PUBLISHED,
         projectStatus: "Status: Live",
         order: 2,
@@ -849,6 +870,11 @@ export class CaseStudyService {
         timeline: "2026",
         client: "Moja Cares",
         impact: "Architected OpenAI API health insights worker, WebSocket patient-care chat, SES/Postmark alert dispatch, and Paystack billing.",
+        highlights: [
+          "OpenAI worker for automated clinical record insight extraction",
+          "Redis Pub/Sub adapter scaling WebSockets across cluster nodes",
+          "Paystack billing & subscription webhooks integration",
+        ],
         views: 1920,
         likesCount: 74,
         publishedAt: new Date("2026-01-15T00:00:00.000Z"),
@@ -884,19 +910,99 @@ export class CaseStudyService {
           { title: "Lessons Learned", entries: [{ heading: "Asynchronous First Architecture", detail: "Offloading document intelligence and email dispatches to dedicated background workers protected core patient API latency during peak clinic hours." }, { heading: "Strict Type Safety", detail: "Defining centralized Prisma schemas and TypeScript contracts eliminated schema drift between care team APIs, socket payloads, and billing webhooks." }] },
         ],
       },
+      {
+        slug: "express-monorepo-template",
+        title: "Express Class Monorepo Template",
+        subtitle: "Production-ready backend architecture starter",
+        description: "A modular, class-based Express monorepo template built with TypeScript, Bun, Docker Compose, and automated API documentation for rapid backend deployment.",
+        projectType: "PROJECT" as const,
+        status: CaseStudyStatus.PUBLISHED,
+        projectStatus: "Status: Completed",
+        order: 3,
+        featured: false,
+        pinned: false,
+        techStack: ["TypeScript", "Express", "Bun", "Docker", "Turborepo", "Swagger"],
+        liveUrl: null,
+        githubUrl: "https://github.com/fiamanillah",
+        image: "/assets/images/mickanic-cover.png",
+        imageLabel: "Monorepo_Architecture_Template.png",
+        role: "Open Source Creator",
+        timeline: "2026",
+        client: "Open Source",
+        impact: "Standardized backend boilerplate across personal and client projects, reducing initial project setup time by over 70%.",
+        highlights: [
+          "Strict ESLint & Prettier configuration with monorepo Turborepo pipelines",
+          "Class-based controller & service routing architecture",
+          "Dockerized development and production compose files",
+        ],
+        views: 1120,
+        likesCount: 45,
+        publishedAt: new Date("2026-02-01T00:00:00.000Z"),
+        metadata: [
+          { label: "Role", value: "Open Source Creator" },
+          { label: "Timeline", value: "2026" },
+          { label: "Client / Company", value: "Open Source" },
+          { label: "Tech Stack", value: "TypeScript, Bun, Docker, Express" },
+        ],
+        contextBlocks: [],
+        architectureLayers: [],
+        features: [],
+        metrics: [],
+        postMortem: [],
+      },
+      {
+        slug: "microservice-alert-worker",
+        title: "RabbitMQ Microservice Dispatcher",
+        subtitle: "High-throughput asynchronous message consumer",
+        description: "A lightweight, failure-resilient background queue dispatcher service designed to decouple email, SMS, and web-push notifications from core REST APIs.",
+        projectType: "PROJECT" as const,
+        status: CaseStudyStatus.PUBLISHED,
+        projectStatus: "Status: Live",
+        order: 4,
+        featured: false,
+        pinned: false,
+        techStack: ["Node.js", "RabbitMQ", "Redis", "TypeScript", "AWS SES"],
+        liveUrl: null,
+        githubUrl: "https://github.com/fiamanillah",
+        image: "/assets/images/moja-cares-cover.png",
+        imageLabel: "Microservice_Alert_Worker.png",
+        role: "Full Stack Developer",
+        timeline: "2025",
+        client: "System Utility",
+        impact: "Processed thousands of asynchronous notification events daily with automatic retry strategies and dead-letter queue routing.",
+        highlights: [
+          "Dead-letter exchange handling for failed message redelivery",
+          "Rate-limited SMTP dispatching with Redis token buckets",
+        ],
+        views: 950,
+        likesCount: 38,
+        publishedAt: new Date("2025-11-10T00:00:00.000Z"),
+        metadata: [
+          { label: "Role", value: "Full Stack Developer" },
+          { label: "Timeline", value: "2025" },
+          { label: "Client / Company", value: "System Utility" },
+          { label: "Tech Stack", value: "Node.js, RabbitMQ, Redis, TypeScript" },
+        ],
+        contextBlocks: [],
+        architectureLayers: [],
+        features: [],
+        metrics: [],
+        postMortem: [],
+      },
     ];
 
-    let imported = 0;
     const adminUser = await this.db.user.findFirst({
       where: { role: Role.ADMIN },
     });
 
+    let imported = 0;
     for (const cs of defaultStudies) {
       try {
         const caseStudyData = {
           title: cs.title,
           subtitle: cs.subtitle,
           description: cs.description,
+          projectType: cs.projectType,
           status: cs.status,
           projectStatus: cs.projectStatus,
           order: cs.order,
@@ -911,6 +1017,7 @@ export class CaseStudyService {
           timeline: cs.timeline,
           client: cs.client,
           impact: cs.impact,
+          highlights: cs.highlights || [],
           views: cs.views,
           likesCount: cs.likesCount,
           publishedAt: cs.publishedAt,
@@ -927,7 +1034,7 @@ export class CaseStudyService {
           features: cs.features,
           metrics: cs.metrics,
           postMortem: cs.postMortem,
-          metaTitle: `${cs.title} | Technical Case Study`,
+          metaTitle: `${cs.title} | ${cs.projectType === "CASE_STUDY" ? "Technical Case Study" : "Project Showcase"}`,
           metaDescription: cs.description,
           metaKeywords: cs.techStack,
           ogTitle: cs.title,
@@ -973,6 +1080,10 @@ export class CaseStudyService {
     const where: any = {
       status: CaseStudyStatus.PUBLISHED,
     };
+
+    if (query.projectType) {
+      where.projectType = query.projectType;
+    }
 
     if (query.featured !== undefined) {
       where.featured = query.featured;

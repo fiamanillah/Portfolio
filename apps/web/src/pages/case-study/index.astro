@@ -4,56 +4,101 @@ import CaseStudyHeader from "@/components/CaseStudy/hero/CaseStudyHeader.astro"
 import CaseStudyExplorer from "@/components/CaseStudy/explorer/CaseStudyExplorer.astro"
 import NewsletterSection from "@/components/Newsletter/NewsletterSection.astro"
 import SectionDivider from "@/components/SectionDivider.astro"
-import { getProjectsWithoutCaseStudy } from "@/data/projects"
+import { getCaseStudies, getProjectsWithoutCaseStudy } from "@/data/projects"
 import { CaseStudyApi } from "@/lib/api/caseStudyApi"
 
-// Fetch published case studies directly from PostgreSQL API (with local fallback)
-const fetchedCaseStudies = await CaseStudyApi.fetchAllCaseStudies()
+// Fetch all published systems directly from PostgreSQL API (with local fallback)
+const allFetched = await CaseStudyApi.fetchAllCaseStudies()
 
-const caseStudies = fetchedCaseStudies.map((study, idx) => {
+const apiDeepDives = allFetched.filter(
+  (s) => s.projectType === "CASE_STUDY" || !s.projectType
+)
+const apiQuickProjects = allFetched.filter((s) => s.projectType === "PROJECT")
+
+// Fallback to local data only if API returns empty
+const rawCaseStudies = apiDeepDives.length > 0 ? apiDeepDives : getCaseStudies()
+const rawStandardProjects =
+  apiQuickProjects.length > 0
+    ? apiQuickProjects
+    : getProjectsWithoutCaseStudy()
+
+const caseStudies = rawCaseStudies.map((study: any, idx) => {
   const metaObj = (study.metadata || []).reduce((acc: any, item: any) => {
     acc[item.label] = item.value
     return acc
   }, {})
 
   return {
-    id: study.slug,
-    slug: study.slug,
+    id: study.slug || study.id,
+    slug: study.slug || study.id,
     title: study.title.includes("—")
       ? study.title.split("—")[0]?.trim()
       : study.title,
-    subtitle: study.title.includes("—")
-      ? study.title.split("—")[1]?.trim()
-      : undefined,
+    subtitle:
+      study.subtitle ||
+      (study.title.includes("—") ? study.title.split("—")[1]?.trim() : undefined),
     description: study.description,
-    role: metaObj["Role"] || "Full-Stack Architect",
+    role: study.role || metaObj["Role"] || "Full-Stack Architect",
     impact:
-      study.description.length > 130
+      study.impact ||
+      (study.description.length > 130
         ? study.description.slice(0, 130) + "..."
-        : study.description,
-    tech: study.techStack || [],
+        : study.description),
+    tech: study.techStack || study.tech || [],
     links: {
-      live: study.liveUrl || undefined,
-      github: study.githubUrl || undefined,
-      caseStudy: `/case-study/${study.slug}`,
+      live: study.liveUrl || study.links?.live || undefined,
+      github: study.githubUrl || study.links?.github || undefined,
+      caseStudy: `/case-study/${study.slug || study.id}`,
     },
-    img: study.image,
+    img: study.image || study.img,
     index: String(idx + 1).padStart(2, "0"),
     status: (study.status || "Completed").replace(/^Status:\s*/i, ""),
-    year: metaObj["Timeline"] || "2026",
+    year: study.timeline || metaObj["Timeline"] || study.year || "2026",
     hasCaseStudy: true,
-    featured: true,
-    metrics: (study.metrics || []).slice(0, 3).map((m) => ({
+    featured: Boolean(study.featured ?? true),
+    metrics: (study.metrics || []).slice(0, 3).map((m: any) => ({
       value: m.value,
       label: m.label,
     })),
-    highlights: (study.features || [])
-      .flatMap((f) => f.highlights || [])
-      .slice(0, 3),
+    highlights:
+      study.highlights && study.highlights.length > 0
+        ? study.highlights
+        : (study.features || [])
+            .flatMap((f: any) => f.highlights || [])
+            .slice(0, 3),
   }
 })
 
-const standardProjects = getProjectsWithoutCaseStudy()
+const standardProjects = rawStandardProjects.map((study: any, idx) => {
+  const metaObj = (study.metadata || []).reduce((acc: any, item: any) => {
+    acc[item.label] = item.value
+    return acc
+  }, {})
+
+  return {
+    id: study.slug || study.id,
+    title: study.title.includes("—")
+      ? study.title.split("—")[0]?.trim()
+      : study.title,
+    subtitle:
+      study.subtitle ||
+      (study.title.includes("—") ? study.title.split("—")[1]?.trim() : undefined),
+    description: study.description,
+    role: study.role || metaObj["Role"] || "Open Source / Full Stack",
+    impact: study.impact || study.description,
+    tech: study.techStack || study.tech || [],
+    links: {
+      live: study.liveUrl || study.links?.live || undefined,
+      github: study.githubUrl || study.links?.github || undefined,
+    },
+    img: study.image || study.img,
+    index: String(idx + 1).padStart(2, "0"),
+    status: (study.status || "Completed").replace(/^Status:\s*/i, ""),
+    year: study.timeline || metaObj["Timeline"] || study.year || "2026",
+    highlights: study.highlights || [],
+  }
+})
+
 const allProjects = [...caseStudies, ...standardProjects]
 const totalTechCount = new Set(allProjects.flatMap((p) => p.tech)).size
 ---

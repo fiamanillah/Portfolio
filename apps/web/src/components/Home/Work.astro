@@ -14,32 +14,35 @@ const apiProjects = fetchedStudies.map((study, idx) => {
     return acc
   }, {})
 
+  const isDeepDive = study.projectType === "CASE_STUDY" || !study.projectType
+
   return {
     id: study.slug,
     slug: study.slug,
     title: study.title.includes("—")
       ? study.title.split("—")[0]?.trim()
       : study.title,
-    subtitle: study.title.includes("—")
-      ? study.title.split("—")[1]?.trim()
-      : undefined,
+    subtitle:
+      study.subtitle ||
+      (study.title.includes("—") ? study.title.split("—")[1]?.trim() : undefined),
     description: study.description,
-    role: metaObj["Role"] || "Full-Stack Architect",
+    role: study.role || metaObj["Role"] || (isDeepDive ? "Full-Stack Architect" : "Open Source / Creator"),
     impact:
-      study.description.length > 130
+      study.impact ||
+      (study.description.length > 130
         ? study.description.slice(0, 130) + "..."
-        : study.description,
+        : study.description),
     tech: study.techStack || [],
     links: {
       live: study.liveUrl || undefined,
       github: study.githubUrl || undefined,
-      caseStudy: `/case-study/${study.slug}`,
+      caseStudy: isDeepDive ? `/case-study/${study.slug}` : undefined,
     },
     img: study.image,
     index: String(idx + 1).padStart(2, "0"),
     status: (study.status || "Completed").replace(/^Status:\s*/i, ""),
-    year: metaObj["Timeline"] || "2026",
-    hasCaseStudy: true,
+    year: study.timeline || metaObj["Timeline"] || "2026",
+    hasCaseStudy: isDeepDive,
   }
 })
 
@@ -71,16 +74,14 @@ const BASE_TOP_OFFSET = 72
     </div>
   </div>
 
-  <!-- Stack Container -->
-  <div class="relative flex flex-col gap-12">
+  <!-- Sticky Stack Cards Container -->
+  <div class="space-y-4">
     {
-      projects.map((p, i) => (
+      projects.map((p, idx) => (
         <article
-          class={`sticky-card group sticky flex flex-col border-b border-border bg-background transition-all duration-250 hover:shadow-[0_0_0_1px_oklch(var(--primary)/20%),0_8px_32px_-8px_oklch(var(--primary)/12%)] ${
-            i > 0 ? " origin-top" : ""
-          }`}
-          style={`top: ${BASE_TOP_OFFSET + i * CARD_HEADER_HEIGHT}px; z-index: ${10 + i};`}
-          data-stuck="false"
+          class="sticky-card border-x border-b border-border bg-card shadow-lg transition-transform duration-300 ease-out last:border-b-0"
+          data-index={idx}
+          style={`top: ${BASE_TOP_OFFSET + idx * CARD_HEADER_HEIGHT}px;`}
         >
           {/* Corner brackets */}
           <div class="pointer-events-none absolute top-2 left-2 z-10 h-4 w-4 border-t-[1.5px] border-l-[1.5px] border-border transition-all duration-220 group-hover:h-5 group-hover:w-5 group-hover:border-[oklch(var(--primary)/70%)]" />

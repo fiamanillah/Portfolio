@@ -2540,6 +2540,7 @@ export const CaseStudyScalarFieldEnum = {
   title: 'title',
   subtitle: 'subtitle',
   description: 'description',
+  projectType: 'projectType',
   status: 'status',
   projectStatus: 'projectStatus',
   order: 'order',
@@ -2554,6 +2555,7 @@ export const CaseStudyScalarFieldEnum = {
   timeline: 'timeline',
   client: 'client',
   impact: 'impact',
+  highlights: 'highlights',
   views: 'views',
   likesCount: 'likesCount',
   publishedAt: 'publishedAt',
@@ -2986,6 +2988,20 @@ export type BigIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 
  * Reference to a field of type 'BigInt[]'
  */
 export type ListBigIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BigInt[]'>
+    
+
+
+/**
+ * Reference to a field of type 'CaseStudyType'
+ */
+export type EnumCaseStudyTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CaseStudyType'>
+    
+
+
+/**
+ * Reference to a field of type 'CaseStudyType[]'
+ */
+export type ListEnumCaseStudyTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CaseStudyType[]'>
     
 
 

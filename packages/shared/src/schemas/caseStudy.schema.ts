@@ -2,6 +2,7 @@
 import { z } from "zod";
 
 export const caseStudyStatusEnumSchema = z.enum(["DRAFT", "PUBLISHED", "ARCHIVED"]);
+export const caseStudyTypeEnumSchema = z.enum(["CASE_STUDY", "PROJECT"]);
 
 export const caseStudyMetadataItemSchema = z.object({
   label: z.string().min(1, "Metadata label is required").max(100),
@@ -88,6 +89,7 @@ export const createCaseStudySchema = z.object({
     .optional(),
   subtitle: z.string().max(300).optional().nullable(),
   description: z.string().min(10, "Description must be at least 10 characters"),
+  projectType: caseStudyTypeEnumSchema.optional().default("CASE_STUDY"),
   status: caseStudyStatusEnumSchema.optional().default("DRAFT"),
   projectStatus: z.string().max(100).optional().default("Status: Completed"),
   order: z.number().int().optional().default(0),
@@ -102,6 +104,7 @@ export const createCaseStudySchema = z.object({
   timeline: z.string().max(100).optional().nullable(),
   client: z.string().max(150).optional().nullable(),
   impact: z.string().max(1000).optional().nullable(),
+  highlights: z.array(z.string().trim()).optional().default([]),
   publishedAt: z.string().datetime().or(z.date()).optional().nullable(),
   author: caseStudyAuthorSchema.optional(),
   metadata: z.array(caseStudyMetadataItemSchema).optional().default([]),
@@ -122,6 +125,7 @@ export const listCaseStudiesQuerySchema = z.object({
   page: z.coerce.number().int().positive().optional().default(1),
   limit: z.coerce.number().int().min(1).max(100).optional().default(10),
   search: z.string().trim().optional(),
+  projectType: caseStudyTypeEnumSchema.optional(),
   status: caseStudyStatusEnumSchema.optional(),
   tech: z.string().trim().optional(),
   featured: z
@@ -136,6 +140,7 @@ export const publicCaseStudyQuerySchema = z.object({
   page: z.coerce.number().int().positive().optional().default(1),
   limit: z.coerce.number().int().min(1).max(100).optional().default(10),
   search: z.string().trim().optional(),
+  projectType: caseStudyTypeEnumSchema.optional(),
   tech: z.string().trim().optional(),
   featured: z
     .union([z.boolean(), z.enum(["true", "false"])])

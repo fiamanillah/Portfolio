@@ -14,7 +14,10 @@ import type { CaseStudyDetail } from "@/data/caseStudies"
 import { CaseStudyApi } from "@/lib/api/caseStudyApi"
 
 export async function getStaticPaths() {
-  const caseStudies = await CaseStudyApi.fetchAllCaseStudies()
+  const allStudies = await CaseStudyApi.fetchAllCaseStudies()
+  const caseStudies = allStudies.filter(
+    (s) => s.projectType === "CASE_STUDY" || !s.projectType
+  )
   const fullDetails = await Promise.all(
     caseStudies.map(async (study) => {
       const full = await CaseStudyApi.fetchCaseStudyBySlug(study.slug, false)

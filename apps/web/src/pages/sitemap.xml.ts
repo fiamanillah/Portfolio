@@ -68,26 +68,28 @@ export const GET: APIRoute = async (context) => {
     },
   ]
 
-  // Dynamic Case Studies with live DB/API data & images
-  const caseStudyRoutes = caseStudies.map((study) => {
-    let imageTag = ""
-    if (study.image) {
-      const imgUrl = study.image.startsWith("http")
-        ? study.image
-        : `${siteUrl}${study.image.startsWith("/") ? "" : "/"}${study.image}`
-      imageTag = `\n    <image:image>
+  // Dynamic Case Studies with live DB/API data & images (Only deep dives have dedicated URLs)
+  const caseStudyRoutes = caseStudies
+    .filter((study) => study.projectType === "CASE_STUDY" || !study.projectType)
+    .map((study) => {
+      let imageTag = ""
+      if (study.image) {
+        const imgUrl = study.image.startsWith("http")
+          ? study.image
+          : `${siteUrl}${study.image.startsWith("/") ? "" : "/"}${study.image}`
+        imageTag = `\n    <image:image>
       <image:loc>${escapeXml(imgUrl)}</image:loc>
       <image:title>${escapeXml(study.title)}</image:title>
     </image:image>`
-    }
+      }
 
-    return `  <url>
+      return `  <url>
     <loc>${siteUrl}/case-study/${study.slug}</loc>
     <lastmod>${nowIso}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>${imageTag}
   </url>`
-  })
+    })
 
   // Dynamic Blog Posts with live DB/API data & images
   const blogRoutes = posts.map((post) => {

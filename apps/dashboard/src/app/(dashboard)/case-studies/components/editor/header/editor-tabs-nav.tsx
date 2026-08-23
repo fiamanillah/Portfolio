@@ -1,5 +1,3 @@
-"use client"
-
 import * as React from "react"
 import {
   Info,
@@ -14,8 +12,10 @@ import {
 } from "lucide-react"
 import { TabsPrimitive } from "@workspace/ui/components/tabs"
 import { Badge } from "@workspace/ui/components/badge"
+import type { CaseStudyType } from "@workspace/shared"
 
 interface EditorTabsNavProps {
+  projectType?: CaseStudyType
   activeTab?: string
   metadataCount: number
   contextCount: number
@@ -25,7 +25,7 @@ interface EditorTabsNavProps {
   postMortemCount: number
 }
 
-const STEPS = [
+const CASE_STUDY_STEPS = [
   { id: "hero", number: "01", label: "Overview", icon: Info },
   { id: "metadata", number: "02", label: "Metadata", icon: Layers, countKey: "metadataCount" },
   { id: "context", number: "03", label: "Context", icon: AlertCircle, countKey: "contextCount" },
@@ -37,7 +37,14 @@ const STEPS = [
   { id: "preview", number: "09", label: "Live Preview", icon: Eye },
 ]
 
+const PROJECT_STEPS = [
+  { id: "hero", number: "01", label: "Project Details", icon: Info },
+  { id: "seo", number: "02", label: "SEO & Social", icon: Share2 },
+  { id: "preview", number: "03", label: "Live Preview", icon: Eye },
+]
+
 export function EditorTabsNav({
+  projectType = "CASE_STUDY",
   activeTab = "hero",
   metadataCount,
   contextCount,
@@ -46,6 +53,9 @@ export function EditorTabsNav({
   metricsCount,
   postMortemCount,
 }: EditorTabsNavProps) {
+  const isProject = projectType === "PROJECT"
+  const STEPS = isProject ? PROJECT_STEPS : CASE_STUDY_STEPS
+
   const counts: Record<string, number> = {
     metadataCount,
     contextCount,
@@ -56,8 +66,9 @@ export function EditorTabsNav({
   }
 
   const activeIndex = STEPS.findIndex((s) => s.id === activeTab)
-  const currentStep = STEPS[Math.max(0, activeIndex)]
-  const progressPercent = Math.round(((Math.max(0, activeIndex) + 1) / STEPS.length) * 100)
+  const currentStep = STEPS[Math.max(0, activeIndex)] || STEPS[0]
+  const totalSteps = STEPS.length
+  const progressPercent = Math.round(((Math.max(0, activeIndex) + 1) / totalSteps) * 100)
 
   return (
     <div className="w-full overflow-hidden rounded-xl border border-border/80 bg-card shadow-xs">
@@ -73,11 +84,16 @@ export function EditorTabsNav({
       <div className="flex items-center justify-between border-b border-border/60 bg-muted/20 px-3.5 py-2">
         <div className="flex items-center gap-2">
           <span className="font-mono text-[11px] font-bold text-primary">
-            STEP {currentStep.number} / 09:
+            STEP {currentStep.number} / {String(totalSteps).padStart(2, "0")}:
           </span>
           <span className="text-xs font-semibold text-foreground">
             {currentStep.label}
           </span>
+          {isProject && (
+            <Badge variant="outline" className="h-4 border-purple-500/30 bg-purple-500/10 px-1.5 font-mono text-[9px] text-purple-400">
+              ⚡ Quick Project Mode
+            </Badge>
+          )}
         </div>
         <span className="font-mono text-[11px] text-muted-foreground">
           {progressPercent}% Complete
@@ -86,11 +102,17 @@ export function EditorTabsNav({
 
       {/* Stepper Grid Container */}
       <div className="p-2 sm:p-2.5">
-        <TabsPrimitive.List className="grid h-auto w-full grid-cols-3 gap-1.5 bg-transparent p-0 md:grid-cols-5 xl:grid-cols-9">
+        <TabsPrimitive.List
+          className={`grid h-auto w-full gap-1.5 bg-transparent p-0 ${
+            isProject
+              ? "grid-cols-3"
+              : "grid-cols-3 md:grid-cols-5 xl:grid-cols-9"
+          }`}
+        >
           {STEPS.map((step) => {
             const Icon = step.icon
             const isCurrent = activeTab === step.id
-            const count = step.countKey ? counts[step.countKey] : undefined
+            const count = (step as any).countKey ? counts[(step as any).countKey] : undefined
 
             return (
               <TabsPrimitive.Trigger
@@ -136,5 +158,6 @@ export function EditorTabsNav({
     </div>
   )
 }
+
 
 

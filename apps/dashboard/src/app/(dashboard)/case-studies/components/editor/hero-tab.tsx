@@ -1,12 +1,11 @@
-"use client"
-
 import * as React from "react"
-import type { CaseStudyStatus } from "@workspace/shared"
+import type { CaseStudyStatus, CaseStudyType } from "@workspace/shared"
 import { HeroBasicInfoCard } from "./hero/hero-basic-info-card"
 import { HeroProjectMetaCard } from "./hero/hero-project-meta-card"
 import { HeroTechStackCard } from "./hero/hero-tech-stack-card"
 import { HeroCoverMediaCard } from "./hero/hero-cover-media-card"
 import { HeroPublishingCard } from "./hero/hero-publishing-card"
+import { HeroHighlightsCard } from "./hero/hero-highlights-card"
 
 interface HeroTabProps {
   title: string
@@ -17,6 +16,8 @@ interface HeroTabProps {
   setSlug: (slug: string) => void
   description: string
   setDescription: (desc: string) => void
+  projectType: CaseStudyType
+  setProjectType: (type: CaseStudyType) => void
   status: CaseStudyStatus
   setStatus: (status: CaseStudyStatus) => void
   projectStatus: string
@@ -43,6 +44,8 @@ interface HeroTabProps {
   setClient: (client: string) => void
   impact: string
   setImpact: (impact: string) => void
+  highlights: string[]
+  setHighlights: (highlights: string[]) => void
   techStack: string[]
   setTechStack: (tech: string[]) => void
   errors?: Record<string, string>
@@ -57,6 +60,8 @@ export function HeroTab({
   setSlug,
   description,
   setDescription,
+  projectType,
+  setProjectType,
   status,
   setStatus,
   projectStatus,
@@ -83,6 +88,8 @@ export function HeroTab({
   setClient,
   impact,
   setImpact,
+  highlights,
+  setHighlights,
   techStack,
   setTechStack,
   errors = {},
@@ -119,6 +126,11 @@ export function HeroTab({
           errors={errors}
         />
 
+        <HeroHighlightsCard
+          highlights={highlights}
+          setHighlights={setHighlights}
+        />
+
         <HeroTechStackCard
           techStack={techStack}
           setTechStack={setTechStack}
@@ -135,6 +147,8 @@ export function HeroTab({
         />
 
         <HeroPublishingCard
+          projectType={projectType}
+          setProjectType={setProjectType}
           status={status}
           setStatus={setStatus}
           projectStatus={projectStatus}
@@ -150,3 +164,4 @@ export function HeroTab({
     </div>
   )
 }
+

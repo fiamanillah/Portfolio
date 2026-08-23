@@ -79,6 +79,14 @@ export const CaseStudyStatus = {
 export type CaseStudyStatus = (typeof CaseStudyStatus)[keyof typeof CaseStudyStatus]
 
 
+export const CaseStudyType = {
+  CASE_STUDY: 'CASE_STUDY',
+  PROJECT: 'PROJECT'
+} as const
+
+export type CaseStudyType = (typeof CaseStudyType)[keyof typeof CaseStudyType]
+
+
 export const NewsletterStatus = {
   DRAFT: 'DRAFT',
   SCHEDULED: 'SCHEDULED',
