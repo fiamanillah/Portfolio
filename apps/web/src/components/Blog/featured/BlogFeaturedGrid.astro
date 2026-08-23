@@ -1,6 +1,6 @@
 ---
 import type { BlogPost } from "@/data/blogPosts"
-import { formatViewsCount } from "@/data/blogPosts"
+import { formatViewsCount, getCategorySlug } from "@/data/blogPosts"
 import { HugeiconsIcon } from "@hugeicons/react"
 import {
   FavouriteIcon,
@@ -23,17 +23,17 @@ const secondaryFeatured = featuredPosts.slice(1, 4)
   featuredPosts.length > 0 && (
     <section>
       {/* Section header — matching site architectural aesthetic */}
-      <div class="relative overflow-hidden text-center">
+      <div class="relative overflow-hidden text-center mb-4">
         <div
           class="diagonal-stripes pointer-events-none absolute inset-0 z-10 bg-background"
           aria-hidden="true"
         />
-        <div class="relative z-10 py-6">
-          <p class="section-label mb-2">Editor's Picks &amp; Deep-Dives</p>
+        <div class="relative z-10 py-3">
+          <p class="section-label mb-1">Editor's Picks &amp; Deep-Dives</p>
           <h2 class="section-title text-foreground">
             Featured <span class="text-primary">/</span> Stories
           </h2>
-          <div class="accent-bar mx-auto mt-3 mb-0 w-48" />
+          <div class="accent-bar mx-auto mt-2 mb-0 w-48" />
         </div>
       </div>
 
@@ -62,20 +62,25 @@ const secondaryFeatured = featuredPosts.slice(1, 4)
                 <span class="h-1.5 w-1.5 animate-pulse rounded-full bg-primary shadow-[0_0_6px_oklch(var(--primary))]" />
                 ⚡ LEAD STORY
               </span>
-              <span
-                style={
-                  primaryFeatured.categoryColor && primaryFeatured.categoryColor.startsWith("#")
-                    ? {
-                        borderColor: `${primaryFeatured.categoryColor}60`,
-                        backgroundColor: `${primaryFeatured.categoryColor}18`,
-                        color: primaryFeatured.categoryColor,
-                      }
-                    : undefined
-                }
-                class="inline-flex items-center border border-border bg-background/80 px-2 py-1 font-mono text-[10px] font-semibold text-muted-foreground uppercase backdrop-blur-md"
+              <a
+                href={`/blog/category/${getCategorySlug(primaryFeatured.categorySlug || primaryFeatured.category)}`}
+                class="transition-transform duration-150 hover:scale-105"
               >
-                {primaryFeatured.category}
-              </span>
+                <span
+                  style={
+                    primaryFeatured.categoryColor && primaryFeatured.categoryColor.startsWith("#")
+                      ? {
+                          borderColor: `${primaryFeatured.categoryColor}60`,
+                          backgroundColor: `${primaryFeatured.categoryColor}18`,
+                          color: primaryFeatured.categoryColor,
+                        }
+                      : undefined
+                  }
+                  class="inline-flex items-center border border-border bg-background/80 px-2 py-1 font-mono text-[10px] font-semibold text-muted-foreground uppercase backdrop-blur-md"
+                >
+                  {primaryFeatured.category}
+                </span>
+              </a>
             </div>
           </div>
 
@@ -209,20 +214,25 @@ const secondaryFeatured = featuredPosts.slice(1, 4)
                     <span class="h-1.5 w-1.5 animate-pulse rounded-full bg-primary shadow-[0_0_6px_oklch(var(--primary))]" />
                     ⚡ LEAD STORY
                   </span>
-                  <span
-                    style={
-                      primaryFeatured.categoryColor && primaryFeatured.categoryColor.startsWith("#")
-                        ? {
-                            borderColor: `${primaryFeatured.categoryColor}60`,
-                            backgroundColor: `${primaryFeatured.categoryColor}18`,
-                            color: primaryFeatured.categoryColor,
-                          }
-                        : undefined
-                    }
-                    class="inline-flex items-center border border-border bg-background/80 px-2 py-0.5 font-mono text-[9px] font-semibold text-muted-foreground uppercase backdrop-blur-md"
+                  <a
+                    href={`/blog/category/${getCategorySlug(primaryFeatured.categorySlug || primaryFeatured.category)}`}
+                    class="transition-transform duration-150 hover:scale-105"
                   >
-                    {primaryFeatured.category}
-                  </span>
+                    <span
+                      style={
+                        primaryFeatured.categoryColor && primaryFeatured.categoryColor.startsWith("#")
+                          ? {
+                              borderColor: `${primaryFeatured.categoryColor}60`,
+                              backgroundColor: `${primaryFeatured.categoryColor}18`,
+                              color: primaryFeatured.categoryColor,
+                            }
+                          : undefined
+                      }
+                      class="inline-flex items-center border border-border bg-background/80 px-2 py-0.5 font-mono text-[9px] font-semibold text-muted-foreground uppercase backdrop-blur-md"
+                    >
+                      {primaryFeatured.category}
+                    </span>
+                  </a>
                 </div>
               </div>
 
@@ -354,31 +364,36 @@ const secondaryFeatured = featuredPosts.slice(1, 4)
                   />
                   <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/70 via-transparent to-transparent sm:bg-gradient-to-r sm:from-transparent sm:to-background/40" />
                   <div class="absolute bottom-2 left-2 z-20">
-                    <span
-                      style={
-                        post.categoryColor && post.categoryColor.startsWith("#")
-                          ? {
-                              borderColor: `${post.categoryColor}60`,
-                              backgroundColor: `${post.categoryColor}18`,
-                              color: post.categoryColor,
-                            }
-                          : undefined
-                      }
-                      class="inline-flex items-center gap-1 border border-primary/40 bg-background/90 px-1.5 py-0.5 font-mono text-[9px] font-semibold text-primary uppercase shadow-xs backdrop-blur-md"
+                    <a
+                      href={`/blog/category/${getCategorySlug(post.categorySlug || post.category)}`}
+                      class="transition-transform duration-150 hover:scale-105"
                     >
                       <span
                         style={
                           post.categoryColor && post.categoryColor.startsWith("#")
                             ? {
-                                backgroundColor: post.categoryColor,
-                                boxShadow: `0 0 4px ${post.categoryColor}`,
+                                borderColor: `${post.categoryColor}60`,
+                                backgroundColor: `${post.categoryColor}18`,
+                                color: post.categoryColor,
                               }
                             : undefined
                         }
-                        class="h-1 w-1 rounded-full bg-primary shadow-[0_0_4px_oklch(var(--primary))]"
-                      />
-                      {post.category}
-                    </span>
+                        class="inline-flex items-center gap-1 border border-primary/40 bg-background/90 px-1.5 py-0.5 font-mono text-[9px] font-semibold text-primary uppercase shadow-xs backdrop-blur-md"
+                      >
+                        <span
+                          style={
+                            post.categoryColor && post.categoryColor.startsWith("#")
+                              ? {
+                                  backgroundColor: post.categoryColor,
+                                  boxShadow: `0 0 4px ${post.categoryColor}`,
+                                }
+                              : undefined
+                          }
+                          class="h-1 w-1 rounded-full bg-primary shadow-[0_0_4px_oklch(var(--primary))]"
+                        />
+                        {post.category}
+                      </span>
+                    </a>
                   </div>
                 </div>
 

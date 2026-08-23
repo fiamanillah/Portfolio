@@ -1,6 +1,6 @@
 ---
 import type { BlogPost } from "@/data/blogPosts"
-import { getBlogPostPublishedDate } from "@/data/blogPosts"
+import { getBlogPostPublishedDate, getCategorySlug } from "@/data/blogPosts"
 
 export interface BreadcrumbItem {
   name: string
@@ -22,6 +22,8 @@ interface Props {
   publishedTime?: string
   modifiedTime?: string
   breadcrumbs?: BreadcrumbItem[]
+  prevPageUrl?: string
+  nextPageUrl?: string
 }
 
 const {
@@ -36,6 +38,8 @@ const {
   publishedTime: customPublishedTime,
   modifiedTime: customModifiedTime,
   breadcrumbs: customBreadcrumbs,
+  prevPageUrl,
+  nextPageUrl,
 } = Astro.props
 
 const siteUrl = (
@@ -116,7 +120,7 @@ const breadcrumbs: BreadcrumbItem[] =
         { name: "Blog", url: `${siteUrl}/blog` },
         {
           name: post.category,
-          url: `${siteUrl}/blog?category=${encodeURIComponent(post.category.toLowerCase())}`,
+          url: `${siteUrl}/blog/category/${getCategorySlug(post.categorySlug || post.category)}`,
         },
         { name: post.title, url: canonicalUrl },
       ]
@@ -256,6 +260,8 @@ const jsonLdPayload = {
 <meta name="keywords" content={keywords} />
 <meta name="author" content={authorName} />
 <link rel="canonical" href={canonicalUrl} />
+{prevPageUrl && <link rel="prev" href={prevPageUrl} />}
+{nextPageUrl && <link rel="next" href={nextPageUrl} />}
 
 <!-- Crawler Directives -->
 <meta

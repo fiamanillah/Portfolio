@@ -1,0 +1,172 @@
+---
+import MySiteLayout from "@/layouts/MySiteLayout.astro"
+import BlogCard from "@/components/Blog/cards/BlogCard.astro"
+import BlogCategoryFilter from "@/components/Blog/explorer/BlogCategoryFilter.astro"
+import BlogPagination from "@/components/Blog/explorer/BlogPagination.astro"
+import NewsletterSection from "@/components/Newsletter/NewsletterSection.astro"
+import SectionDivider from "@/components/SectionDivider.astro"
+import BlogSEO from "@/components/SEO/BlogSEO.astro"
+import {
+  getAllBlogPostsAsync,
+  getBlogCategoriesAsync,
+  type BlogPost,
+} from "@/data/blogPosts"
+
+export async function getStaticPaths() {
+  const posts = await getAllBlogPostsAsync()
+  const postsPerPage = 9
+  const totalPages = Math.max(1, Math.ceil(posts.length / postsPerPage))
+
+  return Array.from({ length: totalPages }, (_, i) => {
+    const pageNum = i + 1
+    const start = (pageNum - 1) * postsPerPage
+    const pagePosts = posts.slice(start, start + postsPerPage)
+
+    return {
+      params: { page: String(pageNum) },
+      props: {
+        pagePosts,
+        currentPage: pageNum,
+        totalPages,
+        totalCount: posts.length,
+        postsPerPage,
+      },
+    }
+  })
+}
+
+interface Props {
+  pagePosts?: BlogPost[]
+  currentPage?: number
+  totalPages?: number
+  totalCount?: number
+  postsPerPage?: number
+}
+
+const { page } = Astro.params
+const pageNum = parseInt(page || "1", 10) || 1
+
+const postsPerPage = Astro.props.postsPerPage || 9
+const allPosts = await getAllBlogPostsAsync()
+const categories = await getBlogCategoriesAsync()
+
+const totalCount = Astro.props.totalCount ?? allPosts.length
+const totalPages =
+  Astro.props.totalPages ?? Math.max(1, Math.ceil(totalCount / postsPerPage))
+const currentPage = Astro.props.currentPage ?? pageNum
+
+const start = (currentPage - 1) * postsPerPage
+const posts =
+  Astro.props.pagePosts ?? allPosts.slice(start, start + postsPerPage)
+
+const prevPageUrl =
+  currentPage > 1 ? `/blog/page/${currentPage - 1}` : undefined
+const nextPageUrl =
+  currentPage < totalPages ? `/blog/page/${currentPage + 1}` : undefined
+---
+
+<MySiteLayout>
+  <!-- SEO & Pagination Header Meta -->
+  <Fragment slot="head">
+    <BlogSEO
+      title={`All Articles — Page ${currentPage} of ${totalPages} | Fi Amanillah`}
+      description={`Browse page ${currentPage} of ${totalPages} featuring in-depth engineering writeups, AI breakthroughs, semiconductor market trends, and systems architecture.`}
+      type="website"
+      url={`/blog/page/${currentPage}`}
+      prevPageUrl={prevPageUrl}
+      nextPageUrl={nextPageUrl}
+      breadcrumbs={[
+        { name: "Home", url: "/" },
+        { name: "Blog", url: "/blog" },
+        { name: `Page ${currentPage}`, url: `/blog/page/${currentPage}` },
+      ]}
+    />
+  </Fragment>
+
+  <!-- Breadcrumbs -->
+  <nav
+    aria-label="Breadcrumbs"
+    class="border-b border-border/60 bg-background/50 py-2.5"
+  >
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div
+        class="flex flex-wrap items-center gap-2 font-mono text-xs text-muted-foreground"
+      >
+        <a href="/" class="transition-colors hover:text-foreground">Home</a>
+        <span>/</span>
+        <a href="/blog" class="transition-colors hover:text-foreground">Blog</a>
+        <span>/</span>
+        <span class="font-semibold text-foreground">Page {currentPage}</span>
+      </div>
+    </div>
+  </nav>
+
+  <main class="w-full">
+    <!-- Header Section (Compact padding) -->
+    <header class="relative overflow-hidden border-b border-border py-8 sm:py-10">
+      <div
+        class="diagonal-stripes pointer-events-none absolute inset-0 z-0 bg-background opacity-80"
+        aria-hidden="true"
+      >
+      </div>
+
+      <div class="relative z-10 mx-auto max-w-5xl px-4 text-center sm:px-6 lg:px-8">
+        <p class="section-label mb-2">ARCHIVE // ALL PUBLICATIONS</p>
+        <h1 class="section-title text-foreground">
+          All Articles <span class="text-primary">/</span> Page {currentPage}
+        </h1>
+        <div class="accent-bar mx-auto mt-3 mb-3 w-48"></div>
+        <p class="font-mono text-xs tracking-wider text-muted-foreground uppercase sm:text-sm">
+          Showing {posts.length} of {totalCount} total published technical writeups &amp; deep dives
+        </p>
+      </div>
+    </header>
+
+    <!-- Category Filter Bar -->
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <BlogCategoryFilter
+        categories={categories}
+        activeCategory="all"
+        baseUrl="/blog/category"
+        showAllOption={true}
+        allUrl="/blog/page/1"
+      />
+    </div>
+
+    <!-- Articles Grid Section (9 posts per page) -->
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      {
+        posts.length > 0 ? (
+          <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {posts.map((post) => (
+              <BlogCard post={post} class="border border-border" />
+            ))}
+          </div>
+        ) : (
+          <div class="border border-border/80 bg-background/50 p-8 text-center font-mono text-sm text-muted-foreground">
+            No articles found on this page.
+          </div>
+        )
+      }
+
+      <!-- Reusable Smart Pagination Navigation -->
+      <BlogPagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        totalCount={totalCount}
+        basePath="/blog/page"
+        isCategoryRoute={false}
+      />
+    </div>
+
+    <SectionDivider />
+
+    <!-- Newsletter Section -->
+    <NewsletterSection
+      title="Stay Ahead in Tech, AI & Engineering"
+      subtitle="Subscribe to get tech stories, AI breakthroughs, semiconductor & hardware market updates, and engineering insights delivered directly to your inbox."
+      source="blog_page"
+      idPrefix="blog-page-newsletter"
+    />
+  </main>
+</MySiteLayout>

@@ -35,6 +35,7 @@ const footerLinks = [
       { label: "Privacy Policy", href: "/privacy" },
       { label: "Terms of Service", href: "/terms" },
       { label: "Disclaimer", href: "/disclaimer" },
+      { label: "Cookie Settings", href: "#cookie-settings", isCookieTrigger: true },
       { label: "Unsubscribe", href: "/unsubscribe" },
     ],
   },
@@ -108,12 +109,22 @@ const footerLinks = [
             <ul class="m-0 flex list-none flex-col gap-2 p-0">
               {section.links.map((link) => (
                 <li>
-                  <a
-                    href={link.href}
-                    class="rounded px-1 text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:outline-none"
-                  >
-                    {link.label}
-                  </a>
+                  {link.isCookieTrigger ? (
+                    <button
+                      type="button"
+                      data-cookie-trigger="true"
+                      class="cursor-pointer rounded px-1 text-left text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:outline-none"
+                    >
+                      {link.label}
+                    </button>
+                  ) : (
+                    <a
+                      href={link.href}
+                      class="rounded px-1 text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:outline-none"
+                    >
+                      {link.label}
+                    </a>
+                  )}
                 </li>
               ))}
             </ul>
@@ -138,3 +149,25 @@ const footerLinks = [
     </div>
   </div>
 </footer>
+
+<script>
+  function setupCookieTriggers() {
+    document.querySelectorAll('[data-cookie-trigger="true"]').forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        e.preventDefault()
+        if (typeof (window as any).openCookiePreferences === "function") {
+          (window as any).openCookiePreferences()
+        } else {
+          window.dispatchEvent(new CustomEvent("open-cookie-preferences"))
+        }
+      })
+    })
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", setupCookieTriggers)
+  } else {
+    setupCookieTriggers()
+  }
+  document.addEventListener("astro:page-load", setupCookieTriggers)
+</script>

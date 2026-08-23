@@ -98,6 +98,27 @@ export function formatViewsCount(views: string | number | undefined): string {
   return views
 }
 
+export function slugifyCategory(category: string): string {
+  if (!category) return ""
+  return category
+    .toLowerCase()
+    .trim()
+    .replace(/&+/g, "")
+    .replace(/[^\w\s-]/g, "")
+    .replace(/[\s_-]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+}
+
+export function getCategorySlug(
+  cat: string | { name: string; slug?: string; categorySlug?: string }
+): string {
+  if (!cat) return ""
+  if (typeof cat === "string") {
+    return slugifyCategory(cat)
+  }
+  return cat.slug || cat.categorySlug || slugifyCategory(cat.name)
+}
+
 // Global empty fallback for static safety
 export const blogPostsData: BlogPost[] = []
 export const blogPostsRegistry: Record<string, BlogPost> = {}

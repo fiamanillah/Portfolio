@@ -2,10 +2,12 @@
 import MySiteLayout from "@/layouts/MySiteLayout.astro"
 import BlogHeader from "@/components/Blog/hero/BlogHeader.astro"
 import BlogFeaturedGrid from "@/components/Blog/featured/BlogFeaturedGrid.astro"
-import BlogExplorer from "@/components/Blog/explorer/BlogExplorer.astro"
+import BlogCard from "@/components/Blog/cards/BlogCard.astro"
+import BlogCategoryFilter from "@/components/Blog/explorer/BlogCategoryFilter.astro"
 import NewsletterSection from "@/components/Newsletter/NewsletterSection.astro"
 import SectionDivider from "@/components/SectionDivider.astro"
 import BlogSEO from "@/components/SEO/BlogSEO.astro"
+import { Button } from "@workspace/ui/components/button"
 import {
   getAllBlogPostsAsync,
   getBlogCategoriesAsync,
@@ -24,6 +26,10 @@ if (featuredPosts.length === 0 && posts.length > 0) {
     markedFeatured.length > 0 ? markedFeatured.slice(0, 4) : posts.slice(0, 4)
 }
 
+// Show the most recent 9 articles for the landing showcase
+const recentPosts = posts.slice(0, 9)
+const postsPerPage = 9
+const totalPages = Math.max(1, Math.ceil(posts.length / postsPerPage))
 const totalTopics = new Set(posts.flatMap((p) => p.tags)).size
 ---
 
@@ -57,19 +63,77 @@ const totalTopics = new Set(posts.flatMap((p) => p.tags)).size
     totalTopics={totalTopics}
   />
 
-  <SectionDivider />
-
   <main class="w-full">
     <!-- Featured Stories Grid Section -->
-    <div class="container mx-auto">
-      <BlogFeaturedGrid featuredPosts={featuredPosts} />
+    {
+      featuredPosts.length > 0 && (
+        <div class="container mx-auto mt-6 px-4 sm:px-6 lg:px-8">
+          <BlogFeaturedGrid featuredPosts={featuredPosts} />
+        </div>
+      )
+    }
+
+    <!-- Category Explore Bar -->
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <BlogCategoryFilter
+        categories={categories}
+        activeCategory=""
+        baseUrl="/blog/category"
+        showAllOption={true}
+        allUrl="/blog/page/1"
+      />
     </div>
 
-    <SectionDivider />
+    <!-- Recent Articles Section -->
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="relative overflow-hidden text-center mb-6">
+        <div
+          class="diagonal-stripes pointer-events-none absolute inset-0 z-10 bg-background"
+          aria-hidden="true"
+        >
+        </div>
+        <div class="relative z-10 py-3">
+          <p class="section-label mb-1">Latest Insights &amp; Publications</p>
+          <h2 class="section-title text-foreground">
+            Recent <span class="text-primary">/</span> Articles
+          </h2>
+          <div class="accent-bar mx-auto mt-2 mb-0 w-48"></div>
+        </div>
+      </div>
 
-    <!-- Interactive Articles Explorer -->
-    <div class="container mx-auto">
-      <BlogExplorer initialPosts={posts} categories={categories} />
+      <!-- 3-Column Responsive Recent Posts Grid -->
+      {
+        recentPosts.length > 0 ? (
+          <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {recentPosts.map((post) => (
+              <BlogCard post={post} class="border border-border" />
+            ))}
+          </div>
+        ) : (
+          <div class="border border-border/80 bg-background/50 p-8 text-center font-mono text-sm text-muted-foreground">
+            No published articles found yet. Check back soon!
+          </div>
+        )
+      }
+
+      <!-- Dedicated Archive & Pagination CTA -->
+      <div class="mt-8 mb-6 flex flex-col items-center justify-center gap-3 text-center">
+        <a href="/blog/page/1" class="inline-block">
+          <Button
+            variant="outline"
+            size="lg"
+            className="border-primary/40 font-mono text-xs tracking-wider text-primary transition-all duration-200 hover:bg-primary/10 hover:shadow-[0_0_16px_oklch(var(--primary)/20%)]"
+          >
+            Explore Complete Article Archive ({posts.length} Posts across {totalPages} Pages)
+            <span class="ml-1.5 transition-transform duration-200 hover:translate-x-0.5">
+              →
+            </span>
+          </Button>
+        </a>
+        <p class="font-mono text-[11px] text-muted-foreground">
+          Browse all technical writings with dedicated page routes and topic categories.
+        </p>
+      </div>
     </div>
 
     <SectionDivider />

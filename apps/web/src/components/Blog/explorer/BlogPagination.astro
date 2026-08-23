@@ -1,106 +1,230 @@
 ---
+import { HugeiconsIcon } from "@hugeicons/react"
+import {
+  ArrowLeft01Icon,
+  ArrowRight01Icon,
+  ArrowLeftDoubleIcon,
+  ArrowRightDoubleIcon,
+} from "@hugeicons/core-free-icons"
+
 interface Props {
   currentPage: number
   totalPages: number
-  baseUrl?: string
-  currentCategory?: string
+  totalCount?: number
+  basePath?: string // e.g. "/blog/page" or "/blog/category/ai-intelligence"
+  isCategoryRoute?: boolean
+  showFirstLast?: boolean
 }
 
 const {
   currentPage,
   totalPages,
-  baseUrl = "/blog",
-  currentCategory = "All",
+  totalCount,
+  basePath = "/blog/page",
+  isCategoryRoute = false,
+  showFirstLast = true,
 } = Astro.props
 
-const buildPageUrl = (pageNumber: number) => {
-  const params = new URLSearchParams()
-  if (currentCategory && currentCategory !== "All") {
-    params.set("category", currentCategory.toLowerCase())
+const buildUrl = (pageNumber: number) => {
+  if (isCategoryRoute) {
+    return pageNumber === 1 ? basePath : `${basePath}/${pageNumber}`
   }
-  if (pageNumber > 1) {
-    params.set("page", pageNumber.toString())
-  }
-  const queryString = params.toString()
-  return queryString ? `${baseUrl}?${queryString}` : baseUrl
+  return `${basePath}/${pageNumber}`
 }
 
-const pages = Array.from({ length: totalPages }, (_, i) => i + 1)
+// Generate smart pagination range with ellipsis
+function getPaginationRange(current: number, total: number) {
+  if (total <= 1) {
+    return [1]
+  }
+  if (total <= 7) {
+    return Array.from({ length: total }, (_, i) => i + 1)
+  }
+  if (current <= 3) {
+    return [1, 2, 3, 4, "...", total]
+  }
+  if (current >= total - 2) {
+    return [1, "...", total - 3, total - 2, total - 1, total]
+  }
+  return [1, "...", current - 1, current, current + 1, "...", total]
+}
+
+const paginationItems = getPaginationRange(currentPage, totalPages)
 ---
 
-{
-  totalPages > 1 && (
-    <nav
-      aria-label="Blog Pagination"
-      class="mt-12 flex flex-col items-center justify-between gap-4 border-t border-border/80 pt-8 sm:flex-row"
-    >
-      <div class="font-mono text-xs text-muted-foreground">
-        PAGE <span class="font-bold text-foreground">{currentPage}</span> OF{" "}
-        <span class="font-bold text-foreground">{totalPages}</span>
-      </div>
+<nav
+  aria-label="Blog Pagination"
+  class="my-8 w-full border-t border-border/70 pt-6"
+>
+  <div
+    class="flex flex-col items-center justify-between gap-4 sm:flex-row"
+  >
+    <!-- Left: Page Status -->
+    <div class="flex items-center gap-2 font-mono text-xs text-muted-foreground">
+      <span
+        class="inline-block h-1.5 w-1.5 rounded-full bg-primary/80 shadow-[0_0_6px_oklch(var(--primary)/70%)]"
+      ></span>
+      <span>
+        PAGE <strong class="font-bold text-foreground">{currentPage}</strong> OF{" "}
+        <strong class="font-bold text-foreground">{totalPages}</strong>
+      </span>
+      {
+        totalCount !== undefined && (
+          <span class="text-muted-foreground/60">
+            • {totalCount} {totalCount === 1 ? "article" : "articles"}
+          </span>
+        )
+      }
+    </div>
 
-      <div class="flex items-center gap-2">
-        {/* Previous Button */}
-        {currentPage > 1 ? (
-          <a href={buildPageUrl(currentPage - 1)}>
+    <!-- Right: Page Controls -->
+    <div class="flex flex-wrap items-center justify-center gap-1.5">
+      {/* First Page Button */}
+      {showFirstLast && totalPages > 2 && (
+        currentPage > 1 ? (
+          <a
+            href={buildUrl(1)}
+            class="focus:outline-none"
+            title="First Page"
+            aria-label="Go to first page"
+          >
             <button
               type="button"
-              class="inline-flex cursor-pointer items-center border border-border bg-background px-3 py-1.5 font-mono text-xs transition-colors select-none hover:border-primary hover:text-primary"
+              class="inline-flex h-8 w-8 cursor-pointer items-center justify-center border border-border bg-background/80 font-mono text-xs transition-colors select-none hover:border-primary hover:text-primary"
             >
-              ← Prev
+              <HugeiconsIcon icon={ArrowLeftDoubleIcon} className="size-3.5" />
             </button>
           </a>
         ) : (
           <button
             type="button"
             disabled
-            class="inline-flex cursor-not-allowed items-center border border-border bg-background px-3 py-1.5 font-mono text-xs opacity-40 select-none"
+            class="inline-flex h-8 w-8 cursor-not-allowed items-center justify-center border border-border bg-background/30 font-mono text-xs opacity-30 select-none"
+            aria-disabled="true"
           >
-            ← Prev
+            <HugeiconsIcon icon={ArrowLeftDoubleIcon} className="size-3.5" />
           </button>
-        )}
+        )
+      )}
 
-        {/* Page Number Buttons */}
-        <div class="flex items-center gap-1">
-          {pages.map((p) => {
-            const isCurrent = p === currentPage
+      {/* Previous Button */}
+      {currentPage > 1 ? (
+        <a
+          href={buildUrl(currentPage - 1)}
+          class="focus:outline-none"
+          title="Previous Page"
+          aria-label="Go to previous page"
+        >
+          <button
+            type="button"
+            class="inline-flex h-8 cursor-pointer items-center gap-1 border border-border bg-background/80 px-2.5 font-mono text-xs transition-colors select-none hover:border-primary hover:text-primary"
+          >
+            <HugeiconsIcon icon={ArrowLeft01Icon} className="size-3.5" />
+            <span class="hidden xs:inline">Prev</span>
+          </button>
+        </a>
+      ) : (
+        <button
+          type="button"
+          disabled
+          class="inline-flex h-8 cursor-not-allowed items-center gap-1 border border-border bg-background/30 px-2.5 font-mono text-xs opacity-30 select-none"
+          aria-disabled="true"
+        >
+          <HugeiconsIcon icon={ArrowLeft01Icon} className="size-3.5" />
+          <span class="hidden xs:inline">Prev</span>
+        </button>
+      )}
+
+      {/* Number Buttons */}
+      <div class="flex items-center gap-1">
+        {paginationItems.map((item) => {
+          if (item === "...") {
             return (
-              <a href={buildPageUrl(p)}>
-                <button
-                  type="button"
-                  class={`h-8 w-8 cursor-pointer font-mono text-xs transition-colors select-none ${
-                    isCurrent
-                      ? "bg-primary font-bold text-primary-foreground shadow-sm"
-                      : "border border-border bg-background text-muted-foreground hover:border-primary hover:text-primary"
-                  }`}
-                >
-                  {p}
-                </button>
-              </a>
+              <span class="flex h-8 w-6 items-center justify-center font-mono text-xs text-muted-foreground select-none">
+                …
+              </span>
             )
-          })}
-        </div>
+          }
 
-        {/* Next Button */}
-        {currentPage < totalPages ? (
-          <a href={buildPageUrl(currentPage + 1)}>
+          const p = item as number
+          const isCurrent = p === currentPage
+
+          return (
+            <a
+              href={buildUrl(p)}
+              class="focus:outline-none"
+              aria-current={isCurrent ? "page" : undefined}
+            >
+              <button
+                type="button"
+                class={`h-8 min-w-[2rem] px-2 cursor-pointer font-mono text-xs transition-all select-none ${
+                  isCurrent
+                    ? "border border-primary bg-primary font-bold text-primary-foreground shadow-[0_0_12px_oklch(var(--primary)/30%)]"
+                    : "border border-border bg-background/80 text-muted-foreground hover:border-primary/60 hover:text-foreground hover:bg-background"
+                }`}
+              >
+                {p}
+              </button>
+            </a>
+          )
+        })}
+      </div>
+
+      {/* Next Button */}
+      {currentPage < totalPages ? (
+        <a
+          href={buildUrl(currentPage + 1)}
+          class="focus:outline-none"
+          title="Next Page"
+          aria-label="Go to next page"
+        >
+          <button
+            type="button"
+            class="inline-flex h-8 cursor-pointer items-center gap-1 border border-border bg-background/80 px-2.5 font-mono text-xs transition-colors select-none hover:border-primary hover:text-primary"
+          >
+            <span class="hidden xs:inline">Next</span>
+            <HugeiconsIcon icon={ArrowRight01Icon} className="size-3.5" />
+          </button>
+        </a>
+      ) : (
+        <button
+          type="button"
+          disabled
+          class="inline-flex h-8 cursor-not-allowed items-center gap-1 border border-border bg-background/30 px-2.5 font-mono text-xs opacity-30 select-none"
+          aria-disabled="true"
+        >
+          <span class="hidden xs:inline">Next</span>
+          <HugeiconsIcon icon={ArrowRight01Icon} className="size-3.5" />
+        </button>
+      )}
+
+      {/* Last Page Button */}
+      {showFirstLast && totalPages > 2 && (
+        currentPage < totalPages ? (
+          <a
+            href={buildUrl(totalPages)}
+            class="focus:outline-none"
+            title="Last Page"
+            aria-label="Go to last page"
+          >
             <button
               type="button"
-              class="inline-flex cursor-pointer items-center border border-border bg-background px-3 py-1.5 font-mono text-xs transition-colors select-none hover:border-primary hover:text-primary"
+              class="inline-flex h-8 w-8 cursor-pointer items-center justify-center border border-border bg-background/80 font-mono text-xs transition-colors select-none hover:border-primary hover:text-primary"
             >
-              Next →
+              <HugeiconsIcon icon={ArrowRightDoubleIcon} className="size-3.5" />
             </button>
           </a>
         ) : (
           <button
             type="button"
             disabled
-            class="inline-flex cursor-not-allowed items-center border border-border bg-background px-3 py-1.5 font-mono text-xs opacity-40 select-none"
+            class="inline-flex h-8 w-8 cursor-not-allowed items-center justify-center border border-border bg-background/30 font-mono text-xs opacity-30 select-none"
+            aria-disabled="true"
           >
-            Next →
+            <HugeiconsIcon icon={ArrowRightDoubleIcon} className="size-3.5" />
           </button>
-        )}
-      </div>
-    </nav>
-  )
-}
+        )
+      )}
+    </div>
+  </div>
+</nav>

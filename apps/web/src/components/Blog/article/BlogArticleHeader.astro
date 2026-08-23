@@ -1,6 +1,6 @@
 ---
 import type { BlogPost } from "@/data/blogPosts"
-import { getBlogPostPublishedDate } from "@/data/blogPosts"
+import { getBlogPostPublishedDate, getCategorySlug } from "@/data/blogPosts"
 import { ArticleHeaderActions } from "./ArticleHeaderActions"
 import { HugeiconsIcon } from "@hugeicons/react"
 import {
@@ -25,13 +25,14 @@ const catColor =
   post.categoryColor && post.categoryColor.startsWith("#")
     ? post.categoryColor
     : undefined
+const categorySlug = getCategorySlug(post.categorySlug || post.category)
 ---
 
 <header id="article-top" class="border-b border-border/80 pb-8 text-left">
   {/* Category & Featured Badges */}
   <div class="mb-4 flex flex-wrap items-center gap-2">
     <a
-      href={`/blog?category=${encodeURIComponent(post.category.toLowerCase())}`}
+      href={`/blog/category/${categorySlug}`}
     >
       <span
         style={

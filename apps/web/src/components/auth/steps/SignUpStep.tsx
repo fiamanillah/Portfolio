@@ -250,6 +250,28 @@ export function SignUpStep({
           </>
         )}
       </Button>
+
+      <p className="text-center font-mono text-[10px] text-muted-foreground/80">
+        By signing up, you agree to our{" "}
+        <a
+          href="/terms"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-primary underline hover:text-foreground"
+        >
+          Terms of Use
+        </a>{" "}
+        and{" "}
+        <a
+          href="/privacy"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-primary underline hover:text-foreground"
+        >
+          Privacy Policy
+        </a>
+        .
+      </p>
     </form>
   )
 }

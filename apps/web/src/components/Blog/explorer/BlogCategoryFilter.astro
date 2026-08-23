@@ -1,4 +1,6 @@
 ---
+import { getCategorySlug } from "@/data/blogPosts"
+
 interface CategoryItem {
   id?: string
   name: string
@@ -9,92 +11,118 @@ interface CategoryItem {
 
 interface Props {
   categories: CategoryItem[]
-  activeCategory: string
+  activeCategory?: string
   baseUrl?: string
+  showAllOption?: boolean
+  allUrl?: string
 }
 
-const { categories, activeCategory = "All", baseUrl = "/blog" } = Astro.props
+const {
+  categories,
+  activeCategory = "",
+  baseUrl = "/blog/category",
+  showAllOption = true,
+  allUrl = "/blog/page/1",
+} = Astro.props
 ---
 
 <div
-  class="my-8 flex flex-wrap items-center justify-between gap-4 border-b border-border/60 pb-6"
+  class="my-4 flex flex-wrap items-center justify-between gap-3 border-b border-border/50 pb-4"
 >
   <div class="flex items-center gap-2">
     <span
       class="font-mono text-xs font-semibold tracking-wider text-muted-foreground uppercase"
     >
-      FILTER CATEGORY:
+      EXPLORE BY TOPIC:
     </span>
   </div>
 
   <div class="flex flex-wrap items-center gap-2">
     {
-      categories.map((cat) => {
-        const isAll = cat.name.toLowerCase() === "all"
-        const isActive = activeCategory.toLowerCase() === cat.name.toLowerCase()
-        const targetUrl = isAll
-          ? baseUrl
-          : `${baseUrl}?category=${encodeURIComponent(cat.name.toLowerCase())}`
-        const catColor =
-          cat.color && cat.color.startsWith("#") ? cat.color : undefined
+      showAllOption && (
+        <a href={allUrl} class="focus:outline-none">
+          <button
+            type="button"
+            class={`flex cursor-pointer items-center gap-2 border px-3.5 py-1.5 font-mono text-xs transition-all duration-200 ${
+              activeCategory.toLowerCase() === "all" || !activeCategory
+                ? "border-primary bg-primary/10 font-bold text-primary shadow-[0_0_12px_oklch(var(--primary)/15%)]"
+                : "border-border bg-background/50 text-muted-foreground hover:border-primary/40 hover:text-foreground"
+            }`}
+          >
+            <span>All Articles</span>
+          </button>
+        </a>
+      )
+    }
+    {
+      categories
+        .filter((c) => c.name.toLowerCase() !== "all")
+        .map((cat) => {
+          const catSlug = getCategorySlug(cat)
+          const isActive =
+            activeCategory.toLowerCase() === cat.name.toLowerCase() ||
+            activeCategory.toLowerCase() === catSlug.toLowerCase()
+          const targetUrl = `${baseUrl}/${catSlug}`
+          const catColor =
+            cat.color && cat.color.startsWith("#") ? cat.color : undefined
 
-        return (
-          <a href={targetUrl} class="focus:outline-none">
-            <button
-              type="button"
-              style={
-                catColor && isActive
-                  ? {
-                      borderColor: catColor,
-                      backgroundColor: `${catColor}1a`,
-                      color: catColor,
-                      boxShadow: `0 0 12px ${catColor}33`,
-                    }
-                  : catColor
-                    ? {
-                        borderColor: `${catColor}30`,
-                      }
-                    : undefined
-              }
-              class={`flex cursor-pointer items-center gap-2 border px-3.5 py-1.5 font-mono text-xs transition-all duration-200 ${
-                isActive && !catColor
-                  ? "border-primary bg-primary/10 font-bold text-primary shadow-[0_0_12px_oklch(var(--primary)/15%)]"
-                  : !isActive && !catColor
-                    ? "border-border bg-background/50 text-muted-foreground hover:border-primary/40 hover:text-foreground"
-                    : "bg-background/50 text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              {!isAll && catColor && (
-                <span
-                  class="h-1.5 w-1.5 shrink-0 rounded-full"
-                  style={{
-                    backgroundColor: catColor,
-                    boxShadow: `0 0 5px ${catColor}`,
-                  }}
-                />
-              )}
-              <span>{cat.name}</span>
-              <span
+          return (
+            <a href={targetUrl} class="focus:outline-none">
+              <button
+                type="button"
                 style={
-                  isActive && catColor
+                  catColor && isActive
                     ? {
-                        backgroundColor: catColor,
-                        color: "#fff",
+                        borderColor: catColor,
+                        backgroundColor: `${catColor}1a`,
+                        color: catColor,
+                        boxShadow: `0 0 12px ${catColor}33`,
                       }
-                    : undefined
+                    : catColor
+                      ? {
+                          borderColor: `${catColor}30`,
+                        }
+                      : undefined
                 }
-                class={`inline-flex h-4 min-w-[1.25rem] items-center justify-center rounded-sm px-1 font-mono text-[10px] ${
+                class={`flex cursor-pointer items-center gap-2 border px-3.5 py-1.5 font-mono text-xs transition-all duration-200 ${
                   isActive && !catColor
-                    ? "bg-primary font-bold text-primary-foreground"
-                    : "bg-muted text-muted-foreground"
+                    ? "border-primary bg-primary/10 font-bold text-primary shadow-[0_0_12px_oklch(var(--primary)/15%)]"
+                    : !isActive && !catColor
+                      ? "border-border bg-background/50 text-muted-foreground hover:border-primary/40 hover:text-foreground"
+                      : "bg-background/50 text-muted-foreground hover:text-foreground"
                 }`}
               >
-                {cat.count}
-              </span>
-            </button>
-          </a>
-        )
-      })
+                {catColor && (
+                  <span
+                    class="h-1.5 w-1.5 shrink-0 rounded-full"
+                    style={{
+                      backgroundColor: catColor,
+                      boxShadow: `0 0 5px ${catColor}`,
+                    }}
+                  />
+                )}
+                <span>{cat.name}</span>
+                <span
+                  style={
+                    isActive && catColor
+                      ? {
+                          backgroundColor: catColor,
+                          color: "#fff",
+                        }
+                      : undefined
+                  }
+                  class={`inline-flex h-4 min-w-[1.25rem] items-center justify-center rounded-sm px-1 font-mono text-[10px] ${
+                    isActive && !catColor
+                      ? "bg-primary font-bold text-primary-foreground"
+                      : "bg-muted text-muted-foreground"
+                  }`}
+                >
+                  {cat.count}
+                </span>
+              </button>
+            </a>
+          )
+        })
     }
   </div>
 </div>

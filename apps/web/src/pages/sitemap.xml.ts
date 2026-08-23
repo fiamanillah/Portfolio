@@ -1,7 +1,9 @@
 import type { APIRoute } from "astro"
 import {
   getAllBlogPostsAsync,
+  getBlogCategoriesAsync,
   getBlogPostPublishedDate,
+  getCategorySlug,
 } from "@/data/blogPosts"
 import { CaseStudyApi } from "@/lib/api/caseStudyApi"
 
@@ -23,6 +25,7 @@ export const GET: APIRoute = async (context) => {
 
   // Fetch real-time published blog posts & case studies directly from DB/API
   const posts = await getAllBlogPostsAsync()
+  const categories = await getBlogCategoriesAsync()
   const caseStudies = await CaseStudyApi.fetchAllCaseStudies()
 
   const nowIso = new Date().toISOString()
@@ -61,12 +64,90 @@ export const GET: APIRoute = async (context) => {
       priority: "0.85",
     },
     {
-      loc: `${siteUrl}/profile`,
+      loc: `${siteUrl}/resume`,
       lastmod: nowIso,
       changefreq: "monthly",
       priority: "0.8",
     },
+    {
+      loc: `${siteUrl}/profile`,
+      lastmod: nowIso,
+      changefreq: "monthly",
+      priority: "0.7",
+    },
+    {
+      loc: `${siteUrl}/privacy`,
+      lastmod: nowIso,
+      changefreq: "monthly",
+      priority: "0.5",
+    },
+    {
+      loc: `${siteUrl}/terms`,
+      lastmod: nowIso,
+      changefreq: "monthly",
+      priority: "0.5",
+    },
   ]
+
+  // Dynamic Category Landing & Paginated Routes
+  const knownCategorySlugs = new Set<string>()
+  const categoryRoutes: string[] = []
+  const postsPerPage = 9
+
+  const allCategoryEntries: Array<{ name: string; slug: string }> = []
+  for (const cat of categories.filter((c) => c.name.toLowerCase() !== "all")) {
+    const slug = getCategorySlug(cat)
+    if (!slug || knownCategorySlugs.has(slug)) continue
+    knownCategorySlugs.add(slug)
+    allCategoryEntries.push({ name: cat.name, slug })
+  }
+
+  for (const post of posts) {
+    const slug = getCategorySlug(post.categorySlug || post.category)
+    if (!slug || knownCategorySlugs.has(slug)) continue
+    knownCategorySlugs.add(slug)
+    allCategoryEntries.push({ name: post.category, slug })
+  }
+
+  for (const catEntry of allCategoryEntries) {
+    const matchingCount = posts.filter(
+      (p) =>
+        p.category.toLowerCase() === catEntry.name.toLowerCase() ||
+        getCategorySlug(p.categorySlug || p.category) === catEntry.slug
+    ).length
+
+    const catPages = Math.max(1, Math.ceil(matchingCount / postsPerPage))
+
+    // Page 1
+    categoryRoutes.push(`  <url>
+    <loc>${siteUrl}/blog/category/${catEntry.slug}</loc>
+    <lastmod>${latestBlogDate}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>`)
+
+    // Additional pages (if any)
+    for (let cp = 2; cp <= catPages; cp++) {
+      categoryRoutes.push(`  <url>
+    <loc>${siteUrl}/blog/category/${catEntry.slug}/${cp}</loc>
+    <lastmod>${latestBlogDate}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.80</priority>
+  </url>`)
+    }
+  }
+
+  // Dynamic Paginated Archive Routes (/blog/page/1, /blog/page/2, ...)
+  const totalPages = Math.max(1, Math.ceil(posts.length / postsPerPage))
+  const paginationRoutes = Array.from({ length: totalPages }, (_, i) => {
+    const pageNum = i + 1
+    return `  <url>
+    <loc>${siteUrl}/blog/page/${pageNum}</loc>
+    <lastmod>${latestBlogDate}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>`
+  })
 
   // Dynamic Case Studies with live DB/API data & images (Only deep dives have dedicated URLs)
   const caseStudyRoutes = caseStudies
@@ -127,14 +208,17 @@ export const GET: APIRoute = async (context) => {
     )
     .join("\n")
 
+  const categoryXml = categoryRoutes.join("\n")
+  const paginationXml = paginationRoutes.join("\n")
   const caseStudiesXml = caseStudyRoutes.join("\n")
-
   const blogXml = blogRoutes.join("\n")
 
   const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
 ${staticXml}
+${categoryXml}
+${paginationXml}
 ${caseStudiesXml}
 ${blogXml}
 </urlset>`

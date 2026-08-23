@@ -7,6 +7,7 @@ import ThemeScript from "@/components/ThemeScript.astro"
 import Footer from "@/components/footer.astro"
 import { Toaster } from "@workspace/ui/components/sonner"
 import { AuthModal } from "@/components/auth/AuthModal"
+import { CookieConsent } from "@/components/Legal/CookieConsent"
 ---
 
 <html lang="en">
@@ -49,6 +50,7 @@ import { AuthModal } from "@/components/auth/AuthModal"
 
     <Toaster client:load />
     <AuthModal client:load />
+    <CookieConsent client:load />
     <Footer />
   </body>
 </html>

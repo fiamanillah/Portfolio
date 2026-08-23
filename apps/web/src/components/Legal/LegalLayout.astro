@@ -1,0 +1,399 @@
+---
+import {
+  SecurityIcon,
+  DocumentCodeIcon,
+  Alert02Icon,
+  PrinterIcon,
+  Link01Icon,
+  Mail01Icon,
+  Menu01Icon,
+  ArrowRight01Icon,
+} from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
+
+interface SectionItem {
+  id: string
+  title: string
+  num?: string
+}
+
+interface Props {
+  currentDoc: "privacy" | "terms" | "disclaimer"
+  sections: SectionItem[]
+  pageTitle: string
+}
+
+const { currentDoc, sections, pageTitle } = Astro.props
+
+const legalTabs = [
+  {
+    id: "privacy",
+    label: "Privacy Policy",
+    href: "/privacy",
+    icon: SecurityIcon,
+    badge: "GDPR / CCPA",
+  },
+  {
+    id: "terms",
+    label: "Terms of Use",
+    href: "/terms",
+    icon: DocumentCodeIcon,
+    badge: "AGREEMENT",
+  },
+  {
+    id: "disclaimer",
+    label: "Disclaimer",
+    href: "/disclaimer",
+    icon: Alert02Icon,
+    badge: "LEGAL",
+  },
+]
+---
+
+<style>
+  /* Custom scroll spy indicator styles */
+  .toc-link.active {
+    border-left-color: oklch(var(--primary));
+    color: oklch(var(--primary));
+    background-color: oklch(var(--primary) / 0.08);
+    font-weight: 600;
+  }
+  .toc-link.active .toc-num {
+    color: oklch(var(--primary));
+  }
+
+  /* Print specific stylesheet */
+  @media print {
+    header,
+    nav,
+    footer,
+    #legal-sidebar,
+    #mobile-toc-container,
+    #action-bar,
+    .no-print {
+      display: none !important;
+    }
+    main,
+    article {
+      width: 100% !important;
+      max-width: 100% !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      color: #000 !important;
+      background: #fff !important;
+    }
+    .legal-card {
+      border: 1px solid #ddd !important;
+      background: transparent !important;
+      box-shadow: none !important;
+      page-break-inside: avoid;
+    }
+  }
+</style>
+
+<div class="relative w-full">
+  <!-- Breadcrumb & Top Utility Bar -->
+  <div class="border-b border-border/70 bg-card/30 backdrop-blur-xs">
+    <div
+      class="container mx-auto flex flex-wrap items-center justify-between gap-4 px-4 py-3 sm:px-6"
+    >
+      <!-- Breadcrumbs -->
+      <nav aria-label="Breadcrumb" class="flex items-center gap-2 font-mono text-xs text-muted-foreground">
+        <a
+          href="/"
+          class="transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:outline-none"
+        >
+          Home
+        </a>
+        <span class="text-border">/</span>
+        <span class="text-muted-foreground">Legal</span>
+        <span class="text-border">/</span>
+        <span class="font-semibold text-primary">{pageTitle}</span>
+      </nav>
+
+      <!-- Document Switcher Pills -->
+      <div class="flex items-center gap-1.5 rounded-sm border border-border/70 bg-background/80 p-1">
+        {
+          legalTabs.map((tab) => {
+            const isActive = currentDoc === tab.id
+            return (
+              <a
+                href={tab.href}
+                class:list={[
+                  "inline-flex items-center gap-2 px-3 py-1.5 font-mono text-xs transition-all duration-200 rounded-xs",
+                  isActive
+                    ? "bg-primary text-primary-foreground font-bold shadow-xs"
+                    : "text-muted-foreground hover:bg-muted/50 hover:text-foreground",
+                ]}
+              >
+                <HugeiconsIcon
+                  icon={tab.icon}
+                  className="size-3.5"
+                  aria-hidden="true"
+                />
+                <span>{tab.label}</span>
+              </a>
+            )
+          })
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Collapsible Table of Contents Bar -->
+  <div
+    id="mobile-toc-container"
+    class="sticky top-16 z-30 border-b border-border bg-background/95 p-3 backdrop-blur-md lg:hidden"
+  >
+    <div class="flex items-center justify-between">
+      <button
+        id="mobile-toc-toggle-btn"
+        type="button"
+        class="inline-flex w-full items-center justify-between rounded-sm border border-border bg-card/70 px-3 py-2 text-xs font-mono text-foreground transition-colors hover:border-primary/40"
+        aria-expanded="false"
+        aria-controls="mobile-toc-dropdown"
+      >
+        <span class="flex items-center gap-2">
+          <HugeiconsIcon icon={Menu01Icon} className="size-4 text-primary" />
+          <span>Jump to Section...</span>
+        </span>
+        <span id="mobile-toc-indicator" class="text-xs text-muted-foreground transition-transform">▼</span>
+      </button>
+    </div>
+
+    <div
+      id="mobile-toc-dropdown"
+      class="mt-2 hidden max-h-72 overflow-y-auto rounded-sm border border-border bg-card/95 p-2 shadow-xl backdrop-blur-xl"
+    >
+      <ul class="m-0 flex flex-col gap-1 p-0 list-none">
+        {
+          sections.map((sec) => (
+            <li>
+              <a
+                href={`#${sec.id}`}
+                class="mobile-toc-link flex items-center justify-between rounded-xs px-2.5 py-1.5 font-mono text-xs text-muted-foreground transition-colors hover:bg-primary/10 hover:text-primary"
+              >
+                <span class="truncate">
+                  {sec.num && <span class="text-primary/70 mr-1.5">{sec.num}.</span>}
+                  {sec.title}
+                </span>
+                <span class="text-[10px] text-muted-foreground/50">#</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+
+  <!-- Main Content Layout (Sidebar + Document Body) -->
+  <div class="container mx-auto px-4 py-8 sm:px-6 lg:py-12">
+    <div class="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-12">
+      <!-- Desktop Sticky Sidebar (3 Columns) -->
+      <aside
+        id="legal-sidebar"
+        class="hidden lg:col-span-4 lg:block xl:col-span-3"
+      >
+        <div class="sticky top-24 space-y-6">
+          <!-- Document Outline Card -->
+          <div
+            class="rounded-sm border border-border/80 bg-card/60 p-5 backdrop-blur-xs shadow-xs"
+            data-grid-cross
+          >
+            <div class="mb-4 flex items-center justify-between border-b border-border/60 pb-3">
+              <span class="font-mono text-xs font-bold tracking-wider text-foreground uppercase">
+                Table of Contents
+              </span>
+              <span class="font-mono text-[10px] text-primary">
+                {sections.length} SECTIONS
+              </span>
+            </div>
+
+            <nav aria-label="Table of Contents" class="max-h-[calc(100vh-18rem)] overflow-y-auto pr-1">
+              <ul class="m-0 flex flex-col gap-0.5 p-0 list-none font-mono text-xs">
+                {
+                  sections.map((sec) => (
+                    <li>
+                      <a
+                        href={`#${sec.id}`}
+                        data-section-id={sec.id}
+                        class="toc-link group flex items-start gap-2 border-l-2 border-transparent px-2.5 py-1.5 text-muted-foreground transition-all duration-150 hover:border-primary/50 hover:bg-primary/5 hover:text-foreground"
+                      >
+                        {sec.num && (
+                          <span class="toc-num shrink-0 text-muted-foreground/60 group-hover:text-primary transition-colors">
+                            {sec.num}.
+                          </span>
+                        )}
+                        <span class="leading-tight">{sec.title}</span>
+                      </a>
+                    </li>
+                  ))
+                }
+              </ul>
+            </nav>
+          </div>
+
+          <!-- Utility & Action Card -->
+          <div
+            id="action-bar"
+            class="rounded-sm border border-border/80 bg-card/60 p-5 backdrop-blur-xs space-y-3"
+          >
+            <span class="block font-mono text-[11px] font-bold tracking-wider text-muted-foreground uppercase">
+              Quick Actions
+            </span>
+
+            <div class="flex flex-col gap-2">
+              <button
+                type="button"
+                id="btn-print-doc"
+                class="flex w-full items-center justify-between rounded-xs border border-border/70 bg-background/80 px-3 py-2 font-mono text-xs text-foreground transition-colors hover:border-primary/40 hover:bg-primary/10 hover:text-primary focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:outline-none"
+              >
+                <span class="flex items-center gap-2">
+                  <HugeiconsIcon icon={PrinterIcon} className="size-3.5" />
+                  <span>Print Document / PDF</span>
+                </span>
+                <span class="text-[10px] text-muted-foreground">⌘P</span>
+              </button>
+
+              <button
+                type="button"
+                id="btn-copy-url"
+                class="flex w-full items-center justify-between rounded-xs border border-border/70 bg-background/80 px-3 py-2 font-mono text-xs text-foreground transition-colors hover:border-primary/40 hover:bg-primary/10 hover:text-primary focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:outline-none"
+              >
+                <span class="flex items-center gap-2">
+                  <HugeiconsIcon icon={Link01Icon} className="size-3.5" />
+                  <span id="btn-copy-text">Share Link</span>
+                </span>
+                <span class="text-[10px] text-muted-foreground">URL</span>
+              </button>
+
+              <a
+                href="mailto:fi@amanillah.com"
+                class="flex w-full items-center justify-between rounded-xs border border-border/70 bg-background/80 px-3 py-2 font-mono text-xs text-foreground transition-colors hover:border-primary/40 hover:bg-primary/10 hover:text-primary focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:outline-none"
+              >
+                <span class="flex items-center gap-2">
+                  <HugeiconsIcon icon={Mail01Icon} className="size-3.5" />
+                  <span>Legal Inquiries</span>
+                </span>
+                <HugeiconsIcon icon={ArrowRight01Icon} className="size-3 text-muted-foreground" />
+              </a>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Legal Document Body (9 Columns) -->
+      <main class="lg:col-span-8 xl:col-span-9">
+        <article class="prose prose-neutral dark:prose-invert max-w-none space-y-12">
+          <slot />
+        </article>
+      </main>
+    </div>
+  </div>
+</div>
+
+<script>
+  function setupLegalPage() {
+    // 1. Mobile TOC toggle
+    const toggleBtn = document.getElementById("mobile-toc-toggle-btn")
+    const dropdown = document.getElementById("mobile-toc-dropdown")
+    const indicator = document.getElementById("mobile-toc-indicator")
+
+    if (toggleBtn && dropdown) {
+      toggleBtn.addEventListener("click", () => {
+        const isHidden = dropdown.classList.contains("hidden")
+        if (isHidden) {
+          dropdown.classList.remove("hidden")
+          toggleBtn.setAttribute("aria-expanded", "true")
+          if (indicator) indicator.style.transform = "rotate(180deg)"
+        } else {
+          dropdown.classList.add("hidden")
+          toggleBtn.setAttribute("aria-expanded", "false")
+          if (indicator) indicator.style.transform = "rotate(0deg)"
+        }
+      })
+
+      // Close mobile dropdown when a link is clicked
+      dropdown.querySelectorAll(".mobile-toc-link").forEach((link) => {
+        link.addEventListener("click", () => {
+          dropdown.classList.add("hidden")
+          toggleBtn.setAttribute("aria-expanded", "false")
+          if (indicator) indicator.style.transform = "rotate(0deg)"
+        })
+      })
+    }
+
+    // 2. Print trigger
+    const printBtn = document.getElementById("btn-print-doc")
+    if (printBtn) {
+      printBtn.addEventListener("click", () => {
+        window.print()
+      })
+    }
+
+    // 3. Share URL trigger
+    const copyBtn = document.getElementById("btn-copy-url")
+    const copyText = document.getElementById("btn-copy-text")
+    if (copyBtn && copyText) {
+      copyBtn.addEventListener("click", async () => {
+        try {
+          await navigator.clipboard.writeText(window.location.href)
+          const original = copyText.textContent
+          copyText.textContent = "Link Copied!"
+          setTimeout(() => {
+            copyText.textContent = original
+          }, 2200)
+        } catch (e) {
+          console.error("Failed to copy URL", e)
+        }
+      })
+    }
+
+    // 4. Scroll spy for desktop TOC
+    const tocLinks = document.querySelectorAll<HTMLAnchorElement>(".toc-link")
+    if (tocLinks.length === 0) return
+
+    const sections = Array.from(tocLinks)
+      .map((link) => {
+        const targetId = link.getAttribute("data-section-id")
+        if (!targetId) return null
+        const element = document.getElementById(targetId)
+        return element ? { id: targetId, element, link } : null
+      })
+      .filter((s): s is { id: string; element: HTMLElement; link: HTMLAnchorElement } => s !== null)
+
+    if (sections.length === 0) return
+
+    function onScroll() {
+      const scrollY = window.scrollY + 120 // offset for fixed header
+      let currentSectionId = sections[0]?.id
+
+      for (let i = 0; i < sections.length; i++) {
+        const sec = sections[i]
+        if (!sec) continue
+        const top = sec.element.offsetTop
+        if (scrollY >= top) {
+          currentSectionId = sec.id
+        }
+      }
+
+      tocLinks.forEach((link) => {
+        if (link.getAttribute("data-section-id") === currentSectionId) {
+          link.classList.add("active")
+        } else {
+          link.classList.remove("active")
+        }
+      })
+    }
+
+    window.addEventListener("scroll", onScroll, { passive: true })
+    onScroll() // initialize on page load
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", setupLegalPage)
+  } else {
+    setupLegalPage()
+  }
+  document.addEventListener("astro:page-load", setupLegalPage)
+</script>

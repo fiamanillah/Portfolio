@@ -2,6 +2,7 @@
 import { Icon } from "astro-icon/components"
 
 interface Props {
+  badge?: string
   title?: string
   subtitle?: string
   source?: string
@@ -10,6 +11,7 @@ interface Props {
 }
 
 const {
+  badge = "TECH_DISPATCH // INSIGHTS",
   title = "Subscribe to Tech Stories & Insights",
   subtitle = "Stories on AI advancements, semiconductor shifts, emerging tech trends, and modern software engineering delivered directly to your inbox.",
   source = "newsletter_section",
@@ -28,6 +30,18 @@ const submitTextId = `${idPrefix}-submit-text`
 ---
 
 <style>
+  @keyframes blink-cursor {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0;
+    }
+  }
+  .cursor-blink {
+    animation: blink-cursor 1.1s step-end infinite;
+  }
   @keyframes shimmer-x {
     0% {
       background-position: -200% center;
@@ -71,15 +85,17 @@ const submitTextId = `${idPrefix}-submit-text`
   <div class="relative z-10 px-4 sm:px-6">
     <!-- Header -->
     <div class="mx-auto max-w-2xl text-center">
-      <!-- Minimalist Micro Badge -->
-      <div
-        class="mb-3.5 inline-flex items-center gap-2 rounded-full border border-primary/25 bg-primary/5 px-3 py-1 font-mono text-[11px] font-medium tracking-wider text-primary uppercase"
-      >
-        <span class="relative flex size-2">
-          <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75"></span>
-          <span class="relative inline-flex size-2 rounded-full bg-primary"></span>
-        </span>
-        <span>Tech Dispatch // Insights</span>
+      <!-- Section label pill -->
+      <div class="flex justify-center">
+        <p
+          class="mb-4 inline-flex items-center gap-2 border border-primary/25 bg-primary/8 px-4 py-1.5 font-mono text-xs font-semibold tracking-[0.2em] text-primary uppercase shadow-[0_0_15px_oklch(var(--primary)/10%)]"
+        >
+          <span
+            class="h-1.5 w-1.5 animate-pulse rounded-full bg-primary shadow-[0_0_6px_oklch(var(--primary)/80%)]"
+          ></span>
+          {badge}
+          <span class="cursor-blink ml-1 inline-block h-3 w-0.5 bg-primary"></span>
+        </p>
       </div>
 
       <!-- Title -->

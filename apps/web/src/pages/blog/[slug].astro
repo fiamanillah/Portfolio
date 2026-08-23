@@ -4,10 +4,12 @@ import BlogContentBody from "@/components/Blog/article/BlogContentBody.astro"
 import BlogArticleNav from "@/components/Blog/article/BlogArticleNav.astro"
 import BlogCard from "@/components/Blog/cards/BlogCard.astro"
 import NewsletterSection from "@/components/Newsletter/NewsletterSection.astro"
+import SectionDivider from "@/components/SectionDivider.astro"
 import BlogSEO from "@/components/SEO/BlogSEO.astro"
 import {
   getAllBlogPostsAsync,
   getBlogPostBySlugAsync,
+  getCategorySlug,
   type BlogPost,
 } from "@/data/blogPosts"
 
@@ -42,8 +44,8 @@ const prevPost = postData?.prevPost || null
 const nextPost = postData?.nextPost || null
 const relatedPosts =
   postData?.relatedPosts && postData.relatedPosts.length > 0
-    ? postData.relatedPosts
-    : (await getAllBlogPostsAsync()).filter((p) => p.slug !== slug).slice(0, 2)
+    ? postData.relatedPosts.slice(0, 3)
+    : (await getAllBlogPostsAsync()).filter((p) => p.slug !== slug).slice(0, 3)
 ---
 
 <MySiteLayout>
@@ -80,7 +82,7 @@ const relatedPosts =
         <a href="/blog" class="transition-colors hover:text-foreground">Blog</a>
         <span>/</span>
         <a
-          href={`/blog?category=${encodeURIComponent(currentPost.category.toLowerCase())}`}
+          href={`/blog/category/${getCategorySlug(currentPost.categorySlug || currentPost.category)}`}
           class="text-primary hover:underline"
         >
           {currentPost.category}
@@ -97,7 +99,7 @@ const relatedPosts =
     {/* Reader Body (Main Article + Sticky Right TOC) */}
     <BlogContentBody post={currentPost} />
 
-    {/* Bottom Sections Container — full container width */}
+    {/* Previous & Next Article Navigation Container */}
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       {/* Decorative section divider */}
       <div class="my-4 flex items-center gap-4">
@@ -115,45 +117,58 @@ const relatedPosts =
         </div>
       </div>
 
-      {/* Previous & Next Article Navigation — full width */}
+      {/* Previous & Next Article Navigation */}
       <BlogArticleNav prevPost={prevPost} nextPost={nextPost} />
+    </div>
 
-      {/* Related Articles Recommendation Grid — full width */}
-      {
-        relatedPosts.length > 0 && (
-          <section class="blog-bottom-animate mt-8 border-t border-border/80 pt-12">
-            <div class="mb-6 flex items-center justify-between">
-              <h2 class="font-mono text-xs font-bold tracking-widest text-primary uppercase">
-                // CONTINUE READING RELATED ARTICLES
-              </h2>
-              <a
-                href="/blog"
-                class="font-mono text-xs text-muted-foreground transition-colors hover:text-foreground"
-              >
-                View All Articles →
-              </a>
-            </div>
-            <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-              {relatedPosts.map((relatedPost) => (
-                <BlogCard
-                  post={relatedPost}
-                  class="border border-border"
-                />
-              ))}
+    {/* Related Articles — Dedicated Full-Width Section with SectionDivider & Gridline Alignment */}
+    {
+      relatedPosts.length > 0 && (
+        <>
+          <SectionDivider />
+          <section class="blog-bottom-animate relative z-10 w-full" data-grid-cross>
+            <div class="overflow-hidden border-r border-l border-border bg-background">
+              {/* Section Header Bar */}
+              <div class="flex items-center justify-between border-b border-border bg-card/60 px-4 py-3 sm:px-6">
+                <div class="flex items-center gap-2 font-mono text-xs font-bold tracking-wider text-primary uppercase">
+                  <span class="inline-block h-1.5 w-1.5 rounded-full bg-primary shadow-[0_0_6px_oklch(var(--primary))]" />
+                  <span>// CONTINUE READING RELATED ARTICLES</span>
+                </div>
+                <a
+                  href="/blog/page/1"
+                  class="group/link inline-flex items-center gap-1.5 font-mono text-xs text-muted-foreground transition-colors hover:text-primary"
+                >
+                  <span>View All Articles</span>
+                  <span class="transition-transform duration-200 group-hover/link:translate-x-0.5">
+                    →
+                  </span>
+                </a>
+              </div>
+
+              {/* Zero-Gap 3-Column Responsive Grid */}
+              <div class="grid grid-cols-1 divide-y divide-border md:grid-cols-3 md:divide-y-0 md:divide-x">
+                {relatedPosts.map((relatedPost) => (
+                  <BlogCard
+                    post={relatedPost}
+                    class="border-0 bg-transparent rounded-none shadow-none"
+                  />
+                ))}
+              </div>
             </div>
           </section>
-        )
-      }
+          <SectionDivider />
+        </>
+      )
+    }
 
-      {/* Newsletter Subscription Form — full width */}
-      <div class="blog-bottom-animate mt-16 pb-12">
-        <NewsletterSection
-          title="Enjoyed this Article?"
-          subtitle="Get notified as soon as new tech deep dives, AI analyses, semiconductor market stories, and engineering guides are published."
-          source="blog_detail"
-          idPrefix="blog-detail-newsletter"
-        />
-      </div>
+    {/* Newsletter Subscription Section */}
+    <div class="blog-bottom-animate pb-10">
+      <NewsletterSection
+        title="Enjoyed this Article?"
+        subtitle="Get notified as soon as new tech deep dives, AI analyses, semiconductor market stories, and engineering guides are published."
+        source="blog_detail"
+        idPrefix="blog-detail-newsletter"
+      />
     </div>
   </main>
 </MySiteLayout>
