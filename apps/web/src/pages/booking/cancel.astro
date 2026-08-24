@@ -1,14 +1,16 @@
 ---
 import MySiteLayout from "@/layouts/MySiteLayout.astro"
 import BookingCancelContainer from "@/components/Booking/BookingCancelContainer"
+import SEO from "@/components/SEO/SEO.astro"
 ---
 
 <MySiteLayout>
   <Fragment slot="head">
-    <title>Cancel or Manage Consultation | Fi Amanillah</title>
-    <meta
-      name="description"
-      content="Review and manage or cancel your scheduled consultation session with Fi Amanillah."
+    <SEO
+      title="Manage Consultation Session | Fi Amanillah"
+      description="Review and manage or cancel your scheduled consultation session with Fi Amanillah."
+      url="/booking/cancel"
+      noIndex={true}
     />
   </Fragment>
 

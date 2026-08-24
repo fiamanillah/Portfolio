@@ -1,17 +1,20 @@
 ---
+import { Badge } from "@workspace/ui/components/badge"
 import { Button } from "@workspace/ui/components/button"
 import { HugeiconsIcon } from "@hugeicons/react"
 import {
+  ArrowUpRight01Icon,
   Github,
   Globe02Icon,
 } from "@hugeicons/core-free-icons"
 
-interface ProjectProps {
+export interface ProjectProps {
   id: string
+  slug?: string
   title: string
   subtitle?: string
   description: string
-  role: string
+  role?: string
   impact?: string
   tech: string[]
   links: {
@@ -21,148 +24,211 @@ interface ProjectProps {
   }
   img?: string
   index: string
-  status: string
-  year: string
+  status?: string
+  year?: string
   highlights?: string[]
 }
 
 interface Props {
   project: ProjectProps
+  class?: string
 }
 
-const { project } = Astro.props
+const { project, class: className = "" } = Astro.props
+
+const rawStatus = (project.status || "Completed").replace(/^Status:\s*/i, "").trim()
+const statusLower = rawStatus.toLowerCase()
+const isLive = statusLower === "live"
+const isInProgress = statusLower.includes("progress")
 ---
 
 <article
-  class="project-card group relative flex flex-col justify-between overflow-hidden border border-border bg-background transition-all duration-300 hover:border-primary/50 hover:bg-card/40 hover:shadow-[0_0_0_1px_oklch(var(--primary)/15%),0_8px_24px_-8px_oklch(var(--primary)/10%)] p-6 sm:p-7"
+  class={`project-card group relative flex flex-col justify-between border border-dashed border-border/80 bg-card/30 p-6 backdrop-blur-sm transition-all duration-300 hover:border-primary/60 hover:bg-card/60 sm:p-7 ${className}`}
   data-category="project-only"
   data-title={project.title.toLowerCase()}
   data-tech={project.tech.join(" ").toLowerCase()}
 >
-  {/* Corner Bracket Accents */}
-  <div
-    class="pointer-events-none absolute top-2 left-2 z-20 h-3 w-3 border-t-[1.5px] border-l-[1.5px] border-primary/30 transition-all duration-300 group-hover:h-4 group-hover:w-4 group-hover:border-primary"
+  {/* Cyber Corner Plus Markers */}
+  <span
+    class="pointer-events-none absolute -top-[9px] -left-[6px] font-mono text-sm leading-none text-muted-foreground/60 transition-colors duration-300 select-none group-hover:text-primary"
+    aria-hidden="true"
   >
-  </div>
-  <div
-    class="pointer-events-none absolute top-2 right-2 z-20 h-3 w-3 border-t-[1.5px] border-r-[1.5px] border-primary/30 transition-all duration-300 group-hover:h-4 group-hover:w-4 group-hover:border-primary"
+    +
+  </span>
+  <span
+    class="pointer-events-none absolute -top-[9px] -right-[6px] font-mono text-sm leading-none text-muted-foreground/60 transition-colors duration-300 select-none group-hover:text-primary"
+    aria-hidden="true"
   >
-  </div>
-  <div
-    class="pointer-events-none absolute bottom-2 left-2 z-20 h-3 w-3 border-b-[1.5px] border-l-[1.5px] border-primary/30 transition-all duration-300 group-hover:h-4 group-hover:w-4 group-hover:border-primary"
+    +
+  </span>
+  <span
+    class="pointer-events-none absolute -bottom-[9px] -left-[6px] font-mono text-sm leading-none text-muted-foreground/60 transition-colors duration-300 select-none group-hover:text-primary"
+    aria-hidden="true"
   >
-  </div>
-  <div
-    class="pointer-events-none absolute right-2 bottom-2 z-20 h-3 w-3 border-r-[1.5px] border-b-[1.5px] border-primary/30 transition-all duration-300 group-hover:h-4 group-hover:w-4 group-hover:border-primary"
+    +
+  </span>
+  <span
+    class="pointer-events-none absolute -right-[6px] -bottom-[9px] font-mono text-sm leading-none text-muted-foreground/60 transition-colors duration-300 select-none group-hover:text-primary"
+    aria-hidden="true"
   >
-  </div>
+    +
+  </span>
 
-  <div class="space-y-4">
+  <div class="flex flex-col gap-4">
     {/* Meta Header */}
-    <div class="flex items-start justify-between gap-4">
-      <div>
-        <div class="flex items-center gap-2 font-mono text-[10px] tracking-wider text-muted-foreground uppercase">
-          <span class="text-primary/80">// SYS_{project.index}</span>
-          <span>•</span>
-          <span>{project.year}</span>
-        </div>
-        <h3
-          class="mt-1.5 text-xl font-bold tracking-tight text-foreground transition-colors duration-200 group-hover:text-primary"
+    <div class="flex items-center justify-between gap-2 border-b border-border/40 pb-3">
+      <div class="flex flex-wrap items-center gap-2">
+        <span class="font-mono text-xs font-bold tracking-[0.2em] text-primary">
+          // {project.index}
+        </span>
+        
+        {/* Status Badge */}
+        <span
+          class={`inline-flex items-center gap-1.5 px-2 py-0.5 font-mono text-[10px] font-bold uppercase border ${
+            isLive
+              ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-400"
+              : isInProgress
+                ? "border-amber-500/40 bg-amber-500/10 text-amber-400"
+                : "border-primary/40 bg-primary/10 text-primary"
+          }`}
         >
-          {project.title}
-        </h3>
+          <span
+            class={`size-1.5 rounded-full ${
+              isLive
+                ? "bg-emerald-400 animate-pulse shadow-[0_0_6px_rgb(52,211,153)]"
+                : isInProgress
+                  ? "bg-amber-400"
+                  : "bg-primary"
+            }`}
+          ></span>
+          {rawStatus}
+        </span>
       </div>
-      <span
-        class="shrink-0 rounded-sm border border-border/80 bg-muted/40 px-2.5 py-1 font-mono text-[10px] font-semibold text-muted-foreground uppercase"
-      >
-        {project.role}
-      </span>
+
+      <div class="flex items-center gap-2 font-mono text-xs text-muted-foreground">
+        {project.role && (
+          <span class="hidden sm:inline text-muted-foreground/80">{project.role}</span>
+        )}
+        {project.year && (
+          <>
+            <span class="hidden sm:inline text-muted-foreground/40">•</span>
+            <span class="tabular-nums">{project.year}</span>
+          </>
+        )}
+      </div>
     </div>
 
-    {
-      project.subtitle && (
-        <p class="font-mono text-xs font-semibold text-primary/90">
+    {/* Title & Subtitle */}
+    <div>
+      <h3
+        class="text-xl font-bold tracking-tight text-foreground transition-colors duration-200 group-hover:text-primary sm:text-2xl"
+      >
+        {project.title}
+      </h3>
+      {project.subtitle && (
+        <p class="mt-1 font-mono text-xs font-semibold text-primary/90">
           // {project.subtitle}
         </p>
-      )
-    }
+      )}
+    </div>
 
+    {/* Description */}
     <p class="text-sm leading-relaxed text-muted-foreground">
       {project.description}
     </p>
 
-    {/* Highlights list */}
-    {
-      project.highlights && project.highlights.length > 0 && (
-        <ul class="space-y-1.5 pt-1">
+    {/* Architectural Impact Highlight Callout (Since no separate details page) */}
+    {project.impact && (
+      <div class="relative border-l-2 border-primary/80 bg-primary/5 px-3.5 py-2.5 rounded-r-sm transition-colors group-hover:bg-primary/8">
+        <div class="flex items-center gap-1.5 text-[11px] font-mono font-semibold tracking-wider text-primary uppercase mb-1">
+          <span class="size-1.5 rounded-full bg-primary"></span>
+          <span>Core Impact &amp; Architecture</span>
+        </div>
+        <p class="text-xs sm:text-sm font-medium text-foreground/90 leading-relaxed">
+          {project.impact}
+        </p>
+      </div>
+    )}
+
+    {/* Key Highlights / Capabilities List */}
+    {project.highlights && project.highlights.length > 0 && (
+      <div class="space-y-1.5 pt-1">
+        <div class="font-mono text-[10px] font-bold tracking-wider text-muted-foreground uppercase">
+          Key Capabilities:
+        </div>
+        <ul class="space-y-1.5">
           {project.highlights.map((h) => (
             <li class="flex items-start gap-2 text-xs text-muted-foreground">
-              <span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary/70 shadow-[0_0_4px_oklch(var(--primary))]" />
-              <span>{h}</span>
+              <span class="mt-1.5 size-1.5 shrink-0 rounded-full bg-primary/80 shadow-[0_0_4px_oklch(var(--primary))]" />
+              <span class="leading-relaxed">{h}</span>
             </li>
           ))}
         </ul>
-      )
-    }
+      </div>
+    )}
 
-    {/* Tech stack tags */}
+    {/* Tech Stack Badges */}
     <div class="flex flex-wrap gap-1.5 pt-2">
-      {
-        project.tech.map((t) => (
-          <span class="rounded-sm border border-border/80 bg-muted/20 px-2 py-0.5 font-mono text-[10px] font-medium text-muted-foreground transition-colors group-hover:border-primary/40 group-hover:text-foreground">
-            {t}
-          </span>
-        ))
-      }
+      {project.tech.map((t) => (
+        <Badge
+          variant="outline"
+          className="text-[11px] font-mono border-border/70 bg-background/50 text-muted-foreground transition-colors group-hover:border-primary/40 group-hover:text-foreground"
+        >
+          {t}
+        </Badge>
+      ))}
     </div>
   </div>
 
-  {/* Action Footer */}
-  <div
-    class="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-border/50 pt-4"
-  >
-    <div class="flex flex-wrap items-center gap-2.5">
-      {
-        project.links.github && (
-          <a
-            href={project.links.github}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+  {/* Actions Footer */}
+  {((project.links.live && project.links.live !== "#") ||
+    (project.links.github && project.links.github !== "#") ||
+    (project.links.caseStudy && project.links.caseStudy !== "#")) && (
+    <div class="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-border/40 pt-4">
+      <div class="flex flex-wrap items-center gap-2.5">
+        {project.links.live && project.links.live !== "#" && (
+          <a href={project.links.live} target="_blank" rel="noopener noreferrer">
             <Button
               variant="outline"
               size="sm"
-              className="gap-1.5 text-xs transition-colors hover:border-primary/60 hover:text-primary"
-            >
-              <HugeiconsIcon icon={Github} className="size-3.5" />
-              Source Code ↗
-            </Button>
-          </a>
-        )
-      }
-
-      {
-        project.links.live && project.links.live !== "#" && (
-          <a
-            href={project.links.live}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Button
-              variant="outline"
-              size="sm"
-              className="gap-1.5 text-xs transition-colors hover:border-primary/60 hover:text-primary"
+              className="gap-1.5 text-xs border-border hover:border-primary/60 hover:text-primary transition-colors cursor-pointer"
             >
               <HugeiconsIcon icon={Globe02Icon} className="size-3.5" />
-              Live Demo ↗
+              Live demo ↗
             </Button>
           </a>
-        )
-      }
-    </div>
+        )}
 
-    <span class="font-mono text-[10px] text-muted-foreground/60">
-      ARCH_TEMPLATE
-    </span>
-  </div>
+        {project.links.caseStudy && project.links.caseStudy !== "#" && (
+          <a
+            href={project.links.caseStudy}
+            target={project.links.caseStudy.startsWith("/") ? "_self" : "_blank"}
+            rel={project.links.caseStudy.startsWith("/") ? undefined : "noopener noreferrer"}
+          >
+            <Button size="sm" className="gap-1.5 text-xs font-semibold cursor-pointer">
+              Case study
+              <HugeiconsIcon icon={ArrowUpRight01Icon} className="size-3" />
+            </Button>
+          </a>
+        )}
+
+        {project.links.github && project.links.github !== "#" && (
+          <a href={project.links.github} target="_blank" rel="noopener noreferrer">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+            >
+              <HugeiconsIcon icon={Github} className="size-3.5" />
+              Source code ↗
+            </Button>
+          </a>
+        )}
+      </div>
+
+      <span class="font-mono text-[10px] text-muted-foreground/60 hidden sm:inline">
+        ARCH_STARTER
+      </span>
+    </div>
+  )}
 </article>

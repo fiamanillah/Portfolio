@@ -572,6 +572,23 @@ export type EnumBookingStatusWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumBookingStatusFilter<$PrismaModel>
 }
 
+export type EnumRedirectEntityTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.RedirectEntityType | Prisma.EnumRedirectEntityTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.RedirectEntityType[] | Prisma.ListEnumRedirectEntityTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RedirectEntityType[] | Prisma.ListEnumRedirectEntityTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRedirectEntityTypeFilter<$PrismaModel> | $Enums.RedirectEntityType
+}
+
+export type EnumRedirectEntityTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.RedirectEntityType | Prisma.EnumRedirectEntityTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.RedirectEntityType[] | Prisma.ListEnumRedirectEntityTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RedirectEntityType[] | Prisma.ListEnumRedirectEntityTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRedirectEntityTypeWithAggregatesFilter<$PrismaModel> | $Enums.RedirectEntityType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumRedirectEntityTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumRedirectEntityTypeFilter<$PrismaModel>
+}
+
 export type NestedUuidFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -1110,6 +1127,23 @@ export type NestedEnumBookingStatusWithAggregatesFilter<$PrismaModel = never> = 
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumBookingStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumBookingStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumRedirectEntityTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.RedirectEntityType | Prisma.EnumRedirectEntityTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.RedirectEntityType[] | Prisma.ListEnumRedirectEntityTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RedirectEntityType[] | Prisma.ListEnumRedirectEntityTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRedirectEntityTypeFilter<$PrismaModel> | $Enums.RedirectEntityType
+}
+
+export type NestedEnumRedirectEntityTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.RedirectEntityType | Prisma.EnumRedirectEntityTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.RedirectEntityType[] | Prisma.ListEnumRedirectEntityTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RedirectEntityType[] | Prisma.ListEnumRedirectEntityTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRedirectEntityTypeWithAggregatesFilter<$PrismaModel> | $Enums.RedirectEntityType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumRedirectEntityTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumRedirectEntityTypeFilter<$PrismaModel>
 }
 
 

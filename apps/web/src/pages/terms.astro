@@ -4,6 +4,7 @@ import LegalHero from "@/components/Legal/LegalHero.astro"
 import LegalLayout from "@/components/Legal/LegalLayout.astro"
 import SectionDivider from "@/components/SectionDivider.astro"
 import NewsletterSection from "@/components/Newsletter/NewsletterSection.astro"
+import SEO from "@/components/SEO/SEO.astro"
 
 const sections = [
   { id: "acceptance", title: "Agreement to Terms", num: "01" },
@@ -21,77 +22,18 @@ const sections = [
   { id: "modifications", title: "Modifications to Terms", num: "13" },
   { id: "contact-info", title: "Contact & Legal Inquiries", num: "14" },
 ]
-
-const siteUrl = (import.meta.env.PUBLIC_WEB_URL || "https://fi.amanillah.com").replace(/\/$/, "")
-const pageUrl = `${siteUrl}/terms`
-
-const schemaData = {
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "WebPage",
-      "@id": pageUrl,
-      "url": pageUrl,
-      "name": "Terms of Use | Fi Amanillah",
-      "description": "Terms of Use and Conditions governing access to Fi Amanillah's developer portfolio, open-source codebases, and tech journal.",
-      "inLanguage": "en-US",
-      "isPartOf": {
-        "@type": "WebSite",
-        "@id": `${siteUrl}/#website`,
-        "url": siteUrl,
-        "name": "Fi Amanillah",
-        "publisher": {
-          "@type": "Person",
-          "name": "Fi Amanillah",
-          "email": "fi@amanillah.com",
-        },
-      },
-    },
-    {
-      "@type": "BreadcrumbList",
-      "@id": `${pageUrl}#breadcrumb`,
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "Home",
-          "item": siteUrl,
-        },
-        {
-          "@type": "ListItem",
-          "position": 2,
-          "name": "Terms of Use",
-          "item": pageUrl,
-        },
-      ],
-    },
-  ],
-}
 ---
 
 <MySiteLayout>
   <!-- SEO & Social Graph Meta Tags -->
   <Fragment slot="head">
-    <title>Terms of Use | Fi Amanillah</title>
-    <meta
-      name="description"
-      content="Terms of Use and conditions for accessing Fi Amanillah's software engineering portfolio, technical writeups, code repositories, and booking services."
+    <SEO
+      title="Terms of Use & Code Licenses | Fi Amanillah"
+      description="Terms of Use and conditions for accessing Fi Amanillah's software engineering portfolio, technical writeups, code repositories, and booking services."
+      url="/terms"
+      image="/fi.png"
+      tags={["Terms of Use", "Open Source Licenses", "Legal", "Developer Terms"]}
     />
-    <link rel="canonical" href={pageUrl} />
-    <meta property="og:title" content="Terms of Use | Fi Amanillah" />
-    <meta
-      property="og:description"
-      content="Terms of Use and conditions for accessing Fi Amanillah's software engineering portfolio, technical writeups, and booking services."
-    />
-    <meta property="og:url" content={pageUrl} />
-    <meta property="og:type" content="website" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Terms of Use | Fi Amanillah" />
-    <meta
-      name="twitter:description"
-      content="Terms of Use and Conditions governing Fi Amanillah's web platform and services."
-    />
-    <script is:inline type="application/ld+json" set:html={JSON.stringify(schemaData)} />
   </Fragment>
 
   <!-- Cyber-Tech Hero Header -->

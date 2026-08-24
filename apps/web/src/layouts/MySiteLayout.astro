@@ -8,6 +8,7 @@ import Footer from "@/components/footer.astro"
 import { Toaster } from "@workspace/ui/components/sonner"
 import { AuthModal } from "@/components/auth/AuthModal"
 import { CookieConsent } from "@/components/Legal/CookieConsent"
+import SEO from "@/components/SEO/SEO.astro"
 ---
 
 <html lang="en">
@@ -24,11 +25,7 @@ import { CookieConsent } from "@/components/Legal/CookieConsent"
     />
     <ThemeScript />
     <slot name="head">
-      <title>Fi Amanillah | Software Engineer & Tech Explorer</title>
-      <meta
-        name="description"
-        content="Portfolio, Tech Stories & Engineering Journal of Fi Amanillah — Software Engineer & Technology Enthusiast."
-      />
+      <SEO />
     </slot>
   </head>
   <body class="min-h-svh overflow-x-hidden bg-background text-foreground">

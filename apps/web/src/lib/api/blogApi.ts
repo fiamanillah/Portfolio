@@ -1,5 +1,6 @@
 import type { BlogPost, BlogCategory, BlogAuthor } from "@/data/blogPosts"
 import { getStoredAccessToken } from "./authApi"
+import { RedirectApi } from "./redirectApi"
 
 const API_BASE_URL =
   (typeof import.meta !== "undefined" && import.meta.env?.PUBLIC_API_URL) ||
@@ -43,10 +44,13 @@ export interface PaginatedBlogPostsResponse {
 }
 
 export interface SingleBlogPostResponse {
-  post: BlogPost
+  post?: BlogPost
   prevPost: BlogPost | null
   nextPost: BlogPost | null
   relatedPosts: BlogPost[]
+  redirected?: boolean
+  destination?: string
+  statusCode?: number
 }
 
 /**
@@ -297,6 +301,20 @@ export const BlogApi = {
         const body = await res.json()
         if (body.success && body.data) {
           const raw = body.data
+
+          // If backend indicated a 301/308 redirect for this slug
+          if (raw.redirected && raw.destination) {
+            return {
+              post: undefined,
+              prevPost: null,
+              nextPost: null,
+              relatedPosts: [],
+              redirected: true,
+              destination: raw.destination,
+              statusCode: raw.statusCode || 301,
+            }
+          }
+
           const post = mapApiPostToBlogPost(raw.post || raw)
           const prevPost = raw.prevPost
             ? mapApiPostToBlogPost(raw.prevPost)
@@ -313,6 +331,20 @@ export const BlogApi = {
             prevPost,
             nextPost,
             relatedPosts,
+          }
+        }
+      } else {
+        // If 404, check fallback redirect resolver
+        const directRedirect = await RedirectApi.resolveRedirect(`/blog/${slug}`)
+        if (directRedirect?.redirected && directRedirect.destination) {
+          return {
+            post: undefined,
+            prevPost: null,
+            nextPost: null,
+            relatedPosts: [],
+            redirected: true,
+            destination: directRedirect.destination,
+            statusCode: directRedirect.statusCode || 301,
           }
         }
       }

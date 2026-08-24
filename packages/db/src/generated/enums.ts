@@ -145,3 +145,14 @@ export const BookingStatus = {
 } as const
 
 export type BookingStatus = (typeof BookingStatus)[keyof typeof BookingStatus]
+
+
+export const RedirectEntityType = {
+  BLOG_POST: 'BLOG_POST',
+  CASE_STUDY: 'CASE_STUDY',
+  BLOG_CATEGORY: 'BLOG_CATEGORY',
+  STATIC_PAGE: 'STATIC_PAGE',
+  CUSTOM: 'CUSTOM'
+} as const
+
+export type RedirectEntityType = (typeof RedirectEntityType)[keyof typeof RedirectEntityType]

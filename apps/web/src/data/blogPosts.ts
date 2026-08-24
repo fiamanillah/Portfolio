@@ -194,14 +194,17 @@ export async function getBlogPostBySlugAsync(
   slug: string,
   incrementView: boolean = false
 ): Promise<{
-  post: BlogPost
+  post?: BlogPost
   prevPost: BlogPost | null
   nextPost: BlogPost | null
   relatedPosts: BlogPost[]
+  redirected?: boolean
+  destination?: string
+  statusCode?: number
 } | null> {
   try {
     const res = await BlogApi.fetchPostBySlug(slug, incrementView)
-    if (res && res.post) {
+    if (res && (res.post || res.redirected)) {
       return res
     }
   } catch (err) {

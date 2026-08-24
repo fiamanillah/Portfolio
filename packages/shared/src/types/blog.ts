@@ -237,6 +237,9 @@ export interface PublicBlogPostDetail {
     url: string;
   }>;
   jsonLd: Record<string, any>;
+  redirected?: boolean;
+  destination?: string;
+  statusCode?: number;
 }
 
 export type CreateBlogPostDTO = z.input<typeof createBlogPostSchema>;

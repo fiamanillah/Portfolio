@@ -4,6 +4,7 @@ import LegalHero from "@/components/Legal/LegalHero.astro"
 import LegalLayout from "@/components/Legal/LegalLayout.astro"
 import SectionDivider from "@/components/SectionDivider.astro"
 import NewsletterSection from "@/components/Newsletter/NewsletterSection.astro"
+import SEO from "@/components/SEO/SEO.astro"
 
 const sections = [
   { id: "general", title: "General Disclaimer", num: "01" },
@@ -13,24 +14,17 @@ const sections = [
   { id: "affiliates", title: "Affiliate Links & Endorsements", num: "05" },
   { id: "contact", title: "Inquiries & Clarifications", num: "06" },
 ]
-
-const siteUrl = (import.meta.env.PUBLIC_WEB_URL || "https://fi.amanillah.com").replace(/\/$/, "")
-const pageUrl = `${siteUrl}/disclaimer`
 ---
 
 <MySiteLayout>
   <!-- SEO Slot -->
   <Fragment slot="head">
-    <title>Disclaimer | Fi Amanillah</title>
-    <meta
-      name="description"
-      content="Legal, technical, financial, and code safety disclaimers for Fi Amanillah's developer portfolio, architecture case studies, and engineering blog."
-    />
-    <link rel="canonical" href={pageUrl} />
-    <meta property="og:title" content="Disclaimer | Fi Amanillah" />
-    <meta
-      property="og:description"
-      content="Legal, technical, and code safety disclaimers for Fi Amanillah's platform."
+    <SEO
+      title="Legal & Technical Disclaimer | Fi Amanillah"
+      description="Legal, technical, financial, and code safety disclaimers for Fi Amanillah's developer portfolio, architecture case studies, and engineering blog."
+      url="/disclaimer"
+      image="/fi.png"
+      tags={["Disclaimer", "Code Safety", "Technical Advice", "Legal"]}
     />
   </Fragment>
 

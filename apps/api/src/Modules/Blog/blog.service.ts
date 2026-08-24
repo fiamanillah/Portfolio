@@ -27,16 +27,54 @@ import {
   SeoPreviewDTO,
 } from "./BlogDTO"
 import { StorageService } from "@/services/StorageService"
+import { RedirectService } from "../Redirect/redirect.service"
+import { config } from "@/core/config"
 import fs from "fs/promises"
 import path from "path"
 
 export class BlogService {
   private logger = new AppLogger("BlogService")
+  private readonly redirectService = new RedirectService()
 
   constructor(
     private readonly db: typeof prisma = prisma,
     private readonly storage: StorageService = new StorageService()
   ) {}
+
+  /**
+   * Automatically trigger background sitemap & RSS cache refresh
+   */
+  private triggerSitemapAutoUpdate(slug: string, action: string): void {
+    const allowed = config.security.cors.allowedOrigins
+    const origin =
+      typeof allowed === "string"
+        ? allowed.split(",")[0]?.trim()
+        : "http://localhost:4321"
+    const webUrl = config.site.webUrl || origin || "http://localhost:4321"
+
+    this.logger.info(
+      `✔ [Sitemap / SEO Sync] Auto-updating sitemap for blog: '${slug}' (action: ${action})`
+    )
+
+    setTimeout(async () => {
+      try {
+        const sitemapUrl = `${webUrl.replace(/\/$/, "")}/sitemap.xml`
+        const rssUrl = `${webUrl.replace(/\/$/, "")}/rss.xml`
+        await Promise.allSettled([
+          fetch(sitemapUrl, {
+            method: "GET",
+            headers: { "User-Agent": "Portfolio-API-Sitemap-Ping/1.0" },
+          }),
+          fetch(rssUrl, {
+            method: "GET",
+            headers: { "User-Agent": "Portfolio-API-RSS-Ping/1.0" },
+          }),
+        ])
+      } catch (err) {
+        this.logger.warn(`Failed to auto-ping sitemap/rss for '${slug}':`, err)
+      }
+    }, 100)
+  }
 
   // =========================================================================
   // UTILITY & TEXT COMPUTATION HELPERS
@@ -621,6 +659,7 @@ export class BlogService {
     this.logger.info(
       `Blog post created: '${created.title}' (slug: ${created.slug}) by ${user?.name || "Admin"}`
     )
+    this.triggerSitemapAutoUpdate(created.slug, "CREATED")
     return this.mapToBlogPostDTO(created)
   }
 
@@ -822,6 +861,16 @@ export class BlogService {
     this.logger.info(
       `Blog post updated: '${updated.title}' (ID: ${updated.id})`
     )
+    if (finalSlug && existing.slug && finalSlug !== existing.slug) {
+      await this.redirectService.trackEntitySlugChange({
+        entityType: "BLOG_POST",
+        entityId: updated.id,
+        oldPath: `/blog/${existing.slug}`,
+        newPath: `/blog/${finalSlug}`,
+        notes: `Blog post '${updated.title}' slug renamed`,
+      })
+    }
+    this.triggerSitemapAutoUpdate(updated.slug, "UPDATED")
     return this.mapToBlogPostDTO(updated)
   }
 
@@ -882,6 +931,7 @@ export class BlogService {
     })
 
     this.logger.info(`✔ Blog post deleted: '${post.title}' (ID: ${id})`)
+    this.triggerSitemapAutoUpdate(post.title || id, "DELETED")
   }
 
   /**
@@ -956,6 +1006,7 @@ export class BlogService {
     this.logger.info(
       `Blog post duplicated: '${post.title}' -> '${duplicated.title}' (ID: ${duplicated.id})`
     )
+    this.triggerSitemapAutoUpdate(duplicated.slug, "DUPLICATED")
     return this.mapToBlogPostDTO(duplicated)
   }
 
@@ -979,6 +1030,7 @@ export class BlogService {
     this.logger.info(
       `Bulk status update to ${status} for ${result.count} posts`
     )
+    this.triggerSitemapAutoUpdate(`${result.count} posts`, `BULK_STATUS_${status}`)
     return { count: result.count }
   }
 
@@ -1033,6 +1085,7 @@ export class BlogService {
     this.logger.info(
       `Bulk deleted ${result.count} posts and cleaned associated storage`
     )
+    this.triggerSitemapAutoUpdate(`${result.count} posts`, "BULK_DELETED")
     return { count: result.count }
   }
 
@@ -1409,6 +1462,7 @@ export class BlogService {
       },
     })
 
+    this.triggerSitemapAutoUpdate(created.slug, "CATEGORY_CREATED")
     return {
       id: created.id,
       slug: created.slug,
@@ -1457,6 +1511,17 @@ export class BlogService {
       },
     })
 
+    if (slugToSet && existing.slug && slugToSet !== existing.slug) {
+      await this.redirectService.trackEntitySlugChange({
+        entityType: "BLOG_CATEGORY",
+        entityId: updated.id,
+        oldPath: `/blog/category/${existing.slug}`,
+        newPath: `/blog/category/${updated.slug}`,
+        notes: `Blog category '${updated.name}' slug renamed`,
+      })
+    }
+
+    this.triggerSitemapAutoUpdate(updated.slug, "CATEGORY_UPDATED")
     return {
       id: updated.id,
       slug: updated.slug,
@@ -1483,6 +1548,7 @@ export class BlogService {
 
     await prisma.blogCategory.delete({ where: { id } })
     this.logger.info(`Category deleted: '${existing.name}' (ID: ${id})`)
+    this.triggerSitemapAutoUpdate(existing.slug, "CATEGORY_DELETED")
   }
 
   public async getTags(): Promise<BlogTagDTO[]> {
@@ -1686,6 +1752,22 @@ export class BlogService {
     })
 
     if (!post) {
+      // Check if a 301 redirect exists for this blog post slug
+      const redirect = await this.redirectService.resolve(`/blog/${slug}`)
+      if (redirect.redirected && redirect.destination) {
+        return {
+          post: null as any,
+          prevPost: null,
+          nextPost: null,
+          relatedPosts: [],
+          breadcrumbs: [],
+          jsonLd: {},
+          redirected: true,
+          destination: redirect.destination,
+          statusCode: redirect.statusCode || 301,
+        }
+      }
+
       throw new NotFoundError(
         `Blog post '${slug}' not found or is not published`
       )
@@ -1946,7 +2028,7 @@ export class BlogService {
       title: "Fi Amanillah — Engineering & Architecture Blog",
       description:
         "Deep dives into high-throughput systems, distributed microservices, database optimization, Redis streaming, and modern DevOps pipelines.",
-      siteUrl: "https://fi.amanillah.com",
+      siteUrl: config.site.webUrl || "http://localhost:4321",
       items: posts.map((post) => ({
         id: post.id,
         title: post.title,
@@ -2387,6 +2469,7 @@ export class BlogService {
       this.logger.warn("Could not read local blog directory:", err)
     }
 
+    this.triggerSitemapAutoUpdate("local-seed", "SEEDED")
     return {
       imported: count,
       message: `Successfully synchronized ${count} blog posts into PostgreSQL database.`,

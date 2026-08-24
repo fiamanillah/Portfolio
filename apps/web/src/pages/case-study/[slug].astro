@@ -12,6 +12,7 @@ import SectionDivider from "@/components/SectionDivider.astro"
 import MySiteLayout from "@/layouts/MySiteLayout.astro"
 import type { CaseStudyDetail } from "@/data/caseStudies"
 import { CaseStudyApi } from "@/lib/api/caseStudyApi"
+import SEO from "@/components/SEO/SEO.astro"
 
 export async function getStaticPaths() {
   const allStudies = await CaseStudyApi.fetchAllCaseStudies()
@@ -41,13 +42,16 @@ interface Props {
 }
 
 const { slug } = Astro.params
-let caseStudy = Astro.props.caseStudy
+let caseStudy: CaseStudyDetail | undefined = Astro.props.caseStudy
 let prevCaseStudy = Astro.props.prevCaseStudy
 let nextCaseStudy = Astro.props.nextCaseStudy
 
 // On-demand fetch fallback for dynamic rendering or newly created case studies
 if ((!caseStudy || !caseStudy.contextBlocks?.length) && slug) {
   const result = await CaseStudyApi.fetchCaseStudyBySlug(slug)
+  if (result?.redirected && result.destination) {
+    return Astro.redirect(result.destination, (result.statusCode as any) || 301)
+  }
   if (result) {
     caseStudy = result.caseStudy
     prevCaseStudy = result.prevCaseStudy
@@ -79,16 +83,7 @@ const roleMeta = (caseStudy.metadata || []).find((m) => m.label.toLowerCase().in
 <MySiteLayout>
   <!-- SEO & Schema Markup Injection -->
   <Fragment slot="head">
-    <title>{caseStudy.title} | Technical Case Study</title>
-    <meta name="description" content={caseStudy.description} />
-    <meta property="og:title" content={`${caseStudy.title} | Fi Amanillah`} />
-    <meta property="og:description" content={caseStudy.description} />
-    <meta property="og:image" content={caseStudy.image} />
-    <meta property="og:type" content="article" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={`${caseStudy.title} | Fi Amanillah`} />
-    <meta name="twitter:description" content={caseStudy.description} />
-    <meta name="twitter:image" content={caseStudy.image} />
+    <SEO caseStudy={caseStudy} />
   </Fragment>
 
   <!-- Reading Progress Bar (Fixed on scroll) -->

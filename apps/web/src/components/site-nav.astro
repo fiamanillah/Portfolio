@@ -112,12 +112,13 @@ function isLinkActive(href: string) {
         type="button"
         aria-label="Toggle navigation menu"
         aria-expanded="false"
+        data-state="closed"
         aria-controls="mobile-nav-panel"
-        class="group relative flex size-9 cursor-pointer items-center justify-center border border-border bg-background/80 text-foreground transition-all duration-200 hover:border-primary hover:bg-primary/10 hover:text-primary focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:outline-none"
+        class="group relative flex size-9 cursor-pointer items-center justify-center border border-border bg-background/80 text-foreground transition-colors duration-150 hover:border-primary hover:bg-primary/10 hover:text-primary focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:outline-none"
       >
         <span
           id="menu-open-icon"
-          class="flex items-center justify-center transition-transform duration-300"
+          class="nav-icon-open pointer-events-none absolute inset-0 flex items-center justify-center"
         >
           <HugeiconsIcon
             icon={Menu01Icon}
@@ -127,7 +128,7 @@ function isLinkActive(href: string) {
         </span>
         <span
           id="menu-close-icon"
-          class="hidden items-center justify-center transition-transform duration-300"
+          class="nav-icon-close pointer-events-none absolute inset-0 flex items-center justify-center"
         >
           <HugeiconsIcon
             icon={Cancel01Icon}
@@ -142,125 +143,206 @@ function isLinkActive(href: string) {
   <!-- Mobile Navigation Dropdown Panel -->
   <div
     id="mobile-nav-panel"
-    class="hidden border-t border-border/60 bg-background/95 shadow-2xl backdrop-blur-2xl transition-all duration-300 ease-in-out lg:hidden"
+    data-state="closed"
+    class="mobile-nav-dropdown border-t border-transparent bg-background/95 shadow-xl backdrop-blur-md lg:hidden"
   >
-    <div class="space-y-4 px-4 py-5">
-      <!-- Responsive Links Grid -->
-      <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
-        {
-          navLinks.map((link) => {
-            const active = isLinkActive(link.href)
-            return (
-              <a
-                href={link.href}
-                class:list={[
-                  "group flex items-center justify-between p-2.5 transition-all duration-200 border",
-                  active
-                    ? "border-primary/50 bg-primary/15 text-primary font-medium"
-                    : link.highlight
-                      ? "border-primary/30 bg-primary/5 text-foreground hover:border-primary hover:bg-primary/10"
-                      : "border-border/50 bg-card/40 text-muted-foreground hover:border-border hover:bg-muted/40 hover:text-foreground",
-                ]}
-              >
-                <div class="flex items-center gap-2.5">
-                  <div
-                    class:list={[
-                      "flex size-7 items-center justify-center border transition-colors",
-                      active
-                        ? "border-primary/40 bg-primary/20 text-primary"
-                        : "border-border bg-background text-muted-foreground group-hover:border-primary/40 group-hover:text-primary",
-                    ]}
-                  >
-                    <HugeiconsIcon
-                      icon={link.icon}
-                      className="size-3.5"
-                      aria-hidden="true"
-                    />
+    <div class="min-h-0 overflow-hidden">
+      <div id="mobile-nav-content" class="space-y-4 px-4 py-4">
+        <!-- Responsive Links Grid -->
+        <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
+          {
+            navLinks.map((link) => {
+              const active = isLinkActive(link.href)
+              return (
+                <a
+                  href={link.href}
+                  class:list={[
+                    "group flex items-center justify-between p-2.5 transition-all duration-150 border",
+                    active
+                      ? "border-primary/50 bg-primary/15 text-primary font-medium"
+                      : link.highlight
+                        ? "border-primary/30 bg-primary/5 text-foreground hover:border-primary hover:bg-primary/10"
+                        : "border-border/50 bg-card/40 text-muted-foreground hover:border-border hover:bg-muted/40 hover:text-foreground",
+                  ]}
+                >
+                  <div class="flex items-center gap-2.5">
+                    <div
+                      class:list={[
+                        "flex size-7 items-center justify-center border transition-colors",
+                        active
+                          ? "border-primary/40 bg-primary/20 text-primary"
+                          : "border-border bg-background text-muted-foreground group-hover:border-primary/40 group-hover:text-primary",
+                      ]}
+                    >
+                      <HugeiconsIcon
+                        icon={link.icon}
+                        className="size-3.5"
+                        aria-hidden="true"
+                      />
+                    </div>
+                    <span class="font-mono text-xs font-medium">
+                      {link.label}
+                    </span>
                   </div>
-                  <span class="font-mono text-xs font-medium">
-                    {link.label}
+                  <span class="text-xs text-muted-foreground/50 transition-transform duration-150 group-hover:translate-x-0.5 group-hover:text-primary">
+                    →
                   </span>
-                </div>
-                <span class="text-xs text-muted-foreground/50 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:text-primary">
-                  →
-                </span>
-              </a>
-            )
-          })
-        }
+                </a>
+              )
+            })
+          }
+        </div>
       </div>
     </div>
   </div>
 </nav>
 
+<style>
+  .mobile-nav-dropdown {
+    display: grid;
+    grid-template-rows: 0fr;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition:
+      grid-template-rows 220ms cubic-bezier(0.16, 1, 0.3, 1),
+      opacity 180ms ease-out,
+      border-color 200ms ease-out,
+      visibility 0s linear 220ms;
+    will-change: grid-template-rows, opacity;
+  }
+
+  .mobile-nav-dropdown[data-state="open"] {
+    grid-template-rows: 1fr;
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    border-color: color-mix(in oklch, var(--color-border, #e5e7eb) 60%, transparent);
+    transition:
+      grid-template-rows 240ms cubic-bezier(0.16, 1, 0.3, 1),
+      opacity 200ms ease-out,
+      border-color 200ms ease-out,
+      visibility 0s linear 0s;
+  }
+
+  #mobile-nav-content {
+    transform: translateY(-6px);
+    transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: transform;
+  }
+
+  .mobile-nav-dropdown[data-state="open"] #mobile-nav-content {
+    transform: translateY(0);
+  }
+
+  /* Hamburger to Close Icon smooth morph */
+  .nav-icon-open {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+    transition:
+      opacity 150ms ease-out,
+      transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: transform, opacity;
+  }
+
+  #mobile-menu-btn[data-state="open"] .nav-icon-open {
+    opacity: 0;
+    transform: rotate(90deg) scale(0.65);
+  }
+
+  .nav-icon-close {
+    opacity: 0;
+    transform: rotate(-90deg) scale(0.65);
+    transition:
+      opacity 150ms ease-out,
+      transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: transform, opacity;
+  }
+
+  #mobile-menu-btn[data-state="open"] .nav-icon-close {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+  }
+</style>
+
 <script>
   function setupMobileMenu() {
     const btn = document.getElementById("mobile-menu-btn")
     const panel = document.getElementById("mobile-nav-panel")
-    const openIcon = document.getElementById("menu-open-icon")
-    const closeIcon = document.getElementById("menu-close-icon")
 
     if (!btn || !panel) return
 
-    // Prevent duplicate event binding
-    if (btn.dataset.bound === "true") return
-    btn.dataset.bound = "true"
+    // Prevent duplicate per-element event binding across astro navigations
+    if (btn.dataset.initialized === "true") return
+    btn.dataset.initialized = "true"
 
-    const openMenu = () => {
-      panel.classList.remove("hidden")
-      btn.setAttribute("aria-expanded", "true")
-      openIcon?.classList.add("hidden")
-      closeIcon?.classList.remove("hidden")
-    }
-
-    const closeMenu = () => {
-      panel.classList.add("hidden")
-      btn.setAttribute("aria-expanded", "false")
-      openIcon?.classList.remove("hidden")
-      closeIcon?.classList.add("hidden")
+    const setMenuState = (isOpen: boolean) => {
+      const state = isOpen ? "open" : "closed"
+      btn.setAttribute("data-state", state)
+      panel.setAttribute("data-state", state)
+      btn.setAttribute("aria-expanded", isOpen ? "true" : "false")
     }
 
     btn.addEventListener("click", (e) => {
       e.stopPropagation()
-      const isOpen = !panel.classList.contains("hidden")
-      if (isOpen) {
-        closeMenu()
-      } else {
-        openMenu()
-      }
+      const isOpen = panel.getAttribute("data-state") === "open"
+      setMenuState(!isOpen)
     })
 
     // Close on navigation link click
     panel.querySelectorAll("a").forEach((link) => {
       link.addEventListener("click", () => {
-        closeMenu()
+        setMenuState(false)
       })
     })
+  }
 
-    // Close on Escape
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && !panel.classList.contains("hidden")) {
-        closeMenu()
-      }
-    })
+  // Register global document & window handlers once
+  if (typeof window !== "undefined" && !(window as any).__mobileNavGlobalInit) {
+    (window as any).__mobileNavGlobalInit = true
 
     // Close on click outside
     document.addEventListener("click", (e) => {
-      if (
-        !panel.classList.contains("hidden") &&
-        !panel.contains(e.target as Node) &&
-        !btn.contains(e.target as Node)
-      ) {
-        closeMenu()
+      const btn = document.getElementById("mobile-menu-btn")
+      const panel = document.getElementById("mobile-nav-panel")
+      if (panel && btn && panel.getAttribute("data-state") === "open") {
+        if (!panel.contains(e.target as Node) && !btn.contains(e.target as Node)) {
+          btn.setAttribute("data-state", "closed")
+          panel.setAttribute("data-state", "closed")
+          btn.setAttribute("aria-expanded", "false")
+        }
       }
     })
 
-    // Auto-close on resize to lg (desktop)
-    window.addEventListener("resize", () => {
-      if (window.innerWidth >= 1024 && !panel.classList.contains("hidden")) {
-        closeMenu()
+    // Close on Escape key
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        const btn = document.getElementById("mobile-menu-btn")
+        const panel = document.getElementById("mobile-nav-panel")
+        if (panel && btn && panel.getAttribute("data-state") === "open") {
+          btn.setAttribute("data-state", "closed")
+          panel.setAttribute("data-state", "closed")
+          btn.setAttribute("aria-expanded", "false")
+        }
       }
     })
+
+    // Auto-close on resize to desktop (>= 1024px)
+    window.addEventListener(
+      "resize",
+      () => {
+        if (window.innerWidth >= 1024) {
+          const btn = document.getElementById("mobile-menu-btn")
+          const panel = document.getElementById("mobile-nav-panel")
+          if (panel && btn && panel.getAttribute("data-state") === "open") {
+            btn.setAttribute("data-state", "closed")
+            panel.setAttribute("data-state", "closed")
+            btn.setAttribute("aria-expanded", "false")
+          }
+        }
+      },
+      { passive: true }
+    )
   }
 
   if (document.readyState === "loading") {

@@ -1,0 +1,420 @@
+---
+import type { BlogPost } from "@/data/blogPosts"
+import type { CaseStudyDetail } from "@/data/caseStudies"
+import { getBlogPostPublishedDate, getCategorySlug } from "@/data/blogPosts"
+import { webEnv } from "@workspace/env/web"
+
+export interface BreadcrumbItem {
+  name: string
+  url: string
+}
+
+export interface Props {
+  // Option 1: Pass BlogPost
+  post?: BlogPost
+
+  // Option 2: Pass CaseStudyDetail
+  caseStudy?: CaseStudyDetail
+
+  // Option 3: Individual custom props
+  title?: string
+  description?: string
+  image?: string
+  url?: string
+  type?: "article" | "website" | "profile"
+  category?: string
+  tags?: string[]
+  publishedTime?: string
+  modifiedTime?: string
+  breadcrumbs?: BreadcrumbItem[]
+  noIndex?: boolean
+  prevPageUrl?: string
+  nextPageUrl?: string
+}
+
+const {
+  post,
+  caseStudy,
+  title: customTitle,
+  description: customDescription,
+  image: customImage,
+  url: customUrl,
+  type: customType = "website",
+  category: customCategory,
+  tags: customTags,
+  publishedTime: customPublishedTime,
+  modifiedTime: customModifiedTime,
+  breadcrumbs: customBreadcrumbs,
+  noIndex: customNoIndex,
+  prevPageUrl,
+  nextPageUrl,
+} = Astro.props
+
+const siteUrl = (
+  webEnv.PUBLIC_WEB_URL ||
+  import.meta.env.PUBLIC_WEB_URL ||
+  Astro.site?.toString() ||
+  "https://fi.amanillah.com"
+).replace(/\/$/, "")
+
+// Calculate derived fields
+const isArticle = Boolean(post || caseStudy || customType === "article")
+const type = isArticle ? "article" : customType
+
+const noIndex = Boolean(post?.seo?.noIndex || customNoIndex)
+
+// Determine Title
+let title = "Fi Amanillah | Full-Stack Architect & Software Engineer"
+let rawTitle = "Fi Amanillah"
+
+if (post) {
+  rawTitle = post.title
+  title = post.seo?.metaTitle || `${post.title} | Fi Amanillah`
+} else if (caseStudy) {
+  rawTitle = caseStudy.title
+  title = `${caseStudy.title} | Technical Case Study`
+} else if (customTitle) {
+  rawTitle = customTitle.includes("|") ? customTitle.split("|")[0].trim() : customTitle
+  title = customTitle.includes("Fi Amanillah") ? customTitle : `${customTitle} | Fi Amanillah`
+}
+
+// Determine Description
+let description =
+  "Portfolio, system architecture deep dives, real-time microservices, database optimizations, and technical journal of Fi Amanillah."
+
+if (post) {
+  description = post.seo?.metaDescription || post.summary || description
+} else if (caseStudy) {
+  description = caseStudy.description || description
+} else if (customDescription) {
+  description = customDescription
+}
+
+// Determine Relative & Canonical URLs
+let relativeUrl = Astro.url.pathname
+
+if (post) {
+  relativeUrl = `/blog/${post.slug}`
+} else if (caseStudy) {
+  relativeUrl = `/case-study/${caseStudy.slug}`
+} else if (customUrl) {
+  relativeUrl = customUrl
+}
+
+let canonicalUrl = `${siteUrl}${relativeUrl.startsWith("/") ? relativeUrl : `/${relativeUrl}`}`
+if (post?.seo?.canonicalUrl && post.seo.canonicalUrl.startsWith("http")) {
+  canonicalUrl = post.seo.canonicalUrl
+}
+
+// Determine Social / Open Graph Preview Image
+let rawThumbnail = "/fi.png"
+
+if (post?.seo?.ogImage || post?.thumbnail) {
+  rawThumbnail = post.seo?.ogImage || post.thumbnail
+} else if (caseStudy?.image) {
+  rawThumbnail = caseStudy.image
+} else if (customImage) {
+  rawThumbnail = customImage
+}
+
+const absoluteImageUrl = rawThumbnail.startsWith("http")
+  ? rawThumbnail
+  : `${siteUrl}${rawThumbnail.startsWith("/") ? rawThumbnail : `/${rawThumbnail}`}`
+
+const imageType = absoluteImageUrl.endsWith(".png")
+  ? "image/png"
+  : absoluteImageUrl.endsWith(".webp")
+    ? "image/webp"
+    : "image/jpeg"
+
+// Determine Category & Tags
+let category = "Technology"
+let tags = [
+  "Software Engineering",
+  "System Architecture",
+  "Full Stack Development",
+  "TypeScript",
+  "PostgreSQL",
+  "Redis",
+  "DevOps",
+]
+
+if (post) {
+  category = post.category || "Technology"
+  tags = post.seo?.keywords || post.tags || [category]
+} else if (caseStudy) {
+  category = "Software Architecture"
+  tags = caseStudy.techStack || ["System Architecture"]
+} else {
+  if (customCategory) category = customCategory
+  if (customTags && customTags.length > 0) tags = customTags
+}
+
+const keywords = tags.join(", ")
+
+// Determine Published & Modified Timestamps
+let publishedTime = customPublishedTime
+let modifiedTime = customModifiedTime
+
+if (post) {
+  publishedTime = getBlogPostPublishedDate(post)
+  modifiedTime = post.modifiedAt || publishedTime
+} else if (caseStudy) {
+  publishedTime = caseStudy.createdAt || new Date().toISOString()
+  modifiedTime = caseStudy.updatedAt || publishedTime
+}
+
+// Calculate Word Count estimate for TechArticle schema
+const wordCount = post?.content
+  ? post.content.split(/\s+/).filter(Boolean).length
+  : undefined
+
+// Build Breadcrumbs
+let breadcrumbs: BreadcrumbItem[] = [
+  { name: "Home", url: `${siteUrl}/` },
+]
+
+if (customBreadcrumbs) {
+  breadcrumbs = customBreadcrumbs
+} else if (post) {
+  breadcrumbs = [
+    { name: "Home", url: `${siteUrl}/` },
+    { name: "Blog", url: `${siteUrl}/blog` },
+    {
+      name: post.category,
+      url: `${siteUrl}/blog/category/${getCategorySlug(post.categorySlug || post.category)}`,
+    },
+    { name: post.title, url: canonicalUrl },
+  ]
+} else if (caseStudy) {
+  breadcrumbs = [
+    { name: "Home", url: `${siteUrl}/` },
+    { name: "Case Studies", url: `${siteUrl}/case-study` },
+    { name: caseStudy.title, url: canonicalUrl },
+  ]
+} else if (relativeUrl !== "/") {
+  const cleanPath = relativeUrl.replace(/^\/|\/$/g, "")
+  const segments = cleanPath.split("/")
+  let currentAcc = siteUrl
+  for (const seg of segments) {
+    currentAcc += `/${seg}`
+    const formattedName = seg
+      .replace(/-/g, " ")
+      .replace(/\b\w/g, (c) => c.toUpperCase())
+    breadcrumbs.push({ name: formattedName, url: currentAcc })
+  }
+}
+
+// Author details
+const authorName = post?.author?.name || "Fi Amanillah"
+const authorRole = post?.author?.role || "Software Engineer & Full-Stack Architect"
+const authorAvatar = post?.author?.avatar
+  ? post.author.avatar.startsWith("http")
+    ? post.author.avatar
+    : `${siteUrl}${post.author.avatar}`
+  : `${siteUrl}/fi.png`
+
+const authorTwitter = post?.author?.twitter || "@fiamanillah"
+const authorLinkedin =
+  post?.author?.linkedin || "https://linkedin.com/in/fiamanillah"
+const authorGithub = post?.author?.github || "https://github.com/fiamanillah"
+
+const sameAsList = [
+  authorGithub,
+  authorLinkedin,
+  authorTwitter.startsWith("http")
+    ? authorTwitter
+    : `https://twitter.com/${authorTwitter.replace(/^@/, "")}`,
+].filter(Boolean)
+
+// Article Type Schema (TechArticle / BlogPosting / Article)
+const articleSchemaType = post?.seo?.articleType || "TechArticle"
+
+// Construct Schema.org JSON-LD graph
+const schemaGraph: any[] = [
+  {
+    "@type": "WebSite",
+    "@id": `${siteUrl}/#website`,
+    url: siteUrl,
+    name: "Fi Amanillah",
+    description: "Portfolio & Engineering Architecture Blog of Fi Amanillah",
+    publisher: {
+      "@id": `${siteUrl}/#person`,
+    },
+    inLanguage: "en-US",
+  },
+  {
+    "@type": "Person",
+    "@id": `${siteUrl}/#person`,
+    name: authorName,
+    jobTitle: authorRole,
+    url: siteUrl,
+    image: authorAvatar,
+    sameAs: sameAsList,
+  },
+  {
+    "@type": "BreadcrumbList",
+    "@id": `${canonicalUrl}#breadcrumb`,
+    itemListElement: breadcrumbs.map((crumb, idx) => ({
+      "@type": "ListItem",
+      position: idx + 1,
+      name: crumb.name,
+      item: crumb.url,
+    })),
+  },
+]
+
+if (isArticle) {
+  schemaGraph.push({
+    "@type": [articleSchemaType, "BlogPosting"],
+    "@id": `${canonicalUrl}#article`,
+    isPartOf: {
+      "@id": `${siteUrl}/#website`,
+    },
+    headline: rawTitle,
+    name: rawTitle,
+    description: description,
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": canonicalUrl,
+    },
+    url: canonicalUrl,
+    datePublished: publishedTime,
+    dateModified: modifiedTime,
+    articleSection: category,
+    keywords: keywords,
+    ...(wordCount ? { wordCount } : {}),
+    inLanguage: "en-US",
+    image: {
+      "@type": "ImageObject",
+      url: absoluteImageUrl,
+      width: 1200,
+      height: 630,
+      caption: rawTitle,
+    },
+    author: {
+      "@type": "Person",
+      "@id": `${siteUrl}/#person`,
+      name: authorName,
+      jobTitle: authorRole,
+      url: siteUrl,
+    },
+    publisher: {
+      "@type": "Person",
+      "@id": `${siteUrl}/#person`,
+      name: "Fi Amanillah",
+      url: siteUrl,
+      logo: {
+        "@type": "ImageObject",
+        url: `${siteUrl}/favicon.svg`,
+      },
+    },
+  })
+} else {
+  schemaGraph.push({
+    "@type": "WebPage",
+    "@id": `${canonicalUrl}#webpage`,
+    isPartOf: {
+      "@id": `${siteUrl}/#website`,
+    },
+    url: canonicalUrl,
+    name: title,
+    description: description,
+    inLanguage: "en-US",
+  })
+}
+
+const jsonLdPayload = {
+  "@context": "https://schema.org",
+  "@graph": schemaGraph,
+}
+---
+
+<!-- Primary Meta Tags -->
+<title>{title}</title>
+<meta name="title" content={title} />
+<meta name="description" content={description} />
+<meta name="keywords" content={keywords} />
+<meta name="author" content={authorName} />
+<link rel="canonical" href={canonicalUrl} />
+{prevPageUrl && <link rel="prev" href={prevPageUrl} />}
+{nextPageUrl && <link rel="next" href={nextPageUrl} />}
+
+<!-- Crawler Directives -->
+{
+  noIndex ? (
+    <meta name="robots" content="noindex, nofollow" />
+  ) : (
+    <>
+      <meta
+        name="robots"
+        content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+      />
+      <meta
+        name="googlebot"
+        content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+      />
+      <meta
+        name="bingbot"
+        content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+      />
+    </>
+  )
+}
+
+<!-- Open Graph / Facebook / LinkedIn / Discord / Slack / WhatsApp / Telegram -->
+<meta property="og:site_name" content="Fi Amanillah" />
+<meta property="og:type" content={type} />
+<meta property="og:url" content={canonicalUrl} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={absoluteImageUrl} />
+<meta property="og:image:secure_url" content={absoluteImageUrl} />
+<meta property="og:image:type" content={imageType} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content={rawTitle} />
+<meta property="og:locale" content="en_US" />
+
+{
+  isArticle && (
+    <>
+      {publishedTime && (
+        <meta property="article:published_time" content={publishedTime} />
+      )}
+      {modifiedTime && (
+        <meta property="article:modified_time" content={modifiedTime} />
+      )}
+      <meta property="article:author" content={authorName} />
+      <meta property="article:section" content={category} />
+      {tags.map((tag) => (
+        <meta property="article:tag" content={tag} />
+      ))}
+    </>
+  )
+}
+
+<!-- Twitter / X Cards -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:site" content="@fiamanillah" />
+<meta name="twitter:creator" content="@fiamanillah" />
+<meta name="twitter:url" content={canonicalUrl} />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={absoluteImageUrl} />
+<meta name="twitter:image:alt" content={rawTitle} />
+
+<!-- RSS Feed Auto-Discovery Link -->
+<link
+  rel="alternate"
+  type="application/rss+xml"
+  title="Fi Amanillah | Tech, AI & Engineering Journal"
+  href={`${siteUrl}/rss.xml`}
+/>
+
+<!-- JSON-LD Structured Data Schema -->
+<script
+  is:inline
+  type="application/ld+json"
+  set:html={JSON.stringify(jsonLdPayload)}
+/>

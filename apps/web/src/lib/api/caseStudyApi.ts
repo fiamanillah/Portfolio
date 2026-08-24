@@ -7,6 +7,7 @@ import type {
   PostMortemSection,
   CaseStudyMetadata,
 } from "@/data/caseStudies"
+import { RedirectApi } from "./redirectApi"
 
 const API_BASE_URL =
   (typeof import.meta !== "undefined" && import.meta.env?.PUBLIC_API_URL) ||
@@ -31,10 +32,13 @@ export interface PaginatedCaseStudiesResponse {
 }
 
 export interface SingleCaseStudyResponse {
-  caseStudy: CaseStudyDetail
+  caseStudy?: CaseStudyDetail
   prevCaseStudy: CaseStudyDetail | null
   nextCaseStudy: CaseStudyDetail | null
   relatedCaseStudies: CaseStudyDetail[]
+  redirected?: boolean
+  destination?: string
+  statusCode?: number
 }
 
 /**
@@ -135,6 +139,8 @@ export function mapApiCaseStudyToDetail(dto: any): CaseStudyDetail {
     features,
     metrics,
     postMortem,
+    createdAt: dto.createdAt,
+    updatedAt: dto.updatedAt,
   }
 }
 
@@ -237,6 +243,20 @@ export const CaseStudyApi = {
         const body = await res.json()
         if (body.success && body.data) {
           const raw = body.data
+
+          // If backend indicated a 301/308 redirect for this case study slug
+          if (raw.redirected && raw.destination) {
+            return {
+              caseStudy: undefined,
+              prevCaseStudy: null,
+              nextCaseStudy: null,
+              relatedCaseStudies: [],
+              redirected: true,
+              destination: raw.destination,
+              statusCode: raw.statusCode || 301,
+            }
+          }
+
           const caseStudy = mapApiCaseStudyToDetail(raw.caseStudy || raw)
           const prevCaseStudy = raw.prevCaseStudy
             ? mapApiCaseStudyToDetail(raw.prevCaseStudy)
@@ -253,6 +273,20 @@ export const CaseStudyApi = {
             prevCaseStudy,
             nextCaseStudy,
             relatedCaseStudies,
+          }
+        }
+      } else {
+        // If 404, check fallback redirect resolver
+        const directRedirect = await RedirectApi.resolveRedirect(`/case-study/${slug}`)
+        if (directRedirect?.redirected && directRedirect.destination) {
+          return {
+            caseStudy: undefined,
+            prevCaseStudy: null,
+            nextCaseStudy: null,
+            relatedCaseStudies: [],
+            redirected: true,
+            destination: directRedirect.destination,
+            statusCode: directRedirect.statusCode || 301,
           }
         }
       }

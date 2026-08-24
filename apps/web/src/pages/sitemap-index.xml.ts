@@ -1,7 +1,9 @@
 import type { APIRoute } from "astro"
+import { webEnv } from "@workspace/env/web"
 
 export const GET: APIRoute = async (context) => {
   const siteUrl = (
+    webEnv.PUBLIC_WEB_URL ||
     context.site?.toString() ||
     import.meta.env.PUBLIC_WEB_URL ||
     "https://fi.amanillah.com"

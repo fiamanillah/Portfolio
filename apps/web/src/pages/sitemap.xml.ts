@@ -1,4 +1,5 @@
 import type { APIRoute } from "astro"
+import { webEnv } from "@workspace/env/web"
 import {
   getAllBlogPostsAsync,
   getBlogCategoriesAsync,
@@ -18,6 +19,7 @@ function escapeXml(unsafe: string): string {
 
 export const GET: APIRoute = async (context) => {
   const siteUrl = (
+    webEnv.PUBLIC_WEB_URL ||
     context.site?.toString() ||
     import.meta.env.PUBLIC_WEB_URL ||
     "https://fi.amanillah.com"
@@ -83,6 +85,12 @@ export const GET: APIRoute = async (context) => {
     },
     {
       loc: `${siteUrl}/terms`,
+      lastmod: nowIso,
+      changefreq: "monthly",
+      priority: "0.5",
+    },
+    {
+      loc: `${siteUrl}/disclaimer`,
       lastmod: nowIso,
       changefreq: "monthly",
       priority: "0.5",
@@ -153,6 +161,12 @@ export const GET: APIRoute = async (context) => {
   const caseStudyRoutes = caseStudies
     .filter((study) => study.projectType === "CASE_STUDY" || !study.projectType)
     .map((study) => {
+      const studyLastMod = study.updatedAt
+        ? new Date(study.updatedAt).toISOString()
+        : study.createdAt
+          ? new Date(study.createdAt).toISOString()
+          : nowIso
+
       let imageTag = ""
       if (study.image) {
         const imgUrl = study.image.startsWith("http")
@@ -166,7 +180,7 @@ export const GET: APIRoute = async (context) => {
 
       return `  <url>
     <loc>${siteUrl}/case-study/${study.slug}</loc>
-    <lastmod>${nowIso}</lastmod>
+    <lastmod>${studyLastMod}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>${imageTag}
   </url>`
@@ -226,7 +240,7 @@ ${blogXml}
   return new Response(sitemapXml.trim(), {
     headers: {
       "Content-Type": "application/xml; charset=utf-8",
-      "Cache-Control": "public, max-age=300, s-maxage=600",
+      "Cache-Control": "public, max-age=0, s-maxage=60, stale-while-revalidate=300",
       "X-Content-Type-Options": "nosniff",
     },
   })

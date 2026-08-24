@@ -6,6 +6,7 @@ import NewsletterSection from "@/components/Newsletter/NewsletterSection.astro"
 import SectionDivider from "@/components/SectionDivider.astro"
 import { getCaseStudies, getProjectsWithoutCaseStudy } from "@/data/projects"
 import { CaseStudyApi } from "@/lib/api/caseStudyApi"
+import SEO from "@/components/SEO/SEO.astro"
 
 // Fetch all published systems directly from PostgreSQL API (with local fallback)
 const allFetched = await CaseStudyApi.fetchAllCaseStudies()
@@ -77,6 +78,7 @@ const standardProjects = rawStandardProjects.map((study: any, idx) => {
 
   return {
     id: study.slug || study.id,
+    slug: study.slug || study.id,
     title: study.title.includes("—")
       ? study.title.split("—")[0]?.trim()
       : study.title,
@@ -84,7 +86,7 @@ const standardProjects = rawStandardProjects.map((study: any, idx) => {
       study.subtitle ||
       (study.title.includes("—") ? study.title.split("—")[1]?.trim() : undefined),
     description: study.description,
-    role: study.role || metaObj["Role"] || "Open Source / Full Stack",
+    role: study.role || metaObj["Role"] || "Lead System Architect",
     impact: study.impact || study.description,
     tech: study.techStack || study.tech || [],
     links: {
@@ -106,22 +108,12 @@ const totalTechCount = new Set(allProjects.flatMap((p) => p.tech)).size
 <MySiteLayout>
   <!-- SEO Head Slot -->
   <Fragment slot="head">
-    <title>Technical Case Studies & System Architecture | Fi Amanillah</title>
-    <meta
-      name="description"
-      content="In-depth architectural breakdowns, database schema designs, event-driven pipelines, and production engineering post-mortems across full-stack applications."
-    />
-    <meta property="og:title" content="Technical Case Studies & Architecture | Fi Amanillah" />
-    <meta
-      property="og:description"
-      content="Explore full-stack architectural deep dives, real-time microservices, database optimizations, and system post-mortems."
-    />
-    <meta property="og:type" content="website" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Technical Case Studies & Architecture | Fi Amanillah" />
-    <meta
-      name="twitter:description"
-      content="Explore full-stack architectural deep dives, real-time microservices, database optimizations, and system post-mortems."
+    <SEO
+      title="Technical Case Studies & System Architecture | Fi Amanillah"
+      description="In-depth architectural breakdowns, database schema designs, event-driven pipelines, and production engineering post-mortems across full-stack applications."
+      url="/case-study"
+      image="/fi.png"
+      tags={["Software Architecture", "Case Studies", "System Design", "Microservices"]}
     />
   </Fragment>
 

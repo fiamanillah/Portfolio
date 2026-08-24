@@ -12,9 +12,19 @@ import Work from "@/components/Home/Work.astro"
 import NewsletterSection from "@/components/Newsletter/NewsletterSection.astro"
 import SectionDivider from "@/components/SectionDivider.astro"
 import MySiteLayout from "@/layouts/MySiteLayout.astro"
+import SEO from "@/components/SEO/SEO.astro"
 ---
 
 <MySiteLayout>
+  <Fragment slot="head">
+    <SEO
+      title="Fi Amanillah | Full-Stack Architect & Software Engineer"
+      description="Portfolio, system architecture deep dives, real-time microservices, database optimizations, and technical journal of Fi Amanillah — Software Engineer & Full-Stack Architect."
+      url="/"
+      image="/fi.png"
+    />
+  </Fragment>
+
   <!-- Hero Section -->
   <Hero />
 

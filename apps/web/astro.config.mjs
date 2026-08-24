@@ -6,9 +6,14 @@ import { webEnv } from "@workspace/env/web"
 
 const siteUrl = webEnv.PUBLIC_WEB_URL.replace(/\/$/, "")
 
-// https://astro.build/config
 export default defineConfig({
   site: siteUrl,
+  redirects: {
+    "/terms-of-use": {
+      status: 301,
+      destination: "/terms",
+    },
+  },
   markdown: {
     shikiConfig: {
       themes: {

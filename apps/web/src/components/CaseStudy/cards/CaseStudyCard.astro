@@ -1,277 +1,250 @@
 ---
 import { Badge } from "@workspace/ui/components/badge"
 import { Button } from "@workspace/ui/components/button"
-import { Icon } from "astro-icon/components"
 import { HugeiconsIcon } from "@hugeicons/react"
 import {
   ArrowUpRight01Icon,
   BookOpen01Icon,
   Github,
   Globe02Icon,
-  Layers01Icon,
 } from "@hugeicons/core-free-icons"
 
-interface MetricItem {
-  value: string
-  label: string
-}
-
-interface CaseStudyCardProps {
+export interface CaseStudyCardProps {
   id: string
-  slug: string
+  slug?: string
   title: string
   subtitle?: string
   description: string
-  role: string
-  impact: string
+  role?: string
   tech: string[]
   links: {
     live?: string
     github?: string
-    caseStudy: string
+    caseStudy?: string
   }
   img: string
   index: string
-  status: string
-  year: string
-  metrics?: MetricItem[]
-  highlights?: string[]
+  status?: string
+  year?: string
 }
 
 interface Props {
   project: CaseStudyCardProps
-  viewMode?: "grid" | "list"
+  class?: string
 }
 
-const { project } = Astro.props
+const { project, class: className = "" } = Astro.props
+
+const caseStudyUrl =
+  project.links.caseStudy ||
+  (project.slug ? `/case-study/${project.slug}` : undefined)
+
+const rawStatus = (project.status || "Completed").replace(/^Status:\s*/i, "").trim()
+const statusLower = rawStatus.toLowerCase()
+const isLive = statusLower === "live"
+const isInProgress = statusLower.includes("progress")
 ---
 
 <article
-  class="project-card group relative flex flex-col overflow-hidden border border-border bg-background transition-all duration-300 hover:border-primary/50 hover:bg-card/40 hover:shadow-[0_0_0_1px_oklch(var(--primary)/20%),0_8px_32px_-8px_oklch(var(--primary)/12%)] lg:grid lg:grid-cols-12 lg:items-stretch"
+  class={`project-card group relative flex flex-col overflow-hidden border border-border/70 bg-card/40 backdrop-blur-md transition-all duration-300 hover:border-primary/50 hover:bg-card/70 hover:shadow-[0_0_24px_-4px_oklch(var(--primary)/14%)] lg:grid lg:grid-cols-12 lg:items-stretch ${className}`}
   data-category="case-study"
   data-title={project.title.toLowerCase()}
   data-tech={project.tech.join(" ").toLowerCase()}
 >
-  {/* Corner Bracket Accents */}
+  {/* Precision Cyber Corner Brackets */}
   <div
-    class="pointer-events-none absolute top-2 left-2 z-20 h-3 w-3 border-t-[1.5px] border-l-[1.5px] border-primary/40 transition-all duration-300 group-hover:h-5 group-hover:w-5 group-hover:border-primary"
+    class="pointer-events-none absolute top-0 left-0 z-20 h-3.5 w-3.5 border-t-2 border-l-2 border-primary/40 transition-colors duration-300 group-hover:border-primary"
+    aria-hidden="true"
   >
   </div>
   <div
-    class="pointer-events-none absolute top-2 right-2 z-20 h-3 w-3 border-t-[1.5px] border-r-[1.5px] border-primary/40 transition-all duration-300 group-hover:h-5 group-hover:w-5 group-hover:border-primary"
+    class="pointer-events-none absolute top-0 right-0 z-20 h-3.5 w-3.5 border-t-2 border-r-2 border-primary/40 transition-colors duration-300 group-hover:border-primary"
+    aria-hidden="true"
   >
   </div>
   <div
-    class="pointer-events-none absolute bottom-2 left-2 z-20 h-3 w-3 border-b-[1.5px] border-l-[1.5px] border-primary/40 transition-all duration-300 group-hover:h-5 group-hover:w-5 group-hover:border-primary"
+    class="pointer-events-none absolute bottom-0 left-0 z-20 h-3.5 w-3.5 border-b-2 border-l-2 border-primary/40 transition-colors duration-300 group-hover:border-primary"
+    aria-hidden="true"
   >
   </div>
   <div
-    class="pointer-events-none absolute right-2 bottom-2 z-20 h-3 w-3 border-r-[1.5px] border-b-[1.5px] border-primary/40 transition-all duration-300 group-hover:h-5 group-hover:w-5 group-hover:border-primary"
+    class="pointer-events-none absolute right-0 bottom-0 z-20 h-3.5 w-3.5 border-r-2 border-b-2 border-primary/40 transition-colors duration-300 group-hover:border-primary"
+    aria-hidden="true"
   >
   </div>
 
-  {/* Media Preview Banner */}
-  <div
-    class="relative aspect-[16/10] w-full shrink-0 overflow-hidden border-b border-border bg-muted/30 before:pointer-events-none before:absolute before:inset-0 before:z-10 before:bg-[linear-gradient(105deg,transparent_40%,oklch(var(--primary)/15%)_50%,transparent_60%)] before:bg-[length:200%_100%] before:transition-all before:duration-700 after:pointer-events-none after:absolute after:inset-0 after:bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(0,0,0,0.04)_2px,rgba(0,0,0,0.04)_4px)] after:opacity-60 hover:before:bg-[-100%_0] lg:col-span-5 lg:h-full lg:aspect-auto lg:border-r lg:border-b-0"
-  >
-    <img
-      src={project.img}
-      alt={project.title}
-      class="h-full w-full object-cover grayscale-[15%] transition-all duration-700 ease-out group-hover:scale-105 group-hover:grayscale-0"
-      loading="lazy"
-    />
-    <div
-      class="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-transparent lg:bg-gradient-to-r lg:from-transparent lg:to-background/60"
-    >
-    </div>
-
-    {/* Floating Badges */}
-    <div class="absolute top-3.5 left-3.5 z-20 flex flex-wrap items-center gap-2">
-      <span
-        class="inline-flex items-center gap-1.5 border border-primary/50 bg-background/90 px-2.5 py-1 font-mono text-[10px] font-bold text-primary uppercase shadow-xs backdrop-blur-md"
-      >
-        <span
-          class="h-1.5 w-1.5 animate-pulse rounded-full bg-primary shadow-[0_0_6px_oklch(var(--primary))]"
-        ></span>
-        ⚡ DEEP DIVE #{project.index}
-      </span>
-      <span
-        class="inline-flex items-center border border-border bg-background/80 px-2 py-1 font-mono text-[10px] font-semibold text-muted-foreground uppercase backdrop-blur-md"
-      >
-        {project.year}
-      </span>
-    </div>
-
-    <div
-      class="absolute right-3.5 bottom-3.5 left-3.5 z-20 flex items-center justify-between font-mono text-xs"
-    >
-      <span
-        class="inline-flex items-center gap-1.5 rounded-sm bg-black/60 px-2 py-0.5 text-[10px] font-semibold tracking-wider text-white/90 uppercase backdrop-blur-md"
-      >
-        <HugeiconsIcon icon={Layers01Icon} className="size-3 text-primary" />
-        {project.role}
-      </span>
-      <span
-        class="rounded-full border border-emerald-500/30 bg-emerald-500/20 px-2.5 py-0.5 text-[10px] font-medium text-emerald-300 backdrop-blur-md"
-      >
-        {project.status}
-      </span>
-    </div>
-  </div>
-
-  {/* Content Area */}
-  <div class="flex flex-1 flex-col justify-between p-6 sm:p-7 lg:col-span-7 lg:p-8">
-    <div class="space-y-4">
-      {/* Title & Index Header */}
-      <div class="flex items-start justify-between gap-4">
-        <div>
-          <h2
-            class="text-xl font-bold tracking-tight text-foreground transition-colors duration-200 group-hover:text-primary sm:text-2xl"
+  {/* Left Column: Streamlined Project Details (7 Cols on Large Screens) */}
+  <div class="flex flex-1 flex-col justify-between gap-5 p-6 sm:p-8 lg:col-span-7">
+    <div class="flex flex-col gap-4">
+      {/* Meta Header: Index, Status, Role, Timeline */}
+      <div class="flex flex-wrap items-center justify-between gap-2 border-b border-border/40 pb-3">
+        <div class="flex flex-wrap items-center gap-2.5">
+          <span class="font-mono text-xs font-bold tracking-[0.2em] text-primary">
+            // {project.index}
+          </span>
+          
+          {/* Status Badge */}
+          <span
+            class={`inline-flex items-center gap-1.5 px-2 py-0.5 font-mono text-[10px] font-bold uppercase border ${
+              isLive
+                ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-400"
+                : isInProgress
+                  ? "border-amber-500/40 bg-amber-500/10 text-amber-400"
+                  : "border-primary/40 bg-primary/10 text-primary"
+            }`}
           >
-            <a href={project.links.caseStudy} class="focus:outline-none">
-              {project.title}
-            </a>
-          </h2>
-          {
-            project.subtitle && (
-              <p class="mt-1 font-mono text-xs font-semibold tracking-wide text-primary/90">
-                // {project.subtitle}
-              </p>
-            )
-          }
+            <span
+              class={`size-1.5 rounded-full ${
+                isLive
+                  ? "bg-emerald-400 animate-pulse shadow-[0_0_6px_rgb(52,211,153)]"
+                  : isInProgress
+                    ? "bg-amber-400"
+                    : "bg-primary"
+              }`}
+            ></span>
+            {rawStatus}
+          </span>
+
+          {project.role && (
+            <>
+              <span class="text-muted-foreground/30 hidden sm:inline">•</span>
+              <span class="font-mono text-xs text-muted-foreground hidden sm:inline truncate max-w-[200px]">
+                {project.role}
+              </span>
+            </>
+          )}
         </div>
-        <span
-          class="font-mono text-xs font-bold tracking-widest text-muted-foreground/60"
-        >
-          SYS_{project.index}
-        </span>
+
+        {project.year && (
+          <span class="font-mono text-xs text-muted-foreground tabular-nums">
+            {project.year}
+          </span>
+        )}
       </div>
 
-      <p class="text-xs leading-relaxed text-muted-foreground sm:text-sm">
+      {/* Title & Subtitle */}
+      <div>
+        <h3 class="text-2xl font-black tracking-tight text-foreground transition-colors duration-200 group-hover:text-primary sm:text-3xl leading-tight">
+          {caseStudyUrl ? (
+            <a href={caseStudyUrl} class="focus:outline-none hover:underline decoration-primary/50 underline-offset-4">
+              {project.title}
+            </a>
+          ) : (
+            project.title
+          )}
+        </h3>
+        {project.subtitle && (
+          <p class="mt-1 font-mono text-xs font-semibold text-primary/90 sm:text-sm">
+            // {project.subtitle}
+          </p>
+        )}
+        {project.role && (
+          <p class="mt-1 font-mono text-xs text-muted-foreground sm:hidden">
+            Role: {project.role}
+          </p>
+        )}
+      </div>
+
+      {/* Description */}
+      <p class="text-sm leading-relaxed text-muted-foreground sm:text-base">
         {project.description}
       </p>
 
-      {/* Impact summary callout */}
-      <div
-        class="flex items-start gap-2.5 rounded-r-md border-l-2 border-primary bg-primary/5 px-3.5 py-2.5 transition-colors group-hover:bg-primary/8"
-      >
-        <Icon
-          name="mdi:chart-line-variant"
-          class="mt-0.5 size-4 shrink-0 text-primary"
-        />
-        <p class="text-xs leading-snug font-medium text-foreground/90">
-          <span class="font-semibold text-primary">Architecture Impact:</span>{" "}
-          {project.impact}
-        </p>
-      </div>
-
-      {/* Production Telemetry Metrics Bar */}
-      {
-        project.metrics && project.metrics.length > 0 && (
-          <div class="grid grid-cols-3 gap-2 border-y border-border/60 py-2.5 font-mono text-xs">
-            {project.metrics.map((m) => (
-              <div class="flex flex-col items-start sm:flex-row sm:items-center sm:gap-1.5">
-                <span class="font-bold text-primary">{m.value}</span>
-                <span class="text-[10px] text-muted-foreground tracking-tight truncate">
-                  {m.label}
-                </span>
-              </div>
-            ))}
-          </div>
-        )
-      }
-
-      {/* Highlights checklist if available */}
-      {
-        project.highlights && project.highlights.length > 0 && (
-          <ul class="space-y-1.5 pt-0.5">
-            {project.highlights.slice(0, 2).map((h) => (
-              <li class="flex items-center gap-2 text-xs text-muted-foreground">
-                <span class="h-1.5 w-1.5 rounded-full bg-primary/70 shadow-[0_0_4px_oklch(var(--primary))]" />
-                <span class="line-clamp-1">{h}</span>
-              </li>
-            ))}
-          </ul>
-        )
-      }
-
       {/* Tech Stack Badges */}
       <div class="flex flex-wrap items-center gap-1.5 pt-1">
-        {
-          project.tech.slice(0, 8).map((t) => (
-            <Badge
-              variant="outline"
-              className="font-mono text-[10px] px-2 py-0.5 transition-colors group-hover:border-primary/40"
-            >
-              {t}
-            </Badge>
-          ))
-        }
-        {
-          project.tech.length > 8 && (
-            <span class="pl-1 font-mono text-[10px] text-muted-foreground">
-              +{project.tech.length - 8} more
-            </span>
-          )
-        }
+        {project.tech.slice(0, 7).map((t) => (
+          <Badge
+            variant="outline"
+            className="text-[11px] font-mono border-border/70 bg-background/50 text-muted-foreground transition-colors group-hover:border-primary/40 group-hover:text-foreground"
+          >
+            {t}
+          </Badge>
+        ))}
+        {project.tech.length > 7 && (
+          <span class="pl-1 font-mono text-[10px] text-muted-foreground">
+            +{project.tech.length - 7} more
+          </span>
+        )}
       </div>
     </div>
 
-    {/* Action Links Bar */}
-    <div
-      class="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-border/60 pt-4"
-    >
-      <div class="flex flex-wrap items-center gap-3">
-        <a href={project.links.caseStudy}>
-          <Button size="sm" className="gap-1.5 font-medium shadow-xs">
-            <HugeiconsIcon icon={BookOpen01Icon} className="size-3.5" />
-            Read Case Study
-            <HugeiconsIcon icon={ArrowUpRight01Icon} className="size-3.5" />
-          </Button>
-        </a>
-
-        {
-          project.links.live && project.links.live !== "#" && (
+    {/* Action Buttons Row */}
+    {((caseStudyUrl && caseStudyUrl !== "#") ||
+      (project.links.live && project.links.live !== "#") ||
+      (project.links.github && project.links.github !== "#")) && (
+      <div class="flex flex-wrap items-center justify-between gap-3 border-t border-border/40 pt-4 mt-auto">
+        <div class="flex flex-wrap items-center gap-2.5">
+          {caseStudyUrl && caseStudyUrl !== "#" && (
             <a
-              href={project.links.live}
-              target="_blank"
-              rel="noopener noreferrer"
+              href={caseStudyUrl}
+              target={caseStudyUrl.startsWith("/") ? "_self" : "_blank"}
+              rel={caseStudyUrl.startsWith("/") ? undefined : "noopener noreferrer"}
             >
-              <Button
-                variant="outline"
-                size="sm"
-                className="gap-1.5 text-xs transition-colors hover:border-primary/60 hover:text-primary"
-              >
-                <HugeiconsIcon icon={Globe02Icon} className="size-3.5" />
-                Live Demo ↗
+              <Button size="sm" className="font-semibold gap-1.5 shadow-xs cursor-pointer">
+                <HugeiconsIcon icon={BookOpen01Icon} className="size-3.5" />
+                Read Case Study
+                <HugeiconsIcon icon={ArrowUpRight01Icon} className="size-3.5" />
               </Button>
             </a>
-          )
-        }
+          )}
 
-        {
-          project.links.github && project.links.github !== "#" && (
-            <a
-              href={project.links.github}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+          {project.links.live && project.links.live !== "#" && (
+            <a href={project.links.live} target="_blank" rel="noopener noreferrer">
               <Button
                 variant="outline"
                 size="sm"
-                className="gap-1.5 text-xs transition-colors hover:border-primary/60 hover:text-primary"
+                className="gap-1.5 text-xs border-border hover:border-primary/60 hover:text-primary transition-colors cursor-pointer"
+              >
+                <HugeiconsIcon icon={Globe02Icon} className="size-3.5" />
+                Live site ↗
+              </Button>
+            </a>
+          )}
+
+          {project.links.github && project.links.github !== "#" && (
+            <a href={project.links.github} target="_blank" rel="noopener noreferrer">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
               >
                 <HugeiconsIcon icon={Github} className="size-3.5" />
                 Code ↗
               </Button>
             </a>
-          )
-        }
-      </div>
+          )}
+        </div>
 
-      <span class="font-mono text-[10px] text-muted-foreground/60">
-        READ_TIME // ~5 MIN
-      </span>
-    </div>
+        <span class="font-mono text-[10px] text-muted-foreground/60 hidden sm:inline">
+          DEEP_DIVE // {project.index}
+        </span>
+      </div>
+    )}
+  </div>
+
+  {/* Right Column: Media Preview Showcase (5 Cols on Large Screens) */}
+  <div class="relative flex items-center justify-center border-t border-border/60 bg-muted/10 overflow-hidden lg:border-t-0 lg:border-l lg:border-border/60 lg:col-span-5 min-h-[240px] sm:min-h-[280px] lg:min-h-full">
+    {caseStudyUrl ? (
+      <a href={caseStudyUrl} class="block h-full w-full relative group/img overflow-hidden">
+        <img
+          src={project.img}
+          alt={project.title}
+          loading="lazy"
+          class="h-full w-full object-cover object-top transition-transform duration-700 ease-out group-hover:scale-105"
+        />
+        {/* Subtle Vignette Overlay */}
+        <div class="pointer-events-none absolute inset-0 bg-linear-to-t from-background/70 via-transparent to-transparent opacity-60 transition-opacity duration-300 group-hover:opacity-40 lg:bg-linear-to-r lg:from-transparent lg:to-background/30" />
+      </a>
+    ) : (
+      <div class="h-full w-full relative overflow-hidden">
+        <img
+          src={project.img}
+          alt={project.title}
+          loading="lazy"
+          class="h-full w-full object-cover object-top transition-transform duration-700 ease-out group-hover:scale-105"
+        />
+        <div class="pointer-events-none absolute inset-0 bg-linear-to-t from-background/70 via-transparent to-transparent opacity-60 transition-opacity duration-300 group-hover:opacity-40 lg:bg-linear-to-r lg:from-transparent lg:to-background/30" />
+      </div>
+    )}
   </div>
 </article>

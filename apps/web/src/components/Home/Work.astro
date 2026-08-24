@@ -1,9 +1,11 @@
 ---
-import { Badge } from "@workspace/ui/components/badge"
-import { Button } from "@workspace/ui/components/button"
-import { Icon } from "astro-icon/components"
 import { projectsData } from "@/data/projects"
 import { CaseStudyApi } from "@/lib/api/caseStudyApi"
+import CaseStudyCard from "@/components/CaseStudy/cards/CaseStudyCard.astro"
+import ProjectCard from "@/components/CaseStudy/cards/ProjectCard.astro"
+import { Button } from "@workspace/ui/components/button"
+import { HugeiconsIcon } from "@hugeicons/react"
+import { ArrowUpRight01Icon, BookOpen01Icon } from "@hugeicons/core-free-icons"
 
 // Fetch published case studies from API (with fallback to local projects)
 const fetchedStudies = await CaseStudyApi.fetchAllCaseStudies()
@@ -48,6 +50,16 @@ const apiProjects = fetchedStudies.map((study, idx) => {
     status: (study.status || "Completed").replace(/^Status:\s*/i, ""),
     year: study.timeline || metaObj["Timeline"] || "2026",
     hasCaseStudy: isDeepDive,
+    highlights:
+      study.highlights && study.highlights.length > 0
+        ? study.highlights
+        : (study.features || [])
+            .flatMap((f: any) => f.highlights || [])
+            .slice(0, 3),
+    metrics: (study.metrics || []).slice(0, 3).map((m: any) => ({
+      value: m.value,
+      label: m.label,
+    })),
   }
 })
 
@@ -75,290 +87,58 @@ const otherProjects = projects.filter((p) => !p.hasCaseStudy)
     </div>
   </div>
 
-  <!-- Featured Case Studies (Large Showcase Cards with 16:9 Aspect Ratio) -->
+  <!-- Featured Case Studies (Unified Showcase Cards) -->
   {featuredProjects.length > 0 && (
     <div class="space-y-8 md:space-y-10">
       {featuredProjects.map((p) => (
-        <article class="group relative overflow-hidden border border-border bg-card/60 backdrop-blur-sm transition-all duration-300 hover:border-primary/50 hover:bg-card/90 hover:shadow-xl hover:shadow-primary/5">
-          <!-- Corner brackets -->
-          <div class="pointer-events-none absolute top-0 left-0 z-20 h-4 w-4 border-t-2 border-l-2 border-border/80 transition-colors duration-300 group-hover:border-primary" />
-          <div class="pointer-events-none absolute top-0 right-0 z-20 h-4 w-4 border-t-2 border-r-2 border-border/80 transition-colors duration-300 group-hover:border-primary" />
-          <div class="pointer-events-none absolute bottom-0 left-0 z-20 h-4 w-4 border-b-2 border-l-2 border-border/80 transition-colors duration-300 group-hover:border-primary" />
-          <div class="pointer-events-none absolute right-0 bottom-0 z-20 h-4 w-4 border-r-2 border-b-2 border-border/80 transition-colors duration-300 group-hover:border-primary" />
-
-          <!-- Card Grid: Flush split layout (Zero gap around image) -->
-          <div class="grid grid-cols-1 lg:grid-cols-12 items-stretch">
-            
-            <!-- Left Column: Project Details (7 cols with internal padding) -->
-            <div class="flex flex-col justify-between gap-5 p-6 sm:p-8 lg:p-8 lg:col-span-7">
-              <div class="flex flex-col gap-4">
-                <!-- Header Meta: Index, Title, Subtitle, Status, Timeline -->
-                <div class="flex flex-col gap-2">
-                  <div class="flex flex-wrap items-center justify-between gap-2">
-                    <div class="flex flex-wrap items-center gap-2">
-                      <span class="font-mono text-xs font-bold tracking-[0.2em] text-primary">
-                        // {p.index}
-                      </span>
-                      <span class={`status-badge status-${(p.status || "Completed").toLowerCase().replace(/\s+/g, "-")}`}>
-                        {p.status}
-                      </span>
-                      <span class="text-muted-foreground/30 hidden sm:inline">•</span>
-                      <span class="font-mono text-xs text-muted-foreground hidden sm:inline">{p.role}</span>
-                    </div>
-                    <span class="font-mono text-xs text-muted-foreground tabular-nums">
-                      {p.year}
-                    </span>
-                  </div>
-
-                  <div>
-                    <h3 class="text-2xl font-black tracking-tight text-foreground sm:text-3xl leading-tight">
-                      {p.title}
-                    </h3>
-                    {p.subtitle && (
-                      <p class="mt-1 text-sm font-medium text-primary">
-                        {p.subtitle}
-                      </p>
-                    )}
-                    <p class="mt-1 font-mono text-xs text-muted-foreground sm:hidden">
-                      Role: {p.role}
-                    </p>
-                  </div>
-                </div>
-
-                <!-- Description -->
-                <p class="text-sm leading-relaxed text-muted-foreground sm:text-base">
-                  {p.description}
-                </p>
-
-                <!-- Key Impact & Architecture Highlight (Sleek accent callout) -->
-                <div class="relative border-l-2 border-primary/80 bg-primary/5 px-4 py-2.5 rounded-r-sm">
-                  <div class="flex items-center gap-1.5 text-[11px] font-mono font-semibold tracking-wider text-primary uppercase mb-1">
-                    <Icon name="mdi:chart-line-variant" class="size-3.5" />
-                    <span>Key Impact &amp; Architecture</span>
-                  </div>
-                  <p class="text-xs sm:text-sm font-medium text-foreground/90 leading-relaxed">
-                    {p.impact}
-                  </p>
-                </div>
-
-                <!-- Tech Stack Badges -->
-                <div class="flex flex-wrap items-center gap-1.5 pt-1">
-                  {p.tech.map((t) => (
-                    <Badge key={t} variant="outline" className="text-xs border-border/80 bg-background/50 font-normal">
-                      {t}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-
-              <!-- CTA Actions (Rendered only when links are available) -->
-              {((p.links.caseStudy && p.links.caseStudy !== "#") ||
-                (p.links.live && p.links.live !== "#") ||
-                ("github" in p.links && p.links.github && p.links.github !== "#")) && (
-                <div class="flex flex-wrap items-center gap-3 pt-2 mt-auto border-t border-border/40">
-                  {p.links.caseStudy && p.links.caseStudy !== "#" && (
-                    <a
-                      href={p.links.caseStudy}
-                      target={p.links.caseStudy.startsWith("/") ? "_self" : "_blank"}
-                      rel={p.links.caseStudy.startsWith("/") ? undefined : "noopener noreferrer"}
-                    >
-                      <Button size="sm" className="font-semibold gap-1.5">
-                        Case study
-                        <span>↗</span>
-                      </Button>
-                    </a>
-                  )}
-                  {p.links.live && p.links.live !== "#" && (
-                    <a href={p.links.live} target="_blank" rel="noopener noreferrer">
-                      <Button variant="outline" size="sm" className="gap-1.5 border-border hover:border-primary/60">
-                        Live site
-                        <span>↗</span>
-                      </Button>
-                    </a>
-                  )}
-                  {"github" in p.links && p.links.github && p.links.github !== "#" && (
-                    <a href={p.links.github as string} target="_blank" rel="noopener noreferrer">
-                      <Button variant="ghost" size="sm" className="gap-1.5 text-muted-foreground hover:text-foreground">
-                        <Icon name="mdi:github" class="size-4" />
-                        Code
-                      </Button>
-                    </a>
-                  )}
-                </div>
-              )}
-            </div>
-
-            <!-- Right Column: Flush 16:9 Image (5 cols with no gap) -->
-            <div class="relative flex items-center justify-center border-t border-border bg-muted/10 overflow-hidden lg:border-t-0 lg:border-l lg:col-span-5 min-h-[260px] sm:min-h-[320px] lg:min-h-full">
-              <div class="relative aspect-video w-full h-full overflow-hidden">
-                <img
-                  src={p.img}
-                  alt={p.title}
-                  loading="lazy"
-                  class="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
-                />
-                <!-- Subtle gradient overlay on hover -->
-                <div class="pointer-events-none absolute inset-0 bg-linear-to-t from-background/30 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-              </div>
-            </div>
-
-          </div>
-        </article>
+        <CaseStudyCard project={p} />
       ))}
     </div>
   )}
 
-  <!-- Personal Projects & Experiments -->
+  <!-- Personal Projects & Architecture Starters -->
   {otherProjects.length > 0 && (
     <div class="mt-14 space-y-6 md:mt-18">
       <!-- Sub-section Header -->
-      <div class="flex items-center gap-3 border-b border-border pb-3">
-        <span class="font-mono text-xs font-bold tracking-[0.2em] text-primary">
-          // 02
-        </span>
-        <h3 class="text-base font-bold tracking-tight text-foreground uppercase sm:text-lg">
-          Personal Projects &amp; Experiments
-        </h3>
+      <div class="flex items-center justify-between border-b border-border/70 pb-3">
+        <div class="flex items-center gap-3">
+          <span class="font-mono text-xs font-bold tracking-[0.2em] text-primary">
+            // 02
+          </span>
+          <h3 class="text-base font-bold tracking-tight text-foreground uppercase sm:text-lg">
+            Personal Projects &amp; Starters
+          </h3>
+        </div>
+        <a
+          href="/case-study"
+          class="group/link font-mono text-xs text-muted-foreground hover:text-primary transition-colors flex items-center gap-1"
+        >
+          View all systems
+          <span class="transition-transform group-hover/link:translate-x-0.5">↗</span>
+        </a>
       </div>
 
-      <!-- 2-Column Bento Grid with Plus Markers -->
+      <!-- 2-Column Grid with Unified Project Cards -->
       <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
         {otherProjects.map((p) => (
-          <article class="group relative flex flex-col justify-between border border-dashed border-border/80 bg-card/30 p-6 backdrop-blur-sm transition-all duration-300 hover:border-primary/60 hover:bg-card/60 sm:p-7">
-            <!-- Corner Plus Markers -->
-            <span class="pointer-events-none absolute -top-[9px] -left-[6px] font-mono text-sm leading-none text-muted-foreground/60 select-none transition-colors duration-300 group-hover:text-primary">
-              +
-            </span>
-            <span class="pointer-events-none absolute -top-[9px] -right-[6px] font-mono text-sm leading-none text-muted-foreground/60 select-none transition-colors duration-300 group-hover:text-primary">
-              +
-            </span>
-            <span class="pointer-events-none absolute -bottom-[9px] -left-[6px] font-mono text-sm leading-none text-muted-foreground/60 select-none transition-colors duration-300 group-hover:text-primary">
-              +
-            </span>
-            <span class="pointer-events-none absolute -right-[6px] -bottom-[9px] font-mono text-sm leading-none text-muted-foreground/60 select-none transition-colors duration-300 group-hover:text-primary">
-              +
-            </span>
-
-            <div class="flex flex-col gap-4">
-              <!-- Header Meta: Index, Status, Year -->
-              <div class="flex items-center justify-between gap-2">
-                <div class="flex items-center gap-2">
-                  <span class="font-mono text-xs font-bold text-muted-foreground">
-                    #{p.index}
-                  </span>
-                  <span class={`status-badge status-${(p.status || "Completed").toLowerCase().replace(/\s+/g, "-")}`}>
-                    {p.status}
-                  </span>
-                </div>
-                <span class="font-mono text-xs text-muted-foreground tabular-nums">
-                  {p.year}
-                </span>
-              </div>
-
-              <!-- Title & Subtitle -->
-              <div>
-                <h4 class="text-lg font-bold tracking-tight text-foreground leading-snug">
-                  {p.title}
-                </h4>
-                {p.subtitle && (
-                  <p class="mt-0.5 text-xs font-medium text-primary">
-                    {p.subtitle}
-                  </p>
-                )}
-              </div>
-
-              <!-- Description -->
-              <p class="text-sm leading-relaxed text-muted-foreground">
-                {p.description}
-              </p>
-
-              <!-- Tech stack -->
-              <div class="flex flex-wrap gap-1 pt-1">
-                {p.tech.map((t) => (
-                  <Badge key={t} variant="outline" className="text-[11px] px-2 py-0 border-border/70 bg-background/40">
-                    {t}
-                  </Badge>
-                ))}
-              </div>
-            </div>
-
-            <!-- Actions Footer (Rendered only when links are available) -->
-            {((p.links.github && p.links.github !== "#") ||
-              (p.links.live && p.links.live !== "#") ||
-              (p.links.caseStudy && p.links.caseStudy !== "#")) && (
-              <div class="flex flex-wrap items-center gap-2.5 pt-4 mt-auto border-t border-border/50">
-                {p.links.live && p.links.live !== "#" && (
-                  <a href={p.links.live} target="_blank" rel="noopener noreferrer">
-                    <Button variant="outline" size="sm" className="h-8 gap-1.5 text-xs border-border hover:border-primary/60">
-                      Live demo
-                      <span>↗</span>
-                    </Button>
-                  </a>
-                )}
-                {p.links.caseStudy && p.links.caseStudy !== "#" && (
-                  <a
-                    href={p.links.caseStudy}
-                    target={p.links.caseStudy.startsWith("/") ? "_self" : "_blank"}
-                    rel={p.links.caseStudy.startsWith("/") ? undefined : "noopener noreferrer"}
-                  >
-                    <Button size="sm" className="h-8 gap-1.5 text-xs">
-                      Case study
-                      <span>↗</span>
-                    </Button>
-                  </a>
-                )}
-                {p.links.github && p.links.github !== "#" && (
-                  <a href={p.links.github as string} target="_blank" rel="noopener noreferrer">
-                    <Button variant={p.links.live ? "ghost" : "outline"} size="sm" className="h-8 gap-1.5 text-xs text-muted-foreground hover:text-foreground">
-                      <Icon name="mdi:github" class="size-3.5" />
-                      Code
-                    </Button>
-                  </a>
-                )}
-              </div>
-            )}
-          </article>
+          <ProjectCard project={p} />
         ))}
       </div>
     </div>
   )}
+
+  <!-- Bottom CTA to Case Study Explorer -->
+  <div class="mt-12 text-center md:mt-16">
+    <a href="/case-study">
+      <Button
+        variant="outline"
+        size="lg"
+        className="gap-2 font-mono text-xs tracking-wider uppercase border-border/80 hover:border-primary hover:bg-primary/5 cursor-pointer shadow-xs"
+      >
+        <HugeiconsIcon icon={BookOpen01Icon} className="size-4 text-primary" />
+        Explore Full Case Study Archive
+        <HugeiconsIcon icon={ArrowUpRight01Icon} className="size-4" />
+      </Button>
+    </a>
+  </div>
 </section>
-
-<style>
-  /* Status badge styling */
-  .status-badge {
-    display: inline-flex;
-    align-items: center;
-    font-size: 0.65rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    padding: 0.12rem 0.45rem;
-    border: 1px solid;
-    font-family: var(--font-mono, monospace);
-  }
-
-  .status-live {
-    color: oklch(0.75 0.18 145);
-    border-color: oklch(0.75 0.18 145 / 50%);
-    background-color: oklch(0.75 0.18 145 / 12%);
-  }
-
-  .status-completed {
-    color: oklch(var(--primary));
-    border-color: oklch(var(--primary) / 50%);
-    background-color: oklch(var(--primary) / 12%);
-  }
-
-  .status-in-progress {
-    color: oklch(0.75 0.15 60);
-    border-color: oklch(0.75 0.15 60 / 50%);
-    background-color: oklch(0.75 0.15 60 / 12%);
-  }
-
-  .status-archived {
-    color: oklch(var(--muted-foreground));
-    border-color: oklch(var(--border));
-    background-color: oklch(var(--muted) / 30%);
-  }
-</style>

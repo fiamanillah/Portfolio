@@ -25,6 +25,7 @@ import {
   FileText,
   Cpu,
   CalendarCheck,
+  ArrowRightLeft,
 } from "lucide-react"
 
 import {
@@ -161,6 +162,11 @@ const navGroups: NavGroup[] = [
   {
     label: "System",
     items: [
+      {
+        title: "URL Redirects",
+        url: "/redirects",
+        icon: ArrowRightLeft,
+      },
       {
         title: "Settings",
         url: "/settings",

@@ -1,8 +1,17 @@
 ---
 import MySiteLayout from "@/layouts/MySiteLayout.astro"
+import SEO from "@/components/SEO/SEO.astro"
 ---
 
 <MySiteLayout>
+  <Fragment slot="head">
+    <SEO
+      title="Newsletter Preferences & Unsubscribe | Fi Amanillah"
+      description="Manage your email newsletter subscription preferences or unsubscribe from Fi Amanillah's engineering updates."
+      url="/unsubscribe"
+      noIndex={true}
+    />
+  </Fragment>
   <section
     class="relative z-10 flex min-h-[calc(100svh-10rem)] items-center justify-center py-24"
     id="unsubscribe-section"

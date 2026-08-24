@@ -8,20 +8,16 @@ import {
   BookOpen01Icon,
   DocumentCodeIcon,
 } from "@hugeicons/core-free-icons"
+import SEO from "@/components/SEO/SEO.astro"
 ---
 
 <MySiteLayout>
   <Fragment slot="head">
-    <title>404: Page Not Found | Fi Amanillah</title>
-    <meta
-      name="description"
-      content="The page you are looking for does not exist on Fi Amanillah's website."
-    />
-    <meta name="robots" content="noindex, follow" />
-    <meta property="og:title" content="404: Page Not Found | Fi Amanillah" />
-    <meta
-      property="og:description"
-      content="The requested page could not be found."
+    <SEO
+      title="404: Page Not Found | Fi Amanillah"
+      description="The page you are looking for does not exist on Fi Amanillah's website."
+      url="/404"
+      noIndex={true}
     />
   </Fragment>
 
@@ -158,10 +154,41 @@ import {
     }
   }
 
+  // Automatic client-side redirect resolution for moved URLs
+  async function checkRedirect() {
+    try {
+      const currentPath = window.location.pathname
+      if (!currentPath || currentPath === "/" || currentPath === "/404") return
+
+      const apiUrl =
+        (typeof window !== "undefined" && (window as any).__PUBLIC_API_URL__) ||
+        "http://localhost:3040"
+
+      const res = await fetch(
+        `${apiUrl}/redirects/v1/resolve?path=${encodeURIComponent(currentPath)}`
+      )
+      if (res.ok) {
+        const body = await res.json()
+        if (body.success && body.data?.redirected && body.data.destination) {
+          window.location.replace(body.data.destination)
+        }
+      }
+    } catch {
+      // Ignore network errors on 404 page
+    }
+  }
+
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", setupBackButton)
+    document.addEventListener("DOMContentLoaded", () => {
+      setupBackButton()
+      checkRedirect()
+    })
   } else {
     setupBackButton()
+    checkRedirect()
   }
-  document.addEventListener("astro:page-load", setupBackButton)
+  document.addEventListener("astro:page-load", () => {
+    setupBackButton()
+    checkRedirect()
+  })
 </script>

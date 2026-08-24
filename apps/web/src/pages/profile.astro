@@ -1,16 +1,17 @@
 ---
 import MySiteLayout from "@/layouts/MySiteLayout.astro"
 import { ProfileContainer } from "@/components/Profile/ProfileContainer"
+import SEO from "@/components/SEO/SEO.astro"
 ---
 
 <MySiteLayout>
   <Fragment slot="head">
-    <title>Profile & Account Settings | Fi Amanillah</title>
-    <meta
-      name="description"
-      content="Manage your developer account credentials, 2FA security, code typography themes, reading bookmarks, notification channels, and personal API tokens."
+    <SEO
+      title="Profile & Account Settings | Fi Amanillah"
+      description="Manage your developer account credentials, 2FA security, code typography themes, reading bookmarks, notification channels, and personal API tokens."
+      url="/profile"
+      noIndex={true}
     />
-    <meta name="robots" content="noindex, nofollow" />
   </Fragment>
 
   <section class="relative min-h-[calc(100svh-12rem)] pb-16">

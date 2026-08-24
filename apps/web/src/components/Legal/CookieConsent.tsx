@@ -141,10 +141,7 @@ export function CookieConsent() {
           aria-label="Cookie and Privacy Consent"
           className="fixed bottom-4 right-4 left-4 z-50 mx-auto w-[calc(100%-2rem)] sm:w-auto sm:min-w-[480px] sm:max-w-xl md:min-w-[560px] md:max-w-2xl animate-in fade-in slide-in-from-bottom-5 duration-300 sm:bottom-6 sm:right-6 sm:left-auto"
         >
-          <div
-            data-grid-cross
-            className="relative overflow-hidden rounded-sm border border-border/90 bg-card/95 p-5 shadow-2xl backdrop-blur-xl transition-all"
-          >
+          <div className="relative overflow-hidden rounded-sm border border-border/90 bg-card/95 p-5 shadow-2xl backdrop-blur-xl transition-all">
             {/* Corner Cyber Accents */}
             <div className="pointer-events-none absolute top-2 left-2 h-2.5 w-2.5 border-t-2 border-l-2 border-primary/50" />
             <div className="pointer-events-none absolute top-2 right-2 h-2.5 w-2.5 border-t-2 border-r-2 border-primary/50" />

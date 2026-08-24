@@ -34,6 +34,12 @@ if (!slug) {
 
 // Fetch complete post details, adjacent navigation, and related articles from DB / API
 const postData = await getBlogPostBySlugAsync(slug)
+
+// If post has moved to a new URL, perform a 301 Permanent Redirect
+if (postData?.redirected && postData.destination) {
+  return Astro.redirect(postData.destination, (postData.statusCode as any) || 301)
+}
+
 const currentPost = postData?.post || propPost
 
 if (!currentPost) {

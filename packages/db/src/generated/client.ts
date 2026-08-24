@@ -161,3 +161,8 @@ export type BookingAvailability = Prisma.BookingAvailabilityModel
  * 
  */
 export type Booking = Prisma.BookingModel
+/**
+ * Model Redirect
+ * 
+ */
+export type Redirect = Prisma.RedirectModel

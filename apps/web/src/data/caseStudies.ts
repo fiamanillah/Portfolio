@@ -68,5 +68,7 @@ export interface CaseStudyDetail {
   features: FeatureItem[]
   metrics: PerformanceMetric[]
   postMortem: PostMortemSection[]
+  createdAt?: string
+  updatedAt?: string
 }
 

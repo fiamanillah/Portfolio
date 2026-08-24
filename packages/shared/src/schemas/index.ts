@@ -14,3 +14,4 @@ export * from "./experience.schema";
 export * from "./resume.schema";
 export * from "./skill.schema";
 export * from "./booking.schema";
+export * from "./redirect.schema";

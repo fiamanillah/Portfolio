@@ -156,8 +156,11 @@ export interface CaseStudyStatsDTO {
 }
 
 export interface SingleCaseStudyPublicResponse {
-  caseStudy: CaseStudyDTO;
-  prevCaseStudy: CaseStudyListItemDTO | null;
-  nextCaseStudy: CaseStudyListItemDTO | null;
-  relatedCaseStudies: CaseStudyListItemDTO[];
+  caseStudy?: CaseStudyDTO;
+  prevCaseStudy?: CaseStudyListItemDTO | null;
+  nextCaseStudy?: CaseStudyListItemDTO | null;
+  relatedCaseStudies?: CaseStudyListItemDTO[];
+  redirected?: boolean;
+  destination?: string;
+  statusCode?: number;
 }

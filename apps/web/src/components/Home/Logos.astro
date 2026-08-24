@@ -60,54 +60,68 @@ const icons = [
 </section>
 
 <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    // Grab the rendered SVGs and the visible slots
+  let logosInterval: ReturnType<typeof setInterval> | null = null
+
+  function setupLogos() {
+    if (logosInterval) {
+      clearInterval(logosInterval)
+      logosInterval = null
+    }
+
     const poolElements = Array.from(
       document.querySelectorAll("#icon-pool > div")
     )
     const slots = Array.from(document.querySelectorAll(".icon-slot"))
+    if (poolElements.length === 0 || slots.length === 0) return
 
     let availableIcons = [...poolElements]
     let activeIcons: Element[] = []
 
-    // 1. Initial setup: Fill the 8 slots with random icons
+    // Initial setup: Fill the 8 slots with random icons
     slots.forEach((slot) => {
       const randomIndex = Math.floor(Math.random() * availableIcons.length)
       const selectedIcon = availableIcons.splice(randomIndex, 1)[0]
-
       activeIcons.push(selectedIcon)
       slot.innerHTML = selectedIcon.innerHTML
     })
 
-    // 2. Animation logic: Randomly swap one icon every 1.5 seconds
     const swapIcon = () => {
-      // Pick a random slot to animate
+      if (document.hidden) return
       const slotIndex = Math.floor(Math.random() * slots.length)
       const slot = slots[slotIndex]
+      if (!slot) return
 
-      // Trigger fade-out & shrink animation
       slot.classList.add("opacity-0", "scale-50")
 
-      // Wait for CSS transition to finish before swapping the SVG
       setTimeout(() => {
-        // Return current icon to the available pool
         const oldIcon = activeIcons[slotIndex]
-        availableIcons.push(oldIcon)
+        if (oldIcon) availableIcons.push(oldIcon)
 
-        // Pick a new random icon from the pool
         const newRandomIndex = Math.floor(Math.random() * availableIcons.length)
         const newIcon = availableIcons.splice(newRandomIndex, 1)[0]
-        activeIcons[slotIndex] = newIcon
+        if (newIcon) {
+          activeIcons[slotIndex] = newIcon
+          slot.innerHTML = newIcon.innerHTML
+        }
 
-        // Replace the HTML
-        slot.innerHTML = newIcon.innerHTML
-
-        // Trigger fade-in & grow animation
         slot.classList.remove("opacity-0", "scale-50")
-      }, 500) // 500ms matches the `duration-500` Tailwind class
+      }, 500)
     }
 
-    // Run the swap continuously
-    setInterval(swapIcon, 1500)
+    logosInterval = setInterval(swapIcon, 2500)
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", setupLogos)
+  } else {
+    setupLogos()
+  }
+  document.addEventListener("astro:page-load", setupLogos)
+  document.addEventListener("astro:before-swap", () => {
+    if (logosInterval) {
+      clearInterval(logosInterval)
+      logosInterval = null
+    }
   })
 </script>
+

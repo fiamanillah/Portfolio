@@ -3,6 +3,7 @@ import MySiteLayout from "@/layouts/MySiteLayout.astro"
 import SectionDivider from "@/components/SectionDivider.astro"
 import NewsletterSection from "@/components/Newsletter/NewsletterSection.astro"
 import { ResumeApi } from "@/lib/api/resumeApi"
+import SEO from "@/components/SEO/SEO.astro"
 
 const activeResume = await ResumeApi.fetchActiveResume()
 
@@ -30,15 +31,19 @@ function formatDate(dateStr: string | null) {
 
 <MySiteLayout>
   <Fragment slot="head">
-    <title>Curriculum Vitae & Resume | Fi Amanillah</title>
-    <meta
-      name="description"
-      content="Official curriculum vitae of Fi Amanillah — Full Stack Developer specializing in scalable TypeScript backends, event-driven architectures, and cloud DevOps."
-    />
-    <meta property="og:title" content="Curriculum Vitae & Resume | Fi Amanillah" />
-    <meta
-      property="og:description"
-      content="Download or preview the official developer resume of Fi Amanillah."
+    <SEO
+      title="Curriculum Vitae & Technical Resume | Fi Amanillah"
+      description="Official curriculum vitae of Fi Amanillah — Full Stack Developer specializing in scalable TypeScript backends, event-driven architectures, and cloud DevOps."
+      url="/resume"
+      image="/fi.png"
+      tags={[
+        "Curriculum Vitae",
+        "Resume",
+        "Full Stack Developer",
+        "Software Engineer",
+        "TypeScript",
+        "PostgreSQL",
+      ]}
     />
   </Fragment>
 

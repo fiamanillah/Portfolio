@@ -12,6 +12,7 @@ import {
   getCategorySlug,
   type BlogPost,
 } from "@/data/blogPosts"
+import { RedirectApi } from "@/lib/api/redirectApi"
 
 export async function getStaticPaths() {
   const posts = await getAllBlogPostsAsync()
@@ -128,6 +129,13 @@ const allMatchingPosts = allPosts.filter(
     getCategorySlug(p.categorySlug || p.category) === categorySlug
 )
 
+if (!foundCategory && allMatchingPosts.length === 0 && categorySlug) {
+  const redirect = await RedirectApi.resolveRedirect(`/blog/category/${categorySlug}`)
+  if (redirect?.redirected && redirect.destination) {
+    return Astro.redirect(redirect.destination, (redirect.statusCode as any) || 301)
+  }
+}
+
 const totalCategoryPosts =
   Astro.props.totalCategoryPosts ?? allMatchingPosts.length
 const totalPages =
@@ -136,7 +144,7 @@ const totalPages =
 const currentPage = Astro.props.currentPage ?? pageNum
 
 const start = (currentPage - 1) * postsPerPage
-const posts =
+const posts: BlogPost[] =
   Astro.props.categoryPosts ??
   allMatchingPosts.slice(start, start + postsPerPage)
 

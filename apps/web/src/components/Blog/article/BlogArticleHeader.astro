@@ -8,6 +8,7 @@ import {
   Time02Icon,
   ViewIcon,
 } from "@hugeicons/core-free-icons"
+import { webEnv } from "@workspace/env/web"
 
 interface Props {
   post: BlogPost
@@ -16,6 +17,7 @@ interface Props {
 const { post } = Astro.props
 const publishedDateIso = getBlogPostPublishedDate(post)
 const siteUrl = (
+  webEnv.PUBLIC_WEB_URL ||
   import.meta.env.PUBLIC_WEB_URL ||
   Astro.site?.toString() ||
   "https://fi.amanillah.com"

@@ -23,9 +23,11 @@ import {
 import fs from "fs/promises";
 import path from "path";
 import { config } from "@/core/config";
+import { RedirectService } from "../Redirect/redirect.service";
 
 export class CaseStudyService {
   private logger = new AppLogger("CaseStudyService");
+  private readonly redirectService = new RedirectService();
 
   constructor(private readonly db: typeof prisma = prisma) {}
 
@@ -47,16 +49,21 @@ export class CaseStudyService {
     setTimeout(async () => {
       try {
         const sitemapUrl = `${webUrl.replace(/\/$/, "")}/sitemap.xml`;
-        const res = await fetch(sitemapUrl, {
-          method: "GET",
-          headers: { "User-Agent": "Portfolio-API-Sitemap-Ping/1.0" },
-        }).catch(() => null);
+        const rssUrl = `${webUrl.replace(/\/$/, "")}/rss.xml`;
+        await Promise.allSettled([
+          fetch(sitemapUrl, {
+            method: "GET",
+            headers: { "User-Agent": "Portfolio-API-Sitemap-Ping/1.0" },
+          }),
+          fetch(rssUrl, {
+            method: "GET",
+            headers: { "User-Agent": "Portfolio-API-RSS-Ping/1.0" },
+          }),
+        ]);
 
-        if (res?.ok) {
-          this.logger.info(
-            `✔ [Sitemap / SEO Sync] Dynamic sitemap cache prewarmed: ${sitemapUrl} (status: ${res.status})`
-          );
-        }
+        this.logger.info(
+          `✔ [Sitemap / SEO Sync] Dynamic sitemap cache prewarmed: ${sitemapUrl}`
+        );
       } catch (err) {
         this.logger.warn(`Failed to auto-ping sitemap for '${slug}':`, err);
       }
@@ -627,6 +634,16 @@ export class CaseStudyService {
       },
     });
 
+    if (finalSlug && existing.slug && finalSlug !== existing.slug) {
+      await this.redirectService.trackEntitySlugChange({
+        entityType: "CASE_STUDY",
+        entityId: updated.id,
+        oldPath: `/case-study/${existing.slug}`,
+        newPath: `/case-study/${finalSlug}`,
+        notes: `Case study '${updated.title}' slug renamed`,
+      });
+    }
+
     this.triggerSitemapAutoUpdate(updated.slug, "UPDATED");
     this.logger.info(`✔ Case study updated: '${updated.title}' (${updated.id})`);
     return this.mapToCaseStudyDTO(updated);
@@ -725,6 +742,7 @@ export class CaseStudyService {
     });
 
     this.logger.info(`✔ Case study duplicated: '${cloned.title}' (${cloned.id})`);
+    this.triggerSitemapAutoUpdate(cloned.slug, "DUPLICATED");
     return this.mapToCaseStudyDTO(cloned);
   }
 
@@ -747,6 +765,7 @@ export class CaseStudyService {
     });
 
     this.logger.info(`✔ Bulk status updated for ${result.count} case studies to '${payload.status}'`);
+    this.triggerSitemapAutoUpdate(`${result.count} case studies`, `BULK_STATUS_${payload.status}`);
     return { count: result.count };
   }
 
@@ -763,6 +782,7 @@ export class CaseStudyService {
     });
 
     this.logger.info(`✔ Bulk deleted ${result.count} case studies`);
+    this.triggerSitemapAutoUpdate(`${result.count} case studies`, "BULK_DELETED");
     return { count: result.count };
   }
 
@@ -781,6 +801,7 @@ export class CaseStudyService {
 
     await this.db.$transaction(updates);
     this.logger.info(`✔ Reordered ${payload.items.length} case studies`);
+    this.triggerSitemapAutoUpdate(`${payload.items.length} case studies`, "REORDERED");
     return { updated: payload.items.length };
   }
 
@@ -1058,6 +1079,7 @@ export class CaseStudyService {
       }
     }
 
+    this.triggerSitemapAutoUpdate("local-seed", "SEEDED");
     return {
       imported,
       message: `Successfully synchronized ${imported} default case studies to the database.`,
@@ -1176,6 +1198,20 @@ export class CaseStudyService {
     });
 
     if (!record || record.status !== CaseStudyStatus.PUBLISHED) {
+      // Check if a 301 redirect exists for this case study slug
+      const redirect = await this.redirectService.resolve(`/case-study/${slug}`);
+      if (redirect.redirected && redirect.destination) {
+        return {
+          caseStudy: undefined,
+          prevCaseStudy: null,
+          nextCaseStudy: null,
+          relatedCaseStudies: [],
+          redirected: true,
+          destination: redirect.destination,
+          statusCode: redirect.statusCode || 301,
+        };
+      }
+
       throw new NotFoundError(`Case study '${slug}' not found or not published`);
     }
 

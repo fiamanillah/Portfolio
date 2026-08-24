@@ -4,6 +4,7 @@ import LegalHero from "@/components/Legal/LegalHero.astro"
 import LegalLayout from "@/components/Legal/LegalLayout.astro"
 import SectionDivider from "@/components/SectionDivider.astro"
 import NewsletterSection from "@/components/Newsletter/NewsletterSection.astro"
+import SEO from "@/components/SEO/SEO.astro"
 
 const sections = [
   { id: "overview", title: "Overview & Principles", num: "01" },
@@ -19,77 +20,18 @@ const sections = [
   { id: "policy-changes", title: "Modifications to this Policy", num: "11" },
   { id: "contact-inquiries", title: "Contact & Data Protection Inquiries", num: "12" },
 ]
-
-const siteUrl = (import.meta.env.PUBLIC_WEB_URL || "https://fi.amanillah.com").replace(/\/$/, "")
-const pageUrl = `${siteUrl}/privacy`
-
-const schemaData = {
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "WebPage",
-      "@id": pageUrl,
-      "url": pageUrl,
-      "name": "Privacy Policy | Fi Amanillah",
-      "description": "Comprehensive privacy policy detailing data protection, GDPR/CCPA compliance, cookies, and user rights on Fi Amanillah's portfolio and tech journal.",
-      "inLanguage": "en-US",
-      "isPartOf": {
-        "@type": "WebSite",
-        "@id": `${siteUrl}/#website`,
-        "url": siteUrl,
-        "name": "Fi Amanillah",
-        "publisher": {
-          "@type": "Person",
-          "name": "Fi Amanillah",
-          "email": "fi@amanillah.com",
-        },
-      },
-    },
-    {
-      "@type": "BreadcrumbList",
-      "@id": `${pageUrl}#breadcrumb`,
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "Home",
-          "item": siteUrl,
-        },
-        {
-          "@type": "ListItem",
-          "position": 2,
-          "name": "Privacy Policy",
-          "item": pageUrl,
-        },
-      ],
-    },
-  ],
-}
 ---
 
 <MySiteLayout>
   <!-- SEO & Social Graph Meta Tags -->
   <Fragment slot="head">
-    <title>Privacy Policy | Fi Amanillah</title>
-    <meta
-      name="description"
-      content="Learn how Fi Amanillah collects, protects, and handles your personal data, developer credentials, and communication preferences in accordance with GDPR and CCPA."
+    <SEO
+      title="Privacy Policy & Data Protection | Fi Amanillah"
+      description="Learn how Fi Amanillah collects, protects, and handles your personal data, developer credentials, and communication preferences in accordance with GDPR and CCPA."
+      url="/privacy"
+      image="/fi.png"
+      tags={["Privacy Policy", "GDPR", "Data Protection", "Security"]}
     />
-    <link rel="canonical" href={pageUrl} />
-    <meta property="og:title" content="Privacy Policy | Fi Amanillah" />
-    <meta
-      property="og:description"
-      content="Learn how Fi Amanillah collects, protects, and handles your personal data, developer credentials, and communication preferences."
-    />
-    <meta property="og:url" content={pageUrl} />
-    <meta property="og:type" content="website" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Privacy Policy | Fi Amanillah" />
-    <meta
-      name="twitter:description"
-      content="Comprehensive Privacy Policy & Data Protection guidelines for Fi Amanillah's platform."
-    />
-    <script is:inline type="application/ld+json" set:html={JSON.stringify(schemaData)} />
   </Fragment>
 
   <!-- Cyber-Tech Hero Header -->
