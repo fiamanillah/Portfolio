@@ -46,31 +46,44 @@ export function loadEnv(forceReload = false): Record<string, string | undefined>
     return process.env
   }
 
+  // Preserve explicit process.env variables passed in via Docker ARG/ENV, CI, or deployment container
+  const explicitEnv = { ...process.env }
+  const isProd = process.env.NODE_ENV === "production"
+
   const rootDir = findMonorepoRoot()
   const cwd = process.cwd()
 
   // 1. Root .env (base defaults for monorepo)
   const rootEnvPath = path.join(rootDir, ".env")
   if (fs.existsSync(rootEnvPath)) {
-    dotenv.config({ path: rootEnvPath })
+    dotenv.config({ path: rootEnvPath, override: !isProd })
   }
 
-  // 2. Root .env.local (developer overrides)
+  // 2. Root .env.local (developer overrides in non-production)
   const rootEnvLocalPath = path.join(rootDir, ".env.local")
   if (fs.existsSync(rootEnvLocalPath)) {
-    dotenv.config({ path: rootEnvLocalPath, override: true })
+    dotenv.config({ path: rootEnvLocalPath, override: !isProd })
   }
 
   // 3. Workspace-specific .env (if different from root)
   if (cwd !== rootDir) {
     const localEnvPath = path.join(cwd, ".env")
     if (fs.existsSync(localEnvPath)) {
-      dotenv.config({ path: localEnvPath, override: true })
+      dotenv.config({ path: localEnvPath, override: !isProd })
     }
 
     const localEnvLocalPath = path.join(cwd, ".env.local")
     if (fs.existsSync(localEnvLocalPath)) {
-      dotenv.config({ path: localEnvLocalPath, override: true })
+      dotenv.config({ path: localEnvLocalPath, override: !isProd })
+    }
+  }
+
+  // In production, ensure explicitly injected environment variables take absolute precedence
+  if (isProd) {
+    for (const [key, val] of Object.entries(explicitEnv)) {
+      if (val !== undefined) {
+        process.env[key] = val
+      }
     }
   }
 

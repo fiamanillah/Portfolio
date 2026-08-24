@@ -9,6 +9,7 @@ import { Toaster } from "@workspace/ui/components/sonner"
 import { AuthModal } from "@/components/auth/AuthModal"
 import { CookieConsent } from "@/components/Legal/CookieConsent"
 import SEO from "@/components/SEO/SEO.astro"
+import GoogleAnalytics from "@/components/GoogleAnalytics.astro"
 ---
 
 <html lang="en">
@@ -23,6 +24,7 @@ import SEO from "@/components/SEO/SEO.astro"
       title="Fi Amanillah | Tech, AI & Engineering Journal"
       href="/rss.xml"
     />
+    <GoogleAnalytics />
     <ThemeScript />
     <slot name="head">
       <SEO />

@@ -1,6 +1,7 @@
 ---
 import "@workspace/ui/globals.css"
 import SEO from "@/components/SEO/SEO.astro"
+import GoogleAnalytics from "@/components/GoogleAnalytics.astro"
 ---
 
 <html lang="en">
@@ -15,6 +16,7 @@ import SEO from "@/components/SEO/SEO.astro"
       title="Fi Amanillah | Tech, AI & Engineering Journal"
       href="/rss.xml"
     />
+    <GoogleAnalytics />
     <slot name="head">
       <SEO />
     </slot>

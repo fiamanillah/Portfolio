@@ -1,11 +1,9 @@
 "use client"
 
 import * as React from "react"
-import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
 import {
   Shield,
-  ShieldAlert,
   Lock,
   Mail,
   Eye,
@@ -13,12 +11,10 @@ import {
   ArrowRight,
   Sparkles,
   Command,
-  CheckCircle2,
   AlertCircle,
   ExternalLink,
   Loader2,
   KeyRound,
-  UserCheck,
 } from "lucide-react"
 
 import { useAuth } from "@/providers/auth-provider"
@@ -40,45 +36,8 @@ import {
   AlertTitle,
 } from "@workspace/ui/components/alert"
 
-interface AdminPreset {
-  id: string
-  name: string
-  email: string
-  role: "ADMIN" | "MODERATOR" | "USER"
-  badge: string
-  hasAccess: boolean
-  demoId: string
-}
-
-const presets: AdminPreset[] = [
-  {
-    id: "admin-fi",
-    name: "Fi Amanillah",
-    email: "fi@amanillah.dev",
-    role: "ADMIN",
-    badge: "Super Admin",
-    hasAccess: true,
-    demoId: "user-fi",
-  },
-  {
-    id: "admin-sys",
-    name: "System Admin",
-    email: "admin@example.com",
-    role: "ADMIN",
-    badge: "System Admin",
-    hasAccess: true,
-    demoId: "user-admin",
-  },
-  {
-    id: "mod-alex",
-    name: "Alex Chen",
-    email: "alex@chen.io",
-    role: "MODERATOR",
-    badge: "Moderator (Restricted)",
-    hasAccess: false,
-    demoId: "user-alex",
-  },
-]
+const PUBLIC_SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL || "https://fi.amanillah.com"
 
 function AdminLoginForm() {
   const router = useRouter()
@@ -87,14 +46,13 @@ function AdminLoginForm() {
 
   const {
     login,
-    loginAsDemo,
     isAuthenticated,
     isAdmin,
     isLoading: isAuthChecking,
   } = useAuth()
 
-  const [email, setEmail] = React.useState("fi@amanillah.dev")
-  const [password, setPassword] = React.useState("change-me-immediately")
+  const [email, setEmail] = React.useState("")
+  const [password, setPassword] = React.useState("")
   const [showPassword, setShowPassword] = React.useState(false)
   const [isSubmitting, setIsSubmitting] = React.useState(false)
   const [errorMessage, setErrorMessage] = React.useState<string | null>(null)
@@ -127,35 +85,13 @@ function AdminLoginForm() {
           res.error || "Authentication failed. Check your credentials."
         )
       } else {
-        // If login succeeded, check if user is admin
+        // If login succeeded, redirect to requested path
         router.replace(redirectPath)
       }
     } catch (err: any) {
       setErrorMessage(
         err?.message || "An error occurred while communicating with the server."
       )
-    } finally {
-      setIsSubmitting(false)
-    }
-  }
-
-  const handleDemoPreset = async (preset: AdminPreset) => {
-    setErrorMessage(null)
-    setEmail(preset.email)
-    setPassword(
-      preset.role === "ADMIN" ? "change-me-immediately" : "password123"
-    )
-
-    try {
-      setIsSubmitting(true)
-      const res = await loginAsDemo(preset.demoId)
-      if (!res.success) {
-        setErrorMessage(res.error || "Demo login failed.")
-      } else if (preset.hasAccess) {
-        router.replace(redirectPath)
-      }
-    } catch (err: any) {
-      setErrorMessage(err?.message || "Failed to log in with preset.")
     } finally {
       setIsSubmitting(false)
     }
@@ -239,6 +175,7 @@ function AdminLoginForm() {
                     onChange={(e) => setEmail(e.target.value)}
                     className="pl-9 text-sm"
                     required
+                    autoComplete="email"
                     disabled={isSubmitting}
                   />
                 </div>
@@ -263,6 +200,7 @@ function AdminLoginForm() {
                     onChange={(e) => setPassword(e.target.value)}
                     className="pr-9 pl-9 text-sm"
                     required
+                    autoComplete="current-password"
                     disabled={isSubmitting}
                   />
                   <button
@@ -282,7 +220,7 @@ function AdminLoginForm() {
 
               <Button
                 type="submit"
-                className="h-10 w-full font-medium shadow-md shadow-primary/20"
+                className="h-10 w-full font-medium shadow-md shadow-primary/20 cursor-pointer"
                 disabled={isSubmitting}
               >
                 {isSubmitting ? (
@@ -299,80 +237,16 @@ function AdminLoginForm() {
                 )}
               </Button>
             </form>
-
-            <div className="relative my-4">
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t border-border" />
-              </div>
-              <div className="relative flex justify-center text-[10px] font-semibold tracking-wider uppercase">
-                <span className="bg-card px-2 text-muted-foreground">
-                  Quick Demo Switcher
-                </span>
-              </div>
-            </div>
-
-            {/* Quick Presets for Demo & Testing */}
-            <div className="space-y-2">
-              <div className="flex items-center justify-between text-[11px] text-muted-foreground">
-                <span>Select a preset account to test access:</span>
-              </div>
-
-              <div className="grid gap-2">
-                {presets.map((preset) => (
-                  <button
-                    key={preset.id}
-                    type="button"
-                    onClick={() => handleDemoPreset(preset)}
-                    disabled={isSubmitting}
-                    className="group flex items-center justify-between rounded-xl border border-border/70 bg-background/50 p-2.5 text-left transition-all hover:border-primary/40 hover:bg-accent/60"
-                  >
-                    <div className="flex min-w-0 items-center gap-2.5">
-                      <div
-                        className={`flex size-7 items-center justify-center rounded-lg ${
-                          preset.hasAccess
-                            ? "bg-primary/10 text-primary"
-                            : "bg-amber-500/10 text-amber-500"
-                        }`}
-                      >
-                        {preset.hasAccess ? (
-                          <UserCheck className="size-3.5" />
-                        ) : (
-                          <ShieldAlert className="size-3.5" />
-                        )}
-                      </div>
-                      <div className="truncate">
-                        <div className="flex items-center gap-1.5 text-xs font-medium text-foreground">
-                          <span>{preset.name}</span>
-                          <span className="text-[10px] font-normal text-muted-foreground">
-                            ({preset.role})
-                          </span>
-                        </div>
-                        <div className="truncate text-[11px] text-muted-foreground">
-                          {preset.email}
-                        </div>
-                      </div>
-                    </div>
-
-                    <Badge
-                      variant={preset.hasAccess ? "default" : "secondary"}
-                      className="h-5 shrink-0 font-mono text-[10px]"
-                    >
-                      {preset.hasAccess ? "Admin" : "Blocked"}
-                    </Badge>
-                  </button>
-                ))}
-              </div>
-            </div>
           </CardContent>
 
-          <CardFooter className="flex flex-col gap-2 border-t border-border/50 pt-0 pt-4 pb-5 text-center text-xs text-muted-foreground">
+          <CardFooter className="flex flex-col gap-2 border-t border-border/50 pt-4 pb-5 text-center text-xs text-muted-foreground">
             <div className="flex w-full items-center justify-between text-[11px]">
               <div className="flex items-center gap-1 text-muted-foreground">
                 <Sparkles className="size-3 text-primary" />
                 <span>Encrypted Session</span>
               </div>
               <a
-                href="http://localhost:4321"
+                href={PUBLIC_SITE_URL}
                 target="_blank"
                 rel="noreferrer"
                 className="flex items-center gap-1 text-primary hover:underline"

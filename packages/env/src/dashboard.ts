@@ -5,12 +5,20 @@ export const dashboardEnvSchema = z.object({
   NEXT_PUBLIC_API_URL: z
     .string()
     .url("NEXT_PUBLIC_API_URL must be a valid URL")
-    .default("http://localhost:3040"),
+    .default(
+      process.env.NODE_ENV === "production"
+        ? "https://api-fi.amanillah.com"
+        : "http://localhost:3040"
+    ),
   NEXT_PUBLIC_SITE_URL: z
     .string()
     .url("NEXT_PUBLIC_SITE_URL must be a valid URL")
     .optional()
-    .default("http://localhost:4321"),
+    .default(
+      process.env.NODE_ENV === "production"
+        ? "https://fi.amanillah.com"
+        : "http://localhost:4321"
+    ),
   PORT: z.coerce.number().default(3001),
   NODE_ENV: z
     .enum(["development", "production", "test"])

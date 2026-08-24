@@ -3,7 +3,7 @@
 import * as React from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { Plus, CloudDownload, Loader2, Layers } from "lucide-react"
+import { Plus, Loader2, Layers } from "lucide-react"
 
 import type {
   CaseStudyListItemDTO,
@@ -56,7 +56,6 @@ export default function CaseStudiesPage() {
     React.useState<CaseStudyListItemDTO | null>(null)
   const [bulkDeletingIds, setBulkDeletingIds] = React.useState<string[]>([])
   const [isDeleting, setIsDeleting] = React.useState(false)
-  const [isSyncing, setIsSyncing] = React.useState(false)
 
   // Load Data
   const loadStudies = React.useCallback(async () => {
@@ -225,26 +224,6 @@ export default function CaseStudiesPage() {
     }
   }
 
-  const handleSyncLocal = async () => {
-    setIsSyncing(true)
-    try {
-      const res = await CaseStudyApi.seedLocal()
-      if (res.success) {
-        toast.success(
-          res.message || "Local JSON case studies synchronized to DB!"
-        )
-        loadStudies()
-        loadStats()
-      } else {
-        toast.error(res.message || "Failed to sync local data")
-      }
-    } catch {
-      toast.error("Failed to sync local case studies")
-    } finally {
-      setIsSyncing(false)
-    }
-  }
-
   const handleResetFilters = () => {
     setSearchQuery("")
     setStatusFilter("all")
@@ -285,22 +264,6 @@ export default function CaseStudiesPage() {
         </div>
 
         <div className="flex flex-wrap items-center gap-2.5">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleSyncLocal}
-            disabled={isSyncing}
-            className="h-9 gap-1.5 text-xs font-mono"
-            title="Import/sync existing case studies from repository JSON"
-          >
-            {isSyncing ? (
-              <Loader2 className="size-3.5 animate-spin" />
-            ) : (
-              <CloudDownload className="size-3.5 text-primary" />
-            )}
-            Sync Local Data
-          </Button>
-
           <Button asChild size="sm" className="h-9 gap-1.5 text-xs bg-primary">
             <Link href="/case-studies/create">
               <Plus className="size-4" />

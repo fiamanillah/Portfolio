@@ -157,7 +157,10 @@ export class BookingService {
     const [endHour, endMin] = availability.endTime.split(":").map(Number)
 
     const dayStart = new Date(Date.UTC(year, month - 1, day, startHour, startMin, 0))
-    const dayEnd = new Date(Date.UTC(year, month - 1, day, endHour, endMin, 0))
+    const dayEnd =
+      endHour === 23 && endMin === 59
+        ? new Date(Date.UTC(year, month - 1, day + 1, 0, 0, 0))
+        : new Date(Date.UTC(year, month - 1, day, endHour, endMin, 0))
 
     // 3. Fetch existing confirmed/pending bookings for this date range in DB
     const rangeStart = new Date(Date.UTC(year, month - 1, day, 0, 0, 0))
@@ -1114,10 +1117,8 @@ export class BookingService {
    * Update weekly availability schedule
    */
   public async adminUpdateAvailability(schedule: AvailabilityDayInput[]) {
-    const results = []
-
     for (const item of schedule) {
-      const updated = await prisma.bookingAvailability.upsert({
+      await prisma.bookingAvailability.upsert({
         where: { dayOfWeek: item.dayOfWeek },
         update: {
           startTime: item.startTime,
@@ -1137,10 +1138,12 @@ export class BookingService {
           timezone: item.timezone || "UTC",
         },
       })
-      results.push(updated)
     }
 
     this.logger.info("✔ Booking availability schedule updated")
+    const results = await prisma.bookingAvailability.findMany({
+      orderBy: { dayOfWeek: "asc" },
+    })
     return results
   }
 }

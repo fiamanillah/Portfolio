@@ -1,5 +1,5 @@
 ---
-import { projectsData } from "@/data/projects"
+import type { Project } from "@/data/projects"
 import { CaseStudyApi } from "@/lib/api/caseStudyApi"
 import CaseStudyCard from "@/components/CaseStudy/cards/CaseStudyCard.astro"
 import ProjectCard from "@/components/CaseStudy/cards/ProjectCard.astro"
@@ -7,10 +7,10 @@ import { Button } from "@workspace/ui/components/button"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { ArrowUpRight01Icon, BookOpen01Icon } from "@hugeicons/core-free-icons"
 
-// Fetch published case studies from API (with fallback to local projects)
+// Fetch published case studies & projects dynamically from PostgreSQL API
 const fetchedStudies = await CaseStudyApi.fetchAllCaseStudies()
 
-const apiProjects = fetchedStudies.map((study, idx) => {
+const apiProjects: Project[] = fetchedStudies.map((study, idx) => {
   const metaObj = (study.metadata || []).reduce((acc: any, item: any) => {
     acc[item.label] = item.value
     return acc
@@ -40,14 +40,9 @@ const apiProjects = fetchedStudies.map((study, idx) => {
       github: study.githubUrl || undefined,
       caseStudy: isDeepDive ? `/case-study/${study.slug}` : undefined,
     },
-    img:
-      study.slug === "moja-cares"
-        ? "/assets/images/moja-cares-hero.png"
-        : study.slug === "mickanic"
-          ? "/assets/images/mickanic-hero.png"
-          : (study.image || (idx % 2 === 0 ? "/assets/images/mickanic-hero.png" : "/assets/images/moja-cares-hero.png")),
+    img: study.image || "/fi.png",
     index: String(idx + 1).padStart(2, "0"),
-    status: (study.status || "Completed").replace(/^Status:\s*/i, ""),
+    status: ((study.status || "Completed").replace(/^Status:\s*/i, "") as any) || "Completed",
     year: study.timeline || metaObj["Timeline"] || "2026",
     hasCaseStudy: isDeepDive,
     highlights:
@@ -63,7 +58,7 @@ const apiProjects = fetchedStudies.map((study, idx) => {
   }
 })
 
-const projects = apiProjects.length > 0 ? apiProjects : projectsData
+const projects = apiProjects
 
 // Separate featured projects (deep dive case studies) from other projects
 const featuredProjects = projects.filter((p) => p.hasCaseStudy)

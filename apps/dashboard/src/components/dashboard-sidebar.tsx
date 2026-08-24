@@ -345,7 +345,7 @@ export function DashboardSidebar({
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <a
-                      href="http://localhost:4321"
+                      href={process.env.NEXT_PUBLIC_SITE_URL || "https://fi.amanillah.com"}
                       target="_blank"
                       rel="noreferrer"
                       className="flex items-center gap-2 text-xs"

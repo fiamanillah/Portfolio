@@ -50,11 +50,18 @@ const {
   nextPageUrl,
 } = Astro.props
 
-const siteUrl = (
-  webEnv.PUBLIC_WEB_URL ||
+const isProd = import.meta.env.PROD || process.env.NODE_ENV === "production"
+const rawSiteUrl =
   import.meta.env.PUBLIC_WEB_URL ||
   Astro.site?.toString() ||
+  process.env.PUBLIC_WEB_URL ||
+  webEnv.PUBLIC_WEB_URL ||
   "https://fi.amanillah.com"
+
+const siteUrl = (
+  isProd && rawSiteUrl.includes("localhost")
+    ? "https://fi.amanillah.com"
+    : rawSiteUrl
 ).replace(/\/$/, "")
 
 // Calculate derived fields

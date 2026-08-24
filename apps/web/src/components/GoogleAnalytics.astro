@@ -1,0 +1,27 @@
+---
+import { webEnv } from "@workspace/env/web"
+
+export interface Props {
+  id?: string
+}
+
+const {
+  id = import.meta.env.PUBLIC_GA_MEASUREMENT_ID ||
+    webEnv.PUBLIC_GA_MEASUREMENT_ID ||
+    "G-G8BDG57VX9",
+} = Astro.props
+---
+
+<!-- Google tag (gtag.js) -->
+<script
+  is:inline
+  async
+  src={`https://www.googletagmanager.com/gtag/js?id=${id}`}
+></script>
+<script is:inline define:vars={{ id }}>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', id);
+</script>

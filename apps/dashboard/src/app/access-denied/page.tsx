@@ -170,7 +170,11 @@ export default function AccessDeniedPage() {
               className="w-full gap-2 text-xs text-muted-foreground"
               asChild
             >
-              <a href="http://localhost:4321" target="_blank" rel="noreferrer">
+              <a
+                href={process.env.NEXT_PUBLIC_SITE_URL || "https://fi.amanillah.com"}
+                target="_blank"
+                rel="noreferrer"
+              >
                 <ExternalLink className="size-3.5" />
                 Return to Live Portfolio Site
               </a>

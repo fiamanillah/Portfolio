@@ -105,9 +105,7 @@ export function CaseStudyEditorForm({
   const [order, setOrder] = React.useState(initialStudy?.order ?? 0)
   const [featured, setFeatured] = React.useState(Boolean(initialStudy?.featured))
   const [pinned, setPinned] = React.useState(Boolean(initialStudy?.pinned))
-  const [image, setImage] = React.useState(
-    initialStudy?.image || "/assets/images/mickanic-cover.png"
-  )
+  const [image, setImage] = React.useState(initialStudy?.image || "")
   const [imageLabel, setImageLabel] = React.useState(initialStudy?.imageLabel || "")
   const [liveUrl, setLiveUrl] = React.useState(initialStudy?.liveUrl || "")
   const [githubUrl, setGithubUrl] = React.useState(initialStudy?.githubUrl || "")
@@ -327,15 +325,15 @@ export function CaseStudyEditorForm({
     techStack,
     liveUrl: liveUrl || null,
     githubUrl: githubUrl || null,
-    image: image || "/assets/images/mickanic-cover.png",
+    image: image || "/fi.png",
     imageLabel: imageLabel || null,
     role: role || null,
     timeline: timeline || null,
     client: client || null,
     impact: impact || null,
     highlights,
-    views: initialStudy?.views ?? 1250,
-    likesCount: initialStudy?.likesCount ?? 42,
+    views: initialStudy?.views ?? 0,
+    likesCount: initialStudy?.likesCount ?? 0,
     publishedAt: initialStudy?.publishedAt || new Date().toISOString(),
     authorName: initialStudy?.authorName || "Fi Amanillah",
     authorRole: initialStudy?.authorRole || "Author & Lead Architect",

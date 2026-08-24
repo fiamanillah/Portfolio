@@ -4,11 +4,10 @@ import CaseStudyHeader from "@/components/CaseStudy/hero/CaseStudyHeader.astro"
 import CaseStudyExplorer from "@/components/CaseStudy/explorer/CaseStudyExplorer.astro"
 import NewsletterSection from "@/components/Newsletter/NewsletterSection.astro"
 import SectionDivider from "@/components/SectionDivider.astro"
-import { getCaseStudies, getProjectsWithoutCaseStudy } from "@/data/projects"
 import { CaseStudyApi } from "@/lib/api/caseStudyApi"
 import SEO from "@/components/SEO/SEO.astro"
 
-// Fetch all published systems directly from PostgreSQL API (with local fallback)
+// Fetch all published systems directly from PostgreSQL API
 const allFetched = await CaseStudyApi.fetchAllCaseStudies()
 
 const apiDeepDives = allFetched.filter(
@@ -16,12 +15,8 @@ const apiDeepDives = allFetched.filter(
 )
 const apiQuickProjects = allFetched.filter((s) => s.projectType === "PROJECT")
 
-// Fallback to local data only if API returns empty
-const rawCaseStudies = apiDeepDives.length > 0 ? apiDeepDives : getCaseStudies()
-const rawStandardProjects =
-  apiQuickProjects.length > 0
-    ? apiQuickProjects
-    : getProjectsWithoutCaseStudy()
+const rawCaseStudies = apiDeepDives
+const rawStandardProjects = apiQuickProjects
 
 const caseStudies = rawCaseStudies.map((study: any, idx) => {
   const metaObj = (study.metadata || []).reduce((acc: any, item: any) => {

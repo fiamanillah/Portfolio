@@ -7,11 +7,18 @@ import {
 } from "@/data/blogPosts"
 
 export const GET: APIRoute = async (context) => {
-  const site = (
-    webEnv.PUBLIC_WEB_URL ||
-    context.site?.toString() ||
+  const isProd = import.meta.env.PROD || process.env.NODE_ENV === "production"
+  const rawSite =
     import.meta.env.PUBLIC_WEB_URL ||
+    context.site?.toString() ||
+    process.env.PUBLIC_WEB_URL ||
+    webEnv.PUBLIC_WEB_URL ||
     "https://fi.amanillah.com"
+
+  const site = (
+    isProd && rawSite.includes("localhost")
+      ? "https://fi.amanillah.com"
+      : rawSite
   ).replace(/\/$/, "")
   const posts = await getAllBlogPostsAsync()
 

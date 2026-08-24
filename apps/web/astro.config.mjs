@@ -4,7 +4,11 @@ import react from "@astrojs/react"
 import icon from "astro-icon"
 import { webEnv } from "@workspace/env/web"
 
-const siteUrl = webEnv.PUBLIC_WEB_URL.replace(/\/$/, "")
+const isProd = process.env.NODE_ENV === "production"
+const siteUrl = (
+  process.env.PUBLIC_WEB_URL ||
+  (isProd ? "https://fi.amanillah.com" : webEnv.PUBLIC_WEB_URL)
+).replace(/\/$/, "")
 
 export default defineConfig({
   site: siteUrl,

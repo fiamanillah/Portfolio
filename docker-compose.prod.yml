@@ -94,6 +94,7 @@ services:
         PUBLIC_WEB_URL: ${PUBLIC_WEB_URL:-https://fi.amanillah.com}
         PUBLIC_API_URL: ${PUBLIC_API_URL:-https://api-fi.amanillah.com}
         PUBLIC_TURNSTILE_SITE_KEY: ${PUBLIC_TURNSTILE_SITE_KEY:-}
+        PUBLIC_GA_MEASUREMENT_ID: ${PUBLIC_GA_MEASUREMENT_ID:-G-G8BDG57VX9}
     container_name: portfolio_web_prod
     restart: always
     ports:

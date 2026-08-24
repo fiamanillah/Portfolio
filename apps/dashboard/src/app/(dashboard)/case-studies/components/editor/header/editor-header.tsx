@@ -76,7 +76,7 @@ export function EditorHeader({
             asChild
           >
             <a
-              href={`http://localhost:4321/case-study/${slug}`}
+              href={`${process.env.NEXT_PUBLIC_SITE_URL || "https://fi.amanillah.com"}/case-study/${slug}`}
               target="_blank"
               rel="noreferrer"
             >

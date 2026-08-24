@@ -18,11 +18,19 @@ function escapeXml(unsafe: string): string {
 }
 
 export const GET: APIRoute = async (context) => {
-  const siteUrl = (
-    webEnv.PUBLIC_WEB_URL ||
-    context.site?.toString() ||
+  const isProd = import.meta.env.PROD || process.env.NODE_ENV === "production"
+  const rawSiteUrl =
     import.meta.env.PUBLIC_WEB_URL ||
+    context.site?.toString() ||
+    process.env.PUBLIC_WEB_URL ||
+    webEnv.PUBLIC_WEB_URL ||
     "https://fi.amanillah.com"
+
+  // In production builds, ensure we never emit localhost
+  const siteUrl = (
+    isProd && rawSiteUrl.includes("localhost")
+      ? "https://fi.amanillah.com"
+      : rawSiteUrl
   ).replace(/\/$/, "")
 
   // Fetch real-time published blog posts & case studies directly from DB/API

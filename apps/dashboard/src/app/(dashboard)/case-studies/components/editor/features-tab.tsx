@@ -17,17 +17,13 @@ export function FeaturesTab({ features, setFeatures }: FeaturesTabProps) {
     setFeatures([
       ...features,
       {
-        title: "Real-Time Feature Title",
-        description:
-          "Detailed explanation of how this feature was architected, APIs used, and performance outcomes.",
+        title: "",
+        description: "",
         mediaType: "Image / Video",
-        mediaLabel: "Feature Interface",
-        media: "/assets/images/mickanic-cover.png",
-        tags: ["WebSockets", "RTK Query", "Optimistic UI"],
-        highlights: [
-          "Instant bidirectional state synchronization across clients",
-          "Sub-50ms latency with dedicated message broker queues",
-        ],
+        mediaLabel: "",
+        media: "",
+        tags: [],
+        highlights: [],
       },
     ])
   }
