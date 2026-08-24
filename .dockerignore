@@ -1,0 +1,41 @@
+# Dependencies and artifacts
+node_modules
+**/node_modules
+.pnpm-store
+
+# Build outputs
+dist
+**/dist
+.next
+**/.next
+.astro
+**/.astro
+.turbo
+**/.turbo
+
+# Environment and secrets
+.env
+.env*.local
+.env.development
+.env.production
+.env.test
+!.env.example
+
+# Git and IDE
+.git
+.gitignore
+.vscode
+.idea
+.DS_Store
+*.pem
+
+# Logs & temporary files
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+bun.lockb
+.npm
+.cache
+coverage

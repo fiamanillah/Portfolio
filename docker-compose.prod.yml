@@ -1,0 +1,156 @@
+# ==============================================================================
+# Production Docker Compose Configuration
+# Portfolio Monorepo: Web (Astro) + API (Express/Bun) + Dashboard (Next.js)
+# ==============================================================================
+
+services:
+  # ----------------------------------------------------------------------------
+  # PostgreSQL Database (v17 Alpine)
+  # ----------------------------------------------------------------------------
+  postgres:
+    image: postgres:17-alpine
+    container_name: portfolio_postgres_prod
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-fiamanillah}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-fiamanillah}
+      POSTGRES_DB: ${POSTGRES_DB:-portfolio_db}
+    ports:
+      - '${POSTGRES_PORT:-5445}:5432'
+    volumes:
+      - portfolio_postgres_prod_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER:-fiamanillah} -d ${POSTGRES_DB:-portfolio_db}']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - portfolio_prod_network
+
+  # ----------------------------------------------------------------------------
+  # Redis Cache (v7 Alpine)
+  # ----------------------------------------------------------------------------
+  redis:
+    image: redis:7-alpine
+    container_name: portfolio_redis_prod
+    restart: always
+    command: redis-server --appendonly yes
+    ports:
+      - '${REDIS_PORT:-6380}:6379'
+    volumes:
+      - portfolio_redis_prod_data:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+    networks:
+      - portfolio_prod_network
+
+  # ----------------------------------------------------------------------------
+  # API Server (Express + Prisma Engine + Bun Runtime)
+  # ----------------------------------------------------------------------------
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    container_name: portfolio_api_prod
+    restart: always
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: production
+      PORT: 3040
+      DATABASE_URL: postgresql://${POSTGRES_USER:-fiamanillah}:${POSTGRES_PASSWORD:-fiamanillah}@postgres:5432/${POSTGRES_DB:-portfolio_db}?schema=public
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_URL: redis://redis:6379
+    ports:
+      - '${API_PORT:-3040}:3040'
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD', 'wget', '-q', '--spider', 'http://127.0.0.1:3040/health']
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    networks:
+      - portfolio_prod_network
+
+  # ----------------------------------------------------------------------------
+  # Web Frontend (Astro 5 Static Build + Tuned Nginx Server)
+  # ----------------------------------------------------------------------------
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+      args:
+        PUBLIC_WEB_URL: ${PUBLIC_WEB_URL:-https://fi.amanillah.com}
+        PUBLIC_API_URL: ${PUBLIC_API_URL:-https://api.fi.amanillah.com}
+        PUBLIC_TURNSTILE_SITE_KEY: ${PUBLIC_TURNSTILE_SITE_KEY:-}
+    container_name: portfolio_web_prod
+    restart: always
+    ports:
+      - '${WEB_PORT:-8080}:80'
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD', 'wget', '-q', '--spider', 'http://127.0.0.1/health']
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    networks:
+      - portfolio_prod_network
+
+  # ----------------------------------------------------------------------------
+  # Dashboard (Next.js 16 Standalone Server)
+  # ----------------------------------------------------------------------------
+  dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile.dashboard
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-https://api.fi.amanillah.com}
+        NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-https://fi.amanillah.com}
+    container_name: portfolio_dashboard_prod
+    restart: always
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: production
+      PORT: 3001
+      HOSTNAME: 0.0.0.0
+    ports:
+      - '${DASHBOARD_PORT:-3001}:3001'
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD', 'node', '-e', "require('http').get('http://127.0.0.1:3001', (r) => { process.exit(r.statusCode < 500 ? 0 : 1); }).on('error', () => process.exit(1));"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    networks:
+      - portfolio_prod_network
+
+networks:
+  portfolio_prod_network:
+    driver: bridge
+    name: portfolio_prod_network
+
+volumes:
+  portfolio_postgres_prod_data:
+    driver: local
+    name: portfolio_postgres_prod_data
+  portfolio_redis_prod_data:
+    driver: local
+    name: portfolio_redis_prod_data

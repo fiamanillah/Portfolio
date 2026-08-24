@@ -21,6 +21,19 @@ export const metadata: Metadata = {
   title: "Admin Dashboard | Portfolio Platform",
   description:
     "Administrative control center for portfolio management, content, subscribers, and system telemetry.",
+  robots: {
+    index: false,
+    follow: false,
+    nocache: true,
+    googleBot: {
+      index: false,
+      follow: false,
+      noimageindex: true,
+      "max-video-preview": -1,
+      "max-image-preview": "none",
+      "max-snippet": -1,
+    },
+  },
 }
 
 export default function RootLayout({

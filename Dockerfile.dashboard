@@ -1,0 +1,76 @@
+# syntax=docker/dockerfile:1.4
+# ==============================================================================
+# Multi-Stage High Performance Dockerfile for Next.js Dashboard (apps/dashboard)
+# Standalone output mode produces an ultra-lean image (~120MB)
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# Stage 1: Build Stage
+# ------------------------------------------------------------------------------
+FROM oven/bun:1-alpine AS builder
+
+WORKDIR /app
+
+# Accept build arguments for Next.js frontend variables
+ARG NEXT_PUBLIC_API_URL=https://api.fi.amanillah.com
+ARG NEXT_PUBLIC_SITE_URL=https://fi.amanillah.com
+
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL \
+    NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL \
+    NODE_ENV=production \
+    NEXT_TELEMETRY_DISABLED=1
+
+# 1. Install workspace dependencies (layer caching)
+COPY package.json bun.lock turbo.json tsconfig.json ./
+COPY packages/db/package.json ./packages/db/
+COPY packages/env/package.json ./packages/env/
+COPY packages/shared/package.json ./packages/shared/
+COPY packages/ui/package.json ./packages/ui/
+COPY packages/cache/package.json ./packages/cache/
+COPY packages/logger/package.json ./packages/logger/
+COPY apps/dashboard/package.json ./apps/dashboard/
+
+RUN bun install --frozen-lockfile
+
+# 2. Copy source code
+COPY packages/ ./packages/
+COPY apps/dashboard/ ./apps/dashboard/
+
+# 3. Generate Prisma client (if required by packages) & build standalone Next.js bundle
+RUN cd packages/db && bun run db:generate || true
+RUN cd apps/dashboard && bun run build
+
+# ------------------------------------------------------------------------------
+# Stage 2: Production Lean Node Runner Image (~120MB)
+# ------------------------------------------------------------------------------
+FROM node:22-alpine AS runner
+
+WORKDIR /app
+
+ENV NODE_ENV=production \
+    PORT=3001 \
+    HOSTNAME="0.0.0.0" \
+    NEXT_TELEMETRY_DISABLED=1
+
+# Security: Create non-root user
+RUN addgroup --system --gid 1001 nodejs \
+  && adduser --system --uid 1001 nextjs
+
+# Copy Next.js Standalone build artifacts
+# In monorepos, standalone produces apps/dashboard/server.js and root node_modules
+COPY --from=builder --chown=nextjs:nodejs /app/apps/dashboard/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/apps/dashboard/.next/static ./apps/dashboard/.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/apps/dashboard/public ./apps/dashboard/public
+
+# Switch to non-root user
+USER nextjs
+
+# Expose Dashboard Port
+EXPOSE 3001
+
+# Container healthcheck using native Node script
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+  CMD node -e "require('http').get('http://127.0.0.1:3001', (r) => { process.exit(r.statusCode < 500 ? 0 : 1); }).on('error', () => process.exit(1));"
+
+# Start the standalone Next.js server
+CMD ["node", "apps/dashboard/server.js"]

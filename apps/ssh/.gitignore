@@ -1,9 +1,0 @@
-# Go binaries and build outputs
-portfolio
-portfolio.exe
-
-# SSH keys and host credentials
-.ssh/
-
-# Local guestbook records
-guestbook.json
