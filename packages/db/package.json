@@ -17,6 +17,7 @@
     "db:studio": "prisma studio",
     "db:push": "prisma db push",
     "db:seed": "bun prisma/seed.ts",
+    "db:seed:prod": "bun prisma/seed-prod.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

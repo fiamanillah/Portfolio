@@ -75,7 +75,7 @@ export const SYSTEM_TEMPLATES: DefaultTemplateSeed[] = [
       durationMinutes: 30,
       timezone: "Asia/Dhaka",
       googleMeetLink: "https://meet.google.com/abc-defg-hij",
-      bookingsPageUrl: "https://admin.fi.amanillah.com/bookings",
+      bookingsPageUrl: "https://admin-fi.amanillah.com/bookings",
       guestNotes: "Looking forward to discussing database migration strategies.",
     },
   },
@@ -124,7 +124,7 @@ export const SYSTEM_TEMPLATES: DefaultTemplateSeed[] = [
       durationMinutes: 30,
       timezone: "Asia/Dhaka",
       reason: "Conflict with another scheduled session.",
-      bookingsPageUrl: "https://admin.fi.amanillah.com/bookings",
+      bookingsPageUrl: "https://admin-fi.amanillah.com/bookings",
     },
   },
   {

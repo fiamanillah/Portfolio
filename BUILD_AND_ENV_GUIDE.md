@@ -78,7 +78,7 @@ graph LR
 | Variable | Scope | Type | Default (Dev) | Production Example | Description |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | `PUBLIC_WEB_URL` | **Build** | URL | `http://localhost:4321` | `https://fi.amanillah.com` | Canonical base URL for SEO, sitemaps, and RSS |
-| `PUBLIC_API_URL` | **Build** | URL | `http://localhost:3040` | `https://api.fi.amanillah.com` | Public API endpoint for newsletter, contact & booking |
+| `PUBLIC_API_URL` | **Build** | URL | `http://localhost:3040` | `https://api-fi.amanillah.com` | Public API endpoint for newsletter, contact & booking |
 | `PUBLIC_TURNSTILE_SITE_KEY` | **Build** | String | `1x00000000000000000000AA` | `0x4AAAAAAAYourKey` | Cloudflare Turnstile public widget site key |
 | `NODE_ENV` | Build | Enum | `development` | `production` | Node environment indicator |
 
@@ -89,7 +89,7 @@ graph LR
 
 | Variable | Scope | Type | Default (Dev) | Production Example | Description |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| `NEXT_PUBLIC_API_URL` | **Build** | URL | `http://localhost:3040` | `https://api.fi.amanillah.com` | Backend API URL for all admin client fetching |
+| `NEXT_PUBLIC_API_URL` | **Build** | URL | `http://localhost:3040` | `https://api-fi.amanillah.com` | Backend API URL for all admin client fetching |
 | `NEXT_PUBLIC_SITE_URL` | **Build** | URL | `http://localhost:4321` | `https://fi.amanillah.com` | Public main website URL for preview links |
 | `PORT` | **Runtime** | Number | `3001` | `3001` | Server listening port |
 | `HOSTNAME` | **Runtime** | String | `localhost` | `0.0.0.0` | Host binding interface (must be `0.0.0.0` in Docker) |
@@ -119,7 +119,7 @@ graph LR
 | `REDIS_URL` | Runtime | URL | `redis://localhost:6380` | `redis://redis:6379` | Direct Redis connection URL |
 | `REDIS_DEFAULT_TTL` | Runtime | Number | `3600` | `3600` | Default cache expiration time in seconds |
 | **Security & Auth** | | | | | |
-| `ALLOWED_ORIGINS` | Runtime | CSV | `http://localhost:4321,http://localhost:3001` | `https://fi.amanillah.com,https://admin.fi.amanillah.com` | Allowed CORS origins (comma-separated) |
+| `ALLOWED_ORIGINS` | Runtime | CSV | `http://localhost:4321,http://localhost:3001` | `https://fi.amanillah.com,https://admin-fi.amanillah.com` | Allowed CORS origins (comma-separated) |
 | `RATE_LIMIT_WINDOW_MS` | Runtime | Number | `900000` | `900000` | Rate limiter sliding window (15 mins) |
 | `RATE_LIMIT_MAX` | Runtime | Number | `100` | `100` | Maximum requests per IP per window |
 | `JWT_SECRET` | Runtime | Secret | `dev-secret-key...` | `openssl rand -hex 64` | 64-character random hex key for signing tokens |
@@ -130,8 +130,8 @@ graph LR
 | `DEFAULT_ADMIN_PASSWORD` | Runtime | String | `change-me-immediately` | `ComplexPasswordHere!` | Initial admin account password for seeding |
 | **Public Service URLs** | | | | | |
 | `PUBLIC_WEB_URL` | Runtime | URL | `http://localhost:4321` | `https://fi.amanillah.com` | Public website URL used for generating links in emails |
-| `PUBLIC_API_URL` | Runtime | URL | `http://localhost:3040` | `https://api.fi.amanillah.com` | Public API URL for webhooks and OAuth redirects |
-| `PUBLIC_DASHBOARD_URL` | Runtime | URL | `http://localhost:3001` | `https://admin.fi.amanillah.com` | Admin dashboard URL |
+| `PUBLIC_API_URL` | Runtime | URL | `http://localhost:3040` | `https://api-fi.amanillah.com` | Public API URL for webhooks and OAuth redirects |
+| `PUBLIC_DASHBOARD_URL` | Runtime | URL | `http://localhost:3001` | `https://admin-fi.amanillah.com` | Admin dashboard URL |
 | **Email Delivery (Plunk)** | | | | | |
 | `PLUNK_SECRET_KEY` | Runtime | Secret | `plunk_sk_...` | `plunk_sk_live_...` | Plunk API secret key |
 | `PLUNK_API_URL` | Runtime | URL | `https://next-api.useplunk.com` | `https://next-api.useplunk.com` | Plunk REST API endpoint |
@@ -149,11 +149,11 @@ graph LR
 | `R2_ACCESS_KEY_ID` | Runtime | Secret | `your_key_id` | `r2_access_key_id` | Cloudflare R2 S3-compatible Access Key ID |
 | `R2_SECRET_ACCESS_KEY` | Runtime | Secret | `your_secret` | `r2_secret_access_key` | Cloudflare R2 Secret Access Key |
 | `R2_BUCKET_NAME` | Runtime | String | `portfolio-assets` | `portfolio-assets` | Cloudflare R2 Bucket Name |
-| `R2_PUBLIC_DOMAIN` | Runtime | URL | `https://assets.fi.amanillah.com` | `https://assets.fi.amanillah.com` | Public CDN domain connected to the bucket |
+| `R2_PUBLIC_DOMAIN` | Runtime | URL | `https://assets-fi.amanillah.com` | `https://assets-fi.amanillah.com` | Public CDN domain connected to the bucket |
 | **Google Calendar OAuth** | | | | | |
 | `GOOGLE_CLIENT_ID` | Runtime | String | `client_id.apps.googleusercontent.com` | `client_id.apps.googleusercontent.com` | Google Cloud OAuth 2.0 Client ID |
 | `GOOGLE_CLIENT_SECRET` | Runtime | Secret | `GOCSPX-secret` | `GOCSPX-secret` | Google Cloud OAuth 2.0 Client Secret |
-| `GOOGLE_REDIRECT_URI` | Runtime | URL | `http://localhost:3040/booking/v1/google/callback` | `https://api.fi.amanillah.com/booking/v1/google/callback` | Authorized Google OAuth Redirect URI |
+| `GOOGLE_REDIRECT_URI` | Runtime | URL | `http://localhost:3040/booking/v1/google/callback` | `https://api-fi.amanillah.com/booking/v1/google/callback` | Authorized Google OAuth Redirect URI |
 
 ---
 
@@ -239,7 +239,7 @@ When building container images individually (e.g. for Dokploy Applications or CI
 ```bash
 docker build -f Dockerfile.web \
   --build-arg PUBLIC_WEB_URL=https://fi.amanillah.com \
-  --build-arg PUBLIC_API_URL=https://api.fi.amanillah.com \
+  --build-arg PUBLIC_API_URL=https://api-fi.amanillah.com \
   --build-arg PUBLIC_TURNSTILE_SITE_KEY=0x4AAAAAAAYourKey \
   -t portfolio-web:latest .
 ```
@@ -247,7 +247,7 @@ docker build -f Dockerfile.web \
 #### B. Dashboard (`apps/dashboard` - Next.js 16 Standalone)
 ```bash
 docker build -f Dockerfile.dashboard \
-  --build-arg NEXT_PUBLIC_API_URL=https://api.fi.amanillah.com \
+  --build-arg NEXT_PUBLIC_API_URL=https://api-fi.amanillah.com \
   --build-arg NEXT_PUBLIC_SITE_URL=https://fi.amanillah.com \
   -t portfolio-dashboard:latest .
 ```
@@ -349,7 +349,10 @@ Once the database container is healthy:
 # 1. Run production migrations (safe, applies pending migrations without reset)
 docker compose -f docker-compose.prod.yml exec api bun --filter=@workspace/db db:migrate:prod
 
-# 2. (Optional) Seed the database with the initial administrator account
+# 2. Seed the production database with only the initial administrator account from env
+docker compose -f docker-compose.prod.yml exec api bun --filter=@workspace/db db:seed:prod
+
+# 3. (Optional for staging/dev) Seed mock demo data (blog posts, case studies, users)
 docker compose -f docker-compose.prod.yml exec api bun --filter=@workspace/db db:seed
 ```
 

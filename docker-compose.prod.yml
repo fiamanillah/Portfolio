@@ -92,7 +92,7 @@ services:
       dockerfile: Dockerfile.web
       args:
         PUBLIC_WEB_URL: ${PUBLIC_WEB_URL:-https://fi.amanillah.com}
-        PUBLIC_API_URL: ${PUBLIC_API_URL:-https://api.fi.amanillah.com}
+        PUBLIC_API_URL: ${PUBLIC_API_URL:-https://api-fi.amanillah.com}
         PUBLIC_TURNSTILE_SITE_KEY: ${PUBLIC_TURNSTILE_SITE_KEY:-}
     container_name: portfolio_web_prod
     restart: always
@@ -118,7 +118,7 @@ services:
       context: .
       dockerfile: Dockerfile.dashboard
       args:
-        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-https://api.fi.amanillah.com}
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-https://api-fi.amanillah.com}
         NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-https://fi.amanillah.com}
     container_name: portfolio_dashboard_prod
     restart: always

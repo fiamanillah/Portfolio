@@ -12,7 +12,7 @@ FROM oven/bun:1-alpine AS builder
 WORKDIR /app
 
 # Accept build arguments for Next.js frontend variables
-ARG NEXT_PUBLIC_API_URL=https://api.fi.amanillah.com
+ARG NEXT_PUBLIC_API_URL=https://api-fi.amanillah.com
 ARG NEXT_PUBLIC_SITE_URL=https://fi.amanillah.com
 
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL \

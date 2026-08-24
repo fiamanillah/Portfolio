@@ -328,14 +328,14 @@ describe("Flat White-Themed Email Templates & Templating System", () => {
         timezone: "UTC",
         googleMeetLink: "https://meet.google.com/xyz-uvwx-rst",
         bookingId: "booking_123",
-        dashboardUrl: "https://admin.fi.amanillah.com",
+        dashboardUrl: "https://admin-fi.amanillah.com",
       })
 
       expect(res.subject).toContain("Elena Rostova")
       expect(res.subject).toContain("Architecture Review")
       expect(res.html).toContain("Elena Rostova")
       expect(res.html).toContain("elena@example.com")
-      expect(res.html).toContain("https://admin.fi.amanillah.com/bookings")
+      expect(res.html).toContain("https://admin-fi.amanillah.com/bookings")
       expect(res.html).toContain("border-radius: 0")
     })
 
@@ -373,7 +373,7 @@ describe("Flat White-Themed Email Templates & Templating System", () => {
         reason: "Client had an urgent conflict.",
         cancelledBy: "guest",
         bookingId: "booking_123",
-        dashboardUrl: "https://admin.fi.amanillah.com",
+        dashboardUrl: "https://admin-fi.amanillah.com",
       })
 
       expect(res.subject).toContain("[Cancelled Booking]")
@@ -381,7 +381,7 @@ describe("Flat White-Themed Email Templates & Templating System", () => {
       expect(res.html).toContain("Alex Rivera")
       expect(res.html).toContain("alex@example.com")
       expect(res.html).toContain("Client had an urgent conflict.")
-      expect(res.html).toContain("https://admin.fi.amanillah.com/bookings")
+      expect(res.html).toContain("https://admin-fi.amanillah.com/bookings")
       expect(res.html).toContain("border-radius: 0")
       expect(res.html).not.toMatch(emojiRegex)
     })

@@ -128,7 +128,7 @@ export function getHostCancellationNotificationLiquidBody(): string {
     {% endif %}
 
     <div style="margin-top: 24px;">
-      <a href="{{ bookingsPageUrl | default: 'https://admin.fi.amanillah.com/bookings' }}" target="_blank" style="display: inline-block; background-color: #0f172a; color: #ffffff; text-decoration: none; font-size: 13px; font-weight: 600; padding: 10px 20px; border-radius: 0; border: 1px solid #0f172a;">
+      <a href="{{ bookingsPageUrl | default: 'https://admin-fi.amanillah.com/bookings' }}" target="_blank" style="display: inline-block; background-color: #0f172a; color: #ffffff; text-decoration: none; font-size: 13px; font-weight: 600; padding: 10px 20px; border-radius: 0; border: 1px solid #0f172a;">
         Open Admin Bookings Dashboard &rarr;
       </a>
     </div>
@@ -264,7 +264,7 @@ export function renderHostCancellationNotificationEmail(
   })
 
   const dashboardUrl =
-    options.dashboardUrl || "https://admin.fi.amanillah.com"
+    options.dashboardUrl || "https://admin-fi.amanillah.com"
   const bookingsPageUrl = `${dashboardUrl}/bookings`
   const emailSubject = `[Cancelled Booking] ${options.guestName} cancelled "${options.meetingType}" (${formattedStartTime})`
 
