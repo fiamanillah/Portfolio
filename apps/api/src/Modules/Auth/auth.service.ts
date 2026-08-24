@@ -3,6 +3,7 @@ import crypto from "crypto"
 import jwt from "jsonwebtoken"
 import { prisma, Role, OtpType, User } from "@workspace/db"
 import { AppLogger } from "@workspace/logger"
+import { CacheManager, getCacheManager, buildCacheKey } from "@workspace/cache"
 import { config } from "@/core/config"
 import {
   AuthenticationError,
@@ -23,6 +24,16 @@ import {
   ResetPasswordDTO,
   ResendOtpDTO,
 } from "./AuthDTO"
+
+export interface OtpRecord {
+  email: string
+  code: string
+  type: string
+  payload?: any
+  userId?: string
+  attempts: number
+  createdAt: number
+}
 
 export interface SanitizedUser {
   id: string
@@ -58,7 +69,26 @@ export interface AuthTokens {
 export class AuthServices {
   private logger = new AppLogger("AuthServices")
 
-  constructor(private readonly db: typeof prisma = prisma) {}
+  constructor(
+    private readonly db: typeof prisma = prisma,
+    private readonly cache: CacheManager = getCacheManager()
+  ) {}
+
+  /**
+   * Generates a cache key for OTP records stored in Redis.
+   */
+  private getOtpCacheKey(type: string, email: string): string {
+    return buildCacheKey("otp", type, email.toLowerCase().trim())
+  }
+
+  /**
+   * Helper to retrieve a pending OTP record (used for testing and status checks).
+   */
+  public async getPendingOtp(type: string, email: string): Promise<OtpRecord | null> {
+    const key = this.getOtpCacheKey(type, email)
+    return this.cache.get<OtpRecord>(key)
+  }
+
 
   /**
    * Generates a secure random 6-digit numeric string for OTP verification.
@@ -236,32 +266,30 @@ export class AuthServices {
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000) // 10 minutes
 
     // Store pending registration payload
-    const draftPayload = JSON.stringify({
+    const draftPayload = {
       name,
       username: cleanUsername,
       passwordHash,
       headline: headline || "Software Engineer",
       avatar: avatar || null,
       subscribedToNewsletter: subscribedToNewsletter ?? true,
-    })
+    }
 
-    // Invalidate prior registration OTPs for this email
-    await this.db.otpVerification.deleteMany({
-      where: {
-        email,
-        type: OtpType.REGISTER_EMAIL_VERIFY,
-      },
-    })
-
-    await this.db.otpVerification.create({
-      data: {
+    // Store in Redis with 10-minute TTL (automatically self-cleans, no DB garbage)
+    const otpKey = this.getOtpCacheKey(OtpType.REGISTER_EMAIL_VERIFY, email)
+    await this.cache.set<OtpRecord>(
+      otpKey,
+      {
         email,
         code: otpCode,
         type: OtpType.REGISTER_EMAIL_VERIFY,
         payload: draftPayload,
-        expiresAt,
+        attempts: 0,
+        createdAt: Date.now(),
       },
-    })
+      { ttlSeconds: 10 * 60 }
+    )
+
 
     // Step 6: Dispatch Plunk Email
     const rendered = renderOtpEmail({
@@ -307,17 +335,8 @@ export class AuthServices {
     userAgent?: string
   ) {
     const { email, otpCode } = dto
-    this.logger.info("Verifying registration OTP", { email })
-
-    const record = await this.db.otpVerification.findFirst({
-      where: {
-        email,
-        type: OtpType.REGISTER_EMAIL_VERIFY,
-        used: false,
-        expiresAt: { gt: new Date() },
-      },
-      orderBy: { createdAt: "desc" },
-    })
+    const otpKey = this.getOtpCacheKey(OtpType.REGISTER_EMAIL_VERIFY, email)
+    const record = await this.cache.get<OtpRecord>(otpKey)
 
     if (!record) {
       throw new BadRequestError(
@@ -326,31 +345,31 @@ export class AuthServices {
     }
 
     if (record.code !== otpCode) {
-      const updatedAttempts = record.attempts + 1
-      await this.db.otpVerification.update({
-        where: { id: record.id },
-        data: {
-          attempts: updatedAttempts,
-          used: updatedAttempts >= 5, // Lock after 5 wrong attempts
-        },
-      })
-
+      const updatedAttempts = (record.attempts || 0) + 1
       if (updatedAttempts >= 5) {
+        await this.cache.del(otpKey)
         throw new BadRequestError(
           "Too many incorrect attempts. This verification code has been revoked. Please request a new code."
         )
       }
+
+      const remainingTtl = await this.cache.ttl(otpKey)
+      await this.cache.set<OtpRecord>(
+        otpKey,
+        {
+          ...record,
+          attempts: updatedAttempts,
+        },
+        { ttlSeconds: remainingTtl > 0 ? remainingTtl : 600 }
+      )
 
       throw new BadRequestError(
         "Incorrect verification code. Please check your email and try again."
       )
     }
 
-    // Mark OTP as used
-    await this.db.otpVerification.update({
-      where: { id: record.id },
-      data: { used: true },
-    })
+    // Invalidate OTP in Redis immediately upon successful verification
+    await this.cache.del(otpKey)
 
     if (!record.payload) {
       throw new BadRequestError(
@@ -358,7 +377,11 @@ export class AuthServices {
       )
     }
 
-    const payload = JSON.parse(record.payload)
+    const payload =
+      typeof record.payload === "string"
+        ? JSON.parse(record.payload)
+        : record.payload
+
 
     // Upsert or create user record
     const user = await this.db.user.upsert({
@@ -595,23 +618,20 @@ export class AuthServices {
     const otpCode = this.generateOtpCode()
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000) // 10 mins
 
-    // Clean up old reset OTPs
-    await this.db.otpVerification.deleteMany({
-      where: {
-        email,
-        type: OtpType.PASSWORD_RESET,
-      },
-    })
-
-    await this.db.otpVerification.create({
-      data: {
+    const otpKey = this.getOtpCacheKey(OtpType.PASSWORD_RESET, email)
+    await this.cache.set<OtpRecord>(
+      otpKey,
+      {
         email,
         code: otpCode,
         type: OtpType.PASSWORD_RESET,
         userId: user.id,
-        expiresAt,
+        attempts: 0,
+        createdAt: Date.now(),
       },
-    })
+      { ttlSeconds: 10 * 60 }
+    )
+
 
     const rendered = renderOtpEmail({
       email,
@@ -649,23 +669,28 @@ export class AuthServices {
    */
   public async verifyResetOtp(dto: VerifyResetOtpDTO) {
     const { email, otpCode } = dto
-    this.logger.info("Verifying password reset OTP", { email })
-
-    const record = await this.db.otpVerification.findFirst({
-      where: {
-        email,
-        type: OtpType.PASSWORD_RESET,
-        used: false,
-        expiresAt: { gt: new Date() },
-      },
-      orderBy: { createdAt: "desc" },
-    })
+    const otpKey = this.getOtpCacheKey(OtpType.PASSWORD_RESET, email)
+    const record = await this.cache.get<OtpRecord>(otpKey)
 
     if (!record || record.code !== otpCode) {
+      if (record) {
+        const updatedAttempts = (record.attempts || 0) + 1
+        if (updatedAttempts >= 5) {
+          await this.cache.del(otpKey)
+        } else {
+          const remainingTtl = await this.cache.ttl(otpKey)
+          await this.cache.set<OtpRecord>(
+            otpKey,
+            { ...record, attempts: updatedAttempts },
+            { ttlSeconds: remainingTtl > 0 ? remainingTtl : 600 }
+          )
+        }
+      }
       throw new BadRequestError(
         "Invalid or expired verification code. Please request a new one."
       )
     }
+
 
     return {
       success: true,
@@ -687,15 +712,8 @@ export class AuthServices {
     const { email, otpCode, newPassword } = dto
     this.logger.info("Executing password reset", { email })
 
-    const record = await this.db.otpVerification.findFirst({
-      where: {
-        email,
-        type: OtpType.PASSWORD_RESET,
-        used: false,
-        expiresAt: { gt: new Date() },
-      },
-      orderBy: { createdAt: "desc" },
-    })
+    const otpKey = this.getOtpCacheKey(OtpType.PASSWORD_RESET, email)
+    const record = await this.cache.get<OtpRecord>(otpKey)
 
     if (!record || record.code !== otpCode) {
       throw new BadRequestError(
@@ -711,11 +729,9 @@ export class AuthServices {
       throw new NotFoundError("Account not found.")
     }
 
-    // Mark OTP as used
-    await this.db.otpVerification.update({
-      where: { id: record.id },
-      data: { used: true },
-    })
+    // Invalidate OTP in Redis
+    await this.cache.del(otpKey)
+
 
     // Hash new password
     const newPasswordHash = await Bun.password.hash(newPassword, {
@@ -756,17 +772,12 @@ export class AuthServices {
     const { email, type = "REGISTER_EMAIL_VERIFY" } = dto
     this.logger.info("Resending OTP", { email, type })
 
-    const lastOtp = await this.db.otpVerification.findFirst({
-      where: {
-        email,
-        type: type as OtpType,
-      },
-      orderBy: { createdAt: "desc" },
-    })
+    const otpKey = this.getOtpCacheKey(type, email)
+    const lastOtp = await this.cache.get<OtpRecord>(otpKey)
 
     // 45 seconds rate limit cooldown
-    if (lastOtp) {
-      const timeSinceLast = Date.now() - lastOtp.createdAt.getTime()
+    if (lastOtp && lastOtp.createdAt) {
+      const timeSinceLast = Date.now() - lastOtp.createdAt
       if (timeSinceLast < 45 * 1000) {
         const remaining = Math.ceil((45 * 1000 - timeSinceLast) / 1000)
         throw new BadRequestError(
@@ -776,21 +787,25 @@ export class AuthServices {
     }
 
     const newOtp = this.generateOtpCode()
-    const expiresAt = new Date(Date.now() + 10 * 60 * 1000)
 
     // If registration, preserve draft payload
     const draftPayload =
       type === "REGISTER_EMAIL_VERIFY" ? lastOtp?.payload : null
 
-    await this.db.otpVerification.create({
-      data: {
+    await this.cache.set<OtpRecord>(
+      otpKey,
+      {
         email,
         code: newOtp,
-        type: type as OtpType,
+        type,
         payload: draftPayload,
-        expiresAt,
+        userId: lastOtp?.userId,
+        attempts: 0,
+        createdAt: Date.now(),
       },
-    })
+      { ttlSeconds: 10 * 60 }
+    )
+
 
     const rendered = renderOtpEmail({
       email,

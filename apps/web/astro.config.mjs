@@ -2,8 +2,9 @@ import tailwindcss from "@tailwindcss/vite"
 import { defineConfig } from "astro/config"
 import react from "@astrojs/react"
 import icon from "astro-icon"
+import { webEnv } from "@workspace/env/web"
 
-const siteUrl = (process.env.PUBLIC_WEB_URL || "https://fi.amanillah.com").replace(/\/$/, "")
+const siteUrl = webEnv.PUBLIC_WEB_URL.replace(/\/$/, "")
 
 // https://astro.build/config
 export default defineConfig({
@@ -26,7 +27,7 @@ export default defineConfig({
       include: ["react", "react-dom", "react/jsx-runtime"],
     },
     ssr: {
-      noExternal: ["@workspace/ui", "@workspace/shared"],
+      noExternal: ["@workspace/ui", "@workspace/shared", "@workspace/env"],
     },
   },
   integrations: [react(), icon()],

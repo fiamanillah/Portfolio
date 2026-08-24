@@ -10,8 +10,29 @@ import {
   HelpCircle,
   ChevronDown,
   ChevronUp,
+  Bold,
+  Italic,
+  Strikethrough,
+  Heading2,
+  Heading3,
+  List,
+  ListOrdered,
+  Link2,
+  Quote,
+  Minus,
+  Box,
+  Layers,
+  MousePointerClick,
+  Tag,
+  Columns,
 } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@workspace/ui/components/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@workspace/ui/components/card";
 import { Input } from "@workspace/ui/components/input";
 import { Label } from "@workspace/ui/components/label";
 import { Textarea } from "@workspace/ui/components/textarea";
@@ -60,22 +81,30 @@ export function CampaignComposer({
 
   const textareaRef = React.useRef<HTMLTextAreaElement>(null);
 
-  const insertVariable = (variable: string) => {
+  /**
+   * Inserts text or wraps selected text with prefix/suffix
+   */
+  const wrapOrInsert = (prefix: string, suffix: string = "", defaultText: string = "") => {
     if (!textareaRef.current) return;
     const start = textareaRef.current.selectionStart;
     const end = textareaRef.current.selectionEnd;
+    const selected = content.substring(start, end);
+    const replacement = selected ? `${prefix}${selected}${suffix}` : `${prefix}${defaultText}${suffix}`;
     const newContent =
-      content.substring(0, start) + variable + content.substring(end);
+      content.substring(0, start) + replacement + content.substring(end);
     onChangeContent(newContent);
+
     setTimeout(() => {
       if (textareaRef.current) {
         textareaRef.current.focus();
-        textareaRef.current.setSelectionRange(
-          start + variable.length,
-          start + variable.length
-        );
+        const cursor = start + prefix.length + (selected ? selected.length : defaultText.length);
+        textareaRef.current.setSelectionRange(cursor, cursor);
       }
     }, 50);
+  };
+
+  const insertVariable = (variable: string) => {
+    wrapOrInsert(variable);
   };
 
   const insertSnippet = (snippet: string) => {
@@ -85,6 +114,11 @@ export function CampaignComposer({
     const newContent =
       content.substring(0, start) + snippet + content.substring(end);
     onChangeContent(newContent);
+    setTimeout(() => {
+      if (textareaRef.current) {
+        textareaRef.current.focus();
+      }
+    }, 50);
   };
 
   const handleApplyPreset = (tpl: PresetTemplate) => {
@@ -97,7 +131,7 @@ export function CampaignComposer({
   const previewLen = previewText.trim().length;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       {/* Campaign Name & Subject Card */}
       <Card className="border-border/80 bg-card/60 shadow-sm">
         <CardHeader className="flex flex-row items-center justify-between pb-3">
@@ -106,7 +140,7 @@ export function CampaignComposer({
               Campaign Header & Subject Line
             </CardTitle>
             <CardDescription className="text-xs">
-              Craft high-impact subject and preview text to maximize open rates.
+              Craft compelling subject and preview snippets to maximize deliverability and open rates.
             </CardDescription>
           </div>
 
@@ -115,7 +149,7 @@ export function CampaignComposer({
             variant="outline"
             size="sm"
             onClick={() => setIsTemplateModalOpen(true)}
-            className="h-8 gap-1.5 border-primary/30 text-xs text-primary hover:bg-primary/10"
+            className="h-7 gap-1.5 border-primary/30 text-xs text-primary hover:bg-primary/10"
           >
             <Zap className="size-3.5" />
             Starter Templates
@@ -137,7 +171,7 @@ export function CampaignComposer({
               className="h-9 text-xs"
             />
             <p className="text-[11px] text-muted-foreground">
-              Used for your internal dashboard organization and analytics.
+              Internal identifier for dashboard organization and analytics.
             </p>
           </div>
 
@@ -150,7 +184,9 @@ export function CampaignComposer({
               <span
                 className={`font-mono text-[11px] ${
                   subjectLen >= 20 && subjectLen <= 70
-                    ? "text-emerald-500"
+                    ? "text-emerald-500 font-semibold"
+                    : subjectLen > 70
+                    ? "text-amber-500"
                     : "text-muted-foreground"
                 }`}
               >
@@ -176,23 +212,24 @@ export function CampaignComposer({
               <span
                 className={`font-mono text-[11px] ${
                   previewLen >= 40 && previewLen <= 100
-                    ? "text-emerald-500"
+                    ? "text-emerald-500 font-semibold"
+                    : previewLen > 100
+                    ? "text-amber-500"
                     : "text-muted-foreground"
                 }`}
               >
-                {previewLen} / 100 chars
+                {previewLen} / 100 chars (ideal: 40-100)
               </span>
             </div>
             <Input
               id="camp-preview"
-              placeholder="e.g. An overview of high-throughput distributed architectures and zero-downtime migrations."
+              placeholder="e.g. An overview of high-throughput distributed architectures, zero-downtime migrations, and event patterns."
               value={previewText}
               onChange={(e) => onChangePreviewText(e.target.value)}
               className="h-9 text-xs"
             />
             <p className="text-[11px] text-muted-foreground">
-              Displayed beside or below the subject line in modern mobile and
-              desktop email clients.
+              Displayed in mobile and desktop inbox notification snippets.
             </p>
           </div>
 
@@ -268,8 +305,7 @@ export function CampaignComposer({
                 Newsletter Content Body
               </CardTitle>
               <CardDescription className="text-xs">
-                Compose with HTML or rich markdown elements. Fully responsive
-                across inboxes.
+                Supports rich HTML and Markdown. Updates the live preview in real time while typing.
               </CardDescription>
             </div>
 
@@ -282,12 +318,13 @@ export function CampaignComposer({
                 type="button"
                 variant="outline"
                 size="sm"
-                className="h-6 font-mono text-[10px] px-2"
+                className="h-6 font-mono text-[10px] px-2 hover:bg-primary/10"
                 onClick={() =>
                   insertVariable(
                     "{{ name | default: firstName | default: 'there' }}"
                   )
                 }
+                title="Inserts personalized subscriber name with fallback"
               >
                 {"{{ name }}"}
               </Button>
@@ -295,8 +332,19 @@ export function CampaignComposer({
                 type="button"
                 variant="outline"
                 size="sm"
-                className="h-6 font-mono text-[10px] px-2"
+                className="h-6 font-mono text-[10px] px-2 hover:bg-primary/10"
+                onClick={() => insertVariable("{{ firstName }}")}
+                title="Inserts first name"
+              >
+                {"{{ firstName }}"}
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="h-6 font-mono text-[10px] px-2 hover:bg-primary/10"
                 onClick={() => insertVariable("{{ email }}")}
+                title="Inserts subscriber email address"
               >
                 {"{{ email }}"}
               </Button>
@@ -304,8 +352,9 @@ export function CampaignComposer({
                 type="button"
                 variant="outline"
                 size="sm"
-                className="h-6 font-mono text-[10px] px-2"
+                className="h-6 font-mono text-[10px] px-2 hover:bg-primary/10"
                 onClick={() => insertVariable("{{ unsubscribeUrl }}")}
+                title="Inserts signed 1-click unsubscribe URL"
               >
                 {"{{ unsubscribeUrl }}"}
               </Button>
@@ -314,77 +363,213 @@ export function CampaignComposer({
         </CardHeader>
 
         <CardContent className="space-y-3">
-          {/* Quick Component Snippet Toolbar */}
-          <div className="flex flex-wrap items-center gap-1.5 border-b border-border/50 pb-2">
-            <span className="text-[11px] text-muted-foreground mr-1">
-              Layout Blocks:
+          {/* Rich Markdown & Formatting Toolbar */}
+          <div className="flex flex-wrap items-center gap-1 border-b border-border/50 pb-2">
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="size-7 rounded"
+              onClick={() => wrapOrInsert("**", "**", "bold text")}
+              title="Bold (**text**)"
+            >
+              <Bold className="size-3.5" />
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="size-7 rounded"
+              onClick={() => wrapOrInsert("*", "*", "italic text")}
+              title="Italic (*text*)"
+            >
+              <Italic className="size-3.5" />
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="size-7 rounded"
+              onClick={() => wrapOrInsert("~~", "~~", "strikethrough text")}
+              title="Strikethrough (~~text~~)"
+            >
+              <Strikethrough className="size-3.5" />
+            </Button>
+
+            <div className="h-4 w-px bg-border/60 mx-1" />
+
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="size-7 rounded"
+              onClick={() => wrapOrInsert("## ", "\n", "Heading 2")}
+              title="Heading 2"
+            >
+              <Heading2 className="size-3.5" />
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="size-7 rounded"
+              onClick={() => wrapOrInsert("### ", "\n", "Heading 3")}
+              title="Heading 3"
+            >
+              <Heading3 className="size-3.5" />
+            </Button>
+
+            <div className="h-4 w-px bg-border/60 mx-1" />
+
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="size-7 rounded"
+              onClick={() => wrapOrInsert("- ", "\n", "List item")}
+              title="Bullet List"
+            >
+              <List className="size-3.5" />
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="size-7 rounded"
+              onClick={() => wrapOrInsert("1. ", "\n", "Numbered item")}
+              title="Numbered List"
+            >
+              <ListOrdered className="size-3.5" />
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="size-7 rounded"
+              onClick={() => wrapOrInsert("> ", "\n", "Quoted text")}
+              title="Blockquote"
+            >
+              <Quote className="size-3.5" />
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="size-7 rounded"
+              onClick={() => wrapOrInsert("[", "](https://fi.amanillah.com)", "Link Text")}
+              title="Link"
+            >
+              <Link2 className="size-3.5" />
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="size-7 rounded"
+              onClick={() => wrapOrInsert("`", "`", "code")}
+              title="Inline Code"
+            >
+              <Code2 className="size-3.5" />
+            </Button>
+
+            <div className="h-4 w-px bg-border/60 mx-1" />
+
+            {/* Layout Block Snippet Quick Dropdowns / Buttons */}
+            <span className="text-[11px] text-muted-foreground mr-0.5">
+              Blocks:
             </span>
 
             <Button
               type="button"
               variant="ghost"
               size="sm"
-              className="h-6 text-[11px] px-2"
+              className="h-7 text-[11px] px-2 gap-1"
               onClick={() =>
-                insertSnippet(`<!-- Highlight Card -->
-<div style="margin: 20px 0; background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 18px 20px;">
-  <h4 style="margin: 0 0 6px 0; font-size: 15px; font-weight: 700; color: #0f172a;">Highlight Title</h4>
-  <p style="margin: 0; font-size: 13px; color: #475569; line-height: 1.6;">Highlight summary text goes here.</p>
+                insertSnippet(`\n<!-- Featured Highlight Card -->
+<div style="margin: 24px 0; background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 0; padding: 20px 22px;">
+  <span style="font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 11px; font-weight: 600; color: #475569; text-transform: uppercase; letter-spacing: 0.04em; background-color: #f1f5f9; border: 1px solid #e2e8f0; padding: 2px 6px; border-radius: 0; display: inline-block; margin-bottom: 12px;">
+    Architecture Deep-Dive
+  </span>
+  <h3 style="margin: 0 0 8px 0; font-size: 16px; font-weight: 700; color: #0f172a; line-height: 1.4;">
+    Highlight Title Goes Here
+  </h3>
+  <p style="margin: 0 0 16px 0; font-size: 13px; color: #475569; line-height: 1.6;">
+    An overview of technical considerations, design decisions, and benchmarks.
+  </p>
+  <div style="text-align: left;">
+    <a href="https://fi.amanillah.com/blog" style="display: inline-block; background-color: #0f172a; color: #ffffff; font-size: 13px; font-weight: 600; padding: 10px 18px; border-radius: 0; border: 1px solid #0f172a; text-decoration: none;">
+      Read Article &rarr;
+    </a>
+  </div>
 </div>\n`)
               }
+              title="Insert Styled Highlight Card"
             >
-              + Highlight Card
+              <Box className="size-3 text-primary" />
+              <span>Card</span>
             </Button>
 
             <Button
               type="button"
               variant="ghost"
               size="sm"
-              className="h-6 text-[11px] px-2"
+              className="h-7 text-[11px] px-2 gap-1"
               onClick={() =>
-                insertSnippet(`<a href="https://fi.amanillah.com" style="display: inline-block; background-color: #0f172a; color: #ffffff; font-size: 13px; font-weight: 600; padding: 10px 18px; border: 1px solid #0f172a; text-decoration: none;">
-  Button Link &rarr;
-</a>\n`)
+                insertSnippet(`\n<!-- CTA Button -->
+<div style="margin: 20px 0; text-align: left;">
+  <a href="https://fi.amanillah.com" style="display: inline-block; background-color: #0f172a; color: #ffffff; font-size: 13px; font-weight: 600; padding: 10px 20px; border-radius: 0; border: 1px solid #0f172a; text-decoration: none;">
+    Explore Platform &rarr;
+  </a>
+</div>\n`)
               }
+              title="Insert CTA Button"
             >
-              + CTA Button
+              <MousePointerClick className="size-3 text-primary" />
+              <span>CTA</span>
             </Button>
 
             <Button
               type="button"
               variant="ghost"
               size="sm"
-              className="h-6 text-[11px] px-2"
+              className="h-7 text-[11px] px-2 gap-1"
               onClick={() =>
-                insertSnippet(`<span style="font-family: ui-monospace, monospace; font-size: 11px; font-weight: 600; color: #475569; background-color: #f1f5f9; border: 1px solid #e2e8f0; padding: 2px 6px; text-transform: uppercase;">
-  TAG LABEL
-</span>\n`)
+                insertSnippet(`\n<span style="font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 11px; font-weight: 600; color: #475569; background-color: #f1f5f9; border: 1px solid #e2e8f0; padding: 2px 7px; border-radius: 0; display: inline-block; text-transform: uppercase; letter-spacing: 0.05em;">TAG LABEL</span>\n`)
               }
+              title="Insert Monospace Badge"
             >
-              + Monospace Badge
+              <Tag className="size-3 text-primary" />
+              <span>Badge</span>
             </Button>
 
             <Button
               type="button"
               variant="ghost"
               size="sm"
-              className="h-6 text-[11px] px-2"
+              className="h-7 text-[11px] px-2 gap-1"
               onClick={() =>
-                insertSnippet(`<hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 24px 0;" />\n`)
+                insertSnippet(`\n<hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 24px 0;" />\n`)
               }
+              title="Insert Divider"
             >
-              + Divider
+              <Minus className="size-3" />
+              <span>Divider</span>
             </Button>
           </div>
 
           <Textarea
             ref={textareaRef}
             rows={18}
-            placeholder="Write your email markup or text here..."
+            placeholder="Write your email content in HTML or Markdown..."
             value={content}
             onChange={(e) => onChangeContent(e.target.value)}
-            className="font-mono text-xs leading-relaxed"
+            className="font-mono text-xs leading-relaxed resize-y min-h-[360px]"
           />
+
+          <div className="flex items-center justify-between text-[11px] text-muted-foreground">
+            <span>Live Sync Active &bull; Format: HTML / Markdown / Liquid</span>
+            <span>{content.length} characters</span>
+          </div>
         </CardContent>
       </Card>
 

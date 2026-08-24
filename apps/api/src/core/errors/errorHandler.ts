@@ -5,6 +5,7 @@ import {
   PayloadTooLargeError,
   ValidationError,
 } from "./AppError"
+import { config } from "@/core/config"
 import { AppLogger } from "@workspace/logger"
 import { HTTPStatusCode } from "@/types/HTTPStatusCode"
 import { errorMapperRegistry } from "./ErrorMapperRegistry"
@@ -40,9 +41,7 @@ export function errorHandler() {
         timestamp: new Date().toISOString(),
         requestId: req.id || "unknown",
         ...(appError.details ? { details: appError.details } : {}),
-        ...(process.env.NODE_ENV === "development"
-          ? { stack: appError.stack }
-          : {}),
+        ...(config.server.isDevelopment ? { stack: appError.stack } : {}),
       },
     }
 

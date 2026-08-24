@@ -56,18 +56,16 @@ describe("Authentication & RBAC System Integration Tests", () => {
     expect(res.success).toBe(true)
     expect(res.email).toBe(testEmail)
 
-    const otpRecord = await prisma.otpVerification.findFirst({
-      where: {
-        email: testEmail,
-        type: OtpType.REGISTER_EMAIL_VERIFY,
-        used: false,
-      },
-    })
+    const otpRecord = await authService.getPendingOtp(
+      OtpType.REGISTER_EMAIL_VERIFY,
+      testEmail
+    )
 
     expect(otpRecord).not.toBeNull()
     expect(otpRecord?.code).toHaveLength(6)
     expect(otpRecord?.payload).not.toBeNull()
   })
+
 
   it("2. should fail registration verification with wrong OTP code", async () => {
     expect(
@@ -79,14 +77,12 @@ describe("Authentication & RBAC System Integration Tests", () => {
   })
 
   it("3. should verify registration OTP and create verified user in DB", async () => {
-    const otpRecord = await prisma.otpVerification.findFirst({
-      where: {
-        email: testEmail,
-        type: OtpType.REGISTER_EMAIL_VERIFY,
-        used: false,
-      },
-    })
+    const otpRecord = await authService.getPendingOtp(
+      OtpType.REGISTER_EMAIL_VERIFY,
+      testEmail
+    )
     expect(otpRecord).not.toBeNull()
+
 
     const res = await authService.verifyRegisterOtp({
       email: testEmail,
@@ -190,11 +186,12 @@ describe("Authentication & RBAC System Integration Tests", () => {
     })
     expect(forgotRes.success).toBe(true)
 
-    const resetOtp = await prisma.otpVerification.findFirst({
-      where: { email: testEmail, type: OtpType.PASSWORD_RESET, used: false },
-      orderBy: { createdAt: "desc" },
-    })
+    const resetOtp = await authService.getPendingOtp(
+      OtpType.PASSWORD_RESET,
+      testEmail
+    )
     expect(resetOtp).not.toBeNull()
+
 
     const verifyRes = await authService.verifyResetOtp({
       email: testEmail,

@@ -2,9 +2,9 @@
 import { IgnitorApp } from "./core/IgnitorApp"
 import { AppLogger } from "@workspace/logger"
 import { config } from "./core/config"
-import { startCleanupScheduler } from "./utils/dbCleanupScheduler"
 
 // Global BigInt JSON serialization support
+
 ;(BigInt.prototype as any).toJSON = function () {
   return Number(this)
 }
@@ -12,6 +12,7 @@ import { startCleanupScheduler } from "./utils/dbCleanupScheduler"
 // Providers (Infrastructure)
 import { PrismaProvider } from "./providers/PrismaProvider"
 import { R2StorageProvider } from "./providers/R2StorageProvider"
+import { CacheProvider } from "./providers/CacheProvider"
 import { prisma } from "@workspace/db"
 import { AuthModule } from "./Modules/Auth/AuthModule"
 import { UserModule } from "./Modules/User/UserModule"
@@ -43,6 +44,8 @@ async function bootstrap() {
     logger.info("⚙ Registering infrastructure...")
     app.getContext().registerProvider("prisma", new PrismaProvider(prisma))
     app.getContext().registerProvider("storage", new R2StorageProvider())
+    app.getContext().registerProvider("cache", new CacheProvider())
+
 
     // 3. Register Application Modules
     logger.info("⚙ Registering modules...")
@@ -66,10 +69,8 @@ async function bootstrap() {
     await app.spark(config.server.port)
 
     logger.info("✷ Ignitor sparked successfully")
-
-    // 5. Start background cleanup scheduler for expired OTPs and refresh tokens
-    startCleanupScheduler()
   } catch (error) {
+
     // Centralized Bootstrap Error Handling
     logger.error("⬤ Failed to initialize application:", {
       error: error instanceof Error ? error : new Error(String(error)),

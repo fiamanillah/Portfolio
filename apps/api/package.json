@@ -27,9 +27,12 @@
   "dependencies": {
     "@prisma/adapter-pg": "^7.5.0",
     "@prisma/client": "^7.2.0",
+    "@workspace/cache": "workspace:*",
     "@workspace/db": "workspace:*",
+    "@workspace/env": "workspace:*",
     "@workspace/logger": "workspace:*",
     "@workspace/shared": "workspace:*",
+
     "axios": "^1.12.2",
     "bcrypt": "^6.0.0",
     "chalk": "^5.6.0",

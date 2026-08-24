@@ -1,6 +1,7 @@
 // src/Modules/Booking/booking.controller.ts
 import { Request, Response, NextFunction } from "express"
 import { BaseController } from "@/core/BaseController"
+import { config } from "@/core/config"
 import { BookingService } from "./booking.service"
 import { HTTPStatusCode } from "@/types/HTTPStatusCode"
 import {
@@ -347,18 +348,12 @@ export class BookingController extends BaseController {
       await googleService.handleCallback(code, state)
 
       // Redirect back to Admin Dashboard bookings page with success flag
-      const dashboardUrl =
-        process.env.PUBLIC_DASHBOARD_URL ||
-        process.env.ALLOWED_ORIGINS?.split(",")[0] ||
-        "http://localhost:3001"
+      const dashboardUrl = config.site.dashboardUrl
 
       res.redirect(`${dashboardUrl}/bookings?google_sync=success`)
     } catch (error) {
       this.logger.error("Error processing Google OAuth callback", { error })
-      const dashboardUrl =
-        process.env.PUBLIC_DASHBOARD_URL ||
-        process.env.ALLOWED_ORIGINS?.split(",")[0] ||
-        "http://localhost:3001"
+      const dashboardUrl = config.site.dashboardUrl
       res.redirect(`${dashboardUrl}/bookings?google_sync=error`)
     }
   }

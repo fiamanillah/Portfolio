@@ -38,8 +38,7 @@ export class CaseStudyService {
       typeof allowed === "string"
         ? allowed.split(",")[0]?.trim()
         : "http://localhost:4321";
-    const webUrl =
-      process.env.PUBLIC_WEB_URL || origin || "http://localhost:4321";
+    const webUrl = config.site.webUrl || origin || "http://localhost:4321";
 
     this.logger.info(
       `✔ [Sitemap / SEO Sync] Auto-updating sitemap for case study: '${slug}' (action: ${action})`

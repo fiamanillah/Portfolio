@@ -14,6 +14,18 @@ services:
         networks:
             - portfolio_network
 
+    redis:
+        image: redis:7-alpine
+        container_name: portfolio_redis
+        restart: unless-stopped
+        command: redis-server --appendonly yes
+        ports:
+            - '6380:6379'
+        volumes:
+            - portfolio_redis_data:/data
+        networks:
+            - portfolio_network
+
 networks:
     portfolio_network:
         driver: bridge
@@ -23,3 +35,7 @@ volumes:
     portfolio_postgres_data:
         driver: local
         name: portfolio_postgres_data
+    portfolio_redis_data:
+        driver: local
+        name: portfolio_redis_data
+

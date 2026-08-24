@@ -1,6 +1,7 @@
 // src/Modules/Auth/auth.controller.ts
 import { Request, Response } from "express"
 import { BaseController } from "@/core/BaseController"
+import { config } from "@/core/config"
 import { AppLogger } from "@workspace/logger"
 import { AuthServices } from "./auth.service"
 import {
@@ -29,7 +30,7 @@ export class AuthController extends BaseController {
     if (!refreshToken) return
     res.cookie("refresh_token", refreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: config.server.isProduction,
       sameSite: "lax",
       maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
       path: "/",

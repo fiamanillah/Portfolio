@@ -458,7 +458,7 @@ export class BookingService {
       googleMeetLink: booking.googleMeetLink,
       guestNotes: booking.guestNotes,
       bookingId: booking.id,
-      dashboardUrl: process.env.PUBLIC_DASHBOARD_URL || "http://localhost:3001",
+      dashboardUrl: config.site.dashboardUrl,
     })
 
     // 3. Generate RFC 5545 iCalendar (.ics) Payload for Native Mail RSVP Banners
@@ -599,7 +599,7 @@ export class BookingService {
           googleMeetLink: booking.googleMeetLink || "",
           guestNotes: booking.guestNotes || "",
           bookingId: booking.id,
-          dashboardUrl: process.env.PUBLIC_DASHBOARD_URL || "http://localhost:3001",
+          dashboardUrl: config.site.dashboardUrl,
         },
       }
 
@@ -784,7 +784,7 @@ export class BookingService {
       reason,
       cancelledBy,
       bookingId: booking.id,
-      dashboardUrl: process.env.PUBLIC_DASHBOARD_URL || "https://admin.fi.amanillah.com",
+      dashboardUrl: config.site.dashboardUrl,
     })
 
     // Generate RFC 5545 Cancellation .ics payload
@@ -897,7 +897,7 @@ export class BookingService {
           timezone: booking.timezone,
           reason: reason || "",
           bookingId: booking.id,
-          dashboardUrl: process.env.PUBLIC_DASHBOARD_URL || "https://admin.fi.amanillah.com",
+          dashboardUrl: config.site.dashboardUrl,
         },
       }
 
