@@ -4,24 +4,23 @@ interface Props {
   class?: string
 }
 
-const {
-  label = "[ SEC_01 // CONTEXT_&_PROBLEM ]",
-  class: className = "",
-} = Astro.props as Props
+const { label = "[ SEC_01 // CONTEXT_&_PROBLEM ]", class: className = "" } =
+  Astro.props as Props
 ---
 
 <div class={`relative my-8 flex items-center justify-center ${className}`}>
   <!-- Background Accent Line -->
-  <div
-    class="absolute inset-0 flex items-center"
-    aria-hidden="true"
-  >
+  <div class="absolute inset-0 flex items-center" aria-hidden="true">
     <div class="w-full border-t border-border/80"></div>
   </div>
 
   <!-- Center Pill Badge -->
-  <div class="relative z-10 flex items-center gap-2 border border-primary/40 bg-background px-4 py-1 font-mono text-xs font-semibold tracking-wider text-primary uppercase shadow-[0_0_12px_oklch(var(--primary)/15%)] backdrop-blur-md">
-    <span class="h-1.5 w-1.5 animate-pulse rounded-full bg-primary shadow-[0_0_6px_oklch(var(--primary))]"></span>
+  <div
+    class="relative z-10 flex items-center gap-2 border border-primary/40 bg-background px-4 py-1 font-mono text-xs font-semibold tracking-wider text-primary uppercase shadow-[0_0_12px_oklch(var(--primary)/15%)] backdrop-blur-md"
+  >
+    <span
+      class="h-1.5 w-1.5 animate-pulse rounded-full bg-primary shadow-[0_0_6px_oklch(var(--primary))]"
+    ></span>
     <span>{label}</span>
   </div>
 </div>

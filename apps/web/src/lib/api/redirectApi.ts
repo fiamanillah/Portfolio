@@ -23,7 +23,10 @@ export const RedirectApi = {
         }
       }
     } catch (err) {
-      console.warn(`[RedirectApi] Error resolving redirect for path '${path}':`, err)
+      console.warn(
+        `[RedirectApi] Error resolving redirect for path '${path}':`,
+        err
+      )
     }
 
     return null

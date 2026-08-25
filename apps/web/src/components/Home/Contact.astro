@@ -92,56 +92,99 @@ import { Icon } from "astro-icon/components"
     <div
       class="flex flex-col justify-between border-b border-border p-8 md:p-10 lg:border-r lg:border-b-0"
     >
-      <div class="flex flex-col gap-8">
+      <div class="flex flex-col gap-7">
         <!-- Editorial statement -->
-        <div class="space-y-4">
+        <div class="space-y-3">
           <p
-            class="text-2xl leading-[1.15] font-bold tracking-tight text-foreground md:text-3xl"
+            class="text-2xl font-bold tracking-tight text-foreground sm:text-3xl lg:text-[1.85rem] lg:leading-snug"
           >
             Got a project in mind?<br />
             <span class="text-primary">Let's make it happen.</span>
           </p>
-          <p class="max-w-[42ch] text-sm leading-relaxed text-muted-foreground">
+          <p class="max-w-[44ch] text-sm leading-relaxed text-muted-foreground">
             Whether it's a full-stack application, backend architecture, or
             cloud infrastructure — I'm open to freelance work, full-time roles,
             and interesting collaborations.
           </p>
         </div>
 
-        <!-- Contact details (info + socials unified) -->
-        <div class="flex flex-col gap-1 border-t border-border pt-6">
+        <!-- Contact details -->
+        <div
+          class="flex flex-col divide-y divide-border/60 border-t border-border pt-2"
+        >
           <!-- Email -->
           <a
             href="mailto:fi@amanillah.com"
-            class="contact-info-row group flex items-center gap-4 py-3 no-underline"
+            class="contact-info-row group flex items-center gap-4 py-3.5 no-underline"
           >
             <div
               class="flex h-10 w-10 shrink-0 items-center justify-center border border-border bg-background text-muted-foreground transition-all duration-200 group-hover:border-primary/40 group-hover:bg-primary/10 group-hover:text-primary"
             >
               <Icon name="mdi:email-outline" class="size-4" />
             </div>
-            <div>
-              <p
-                class="font-mono text-[10px] tracking-[0.14em] text-muted-foreground uppercase"
+            <div class="flex flex-col gap-1">
+              <span
+                class="font-mono text-[10px] leading-none tracking-[0.14em] text-muted-foreground uppercase"
               >
                 Email
-              </p>
-              <p
-                class="text-sm font-semibold text-foreground transition-colors group-hover:text-primary"
+              </span>
+              <span
+                class="text-sm font-semibold leading-tight text-foreground transition-colors group-hover:text-primary"
               >
                 fi@amanillah.com
-              </p>
+              </span>
             </div>
           </a>
 
-          <!-- Social links — same row pattern as above -->
-          <div class="contact-info-row flex items-center gap-4 py-3">
+          <!-- Location & Timezone -->
+          <div class="contact-info-row flex items-center gap-4 py-3.5">
+            <div
+              class="flex h-10 w-10 shrink-0 items-center justify-center border border-border bg-background text-muted-foreground"
+            >
+              <Icon name="mdi:map-marker-outline" class="size-4" />
+            </div>
+            <div class="flex flex-col gap-1">
+              <span
+                class="font-mono text-[10px] leading-none tracking-[0.14em] text-muted-foreground uppercase"
+              >
+                Location & Timezone
+              </span>
+              <span class="text-sm font-medium leading-tight text-foreground">
+                Dhaka, Bangladesh <span
+                  class="font-normal text-muted-foreground/80"
+                  >· UTC+06:00</span
+                >
+              </span>
+            </div>
+          </div>
+
+          <!-- Response Time -->
+          <div class="contact-info-row flex items-center gap-4 py-3.5">
+            <div
+              class="flex h-10 w-10 shrink-0 items-center justify-center border border-border bg-background text-muted-foreground"
+            >
+              <Icon name="mdi:clock-outline" class="size-4" />
+            </div>
+            <div class="flex flex-col gap-1">
+              <span
+                class="font-mono text-[10px] leading-none tracking-[0.14em] text-muted-foreground uppercase"
+              >
+                Response Time
+              </span>
+              <span class="text-sm font-medium leading-tight text-foreground">
+                Typically within 24 hours
+              </span>
+            </div>
+          </div>
+
+          <!-- Social links -->
+          <div class="contact-info-row flex items-center gap-4 py-3.5">
             <div class="flex flex-col gap-2">
-              <p
-                class="font-mono text-[10px] tracking-[0.14em] text-muted-foreground uppercase"
+              <span
+                class="font-mono text-[10px] leading-none tracking-[0.14em] text-muted-foreground uppercase"
               >
                 Find me on
-              </p>
+              </span>
               <div class="flex items-center gap-2">
                 {
                   [
@@ -179,6 +222,30 @@ import { Icon } from "astro-icon/components"
               </div>
             </div>
           </div>
+        </div>
+      </div>
+
+      <!-- Bottom Status & Availability Strip -->
+      <div class="mt-8 border-t border-border pt-4">
+        <div
+          class="flex items-center justify-between font-mono text-xs text-muted-foreground"
+        >
+          <span class="inline-flex items-center gap-2">
+            <span class="relative flex h-2 w-2">
+              <span
+                class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"
+              ></span>
+              <span
+                class="relative inline-flex h-2 w-2 rounded-full bg-emerald-500"
+              ></span>
+            </span>
+            Available for new projects
+          </span>
+          <span
+            class="text-[10px] tracking-wider text-muted-foreground/60 uppercase"
+          >
+            Remote Friendly
+          </span>
         </div>
       </div>
     </div>
@@ -385,7 +452,6 @@ import { Icon } from "astro-icon/components"
       </p>
     </div>
   </div>
-
 </section>
 
 <script>
@@ -458,7 +524,9 @@ import { Icon } from "astro-icon/components"
   }
 
   function initContactTurnstileOnDemand() {
-    const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+    const isLocal =
+      window.location.hostname === "localhost" ||
+      window.location.hostname === "127.0.0.1"
     const turnstileKey =
       import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ||
       (isLocal ? "1x00000000000000000000AA" : "0x4AAAAAAEMAnAognjniSApt")
@@ -496,7 +564,8 @@ import { Icon } from "astro-icon/components"
     if (!script) {
       script = document.createElement("script")
       script.id = "cf-turnstile-script"
-      script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
+      script.src =
+        "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
       script.async = true
       script.defer = true
       document.head.appendChild(script)

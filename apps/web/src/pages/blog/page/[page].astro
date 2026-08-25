@@ -103,21 +103,28 @@ const nextPageUrl =
 
   <main class="w-full">
     <!-- Header Section (Compact padding) -->
-    <header class="relative overflow-hidden border-b border-border py-8 sm:py-10">
+    <header
+      class="relative overflow-hidden border-b border-border py-8 sm:py-10"
+    >
       <div
         class="diagonal-stripes pointer-events-none absolute inset-0 z-0 bg-background opacity-80"
         aria-hidden="true"
       >
       </div>
 
-      <div class="relative z-10 mx-auto max-w-5xl px-4 text-center sm:px-6 lg:px-8">
+      <div
+        class="relative z-10 mx-auto max-w-5xl px-4 text-center sm:px-6 lg:px-8"
+      >
         <p class="section-label mb-2">ARCHIVE // ALL PUBLICATIONS</p>
         <h1 class="section-title text-foreground">
           All Articles <span class="text-primary">/</span> Page {currentPage}
         </h1>
         <div class="accent-bar mx-auto mt-3 mb-3 w-48"></div>
-        <p class="font-mono text-xs tracking-wider text-muted-foreground uppercase sm:text-sm">
-          Showing {posts.length} of {totalCount} total published technical writeups &amp; deep dives
+        <p
+          class="font-mono text-xs tracking-wider text-muted-foreground uppercase sm:text-sm"
+        >
+          Showing {posts.length} of {totalCount} total published technical writeups
+          &amp; deep dives
         </p>
       </div>
     </header>

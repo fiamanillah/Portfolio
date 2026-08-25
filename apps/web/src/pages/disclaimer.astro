@@ -9,7 +9,11 @@ import SEO from "@/components/SEO/SEO.astro"
 const sections = [
   { id: "general", title: "General Disclaimer", num: "01" },
   { id: "technical", title: "Technical & Architectural Advice", num: "02" },
-  { id: "market-analysis", title: "Hardware & Tech Market Analysis", num: "03" },
+  {
+    id: "market-analysis",
+    title: "Hardware & Tech Market Analysis",
+    num: "03",
+  },
   { id: "code-safety", title: "Code Safety & Production Readiness", num: "04" },
   { id: "affiliates", title: "Affiliate Links & Endorsements", num: "05" },
   { id: "contact", title: "Inquiries & Clarifications", num: "06" },
@@ -42,82 +46,146 @@ const sections = [
 
   <SectionDivider />
 
-  <LegalLayout currentDoc="disclaimer" sections={sections} pageTitle="Disclaimer">
+  <LegalLayout
+    currentDoc="disclaimer"
+    sections={sections}
+    pageTitle="Disclaimer"
+  >
     <!-- 01. General Disclaimer -->
-    <section id="general" class="legal-card scroll-mt-24 rounded-sm border border-border/80 bg-card/40 p-6 sm:p-8 backdrop-blur-xs">
+    <section
+      id="general"
+      class="legal-card scroll-mt-24 rounded-sm border border-border/80 bg-card/40 p-6 backdrop-blur-xs sm:p-8"
+    >
       <div class="mb-4 flex items-center gap-3">
         <span class="font-mono text-xs font-bold text-primary">01 //</span>
-        <h2 class="m-0 text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+        <h2
+          class="m-0 text-xl font-bold tracking-tight text-foreground sm:text-2xl"
+        >
           General Website Disclaimer
         </h2>
       </div>
       <p class="text-sm leading-relaxed text-muted-foreground sm:text-base">
-        The information provided on <a href="https://fi.amanillah.com" class="text-primary underline hover:text-foreground">fi.amanillah.com</a> (the "Site") is for general informational, educational, and professional showcase purposes only. All content on the Site is provided in good faith; however, we make no representation or warranty of any kind, express or implied, regarding the accuracy, adequacy, validity, reliability, availability, or completeness of any information on the Site.
+        The information provided on <a
+          href="https://fi.amanillah.com"
+          class="text-primary underline hover:text-foreground"
+          >fi.amanillah.com</a
+        > (the "Site") is for general informational, educational, and professional
+        showcase purposes only. All content on the Site is provided in good faith;
+        however, we make no representation or warranty of any kind, express or implied,
+        regarding the accuracy, adequacy, validity, reliability, availability, or
+        completeness of any information on the Site.
       </p>
     </section>
 
     <!-- 02. Technical & Architecture Advice -->
-    <section id="technical" class="legal-card scroll-mt-24 rounded-sm border border-border/80 bg-card/40 p-6 sm:p-8 backdrop-blur-xs">
+    <section
+      id="technical"
+      class="legal-card scroll-mt-24 rounded-sm border border-border/80 bg-card/40 p-6 backdrop-blur-xs sm:p-8"
+    >
       <div class="mb-4 flex items-center gap-3">
         <span class="font-mono text-xs font-bold text-primary">02 //</span>
-        <h2 class="m-0 text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+        <h2
+          class="m-0 text-xl font-bold tracking-tight text-foreground sm:text-2xl"
+        >
           Technical &amp; Architectural Advice
         </h2>
       </div>
       <p class="text-sm leading-relaxed text-muted-foreground sm:text-base">
-        The Site contains case studies, code recipes, database schema designs, and system architectures. These represent personal engineering experiences, research findings, and technical explorations. They do not constitute certified professional advisory or formal engineering audits for your specific infrastructure without an executed engagement agreement.
+        The Site contains case studies, code recipes, database schema designs,
+        and system architectures. These represent personal engineering
+        experiences, research findings, and technical explorations. They do not
+        constitute certified professional advisory or formal engineering audits
+        for your specific infrastructure without an executed engagement
+        agreement.
       </p>
     </section>
 
     <!-- 03. Market Analysis -->
-    <section id="market-analysis" class="legal-card scroll-mt-24 rounded-sm border border-border/80 bg-card/40 p-6 sm:p-8 backdrop-blur-xs">
+    <section
+      id="market-analysis"
+      class="legal-card scroll-mt-24 rounded-sm border border-border/80 bg-card/40 p-6 backdrop-blur-xs sm:p-8"
+    >
       <div class="mb-4 flex items-center gap-3">
         <span class="font-mono text-xs font-bold text-primary">03 //</span>
-        <h2 class="m-0 text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+        <h2
+          class="m-0 text-xl font-bold tracking-tight text-foreground sm:text-2xl"
+        >
           Hardware &amp; Tech Market Analysis
         </h2>
       </div>
       <p class="text-sm leading-relaxed text-muted-foreground sm:text-base">
-        Articles analyzing semiconductor dynamics, GPU price trends, cloud compute unit economics, or tech enterprise strategies are solely journalistic observations and editorial commentary. <strong class="text-foreground">None of the commentary on this website constitutes financial, investment, or legal advice.</strong>
+        Articles analyzing semiconductor dynamics, GPU price trends, cloud
+        compute unit economics, or tech enterprise strategies are solely
+        journalistic observations and editorial commentary. <strong
+          class="text-foreground"
+          >None of the commentary on this website constitutes financial,
+          investment, or legal advice.</strong
+        >
       </p>
     </section>
 
     <!-- 04. Code Safety -->
-    <section id="code-safety" class="legal-card scroll-mt-24 rounded-sm border border-border/80 bg-card/40 p-6 sm:p-8 backdrop-blur-xs">
+    <section
+      id="code-safety"
+      class="legal-card scroll-mt-24 rounded-sm border border-border/80 bg-card/40 p-6 backdrop-blur-xs sm:p-8"
+    >
       <div class="mb-4 flex items-center gap-3">
         <span class="font-mono text-xs font-bold text-primary">04 //</span>
-        <h2 class="m-0 text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+        <h2
+          class="m-0 text-xl font-bold tracking-tight text-foreground sm:text-2xl"
+        >
           Code Safety &amp; Production Readiness
         </h2>
       </div>
       <p class="text-sm leading-relaxed text-muted-foreground sm:text-base">
-        Any code snippet, script, or configuration template published on this site is provided "AS IS" without warranty of any kind. You assume total responsibility and risk for executing or integrating any referenced scripts, Dockerfiles, SQL migrations, or TypeScript algorithms into production environments.
+        Any code snippet, script, or configuration template published on this
+        site is provided "AS IS" without warranty of any kind. You assume total
+        responsibility and risk for executing or integrating any referenced
+        scripts, Dockerfiles, SQL migrations, or TypeScript algorithms into
+        production environments.
       </p>
     </section>
 
     <!-- 05. Affiliates -->
-    <section id="affiliates" class="legal-card scroll-mt-24 rounded-sm border border-border/80 bg-card/40 p-6 sm:p-8 backdrop-blur-xs">
+    <section
+      id="affiliates"
+      class="legal-card scroll-mt-24 rounded-sm border border-border/80 bg-card/40 p-6 backdrop-blur-xs sm:p-8"
+    >
       <div class="mb-4 flex items-center gap-3">
         <span class="font-mono text-xs font-bold text-primary">05 //</span>
-        <h2 class="m-0 text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+        <h2
+          class="m-0 text-xl font-bold tracking-tight text-foreground sm:text-2xl"
+        >
           Affiliate Links &amp; Endorsements
         </h2>
       </div>
       <p class="text-sm leading-relaxed text-muted-foreground sm:text-base">
-        We do not accept sponsored content or undisclosed product placements. Tools, hardware, and libraries mentioned in our blog posts represent independent editorial choices based on technical merit.
+        We do not accept sponsored content or undisclosed product placements.
+        Tools, hardware, and libraries mentioned in our blog posts represent
+        independent editorial choices based on technical merit.
       </p>
     </section>
 
     <!-- 06. Contact -->
-    <section id="contact" class="legal-card scroll-mt-24 rounded-sm border border-border/80 bg-card/40 p-6 sm:p-8 backdrop-blur-xs">
+    <section
+      id="contact"
+      class="legal-card scroll-mt-24 rounded-sm border border-border/80 bg-card/40 p-6 backdrop-blur-xs sm:p-8"
+    >
       <div class="mb-4 flex items-center gap-3">
         <span class="font-mono text-xs font-bold text-primary">06 //</span>
-        <h2 class="m-0 text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+        <h2
+          class="m-0 text-xl font-bold tracking-tight text-foreground sm:text-2xl"
+        >
           Inquiries &amp; Clarifications
         </h2>
       </div>
       <p class="text-sm leading-relaxed text-muted-foreground sm:text-base">
-        If you require any more information or have questions about our site's disclaimer, please feel free to contact us by email at <a href="mailto:fi@amanillah.com" class="text-primary font-mono font-semibold hover:underline">fi@amanillah.com</a>.
+        If you require any more information or have questions about our site's
+        disclaimer, please feel free to contact us by email at <a
+          href="mailto:fi@amanillah.com"
+          class="font-mono font-semibold text-primary hover:underline"
+          >fi@amanillah.com</a
+        >.
       </p>
     </section>
   </LegalLayout>

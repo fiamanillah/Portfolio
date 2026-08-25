@@ -14,43 +14,61 @@ const {
 
 <!-- Google tag (gtag.js) - Queue initialized immediately, script loaded on interaction or idle -->
 <script is:inline define:vars={{ id }}>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', id);
+  window.dataLayer = window.dataLayer || []
+  function gtag() {
+    dataLayer.push(arguments)
+  }
+  gtag("js", new Date())
+  gtag("config", id)
 
   function loadGtagScript() {
-    if (document.getElementById('ga-gtag-script')) return;
-    
-    // Remove listeners once triggered
-    window.removeEventListener('scroll', loadGtagScript);
-    window.removeEventListener('touchstart', loadGtagScript);
-    window.removeEventListener('mousemove', loadGtagScript);
-    window.removeEventListener('keydown', loadGtagScript);
+    if (document.getElementById("ga-gtag-script")) return
 
-    const script = document.createElement('script');
-    script.id = 'ga-gtag-script';
-    script.async = true;
-    script.src = 'https://www.googletagmanager.com/gtag/js?id=' + id;
-    document.head.appendChild(script);
+    // Remove listeners once triggered
+    window.removeEventListener("scroll", loadGtagScript)
+    window.removeEventListener("touchstart", loadGtagScript)
+    window.removeEventListener("mousemove", loadGtagScript)
+    window.removeEventListener("keydown", loadGtagScript)
+
+    const script = document.createElement("script")
+    script.id = "ga-gtag-script"
+    script.async = true
+    script.src = "https://www.googletagmanager.com/gtag/js?id=" + id
+    document.head.appendChild(script)
   }
 
-  if (typeof window !== 'undefined') {
+  if (typeof window !== "undefined") {
     // 1. Trigger immediately on user interaction
-    window.addEventListener('scroll', loadGtagScript, { once: true, passive: true });
-    window.addEventListener('touchstart', loadGtagScript, { once: true, passive: true });
-    window.addEventListener('mousemove', loadGtagScript, { once: true, passive: true });
-    window.addEventListener('keydown', loadGtagScript, { once: true, passive: true });
+    window.addEventListener("scroll", loadGtagScript, {
+      once: true,
+      passive: true,
+    })
+    window.addEventListener("touchstart", loadGtagScript, {
+      once: true,
+      passive: true,
+    })
+    window.addEventListener("mousemove", loadGtagScript, {
+      once: true,
+      passive: true,
+    })
+    window.addEventListener("keydown", loadGtagScript, {
+      once: true,
+      passive: true,
+    })
 
     // 2. Safe fallback after page settles completely
-    window.addEventListener('load', function() {
-      if ('requestIdleCallback' in window) {
-        window.requestIdleCallback(function() {
-          setTimeout(loadGtagScript, 4000);
-        });
-      } else {
-        setTimeout(loadGtagScript, 6000);
-      }
-    }, { once: true });
+    window.addEventListener(
+      "load",
+      function () {
+        if ("requestIdleCallback" in window) {
+          window.requestIdleCallback(function () {
+            setTimeout(loadGtagScript, 4000)
+          })
+        } else {
+          setTimeout(loadGtagScript, 6000)
+        }
+      },
+      { once: true }
+    )
   }
 </script>

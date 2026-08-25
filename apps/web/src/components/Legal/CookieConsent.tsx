@@ -46,7 +46,8 @@ export function CookieConsent() {
   const [mounted, setMounted] = useState(false)
   const [showBanner, setShowBanner] = useState(false)
   const [showModal, setShowModal] = useState(false)
-  const [preferences, setPreferences] = useState<CookiePreferences>(DEFAULT_PREFERENCES)
+  const [preferences, setPreferences] =
+    useState<CookiePreferences>(DEFAULT_PREFERENCES)
 
   useEffect(() => {
     setMounted(true)
@@ -170,7 +171,7 @@ export function CookieConsent() {
         <aside
           role="region"
           aria-label="Cookie and Privacy Consent"
-          className="fixed bottom-4 right-4 left-4 z-50 mx-auto w-[calc(100%-2rem)] sm:w-auto sm:min-w-[480px] sm:max-w-xl md:min-w-[560px] md:max-w-2xl animate-in fade-in slide-in-from-bottom-5 duration-300 sm:bottom-6 sm:right-6 sm:left-auto"
+          className="fixed right-4 bottom-4 left-4 z-50 mx-auto w-[calc(100%-2rem)] animate-in duration-300 slide-in-from-bottom-5 fade-in sm:right-6 sm:bottom-6 sm:left-auto sm:w-auto sm:max-w-xl sm:min-w-[480px] md:max-w-2xl md:min-w-[560px]"
         >
           <div className="relative overflow-hidden rounded-sm border border-border/90 bg-card/95 p-5 shadow-2xl backdrop-blur-xl transition-all">
             {/* Corner Cyber Accents */}
@@ -196,23 +197,27 @@ export function CookieConsent() {
             </div>
 
             {/* Description Body */}
-            <div className="py-3.5 space-y-2">
+            <div className="space-y-2 py-3.5">
               <p className="text-xs leading-relaxed text-foreground/90 sm:text-sm">
-                We utilize essential cookies and functional local storage for session authentication, theme persistence, and security challenges.{" "}
-                <strong className="text-foreground font-semibold">We never deploy third-party advertising trackers.</strong>
+                We utilize essential cookies and functional local storage for
+                session authentication, theme persistence, and security
+                challenges.{" "}
+                <strong className="font-semibold text-foreground">
+                  We never deploy third-party advertising trackers.
+                </strong>
               </p>
               <p className="text-[11px] text-muted-foreground">
                 Customize your preferences or inspect our{" "}
                 <a
                   href="/privacy#cookies-storage"
-                  className="text-primary underline underline-offset-2 hover:text-foreground transition-colors"
+                  className="text-primary underline underline-offset-2 transition-colors hover:text-foreground"
                 >
                   Privacy Policy
                 </a>{" "}
                 and{" "}
                 <a
                   href="/terms"
-                  className="text-primary underline underline-offset-2 hover:text-foreground transition-colors"
+                  className="text-primary underline underline-offset-2 transition-colors hover:text-foreground"
                 >
                   Terms of Use
                 </a>
@@ -221,7 +226,7 @@ export function CookieConsent() {
             </div>
 
             {/* Action Buttons Grid */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 pt-2 border-t border-border/50 font-mono text-xs">
+            <div className="flex flex-col items-stretch justify-between gap-2 border-t border-border/50 pt-2 font-mono text-xs sm:flex-row sm:items-center">
               <button
                 type="button"
                 onClick={() => {
@@ -238,7 +243,7 @@ export function CookieConsent() {
                 <button
                   type="button"
                   onClick={handleEssentialOnly}
-                  className="flex-1 sm:flex-initial rounded-xs border border-border/80 bg-secondary/80 px-3.5 py-2 font-semibold text-secondary-foreground transition-colors hover:bg-secondary hover:text-foreground focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:outline-none"
+                  className="flex-1 rounded-xs border border-border/80 bg-secondary/80 px-3.5 py-2 font-semibold text-secondary-foreground transition-colors hover:bg-secondary hover:text-foreground focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:outline-none sm:flex-initial"
                 >
                   Essential Only
                 </button>
@@ -246,7 +251,7 @@ export function CookieConsent() {
                 <button
                   type="button"
                   onClick={handleAcceptAll}
-                  className="flex-1 sm:flex-initial flex items-center justify-center gap-1.5 rounded-xs bg-primary px-4 py-2 font-bold text-primary-foreground shadow-xs transition-colors hover:bg-primary/90 focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:outline-none"
+                  className="flex flex-1 items-center justify-center gap-1.5 rounded-xs bg-primary px-4 py-2 font-bold text-primary-foreground shadow-xs transition-colors hover:bg-primary/90 focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:outline-none sm:flex-initial"
                 >
                   <HugeiconsIcon icon={Tick02Icon} className="size-3.5" />
                   <span>Accept All</span>
@@ -260,7 +265,7 @@ export function CookieConsent() {
       {/* ── Detailed Preferences Dialog Modal ──────────────────────── */}
       <Dialog open={showModal} onOpenChange={setShowModal}>
         <DialogContent
-          className="w-[calc(100vw-2rem)] sm:w-[92vw] sm:min-w-[580px] sm:max-w-3xl md:min-w-[680px] md:max-w-3xl lg:min-w-[780px] lg:max-w-4xl rounded-sm border border-border bg-card/95 p-6 shadow-2xl backdrop-blur-2xl sm:p-8"
+          className="w-[calc(100vw-2rem)] rounded-sm border border-border bg-card/95 p-6 shadow-2xl backdrop-blur-2xl sm:w-[92vw] sm:max-w-3xl sm:min-w-[580px] sm:p-8 md:max-w-3xl md:min-w-[680px] lg:max-w-4xl lg:min-w-[780px]"
           showCloseButton={true}
         >
           {/* Cyber accents on modal */}
@@ -278,19 +283,24 @@ export function CookieConsent() {
             <DialogTitle className="font-mono text-xl font-bold tracking-tight text-foreground sm:text-2xl">
               Cookie &amp; Local Storage Manager
             </DialogTitle>
-            <DialogDescription className="text-xs text-muted-foreground leading-relaxed">
-              Configure how local storage and session cookies are used on this device. Essential cookies are strictly necessary for core functionality and cannot be switched off.
+            <DialogDescription className="text-xs leading-relaxed text-muted-foreground">
+              Configure how local storage and session cookies are used on this
+              device. Essential cookies are strictly necessary for core
+              functionality and cannot be switched off.
             </DialogDescription>
           </DialogHeader>
 
           {/* Preferences Categories List */}
-          <div className="space-y-3.5 py-2 max-h-[60vh] overflow-y-auto pr-1">
+          <div className="max-h-[60vh] space-y-3.5 overflow-y-auto py-2 pr-1">
             {/* 1. Strictly Necessary */}
             <div className="rounded-xs border border-border/70 bg-background/50 p-4 transition-colors">
               <div className="flex items-start justify-between gap-4">
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
-                    <HugeiconsIcon icon={SecurityCheckIcon} className="size-4 text-primary" />
+                    <HugeiconsIcon
+                      icon={SecurityCheckIcon}
+                      className="size-4 text-primary"
+                    />
                     <span className="font-mono text-xs font-bold text-foreground">
                       1. Strictly Necessary &amp; Security
                     </span>
@@ -298,12 +308,18 @@ export function CookieConsent() {
                       ALWAYS ACTIVE
                     </span>
                   </div>
-                  <p className="text-xs text-muted-foreground leading-relaxed">
-                    Essential for secure authentication sessions, CSRF prevention, Cloudflare Turnstile bot verification challenges, and remembering your dark/light theme setting.
+                  <p className="text-xs leading-relaxed text-muted-foreground">
+                    Essential for secure authentication sessions, CSRF
+                    prevention, Cloudflare Turnstile bot verification
+                    challenges, and remembering your dark/light theme setting.
                   </p>
                 </div>
                 <div className="pt-0.5">
-                  <Switch checked={true} disabled={true} aria-label="Strictly Necessary Cookies (Always active)" />
+                  <Switch
+                    checked={true}
+                    disabled={true}
+                    aria-label="Strictly Necessary Cookies (Always active)"
+                  />
                 </div>
               </div>
             </div>
@@ -316,19 +332,24 @@ export function CookieConsent() {
                     <span className="font-mono text-xs font-bold text-foreground">
                       2. Functional &amp; User Experience
                     </span>
-                    <span className="font-mono text-[9px] text-muted-foreground uppercase border border-border px-1.5 py-0.2">
+                    <span className="py-0.2 border border-border px-1.5 font-mono text-[9px] text-muted-foreground uppercase">
                       OPTIONAL
                     </span>
                   </div>
-                  <p className="text-xs text-muted-foreground leading-relaxed">
-                    Stores custom code editor font preferences, reading progress on technical articles, and bookmarking states for a seamless developer experience.
+                  <p className="text-xs leading-relaxed text-muted-foreground">
+                    Stores custom code editor font preferences, reading progress
+                    on technical articles, and bookmarking states for a seamless
+                    developer experience.
                   </p>
                 </div>
                 <div className="pt-0.5">
                   <Switch
                     checked={preferences.functional}
                     onCheckedChange={(checked) =>
-                      setPreferences((prev) => ({ ...prev, functional: checked }))
+                      setPreferences((prev) => ({
+                        ...prev,
+                        functional: checked,
+                      }))
                     }
                     aria-label="Functional and Experience Preferences"
                   />
@@ -344,19 +365,24 @@ export function CookieConsent() {
                     <span className="font-mono text-xs font-bold text-foreground">
                       3. Anonymous Telemetry &amp; Performance
                     </span>
-                    <span className="font-mono text-[9px] text-muted-foreground uppercase border border-border px-1.5 py-0.2">
+                    <span className="py-0.2 border border-border px-1.5 font-mono text-[9px] text-muted-foreground uppercase">
                       OPTIONAL
                     </span>
                   </div>
-                  <p className="text-xs text-muted-foreground leading-relaxed">
-                    Collects aggregated, non-identifying Core Web Vitals and load performance metrics to help us optimize edge routing and frontend rendering speeds.
+                  <p className="text-xs leading-relaxed text-muted-foreground">
+                    Collects aggregated, non-identifying Core Web Vitals and
+                    load performance metrics to help us optimize edge routing
+                    and frontend rendering speeds.
                   </p>
                 </div>
                 <div className="pt-0.5">
                   <Switch
                     checked={preferences.analytics}
                     onCheckedChange={(checked) =>
-                      setPreferences((prev) => ({ ...prev, analytics: checked }))
+                      setPreferences((prev) => ({
+                        ...prev,
+                        analytics: checked,
+                      }))
                     }
                     aria-label="Anonymous Telemetry and Performance"
                   />
@@ -376,19 +402,25 @@ export function CookieConsent() {
                       ZERO ADS / NOT USED
                     </span>
                   </div>
-                  <p className="text-xs text-muted-foreground leading-relaxed">
-                    We do not partner with ad networks, sell user profiles, or embed behavioral marketing pixels. This category is permanently disabled.
+                  <p className="text-xs leading-relaxed text-muted-foreground">
+                    We do not partner with ad networks, sell user profiles, or
+                    embed behavioral marketing pixels. This category is
+                    permanently disabled.
                   </p>
                 </div>
                 <div className="pt-0.5">
-                  <Switch checked={false} disabled={true} aria-label="Marketing Tracking (Permanently disabled)" />
+                  <Switch
+                    checked={false}
+                    disabled={true}
+                    aria-label="Marketing Tracking (Permanently disabled)"
+                  />
                 </div>
               </div>
             </div>
           </div>
 
           {/* Dialog Action Buttons */}
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 border-t border-border/70 pt-4 font-mono text-xs">
+          <div className="flex flex-col items-stretch justify-between gap-3 border-t border-border/70 pt-4 font-mono text-xs sm:flex-row sm:items-center">
             <button
               type="button"
               onClick={handleEssentialOnly}
@@ -401,7 +433,7 @@ export function CookieConsent() {
               <button
                 type="button"
                 onClick={handleAcceptAll}
-                className="flex-1 sm:flex-initial rounded-xs border border-primary/30 bg-primary/10 px-4 py-2 font-semibold text-primary transition-colors hover:bg-primary/20"
+                className="flex-1 rounded-xs border border-primary/30 bg-primary/10 px-4 py-2 font-semibold text-primary transition-colors hover:bg-primary/20 sm:flex-initial"
               >
                 Accept All
               </button>
@@ -409,7 +441,7 @@ export function CookieConsent() {
               <button
                 type="button"
                 onClick={handleSaveCustom}
-                className="flex-1 sm:flex-initial rounded-xs bg-primary px-5 py-2 font-bold text-primary-foreground shadow-xs transition-colors hover:bg-primary/90"
+                className="flex-1 rounded-xs bg-primary px-5 py-2 font-bold text-primary-foreground shadow-xs transition-colors hover:bg-primary/90 sm:flex-initial"
               >
                 Save Preferences
               </button>

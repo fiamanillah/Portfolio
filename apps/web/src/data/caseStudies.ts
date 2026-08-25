@@ -71,4 +71,3 @@ export interface CaseStudyDetail {
   createdAt?: string
   updatedAt?: string
 }
-

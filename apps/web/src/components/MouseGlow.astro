@@ -2,7 +2,11 @@
 // src/components/MouseGlow.astro
 ---
 
-<div id="mouse-glow" class="pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden="true">
+<div
+  id="mouse-glow"
+  class="pointer-events-none fixed inset-0 z-0 overflow-hidden"
+  aria-hidden="true"
+>
   <div id="glow-ball" class="mouse-glow-ball"></div>
 </div>
 
@@ -26,7 +30,9 @@
       return
     }
 
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches
     const lerpFactor = prefersReducedMotion ? 1 : 0.16
 
     function render() {
@@ -98,7 +104,11 @@
     }
 
     window.addEventListener("pointermove", handlePointerMove, { passive: true })
-    document.documentElement.addEventListener("pointerleave", handlePointerLeave, { passive: true })
+    document.documentElement.addEventListener(
+      "pointerleave",
+      handlePointerLeave,
+      { passive: true }
+    )
     window.addEventListener("blur", handleWindowBlur)
   }
 

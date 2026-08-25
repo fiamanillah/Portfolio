@@ -24,7 +24,10 @@ export const TIMEZONE_REGIONS: TimezoneRegion[] = [
       { value: "America/New_York", label: "New York (EST/EDT, UTC-5/-4)" },
       { value: "America/Chicago", label: "Chicago (CST/CDT, UTC-6/-5)" },
       { value: "America/Denver", label: "Denver (MST/MDT, UTC-7/-6)" },
-      { value: "America/Los_Angeles", label: "Los Angeles / SF (PST/PDT, UTC-8/-7)" },
+      {
+        value: "America/Los_Angeles",
+        label: "Los Angeles / SF (PST/PDT, UTC-8/-7)",
+      },
       { value: "America/Anchorage", label: "Anchorage (AKST/AKDT, UTC-9/-8)" },
       { value: "America/Toronto", label: "Toronto (EST/EDT, UTC-5/-4)" },
       { value: "America/Vancouver", label: "Vancouver (PST/PDT, UTC-8/-7)" },
@@ -40,14 +43,29 @@ export const TIMEZONE_REGIONS: TimezoneRegion[] = [
     timezones: [
       { value: "Europe/London", label: "London / Dublin (GMT/BST, UTC+0/+1)" },
       { value: "Europe/Paris", label: "Paris / Brussels (CET/CEST, UTC+1/+2)" },
-      { value: "Europe/Berlin", label: "Berlin / Frankfurt (CET/CEST, UTC+1/+2)" },
+      {
+        value: "Europe/Berlin",
+        label: "Berlin / Frankfurt (CET/CEST, UTC+1/+2)",
+      },
       { value: "Europe/Amsterdam", label: "Amsterdam (CET/CEST, UTC+1/+2)" },
-      { value: "Europe/Madrid", label: "Madrid / Barcelona (CET/CEST, UTC+1/+2)" },
+      {
+        value: "Europe/Madrid",
+        label: "Madrid / Barcelona (CET/CEST, UTC+1/+2)",
+      },
       { value: "Europe/Rome", label: "Rome / Milan (CET/CEST, UTC+1/+2)" },
-      { value: "Europe/Stockholm", label: "Stockholm / Oslo (CET/CEST, UTC+1/+2)" },
+      {
+        value: "Europe/Stockholm",
+        label: "Stockholm / Oslo (CET/CEST, UTC+1/+2)",
+      },
       { value: "Europe/Zurich", label: "Zurich / Geneva (CET/CEST, UTC+1/+2)" },
-      { value: "Europe/Athens", label: "Athens / Bucharest (EET/EEST, UTC+2/+3)" },
-      { value: "Europe/Helsinki", label: "Helsinki / Tallinn (EET/EEST, UTC+2/+3)" },
+      {
+        value: "Europe/Athens",
+        label: "Athens / Bucharest (EET/EEST, UTC+2/+3)",
+      },
+      {
+        value: "Europe/Helsinki",
+        label: "Helsinki / Tallinn (EET/EEST, UTC+2/+3)",
+      },
       { value: "Europe/Kyiv", label: "Kyiv (EET/EEST, UTC+2/+3)" },
       { value: "Europe/Istanbul", label: "Istanbul (TRT, UTC+3)" },
       { value: "Europe/Moscow", label: "Moscow (MSK, UTC+3)" },
@@ -59,9 +77,15 @@ export const TIMEZONE_REGIONS: TimezoneRegion[] = [
       { value: "Asia/Dubai", label: "Dubai / Abu Dhabi (GST, UTC+4)" },
       { value: "Asia/Riyadh", label: "Riyadh / Doha (AST, UTC+3)" },
       { value: "Asia/Karachi", label: "Karachi / Islamabad (PKT, UTC+5)" },
-      { value: "Asia/Kolkata", label: "Kolkata / Mumbai / Delhi (IST, UTC+5:30)" },
+      {
+        value: "Asia/Kolkata",
+        label: "Kolkata / Mumbai / Delhi (IST, UTC+5:30)",
+      },
       { value: "Asia/Dhaka", label: "Dhaka (BST, UTC+6)" },
-      { value: "Asia/Bangkok", label: "Bangkok / Hanoi / Jakarta (ICT/WIB, UTC+7)" },
+      {
+        value: "Asia/Bangkok",
+        label: "Bangkok / Hanoi / Jakarta (ICT/WIB, UTC+7)",
+      },
       { value: "Asia/Singapore", label: "Singapore / KL (SGT/MYT, UTC+8)" },
       { value: "Asia/Hong_Kong", label: "Hong Kong (HKT, UTC+8)" },
       { value: "Asia/Shanghai", label: "Shanghai / Beijing (CST, UTC+8)" },
@@ -74,7 +98,10 @@ export const TIMEZONE_REGIONS: TimezoneRegion[] = [
     region: "Africa",
     timezones: [
       { value: "Africa/Cairo", label: "Cairo (EEST, UTC+3)" },
-      { value: "Africa/Johannesburg", label: "Johannesburg / Cape Town (SAST, UTC+2)" },
+      {
+        value: "Africa/Johannesburg",
+        label: "Johannesburg / Cape Town (SAST, UTC+2)",
+      },
       { value: "Africa/Lagos", label: "Lagos / Accra (WAT/GMT, UTC+1/+0)" },
       { value: "Africa/Nairobi", label: "Nairobi / Addis Ababa (EAT, UTC+3)" },
       { value: "Africa/Casablanca", label: "Casablanca (WEST, UTC+1)" },
@@ -84,17 +111,28 @@ export const TIMEZONE_REGIONS: TimezoneRegion[] = [
     region: "Australia & Pacific",
     timezones: [
       { value: "Australia/Perth", label: "Perth (AWST, UTC+8)" },
-      { value: "Australia/Adelaide", label: "Adelaide (ACST/ACDT, UTC+9:30/+10:30)" },
-      { value: "Australia/Sydney", label: "Sydney / Melbourne (AEST/AEDT, UTC+10/+11)" },
+      {
+        value: "Australia/Adelaide",
+        label: "Adelaide (ACST/ACDT, UTC+9:30/+10:30)",
+      },
+      {
+        value: "Australia/Sydney",
+        label: "Sydney / Melbourne (AEST/AEDT, UTC+10/+11)",
+      },
       { value: "Australia/Brisbane", label: "Brisbane (AEST, UTC+10)" },
-      { value: "Pacific/Auckland", label: "Auckland / Wellington (NZST/NZDT, UTC+12/+13)" },
+      {
+        value: "Pacific/Auckland",
+        label: "Auckland / Wellington (NZST/NZDT, UTC+12/+13)",
+      },
       { value: "Pacific/Honolulu", label: "Honolulu / Hawaii (HST, UTC-10)" },
       { value: "Pacific/Fiji", label: "Fiji (FJT, UTC+12)" },
     ],
   },
 ]
 
-export const POPULAR_TIMEZONES = TIMEZONE_REGIONS.flatMap((r) => r.timezones.map((t) => t.value))
+export const POPULAR_TIMEZONES = TIMEZONE_REGIONS.flatMap((r) =>
+  r.timezones.map((t) => t.value)
+)
 
 export const MAX_TOPIC_LENGTH = 100
 export const MAX_NOTES_LENGTH = 1000
@@ -183,8 +221,12 @@ export function generateGoogleCalendarUrl(booking: {
   googleMeetLink?: string | null
   guestNotes?: string | null
 }): string {
-  const startIso = new Date(booking.startTime).toISOString().replace(/-|:|\.\d+/g, "")
-  const endIso = new Date(booking.endTime).toISOString().replace(/-|:|\.\d+/g, "")
+  const startIso = new Date(booking.startTime)
+    .toISOString()
+    .replace(/-|:|\.\d+/g, "")
+  const endIso = new Date(booking.endTime)
+    .toISOString()
+    .replace(/-|:|\.\d+/g, "")
   const title = encodeURIComponent(`${booking.meetingType} with Fi Amanillah`)
   const details = encodeURIComponent(
     `1-on-1 Consultation Session.\n\nGoogle Meet: ${booking.googleMeetLink || "Generated automatically"}\nNotes: ${booking.guestNotes || "None"}`

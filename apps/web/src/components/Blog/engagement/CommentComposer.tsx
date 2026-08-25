@@ -23,7 +23,10 @@ import type { GuestCommentPayload } from "@/lib/api/commentsApi"
 
 interface CommentComposerProps {
   postSlug?: string
-  onSubmit: (content: string, guestInfo?: GuestCommentPayload) => Promise<void> | void
+  onSubmit: (
+    content: string,
+    guestInfo?: GuestCommentPayload
+  ) => Promise<void> | void
   onOpenAuth: () => void
   isReply?: boolean
   replyToName?: string
@@ -129,7 +132,7 @@ export function CommentComposer({
     } else {
       if (turnstileWidgetIdRef.current !== null && (window as any).turnstile) {
         try {
-          (window as any).turnstile.remove(turnstileWidgetIdRef.current)
+          ;(window as any).turnstile.remove(turnstileWidgetIdRef.current)
         } catch {}
         turnstileWidgetIdRef.current = null
       }
@@ -167,7 +170,9 @@ export function CommentComposer({
         typeof import.meta !== "undefined" &&
         import.meta.env?.PUBLIC_TURNSTILE_SITE_KEY
       if (siteKey && !captchaToken) {
-        setTurnstileError("Please complete the security check before submitting")
+        setTurnstileError(
+          "Please complete the security check before submitting"
+        )
         return
       }
       setTurnstileError(null)
@@ -190,7 +195,7 @@ export function CommentComposer({
       setHpField("")
       if (turnstileWidgetIdRef.current !== null && (window as any).turnstile) {
         try {
-          (window as any).turnstile.reset(turnstileWidgetIdRef.current)
+          ;(window as any).turnstile.reset(turnstileWidgetIdRef.current)
         } catch {}
       }
       setCaptchaToken("")
@@ -201,7 +206,7 @@ export function CommentComposer({
       toast.error("Failed to post comment. Please try again.")
       if (turnstileWidgetIdRef.current !== null && (window as any).turnstile) {
         try {
-          (window as any).turnstile.reset(turnstileWidgetIdRef.current)
+          ;(window as any).turnstile.reset(turnstileWidgetIdRef.current)
         } catch {}
       }
       setCaptchaToken("")
@@ -486,7 +491,10 @@ export function CommentComposer({
         <div className="border border-border/60 bg-muted/10 p-2.5">
           <div className="mb-1.5 flex items-center justify-between">
             <span className="inline-flex items-center gap-1 font-mono text-[10px] font-semibold text-muted-foreground uppercase">
-              <HugeiconsIcon icon={Shield01Icon} className="size-3 text-primary" />
+              <HugeiconsIcon
+                icon={Shield01Icon}
+                className="size-3 text-primary"
+              />
               Bot Defense Verification
             </span>
             <span className="font-mono text-[9px] text-primary/80">

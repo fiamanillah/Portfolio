@@ -16,9 +16,14 @@ export function HeroResumeCard({
   initialDownloadUrl = "/resume",
   initialVersion,
 }: HeroResumeCardProps) {
-  const [resumeUrl, setResumeUrl] = React.useState<string | null>(initialResumeUrl)
-  const [downloadUrl, setDownloadUrl] = React.useState<string>(initialDownloadUrl)
-  const [version, setVersion] = React.useState<string | undefined>(initialVersion)
+  const [resumeUrl, setResumeUrl] = React.useState<string | null>(
+    initialResumeUrl
+  )
+  const [downloadUrl, setDownloadUrl] =
+    React.useState<string>(initialDownloadUrl)
+  const [version, setVersion] = React.useState<string | undefined>(
+    initialVersion
+  )
 
   React.useEffect(() => {
     // If SSR/build-time data was already supplied, do not refetch over network
@@ -67,7 +72,7 @@ export function HeroResumeCard({
         className="group relative flex items-center justify-between border border-border bg-background/40 p-3.5 px-4 font-mono text-sm backdrop-blur-md transition-all duration-300 hover:border-primary/50 hover:bg-background/60 focus:ring-2 focus:ring-primary/30 focus:outline-none"
       >
         <div className="flex items-center gap-3">
-          <div className="flex size-9 shrink-0 items-center justify-center border border-border bg-background/80 text-primary transition-all duration-300 group-hover:border-primary/40 group-hover:bg-primary group-hover:text-primary-foreground group-hover:scale-105">
+          <div className="flex size-9 shrink-0 items-center justify-center border border-border bg-background/80 text-primary transition-all duration-300 group-hover:scale-105 group-hover:border-primary/40 group-hover:bg-primary group-hover:text-primary-foreground">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="size-4.5 transition-transform duration-300 group-hover:translate-y-0.5"
@@ -89,7 +94,7 @@ export function HeroResumeCard({
                 Download Resume (PDF)
               </span>
               {version && (
-                <span className="rounded bg-primary/10 px-1 py-0.2 font-mono text-[9px] font-semibold text-primary">
+                <span className="py-0.2 rounded bg-primary/10 px-1 font-mono text-[9px] font-semibold text-primary">
                   {version}
                 </span>
               )}
@@ -102,7 +107,7 @@ export function HeroResumeCard({
           </div>
         </div>
 
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center border border-border bg-background/80 text-muted-foreground transition-all duration-200 group-hover:border-primary/40 group-hover:text-primary group-hover:translate-x-0.5">
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center border border-border bg-background/80 text-muted-foreground transition-all duration-200 group-hover:translate-x-0.5 group-hover:border-primary/40 group-hover:text-primary">
           <HugeiconsIcon
             icon={ArrowUpRight03Icon}
             className="size-4 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"

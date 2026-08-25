@@ -37,7 +37,9 @@ export const bookingApi = {
   /**
    * Book a meeting slot
    */
-  async bookMeeting(payload: CreateBookingInput): Promise<ApiResponse<Booking>> {
+  async bookMeeting(
+    payload: CreateBookingInput
+  ): Promise<ApiResponse<Booking>> {
     try {
       const url = `${API_BASE_URL}/booking/v1/book`
       const res = await fetch(url, {
@@ -75,7 +77,10 @@ export const bookingApi = {
   /**
    * Cancel booking using cancellation token
    */
-  async cancelBooking(token: string, reason?: string): Promise<ApiResponse<Booking>> {
+  async cancelBooking(
+    token: string,
+    reason?: string
+  ): Promise<ApiResponse<Booking>> {
     try {
       const url = `${API_BASE_URL}/booking/v1/cancel`
       const res = await fetch(url, {

@@ -36,8 +36,7 @@ export function ArticleHeaderActions({
   const [copied, setCopied] = useState(false)
 
   const currentUrl =
-    articleUrl ||
-    (typeof window !== "undefined" ? window.location.href : "")
+    articleUrl || (typeof window !== "undefined" ? window.location.href : "")
 
   const handleLikeClick = (e: React.MouseEvent) => {
     e.preventDefault()
@@ -125,7 +124,9 @@ export function ArticleHeaderActions({
           type="button"
           onClick={handleLikeClick}
           title={reactions.userLiked ? "Unlike article" : "Like this article"}
-          aria-label={reactions.userLiked ? "Unlike article" : "Like this article"}
+          aria-label={
+            reactions.userLiked ? "Unlike article" : "Like this article"
+          }
           className={`group relative inline-flex h-8 cursor-pointer items-center gap-2 border px-3 font-mono text-xs font-semibold transition-all duration-200 select-none ${
             reactions.userLiked
               ? "border-rose-500/60 bg-rose-500/15 text-rose-400 shadow-[0_0_14px_rgba(244,63,94,0.25)] ring-1 ring-rose-500/30"
@@ -134,7 +135,9 @@ export function ArticleHeaderActions({
         >
           <span
             className={`flex items-center transition-transform duration-300 ${
-              isLikingAnimation ? "scale-140 rotate-12" : "group-hover:scale-115"
+              isLikingAnimation
+                ? "scale-140 rotate-12"
+                : "group-hover:scale-115"
             }`}
           >
             <HugeiconsIcon
@@ -185,9 +188,12 @@ export function ArticleHeaderActions({
           onClick={scrollToToc}
           title="Jump to Table of Contents"
           aria-label="Jump to table of contents"
-          className="hidden md:inline-flex lg:hidden h-8 cursor-pointer items-center gap-1.5 border border-border/80 bg-background px-2.5 font-mono text-xs font-semibold text-muted-foreground transition-all duration-200 select-none hover:border-border hover:text-foreground"
+          className="hidden h-8 cursor-pointer items-center gap-1.5 border border-border/80 bg-background px-2.5 font-mono text-xs font-semibold text-muted-foreground transition-all duration-200 select-none hover:border-border hover:text-foreground md:inline-flex lg:hidden"
         >
-          <HugeiconsIcon icon={MenuSquareIcon} className="size-3.5 text-muted-foreground" />
+          <HugeiconsIcon
+            icon={MenuSquareIcon}
+            className="size-3.5 text-muted-foreground"
+          />
           <span className="text-[11px]">Index</span>
         </button>
       </div>

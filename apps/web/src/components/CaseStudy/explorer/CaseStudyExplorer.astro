@@ -16,8 +16,16 @@ const allProjects = [...caseStudies, ...standardProjects]
 
 const categories = [
   { id: "all", label: "All Systems", count: allProjects.length },
-  { id: "case-study", label: "Deep-Dive Case Studies", count: caseStudies.length },
-  { id: "project-only", label: "Architecture Starters", count: standardProjects.length },
+  {
+    id: "case-study",
+    label: "Deep-Dive Case Studies",
+    count: caseStudies.length,
+  },
+  {
+    id: "project-only",
+    label: "Architecture Starters",
+    count: standardProjects.length,
+  },
 ]
 
 // Extract top 10 unique popular tech tags
@@ -35,22 +43,24 @@ const allTechs = Array.from(
   />
 
   <!-- Case Studies Group (Deep Dives) -->
-  <section class="space-y-8 transition-opacity duration-300" id="cs-deep-dives-group">
+  <section
+    class="space-y-8 transition-opacity duration-300"
+    id="cs-deep-dives-group"
+  >
     <CaseStudySectionTitle label="[ DEEP_DIVE // SYSTEM_CASE_STUDIES ]" />
 
     <div class="grid gap-8" id="cs-deep-dives-grid">
-      {
-        caseStudies.map((project) => (
-          <CaseStudyCard project={project} />
-        ))
-      }
+      {caseStudies.map((project) => <CaseStudyCard project={project} />)}
     </div>
   </section>
 
   <!-- Additional Engineered Systems & Boilerplates -->
   {
     standardProjects.length > 0 && (
-      <section class="space-y-8 transition-opacity duration-300" id="cs-additional-projects-group">
+      <section
+        class="space-y-8 transition-opacity duration-300"
+        id="cs-additional-projects-group"
+      >
         <CaseStudySectionTitle label="[ ADDITIONAL // ARCHITECTURAL_STARTERS & SERVICES ]" />
 
         <div class="grid gap-6 md:grid-cols-2" id="cs-additional-projects-grid">
@@ -69,17 +79,34 @@ const allTechs = Array.from(
 <!-- Interactive Client-Side Filtering & Search Script -->
 <script>
   function setupCaseStudyExplorer() {
-    const searchInput = document.querySelector<HTMLInputElement>("[data-cs-search-input]")
-    const clearSearchBtn = document.querySelector<HTMLButtonElement>("[data-cs-search-clear]")
-    const categoryBtns = document.querySelectorAll<HTMLButtonElement>("[data-cs-filter]")
-    const techChips = document.querySelectorAll<HTMLButtonElement>("[data-cs-tech-chip]")
-    const clearTechBtn = document.querySelector<HTMLButtonElement>("[data-cs-clear-tech]")
-    const emptyState = document.querySelector<HTMLElement>("[data-cs-empty-state]")
-    const resetAllBtn = document.querySelector<HTMLButtonElement>("[data-cs-reset-all-btn]")
-    const visibleCountEl = document.querySelector<HTMLElement>("[data-cs-visible-count]")
-    
+    const searchInput = document.querySelector<HTMLInputElement>(
+      "[data-cs-search-input]"
+    )
+    const clearSearchBtn = document.querySelector<HTMLButtonElement>(
+      "[data-cs-search-clear]"
+    )
+    const categoryBtns =
+      document.querySelectorAll<HTMLButtonElement>("[data-cs-filter]")
+    const techChips = document.querySelectorAll<HTMLButtonElement>(
+      "[data-cs-tech-chip]"
+    )
+    const clearTechBtn = document.querySelector<HTMLButtonElement>(
+      "[data-cs-clear-tech]"
+    )
+    const emptyState = document.querySelector<HTMLElement>(
+      "[data-cs-empty-state]"
+    )
+    const resetAllBtn = document.querySelector<HTMLButtonElement>(
+      "[data-cs-reset-all-btn]"
+    )
+    const visibleCountEl = document.querySelector<HTMLElement>(
+      "[data-cs-visible-count]"
+    )
+
     const deepDivesGroup = document.getElementById("cs-deep-dives-group")
-    const additionalGroup = document.getElementById("cs-additional-projects-group")
+    const additionalGroup = document.getElementById(
+      "cs-additional-projects-group"
+    )
     const allCards = document.querySelectorAll<HTMLElement>(".project-card")
 
     let activeCategory = "all"
@@ -198,7 +225,8 @@ const allTechs = Array.from(
       searchInput.addEventListener("input", (e) => {
         searchQuery = (e.target as HTMLInputElement).value
         if (clearSearchBtn) {
-          clearSearchBtn.style.display = searchQuery.length > 0 ? "block" : "none"
+          clearSearchBtn.style.display =
+            searchQuery.length > 0 ? "block" : "none"
         }
         applyFilters()
       })
@@ -208,7 +236,10 @@ const allTechs = Array.from(
         if (
           e.key === "/" &&
           document.activeElement !== searchInput &&
-          !(document.activeElement instanceof HTMLInputElement || document.activeElement instanceof HTMLTextAreaElement)
+          !(
+            document.activeElement instanceof HTMLInputElement ||
+            document.activeElement instanceof HTMLTextAreaElement
+          )
         ) {
           e.preventDefault()
           searchInput.focus()
@@ -233,13 +264,28 @@ const allTechs = Array.from(
         const tech = chip.getAttribute("data-cs-tech-chip")
         if (activeTech === tech) {
           activeTech = null
-          chip.classList.remove("border-primary", "bg-primary/15", "text-primary", "font-bold")
+          chip.classList.remove(
+            "border-primary",
+            "bg-primary/15",
+            "text-primary",
+            "font-bold"
+          )
         } else {
           techChips.forEach((c) =>
-            c.classList.remove("border-primary", "bg-primary/15", "text-primary", "font-bold")
+            c.classList.remove(
+              "border-primary",
+              "bg-primary/15",
+              "text-primary",
+              "font-bold"
+            )
           )
           activeTech = tech
-          chip.classList.add("border-primary", "bg-primary/15", "text-primary", "font-bold")
+          chip.classList.add(
+            "border-primary",
+            "bg-primary/15",
+            "text-primary",
+            "font-bold"
+          )
         }
         applyFilters()
       })
@@ -250,7 +296,12 @@ const allTechs = Array.from(
       clearTechBtn.addEventListener("click", () => {
         activeTech = null
         techChips.forEach((c) =>
-          c.classList.remove("border-primary", "bg-primary/15", "text-primary", "font-bold")
+          c.classList.remove(
+            "border-primary",
+            "bg-primary/15",
+            "text-primary",
+            "font-bold"
+          )
         )
         applyFilters()
       })
@@ -268,7 +319,12 @@ const allTechs = Array.from(
         clearSearchBtn.style.display = "none"
       }
       techChips.forEach((c) =>
-        c.classList.remove("border-primary", "bg-primary/15", "text-primary", "font-bold")
+        c.classList.remove(
+          "border-primary",
+          "bg-primary/15",
+          "text-primary",
+          "font-bold"
+        )
       )
       categoryBtns.forEach((b, idx) => {
         if (idx === 0) {
@@ -280,7 +336,11 @@ const allTechs = Array.from(
             "text-primary",
             "shadow-[0_0_14px_oklch(var(--primary)/20%)]"
           )
-          b.classList.remove("border-border", "bg-background/50", "text-muted-foreground")
+          b.classList.remove(
+            "border-border",
+            "bg-background/50",
+            "text-muted-foreground"
+          )
           b.setAttribute("aria-selected", "true")
         } else {
           b.classList.remove(
@@ -291,7 +351,11 @@ const allTechs = Array.from(
             "text-primary",
             "shadow-[0_0_14px_oklch(var(--primary)/20%)]"
           )
-          b.classList.add("border-border", "bg-background/50", "text-muted-foreground")
+          b.classList.add(
+            "border-border",
+            "bg-background/50",
+            "text-muted-foreground"
+          )
           b.setAttribute("aria-selected", "false")
         }
       })
@@ -303,7 +367,9 @@ const allTechs = Array.from(
     }
 
     // Suggested chips in empty state
-    const suggestedChips = document.querySelectorAll<HTMLButtonElement>("[data-cs-suggested-chip]")
+    const suggestedChips = document.querySelectorAll<HTMLButtonElement>(
+      "[data-cs-suggested-chip]"
+    )
     suggestedChips.forEach((chip) => {
       chip.addEventListener("click", () => {
         const tech = chip.getAttribute("data-cs-suggested-chip")
@@ -314,9 +380,19 @@ const allTechs = Array.from(
         activeTech = tech
         techChips.forEach((c) => {
           if (c.getAttribute("data-cs-tech-chip") === tech) {
-            c.classList.add("border-primary", "bg-primary/15", "text-primary", "font-bold")
+            c.classList.add(
+              "border-primary",
+              "bg-primary/15",
+              "text-primary",
+              "font-bold"
+            )
           } else {
-            c.classList.remove("border-primary", "bg-primary/15", "text-primary", "font-bold")
+            c.classList.remove(
+              "border-primary",
+              "bg-primary/15",
+              "text-primary",
+              "font-bold"
+            )
           }
         })
         applyFilters()

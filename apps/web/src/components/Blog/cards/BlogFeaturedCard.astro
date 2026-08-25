@@ -21,18 +21,10 @@ const { post, class: className = "" } = Astro.props
 >
   {/* Corner brackets — site-standard */}
 
-  <div class="grid grid-cols-1 lg:grid-cols-12 items-stretch">
+  <div class="grid grid-cols-1 items-stretch lg:grid-cols-12">
     {/* Left: Thumbnail */}
     <div
-      class="relative aspect-[16/10] w-full overflow-hidden border-b lg:border-b-0 lg:border-r border-border bg-muted/30 lg:col-span-7 lg:aspect-auto lg:h-full
-        before:pointer-events-none before:absolute before:inset-0 before:z-10
-        before:bg-[linear-gradient(105deg,transparent_40%,oklch(var(--primary)/12%)_50%,transparent_60%)]
-        before:bg-[length:200%_100%] before:transition-all before:duration-700
-        hover:before:bg-[-100%_0]
-        after:pointer-events-none after:absolute after:inset-0
-        after:bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(0,0,0,0.04)_2px,rgba(0,0,0,0.04)_4px)]
-        after:opacity-60 after:transition-opacity after:duration-400
-        group-hover:after:opacity-0"
+      class="relative aspect-[16/10] w-full overflow-hidden border-b border-border bg-muted/30 before:pointer-events-none before:absolute before:inset-0 before:z-10 before:bg-[linear-gradient(105deg,transparent_40%,oklch(var(--primary)/12%)_50%,transparent_60%)] before:bg-[length:200%_100%] before:transition-all before:duration-700 after:pointer-events-none after:absolute after:inset-0 after:bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(0,0,0,0.04)_2px,rgba(0,0,0,0.04)_4px)] after:opacity-60 after:transition-opacity after:duration-400 group-hover:after:opacity-0 hover:before:bg-[-100%_0] lg:col-span-7 lg:aspect-auto lg:h-full lg:border-r lg:border-b-0"
     >
       <img
         src={post.thumbnail}
@@ -41,14 +33,17 @@ const { post, class: className = "" } = Astro.props
       />
       <div
         class="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/85 via-background/15 to-transparent lg:bg-gradient-to-r lg:from-transparent lg:via-background/5 lg:to-background/85"
-      ></div>
+      >
+      </div>
 
       {/* Badges */}
       <div class="absolute top-4 left-4 z-20 flex flex-wrap items-center gap-2">
         <span
           class="inline-flex items-center gap-2 bg-primary px-3 py-1 font-mono text-xs font-bold tracking-wider text-primary-foreground uppercase shadow-md"
         >
-          <span class="h-1.5 w-1.5 animate-pulse rounded-full bg-primary-foreground"></span>
+          <span
+            class="h-1.5 w-1.5 animate-pulse rounded-full bg-primary-foreground"
+          ></span>
           FEATURED
         </span>
         <span
@@ -96,7 +91,9 @@ const { post, class: className = "" } = Astro.props
           )
         }
 
-        <p class="mt-4 text-sm leading-relaxed text-muted-foreground sm:text-base">
+        <p
+          class="mt-4 text-sm leading-relaxed text-muted-foreground sm:text-base"
+        >
           {post.summary}
         </p>
 
@@ -139,7 +136,9 @@ const { post, class: className = "" } = Astro.props
             ></span>
           </div>
           <div class="flex flex-col gap-0.5">
-            <span class="font-mono text-xs font-bold leading-tight text-foreground">
+            <span
+              class="font-mono text-xs leading-tight font-bold text-foreground"
+            >
               {post.author.name}
             </span>
             {
@@ -154,14 +153,19 @@ const { post, class: className = "" } = Astro.props
 
         {/* Stats & CTA */}
         <div class="flex items-center gap-3">
-          <div class="hidden sm:flex items-center gap-2.5 font-mono text-xs text-muted-foreground">
+          <div
+            class="hidden items-center gap-2.5 font-mono text-xs text-muted-foreground sm:flex"
+          >
             {
               post.views && (
                 <span
                   class="inline-flex items-center gap-1 transition-colors group-hover:text-foreground"
                   title={`${post.views} views`}
                 >
-                  <HugeiconsIcon icon={ViewIcon} className="size-3.5 text-primary/60" />
+                  <HugeiconsIcon
+                    icon={ViewIcon}
+                    className="size-3.5 text-primary/60"
+                  />
                   <span>{formatViewsCount(post.views)}</span>
                 </span>
               )
@@ -175,7 +179,6 @@ const { post, class: className = "" } = Astro.props
                   <HugeiconsIcon
                     icon={FavouriteIcon}
                     className="size-3.5 fill-rose-400/25 text-rose-400"
-                   
                   />
                   <span>{post.likesCount}</span>
                 </span>
@@ -194,13 +197,19 @@ const { post, class: className = "" } = Astro.props
             }
           </div>
 
-          <a href={`/blog/${post.slug}`} class="relative z-20 inline-block shrink-0">
+          <a
+            href={`/blog/${post.slug}`}
+            class="relative z-20 inline-block shrink-0"
+          >
             <button
               type="button"
               class="group/btn inline-flex cursor-pointer items-center gap-2 border border-primary/40 bg-primary/10 px-4 py-2 font-mono text-xs font-bold tracking-wider text-primary uppercase transition-all duration-200 hover:border-primary hover:bg-primary hover:text-primary-foreground"
             >
               <span>Read Article</span>
-              <span class="transition-transform duration-200 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5">↗</span>
+              <span
+                class="transition-transform duration-200 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5"
+                >↗</span
+              >
             </button>
           </a>
         </div>

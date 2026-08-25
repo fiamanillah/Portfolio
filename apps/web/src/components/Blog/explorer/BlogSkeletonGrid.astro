@@ -23,7 +23,7 @@ const skeletonCards = Array.from({ length: count }, (_, i) => i)
         const isLastMobile = index === skeletonCards.length - 1
         return (
           <div
-            class={`relative flex flex-col sm:flex-row items-stretch overflow-hidden animate-pulse border-border ${
+            class={`relative flex animate-pulse flex-col items-stretch overflow-hidden border-border sm:flex-row ${
               !isLastMobile ? "border-b" : "border-b-0"
             } ${isLeftCol ? "md:border-r" : "md:border-r-0"} ${
               isLastRow ? "md:border-b-0" : "md:border-b"
@@ -36,10 +36,10 @@ const skeletonCards = Array.from({ length: count }, (_, i) => i)
             <div class="pointer-events-none absolute right-2 bottom-2 z-20 h-2.5 w-2.5 border-r-[1.5px] border-b-[1.5px] border-border/40" />
 
             {/* Thumbnail Skeleton (16:9) */}
-            <div class="relative aspect-[16/9] w-full sm:w-[160px] md:w-[155px] lg:w-[185px] xl:w-[200px] shrink-0 overflow-hidden border-b sm:border-b-0 sm:border-r border-border bg-muted/40" />
+            <div class="relative aspect-[16/9] w-full shrink-0 overflow-hidden border-b border-border bg-muted/40 sm:w-[160px] sm:border-r sm:border-b-0 md:w-[155px] lg:w-[185px] xl:w-[200px]" />
 
             {/* Content Skeleton */}
-            <div class="flex flex-1 flex-col justify-between p-4 sm:p-5 min-w-0">
+            <div class="flex min-w-0 flex-1 flex-col justify-between p-4 sm:p-5">
               <div class="space-y-2.5">
                 {/* Category & Date */}
                 <div class="flex items-center justify-between">

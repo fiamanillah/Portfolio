@@ -93,7 +93,7 @@ export function BookingCalendar({
         <div className="pointer-events-none absolute top-0 left-0 z-10 size-3 border-t border-l border-primary/60" />
         <div className="pointer-events-none absolute top-0 right-0 z-10 size-3 border-t border-r border-primary/60" />
         <div className="pointer-events-none absolute bottom-0 left-0 z-10 size-3 border-b border-l border-primary/60" />
-        <div className="pointer-events-none absolute bottom-0 right-0 z-10 size-3 border-b border-r border-primary/60" />
+        <div className="pointer-events-none absolute right-0 bottom-0 z-10 size-3 border-r border-b border-primary/60" />
 
         {/* Month navigation header */}
         <div className="flex items-center justify-between border-b border-border px-4 py-3 sm:px-5">
@@ -121,8 +121,18 @@ export function BookingCalendar({
               title="Previous month"
               aria-label="Previous month"
             >
-              <svg className="size-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+              <svg
+                className="size-3.5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth="2.5"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M15 19l-7-7 7-7"
+                />
               </svg>
             </button>
 
@@ -133,8 +143,18 @@ export function BookingCalendar({
               title="Next month"
               aria-label="Next month"
             >
-              <svg className="size-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+              <svg
+                className="size-3.5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth="2.5"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M9 5l7 7-7 7"
+                />
               </svg>
             </button>
           </div>
@@ -143,7 +163,10 @@ export function BookingCalendar({
         {/* Day-of-week labels */}
         <div className="grid grid-cols-7 border-b border-border/60 bg-muted/20 px-3 py-2 text-center">
           {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((d) => (
-            <span key={d} className="font-mono text-[10px] font-bold tracking-widest text-muted-foreground/80 uppercase">
+            <span
+              key={d}
+              className="font-mono text-[10px] font-bold tracking-widest text-muted-foreground/80 uppercase"
+            >
               {d}
             </span>
           ))}
@@ -168,10 +191,10 @@ export function BookingCalendar({
                   isSelected
                     ? "border border-primary bg-primary font-bold text-primary-foreground shadow-sm shadow-primary/20"
                     : isDisabled
-                    ? "cursor-not-allowed border border-transparent text-muted-foreground/25"
-                    : item.isWeekend
-                    ? "border border-transparent bg-background/40 text-muted-foreground hover:border-primary/50 hover:bg-primary/10 hover:text-primary cursor-pointer"
-                    : "border border-border/40 bg-background text-foreground hover:border-primary/50 hover:bg-primary/10 hover:text-primary cursor-pointer",
+                      ? "cursor-not-allowed border border-transparent text-muted-foreground/25"
+                      : item.isWeekend
+                        ? "cursor-pointer border border-transparent bg-background/40 text-muted-foreground hover:border-primary/50 hover:bg-primary/10 hover:text-primary"
+                        : "cursor-pointer border border-border/40 bg-background text-foreground hover:border-primary/50 hover:bg-primary/10 hover:text-primary",
                   item.isToday && !isSelected
                     ? "border-primary/60 font-bold text-primary"
                     : "",
@@ -193,12 +216,15 @@ export function BookingCalendar({
           <div className="font-mono text-xs text-muted-foreground">
             Selected Date:{" "}
             <strong className="text-foreground">
-              {new Date(selectedDate + "T00:00:00").toLocaleDateString("en-US", {
-                weekday: "short",
-                month: "short",
-                day: "numeric",
-                year: "numeric",
-              })}
+              {new Date(selectedDate + "T00:00:00").toLocaleDateString(
+                "en-US",
+                {
+                  weekday: "short",
+                  month: "short",
+                  day: "numeric",
+                  year: "numeric",
+                }
+              )}
             </strong>
           </div>
 
@@ -206,11 +232,21 @@ export function BookingCalendar({
             <button
               type="button"
               onClick={onContinue}
-              className="btn-shimmer flex items-center justify-center gap-2 border border-primary bg-primary px-5 py-2.5 font-mono text-xs font-bold uppercase tracking-wider text-primary-foreground transition-all hover:opacity-90 active:scale-[0.99]"
+              className="btn-shimmer flex items-center justify-center gap-2 border border-primary bg-primary px-5 py-2.5 font-mono text-xs font-bold tracking-wider text-primary-foreground uppercase transition-all hover:opacity-90 active:scale-[0.99]"
             >
               <span>View Available Slots</span>
-              <svg className="size-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              <svg
+                className="size-3.5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth="2.5"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M14 5l7 7m0 0l-7 7m7-7H3"
+                />
               </svg>
             </button>
           )}

@@ -30,22 +30,45 @@ const activeResume = await ResumeApi.fetchActiveResume()
 
   <style>
     @keyframes float-glow {
-      0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.12; }
-      50% { transform: translate(-50%, -50%) scale(1.18); opacity: 0.22; }
+      0%,
+      100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.12;
+      }
+      50% {
+        transform: translate(-50%, -50%) scale(1.18);
+        opacity: 0.22;
+      }
     }
     @keyframes blink-cursor {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0; }
+      0%,
+      100% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0;
+      }
     }
     .cursor-blink {
       animation: blink-cursor 1.1s step-end infinite;
     }
     @keyframes slide-up-fade {
-      from { opacity: 0; transform: translateY(18px); }
-      to { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
-    .anim-in { animation: slide-up-fade 0.7s ease forwards; }
-    .anim-in-delay { animation: slide-up-fade 0.7s 0.18s ease forwards; opacity: 0; }
+    .anim-in {
+      animation: slide-up-fade 0.7s ease forwards;
+    }
+    .anim-in-delay {
+      animation: slide-up-fade 0.7s 0.18s ease forwards;
+      opacity: 0;
+    }
   </style>
 
   <!-- Hero Header matching Site-Wide Standards -->
@@ -57,18 +80,21 @@ const activeResume = await ResumeApi.fetchActiveResume()
     <div class="pointer-events-none absolute inset-0 -z-10">
       <div
         class="absolute top-1/2 left-1/4 h-96 w-96 -translate-x-1/2 -translate-y-1/2 animate-[float-glow_8s_ease-in-out_infinite] rounded-full bg-primary/15 blur-[110px]"
-      ></div>
+      >
+      </div>
       <div
         class="absolute top-1/3 right-1/4 h-64 w-64 -translate-x-1/2 -translate-y-1/2 animate-[float-glow_8s_ease-in-out_infinite] rounded-full bg-primary/10 blur-[90px]"
         style="animation-delay: -4s;"
-      ></div>
+      >
+      </div>
     </div>
 
     <!-- Diagonal stripe bg overlay -->
     <div
       class="diagonal-stripes pointer-events-none absolute inset-0 z-0 bg-background opacity-80"
       aria-hidden="true"
-    ></div>
+    >
+    </div>
 
     <div class="relative z-10 mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
       <!-- Section label pill -->
@@ -80,7 +106,8 @@ const activeResume = await ResumeApi.fetchActiveResume()
             class="h-1.5 w-1.5 animate-pulse rounded-full bg-primary shadow-[0_0_6px_oklch(var(--primary)/80%)]"
           ></span>
           CURRICULUM_VITAE // OFFICIAL_RESUME
-          <span class="cursor-blink ml-1 inline-block h-3 w-0.5 bg-primary"></span>
+          <span class="cursor-blink ml-1 inline-block h-3 w-0.5 bg-primary"
+          ></span>
         </p>
       </div>
 
@@ -94,13 +121,14 @@ const activeResume = await ResumeApi.fetchActiveResume()
       </div>
 
       <!-- Accent bar -->
-      <div class="accent-bar mx-auto mt-6 mb-8 w-52 anim-in-delay"></div>
+      <div class="accent-bar anim-in-delay mx-auto mt-6 mb-8 w-52"></div>
 
       <!-- Description -->
       <p
         class="anim-in-delay mx-auto max-w-2xl text-center text-base leading-relaxed text-muted-foreground sm:text-lg"
       >
-        Detailed overview of my engineering experience, system architecture track record, verified competencies, and production background.
+        Detailed overview of my engineering experience, system architecture
+        track record, verified competencies, and production background.
       </p>
     </div>
   </header>

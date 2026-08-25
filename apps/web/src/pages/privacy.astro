@@ -11,14 +11,30 @@ const sections = [
   { id: "controller", title: "Data Controller Information", num: "02" },
   { id: "data-collection", title: "Information We Collect", num: "03" },
   { id: "legal-basis", title: "Legal Basis for Processing", num: "04" },
-  { id: "third-parties", title: "Third-Party Services & Infrastructure", num: "05" },
+  {
+    id: "third-parties",
+    title: "Third-Party Services & Infrastructure",
+    num: "05",
+  },
   { id: "cookies-storage", title: "Cookies & Local Storage", num: "06" },
   { id: "user-rights", title: "Your Rights (GDPR & CCPA)", num: "07" },
-  { id: "security-retention", title: "Security & Retention Policies", num: "08" },
-  { id: "international-transfers", title: "International Data Transfers", num: "09" },
+  {
+    id: "security-retention",
+    title: "Security & Retention Policies",
+    num: "08",
+  },
+  {
+    id: "international-transfers",
+    title: "International Data Transfers",
+    num: "09",
+  },
   { id: "children", title: "Children's Privacy", num: "10" },
   { id: "policy-changes", title: "Modifications to this Policy", num: "11" },
-  { id: "contact-inquiries", title: "Contact & Data Protection Inquiries", num: "12" },
+  {
+    id: "contact-inquiries",
+    title: "Contact & Data Protection Inquiries",
+    num: "12",
+  },
 ]
 ---
 
@@ -49,102 +65,178 @@ const sections = [
   <SectionDivider />
 
   <!-- Legal Main Layout with Sticky Sidebar -->
-  <LegalLayout currentDoc="privacy" sections={sections} pageTitle="Privacy Policy">
-
+  <LegalLayout
+    currentDoc="privacy"
+    sections={sections}
+    pageTitle="Privacy Policy"
+  >
     <!-- 01. Overview -->
-    <section id="overview" class="legal-card scroll-mt-24 rounded-sm border border-border/80 bg-card/40 p-6 sm:p-8 backdrop-blur-xs">
+    <section
+      id="overview"
+      class="legal-card scroll-mt-24 rounded-sm border border-border/80 bg-card/40 p-6 backdrop-blur-xs sm:p-8"
+    >
       <div class="mb-4 flex items-center gap-3">
         <span class="font-mono text-xs font-bold text-primary">01 //</span>
-        <h2 class="m-0 text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+        <h2
+          class="m-0 text-xl font-bold tracking-tight text-foreground sm:text-2xl"
+        >
           Overview &amp; Privacy Principles
         </h2>
       </div>
       <p class="text-sm leading-relaxed text-muted-foreground sm:text-base">
-        Welcome to the official portfolio and engineering journal of <strong class="text-foreground">Fi Amanillah</strong> ("we", "us", or "our", accessible at <a href="https://fi.amanillah.com" class="text-primary underline hover:text-foreground">fi.amanillah.com</a>). We are dedicated to respecting your privacy, upholding global digital sovereignty, and maintaining strict transparency regarding any data shared through our website, consultation systems, developer services, and technical newsletter.
+        Welcome to the official portfolio and engineering journal of <strong
+          class="text-foreground">Fi Amanillah</strong
+        > ("we", "us", or "our", accessible at <a
+          href="https://fi.amanillah.com"
+          class="text-primary underline hover:text-foreground"
+          >fi.amanillah.com</a
+        >). We are dedicated to respecting your privacy, upholding global
+        digital sovereignty, and maintaining strict transparency regarding any
+        data shared through our website, consultation systems, developer
+        services, and technical newsletter.
       </p>
-      <div class="mt-4 rounded-xs border-l-2 border-primary bg-primary/5 p-4 font-mono text-xs text-foreground/90">
-        <strong class="text-primary uppercase tracking-wider block mb-1">Our Core Commitment:</strong>
-        We do not sell, rent, monetize, or broker your personal information. We gather only the minimal data strictly necessary to provide engineering consultation, distribute requested technical articles, secure account sessions, and defend system infrastructure against malicious traffic.
+      <div
+        class="mt-4 rounded-xs border-l-2 border-primary bg-primary/5 p-4 font-mono text-xs text-foreground/90"
+      >
+        <strong class="mb-1 block tracking-wider text-primary uppercase"
+          >Our Core Commitment:</strong
+        >
+        We do not sell, rent, monetize, or broker your personal information. We gather
+        only the minimal data strictly necessary to provide engineering consultation,
+        distribute requested technical articles, secure account sessions, and defend
+        system infrastructure against malicious traffic.
       </div>
     </section>
 
     <!-- 02. Data Controller -->
-    <section id="controller" class="legal-card scroll-mt-24 rounded-sm border border-border/80 bg-card/40 p-6 sm:p-8 backdrop-blur-xs">
+    <section
+      id="controller"
+      class="legal-card scroll-mt-24 rounded-sm border border-border/80 bg-card/40 p-6 backdrop-blur-xs sm:p-8"
+    >
       <div class="mb-4 flex items-center gap-3">
         <span class="font-mono text-xs font-bold text-primary">02 //</span>
-        <h2 class="m-0 text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+        <h2
+          class="m-0 text-xl font-bold tracking-tight text-foreground sm:text-2xl"
+        >
           Data Controller Information
         </h2>
       </div>
       <p class="text-sm leading-relaxed text-muted-foreground sm:text-base">
-        Under the European General Data Protection Regulation (<strong class="text-foreground">GDPR Regulation (EU) 2016/679</strong>), UK GDPR, and related privacy frameworks, the designated data controller responsible for your personal data is:
+        Under the European General Data Protection Regulation (<strong
+          class="text-foreground">GDPR Regulation (EU) 2016/679</strong
+        >), UK GDPR, and related privacy frameworks, the designated data
+        controller responsible for your personal data is:
       </p>
       <div class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
         <div class="border border-border/70 bg-background/60 p-4">
-          <span class="font-mono text-[10px] uppercase text-muted-foreground">Controller &amp; Operator</span>
-          <p class="mt-1 font-mono text-sm font-bold text-foreground">Fi Amanillah</p>
-          <p class="text-xs text-muted-foreground">Full-Stack Engineer &amp; System Architect</p>
+          <span class="font-mono text-[10px] text-muted-foreground uppercase"
+            >Controller &amp; Operator</span
+          >
+          <p class="mt-1 font-mono text-sm font-bold text-foreground">
+            Fi Amanillah
+          </p>
+          <p class="text-xs text-muted-foreground">
+            Full-Stack Engineer &amp; System Architect
+          </p>
         </div>
         <div class="border border-border/70 bg-background/60 p-4">
-          <span class="font-mono text-[10px] uppercase text-muted-foreground">Direct Legal Inquiries</span>
+          <span class="font-mono text-[10px] text-muted-foreground uppercase"
+            >Direct Legal Inquiries</span
+          >
           <p class="mt-1 font-mono text-sm font-bold text-primary">
-            <a href="mailto:fi@amanillah.com" class="hover:underline">fi@amanillah.com</a>
+            <a href="mailto:fi@amanillah.com" class="hover:underline"
+              >fi@amanillah.com</a
+            >
           </p>
-          <p class="text-xs text-muted-foreground">Subject: [Privacy Inquiry / Data Request]</p>
+          <p class="text-xs text-muted-foreground">
+            Subject: [Privacy Inquiry / Data Request]
+          </p>
         </div>
       </div>
     </section>
 
     <!-- 03. Information We Collect -->
-    <section id="data-collection" class="legal-card scroll-mt-24 rounded-sm border border-border/80 bg-card/40 p-6 sm:p-8 backdrop-blur-xs">
+    <section
+      id="data-collection"
+      class="legal-card scroll-mt-24 rounded-sm border border-border/80 bg-card/40 p-6 backdrop-blur-xs sm:p-8"
+    >
       <div class="mb-4 flex items-center gap-3">
         <span class="font-mono text-xs font-bold text-primary">03 //</span>
-        <h2 class="m-0 text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+        <h2
+          class="m-0 text-xl font-bold tracking-tight text-foreground sm:text-2xl"
+        >
           Information We Collect
         </h2>
       </div>
       <p class="text-sm leading-relaxed text-muted-foreground sm:text-base">
-        Depending on how you interact with our platform, we may collect the following categories of information:
+        Depending on how you interact with our platform, we may collect the
+        following categories of information:
       </p>
 
       <div class="mt-6 space-y-4">
         <!-- Item A -->
         <div class="border border-border/60 bg-background/50 p-4">
-          <h3 class="font-mono text-sm font-bold text-foreground flex items-center gap-2">
+          <h3
+            class="flex items-center gap-2 font-mono text-sm font-bold text-foreground"
+          >
             <span class="h-2 w-2 rounded-full bg-primary"></span>
             A. Information You Voluntarily Provide
           </h3>
-          <ul class="mt-2 space-y-1.5 pl-4 text-xs sm:text-sm text-muted-foreground list-disc">
+          <ul
+            class="mt-2 list-disc space-y-1.5 pl-4 text-xs text-muted-foreground sm:text-sm"
+          >
             <li>
-              <strong class="text-foreground">Newsletter &amp; Updates:</strong> When you subscribe to our tech journal, we collect your email address, subscription source, and optional topic preferences.
+              <strong class="text-foreground">Newsletter &amp; Updates:</strong> When
+              you subscribe to our tech journal, we collect your email address, subscription
+              source, and optional topic preferences.
             </li>
             <li>
-              <strong class="text-foreground">Contact &amp; Project Inquiries:</strong> When submitting an inquiry via our contact form, we collect your name, email address, message body, timeline estimates, and budget ranges.
+              <strong class="text-foreground"
+                >Contact &amp; Project Inquiries:</strong
+              > When submitting an inquiry via our contact form, we collect your name,
+              email address, message body, timeline estimates, and budget ranges.
             </li>
             <li>
-              <strong class="text-foreground">Consultation Bookings:</strong> When scheduling a discovery call, we collect your contact name, work email, preferred timezone, and meeting discussion points to formulate calendar invites.
+              <strong class="text-foreground">Consultation Bookings:</strong> When
+              scheduling a discovery call, we collect your contact name, work email,
+              preferred timezone, and meeting discussion points to formulate calendar
+              invites.
             </li>
             <li>
-              <strong class="text-foreground">Developer Accounts &amp; Profiles:</strong> When registering an account, we collect your username, hashed credentials, custom profile links, and two-factor authentication (TOTP) metadata.
+              <strong class="text-foreground"
+                >Developer Accounts &amp; Profiles:</strong
+              > When registering an account, we collect your username, hashed credentials,
+              custom profile links, and two-factor authentication (TOTP) metadata.
             </li>
           </ul>
         </div>
 
         <!-- Item B -->
         <div class="border border-border/60 bg-background/50 p-4">
-          <h3 class="font-mono text-sm font-bold text-foreground flex items-center gap-2">
+          <h3
+            class="flex items-center gap-2 font-mono text-sm font-bold text-foreground"
+          >
             <span class="h-2 w-2 rounded-full bg-primary"></span>
             B. Automatically Collected Technical Data
           </h3>
-          <ul class="mt-2 space-y-1.5 pl-4 text-xs sm:text-sm text-muted-foreground list-disc">
+          <ul
+            class="mt-2 list-disc space-y-1.5 pl-4 text-xs text-muted-foreground sm:text-sm"
+          >
             <li>
-              <strong class="text-foreground">System Telemetry &amp; Logs:</strong> Standard HTTP server logs including masked IP addresses, browser user-agent strings, referring URLs, request timestamps, and response status codes.
+              <strong class="text-foreground"
+                >System Telemetry &amp; Logs:</strong
+              > Standard HTTP server logs including masked IP addresses, browser user-agent
+              strings, referring URLs, request timestamps, and response status codes.
             </li>
             <li>
-              <strong class="text-foreground">Security &amp; Bot Prevention Data:</strong> Cryptographic challenge tokens generated by Cloudflare Turnstile to prevent spam without tracking browsing habits.
+              <strong class="text-foreground"
+                >Security &amp; Bot Prevention Data:</strong
+              > Cryptographic challenge tokens generated by Cloudflare Turnstile to
+              prevent spam without tracking browsing habits.
             </li>
             <li>
-              <strong class="text-foreground">Performance Metrics:</strong> Aggregated Core Web Vitals (LCP, FID, CLS) to monitor frontend rendering efficiency.
+              <strong class="text-foreground">Performance Metrics:</strong> Aggregated
+              Core Web Vitals (LCP, FID, CLS) to monitor frontend rendering efficiency.
             </li>
           </ul>
         </div>
@@ -152,246 +244,430 @@ const sections = [
     </section>
 
     <!-- 04. Legal Basis for Processing -->
-    <section id="legal-basis" class="legal-card scroll-mt-24 rounded-sm border border-border/80 bg-card/40 p-6 sm:p-8 backdrop-blur-xs">
+    <section
+      id="legal-basis"
+      class="legal-card scroll-mt-24 rounded-sm border border-border/80 bg-card/40 p-6 backdrop-blur-xs sm:p-8"
+    >
       <div class="mb-4 flex items-center gap-3">
         <span class="font-mono text-xs font-bold text-primary">04 //</span>
-        <h2 class="m-0 text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+        <h2
+          class="m-0 text-xl font-bold tracking-tight text-foreground sm:text-2xl"
+        >
           Legal Basis for Processing (GDPR Art. 6)
         </h2>
       </div>
       <p class="text-sm leading-relaxed text-muted-foreground sm:text-base">
-        We only process personal data when an explicit legal foundation exists under applicable regulations:
+        We only process personal data when an explicit legal foundation exists
+        under applicable regulations:
       </p>
 
       <div class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
         <div class="border border-border/60 bg-background/50 p-3.5">
-          <span class="font-mono text-xs font-bold text-primary">1. Consent (Art. 6(1)(a))</span>
+          <span class="font-mono text-xs font-bold text-primary"
+            >1. Consent (Art. 6(1)(a))</span
+          >
           <p class="mt-1 text-xs text-muted-foreground">
-            You explicitly opt in to receive our technical newsletter or voluntary notifications. You may revoke consent at any moment via the 1-click unsubscribe mechanism.
+            You explicitly opt in to receive our technical newsletter or
+            voluntary notifications. You may revoke consent at any moment via
+            the 1-click unsubscribe mechanism.
           </p>
         </div>
         <div class="border border-border/60 bg-background/50 p-3.5">
-          <span class="font-mono text-xs font-bold text-primary">2. Contractual Necessity (Art. 6(1)(b))</span>
+          <span class="font-mono text-xs font-bold text-primary"
+            >2. Contractual Necessity (Art. 6(1)(b))</span
+          >
           <p class="mt-1 text-xs text-muted-foreground">
-            Processing contact information and scheduling parameters required to respond to consultation requests or deliver contractual engineering deliverables.
+            Processing contact information and scheduling parameters required to
+            respond to consultation requests or deliver contractual engineering
+            deliverables.
           </p>
         </div>
         <div class="border border-border/60 bg-background/50 p-3.5">
-          <span class="font-mono text-xs font-bold text-primary">3. Legitimate Interests (Art. 6(1)(f))</span>
+          <span class="font-mono text-xs font-bold text-primary"
+            >3. Legitimate Interests (Art. 6(1)(f))</span
+          >
           <p class="mt-1 text-xs text-muted-foreground">
-            Mitigating denial-of-service (DDoS) attacks, preventing automated credential stuffing, optimizing system speed, and ensuring application security.
+            Mitigating denial-of-service (DDoS) attacks, preventing automated
+            credential stuffing, optimizing system speed, and ensuring
+            application security.
           </p>
         </div>
         <div class="border border-border/60 bg-background/50 p-3.5">
-          <span class="font-mono text-xs font-bold text-primary">4. Legal Obligation (Art. 6(1)(c))</span>
+          <span class="font-mono text-xs font-bold text-primary"
+            >4. Legal Obligation (Art. 6(1)(c))</span
+          >
           <p class="mt-1 text-xs text-muted-foreground">
-            Retaining mandatory tax, invoicing, or compliance records where required by applicable statutory laws.
+            Retaining mandatory tax, invoicing, or compliance records where
+            required by applicable statutory laws.
           </p>
         </div>
       </div>
     </section>
 
     <!-- 05. Third-Party Infrastructure -->
-    <section id="third-parties" class="legal-card scroll-mt-24 rounded-sm border border-border/80 bg-card/40 p-6 sm:p-8 backdrop-blur-xs">
+    <section
+      id="third-parties"
+      class="legal-card scroll-mt-24 rounded-sm border border-border/80 bg-card/40 p-6 backdrop-blur-xs sm:p-8"
+    >
       <div class="mb-4 flex items-center gap-3">
         <span class="font-mono text-xs font-bold text-primary">05 //</span>
-        <h2 class="m-0 text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+        <h2
+          class="m-0 text-xl font-bold tracking-tight text-foreground sm:text-2xl"
+        >
           Third-Party Services &amp; Infrastructure
         </h2>
       </div>
       <p class="text-sm leading-relaxed text-muted-foreground sm:text-base">
-        We utilize select infrastructure providers adhering to strict security and privacy standards to operate our website:
+        We utilize select infrastructure providers adhering to strict security
+        and privacy standards to operate our website:
       </p>
 
-      <div class="mt-4 divide-y divide-border/60 border border-border/60 bg-background/40">
-        <div class="p-3.5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+      <div
+        class="mt-4 divide-y divide-border/60 border border-border/60 bg-background/40"
+      >
+        <div
+          class="flex flex-col gap-2 p-3.5 sm:flex-row sm:items-center sm:justify-between"
+        >
           <div>
-            <strong class="font-mono text-xs text-foreground block">Cloudflare, Inc.</strong>
-            <span class="text-xs text-muted-foreground">Edge network routing, SSL termination, DDoS protection, and Turnstile spam defense.</span>
+            <strong class="block font-mono text-xs text-foreground"
+              >Cloudflare, Inc.</strong
+            >
+            <span class="text-xs text-muted-foreground"
+              >Edge network routing, SSL termination, DDoS protection, and
+              Turnstile spam defense.</span
+            >
           </div>
-          <span class="font-mono text-[10px] text-primary border border-primary/30 px-2 py-0.5 bg-primary/5 w-fit">Infrastructure</span>
+          <span
+            class="w-fit border border-primary/30 bg-primary/5 px-2 py-0.5 font-mono text-[10px] text-primary"
+            >Infrastructure</span
+          >
         </div>
 
-        <div class="p-3.5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+        <div
+          class="flex flex-col gap-2 p-3.5 sm:flex-row sm:items-center sm:justify-between"
+        >
           <div>
-            <strong class="font-mono text-xs text-foreground block">Plunk (useplunk.com)</strong>
-            <span class="text-xs text-muted-foreground">Transactional email routing, double opt-in confirmation, and newsletter distribution engine.</span>
+            <strong class="block font-mono text-xs text-foreground"
+              >Plunk (useplunk.com)</strong
+            >
+            <span class="text-xs text-muted-foreground"
+              >Transactional email routing, double opt-in confirmation, and
+              newsletter distribution engine.</span
+            >
           </div>
-          <span class="font-mono text-[10px] text-primary border border-primary/30 px-2 py-0.5 bg-primary/5 w-fit">Email Delivery</span>
+          <span
+            class="w-fit border border-primary/30 bg-primary/5 px-2 py-0.5 font-mono text-[10px] text-primary"
+            >Email Delivery</span
+          >
         </div>
 
-        <div class="p-3.5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+        <div
+          class="flex flex-col gap-2 p-3.5 sm:flex-row sm:items-center sm:justify-between"
+        >
           <div>
-            <strong class="font-mono text-xs text-foreground block">PostgreSQL / Cloud Database Cluster</strong>
-            <span class="text-xs text-muted-foreground">Encrypted database storage storing user bookmarks, subscriptions, and system configurations.</span>
+            <strong class="block font-mono text-xs text-foreground"
+              >PostgreSQL / Cloud Database Cluster</strong
+            >
+            <span class="text-xs text-muted-foreground"
+              >Encrypted database storage storing user bookmarks, subscriptions,
+              and system configurations.</span
+            >
           </div>
-          <span class="font-mono text-[10px] text-primary border border-primary/30 px-2 py-0.5 bg-primary/5 w-fit">Data Persistence</span>
+          <span
+            class="w-fit border border-primary/30 bg-primary/5 px-2 py-0.5 font-mono text-[10px] text-primary"
+            >Data Persistence</span
+          >
         </div>
 
-        <div class="p-3.5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+        <div
+          class="flex flex-col gap-2 p-3.5 sm:flex-row sm:items-center sm:justify-between"
+        >
           <div>
-            <strong class="font-mono text-xs text-foreground block">Google Calendar / Meet</strong>
-            <span class="text-xs text-muted-foreground">Generation of video conference links when you confirm a direct consultation booking.</span>
+            <strong class="block font-mono text-xs text-foreground"
+              >Google Calendar / Meet</strong
+            >
+            <span class="text-xs text-muted-foreground"
+              >Generation of video conference links when you confirm a direct
+              consultation booking.</span
+            >
           </div>
-          <span class="font-mono text-[10px] text-primary border border-primary/30 px-2 py-0.5 bg-primary/5 w-fit">Meeting Sync</span>
+          <span
+            class="w-fit border border-primary/30 bg-primary/5 px-2 py-0.5 font-mono text-[10px] text-primary"
+            >Meeting Sync</span
+          >
         </div>
       </div>
     </section>
 
     <!-- 06. Cookies & Local Storage -->
-    <section id="cookies-storage" class="legal-card scroll-mt-24 rounded-sm border border-border/80 bg-card/40 p-6 sm:p-8 backdrop-blur-xs">
+    <section
+      id="cookies-storage"
+      class="legal-card scroll-mt-24 rounded-sm border border-border/80 bg-card/40 p-6 backdrop-blur-xs sm:p-8"
+    >
       <div class="mb-4 flex items-center gap-3">
         <span class="font-mono text-xs font-bold text-primary">06 //</span>
-        <h2 class="m-0 text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+        <h2
+          class="m-0 text-xl font-bold tracking-tight text-foreground sm:text-2xl"
+        >
           Cookies &amp; Local Storage Practices
         </h2>
       </div>
       <p class="text-sm leading-relaxed text-muted-foreground sm:text-base">
-        We believe the modern web is plagued by unnecessary ad tracking. Therefore, <strong class="text-foreground">we do not deploy behavioral advertisement cookies, retargeting pixels, or third-party marketing trackers</strong>.
+        We believe the modern web is plagued by unnecessary ad tracking.
+        Therefore, <strong class="text-foreground"
+          >we do not deploy behavioral advertisement cookies, retargeting
+          pixels, or third-party marketing trackers</strong
+        >.
       </p>
 
       <div class="mt-4 space-y-3">
         <div class="border border-border/60 bg-background/50 p-3.5">
-          <strong class="font-mono text-xs text-foreground">1. Strictly Necessary &amp; Functional Storage</strong>
+          <strong class="font-mono text-xs text-foreground"
+            >1. Strictly Necessary &amp; Functional Storage</strong
+          >
           <p class="mt-1 text-xs text-muted-foreground">
-            We use browser <code class="bg-muted px-1.5 py-0.5 font-mono text-[11px] text-primary">localStorage</code> solely to remember client-side visual preferences (Dark Mode vs. Light Mode, Code font preferences, and active reading positions).
+            We use browser <code
+              class="bg-muted px-1.5 py-0.5 font-mono text-[11px] text-primary"
+              >localStorage</code
+            > solely to remember client-side visual preferences (Dark Mode vs. Light
+            Mode, Code font preferences, and active reading positions).
           </p>
         </div>
 
         <div class="border border-border/60 bg-background/50 p-3.5">
-          <strong class="font-mono text-xs text-foreground">2. Session Authentication Cookies</strong>
+          <strong class="font-mono text-xs text-foreground"
+            >2. Session Authentication Cookies</strong
+          >
           <p class="mt-1 text-xs text-muted-foreground">
-            If you log in as an authorized developer or administrator, an encrypted, <code class="bg-muted px-1.5 py-0.5 font-mono text-[11px] text-primary">HttpOnly</code>, <code class="bg-muted px-1.5 py-0.5 font-mono text-[11px] text-primary">SameSite=Strict</code> session cookie is utilized strictly to validate authorization on subsequent API calls.
+            If you log in as an authorized developer or administrator, an
+            encrypted, <code
+              class="bg-muted px-1.5 py-0.5 font-mono text-[11px] text-primary"
+              >HttpOnly</code
+            >, <code
+              class="bg-muted px-1.5 py-0.5 font-mono text-[11px] text-primary"
+              >SameSite=Strict</code
+            > session cookie is utilized strictly to validate authorization on subsequent
+            API calls.
           </p>
         </div>
       </div>
     </section>
 
     <!-- 07. User Rights -->
-    <section id="user-rights" class="legal-card scroll-mt-24 rounded-sm border border-border/80 bg-card/40 p-6 sm:p-8 backdrop-blur-xs">
+    <section
+      id="user-rights"
+      class="legal-card scroll-mt-24 rounded-sm border border-border/80 bg-card/40 p-6 backdrop-blur-xs sm:p-8"
+    >
       <div class="mb-4 flex items-center gap-3">
         <span class="font-mono text-xs font-bold text-primary">07 //</span>
-        <h2 class="m-0 text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+        <h2
+          class="m-0 text-xl font-bold tracking-tight text-foreground sm:text-2xl"
+        >
           Your Rights (GDPR, UK-GDPR &amp; CCPA)
         </h2>
       </div>
       <p class="text-sm leading-relaxed text-muted-foreground sm:text-base">
-        Regardless of your geographic location, we extend full digital privacy rights to all visitors:
+        Regardless of your geographic location, we extend full digital privacy
+        rights to all visitors:
       </p>
 
       <div class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
         <div class="border border-border/60 bg-background/50 p-3.5">
-          <strong class="font-mono text-xs text-foreground block">Right of Access</strong>
-          <p class="mt-1 text-xs text-muted-foreground">Request a machine-readable export of any personal records associated with your email address.</p>
+          <strong class="block font-mono text-xs text-foreground"
+            >Right of Access</strong
+          >
+          <p class="mt-1 text-xs text-muted-foreground">
+            Request a machine-readable export of any personal records associated
+            with your email address.
+          </p>
         </div>
 
         <div class="border border-border/60 bg-background/50 p-3.5">
-          <strong class="font-mono text-xs text-foreground block">Right to Rectification</strong>
-          <p class="mt-1 text-xs text-muted-foreground">Request immediate correction of inaccurate or outdated profile and contact details.</p>
+          <strong class="block font-mono text-xs text-foreground"
+            >Right to Rectification</strong
+          >
+          <p class="mt-1 text-xs text-muted-foreground">
+            Request immediate correction of inaccurate or outdated profile and
+            contact details.
+          </p>
         </div>
 
         <div class="border border-border/60 bg-background/50 p-3.5">
-          <strong class="font-mono text-xs text-foreground block">Right to Erasure ("To Be Forgotten")</strong>
-          <p class="mt-1 text-xs text-muted-foreground">Request full deletion of your newsletter subscription, contact records, and account data from our live databases.</p>
+          <strong class="block font-mono text-xs text-foreground"
+            >Right to Erasure ("To Be Forgotten")</strong
+          >
+          <p class="mt-1 text-xs text-muted-foreground">
+            Request full deletion of your newsletter subscription, contact
+            records, and account data from our live databases.
+          </p>
         </div>
 
         <div class="border border-border/60 bg-background/50 p-3.5">
-          <strong class="font-mono text-xs text-foreground block">Right to Withdraw Consent</strong>
-          <p class="mt-1 text-xs text-muted-foreground">Opt out of newsletter dispatches at any moment via the <a href="/unsubscribe" class="text-primary hover:underline">Unsubscribe Portal</a> or footer link.</p>
+          <strong class="block font-mono text-xs text-foreground"
+            >Right to Withdraw Consent</strong
+          >
+          <p class="mt-1 text-xs text-muted-foreground">
+            Opt out of newsletter dispatches at any moment via the <a
+              href="/unsubscribe"
+              class="text-primary hover:underline">Unsubscribe Portal</a
+            > or footer link.
+          </p>
         </div>
       </div>
 
       <div class="mt-4 rounded-xs border border-border/80 bg-card/60 p-4">
         <p class="text-xs leading-relaxed text-muted-foreground">
-          To exercise any statutory privacy right, simply transmit an email to <a href="mailto:fi@amanillah.com" class="text-primary font-mono font-semibold hover:underline">fi@amanillah.com</a>. We will fulfill verified requests within <strong class="text-foreground">30 days</strong> without charge.
+          To exercise any statutory privacy right, simply transmit an email to <a
+            href="mailto:fi@amanillah.com"
+            class="font-mono font-semibold text-primary hover:underline"
+            >fi@amanillah.com</a
+          >. We will fulfill verified requests within <strong
+            class="text-foreground">30 days</strong
+          > without charge.
         </p>
       </div>
     </section>
 
     <!-- 08. Security & Retention -->
-    <section id="security-retention" class="legal-card scroll-mt-24 rounded-sm border border-border/80 bg-card/40 p-6 sm:p-8 backdrop-blur-xs">
+    <section
+      id="security-retention"
+      class="legal-card scroll-mt-24 rounded-sm border border-border/80 bg-card/40 p-6 backdrop-blur-xs sm:p-8"
+    >
       <div class="mb-4 flex items-center gap-3">
         <span class="font-mono text-xs font-bold text-primary">08 //</span>
-        <h2 class="m-0 text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+        <h2
+          class="m-0 text-xl font-bold tracking-tight text-foreground sm:text-2xl"
+        >
           Security &amp; Retention Policies
         </h2>
       </div>
       <p class="text-sm leading-relaxed text-muted-foreground sm:text-base">
-        We implement rigorous architectural standards to safeguard personal information:
+        We implement rigorous architectural standards to safeguard personal
+        information:
       </p>
 
-      <ul class="mt-4 space-y-2 pl-4 text-xs sm:text-sm text-muted-foreground list-disc">
+      <ul
+        class="mt-4 list-disc space-y-2 pl-4 text-xs text-muted-foreground sm:text-sm"
+      >
         <li>
-          <strong class="text-foreground">Transport Encryption:</strong> All client-to-server and server-to-database communications are secured using modern TLS 1.3 encryption protocols.
+          <strong class="text-foreground">Transport Encryption:</strong> All client-to-server
+          and server-to-database communications are secured using modern TLS 1.3 encryption
+          protocols.
         </li>
         <li>
-          <strong class="text-foreground">Credential Security:</strong> Passwords are hashed using salted Argon2id / Bcrypt cryptographic functions; plain-text credentials are never persisted.
+          <strong class="text-foreground">Credential Security:</strong> Passwords
+          are hashed using salted Argon2id / Bcrypt cryptographic functions; plain-text
+          credentials are never persisted.
         </li>
         <li>
-          <strong class="text-foreground">Data Minimization:</strong> Unsubscribed email addresses are purged or irreversibly anonymized in compliance with anti-spam compliance guidelines.
+          <strong class="text-foreground">Data Minimization:</strong> Unsubscribed
+          email addresses are purged or irreversibly anonymized in compliance with
+          anti-spam compliance guidelines.
         </li>
         <li>
-          <strong class="text-foreground">Access Controls:</strong> Database credentials and API keys are stored in secure environment vaults with least-privilege access.
+          <strong class="text-foreground">Access Controls:</strong> Database credentials
+          and API keys are stored in secure environment vaults with least-privilege
+          access.
         </li>
       </ul>
     </section>
 
     <!-- 09. International Transfers -->
-    <section id="international-transfers" class="legal-card scroll-mt-24 rounded-sm border border-border/80 bg-card/40 p-6 sm:p-8 backdrop-blur-xs">
+    <section
+      id="international-transfers"
+      class="legal-card scroll-mt-24 rounded-sm border border-border/80 bg-card/40 p-6 backdrop-blur-xs sm:p-8"
+    >
       <div class="mb-4 flex items-center gap-3">
         <span class="font-mono text-xs font-bold text-primary">09 //</span>
-        <h2 class="m-0 text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+        <h2
+          class="m-0 text-xl font-bold tracking-tight text-foreground sm:text-2xl"
+        >
           International Data Transfers
         </h2>
       </div>
       <p class="text-sm leading-relaxed text-muted-foreground sm:text-base">
-        Because our edge infrastructure is distributed globally through Cloudflare and European cloud providers, your information may be processed across international borders. When data is transferred outside the European Economic Area (EEA), we ensure appropriate transfer mechanisms such as the <strong class="text-foreground">EU Standard Contractual Clauses (SCCs)</strong> are in place.
+        Because our edge infrastructure is distributed globally through
+        Cloudflare and European cloud providers, your information may be
+        processed across international borders. When data is transferred outside
+        the European Economic Area (EEA), we ensure appropriate transfer
+        mechanisms such as the <strong class="text-foreground"
+          >EU Standard Contractual Clauses (SCCs)</strong
+        > are in place.
       </p>
     </section>
 
     <!-- 10. Children's Privacy -->
-    <section id="children" class="legal-card scroll-mt-24 rounded-sm border border-border/80 bg-card/40 p-6 sm:p-8 backdrop-blur-xs">
+    <section
+      id="children"
+      class="legal-card scroll-mt-24 rounded-sm border border-border/80 bg-card/40 p-6 backdrop-blur-xs sm:p-8"
+    >
       <div class="mb-4 flex items-center gap-3">
         <span class="font-mono text-xs font-bold text-primary">10 //</span>
-        <h2 class="m-0 text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+        <h2
+          class="m-0 text-xl font-bold tracking-tight text-foreground sm:text-2xl"
+        >
           Children's Privacy
         </h2>
       </div>
       <p class="text-sm leading-relaxed text-muted-foreground sm:text-base">
-        Our services, articles, and software tools are intended for software professionals and adult learners aged 16 and older. We do not knowingly solicit or collect information from children under 16. If we discover that personal information of a minor was inadvertently collected, it will be deleted immediately.
+        Our services, articles, and software tools are intended for software
+        professionals and adult learners aged 16 and older. We do not knowingly
+        solicit or collect information from children under 16. If we discover
+        that personal information of a minor was inadvertently collected, it
+        will be deleted immediately.
       </p>
     </section>
 
     <!-- 11. Policy Changes -->
-    <section id="policy-changes" class="legal-card scroll-mt-24 rounded-sm border border-border/80 bg-card/40 p-6 sm:p-8 backdrop-blur-xs">
+    <section
+      id="policy-changes"
+      class="legal-card scroll-mt-24 rounded-sm border border-border/80 bg-card/40 p-6 backdrop-blur-xs sm:p-8"
+    >
       <div class="mb-4 flex items-center gap-3">
         <span class="font-mono text-xs font-bold text-primary">11 //</span>
-        <h2 class="m-0 text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+        <h2
+          class="m-0 text-xl font-bold tracking-tight text-foreground sm:text-2xl"
+        >
           Modifications to this Policy
         </h2>
       </div>
       <p class="text-sm leading-relaxed text-muted-foreground sm:text-base">
-        We may update this Privacy Policy periodically to reflect architectural evolutions, new services, or legal obligations. The "Last Revision" date at the top of this document indicates when the latest changes took effect. We encourage visitors to review this page periodically.
+        We may update this Privacy Policy periodically to reflect architectural
+        evolutions, new services, or legal obligations. The "Last Revision" date
+        at the top of this document indicates when the latest changes took
+        effect. We encourage visitors to review this page periodically.
       </p>
     </section>
 
     <!-- 12. Contact & Inquiries -->
-    <section id="contact-inquiries" class="legal-card scroll-mt-24 rounded-sm border border-border/80 bg-card/40 p-6 sm:p-8 backdrop-blur-xs">
+    <section
+      id="contact-inquiries"
+      class="legal-card scroll-mt-24 rounded-sm border border-border/80 bg-card/40 p-6 backdrop-blur-xs sm:p-8"
+    >
       <div class="mb-4 flex items-center gap-3">
         <span class="font-mono text-xs font-bold text-primary">12 //</span>
-        <h2 class="m-0 text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+        <h2
+          class="m-0 text-xl font-bold tracking-tight text-foreground sm:text-2xl"
+        >
           Contact &amp; Data Protection Inquiries
         </h2>
       </div>
       <p class="text-sm leading-relaxed text-muted-foreground sm:text-base">
-        If you have questions, feedback, or formal data protection requests regarding this policy, please reach out directly:
+        If you have questions, feedback, or formal data protection requests
+        regarding this policy, please reach out directly:
       </p>
 
       <div class="mt-4 border border-border/70 bg-background/60 p-5">
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div
+          class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+        >
           <div>
-            <p class="font-mono text-sm font-bold text-foreground">Fi Amanillah — Data Protection</p>
-            <p class="text-xs text-muted-foreground mt-0.5">Software Engineer &amp; System Architect</p>
+            <p class="font-mono text-sm font-bold text-foreground">
+              Fi Amanillah — Data Protection
+            </p>
+            <p class="mt-0.5 text-xs text-muted-foreground">
+              Software Engineer &amp; System Architect
+            </p>
             <a
               href="mailto:fi@amanillah.com"
               class="mt-2 inline-block font-mono text-sm font-semibold text-primary hover:underline"
@@ -408,7 +684,6 @@ const sections = [
         </div>
       </div>
     </section>
-
   </LegalLayout>
 
   <SectionDivider class="mt-12" />

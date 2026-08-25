@@ -81,8 +81,12 @@ if (post) {
   rawTitle = caseStudy.title
   title = `${caseStudy.title} | Technical Case Study`
 } else if (customTitle) {
-  rawTitle = customTitle.includes("|") ? customTitle.split("|")[0].trim() : customTitle
-  title = customTitle.includes("Fi Amanillah") ? customTitle : `${customTitle} | Fi Amanillah`
+  rawTitle = customTitle.includes("|")
+    ? customTitle.split("|")[0].trim()
+    : customTitle
+  title = customTitle.includes("Fi Amanillah")
+    ? customTitle
+    : `${customTitle} | Fi Amanillah`
 }
 
 // Determine Description
@@ -177,9 +181,7 @@ const wordCount = post?.content
   : undefined
 
 // Build Breadcrumbs
-let breadcrumbs: BreadcrumbItem[] = [
-  { name: "Home", url: `${siteUrl}/` },
-]
+let breadcrumbs: BreadcrumbItem[] = [{ name: "Home", url: `${siteUrl}/` }]
 
 if (customBreadcrumbs) {
   breadcrumbs = customBreadcrumbs
@@ -214,7 +216,8 @@ if (customBreadcrumbs) {
 
 // Author details
 const authorName = post?.author?.name || "Fi Amanillah"
-const authorRole = post?.author?.role || "Software Engineer & Full-Stack Architect"
+const authorRole =
+  post?.author?.role || "Software Engineer & Full-Stack Architect"
 const authorAvatar = post?.author?.avatar
   ? post.author.avatar.startsWith("http")
     ? post.author.avatar

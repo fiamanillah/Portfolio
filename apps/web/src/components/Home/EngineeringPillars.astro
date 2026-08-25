@@ -1,447 +1,580 @@
 ---
 // src/components/Home/EngineeringPillars.astro
+import {
+  ServerStack01Icon,
+  CloudServerIcon,
+  Layers01Icon,
+  Shield01Icon,
+  DashboardSpeed01Icon,
+  CpuIcon,
+} from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
+
+const summaryMetrics = [
+  { label: "Target Availability", value: "99.9%+" },
+  { label: "P99 Response Time", value: "< 50ms" },
+  { label: "Deployment Cycle", value: "Zero Downtime" },
+  { label: "Architecture Spec", value: "Event-Driven" },
+]
 ---
+
+<style>
+  .bento-card {
+    transition:
+      border-color 250ms ease,
+      background-color 250ms ease,
+      transform 250ms ease,
+      box-shadow 250ms ease;
+  }
+
+  .bento-card:hover {
+    border-color: oklch(var(--primary) / 60%);
+    background-color: oklch(var(--card) / 80%);
+    transform: translateY(-2px);
+    box-shadow: 0 14px 32px -10px oklch(var(--primary) / 12%);
+  }
+
+  .pillar-icon-box {
+    transition:
+      border-color 250ms ease,
+      background-color 250ms ease,
+      color 250ms ease,
+      transform 250ms ease;
+  }
+
+  .bento-card:hover .pillar-icon-box {
+    border-color: oklch(var(--primary) / 50%);
+    background-color: oklch(var(--primary) / 12%);
+    color: oklch(var(--primary));
+    transform: scale(1.05);
+  }
+
+  .manifesto-banner {
+    background-image: radial-gradient(
+      ellipse 80% 60% at 50% -20%,
+      oklch(var(--primary) / 8%),
+      transparent 75%
+    );
+  }
+</style>
 
 <section
   id="engineering-pillars"
   data-grid-cross
-  class="relative container mx-auto overflow-hidden py-12 md:py-16"
+  class="relative container mx-auto overflow-hidden pb-12 md:pb-16"
 >
   <!-- Section Header -->
-  <div class="relative mb-12 overflow-hidden text-center md:mb-16">
-    <!-- Background Pattern (diagonal stripes themed to site palette) -->
+  <div class="relative mb-8 overflow-hidden text-center md:mb-12">
+    <!-- Background Diagonal Stripes -->
     <div
       class="diagonal-stripes pointer-events-none absolute inset-0 z-10 bg-background"
       aria-hidden="true"
     >
     </div>
 
-    <div class="relative z-10 py-6">
-      <p class="section-label mb-3">Architectural Standards & Core Values</p>
+    <div class="relative z-10 py-5">
+      <p class="section-label mb-2.5">Architectural Standards & Core Values</p>
       <h2 class="section-title text-foreground">
         Engineering <span class="text-primary">Pillars</span>
       </h2>
-      <div class="accent-bar mx-auto mt-3 mb-2 w-48 md:w-56"></div>
+      <div class="accent-bar mx-auto mt-3.5 mb-2 w-48 md:w-56"></div>
     </div>
   </div>
 
-  <!-- Scattered Blueprint Modular Grid (Organic Asymmetric Random Placements) -->
-  <div
-    class="grid grid-cols-1 items-start gap-6 md:grid-cols-12 md:gap-x-6 md:gap-y-10 lg:gap-x-8 lg:gap-y-12"
-  >
-    <!-- Box 1: Scalable Backend Architecture (Col 1-5, flush left) -->
-    <div
-      class="group relative col-span-1 rounded-none border border-dashed border-border/80 bg-card/30 p-6 backdrop-blur-sm transition-all duration-300 hover:border-primary/60 hover:bg-card/60 sm:p-8 md:col-span-6 md:col-start-1 lg:col-span-5 lg:col-start-1"
+  <!-- Truly Asymmetric Interlocking Bento Grid -->
+  <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-12 lg:gap-6">
+    {
+      /* CARD 1: Scalable Backend Architecture (Tall 2-Row Left Anchor: 4 cols x 2 rows) */
+    }
+    <article
+      class="bento-card group relative col-span-1 flex flex-col justify-between border border-dashed border-border/80 bg-card/30 p-6 backdrop-blur-xs sm:p-7 md:col-span-2 lg:col-span-4 lg:row-span-2"
     >
-      <!-- Corner Plus Markers -->
+      {/* Corner Crosshairs */}
       <span
-        class="pointer-events-none absolute -top-[9px] -left-[6px] font-mono text-sm leading-none text-muted-foreground/60 transition-colors duration-300 select-none group-hover:text-primary"
-        >+</span
+        class="pointer-events-none absolute -top-[9px] -left-[6px] font-mono text-sm leading-none text-muted-foreground/40 transition-colors duration-300 select-none group-hover:text-primary"
+        aria-hidden="true"
       >
+        +
+      </span>
       <span
-        class="pointer-events-none absolute -top-[9px] -right-[6px] font-mono text-sm leading-none text-muted-foreground/60 transition-colors duration-300 select-none group-hover:text-primary"
-        >+</span
+        class="pointer-events-none absolute -top-[9px] -right-[6px] font-mono text-sm leading-none text-muted-foreground/40 transition-colors duration-300 select-none group-hover:text-primary"
+        aria-hidden="true"
       >
+        +
+      </span>
       <span
-        class="pointer-events-none absolute -bottom-[9px] -left-[6px] font-mono text-sm leading-none text-muted-foreground/60 transition-colors duration-300 select-none group-hover:text-primary"
-        >+</span
+        class="pointer-events-none absolute -bottom-[9px] -left-[6px] font-mono text-sm leading-none text-muted-foreground/40 transition-colors duration-300 select-none group-hover:text-primary"
+        aria-hidden="true"
       >
+        +
+      </span>
       <span
-        class="pointer-events-none absolute -right-[6px] -bottom-[9px] font-mono text-sm leading-none text-muted-foreground/60 transition-colors duration-300 select-none group-hover:text-primary"
-        >+</span
+        class="pointer-events-none absolute -right-[6px] -bottom-[9px] font-mono text-sm leading-none text-muted-foreground/40 transition-colors duration-300 select-none group-hover:text-primary"
+        aria-hidden="true"
       >
+        +
+      </span>
 
-      <!-- Technical Node Header -->
-      <div
-        class="mb-4 flex items-center justify-between border-b border-border/40 pb-2.5"
-      >
-        <div class="flex items-center gap-2">
-          <span class="inline-block size-1.5 rounded-full bg-primary/70"></span>
-          <span
-            class="font-mono text-[11px] font-semibold tracking-wider text-primary uppercase"
-          >
-            SYS_01 // SCALE
-          </span>
+      <div>
+        <div
+          class="mb-4 flex items-center justify-between border-b border-border/40 pb-3"
+        >
+          <div class="flex items-center gap-2">
+            <span class="inline-block size-1.5 rounded-full bg-primary"></span>
+            <span
+              class="font-mono text-[11px] font-bold tracking-wider text-primary uppercase"
+            >
+              SYS_01 // SCALE
+            </span>
+          </div>
         </div>
-        <span
-          class="font-mono text-[10px] text-muted-foreground/50 select-none"
-        >
-          [LOC: 0x1A4]
-        </span>
+
+        <div class="mb-3.5 flex items-center gap-3.5">
+          <div
+            class="pillar-icon-box flex size-10 shrink-0 items-center justify-center rounded border border-border/70 bg-muted/30 text-primary/80 transition-all duration-200"
+          >
+            <HugeiconsIcon
+              icon={ServerStack01Icon}
+              size={20}
+              strokeWidth={1.75}
+            />
+          </div>
+          <h3
+            class="text-lg font-bold tracking-tight text-foreground transition-colors duration-200 group-hover:text-primary sm:text-xl"
+          >
+            Scalable Backend Architecture
+          </h3>
+        </div>
+
+        <p class="text-xs leading-relaxed text-muted-foreground sm:text-sm">
+          Engineering resilient, modular microservices and distributed backend
+          systems with Nest.js, Go, Express, and Node.js — architected for high
+          concurrency, domain-driven boundaries, and zero single points of
+          failure.
+        </p>
       </div>
 
-      <h3
-        class="mb-3 text-xl font-bold tracking-tight text-foreground transition-colors duration-200 group-hover:text-primary sm:text-2xl"
-      >
-        Scalable Backend Architecture
-      </h3>
-      <p class="text-sm leading-relaxed text-muted-foreground sm:text-base">
-        Engineering resilient, modular microservices and backend systems with
-        Nest.js, Express, Go, and Node.js built with high throughput, clean
-        boundaries, and performance in mind.
-      </p>
-
-      <div class="mt-4 flex flex-wrap gap-1.5 pt-2">
-        <span
-          class="rounded border border-border/50 bg-muted/30 px-2 py-0.5 font-mono text-[11px] text-muted-foreground"
-        >
-          High Throughput
-        </span>
-        <span
-          class="rounded border border-border/50 bg-muted/30 px-2 py-0.5 font-mono text-[11px] text-muted-foreground"
-        >
-          Modular Services
-        </span>
+      <div class="mt-6 flex flex-wrap gap-1.5 border-t border-border/30 pt-4">
+        {
+          ["Nest.js & Go", "Microservices", "Event Pub/Sub", "Modular DDD"].map(
+            (tag) => (
+              <span class="rounded border border-border/60 bg-muted/30 px-2 py-0.5 font-mono text-[10px] font-medium text-muted-foreground transition-colors group-hover:border-primary/30 group-hover:text-foreground">
+                {tag}
+              </span>
+            )
+          )
+        }
       </div>
-    </div>
+    </article>
 
-    <!-- Box 2: DevOps & Cloud Native (Col 8-12, shifted right + downwards) -->
-    <div
-      class="group relative col-span-1 rounded-none border border-dashed border-border/80 bg-card/30 p-6 backdrop-blur-sm transition-all duration-300 hover:border-primary/60 hover:bg-card/60 sm:p-8 md:col-span-6 md:col-start-7 lg:col-span-5 lg:col-start-8 lg:translate-y-8"
+    {/* CARD 2: DevOps & Cloud Native (Wide Top Right Card: 8 cols x 1 row) */}
+    <article
+      class="bento-card group relative col-span-1 flex flex-col justify-between border border-dashed border-border/80 bg-card/30 p-6 backdrop-blur-xs sm:p-7 md:col-span-2 lg:col-span-8 lg:row-span-1"
     >
-      <!-- Corner Plus Markers -->
+      {/* Corner Crosshairs */}
       <span
-        class="pointer-events-none absolute -top-[9px] -left-[6px] font-mono text-sm leading-none text-muted-foreground/60 transition-colors duration-300 select-none group-hover:text-primary"
-        >+</span
+        class="pointer-events-none absolute -top-[9px] -left-[6px] font-mono text-sm leading-none text-muted-foreground/40 transition-colors duration-300 select-none group-hover:text-primary"
+        aria-hidden="true"
       >
+        +
+      </span>
       <span
-        class="pointer-events-none absolute -top-[9px] -right-[6px] font-mono text-sm leading-none text-muted-foreground/60 transition-colors duration-300 select-none group-hover:text-primary"
-        >+</span
+        class="pointer-events-none absolute -top-[9px] -right-[6px] font-mono text-sm leading-none text-muted-foreground/40 transition-colors duration-300 select-none group-hover:text-primary"
+        aria-hidden="true"
       >
+        +
+      </span>
       <span
-        class="pointer-events-none absolute -bottom-[9px] -left-[6px] font-mono text-sm leading-none text-muted-foreground/60 transition-colors duration-300 select-none group-hover:text-primary"
-        >+</span
+        class="pointer-events-none absolute -bottom-[9px] -left-[6px] font-mono text-sm leading-none text-muted-foreground/40 transition-colors duration-300 select-none group-hover:text-primary"
+        aria-hidden="true"
       >
+        +
+      </span>
       <span
-        class="pointer-events-none absolute -right-[6px] -bottom-[9px] font-mono text-sm leading-none text-muted-foreground/60 transition-colors duration-300 select-none group-hover:text-primary"
-        >+</span
+        class="pointer-events-none absolute -right-[6px] -bottom-[9px] font-mono text-sm leading-none text-muted-foreground/40 transition-colors duration-300 select-none group-hover:text-primary"
+        aria-hidden="true"
       >
+        +
+      </span>
 
-      <!-- Technical Node Header -->
-      <div
-        class="mb-4 flex items-center justify-between border-b border-border/40 pb-2.5"
-      >
-        <div class="flex items-center gap-2">
-          <span class="inline-block size-1.5 rounded-full bg-primary/70"></span>
-          <span
-            class="font-mono text-[11px] font-semibold tracking-wider text-primary uppercase"
-          >
-            OPS_02 // CLOUD
-          </span>
+      <div>
+        <div
+          class="mb-4 flex items-center justify-between border-b border-border/40 pb-3"
+        >
+          <div class="flex items-center gap-2">
+            <span class="inline-block size-1.5 rounded-full bg-primary"></span>
+            <span
+              class="font-mono text-[11px] font-bold tracking-wider text-primary uppercase"
+            >
+              OPS_02 // INFRA
+            </span>
+          </div>
         </div>
-        <span
-          class="font-mono text-[10px] text-muted-foreground/50 select-none"
+
+        <div
+          class="grid grid-cols-1 gap-4 sm:grid-cols-12 sm:items-start sm:gap-6"
         >
-          [LOC: 0x7B2]
-        </span>
+          <div class="flex items-center gap-3.5 sm:col-span-5">
+            <div
+              class="pillar-icon-box flex size-10 shrink-0 items-center justify-center rounded border border-border/70 bg-muted/30 text-primary/80 transition-all duration-200"
+            >
+              <HugeiconsIcon
+                icon={CloudServerIcon}
+                size={20}
+                strokeWidth={1.75}
+              />
+            </div>
+            <h3
+              class="text-lg font-bold tracking-tight text-foreground transition-colors duration-200 group-hover:text-primary sm:text-xl"
+            >
+              DevOps &amp; Cloud Native
+            </h3>
+          </div>
+
+          <div class="sm:col-span-7">
+            <p class="text-xs leading-relaxed text-muted-foreground sm:text-sm">
+              Automating zero-downtime CI/CD pipelines, container orchestration
+              with Docker & Kubernetes, and hardened Linux server management
+              with proactive health monitoring.
+            </p>
+          </div>
+        </div>
       </div>
 
-      <h3
-        class="mb-3 text-xl font-bold tracking-tight text-foreground transition-colors duration-200 group-hover:text-primary sm:text-2xl"
-      >
-        DevOps & Cloud Native
-      </h3>
-      <p class="text-sm leading-relaxed text-muted-foreground sm:text-base">
-        Automating continuous integration and deployment pipelines, container
-        orchestration with Docker & Kubernetes, and rock-solid Linux server
-        management to guarantee zero-downtime releases.
-      </p>
-
-      <div class="mt-4 flex flex-wrap gap-1.5 pt-2">
-        <span
-          class="rounded border border-border/50 bg-muted/30 px-2 py-0.5 font-mono text-[11px] text-muted-foreground"
-        >
-          Docker & K8s
-        </span>
-        <span
-          class="rounded border border-border/50 bg-muted/30 px-2 py-0.5 font-mono text-[11px] text-muted-foreground"
-        >
-          CI/CD Automation
-        </span>
+      <div class="mt-5 flex flex-wrap gap-1.5 border-t border-border/30 pt-3">
+        {
+          [
+            "Docker & K8s",
+            "CI/CD Automation",
+            "Hardened Linux VPS",
+            "Reverse Proxy",
+          ].map((tag) => (
+            <span class="rounded border border-border/60 bg-muted/30 px-2 py-0.5 font-mono text-[10px] font-medium text-muted-foreground transition-colors group-hover:border-primary/30 group-hover:text-foreground">
+              {tag}
+            </span>
+          ))
+        }
       </div>
-    </div>
+    </article>
 
-    <!-- Box 3: End-to-End System Design (Col 2-8, indented 1 col from left + slightly shifted) -->
-    <div
-      class="group relative col-span-1 rounded-none border border-dashed border-border/80 bg-card/30 p-6 backdrop-blur-sm transition-all duration-300 hover:border-primary/60 hover:bg-card/60 sm:p-8 md:col-span-7 md:col-start-1 lg:col-span-7 lg:col-start-2 lg:translate-y-4"
+    {/* CARD 3: End-to-End System Design (Middle-Left Card: 5 cols x 1 row) */}
+    <article
+      class="bento-card group relative col-span-1 flex flex-col justify-between border border-dashed border-border/80 bg-card/30 p-6 backdrop-blur-xs sm:p-7 md:col-span-1 lg:col-span-5 lg:row-span-1"
     >
-      <!-- Corner Plus Markers -->
+      {/* Corner Crosshairs */}
       <span
-        class="pointer-events-none absolute -top-[9px] -left-[6px] font-mono text-sm leading-none text-muted-foreground/60 transition-colors duration-300 select-none group-hover:text-primary"
-        >+</span
+        class="pointer-events-none absolute -top-[9px] -left-[6px] font-mono text-sm leading-none text-muted-foreground/40 transition-colors duration-300 select-none group-hover:text-primary"
+        aria-hidden="true"
       >
+        +
+      </span>
       <span
-        class="pointer-events-none absolute -top-[9px] -right-[6px] font-mono text-sm leading-none text-muted-foreground/60 transition-colors duration-300 select-none group-hover:text-primary"
-        >+</span
+        class="pointer-events-none absolute -top-[9px] -right-[6px] font-mono text-sm leading-none text-muted-foreground/40 transition-colors duration-300 select-none group-hover:text-primary"
+        aria-hidden="true"
       >
+        +
+      </span>
       <span
-        class="pointer-events-none absolute -bottom-[9px] -left-[6px] font-mono text-sm leading-none text-muted-foreground/60 transition-colors duration-300 select-none group-hover:text-primary"
-        >+</span
+        class="pointer-events-none absolute -bottom-[9px] -left-[6px] font-mono text-sm leading-none text-muted-foreground/40 transition-colors duration-300 select-none group-hover:text-primary"
+        aria-hidden="true"
       >
+        +
+      </span>
       <span
-        class="pointer-events-none absolute -right-[6px] -bottom-[9px] font-mono text-sm leading-none text-muted-foreground/60 transition-colors duration-300 select-none group-hover:text-primary"
-        >+</span
+        class="pointer-events-none absolute -right-[6px] -bottom-[9px] font-mono text-sm leading-none text-muted-foreground/40 transition-colors duration-300 select-none group-hover:text-primary"
+        aria-hidden="true"
       >
+        +
+      </span>
 
-      <!-- Technical Node Header -->
-      <div
-        class="mb-4 flex items-center justify-between border-b border-border/40 pb-2.5"
-      >
-        <div class="flex items-center gap-2">
-          <span class="inline-block size-1.5 rounded-full bg-primary/70"></span>
-          <span
-            class="font-mono text-[11px] font-semibold tracking-wider text-primary uppercase"
-          >
-            ARCH_03 // FULL-SYSTEM
-          </span>
+      <div>
+        <div
+          class="mb-4 flex items-center justify-between border-b border-border/40 pb-3"
+        >
+          <div class="flex items-center gap-2">
+            <span class="inline-block size-1.5 rounded-full bg-primary"></span>
+            <span
+              class="font-mono text-[11px] font-bold tracking-wider text-primary uppercase"
+            >
+              ARCH_03 // DATA
+            </span>
+          </div>
         </div>
-        <span
-          class="font-mono text-[10px] text-muted-foreground/50 select-none"
-        >
-          [LOC: 0x2C8]
-        </span>
+
+        <div class="mb-3.5 flex items-center gap-3.5">
+          <div
+            class="pillar-icon-box flex size-10 shrink-0 items-center justify-center rounded border border-border/70 bg-muted/30 text-primary/80 transition-all duration-200"
+          >
+            <HugeiconsIcon icon={Layers01Icon} size={20} strokeWidth={1.75} />
+          </div>
+          <h3
+            class="text-lg font-bold tracking-tight text-foreground transition-colors duration-200 group-hover:text-primary sm:text-xl"
+          >
+            End-to-End System Design
+          </h3>
+        </div>
+
+        <p class="text-xs leading-relaxed text-muted-foreground sm:text-sm">
+          Bridging distributed backend logic with fluid client applications.
+          Designing optimized PostgreSQL schemas, MongoDB document stores, and
+          Redis caching layers.
+        </p>
       </div>
 
-      <h3
-        class="mb-3 text-xl font-bold tracking-tight text-foreground transition-colors duration-200 group-hover:text-primary sm:text-2xl"
-      >
-        End-to-End System Design
-      </h3>
-      <p class="text-sm leading-relaxed text-muted-foreground sm:text-base">
-        Bridging distributed backend logic with fluid, high-performance web
-        applications. Whether designing relational schemas in PostgreSQL,
-        optimizing document models in MongoDB, implementing Redis caching
-        tiers, or orchestrating real-time WebSocket and REST/gRPC protocols,
-        every layer is crafted for reliability. With end-to-end type safety,
-        query plan optimization, asynchronous job queues, and responsive state
-        synchronization, your system adapts effortlessly to every device and
-        heavy enterprise workload.
-      </p>
-
-      <div class="mt-4 flex flex-wrap gap-1.5 pt-2">
-        <span
-          class="rounded border border-border/50 bg-muted/30 px-2 py-0.5 font-mono text-[11px] text-muted-foreground"
-        >
-          PostgreSQL & Mongo
-        </span>
-        <span
-          class="rounded border border-border/50 bg-muted/30 px-2 py-0.5 font-mono text-[11px] text-muted-foreground"
-        >
-          Redis & Caching
-        </span>
-        <span
-          class="rounded border border-border/50 bg-muted/30 px-2 py-0.5 font-mono text-[11px] text-muted-foreground"
-        >
-          WebSocket & gRPC
-        </span>
-        <span
-          class="rounded border border-border/50 bg-muted/30 px-2 py-0.5 font-mono text-[11px] text-muted-foreground"
-        >
-          Type Safety
-        </span>
+      <div class="mt-5 flex flex-wrap gap-1.5 border-t border-border/30 pt-3">
+        {
+          ["PostgreSQL & Mongo", "Redis Caching", "gRPC & WebSockets"].map(
+            (tag) => (
+              <span class="rounded border border-border/60 bg-muted/30 px-2 py-0.5 font-mono text-[10px] font-medium text-muted-foreground transition-colors group-hover:border-primary/30 group-hover:text-foreground">
+                {tag}
+              </span>
+            )
+          )
+        }
       </div>
-    </div>
+    </article>
 
-    <!-- Box 4: Security & Performance First (Col 9-12, shifted up & right) -->
-    <div
-      class="group relative col-span-1 rounded-none border border-dashed border-border/80 bg-card/30 p-6 backdrop-blur-sm transition-all duration-300 hover:border-primary/60 hover:bg-card/60 sm:p-8 md:col-span-5 md:col-start-8 lg:col-span-4 lg:col-start-9 lg:-translate-y-8"
+    {
+      /* CARD 4: Security & Zero-Trust (Middle-Right Compact Card: 3 cols x 1 row) */
+    }
+    <article
+      class="bento-card group relative col-span-1 flex flex-col justify-between border border-dashed border-border/80 bg-card/30 p-6 backdrop-blur-xs sm:p-7 md:col-span-1 lg:col-span-3 lg:row-span-1"
     >
-      <!-- Corner Plus Markers -->
+      {/* Corner Crosshairs */}
       <span
-        class="pointer-events-none absolute -top-[9px] -left-[6px] font-mono text-sm leading-none text-muted-foreground/60 transition-colors duration-300 select-none group-hover:text-primary"
-        >+</span
+        class="pointer-events-none absolute -top-[9px] -left-[6px] font-mono text-sm leading-none text-muted-foreground/40 transition-colors duration-300 select-none group-hover:text-primary"
+        aria-hidden="true"
       >
+        +
+      </span>
       <span
-        class="pointer-events-none absolute -top-[9px] -right-[6px] font-mono text-sm leading-none text-muted-foreground/60 transition-colors duration-300 select-none group-hover:text-primary"
-        >+</span
+        class="pointer-events-none absolute -top-[9px] -right-[6px] font-mono text-sm leading-none text-muted-foreground/40 transition-colors duration-300 select-none group-hover:text-primary"
+        aria-hidden="true"
       >
+        +
+      </span>
       <span
-        class="pointer-events-none absolute -bottom-[9px] -left-[6px] font-mono text-sm leading-none text-muted-foreground/60 transition-colors duration-300 select-none group-hover:text-primary"
-        >+</span
+        class="pointer-events-none absolute -bottom-[9px] -left-[6px] font-mono text-sm leading-none text-muted-foreground/40 transition-colors duration-300 select-none group-hover:text-primary"
+        aria-hidden="true"
       >
+        +
+      </span>
       <span
-        class="pointer-events-none absolute -right-[6px] -bottom-[9px] font-mono text-sm leading-none text-muted-foreground/60 transition-colors duration-300 select-none group-hover:text-primary"
-        >+</span
+        class="pointer-events-none absolute -right-[6px] -bottom-[9px] font-mono text-sm leading-none text-muted-foreground/40 transition-colors duration-300 select-none group-hover:text-primary"
+        aria-hidden="true"
       >
+        +
+      </span>
 
-      <!-- Technical Node Header -->
-      <div
-        class="mb-4 flex items-center justify-between border-b border-border/40 pb-2.5"
-      >
-        <div class="flex items-center gap-2">
-          <span class="inline-block size-1.5 rounded-full bg-primary/70"></span>
-          <span
-            class="font-mono text-[11px] font-semibold tracking-wider text-primary uppercase"
-          >
-            SEC_04 // HARDENED
-          </span>
+      <div>
+        <div
+          class="mb-4 flex items-center justify-between border-b border-border/40 pb-3"
+        >
+          <div class="flex items-center gap-2">
+            <span class="inline-block size-1.5 rounded-full bg-primary"></span>
+            <span
+              class="font-mono text-[11px] font-bold tracking-wider text-primary uppercase"
+            >
+              SEC_04 // ZERO-TRUST
+            </span>
+          </div>
         </div>
-        <span
-          class="font-mono text-[10px] text-muted-foreground/50 select-none"
-        >
-          [LOC: 0x9F1]
-        </span>
+
+        <div class="mb-3.5 flex items-center gap-3">
+          <div
+            class="pillar-icon-box flex size-9 shrink-0 items-center justify-center rounded border border-border/70 bg-muted/30 text-primary/80 transition-all duration-200"
+          >
+            <HugeiconsIcon icon={Shield01Icon} size={18} strokeWidth={1.75} />
+          </div>
+          <h3
+            class="text-base font-bold tracking-tight text-foreground transition-colors duration-200 group-hover:text-primary sm:text-lg"
+          >
+            Security &amp; Zero-Trust
+          </h3>
+        </div>
+
+        <p class="text-xs leading-relaxed text-muted-foreground">
+          OWASP Top 10 compliance, granular RBAC policies, signed sessions, and
+          input sanitization at every layer.
+        </p>
       </div>
 
-      <h3
-        class="mb-3 text-xl font-bold tracking-tight text-foreground transition-colors duration-200 group-hover:text-primary sm:text-2xl"
-      >
-        Security & Performance First
-      </h3>
-      <p class="text-sm leading-relaxed text-muted-foreground sm:text-base">
-        Every architecture is thoughtfully designed with OWASP security
-        practices, RBAC authorization, and sub-millisecond query execution to
-        work seamlessly under intense production scale.
-      </p>
-
-      <div class="mt-4 flex flex-wrap gap-1.5 pt-2">
-        <span
-          class="rounded border border-border/50 bg-muted/30 px-2 py-0.5 font-mono text-[11px] text-muted-foreground"
-        >
-          OWASP Standards
-        </span>
-        <span
-          class="rounded border border-border/50 bg-muted/30 px-2 py-0.5 font-mono text-[11px] text-muted-foreground"
-        >
-          RBAC Security
-        </span>
+      <div class="mt-5 flex flex-wrap gap-1.5 border-t border-border/30 pt-3">
+        {
+          ["OWASP Top 10", "Granular RBAC", "Encrypted Auth"].map((tag) => (
+            <span class="rounded border border-border/60 bg-muted/30 px-2 py-0.5 font-mono text-[10px] font-medium text-muted-foreground transition-colors group-hover:border-primary/30 group-hover:text-foreground">
+              {tag}
+            </span>
+          ))
+        }
       </div>
-    </div>
+    </article>
 
-    <!-- Box 5: Fast & Lightweight (Col 1-4, compact + lowered) -->
-    <div
-      class="group relative col-span-1 rounded-none border border-dashed border-border/80 bg-card/30 p-6 backdrop-blur-sm transition-all duration-300 hover:border-primary/60 hover:bg-card/60 sm:p-8 md:col-span-5 md:col-start-1 lg:col-span-4 lg:col-start-1 lg:translate-y-6"
+    {/* CARD 5: Performance & Web Vitals (Bottom-Left Card: 4 cols x 1 row) */}
+    <article
+      class="bento-card group relative col-span-1 flex flex-col justify-between border border-dashed border-border/80 bg-card/30 p-6 backdrop-blur-xs sm:p-7 md:col-span-1 lg:col-span-4 lg:row-span-1"
     >
-      <!-- Corner Plus Markers -->
+      {/* Corner Crosshairs */}
       <span
-        class="pointer-events-none absolute -top-[9px] -left-[6px] font-mono text-sm leading-none text-muted-foreground/60 transition-colors duration-300 select-none group-hover:text-primary"
-        >+</span
+        class="pointer-events-none absolute -top-[9px] -left-[6px] font-mono text-sm leading-none text-muted-foreground/40 transition-colors duration-300 select-none group-hover:text-primary"
+        aria-hidden="true"
       >
+        +
+      </span>
       <span
-        class="pointer-events-none absolute -top-[9px] -right-[6px] font-mono text-sm leading-none text-muted-foreground/60 transition-colors duration-300 select-none group-hover:text-primary"
-        >+</span
+        class="pointer-events-none absolute -top-[9px] -right-[6px] font-mono text-sm leading-none text-muted-foreground/40 transition-colors duration-300 select-none group-hover:text-primary"
+        aria-hidden="true"
       >
+        +
+      </span>
       <span
-        class="pointer-events-none absolute -bottom-[9px] -left-[6px] font-mono text-sm leading-none text-muted-foreground/60 transition-colors duration-300 select-none group-hover:text-primary"
-        >+</span
+        class="pointer-events-none absolute -bottom-[9px] -left-[6px] font-mono text-sm leading-none text-muted-foreground/40 transition-colors duration-300 select-none group-hover:text-primary"
+        aria-hidden="true"
       >
+        +
+      </span>
       <span
-        class="pointer-events-none absolute -right-[6px] -bottom-[9px] font-mono text-sm leading-none text-muted-foreground/60 transition-colors duration-300 select-none group-hover:text-primary"
-        >+</span
+        class="pointer-events-none absolute -right-[6px] -bottom-[9px] font-mono text-sm leading-none text-muted-foreground/40 transition-colors duration-300 select-none group-hover:text-primary"
+        aria-hidden="true"
       >
+        +
+      </span>
 
-      <!-- Technical Node Header -->
-      <div
-        class="mb-4 flex items-center justify-between border-b border-border/40 pb-2.5"
-      >
-        <div class="flex items-center gap-2">
-          <span class="inline-block size-1.5 rounded-full bg-primary/70"></span>
-          <span
-            class="font-mono text-[11px] font-semibold tracking-wider text-primary uppercase"
-          >
-            PERF_05 // CORE
-          </span>
+      <div>
+        <div
+          class="mb-4 flex items-center justify-between border-b border-border/40 pb-3"
+        >
+          <div class="flex items-center gap-2">
+            <span class="inline-block size-1.5 rounded-full bg-primary"></span>
+            <span
+              class="font-mono text-[11px] font-bold tracking-wider text-primary uppercase"
+            >
+              PERF_05 // SPEED
+            </span>
+          </div>
         </div>
-        <span
-          class="font-mono text-[10px] text-muted-foreground/50 select-none"
-        >
-          [LOC: 0x4D3]
-        </span>
+
+        <div class="mb-3.5 flex items-center gap-3.5">
+          <div
+            class="pillar-icon-box flex size-10 shrink-0 items-center justify-center rounded border border-border/70 bg-muted/30 text-primary/80 transition-all duration-200"
+          >
+            <HugeiconsIcon
+              icon={DashboardSpeed01Icon}
+              size={20}
+              strokeWidth={1.75}
+            />
+          </div>
+          <h3
+            class="text-lg font-bold tracking-tight text-foreground transition-colors duration-200 group-hover:text-primary sm:text-xl"
+          >
+            Performance &amp; Web Vitals
+          </h3>
+        </div>
+
+        <p class="text-xs leading-relaxed text-muted-foreground sm:text-sm">
+          Optimized runtime execution with sub-second Time to Interactive (TTI),
+          aggressive database query indexing, and minimal bundle overhead.
+        </p>
       </div>
 
-      <h3
-        class="mb-3 text-xl font-bold tracking-tight text-foreground transition-colors duration-200 group-hover:text-primary sm:text-2xl"
-      >
-        Fast & Lightweight
-      </h3>
-      <p class="text-sm leading-relaxed text-muted-foreground sm:text-base">
-        Built for speed and performance, ensuring quick load times, optimal
-        Core Web Vitals, and responsive interactions without sacrificing
-        architectural quality.
-      </p>
-
-      <div class="mt-4 flex flex-wrap gap-1.5 pt-2">
-        <span
-          class="rounded border border-border/50 bg-muted/30 px-2 py-0.5 font-mono text-[11px] text-muted-foreground"
-        >
-          Optimal CWV
-        </span>
-        <span
-          class="rounded border border-border/50 bg-muted/30 px-2 py-0.5 font-mono text-[11px] text-muted-foreground"
-        >
-          Sub-second TTI
-        </span>
+      <div class="mt-5 flex flex-wrap gap-1.5 border-t border-border/30 pt-3">
+        {
+          ["Sub-100ms TTFB", "Query Optimization", "Lean Footprint"].map(
+            (tag) => (
+              <span class="rounded border border-border/60 bg-muted/30 px-2 py-0.5 font-mono text-[10px] font-medium text-muted-foreground transition-colors group-hover:border-primary/30 group-hover:text-foreground">
+                {tag}
+              </span>
+            )
+          )
+        }
       </div>
-    </div>
+    </article>
 
-    <!-- Box 6: Signature Large Typography Feature ("Built for scale & speed", Col 6-12, wide feature card) -->
-    <div
-      class="group relative col-span-1 flex min-h-[200px] flex-col justify-end rounded-none border border-dashed border-border/80 bg-card/30 p-6 backdrop-blur-sm transition-all duration-300 hover:border-primary/60 hover:bg-card/60 sm:p-8 md:col-span-7 md:col-start-6 lg:col-span-7 lg:col-start-6 lg:-translate-y-2"
+    {
+      /* CARD 6: Core Architectural Manifesto (Bottom-Right Card: 8 cols x 1 row) */
+    }
+    <article
+      class="bento-card manifesto-banner group relative col-span-1 flex flex-col justify-between border border-dashed border-border/80 bg-card/30 p-6 backdrop-blur-xs sm:p-7 md:col-span-2 lg:col-span-8 lg:row-span-1"
     >
-      <!-- Corner Plus Markers -->
+      {/* Corner Crosshairs */}
       <span
-        class="pointer-events-none absolute -top-[9px] -left-[6px] font-mono text-sm leading-none text-muted-foreground/60 transition-colors duration-300 select-none group-hover:text-primary"
-        >+</span
+        class="pointer-events-none absolute -top-[9px] -left-[6px] font-mono text-sm leading-none text-muted-foreground/40 transition-colors duration-300 select-none group-hover:text-primary"
+        aria-hidden="true"
       >
+        +
+      </span>
       <span
-        class="pointer-events-none absolute -top-[9px] -right-[6px] font-mono text-sm leading-none text-muted-foreground/60 transition-colors duration-300 select-none group-hover:text-primary"
-        >+</span
+        class="pointer-events-none absolute -top-[9px] -right-[6px] font-mono text-sm leading-none text-muted-foreground/40 transition-colors duration-300 select-none group-hover:text-primary"
+        aria-hidden="true"
       >
+        +
+      </span>
       <span
-        class="pointer-events-none absolute -bottom-[9px] -left-[6px] font-mono text-sm leading-none text-muted-foreground/60 transition-colors duration-300 select-none group-hover:text-primary"
-        >+</span
+        class="pointer-events-none absolute -bottom-[9px] -left-[6px] font-mono text-sm leading-none text-muted-foreground/40 transition-colors duration-300 select-none group-hover:text-primary"
+        aria-hidden="true"
       >
+        +
+      </span>
       <span
-        class="pointer-events-none absolute -right-[6px] -bottom-[9px] font-mono text-sm leading-none text-muted-foreground/60 transition-colors duration-300 select-none group-hover:text-primary"
-        >+</span
+        class="pointer-events-none absolute -right-[6px] -bottom-[9px] font-mono text-sm leading-none text-muted-foreground/40 transition-colors duration-300 select-none group-hover:text-primary"
+        aria-hidden="true"
       >
+        +
+      </span>
 
-      <!-- Technical Node Header -->
-      <div
-        class="mb-4 flex items-center justify-between border-b border-border/40 pb-2.5"
-      >
-        <div class="flex items-center gap-2">
-          <span
-            class="inline-block size-2 animate-pulse rounded-full bg-primary"
-          ></span>
-          <span
-            class="font-mono text-xs font-medium tracking-wider text-primary uppercase"
-          >
-            Core Philosophy
-          </span>
+      <div class="grid grid-cols-1 items-center gap-6 lg:grid-cols-12 lg:gap-8">
+        {/* Left Column: Statement */}
+        <div class="space-y-3 lg:col-span-7">
+          <div class="flex items-center gap-2">
+            <span
+              class="inline-block size-1.5 animate-pulse rounded-full bg-primary"
+            ></span>
+            <span
+              class="font-mono text-[11px] font-bold tracking-wider text-primary uppercase"
+            >
+              CORE_06 // PHILOSOPHY
+            </span>
+          </div>
+
+          <div class="flex items-center gap-3.5">
+            <div
+              class="pillar-icon-box flex size-10 shrink-0 items-center justify-center rounded border border-border/70 bg-muted/30 text-primary/80 transition-all duration-200"
+            >
+              <HugeiconsIcon icon={CpuIcon} size={20} strokeWidth={1.75} />
+            </div>
+            <h3
+              class="text-xl font-bold tracking-tight text-foreground transition-colors duration-200 group-hover:text-foreground sm:text-2xl"
+            >
+              Built for <span class="text-primary">scale &amp; resilience.</span
+              >
+            </h3>
+          </div>
+
+          <p class="text-xs leading-relaxed text-muted-foreground sm:text-sm">
+            Structuring complex, high-concurrency systems so they operate
+            predictably under heavy enterprise load, recover automatically from
+            failure, and remain effortless to maintain.
+          </p>
         </div>
-        <span
-          class="font-mono text-[10px] text-muted-foreground/50 select-none"
-        >
-          [LOC: 0x8E0]
-        </span>
-      </div>
 
-      <div class="space-y-4">
-        <h3
-          class="text-3xl font-black tracking-tight text-foreground transition-colors duration-200 group-hover:text-foreground sm:text-4xl lg:text-5xl"
-        >
-          Built for <span class="text-primary">scale & speed.</span>
-        </h3>
-
-        <div class="flex flex-wrap gap-2 pt-2">
-          <span
-            class="rounded border border-border/60 bg-muted/40 px-2.5 py-1 font-mono text-xs text-muted-foreground"
-          >
-            99.9% Uptime
-          </span>
-          <span
-            class="rounded border border-border/60 bg-muted/40 px-2.5 py-1 font-mono text-xs text-muted-foreground"
-          >
-            Sub-ms Latency
-          </span>
-          <span
-            class="rounded border border-border/60 bg-muted/40 px-2.5 py-1 font-mono text-xs text-muted-foreground"
-          >
-            Zero Bottlenecks
-          </span>
+        {/* Right Column: Key Metrics Grid */}
+        <div class="lg:col-span-5">
+          <div class="grid grid-cols-2 gap-2.5 sm:gap-3">
+            {
+              summaryMetrics.map((metric) => (
+                <div class="flex flex-col justify-center rounded border border-border/60 bg-muted/20 p-2.5 backdrop-blur-xs transition-colors duration-200 group-hover:border-primary/30 sm:p-3">
+                  <span class="font-mono text-sm font-bold tracking-tight text-primary">
+                    {metric.value}
+                  </span>
+                  <span class="mt-0.5 font-mono text-[10px] font-medium tracking-wider text-muted-foreground uppercase">
+                    {metric.label}
+                  </span>
+                </div>
+              ))
+            }
+          </div>
         </div>
       </div>
-    </div>
+    </article>
   </div>
 </section>

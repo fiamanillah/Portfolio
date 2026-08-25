@@ -50,10 +50,7 @@ const popularCategoryNames = categories
   </div>
 
   <!-- 4. Cards Grid Container (3-Column Responsive Grid) -->
-  <div
-    data-cards-container
-    class="transition-opacity duration-200"
-  >
+  <div data-cards-container class="transition-opacity duration-200">
     <div
       data-cards-grid
       class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
@@ -389,7 +386,6 @@ const popularCategoryNames = categories
       }
     }
 
-
     function switchCategory(newCategory: string) {
       activeCategory = newCategory.toLowerCase()
       updateView(1, false, true)
@@ -533,7 +529,10 @@ const popularCategoryNames = categories
             cardTags.includes(searchQuery)
           return matchesCategory && matchesQuery
         }).length
-        const totalPages = Math.max(1, Math.ceil(matchingCardsCount / postsPerPage))
+        const totalPages = Math.max(
+          1,
+          Math.ceil(matchingCardsCount / postsPerPage)
+        )
         if (currentPage < totalPages) {
           updateView(currentPage + 1, true, false)
         }

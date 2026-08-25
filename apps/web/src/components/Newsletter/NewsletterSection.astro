@@ -94,13 +94,14 @@ const submitTextId = `${idPrefix}-submit-text`
             class="h-1.5 w-1.5 animate-pulse rounded-full bg-primary shadow-[0_0_6px_oklch(var(--primary)/80%)]"
           ></span>
           {badge}
-          <span class="cursor-blink ml-1 inline-block h-3 w-0.5 bg-primary"></span>
+          <span class="cursor-blink ml-1 inline-block h-3 w-0.5 bg-primary"
+          ></span>
         </p>
       </div>
 
       <!-- Title -->
       <h2
-        class="text-2xl font-bold tracking-tight text-foreground sm:text-3xl md:text-4xl text-balance"
+        class="text-2xl font-bold tracking-tight text-balance text-foreground sm:text-3xl md:text-4xl"
       >
         {title}
       </h2>
@@ -108,7 +109,9 @@ const submitTextId = `${idPrefix}-submit-text`
       <div class="accent-bar mx-auto my-3.5 w-24"></div>
 
       <!-- Subtitle -->
-      <p class="mx-auto max-w-lg text-sm leading-relaxed text-muted-foreground sm:text-base">
+      <p
+        class="mx-auto max-w-lg text-sm leading-relaxed text-muted-foreground sm:text-base"
+      >
         {subtitle}
       </p>
     </div>
@@ -138,11 +141,11 @@ const submitTextId = `${idPrefix}-submit-text`
 
         <!-- Minimal Unified Input Bar -->
         <div
-          class="group/bar relative flex flex-col items-stretch border border-border/80 bg-background/80 p-1.5 backdrop-blur-md transition-all duration-300 hover:border-primary/40 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20 focus-within:shadow-[0_0_25px_oklch(var(--primary)/0.12)] sm:flex-row sm:items-center"
+          class="group/bar relative flex flex-col items-stretch border border-border/80 bg-background/80 p-1.5 backdrop-blur-md transition-all duration-300 focus-within:border-primary focus-within:shadow-[0_0_25px_oklch(var(--primary)/0.12)] focus-within:ring-2 focus-within:ring-primary/20 hover:border-primary/40 sm:flex-row sm:items-center"
         >
           <!-- Optional Name Field -->
           <div
-            class="relative flex items-center border-b border-border/50 px-2 py-1 sm:w-44 sm:border-b-0 sm:border-r sm:py-0"
+            class="relative flex items-center border-b border-border/50 px-2 py-1 sm:w-44 sm:border-r sm:border-b-0 sm:py-0"
           >
             <Icon
               name="mdi:account-outline"
@@ -306,7 +309,9 @@ const submitTextId = `${idPrefix}-submit-text`
     }
 
     function initNewsletterTurnstileOnDemand() {
-      const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+      const isLocal =
+        window.location.hostname === "localhost" ||
+        window.location.hostname === "127.0.0.1"
       const turnstileKey =
         import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ||
         (isLocal ? "1x00000000000000000000AA" : "0x4AAAAAAEMAnAognjniSApt")
@@ -343,7 +348,8 @@ const submitTextId = `${idPrefix}-submit-text`
       if (!script) {
         script = document.createElement("script")
         script.id = "cf-turnstile-script"
-        script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
+        script.src =
+          "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
         script.async = true
         script.defer = true
         document.head.appendChild(script)

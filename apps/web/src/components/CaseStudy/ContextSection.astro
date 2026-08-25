@@ -1,10 +1,7 @@
 ---
 import CaseStudySectionTitle from "@/components/CaseStudy/CaseStudySectionTitle.astro"
 import { HugeiconsIcon } from "@hugeicons/react"
-import {
-  Alert02Icon,
-  CheckmarkCircle02Icon,
-} from "@hugeicons/core-free-icons"
+import { Alert02Icon, CheckmarkCircle02Icon } from "@hugeicons/core-free-icons"
 
 interface ContextBlock {
   label: string
@@ -19,7 +16,9 @@ const { blocks } = Astro.props as Props
 ---
 
 <section class="space-y-8">
-  <CaseStudySectionTitle label="[ SEC_01 // SYSTEM_CONTEXT_&_PROBLEM_STATEMENT ]" />
+  <CaseStudySectionTitle
+    label="[ SEC_01 // SYSTEM_CONTEXT_&_PROBLEM_STATEMENT ]"
+  />
 
   <div class="px-4 sm:px-6 lg:px-8">
     <div class="grid gap-6 md:grid-cols-2">
@@ -31,7 +30,7 @@ const { blocks } = Astro.props as Props
             block.label.toLowerCase().includes("challenge")
 
           return (
-            <article class="group relative flex flex-col justify-between overflow-hidden border border-border bg-card/60 p-6 sm:p-7 transition-all duration-300 hover:border-primary/40 hover:bg-card/80 hover:shadow-[0_0_0_1px_oklch(var(--primary)/15%)]">
+            <article class="group relative flex flex-col justify-between overflow-hidden border border-border bg-card/60 p-6 transition-all duration-300 hover:border-primary/40 hover:bg-card/80 hover:shadow-[0_0_0_1px_oklch(var(--primary)/15%)] sm:p-7">
               {/* Corner brackets */}
               <div class="pointer-events-none absolute top-2 left-2 z-10 h-3 w-3 border-t-[1.5px] border-l-[1.5px] border-border transition-colors group-hover:border-primary" />
               <div class="pointer-events-none absolute top-2 right-2 z-10 h-3 w-3 border-t-[1.5px] border-r-[1.5px] border-border transition-colors group-hover:border-primary" />

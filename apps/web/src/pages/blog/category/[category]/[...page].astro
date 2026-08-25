@@ -59,7 +59,10 @@ export async function getStaticPaths() {
         getCategorySlug(p.categorySlug || p.category) === catDef.slug
     )
 
-    const totalPages = Math.max(1, Math.ceil(matchingPosts.length / postsPerPage))
+    const totalPages = Math.max(
+      1,
+      Math.ceil(matchingPosts.length / postsPerPage)
+    )
 
     for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
       const start = (pageNum - 1) * postsPerPage
@@ -130,9 +133,14 @@ const allMatchingPosts = allPosts.filter(
 )
 
 if (!foundCategory && allMatchingPosts.length === 0 && categorySlug) {
-  const redirect = await RedirectApi.resolveRedirect(`/blog/category/${categorySlug}`)
+  const redirect = await RedirectApi.resolveRedirect(
+    `/blog/category/${categorySlug}`
+  )
   if (redirect?.redirected && redirect.destination) {
-    return Astro.redirect(redirect.destination, (redirect.statusCode as any) || 301)
+    return Astro.redirect(
+      redirect.destination,
+      (redirect.statusCode as any) || 301
+    )
   }
 }
 
@@ -206,11 +214,9 @@ const breadcrumbs = [
   <!-- Dedicated Category SEO & Schema with Pagination Links -->
   <Fragment slot="head">
     <BlogSEO
-      title={
-        currentPage === 1
-          ? `${categoryName} Articles & Engineering Insights | Fi Amanillah`
-          : `${categoryName} Articles — Page ${currentPage} of ${totalPages} | Fi Amanillah`
-      }
+      title={currentPage === 1
+        ? `${categoryName} Articles & Engineering Insights | Fi Amanillah`
+        : `${categoryName} Articles — Page ${currentPage} of ${totalPages} | Fi Amanillah`}
       description={description}
       type="website"
       url={canonicalPath}
@@ -241,7 +247,9 @@ const breadcrumbs = [
           currentPage > 1 && (
             <>
               <span>/</span>
-              <span class="font-semibold text-foreground">Page {currentPage}</span>
+              <span class="font-semibold text-foreground">
+                Page {currentPage}
+              </span>
             </>
           )
         }
@@ -251,11 +259,13 @@ const breadcrumbs = [
 
   <main class="w-full">
     <!-- Category Hero Header (Compact padding) -->
-    <header class="relative overflow-hidden border-b border-border py-8 sm:py-12">
+    <header
+      class="relative overflow-hidden border-b border-border py-8 sm:py-12"
+    >
       <!-- Ambient Glow themed to category color -->
       <div class="pointer-events-none absolute inset-0 -z-10">
         <div
-          class="absolute top-1/2 left-1/2 h-72 w-72 -translate-x-1/2 -translate-y-1/2 rounded-full blur-[90px] opacity-15"
+          class="absolute top-1/2 left-1/2 h-72 w-72 -translate-x-1/2 -translate-y-1/2 rounded-full opacity-15 blur-[90px]"
           style={{ backgroundColor: categoryColor }}
         >
         </div>
@@ -267,7 +277,9 @@ const breadcrumbs = [
       >
       </div>
 
-      <div class="relative z-10 mx-auto max-w-5xl px-4 text-center sm:px-6 lg:px-8">
+      <div
+        class="relative z-10 mx-auto max-w-5xl px-4 text-center sm:px-6 lg:px-8"
+      >
         <!-- Category Badge Pill -->
         <div class="flex justify-center">
           <span
@@ -292,21 +304,36 @@ const breadcrumbs = [
         </div>
 
         <h1 class="section-title text-foreground">
-          {categoryName} <span class="text-primary italic">Articles</span>
-          {currentPage > 1 && <span class="text-muted-foreground text-2xl sm:text-3xl font-normal ml-2">— Page {currentPage}</span>}
+          {categoryName}
+          <span class="text-primary italic">Articles</span>
+          {
+            currentPage > 1 && (
+              <span class="ml-2 text-2xl font-normal text-muted-foreground sm:text-3xl">
+                — Page {currentPage}
+              </span>
+            )
+          }
         </h1>
 
         <div class="accent-bar mx-auto mt-3 mb-3 w-48"></div>
 
-        <p class="mx-auto max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+        <p
+          class="mx-auto max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base"
+        >
           {description}
         </p>
 
         <!-- Stats Bar -->
-        <div class="mt-4 flex items-center justify-center gap-4 font-mono text-xs text-muted-foreground">
-          <span class="inline-flex items-center gap-1.5 border border-border/80 bg-card/60 px-3 py-1 backdrop-blur-sm">
+        <div
+          class="mt-4 flex items-center justify-center gap-4 font-mono text-xs text-muted-foreground"
+        >
+          <span
+            class="inline-flex items-center gap-1.5 border border-border/80 bg-card/60 px-3 py-1 backdrop-blur-sm"
+          >
             <span class="font-bold text-foreground">{totalCategoryPosts}</span>
-            <span>{totalCategoryPosts === 1 ? "Article" : "Articles"} Published</span>
+            <span
+              >{totalCategoryPosts === 1 ? "Article" : "Articles"} Published</span
+            >
           </span>
           <a
             href="/blog/page/1"
@@ -344,7 +371,8 @@ const breadcrumbs = [
               No articles found in {categoryName} yet.
             </p>
             <p class="mt-2 font-mono text-xs text-muted-foreground">
-              New writeups are actively in progress. Check back soon or explore other topics!
+              New writeups are actively in progress. Check back soon or explore
+              other topics!
             </p>
             <div class="mt-6">
               <a

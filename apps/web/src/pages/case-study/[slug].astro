@@ -77,7 +77,9 @@ if (!caseStudy) {
   return Astro.redirect("/404")
 }
 
-const roleMeta = (caseStudy.metadata || []).find((m) => m.label.toLowerCase().includes("role"))?.value || "Full-Stack Architect"
+const roleMeta =
+  (caseStudy.metadata || []).find((m) => m.label.toLowerCase().includes("role"))
+    ?.value || "Full-Stack Architect"
 ---
 
 <MySiteLayout>
@@ -111,7 +113,9 @@ const roleMeta = (caseStudy.metadata || []).find((m) => m.label.toLowerCase().in
       >
         <a href="/" class="transition-colors hover:text-foreground">Home</a>
         <span>/</span>
-        <a href="/case-study" class="transition-colors hover:text-foreground">Case Studies</a>
+        <a href="/case-study" class="transition-colors hover:text-foreground"
+          >Case Studies</a
+        >
         <span>/</span>
         <span class="max-w-xs truncate font-semibold text-primary"
           >{caseStudy.title.split("—")[0]?.trim()}</span
@@ -136,49 +140,56 @@ const roleMeta = (caseStudy.metadata || []).find((m) => m.label.toLowerCase().in
 
     <!-- Architectural Deep Dive Content Sections -->
     <div class="w-full space-y-16 pt-12 pb-24">
-      {caseStudy.contextBlocks && caseStudy.contextBlocks.length > 0 && (
-        <ContextSection blocks={caseStudy.contextBlocks} />
-      )}
+      {
+        caseStudy.contextBlocks && caseStudy.contextBlocks.length > 0 && (
+          <ContextSection blocks={caseStudy.contextBlocks} />
+        )
+      }
 
-      {caseStudy.architectureLayers && caseStudy.architectureLayers.length > 0 && (
-        <ArchitectureTopology layers={caseStudy.architectureLayers} />
-      )}
+      {
+        caseStudy.architectureLayers &&
+          caseStudy.architectureLayers.length > 0 && (
+            <ArchitectureTopology layers={caseStudy.architectureLayers} />
+          )
+      }
 
-      {caseStudy.features && caseStudy.features.length > 0 && (
-        <KeyFeatures features={caseStudy.features} />
-      )}
+      {
+        caseStudy.features && caseStudy.features.length > 0 && (
+          <KeyFeatures features={caseStudy.features} />
+        )
+      }
 
-      {caseStudy.metrics && caseStudy.metrics.length > 0 && (
-        <PerformanceMetrics metrics={caseStudy.metrics} />
-      )}
+      {
+        caseStudy.metrics && caseStudy.metrics.length > 0 && (
+          <PerformanceMetrics metrics={caseStudy.metrics} />
+        )
+      }
 
-      {caseStudy.postMortem && caseStudy.postMortem.length > 0 && (
-        <ArchitecturalPostMortem items={caseStudy.postMortem} />
-      )}
+      {
+        caseStudy.postMortem && caseStudy.postMortem.length > 0 && (
+          <ArchitecturalPostMortem items={caseStudy.postMortem} />
+        )
+      }
 
       <!-- Adjacent Case Study Navigation -->
       <div class="px-4 sm:px-6 lg:px-8">
         <CaseStudyNav
-          prevStudy={
-            prevCaseStudy
-              ? {
-                  slug: prevCaseStudy.slug,
-                  title: prevCaseStudy.title.split("—")[0]?.trim(),
-                  image: prevCaseStudy.image,
-                  role: roleMeta,
-                }
-              : null
-          }
-          nextStudy={
-            nextCaseStudy
-              ? {
-                  slug: nextCaseStudy.slug,
-                  title: nextCaseStudy.title.split("—")[0]?.trim(),
-                  image: nextCaseStudy.image,
-                  role: roleMeta,
-                }
-              : null
-          }
+          prevStudy={prevCaseStudy
+            ? {
+                slug: prevCaseStudy.slug,
+                title: prevCaseStudy.title.split("—")[0]?.trim(),
+                image: prevCaseStudy.image,
+                role: roleMeta,
+              }
+            : null}
+          nextStudy={nextCaseStudy
+            ? {
+                slug: nextCaseStudy.slug,
+                title: nextCaseStudy.title.split("—")[0]?.trim(),
+                image: nextCaseStudy.image,
+                role: roleMeta,
+              }
+            : null}
         />
       </div>
 
@@ -212,7 +223,10 @@ const roleMeta = (caseStudy.metadata || []).find((m) => m.label.toLowerCase().in
         document.documentElement.clientHeight
 
       if (scrollHeight > 0) {
-        const progress = Math.min(100, Math.max(0, (scrollTop / scrollHeight) * 100))
+        const progress = Math.min(
+          100,
+          Math.max(0, (scrollTop / scrollHeight) * 100)
+        )
         bar.style.width = `${progress}%`
         if (scrollTop > 80) {
           track.style.opacity = "1"

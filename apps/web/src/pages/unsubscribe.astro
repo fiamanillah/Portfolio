@@ -487,7 +487,8 @@ import SEO from "@/components/SEO/SEO.astro"
     if (!script) {
       script = document.createElement("script")
       script.id = "cf-turnstile-script"
-      script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
+      script.src =
+        "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
       script.async = true
       script.defer = true
       document.head.appendChild(script)
@@ -496,7 +497,9 @@ import SEO from "@/components/SEO/SEO.astro"
   }
 
   function initManualTurnstileOnDemand() {
-    const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+    const isLocal =
+      window.location.hostname === "localhost" ||
+      window.location.hostname === "127.0.0.1"
     const turnstileKey =
       import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ||
       (isLocal ? "1x00000000000000000000AA" : "0x4AAAAAAEMAnAognjniSApt")

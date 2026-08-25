@@ -36,7 +36,9 @@ interface Props {
 
 const { project, class: className = "" } = Astro.props
 
-const rawStatus = (project.status || "Completed").replace(/^Status:\s*/i, "").trim()
+const rawStatus = (project.status || "Completed")
+  .replace(/^Status:\s*/i, "")
+  .trim()
 const statusLower = rawStatus.toLowerCase()
 const isLive = statusLower === "live"
 const isInProgress = statusLower.includes("progress")
@@ -76,12 +78,14 @@ const isInProgress = statusLower.includes("progress")
 
   <div class="flex flex-col gap-4">
     {/* Meta Header */}
-    <div class="flex items-center justify-between gap-2 border-b border-border/40 pb-3">
+    <div
+      class="flex items-center justify-between gap-2 border-b border-border/40 pb-3"
+    >
       <div class="flex flex-wrap items-center gap-2">
         <span class="font-mono text-xs font-bold tracking-[0.2em] text-primary">
           // {project.index}
         </span>
-        
+
         {/* Status Badge */}
         <span
           class={`inline-flex items-center gap-1.5 px-2 py-0.5 font-mono text-[10px] font-bold uppercase border ${
@@ -99,22 +103,29 @@ const isInProgress = statusLower.includes("progress")
                 : isInProgress
                   ? "bg-amber-400"
                   : "bg-primary"
-            }`}
-          ></span>
+            }`}></span>
           {rawStatus}
         </span>
       </div>
 
-      <div class="flex items-center gap-2 font-mono text-xs text-muted-foreground">
-        {project.role && (
-          <span class="hidden sm:inline text-muted-foreground/80">{project.role}</span>
-        )}
-        {project.year && (
-          <>
-            <span class="hidden sm:inline text-muted-foreground/40">•</span>
-            <span class="tabular-nums">{project.year}</span>
-          </>
-        )}
+      <div
+        class="flex items-center gap-2 font-mono text-xs text-muted-foreground"
+      >
+        {
+          project.role && (
+            <span class="hidden text-muted-foreground/80 sm:inline">
+              {project.role}
+            </span>
+          )
+        }
+        {
+          project.year && (
+            <>
+              <span class="hidden text-muted-foreground/40 sm:inline">•</span>
+              <span class="tabular-nums">{project.year}</span>
+            </>
+          )
+        }
       </div>
     </div>
 
@@ -125,11 +136,13 @@ const isInProgress = statusLower.includes("progress")
       >
         {project.title}
       </h3>
-      {project.subtitle && (
-        <p class="mt-1 font-mono text-xs font-semibold text-primary/90">
-          // {project.subtitle}
-        </p>
-      )}
+      {
+        project.subtitle && (
+          <p class="mt-1 font-mono text-xs font-semibold text-primary/90">
+            // {project.subtitle}
+          </p>
+        )
+      }
     </div>
 
     {/* Description */}
@@ -137,98 +150,125 @@ const isInProgress = statusLower.includes("progress")
       {project.description}
     </p>
 
-    {/* Architectural Impact Highlight Callout (Since no separate details page) */}
-    {project.impact && (
-      <div class="relative border-l-2 border-primary/80 bg-primary/5 px-3.5 py-2.5 rounded-r-sm transition-colors group-hover:bg-primary/8">
-        <div class="flex items-center gap-1.5 text-[11px] font-mono font-semibold tracking-wider text-primary uppercase mb-1">
-          <span class="size-1.5 rounded-full bg-primary"></span>
-          <span>Core Impact &amp; Architecture</span>
+    {
+      /* Architectural Impact Highlight Callout (Since no separate details page) */
+    }
+    {
+      project.impact && (
+        <div class="relative rounded-r-sm border-l-2 border-primary/80 bg-primary/5 px-3.5 py-2.5 transition-colors group-hover:bg-primary/8">
+          <div class="mb-1 flex items-center gap-1.5 font-mono text-[11px] font-semibold tracking-wider text-primary uppercase">
+            <span class="size-1.5 rounded-full bg-primary" />
+            <span>Core Impact &amp; Architecture</span>
+          </div>
+          <p class="text-xs leading-relaxed font-medium text-foreground/90 sm:text-sm">
+            {project.impact}
+          </p>
         </div>
-        <p class="text-xs sm:text-sm font-medium text-foreground/90 leading-relaxed">
-          {project.impact}
-        </p>
-      </div>
-    )}
+      )
+    }
 
     {/* Key Highlights / Capabilities List */}
-    {project.highlights && project.highlights.length > 0 && (
-      <div class="space-y-1.5 pt-1">
-        <div class="font-mono text-[10px] font-bold tracking-wider text-muted-foreground uppercase">
-          Key Capabilities:
+    {
+      project.highlights && project.highlights.length > 0 && (
+        <div class="space-y-1.5 pt-1">
+          <div class="font-mono text-[10px] font-bold tracking-wider text-muted-foreground uppercase">
+            Key Capabilities:
+          </div>
+          <ul class="space-y-1.5">
+            {project.highlights.map((h) => (
+              <li class="flex items-start gap-2 text-xs text-muted-foreground">
+                <span class="mt-1.5 size-1.5 shrink-0 rounded-full bg-primary/80 shadow-[0_0_4px_oklch(var(--primary))]" />
+                <span class="leading-relaxed">{h}</span>
+              </li>
+            ))}
+          </ul>
         </div>
-        <ul class="space-y-1.5">
-          {project.highlights.map((h) => (
-            <li class="flex items-start gap-2 text-xs text-muted-foreground">
-              <span class="mt-1.5 size-1.5 shrink-0 rounded-full bg-primary/80 shadow-[0_0_4px_oklch(var(--primary))]" />
-              <span class="leading-relaxed">{h}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
-    )}
+      )
+    }
 
     {/* Tech Stack Badges */}
     <div class="flex flex-wrap gap-1.5 pt-2">
-      {project.tech.map((t) => (
-        <Badge
-          variant="outline"
-          className="text-[11px] font-mono border-border/70 bg-background/50 text-muted-foreground transition-colors group-hover:border-primary/40 group-hover:text-foreground"
-        >
-          {t}
-        </Badge>
-      ))}
+      {
+        project.tech.map((t) => (
+          <Badge
+            variant="outline"
+            className="text-[11px] font-mono border-border/70 bg-background/50 text-muted-foreground transition-colors group-hover:border-primary/40 group-hover:text-foreground"
+          >
+            {t}
+          </Badge>
+        ))
+      }
     </div>
   </div>
 
   {/* Actions Footer */}
-  {((project.links.live && project.links.live !== "#") ||
-    (project.links.github && project.links.github !== "#") ||
-    (project.links.caseStudy && project.links.caseStudy !== "#")) && (
-    <div class="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-border/40 pt-4">
-      <div class="flex flex-wrap items-center gap-2.5">
-        {project.links.live && project.links.live !== "#" && (
-          <a href={project.links.live} target="_blank" rel="noopener noreferrer">
-            <Button
-              variant="outline"
-              size="sm"
-              className="gap-1.5 text-xs border-border hover:border-primary/60 hover:text-primary transition-colors cursor-pointer"
+  {
+    ((project.links.live && project.links.live !== "#") ||
+      (project.links.github && project.links.github !== "#") ||
+      (project.links.caseStudy && project.links.caseStudy !== "#")) && (
+      <div class="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-border/40 pt-4">
+        <div class="flex flex-wrap items-center gap-2.5">
+          {project.links.live && project.links.live !== "#" && (
+            <a
+              href={project.links.live}
+              target="_blank"
+              rel="noopener noreferrer"
             >
-              <HugeiconsIcon icon={Globe02Icon} className="size-3.5" />
-              Live demo ↗
-            </Button>
-          </a>
-        )}
+              <Button
+                variant="outline"
+                size="sm"
+                className="gap-1.5 text-xs border-border hover:border-primary/60 hover:text-primary transition-colors cursor-pointer"
+              >
+                <HugeiconsIcon icon={Globe02Icon} className="size-3.5" />
+                Live demo ↗
+              </Button>
+            </a>
+          )}
 
-        {project.links.caseStudy && project.links.caseStudy !== "#" && (
-          <a
-            href={project.links.caseStudy}
-            target={project.links.caseStudy.startsWith("/") ? "_self" : "_blank"}
-            rel={project.links.caseStudy.startsWith("/") ? undefined : "noopener noreferrer"}
-          >
-            <Button size="sm" className="gap-1.5 text-xs font-semibold cursor-pointer">
-              Case study
-              <HugeiconsIcon icon={ArrowUpRight01Icon} className="size-3" />
-            </Button>
-          </a>
-        )}
-
-        {project.links.github && project.links.github !== "#" && (
-          <a href={project.links.github} target="_blank" rel="noopener noreferrer">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+          {project.links.caseStudy && project.links.caseStudy !== "#" && (
+            <a
+              href={project.links.caseStudy}
+              target={
+                project.links.caseStudy.startsWith("/") ? "_self" : "_blank"
+              }
+              rel={
+                project.links.caseStudy.startsWith("/")
+                  ? undefined
+                  : "noopener noreferrer"
+              }
             >
-              <HugeiconsIcon icon={Github} className="size-3.5" />
-              Source code ↗
-            </Button>
-          </a>
-        )}
+              <Button
+                size="sm"
+                className="gap-1.5 text-xs font-semibold cursor-pointer"
+              >
+                Case study
+                <HugeiconsIcon icon={ArrowUpRight01Icon} className="size-3" />
+              </Button>
+            </a>
+          )}
+
+          {project.links.github && project.links.github !== "#" && (
+            <a
+              href={project.links.github}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Button
+                variant="ghost"
+                size="sm"
+                className="gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+              >
+                <HugeiconsIcon icon={Github} className="size-3.5" />
+                Source code ↗
+              </Button>
+            </a>
+          )}
+        </div>
+
+        <span class="hidden font-mono text-[10px] text-muted-foreground/60 sm:inline">
+          ARCH_STARTER
+        </span>
       </div>
-
-      <span class="font-mono text-[10px] text-muted-foreground/60 hidden sm:inline">
-        ARCH_STARTER
-      </span>
-    </div>
-  )}
+    )
+  }
 </article>

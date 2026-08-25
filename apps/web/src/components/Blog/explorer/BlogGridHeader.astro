@@ -18,22 +18,18 @@ const {
 const initialTo = Math.min(postsPerPage, totalCount)
 ---
 
-<div
-  class={`relative overflow-hidden text-center ${className}`}
->
+<div class={`relative overflow-hidden text-center ${className}`}>
   <!-- Diagonal stripe background -->
   <div
     class="diagonal-stripes pointer-events-none absolute inset-0 z-10 bg-background"
     aria-hidden="true"
-  ></div>
+  >
+  </div>
 
   <div class="relative z-10 py-6">
     <p class="section-label">Browse &amp; discover</p>
     <h2 class="section-title text-foreground">
-      <span
-        data-journal-title
-        class="text-foreground"
-      >
+      <span data-journal-title class="text-foreground">
         All{" "}
         <span class="text-primary">/</span>{" "}
         Tech Articles &amp; Stories
@@ -43,15 +39,20 @@ const initialTo = Math.min(postsPerPage, totalCount)
   </div>
 
   <!-- Live count badge (floating bottom right of header) -->
-  <div class="relative z-20 pb-4 flex items-center justify-center gap-3">
+  <div class="relative z-20 flex items-center justify-center gap-3 pb-4">
     <span
       class="inline-flex items-center gap-1.5 border border-primary/30 bg-primary/8 px-3 py-1 font-mono text-[10px] font-semibold text-primary uppercase"
     >
       <Icon name="mdi:tag-outline" class="size-3" />
       <span data-active-category-text>{activeCategory.toUpperCase()}</span>
     </span>
-    <span class="flex items-center gap-1.5 font-mono text-[10px] text-muted-foreground">
-      <Icon name="mdi:newspaper-variant-outline" class="size-3.5 text-primary/60" />
+    <span
+      class="flex items-center gap-1.5 font-mono text-[10px] text-muted-foreground"
+    >
+      <Icon
+        name="mdi:newspaper-variant-outline"
+        class="size-3.5 text-primary/60"
+      />
       <span data-showing-count>
         {
           totalCount > 0

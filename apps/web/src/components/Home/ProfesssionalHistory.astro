@@ -1,10 +1,18 @@
 ---
+// src/components/Home/ProfesssionalHistory.astro
 import { ExperienceApi } from "@/lib/api/experienceApi"
+import { HugeiconsIcon } from "@hugeicons/react"
+import {
+  Location01Icon,
+  Calendar01Icon,
+  CheckmarkCircle02Icon,
+  ArrowUpRight01Icon,
+} from "@hugeicons/core-free-icons"
 
 const experiences = await ExperienceApi.fetchPublicExperiences()
 
 const distinctYears = new Set(experiences.map((e) => e.year)).size
-const totalYears = Math.max(1, distinctYears)
+const totalYears = Math.max(3, distinctYears)
 const totalCompanies = new Set(
   experiences.map((e) => e.company.toLowerCase().trim())
 ).size
@@ -12,212 +20,347 @@ const totalTech = [...new Set(experiences.flatMap((e) => e.technologies || []))]
   .length
 ---
 
+<style>
+  .timeline-experience-card {
+    transition:
+      border-color 250ms ease,
+      background-color 250ms ease,
+      transform 250ms ease,
+      box-shadow 250ms ease;
+  }
+
+  .timeline-experience-card:hover {
+    border-color: oklch(var(--primary) / 50%);
+    background-color: oklch(var(--card) / 80%);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 32px -10px oklch(var(--primary) / 14%);
+  }
+
+  .timeline-beam-glow {
+    filter: drop-shadow(0 0 8px oklch(var(--primary) / 70%));
+  }
+</style>
+
 {
   experiences && experiences.length > 0 && (
     <section
+      id="professional-history"
       data-grid-cross
-      class="relative container mx-auto flex items-center justify-center overflow-clip py-px"
+      class="relative container mx-auto overflow-hidden pb-12 md:pb-16"
     >
-      <div class="w-full">
-        <div class="bg-background/40 shadow-sm backdrop-blur-3xl">
-          <!-- Top Header Section -->
-          <div class="relative overflow-hidden border-b border-border text-center">
-            <!-- Background Pattern (diagonal stripes themed to site palette) -->
-            <div
-              class="diagonal-stripes pointer-events-none absolute inset-0 z-10 bg-background"
-              aria-hidden="true"
-            >
-            </div>
+      <!-- Section Header -->
+      <div class="relative mb-12 overflow-hidden text-center md:mb-16">
+        <!-- Background Diagonal Stripes -->
+        <div
+          class="diagonal-stripes pointer-events-none absolute inset-0 z-10 bg-background"
+          aria-hidden="true"
+        />
 
-            <div class="relative z-10">
-              <div class="">
-                <p class="section-label pt-6">
-                  Roles, projects, and impact that shaped my engineering path
-                </p>
-                <h2 class="section-title mb-6 text-foreground">
-                  Professional <span class="font-bold text-primary">History</span>
-                </h2>
+        <div class="relative z-10 py-6">
+          <p class="section-label mb-3">
+            Career Track Record & Engineering Milestones
+          </p>
+          <h2 class="section-title text-foreground">
+            Professional <span class="text-primary">History</span>
+          </h2>
 
-                <!-- Accent bar -->
-                <div class="accent-bar mx-auto mb-5 w-48 md:w-56"></div>
+          <!-- Accent bar -->
+          <div class="accent-bar mx-auto mt-4 mb-6 w-48 md:w-56" />
 
-                <!-- Summary Stats Bar -->
-                <div
-                  class="grid grid-cols-3 divide-x divide-border border-t border-border"
-                >
-                  <div class="group flex flex-col items-center gap-1 py-5">
-                    <span
-                      class="text-2xl font-black tracking-tighter text-primary tabular-nums md:text-3xl"
-                      >{totalYears}+</span
-                    >
-                    <span
-                      class="text-[11px] font-semibold tracking-[0.12em] text-muted-foreground uppercase"
-                      >Years Experience</span
-                    >
-                  </div>
-                  <div class="group flex flex-col items-center gap-1 py-5">
-                    <span
-                      class="text-2xl font-black tracking-tighter text-primary tabular-nums md:text-3xl"
-                      >{totalCompanies}</span
-                    >
-                    <span
-                      class="text-[11px] font-semibold tracking-[0.12em] text-muted-foreground uppercase"
-                      >Companies</span
-                    >
-                  </div>
-                  <div class="group flex flex-col items-center gap-1 py-5">
-                    <span
-                      class="text-2xl font-black tracking-tighter text-primary tabular-nums md:text-3xl"
-                      >{totalTech}+</span
-                    >
-                    <span
-                      class="text-[11px] font-semibold tracking-[0.12em] text-muted-foreground uppercase"
-                      >Technologies</span
-                    >
-                  </div>
-                </div>
+          <!-- Summary Metric Cards -->
+          <div class="mx-auto max-w-2xl border border-border bg-card/40 backdrop-blur-xs">
+            <div class="grid grid-cols-3 divide-x divide-border">
+              <div class="flex flex-col items-center gap-1 py-4">
+                <span class="text-2xl font-black tracking-tighter text-primary tabular-nums md:text-3xl">
+                  {totalYears}+
+                </span>
+                <span class="text-[11px] font-semibold tracking-[0.12em] text-muted-foreground uppercase">
+                  Years Experience
+                </span>
+              </div>
+              <div class="flex flex-col items-center gap-1 py-4">
+                <span class="text-2xl font-black tracking-tighter text-primary tabular-nums md:text-3xl">
+                  {totalCompanies}
+                </span>
+                <span class="text-[11px] font-semibold tracking-[0.12em] text-muted-foreground uppercase">
+                  {totalCompanies === 1 ? "Company" : "Companies"}
+                </span>
+              </div>
+              <div class="flex flex-col items-center gap-1 py-4">
+                <span class="text-2xl font-black tracking-tighter text-primary tabular-nums md:text-3xl">
+                  {totalTech}+
+                </span>
+                <span class="text-[11px] font-semibold tracking-[0.12em] text-muted-foreground uppercase">
+                  Technologies
+                </span>
               </div>
             </div>
           </div>
         </div>
+      </div>
 
-        <!-- Timeline Grid -->
-        <div class="flex w-full border-b border-border bg-card">
-          <!-- Vertical Label -->
+      <!-- Full-Width Responsive Timeline -->
+      <div id="history-timeline-root" class="relative w-full px-4 sm:px-6 lg:px-8 pb-12">
+        
+        {/* Timeline Items Container — Shared Coordinate System for Nodes & Rail */}
+        <div id="history-timeline-content" class="relative space-y-12 md:space-y-20">
+          
+          {/* Vertical Rail with Illuminated Gradient Beam (Dead-center at 20px) */}
           <div
-            class="group relative hidden w-16 shrink-0 border-r border-border md:block"
+            id="history-timeline-rail"
+            class="pointer-events-none absolute top-0 bottom-0 left-[19px] w-[2px] overflow-hidden bg-gradient-to-b from-transparent via-border to-transparent [mask-image:linear-gradient(to_bottom,transparent_0%,black_10%,black_90%,transparent_100%)] z-0"
           >
             <div
-              class="sticky top-0 flex h-screen max-h-screen items-center justify-center"
-            >
-              <h3
-                class="inline-block origin-center -rotate-90 font-mono text-xl font-bold tracking-widest whitespace-nowrap text-muted-foreground/20 uppercase transition-colors duration-400 group-hover:text-primary/15"
-              >
-                TRACK_RECORD
-              </h3>
-            </div>
+              id="history-timeline-beam"
+              class="timeline-beam-glow absolute inset-x-0 top-0 w-[2px] rounded-full bg-gradient-to-b from-primary via-primary/90 to-transparent"
+              style="height: 0px; opacity: 0; transform: translateZ(0);"
+            />
           </div>
 
-          <!-- Experiences -->
-          <div class="relative w-full overflow-hidden">
-            <div class="relative z-10 flex flex-col">
-              {
-                experiences.map((exp, index) => (
-                  <article
-                    class={`group relative flex flex-col border-border bg-background/50 backdrop-blur-sm transition-all duration-400 hover:bg-primary/5 md:flex-row ${index !== experiences.length - 1 ? "border-b" : ""}`}
-                  >
-                    {/* Left Column: Year, Company, Meta */}
-                    <div class="flex w-full flex-row items-start justify-between border-b border-border p-5 md:w-[22%] md:flex-col md:border-r md:border-b-0 md:p-6">
-                      <div class="flex flex-col gap-1">
-                        {/* Year */}
-                        <span class="text-[2.25rem] font-black tracking-tighter text-foreground transition-colors duration-400 group-hover:text-primary md:text-[2.75rem]">
-                          {exp.year}
-                        </span>
-                        <div class="mt-1 h-px w-6 bg-primary/40 transition-all duration-400 group-hover:w-10 group-hover:bg-primary" />
-                        <p class="mt-2 font-mono text-[10px] tracking-[0.14em] text-muted-foreground uppercase">
-                          // {exp.period}
-                        </p>
-                      </div>
+          {
+            experiences.map((exp) => {
+              const displayTitle = Array.isArray(exp.title)
+                ? exp.title.join(" ")
+                : exp.title || exp.role || "Full Stack Developer"
 
-                      {/* Location & Type Badge */}
-                      <div class="flex flex-col gap-2 md:mt-auto md:pt-6">
-                        <div class="flex items-center gap-1.5">
-                          <span class="h-1.5 w-1.5 border border-primary/50" />
-                          <span class="font-mono text-[10px] tracking-[0.12em] text-muted-foreground uppercase">
-                            {exp.location}
-                          </span>
-                        </div>
-                        <div class="inline-flex w-fit items-center border border-primary/20 bg-primary/5 px-2 py-0.5 font-mono text-[10px] font-bold tracking-[0.12em] text-primary uppercase">
-                          {exp.type}
-                        </div>
-                      </div>
+              const cleanPeriod = exp.period
+                ? exp.period.replace(/^\/\/\s*/, "")
+                : `${exp.year} — Present`
+
+              return (
+                <div class="timeline-row relative flex flex-col md:flex-row md:items-start md:gap-8 lg:gap-14 z-10">
+                  
+                  {/* Left Column: Sticky Milestone Year Anchor & Node (Width: 200px on md, 240px on lg) */}
+                  <div class="sticky top-28 sm:top-36 z-20 flex self-start items-center md:w-52 lg:w-60 shrink-0">
+                    
+                    {/* Node Circle on Timeline Rail (Size 10 = 40px, Left: 0px -> Center is 20px) */}
+                    <div class="absolute left-0 flex size-10 items-center justify-center rounded-full border border-border bg-background shadow-xs z-10">
+                      {exp.isCurrent ? (
+                        <div class="size-3.5 rounded-full bg-primary shadow-[0_0_14px_oklch(var(--primary))] animate-pulse" />
+                      ) : (
+                        <div class="size-3.5 rounded-full border border-primary/50 bg-primary/20 shadow-[0_0_8px_oklch(var(--primary)/40%)]" />
+                      )}
                     </div>
 
-                    {/* Right Column: Content */}
-                    <div class="flex w-full flex-col gap-6 p-5 md:w-[78%] md:p-8">
-                      {/* Company & Role */}
-                      <div class="flex flex-col gap-2">
-                        <div class="inline-block w-fit border border-border bg-card px-3 py-1 font-mono text-xs font-bold tracking-[0.12em] text-foreground uppercase transition-colors duration-400 group-hover:border-primary/40 group-hover:text-primary">
-                          {exp.company}
-                        </div>
-                        <h3 class="text-xl font-black tracking-tight text-foreground uppercase transition-colors duration-400 group-hover:text-foreground/90 md:text-2xl lg:text-3xl">
-                          {exp.title.join(" ")}
-                        </h3>
+                    {/* Desktop Sticky Year Display */}
+                    <div class="hidden md:block pl-16 space-y-1.5">
+                      <div class="font-mono text-3xl lg:text-4xl xl:text-5xl font-black tracking-tight text-foreground/90">
+                        {exp.year}
                       </div>
+                      {exp.isCurrent && (
+                        <div class="inline-flex items-center gap-1.5 border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 font-mono text-[10px] font-semibold text-emerald-400">
+                          <span class="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                          Current Role
+                        </div>
+                      )}
+                    </div>
+                  </div>
 
-                      {/* Description + Highlights */}
-                      <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
-                        <div class="flex flex-col gap-4">
-                          <div class="relative pl-4">
-                            <div class="absolute top-1 bottom-0 left-0 w-px bg-primary/30 transition-colors duration-400 group-hover:bg-primary" />
-                            <p class="text-sm leading-relaxed text-muted-foreground">
-                              {exp.description}
-                            </p>
+                  {/* Right Column: Full-Width Experience Content Card */}
+                  <div class="relative w-full pl-14 md:pl-0 min-w-0 flex-1">
+                    
+                    {/* Mobile Year Badge */}
+                    <div class="mb-3 flex items-center justify-between gap-2 md:hidden">
+                      <span class="font-mono text-2xl font-black tracking-tight text-foreground">
+                        {exp.year}
+                      </span>
+                      {exp.isCurrent && (
+                        <span class="inline-flex items-center gap-1.5 border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 font-mono text-[10px] font-semibold text-emerald-400">
+                          <span class="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                          Current
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Main Experience Card (Fills available container width) */}
+                    <article class="timeline-experience-card relative w-full border border-border bg-card/40 p-5 sm:p-7 md:p-8 backdrop-blur-xs">
+                      <div class="space-y-5">
+                        
+                        {/* Header: Clean 2-Row Layout Immune to Overlap */}
+                        <div class="space-y-3 border-b border-border/60 pb-5">
+                          {/* Row 1: Role Title + Period Badge */}
+                          <div class="flex flex-wrap items-center justify-between gap-3">
+                            <h3 class="text-xl font-bold tracking-tight text-foreground sm:text-2xl lg:text-3xl break-words">
+                              {displayTitle}
+                            </h3>
+                            <div class="inline-flex items-center gap-1.5 border border-primary/30 bg-primary/10 px-3 py-1 font-mono text-xs font-semibold text-primary shrink-0">
+                              <HugeiconsIcon icon={Calendar01Icon} className="size-3.5" />
+                              <span>{cleanPeriod}</span>
+                            </div>
                           </div>
 
-                          <ul class="flex flex-col gap-2">
-                            {exp.highlights.map((h) => (
-                              <li class="flex items-start gap-3">
-                                <span class="mt-1 flex h-3 w-3 shrink-0 items-center justify-center border border-primary/30 bg-primary/10 text-[7px] text-primary transition-colors duration-400 group-hover:border-primary/60">
-                                  +
-                                </span>
-                                <span class="text-sm leading-relaxed text-muted-foreground transition-colors duration-400 group-hover:text-foreground/80">
-                                  {h}
-                                </span>
-                              </li>
-                            ))}
-                          </ul>
-
-                          {/* Stats row */}
-                          <div class="flex flex-wrap gap-4 border-t border-border pt-4">
-                            {exp.stats.map((stat) => (
-                              <div class="flex flex-col gap-0.5">
-                                <div class="text-lg font-black tracking-tighter text-foreground transition-colors duration-400 group-hover:text-primary">
-                                  {stat.value}
+                          {/* Row 2: Company Link, Employment Type, Location */}
+                          <div class="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-xs sm:text-sm text-muted-foreground">
+                            {exp.companyUrl ? (
+                              <a
+                                href={exp.companyUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="group/link inline-flex items-center gap-1 font-semibold text-primary hover:underline"
+                              >
+                                <span>{exp.company}</span>
+                                <HugeiconsIcon
+                                  icon={ArrowUpRight01Icon}
+                                  className="size-3.5 transition-transform duration-200 group-hover/link:-translate-y-0.5 group-hover/link:translate-x-0.5"
+                                />
+                              </a>
+                            ) : (
+                              <span class="font-semibold text-primary">{exp.company}</span>
+                            )}
+                            <span class="text-border">•</span>
+                            <span class="font-medium text-foreground/80">{exp.type || "Full-Time"}</span>
+                            {exp.location && (
+                              <>
+                                <span class="text-border">•</span>
+                                <div class="flex items-center gap-1 font-mono text-xs text-muted-foreground">
+                                  <HugeiconsIcon icon={Location01Icon} className="size-3.5 text-muted-foreground/70" />
+                                  <span>{exp.location}</span>
                                 </div>
-                                <div class="font-mono text-[10px] font-semibold tracking-[0.12em] text-muted-foreground uppercase">
-                                  {stat.label}
-                                </div>
-                              </div>
-                            ))}
+                              </>
+                            )}
                           </div>
                         </div>
 
-                        <div class="flex flex-col gap-6">
-                          {/* Tech Stack */}
-                          <div class="flex flex-col gap-3">
-                            <h4 class="font-mono text-xs font-bold tracking-[0.12em] text-foreground uppercase">
-                              // TECH_STACK
-                            </h4>
-                            <div class="flex flex-wrap gap-2">
+                        {/* Scope Narrative */}
+                        {exp.description && (
+                          <p class="text-sm leading-relaxed text-muted-foreground sm:text-base">
+                            {exp.description}
+                          </p>
+                        )}
+
+                        {/* Key Engineering Accomplishments Grid (2-Column on sm+) */}
+                        {exp.highlights && exp.highlights.length > 0 && (
+                          <div class="space-y-2 pt-1">
+                            <div class="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+                              {exp.highlights.map((highlight) => (
+                                <div class="flex items-start gap-2.5 rounded-sm border border-border/40 bg-background/40 p-3 text-xs leading-relaxed text-muted-foreground transition-colors hover:border-primary/30 hover:text-foreground/90 sm:text-sm">
+                                  <HugeiconsIcon
+                                    icon={CheckmarkCircle02Icon}
+                                    className="mt-0.5 size-4 shrink-0 text-primary"
+                                  />
+                                  <span>{highlight}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Technologies Tags Strip */}
+                        {exp.technologies && exp.technologies.length > 0 && (
+                          <div class="border-t border-border/60 pt-4">
+                            <div class="flex flex-wrap items-center gap-1.5">
+                              <span class="mr-1 font-mono text-[10px] font-bold tracking-wider text-muted-foreground/70 uppercase">
+                                Stack:
+                              </span>
                               {exp.technologies.map((tech) => (
-                                <span class="border border-border bg-muted/30 px-2.5 py-1 font-mono text-[10px] font-bold tracking-[0.1em] text-foreground uppercase transition-colors duration-300 hover:border-primary/50 hover:bg-primary/10 hover:text-primary">
+                                <span class="border border-border/70 bg-muted/30 px-2.5 py-0.5 font-mono text-[11px] font-medium text-foreground/80 transition-colors duration-200 hover:border-primary/50 hover:bg-primary/5 hover:text-primary">
                                   {tech}
                                 </span>
                               ))}
                             </div>
                           </div>
+                        )}
 
-                          {/* Key Takeaway */}
-                          <div class="border-l-[1.5px] border-border pl-4 transition-colors duration-400 group-hover:border-primary/40">
-                            <h4 class="mb-2 font-mono text-xs font-bold tracking-[0.12em] text-primary uppercase">
-                              [ KEY_TAKEAWAY ]
-                            </h4>
-                            <p class="text-sm leading-relaxed text-muted-foreground italic">
-                              "{exp.learned}"
-                            </p>
-                          </div>
-                        </div>
                       </div>
-                    </div>
-                  </article>
-                ))
-              }
-            </div>
-          </div>
+                    </article>
+                  </div>
+
+                </div>
+              )
+            })
+          }
         </div>
+
       </div>
     </section>
   )
 }
 
+<script>
+  function setupTimelineScrollEngine() {
+    const root = document.getElementById("history-timeline-root")
+    const content = document.getElementById("history-timeline-content")
+    const rail = document.getElementById("history-timeline-rail")
+    const beam = document.getElementById("history-timeline-beam")
+
+    if (!root || !content || !rail || !beam) return
+
+    let isVisible = false
+    let animationFrameId: number | null = null
+
+    function updateTrackHeight() {
+      if (!content || !rail) return
+      const contentHeight = content.offsetHeight
+      rail.style.height = `${contentHeight}px`
+    }
+
+    function calculateScrollProgress() {
+      if (!root || !beam || !content) return
+
+      const rect = root.getBoundingClientRect()
+      const windowHeight = window.innerHeight
+
+      const startOffset = windowHeight * 0.8
+      const totalDistance = rect.height + windowHeight * 0.3
+      const currentScroll = startOffset - rect.top
+
+      let progress = currentScroll / totalDistance
+      progress = Math.max(0, Math.min(1, progress))
+
+      const totalHeight = content.offsetHeight
+      const beamHeight = progress * totalHeight
+
+      beam.style.height = `${beamHeight}px`
+      beam.style.opacity = progress > 0.01 ? "1" : "0"
+    }
+
+    function onScroll() {
+      if (!isVisible) return
+      if (animationFrameId !== null) {
+        cancelAnimationFrame(animationFrameId)
+      }
+      animationFrameId = requestAnimationFrame(() => {
+        calculateScrollProgress()
+        animationFrameId = null
+      })
+    }
+
+    // Viewport Visibility Observer
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          isVisible = entry.isIntersecting
+          if (isVisible) {
+            updateTrackHeight()
+            calculateScrollProgress()
+          }
+        })
+      },
+      { rootMargin: "200px 0px 200px 0px" }
+    )
+
+    observer.observe(root)
+
+    const resizeObserver = new ResizeObserver(() => {
+      updateTrackHeight()
+      calculateScrollProgress()
+    })
+
+    resizeObserver.observe(content)
+
+    window.addEventListener("scroll", onScroll, { passive: true })
+    window.addEventListener("resize", updateTrackHeight, { passive: true })
+
+    // Initial pass
+    updateTrackHeight()
+    calculateScrollProgress()
+  }
+
+  document.addEventListener("astro:page-load", setupTimelineScrollEngine)
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", setupTimelineScrollEngine)
+  } else {
+    setupTimelineScrollEngine()
+  }
+</script>

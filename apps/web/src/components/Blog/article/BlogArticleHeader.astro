@@ -33,31 +33,29 @@ const categorySlug = getCategorySlug(post.categorySlug || post.category)
 <header id="article-top" class="border-b border-border/80 pb-8 text-left">
   {/* Category & Featured Badges */}
   <div class="mb-4 flex flex-wrap items-center gap-2">
-    <a
-      href={`/blog/category/${categorySlug}`}
-    >
+    <a href={`/blog/category/${categorySlug}`}>
       <span
-        style={
-          catColor
-            ? {
-                borderColor: `${catColor}60`,
-                backgroundColor: `${catColor}18`,
-                color: catColor,
-                boxShadow: `0 0 10px ${catColor}25`,
-              }
-            : undefined
-        }
+        style={catColor
+          ? {
+              borderColor: `${catColor}60`,
+              backgroundColor: `${catColor}18`,
+              color: catColor,
+              boxShadow: `0 0 10px ${catColor}25`,
+            }
+          : undefined}
         class="inline-flex items-center gap-1.5 border border-primary/40 bg-primary/10 px-2.5 py-1 font-mono text-xs font-semibold text-primary uppercase transition-colors hover:border-primary"
       >
-        {catColor && (
-          <span
-            class="h-1.5 w-1.5 shrink-0 rounded-full"
-            style={{
-              backgroundColor: catColor,
-              boxShadow: `0 0 5px ${catColor}`,
-            }}
-          />
-        )}
+        {
+          catColor && (
+            <span
+              class="h-1.5 w-1.5 shrink-0 rounded-full"
+              style={{
+                backgroundColor: catColor,
+                boxShadow: `0 0 5px ${catColor}`,
+              }}
+            />
+          )
+        }
         {post.category}
       </span>
     </a>
@@ -87,7 +85,9 @@ const categorySlug = getCategorySlug(post.categorySlug || post.category)
   }
 
   {/* Author & Reading Metadata Overview Cockpit */}
-  <div class="mt-8 overflow-hidden border border-border/80 bg-card/60 backdrop-blur-md">
+  <div
+    class="mt-8 overflow-hidden border border-border/80 bg-card/60 backdrop-blur-md"
+  >
     {/* Upper Section: Persona & Article Telemetry */}
     <div
       class="flex flex-col gap-4 border-b border-border/50 bg-background/50 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5"
@@ -107,8 +107,7 @@ const categorySlug = getCategorySlug(post.categorySlug || post.category)
           />
           <span
             class="absolute -right-0.5 -bottom-0.5 h-3 w-3 rounded-full border-2 border-background bg-emerald-500 shadow-xs"
-            title="Author Active"
-          ></span>
+            title="Author Active"></span>
         </div>
         <div class="flex min-w-0 flex-col">
           <div class="flex items-center gap-2">
@@ -119,7 +118,7 @@ const categorySlug = getCategorySlug(post.categorySlug || post.category)
               {post.author.name}
             </span>
             <span
-              class="border border-primary/30 bg-primary/10 px-1.5 py-0.2 font-mono text-[9px] font-bold text-primary uppercase"
+              class="py-0.2 border border-primary/30 bg-primary/10 px-1.5 font-mono text-[9px] font-bold text-primary uppercase"
             >
               AUTHOR
             </span>
@@ -156,10 +155,7 @@ const categorySlug = getCategorySlug(post.categorySlug || post.category)
           class="inline-flex items-center gap-1.5 border border-border/70 bg-background/80 px-2.5 py-1"
           title="Estimated Read Time"
         >
-          <HugeiconsIcon
-            icon={Time02Icon}
-            className="size-3 text-primary/80"
-          />
+          <HugeiconsIcon icon={Time02Icon} className="size-3 text-primary/80" />
           <span class="text-[11px] font-medium">{post.readTime}</span>
         </div>
 

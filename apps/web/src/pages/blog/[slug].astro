@@ -37,7 +37,10 @@ const postData = await getBlogPostBySlugAsync(slug)
 
 // If post has moved to a new URL, perform a 301 Permanent Redirect
 if (postData?.redirected && postData.destination) {
-  return Astro.redirect(postData.destination, (postData.statusCode as any) || 301)
+  return Astro.redirect(
+    postData.destination,
+    (postData.statusCode as any) || 301
+  )
 }
 
 const currentPost = postData?.post || propPost
@@ -127,12 +130,17 @@ const relatedPosts =
       <BlogArticleNav prevPost={prevPost} nextPost={nextPost} />
     </div>
 
-    {/* Related Articles — Dedicated Full-Width Section with SectionDivider & Gridline Alignment */}
+    {
+      /* Related Articles — Dedicated Full-Width Section with SectionDivider & Gridline Alignment */
+    }
     {
       relatedPosts.length > 0 && (
         <>
           <SectionDivider />
-          <section class="blog-bottom-animate relative z-10 w-full" data-grid-cross>
+          <section
+            class="blog-bottom-animate relative z-10 w-full"
+            data-grid-cross
+          >
             <div class="overflow-hidden border-r border-l border-border bg-background">
               {/* Section Header Bar */}
               <div class="flex items-center justify-between border-b border-border bg-card/60 px-4 py-3 sm:px-6">
@@ -152,11 +160,11 @@ const relatedPosts =
               </div>
 
               {/* Zero-Gap 3-Column Responsive Grid */}
-              <div class="grid grid-cols-1 divide-y divide-border md:grid-cols-3 md:divide-y-0 md:divide-x">
+              <div class="grid grid-cols-1 divide-y divide-border md:grid-cols-3 md:divide-x md:divide-y-0">
                 {relatedPosts.map((relatedPost) => (
                   <BlogCard
                     post={relatedPost}
-                    class="border-0 bg-transparent rounded-none shadow-none"
+                    class="rounded-none border-0 bg-transparent shadow-none"
                   />
                 ))}
               </div>

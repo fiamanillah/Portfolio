@@ -36,7 +36,7 @@ const resumeUrl = resumeData.downloadUrl || "/resume"
     class="z-10 container mx-auto grid grid-cols-1 justify-between gap-12 px-4 lg:grid-cols-2 lg:gap-16 xl:gap-24"
   >
     <!-- Left Side: Main Content -->
-    <div class="flex flex-col justify-center space-y-8 max-w-xl">
+    <div class="flex max-w-xl flex-col justify-center space-y-8">
       <!-- Main Heading -->
       <div class="space-y-4">
         <h1
@@ -67,8 +67,8 @@ const resumeUrl = resumeData.downloadUrl || "/resume"
         <p
           class="max-w-lg text-sm! leading-relaxed font-medium text-balance text-muted-foreground sm:text-base"
         >
-          Full Stack Developer with 1+ year of professional experience building
-          scalable MERN stack, Nest.js, and Next.js applications. Specializing
+          Full Stack Developer with 3+ years of professional experience building
+          scalable full-stack applications with Nest.js and Next.js. Specializing
           in <span class="text-foreground">robust backend systems</span> and <span
             class="text-foreground">DevOps automation</span
           >.
@@ -228,7 +228,7 @@ const resumeUrl = resumeData.downloadUrl || "/resume"
           >
           <span
             class="text-xs font-semibold tracking-tight text-foreground sm:text-sm"
-            >1+ Years</span
+            >3+ Years</span
           >
         </div>
         <div
@@ -312,12 +312,12 @@ const resumeUrl = resumeData.downloadUrl || "/resume"
     </div>
     <!-- Glow Effect (Zero-CLS Radial Gradient) -->
     <div
-      class="absolute bottom-0 inset-x-0 h-3/4 bg-[radial-gradient(ellipse_80%_80%_at_50%_100%,rgba(0,220,200,0.15)_0%,transparent_75%)]"
+      class="absolute inset-x-0 bottom-0 h-3/4 bg-[radial-gradient(ellipse_80%_80%_at_50%_100%,rgba(0,220,200,0.15)_0%,transparent_75%)]"
       aria-hidden="true"
     >
     </div>
     <picture
-      class="pointer-events-none absolute bottom-0 left-1/2 h-[65%] w-auto max-w-none -translate-x-1/2 select-none sm:h-[75%] lg:left-[54%] lg:h-[82%] xl:left-[52%] xl:h-[88%] [mask-image:radial-gradient(ellipse_at_center,black_55%,transparent_95%)]"
+      class="pointer-events-none absolute bottom-0 left-1/2 h-[65%] w-auto max-w-none -translate-x-1/2 [mask-image:radial-gradient(ellipse_at_center,black_55%,transparent_95%)] select-none sm:h-[75%] lg:left-[54%] lg:h-[82%] xl:left-[52%] xl:h-[88%]"
     >
       <source
         media="(max-width: 640px)"
@@ -333,12 +333,7 @@ const resumeUrl = resumeData.downloadUrl || "/resume"
         width="720"
         height="720"
       />
-      <source
-        srcset="/fi.webp"
-        type="image/webp"
-        width="1080"
-        height="1080"
-      />
+      <source srcset="/fi.webp" type="image/webp" width="1080" height="1080" />
       <img
         src="/fi-sm.webp"
         alt="Fi Amanillah - Full-Stack Architect"
@@ -347,7 +342,7 @@ const resumeUrl = resumeData.downloadUrl || "/resume"
         fetchpriority="high"
         loading="eager"
         decoding="async"
-        class="h-full w-auto object-contain opacity-25 grayscale contrast-125 transition-opacity duration-700 sm:opacity-30 lg:opacity-35"
+        class="h-full w-auto object-contain opacity-25 contrast-125 grayscale transition-opacity duration-700 sm:opacity-30 lg:opacity-35"
       />
     </picture>
     <div
@@ -398,11 +393,12 @@ const resumeUrl = resumeData.downloadUrl || "/resume"
     checkStickyStates()
   }
 
-
   let heroTurnstileWidgetId: string | null = null
 
   function initHeroTurnstileOnDemand() {
-    const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+    const isLocal =
+      window.location.hostname === "localhost" ||
+      window.location.hostname === "127.0.0.1"
     const turnstileKey =
       import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ||
       (isLocal ? "1x00000000000000000000AA" : "0x4AAAAAAEMAnAognjniSApt")
@@ -440,7 +436,8 @@ const resumeUrl = resumeData.downloadUrl || "/resume"
     if (!script) {
       script = document.createElement("script")
       script.id = "cf-turnstile-script"
-      script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
+      script.src =
+        "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
       script.async = true
       script.defer = true
       document.head.appendChild(script)
@@ -538,7 +535,9 @@ const resumeUrl = resumeData.downloadUrl || "/resume"
 
         if (response.ok && data.success) {
           const isAlready = data.data?.alreadySubscribed || false
-          submitText.textContent = isAlready ? "Already Subscribed" : "Subscribed!"
+          submitText.textContent = isAlready
+            ? "Already Subscribed"
+            : "Subscribed!"
           if (statusDiv) {
             statusDiv.classList.remove(
               "hidden",

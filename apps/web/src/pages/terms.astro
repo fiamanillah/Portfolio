@@ -8,11 +8,19 @@ import SEO from "@/components/SEO/SEO.astro"
 
 const sections = [
   { id: "acceptance", title: "Agreement to Terms", num: "01" },
-  { id: "intellectual-property", title: "Intellectual Property & Code Licenses", num: "02" },
+  {
+    id: "intellectual-property",
+    title: "Intellectual Property & Code Licenses",
+    num: "02",
+  },
   { id: "accounts-security", title: "User Accounts & Security", num: "03" },
   { id: "acceptable-use", title: "Acceptable Use Policy", num: "04" },
   { id: "consultations", title: "Consultations & Meeting Policies", num: "05" },
-  { id: "technical-disclaimer", title: "Technical Content & Disclaimer", num: "06" },
+  {
+    id: "technical-disclaimer",
+    title: "Technical Content & Disclaimer",
+    num: "06",
+  },
   { id: "third-party-links", title: "Third-Party Links & Services", num: "07" },
   { id: "warranty-disclaimer", title: "Disclaimer of Warranties", num: "08" },
   { id: "liability-limitation", title: "Limitation of Liability", num: "09" },
@@ -32,7 +40,12 @@ const sections = [
       description="Terms of Use and conditions for accessing Fi Amanillah's software engineering portfolio, technical writeups, code repositories, and booking services."
       url="/terms"
       image="/fi.png"
-      tags={["Terms of Use", "Open Source Licenses", "Legal", "Developer Terms"]}
+      tags={[
+        "Terms of Use",
+        "Open Source Licenses",
+        "Legal",
+        "Developer Terms",
+      ]}
     />
   </Fragment>
 
@@ -52,246 +65,419 @@ const sections = [
 
   <!-- Legal Main Layout with Sticky Sidebar -->
   <LegalLayout currentDoc="terms" sections={sections} pageTitle="Terms of Use">
-
     <!-- 01. Acceptance of Terms -->
-    <section id="acceptance" class="legal-card scroll-mt-24 rounded-sm border border-border/80 bg-card/40 p-6 sm:p-8 backdrop-blur-xs">
+    <section
+      id="acceptance"
+      class="legal-card scroll-mt-24 rounded-sm border border-border/80 bg-card/40 p-6 backdrop-blur-xs sm:p-8"
+    >
       <div class="mb-4 flex items-center gap-3">
         <span class="font-mono text-xs font-bold text-primary">01 //</span>
-        <h2 class="m-0 text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+        <h2
+          class="m-0 text-xl font-bold tracking-tight text-foreground sm:text-2xl"
+        >
           Agreement to Terms
         </h2>
       </div>
       <p class="text-sm leading-relaxed text-muted-foreground sm:text-base">
-        These Terms of Use ("Terms", "Agreement") constitute a legally binding agreement between you ("User", "you", or "your") and <strong class="text-foreground">Fi Amanillah</strong> ("we", "us", or "our"), governing your access to and use of <a href="https://fi.amanillah.com" class="text-primary underline hover:text-foreground">fi.amanillah.com</a> and associated subdomains, APIs, code showcases, and consultation scheduling engines.
+        These Terms of Use ("Terms", "Agreement") constitute a legally binding
+        agreement between you ("User", "you", or "your") and <strong
+          class="text-foreground">Fi Amanillah</strong
+        > ("we", "us", or "our"), governing your access to and use of <a
+          href="https://fi.amanillah.com"
+          class="text-primary underline hover:text-foreground"
+          >fi.amanillah.com</a
+        > and associated subdomains, APIs, code showcases, and consultation scheduling
+        engines.
       </p>
-      <div class="mt-4 rounded-xs border-l-2 border-primary bg-primary/5 p-4 font-mono text-xs text-foreground/90">
-        By accessing, browsing, or utilizing any portion of this platform, you acknowledge that you have read, understood, and agreed to be bound by these Terms. If you do not agree, you must discontinue use immediately.
+      <div
+        class="mt-4 rounded-xs border-l-2 border-primary bg-primary/5 p-4 font-mono text-xs text-foreground/90"
+      >
+        By accessing, browsing, or utilizing any portion of this platform, you
+        acknowledge that you have read, understood, and agreed to be bound by
+        these Terms. If you do not agree, you must discontinue use immediately.
       </div>
     </section>
 
     <!-- 02. Intellectual Property & Code Licenses -->
-    <section id="intellectual-property" class="legal-card scroll-mt-24 rounded-sm border border-border/80 bg-card/40 p-6 sm:p-8 backdrop-blur-xs">
+    <section
+      id="intellectual-property"
+      class="legal-card scroll-mt-24 rounded-sm border border-border/80 bg-card/40 p-6 backdrop-blur-xs sm:p-8"
+    >
       <div class="mb-4 flex items-center gap-3">
         <span class="font-mono text-xs font-bold text-primary">02 //</span>
-        <h2 class="m-0 text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+        <h2
+          class="m-0 text-xl font-bold tracking-tight text-foreground sm:text-2xl"
+        >
           Intellectual Property &amp; Code Licenses
         </h2>
       </div>
       <p class="text-sm leading-relaxed text-muted-foreground sm:text-base">
-        Our platform contains a mix of open-source software artifacts, proprietary architecture designs, and original editorial essays:
+        Our platform contains a mix of open-source software artifacts,
+        proprietary architecture designs, and original editorial essays:
       </p>
 
       <div class="mt-4 space-y-3">
         <div class="border border-border/60 bg-background/50 p-4">
-          <strong class="font-mono text-xs text-foreground block">A. Open-Source Code Snippets &amp; Repositories</strong>
-          <p class="mt-1 text-xs sm:text-sm text-muted-foreground">
-            Code samples explicitly linked to public GitHub repositories are governed by their respective open-source licenses (typically <strong class="text-foreground">MIT License</strong> or <strong class="text-foreground">Apache 2.0</strong>). You are free to inspect, fork, and adapt these libraries under the terms of those licenses.
+          <strong class="block font-mono text-xs text-foreground"
+            >A. Open-Source Code Snippets &amp; Repositories</strong
+          >
+          <p class="mt-1 text-xs text-muted-foreground sm:text-sm">
+            Code samples explicitly linked to public GitHub repositories are
+            governed by their respective open-source licenses (typically <strong
+              class="text-foreground">MIT License</strong
+            > or <strong class="text-foreground">Apache 2.0</strong>). You are
+            free to inspect, fork, and adapt these libraries under the terms of
+            those licenses.
           </p>
         </div>
 
         <div class="border border-border/60 bg-background/50 p-4">
-          <strong class="font-mono text-xs text-foreground block">B. Editorial Content, Diagrams &amp; Personal Branding</strong>
-          <p class="mt-1 text-xs sm:text-sm text-muted-foreground">
-            All original articles, case study writeups, system architecture diagrams, custom vector illustrations, brand marks, and layout aesthetics are the exclusive intellectual property of Fi Amanillah (&copy; 2026 Fi Amanillah. All rights reserved). Reproduction without prior written authorization is prohibited.
+          <strong class="block font-mono text-xs text-foreground"
+            >B. Editorial Content, Diagrams &amp; Personal Branding</strong
+          >
+          <p class="mt-1 text-xs text-muted-foreground sm:text-sm">
+            All original articles, case study writeups, system architecture
+            diagrams, custom vector illustrations, brand marks, and layout
+            aesthetics are the exclusive intellectual property of Fi Amanillah
+            (&copy; 2026 Fi Amanillah. All rights reserved). Reproduction
+            without prior written authorization is prohibited.
           </p>
         </div>
       </div>
     </section>
 
     <!-- 03. User Accounts & Security -->
-    <section id="accounts-security" class="legal-card scroll-mt-24 rounded-sm border border-border/80 bg-card/40 p-6 sm:p-8 backdrop-blur-xs">
+    <section
+      id="accounts-security"
+      class="legal-card scroll-mt-24 rounded-sm border border-border/80 bg-card/40 p-6 backdrop-blur-xs sm:p-8"
+    >
       <div class="mb-4 flex items-center gap-3">
         <span class="font-mono text-xs font-bold text-primary">03 //</span>
-        <h2 class="m-0 text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+        <h2
+          class="m-0 text-xl font-bold tracking-tight text-foreground sm:text-2xl"
+        >
           User Accounts &amp; Security
         </h2>
       </div>
       <p class="text-sm leading-relaxed text-muted-foreground sm:text-base">
-        When you create an account to access developer tools, bookmark articles, or generate personal API tokens:
+        When you create an account to access developer tools, bookmark articles,
+        or generate personal API tokens:
       </p>
 
-      <ul class="mt-4 space-y-2 pl-4 text-xs sm:text-sm text-muted-foreground list-disc">
+      <ul
+        class="mt-4 list-disc space-y-2 pl-4 text-xs text-muted-foreground sm:text-sm"
+      >
         <li>
-          <strong class="text-foreground">Account Accuracy:</strong> You agree to provide true, accurate, and current information.
+          <strong class="text-foreground">Account Accuracy:</strong> You agree to
+          provide true, accurate, and current information.
         </li>
         <li>
-          <strong class="text-foreground">Credential Confidentiality:</strong> You are responsible for safeguarding your login credentials, two-factor authentication (2FA) recovery keys, and API tokens.
+          <strong class="text-foreground">Credential Confidentiality:</strong> You
+          are responsible for safeguarding your login credentials, two-factor authentication
+          (2FA) recovery keys, and API tokens.
         </li>
         <li>
-          <strong class="text-foreground">Unauthorized Access Notification:</strong> You must notify us immediately at <a href="mailto:fi@amanillah.com" class="text-primary hover:underline">fi@amanillah.com</a> if you detect any compromise of your account credentials.
+          <strong class="text-foreground"
+            >Unauthorized Access Notification:</strong
+          > You must notify us immediately at <a
+            href="mailto:fi@amanillah.com"
+            class="text-primary hover:underline">fi@amanillah.com</a
+          > if you detect any compromise of your account credentials.
         </li>
       </ul>
     </section>
 
     <!-- 04. Acceptable Use Policy -->
-    <section id="acceptable-use" class="legal-card scroll-mt-24 rounded-sm border border-border/80 bg-card/40 p-6 sm:p-8 backdrop-blur-xs">
+    <section
+      id="acceptable-use"
+      class="legal-card scroll-mt-24 rounded-sm border border-border/80 bg-card/40 p-6 backdrop-blur-xs sm:p-8"
+    >
       <div class="mb-4 flex items-center gap-3">
         <span class="font-mono text-xs font-bold text-primary">04 //</span>
-        <h2 class="m-0 text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+        <h2
+          class="m-0 text-xl font-bold tracking-tight text-foreground sm:text-2xl"
+        >
           Acceptable Use Policy &amp; Prohibitions
         </h2>
       </div>
       <p class="text-sm leading-relaxed text-muted-foreground sm:text-base">
-        To ensure platform stability and protect other community members, you agree not to:
+        To ensure platform stability and protect other community members, you
+        agree not to:
       </p>
 
       <div class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
         <div class="border border-border/60 bg-background/50 p-3.5">
-          <strong class="font-mono text-xs text-foreground block text-destructive">1. Abusive Scraping &amp; DoS</strong>
-          <p class="mt-1 text-xs text-muted-foreground">Do not flood APIs or trigger denial-of-service traffic exceeding standard client request rates.</p>
+          <strong
+            class="block font-mono text-xs text-destructive text-foreground"
+            >1. Abusive Scraping &amp; DoS</strong
+          >
+          <p class="mt-1 text-xs text-muted-foreground">
+            Do not flood APIs or trigger denial-of-service traffic exceeding
+            standard client request rates.
+          </p>
         </div>
 
         <div class="border border-border/60 bg-background/50 p-3.5">
-          <strong class="font-mono text-xs text-foreground block text-destructive">2. Exploit Probing</strong>
-          <p class="mt-1 text-xs text-muted-foreground">Do not probe, scan, or test vulnerabilities of our backend or infrastructure without prior written authorization.</p>
+          <strong
+            class="block font-mono text-xs text-destructive text-foreground"
+            >2. Exploit Probing</strong
+          >
+          <p class="mt-1 text-xs text-muted-foreground">
+            Do not probe, scan, or test vulnerabilities of our backend or
+            infrastructure without prior written authorization.
+          </p>
         </div>
 
         <div class="border border-border/60 bg-background/50 p-3.5">
-          <strong class="font-mono text-xs text-foreground block text-destructive">3. Automated Form Spamming</strong>
-          <p class="mt-1 text-xs text-muted-foreground">Do not bypass Cloudflare Turnstile verification or submit spoofed data through contact/booking forms.</p>
+          <strong
+            class="block font-mono text-xs text-destructive text-foreground"
+            >3. Automated Form Spamming</strong
+          >
+          <p class="mt-1 text-xs text-muted-foreground">
+            Do not bypass Cloudflare Turnstile verification or submit spoofed
+            data through contact/booking forms.
+          </p>
         </div>
 
         <div class="border border-border/60 bg-background/50 p-3.5">
-          <strong class="font-mono text-xs text-foreground block text-destructive">4. Impersonation</strong>
-          <p class="mt-1 text-xs text-muted-foreground">Do not misrepresent identity or claim false affiliation with Fi Amanillah or associated projects.</p>
+          <strong
+            class="block font-mono text-xs text-destructive text-foreground"
+            >4. Impersonation</strong
+          >
+          <p class="mt-1 text-xs text-muted-foreground">
+            Do not misrepresent identity or claim false affiliation with Fi
+            Amanillah or associated projects.
+          </p>
         </div>
       </div>
     </section>
 
     <!-- 05. Consultations & Meetings -->
-    <section id="consultations" class="legal-card scroll-mt-24 rounded-sm border border-border/80 bg-card/40 p-6 sm:p-8 backdrop-blur-xs">
+    <section
+      id="consultations"
+      class="legal-card scroll-mt-24 rounded-sm border border-border/80 bg-card/40 p-6 backdrop-blur-xs sm:p-8"
+    >
       <div class="mb-4 flex items-center gap-3">
         <span class="font-mono text-xs font-bold text-primary">05 //</span>
-        <h2 class="m-0 text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+        <h2
+          class="m-0 text-xl font-bold tracking-tight text-foreground sm:text-2xl"
+        >
           Consultations &amp; Meeting Policies
         </h2>
       </div>
       <p class="text-sm leading-relaxed text-muted-foreground sm:text-base">
-        Discovery calls and technical consultation sessions booked through our system are intended for prospective engineering collaborations, code audits, or system design advisories. We reserve the right to cancel or reschedule appointments with reasonable notice if unexpected scheduling conflicts arise.
+        Discovery calls and technical consultation sessions booked through our
+        system are intended for prospective engineering collaborations, code
+        audits, or system design advisories. We reserve the right to cancel or
+        reschedule appointments with reasonable notice if unexpected scheduling
+        conflicts arise.
       </p>
     </section>
 
     <!-- 06. Technical Content Disclaimer -->
-    <section id="technical-disclaimer" class="legal-card scroll-mt-24 rounded-sm border border-border/80 bg-card/40 p-6 sm:p-8 backdrop-blur-xs">
+    <section
+      id="technical-disclaimer"
+      class="legal-card scroll-mt-24 rounded-sm border border-border/80 bg-card/40 p-6 backdrop-blur-xs sm:p-8"
+    >
       <div class="mb-4 flex items-center gap-3">
         <span class="font-mono text-xs font-bold text-primary">06 //</span>
-        <h2 class="m-0 text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+        <h2
+          class="m-0 text-xl font-bold tracking-tight text-foreground sm:text-2xl"
+        >
           Technical Content &amp; Architectural Disclaimer
         </h2>
       </div>
       <p class="text-sm leading-relaxed text-muted-foreground sm:text-base">
-        All technical essays, benchmark figures, code tutorials, and architectural designs published on this site are presented strictly for <strong class="text-foreground">informational, educational, and reference purposes</strong>. Technology stacks, libraries, and security requirements evolve rapidly; you are responsible for testing, vetting, and auditing any code patterns in your own staging environments before production deployment.
+        All technical essays, benchmark figures, code tutorials, and
+        architectural designs published on this site are presented strictly for <strong
+          class="text-foreground"
+          >informational, educational, and reference purposes</strong
+        >. Technology stacks, libraries, and security requirements evolve
+        rapidly; you are responsible for testing, vetting, and auditing any code
+        patterns in your own staging environments before production deployment.
       </p>
     </section>
 
     <!-- 07. Third-Party Links -->
-    <section id="third-party-links" class="legal-card scroll-mt-24 rounded-sm border border-border/80 bg-card/40 p-6 sm:p-8 backdrop-blur-xs">
+    <section
+      id="third-party-links"
+      class="legal-card scroll-mt-24 rounded-sm border border-border/80 bg-card/40 p-6 backdrop-blur-xs sm:p-8"
+    >
       <div class="mb-4 flex items-center gap-3">
         <span class="font-mono text-xs font-bold text-primary">07 //</span>
-        <h2 class="m-0 text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+        <h2
+          class="m-0 text-xl font-bold tracking-tight text-foreground sm:text-2xl"
+        >
           Third-Party Links &amp; External Services
         </h2>
       </div>
       <p class="text-sm leading-relaxed text-muted-foreground sm:text-base">
-        Our website links to third-party services including GitHub, LinkedIn, package repositories, and documentation sites. We have no control over and assume no responsibility for the content, privacy policies, or practices of any external third-party sites.
+        Our website links to third-party services including GitHub, LinkedIn,
+        package repositories, and documentation sites. We have no control over
+        and assume no responsibility for the content, privacy policies, or
+        practices of any external third-party sites.
       </p>
     </section>
 
     <!-- 08. Disclaimer of Warranties -->
-    <section id="warranty-disclaimer" class="legal-card scroll-mt-24 rounded-sm border border-border/80 bg-card/40 p-6 sm:p-8 backdrop-blur-xs">
+    <section
+      id="warranty-disclaimer"
+      class="legal-card scroll-mt-24 rounded-sm border border-border/80 bg-card/40 p-6 backdrop-blur-xs sm:p-8"
+    >
       <div class="mb-4 flex items-center gap-3">
         <span class="font-mono text-xs font-bold text-primary">08 //</span>
-        <h2 class="m-0 text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+        <h2
+          class="m-0 text-xl font-bold tracking-tight text-foreground sm:text-2xl"
+        >
           Disclaimer of Warranties
         </h2>
       </div>
       <p class="text-sm leading-relaxed text-muted-foreground sm:text-base">
-        THIS PLATFORM AND ALL ASSOCIATED CONTENT, APIS, AND TOOLS ARE PROVIDED ON AN <strong class="text-foreground">"AS IS"</strong> AND <strong class="text-foreground">"AS AVAILABLE"</strong> BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR NON-INFRINGEMENT. WE DO NOT WARRANT THAT THE SERVICE WILL BE UNINTERRUPTED, TIMELY, SECURE, OR ERROR-FREE.
+        THIS PLATFORM AND ALL ASSOCIATED CONTENT, APIS, AND TOOLS ARE PROVIDED
+        ON AN <strong class="text-foreground">"AS IS"</strong> AND <strong
+          class="text-foreground">"AS AVAILABLE"</strong
+        > BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING
+        BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+        PURPOSE, OR NON-INFRINGEMENT. WE DO NOT WARRANT THAT THE SERVICE WILL BE UNINTERRUPTED,
+        TIMELY, SECURE, OR ERROR-FREE.
       </p>
     </section>
 
     <!-- 09. Limitation of Liability -->
-    <section id="liability-limitation" class="legal-card scroll-mt-24 rounded-sm border border-border/80 bg-card/40 p-6 sm:p-8 backdrop-blur-xs">
+    <section
+      id="liability-limitation"
+      class="legal-card scroll-mt-24 rounded-sm border border-border/80 bg-card/40 p-6 backdrop-blur-xs sm:p-8"
+    >
       <div class="mb-4 flex items-center gap-3">
         <span class="font-mono text-xs font-bold text-primary">09 //</span>
-        <h2 class="m-0 text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+        <h2
+          class="m-0 text-xl font-bold tracking-tight text-foreground sm:text-2xl"
+        >
           Limitation of Liability
         </h2>
       </div>
       <p class="text-sm leading-relaxed text-muted-foreground sm:text-base">
-        TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL FI AMANILLAH BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES (INCLUDING LOSS OF PROFITS, DATA, USE, OR GOODWILL) ARISING OUT OF OR IN CONNECTION WITH YOUR USE OR INABILITY TO USE THE SERVICE OR ANY CODE EXAMPLES THEREIN.
+        TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL FI
+        AMANILLAH BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL,
+        CONSEQUENTIAL, OR PUNITIVE DAMAGES (INCLUDING LOSS OF PROFITS, DATA,
+        USE, OR GOODWILL) ARISING OUT OF OR IN CONNECTION WITH YOUR USE OR
+        INABILITY TO USE THE SERVICE OR ANY CODE EXAMPLES THEREIN.
       </p>
     </section>
 
     <!-- 10. Indemnification -->
-    <section id="indemnification" class="legal-card scroll-mt-24 rounded-sm border border-border/80 bg-card/40 p-6 sm:p-8 backdrop-blur-xs">
+    <section
+      id="indemnification"
+      class="legal-card scroll-mt-24 rounded-sm border border-border/80 bg-card/40 p-6 backdrop-blur-xs sm:p-8"
+    >
       <div class="mb-4 flex items-center gap-3">
         <span class="font-mono text-xs font-bold text-primary">10 //</span>
-        <h2 class="m-0 text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+        <h2
+          class="m-0 text-xl font-bold tracking-tight text-foreground sm:text-2xl"
+        >
           Indemnification
         </h2>
       </div>
       <p class="text-sm leading-relaxed text-muted-foreground sm:text-base">
-        You agree to defend, indemnify, and hold harmless Fi Amanillah from and against any claims, liabilities, damages, losses, and expenses (including reasonable legal fees) arising out of or in any way connected with your breach of these Terms or misuse of the platform.
+        You agree to defend, indemnify, and hold harmless Fi Amanillah from and
+        against any claims, liabilities, damages, losses, and expenses
+        (including reasonable legal fees) arising out of or in any way connected
+        with your breach of these Terms or misuse of the platform.
       </p>
     </section>
 
     <!-- 11. Termination -->
-    <section id="termination" class="legal-card scroll-mt-24 rounded-sm border border-border/80 bg-card/40 p-6 sm:p-8 backdrop-blur-xs">
+    <section
+      id="termination"
+      class="legal-card scroll-mt-24 rounded-sm border border-border/80 bg-card/40 p-6 backdrop-blur-xs sm:p-8"
+    >
       <div class="mb-4 flex items-center gap-3">
         <span class="font-mono text-xs font-bold text-primary">11 //</span>
-        <h2 class="m-0 text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+        <h2
+          class="m-0 text-xl font-bold tracking-tight text-foreground sm:text-2xl"
+        >
           Account &amp; Access Termination
         </h2>
       </div>
       <p class="text-sm leading-relaxed text-muted-foreground sm:text-base">
-        We reserve the right to suspend or terminate user accounts or block network access to our servers at our sole discretion, without prior notice, in the event of abusive conduct, security violations, or non-compliance with these Terms.
+        We reserve the right to suspend or terminate user accounts or block
+        network access to our servers at our sole discretion, without prior
+        notice, in the event of abusive conduct, security violations, or
+        non-compliance with these Terms.
       </p>
     </section>
 
     <!-- 12. Governing Law -->
-    <section id="governing-law" class="legal-card scroll-mt-24 rounded-sm border border-border/80 bg-card/40 p-6 sm:p-8 backdrop-blur-xs">
+    <section
+      id="governing-law"
+      class="legal-card scroll-mt-24 rounded-sm border border-border/80 bg-card/40 p-6 backdrop-blur-xs sm:p-8"
+    >
       <div class="mb-4 flex items-center gap-3">
         <span class="font-mono text-xs font-bold text-primary">12 //</span>
-        <h2 class="m-0 text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+        <h2
+          class="m-0 text-xl font-bold tracking-tight text-foreground sm:text-2xl"
+        >
           Governing Law &amp; Jurisdiction
         </h2>
       </div>
       <p class="text-sm leading-relaxed text-muted-foreground sm:text-base">
-        These Terms shall be governed by and construed in accordance with standard international commercial law principles. In the event of any controversy or dispute, the parties agree to first seek resolution in good faith through informal consultation and negotiation.
+        These Terms shall be governed by and construed in accordance with
+        standard international commercial law principles. In the event of any
+        controversy or dispute, the parties agree to first seek resolution in
+        good faith through informal consultation and negotiation.
       </p>
     </section>
 
     <!-- 13. Modifications to Terms -->
-    <section id="modifications" class="legal-card scroll-mt-24 rounded-sm border border-border/80 bg-card/40 p-6 sm:p-8 backdrop-blur-xs">
+    <section
+      id="modifications"
+      class="legal-card scroll-mt-24 rounded-sm border border-border/80 bg-card/40 p-6 backdrop-blur-xs sm:p-8"
+    >
       <div class="mb-4 flex items-center gap-3">
         <span class="font-mono text-xs font-bold text-primary">13 //</span>
-        <h2 class="m-0 text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+        <h2
+          class="m-0 text-xl font-bold tracking-tight text-foreground sm:text-2xl"
+        >
           Modifications to Terms
         </h2>
       </div>
       <p class="text-sm leading-relaxed text-muted-foreground sm:text-base">
-        We reserve the right to modify these Terms at any time. When modifications occur, we will update the "Last Revision" timestamp at the top of this document. Continued use of our platform following posted revisions constitutes acceptance of the updated terms.
+        We reserve the right to modify these Terms at any time. When
+        modifications occur, we will update the "Last Revision" timestamp at the
+        top of this document. Continued use of our platform following posted
+        revisions constitutes acceptance of the updated terms.
       </p>
     </section>
 
     <!-- 14. Contact Information -->
-    <section id="contact-info" class="legal-card scroll-mt-24 rounded-sm border border-border/80 bg-card/40 p-6 sm:p-8 backdrop-blur-xs">
+    <section
+      id="contact-info"
+      class="legal-card scroll-mt-24 rounded-sm border border-border/80 bg-card/40 p-6 backdrop-blur-xs sm:p-8"
+    >
       <div class="mb-4 flex items-center gap-3">
         <span class="font-mono text-xs font-bold text-primary">14 //</span>
-        <h2 class="m-0 text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+        <h2
+          class="m-0 text-xl font-bold tracking-tight text-foreground sm:text-2xl"
+        >
           Contact &amp; Legal Inquiries
         </h2>
       </div>
       <p class="text-sm leading-relaxed text-muted-foreground sm:text-base">
-        For inquiries regarding these Terms of Use, permissions, or licensing clarifications, please reach out via:
+        For inquiries regarding these Terms of Use, permissions, or licensing
+        clarifications, please reach out via:
       </p>
 
       <div class="mt-4 border border-border/70 bg-background/60 p-5">
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div
+          class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+        >
           <div>
-            <p class="font-mono text-sm font-bold text-foreground">Fi Amanillah — Legal &amp; Compliance</p>
-            <p class="text-xs text-muted-foreground mt-0.5">Software Engineer &amp; System Architect</p>
+            <p class="font-mono text-sm font-bold text-foreground">
+              Fi Amanillah — Legal &amp; Compliance
+            </p>
+            <p class="mt-0.5 text-xs text-muted-foreground">
+              Software Engineer &amp; System Architect
+            </p>
             <a
               href="mailto:fi@amanillah.com"
               class="mt-2 inline-block font-mono text-sm font-semibold text-primary hover:underline"
@@ -308,7 +494,6 @@ const sections = [
         </div>
       </div>
     </section>
-
   </LegalLayout>
 
   <SectionDivider class="mt-12" />

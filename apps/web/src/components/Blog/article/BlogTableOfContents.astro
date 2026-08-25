@@ -53,7 +53,7 @@ const tocItems: TocItem[] =
                     index === 0
                       ? ""
                       : isFirstH2AfterH3
-                        ? "mt-3 pt-2 border-t border-border/40"
+                        ? "mt-3 border-t border-border/40 pt-2"
                         : isTopLevelAfterTopLevel
                           ? "mt-2"
                           : "mt-1"
@@ -90,16 +90,8 @@ const tocItems: TocItem[] =
               class="pointer-events-none absolute top-0 left-0 h-full w-[40px] overflow-visible"
               aria-hidden="true"
             >
-              <path
-                id="toc-bg-path"
-                class="toc-bg-path"
-                fill="none"
-              />
-              <path
-                id="toc-active-path"
-                class="toc-active-path"
-                fill="none"
-              />
+              <path id="toc-bg-path" class="toc-bg-path" fill="none" />
+              <path id="toc-active-path" class="toc-active-path" fill="none" />
             </svg>
 
             {/* TOC Item List */}
@@ -135,7 +127,7 @@ const tocItems: TocItem[] =
                         isSubItem
                           ? "pl-8 text-xs text-muted-foreground/75 hover:text-foreground"
                           : "pl-5 text-[13px] font-medium text-muted-foreground hover:text-foreground"
-                      } ${index === 0 ? "toc-active text-foreground font-semibold" : ""}`}
+                      } ${index === 0 ? "toc-active font-semibold text-foreground" : ""}`}
                     >
                       {item.title}
                     </a>
@@ -213,12 +205,25 @@ const tocItems: TocItem[] =
       document.querySelectorAll<HTMLAnchorElement>("[data-toc-link]")
     )
     const sections = document.querySelectorAll("[data-article-section]")
-    const bgPath = document.getElementById("toc-bg-path") as SVGPathElement | null
-    const activePath = document.getElementById("toc-active-path") as SVGPathElement | null
+    const bgPath = document.getElementById(
+      "toc-bg-path"
+    ) as SVGPathElement | null
+    const activePath = document.getElementById(
+      "toc-active-path"
+    ) as SVGPathElement | null
     const wrapper = document.querySelector<HTMLElement>(".toc-rail-wrapper")
-    const items = Array.from(document.querySelectorAll<HTMLElement>(".toc-item"))
+    const items = Array.from(
+      document.querySelectorAll<HTMLElement>(".toc-item")
+    )
 
-    if (!tocLinks.length || !sections.length || !bgPath || !activePath || !wrapper || items.length === 0) {
+    if (
+      !tocLinks.length ||
+      !sections.length ||
+      !bgPath ||
+      !activePath ||
+      !wrapper ||
+      items.length === 0
+    ) {
       return
     }
 
@@ -226,7 +231,11 @@ const tocItems: TocItem[] =
     const X_H3 = 16
 
     // Helper to find path length at a specific Y coordinate using binary search
-    function getPathLengthAtY(pathEl: SVGPathElement, targetY: number, totalLen: number): number {
+    function getPathLengthAtY(
+      pathEl: SVGPathElement,
+      targetY: number,
+      totalLen: number
+    ): number {
       if (totalLen <= 0) return 0
       let low = 0
       let high = totalLen
@@ -293,7 +302,9 @@ const tocItems: TocItem[] =
     function updateActiveIndicator() {
       if (!bgPath || !activePath) return
 
-      const activeLink = document.querySelector<HTMLAnchorElement>(".toc-link.toc-active")
+      const activeLink = document.querySelector<HTMLAnchorElement>(
+        ".toc-link.toc-active"
+      )
       if (!activeLink) {
         activePath.style.opacity = "0"
         return
@@ -371,11 +382,23 @@ const tocItems: TocItem[] =
           tocLinks.forEach((link) => {
             const targetId = link.getAttribute("data-toc-link")
             if (targetId === activeId) {
-              link.classList.add("toc-active", "text-foreground", "font-semibold")
-              link.classList.remove("text-muted-foreground", "text-muted-foreground/75")
+              link.classList.add(
+                "toc-active",
+                "text-foreground",
+                "font-semibold"
+              )
+              link.classList.remove(
+                "text-muted-foreground",
+                "text-muted-foreground/75"
+              )
             } else {
-              link.classList.remove("toc-active", "text-foreground", "font-semibold")
-              const depth = link.closest<HTMLElement>(".toc-item")?.dataset.depth
+              link.classList.remove(
+                "toc-active",
+                "text-foreground",
+                "font-semibold"
+              )
+              const depth =
+                link.closest<HTMLElement>(".toc-item")?.dataset.depth
               if (depth === "3") {
                 link.classList.add("text-muted-foreground/75")
                 link.classList.remove("font-semibold")
@@ -389,7 +412,9 @@ const tocItems: TocItem[] =
           updateActiveIndicator()
 
           // Scroll TOC item into view inside the sticky container if needed
-          const activeLink = document.querySelector<HTMLAnchorElement>(".toc-link.toc-active")
+          const activeLink = document.querySelector<HTMLAnchorElement>(
+            ".toc-link.toc-active"
+          )
           const tocNav = activeLink?.closest<HTMLElement>(".toc-nav-scrollable")
           if (activeLink && tocNav) {
             const linkTop = activeLink.offsetTop - tocNav.offsetTop

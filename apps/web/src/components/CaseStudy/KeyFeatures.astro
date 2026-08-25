@@ -19,7 +19,9 @@ const { features } = Astro.props as Props
 ---
 
 <section class="space-y-8">
-  <CaseStudySectionTitle label="[ SEC_03 // CORE_CAPABILITIES_&_IMPLEMENTATION ]" />
+  <CaseStudySectionTitle
+    label="[ SEC_03 // CORE_CAPABILITIES_&_IMPLEMENTATION ]"
+  />
 
   <div class="space-y-8 px-4 sm:px-6 lg:px-8">
     {
@@ -43,7 +45,7 @@ const { features } = Astro.props as Props
                         FEATURE_{String(index + 1).padStart(2, "0")}
                       </span>
                       <span class="text-muted-foreground/40">•</span>
-                      <span class="text-muted-foreground tracking-wider uppercase">
+                      <span class="tracking-wider text-muted-foreground uppercase">
                         {feature.mediaLabel || feature.mediaType}
                       </span>
                     </div>

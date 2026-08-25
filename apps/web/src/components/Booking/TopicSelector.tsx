@@ -9,7 +9,11 @@ interface TopicSelectorProps {
   onTopicSelect: (id: string) => void
 }
 
-export function TopicSelector({ topics, selectedTopic, onTopicSelect }: TopicSelectorProps) {
+export function TopicSelector({
+  topics,
+  selectedTopic,
+  onTopicSelect,
+}: TopicSelectorProps) {
   return (
     <div className="space-y-0 border border-border">
       {topics.map((topic, idx) => {
@@ -32,19 +36,21 @@ export function TopicSelector({ topics, selectedTopic, onTopicSelect }: TopicSel
               <div className="min-w-0 flex-1">
                 <p
                   className={[
-                    "font-mono text-xs font-semibold leading-tight",
-                    isSelected ? "text-foreground" : "text-muted-foreground group-hover:text-foreground",
+                    "font-mono text-xs leading-tight font-semibold",
+                    isSelected
+                      ? "text-foreground"
+                      : "text-muted-foreground group-hover:text-foreground",
                   ].join(" ")}
                 >
                   {topic.title}
                 </p>
-                <p className="mt-0.5 font-mono text-[10px] text-muted-foreground/70 line-clamp-1">
+                <p className="mt-0.5 line-clamp-1 font-mono text-[10px] text-muted-foreground/70">
                   {topic.desc}
                 </p>
               </div>
               <span
                 className={[
-                  "mt-0.5 shrink-0 border px-1.5 py-px font-mono text-[9px] font-bold uppercase tracking-wider",
+                  "mt-0.5 shrink-0 border px-1.5 py-px font-mono text-[9px] font-bold tracking-wider uppercase",
                   isSelected
                     ? "border-primary bg-primary text-primary-foreground"
                     : "border-border bg-background text-muted-foreground group-hover:border-primary/40 group-hover:text-primary/80",

@@ -176,9 +176,15 @@ const { lines = [-0.04, 0, 1, 1.04] } = Astro.props
       if (mainEl) ro.observe(mainEl)
     }
 
-    window.addEventListener("resize", () => scheduleUpdate(100), { passive: true })
-    window.addEventListener("orientationchange", () => scheduleUpdate(150), { passive: true })
-    window.addEventListener("grid-refresh", () => scheduleUpdate(0), { passive: true })
+    window.addEventListener("resize", () => scheduleUpdate(100), {
+      passive: true,
+    })
+    window.addEventListener("orientationchange", () => scheduleUpdate(150), {
+      passive: true,
+    })
+    window.addEventListener("grid-refresh", () => scheduleUpdate(0), {
+      passive: true,
+    })
 
     function init() {
       requestAnimationFrame(() => scheduleUpdate(0))
@@ -190,7 +196,10 @@ const { lines = [-0.04, 0, 1, 1.04] } = Astro.props
       }
     }
 
-    if (document.readyState === "complete" || document.readyState === "interactive") {
+    if (
+      document.readyState === "complete" ||
+      document.readyState === "interactive"
+    ) {
       init()
     } else {
       window.addEventListener("DOMContentLoaded", init, { once: true })
@@ -203,4 +212,3 @@ const { lines = [-0.04, 0, 1, 1.04] } = Astro.props
     })
   })()
 </script>
-

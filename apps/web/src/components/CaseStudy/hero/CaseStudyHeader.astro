@@ -111,7 +111,7 @@ const { totalCaseStudies, totalProjects, totalTechCount } = Astro.props
     </div>
 
     <!-- Accent bar -->
-    <div class="accent-bar mx-auto mt-6 mb-8 w-56 anim-in-delay"></div>
+    <div class="accent-bar anim-in-delay mx-auto mt-6 mb-8 w-56"></div>
 
     <!-- Description -->
     <p
@@ -129,8 +129,11 @@ const { totalCaseStudies, totalProjects, totalTechCount } = Astro.props
       <div
         class="group relative flex flex-col items-center justify-center border-b border-border/70 p-5 transition-colors duration-200 hover:bg-primary/5 sm:border-r sm:border-b-0 sm:p-8"
       >
-        <div class="flex items-center gap-2">
-          <HugeiconsIcon icon={Layers01Icon} className="size-4 text-primary/70" />
+        <div class="flex items-center gap-2.5 sm:gap-3">
+          <HugeiconsIcon
+            icon={Layers01Icon}
+            className="size-6 sm:size-7 text-primary/80 transition-colors duration-200 group-hover:text-primary shrink-0"
+          />
           <span class="font-mono text-3xl font-black text-primary sm:text-4xl">
             {totalCaseStudies}
           </span>
@@ -145,8 +148,11 @@ const { totalCaseStudies, totalProjects, totalTechCount } = Astro.props
       <div
         class="group relative flex flex-col items-center justify-center border-b border-border/70 p-5 transition-colors duration-200 hover:bg-primary/5 sm:border-r sm:border-b-0 sm:p-8"
       >
-        <div class="flex items-center gap-2">
-          <HugeiconsIcon icon={CpuIcon} className="size-4 text-primary/70" />
+        <div class="flex items-center gap-2.5 sm:gap-3">
+          <HugeiconsIcon
+            icon={CpuIcon}
+            className="size-6 sm:size-7 text-primary/80 transition-colors duration-200 group-hover:text-primary shrink-0"
+          />
           <span class="font-mono text-3xl font-black text-primary sm:text-4xl">
             {totalProjects}
           </span>
@@ -161,8 +167,11 @@ const { totalCaseStudies, totalProjects, totalTechCount } = Astro.props
       <div
         class="group relative flex flex-col items-center justify-center p-5 transition-colors duration-200 hover:bg-primary/5 sm:p-8"
       >
-        <div class="flex items-center gap-2">
-          <HugeiconsIcon icon={CodeCircleIcon} className="size-4 text-primary/70" />
+        <div class="flex items-center gap-2.5 sm:gap-3">
+          <HugeiconsIcon
+            icon={CodeCircleIcon}
+            className="size-6 sm:size-7 text-primary/80 transition-colors duration-200 group-hover:text-primary shrink-0"
+          />
           <span class="font-mono text-3xl font-black text-primary sm:text-4xl">
             {totalTechCount}+
           </span>

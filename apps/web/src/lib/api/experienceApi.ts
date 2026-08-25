@@ -111,7 +111,9 @@ export const ExperienceApi = {
           type: item.employmentType || "Full-Time",
           description: item.description,
           highlights: Array.isArray(item.highlights) ? item.highlights : [],
-          technologies: Array.isArray(item.technologies) ? item.technologies : [],
+          technologies: Array.isArray(item.technologies)
+            ? item.technologies
+            : [],
           stats: Array.isArray(item.stats) ? item.stats : [],
           learned: item.learned || "",
           isCurrent: item.isCurrent ?? false,
@@ -126,4 +128,3 @@ export const ExperienceApi = {
     }
   },
 }
-

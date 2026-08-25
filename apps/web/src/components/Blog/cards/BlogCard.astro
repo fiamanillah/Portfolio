@@ -37,15 +37,7 @@ const categorySlug = getCategorySlug(post.categorySlug || post.category)
 
   {/* Thumbnail */}
   <div
-    class="relative aspect-[16/9] w-full overflow-hidden bg-muted/30
-      before:pointer-events-none before:absolute before:inset-0 before:z-10
-      before:bg-[linear-gradient(105deg,transparent_40%,oklch(var(--primary)/12%)_50%,transparent_60%)]
-      before:bg-[length:200%_100%] before:transition-all before:duration-700
-      hover:before:bg-[-100%_0]
-      after:pointer-events-none after:absolute after:inset-0
-      after:bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(0,0,0,0.04)_2px,rgba(0,0,0,0.04)_4px)]
-      after:opacity-60 after:transition-opacity after:duration-400
-      group-hover:after:opacity-0"
+    class="relative aspect-[16/9] w-full overflow-hidden bg-muted/30 before:pointer-events-none before:absolute before:inset-0 before:z-10 before:bg-[linear-gradient(105deg,transparent_40%,oklch(var(--primary)/12%)_50%,transparent_60%)] before:bg-[length:200%_100%] before:transition-all before:duration-700 after:pointer-events-none after:absolute after:inset-0 after:bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(0,0,0,0.04)_2px,rgba(0,0,0,0.04)_4px)] after:opacity-60 after:transition-opacity after:duration-400 group-hover:after:opacity-0 hover:before:bg-[-100%_0]"
   >
     <img
       src={post.thumbnail}
@@ -56,7 +48,8 @@ const categorySlug = getCategorySlug(post.categorySlug || post.category)
     <!-- Gradient overlay -->
     <div
       class="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/80 via-background/20 to-transparent"
-    ></div>
+    >
+    </div>
 
     <!-- Category badge -->
     <div class="absolute bottom-3 left-3 z-20">
@@ -65,27 +58,23 @@ const categorySlug = getCategorySlug(post.categorySlug || post.category)
         class="inline-block transition-transform duration-150 hover:scale-105"
       >
         <span
-          style={
-            catColor
-              ? {
-                  borderColor: `${catColor}60`,
-                  backgroundColor: `${catColor}18`,
-                  color: catColor,
-                  boxShadow: `0 0 10px ${catColor}25`,
-                }
-              : undefined
-          }
+          style={catColor
+            ? {
+                borderColor: `${catColor}60`,
+                backgroundColor: `${catColor}18`,
+                color: catColor,
+                boxShadow: `0 0 10px ${catColor}25`,
+              }
+            : undefined}
           class="inline-flex items-center gap-1.5 border border-primary/40 bg-background/90 px-2.5 py-1 font-mono text-[10px] font-bold text-primary uppercase shadow-xs backdrop-blur-md"
         >
           <span
-            style={
-              catColor
-                ? {
-                    backgroundColor: catColor,
-                    boxShadow: `0 0 6px ${catColor}`,
-                  }
-                : undefined
-            }
+            style={catColor
+              ? {
+                  backgroundColor: catColor,
+                  boxShadow: `0 0 6px ${catColor}`,
+                }
+              : undefined}
             class="h-1.5 w-1.5 rounded-full bg-primary shadow-[0_0_5px_oklch(var(--primary)/80%)]"
           ></span>
           {post.category}
@@ -108,7 +97,10 @@ const categorySlug = getCategorySlug(post.categorySlug || post.category)
         {
           post.readTime && (
             <span class="flex items-center gap-1 border border-border/70 bg-muted/30 px-2 py-0.5 text-[9px]">
-              <HugeiconsIcon icon={Clock01Icon} className="size-2.5 text-primary/60" />
+              <HugeiconsIcon
+                icon={Clock01Icon}
+                className="size-2.5 text-primary/60"
+              />
               {post.readTime}
             </span>
           )
@@ -117,7 +109,7 @@ const categorySlug = getCategorySlug(post.categorySlug || post.category)
 
       {/* Title */}
       <h3
-        class="mt-3 line-clamp-2 text-base font-black leading-snug tracking-tight text-foreground transition-colors duration-200 group-hover:text-primary sm:text-lg"
+        class="mt-3 line-clamp-2 text-base leading-snug font-black tracking-tight text-foreground transition-colors duration-200 group-hover:text-primary sm:text-lg"
       >
         <a href={`/blog/${post.slug}`} class="focus:outline-none">
           <span class="absolute inset-0 z-10" aria-hidden="true"></span>
@@ -180,7 +172,10 @@ const categorySlug = getCategorySlug(post.categorySlug || post.category)
               class="inline-flex items-center gap-1 text-muted-foreground transition-colors group-hover:text-foreground"
               title={`${post.views} views`}
             >
-              <HugeiconsIcon icon={ViewIcon} className="size-3 text-primary/60" />
+              <HugeiconsIcon
+                icon={ViewIcon}
+                className="size-3 text-primary/60"
+              />
               <span>{formatViewsCount(post.views)}</span>
             </span>
           )
@@ -194,7 +189,6 @@ const categorySlug = getCategorySlug(post.categorySlug || post.category)
               <HugeiconsIcon
                 icon={FavouriteIcon}
                 className="size-3 fill-rose-400/25 text-rose-400"
-               
               />
               <span>{post.likesCount}</span>
             </span>

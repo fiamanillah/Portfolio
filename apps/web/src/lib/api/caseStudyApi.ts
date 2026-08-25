@@ -277,7 +277,9 @@ export const CaseStudyApi = {
         }
       } else {
         // If 404, check fallback redirect resolver
-        const directRedirect = await RedirectApi.resolveRedirect(`/case-study/${slug}`)
+        const directRedirect = await RedirectApi.resolveRedirect(
+          `/case-study/${slug}`
+        )
         if (directRedirect?.redirected && directRedirect.destination) {
           return {
             caseStudy: undefined,

@@ -7,8 +7,12 @@ interface ResumeContainerProps {
   initialResume?: ResumeVersionData | null
 }
 
-export function ResumeContainer({ initialResume = null }: ResumeContainerProps) {
-  const [resume, setResume] = React.useState<ResumeVersionData | null>(initialResume)
+export function ResumeContainer({
+  initialResume = null,
+}: ResumeContainerProps) {
+  const [resume, setResume] = React.useState<ResumeVersionData | null>(
+    initialResume
+  )
   const [isLoading, setIsLoading] = React.useState<boolean>(!initialResume)
 
   // Fetch active resume on client mount only if not already supplied by SSR
@@ -109,20 +113,20 @@ export function ResumeContainer({ initialResume = null }: ResumeContainerProps) 
       ) : isLoading ? (
         /* Loading Skeleton */
         <div className="mb-12">
-          <div className="grid grid-cols-2 sm:grid-cols-4 border border-border/70 bg-card/40 animate-pulse">
+          <div className="grid animate-pulse grid-cols-2 border border-border/70 bg-card/40 sm:grid-cols-4">
             {[1, 2, 3, 4].map((i) => (
               <div
                 key={i}
-                className="flex flex-col items-center justify-center p-6 border-r last:border-r-0 border-border/70 space-y-2"
+                className="flex flex-col items-center justify-center space-y-2 border-r border-border/70 p-6 last:border-r-0"
               >
-                <div className="h-8 w-16 bg-muted/60 rounded"></div>
-                <div className="h-3 w-24 bg-muted/40 rounded"></div>
+                <div className="h-8 w-16 rounded bg-muted/60"></div>
+                <div className="h-3 w-24 rounded bg-muted/40"></div>
               </div>
             ))}
           </div>
           <div className="mt-8 flex justify-center gap-3">
-            <div className="h-10 w-44 bg-muted/60 rounded-md animate-pulse"></div>
-            <div className="h-10 w-36 bg-muted/40 rounded-md animate-pulse"></div>
+            <div className="h-10 w-44 animate-pulse rounded-md bg-muted/60"></div>
+            <div className="h-10 w-36 animate-pulse rounded-md bg-muted/40"></div>
           </div>
         </div>
       ) : null}
@@ -140,11 +144,11 @@ export function ResumeContainer({ initialResume = null }: ResumeContainerProps) 
                   <div className="size-3 rounded-full bg-amber-500/80"></div>
                   <div className="size-3 rounded-full bg-emerald-500/80"></div>
                 </div>
-                <div className="hidden sm:block h-3.5 w-px bg-border"></div>
-                <span className="font-mono text-xs font-medium text-foreground truncate max-w-[200px] sm:max-w-md">
+                <div className="hidden h-3.5 w-px bg-border sm:block"></div>
+                <span className="max-w-[200px] truncate font-mono text-xs font-medium text-foreground sm:max-w-md">
                   {resume.fileName}
                 </span>
-                <span className="hidden sm:inline-flex rounded bg-primary/10 px-1.5 py-0.5 font-mono text-[10px] text-primary">
+                <span className="hidden rounded bg-primary/10 px-1.5 py-0.5 font-mono text-[10px] text-primary sm:inline-flex">
                   {resume.version}
                 </span>
               </div>
@@ -188,11 +192,15 @@ export function ResumeContainer({ initialResume = null }: ResumeContainerProps) 
           {/* Document Version Notes / Changelog */}
           {resume.description && (
             <div className="rounded-xl border border-border/70 bg-card/60 p-6 backdrop-blur-sm">
-              <div className="flex items-center gap-2 mb-2">
-                <span className="font-mono text-xs text-primary">// VERSION_NOTES</span>
-                <span className="text-xs font-bold text-foreground">{resume.version}</span>
+              <div className="mb-2 flex items-center gap-2">
+                <span className="font-mono text-xs text-primary">
+                  // VERSION_NOTES
+                </span>
+                <span className="text-xs font-bold text-foreground">
+                  {resume.version}
+                </span>
               </div>
-              <p className="text-xs leading-relaxed text-muted-foreground whitespace-pre-line">
+              <p className="text-xs leading-relaxed whitespace-pre-line text-muted-foreground">
                 {resume.description}
               </p>
             </div>
@@ -200,9 +208,11 @@ export function ResumeContainer({ initialResume = null }: ResumeContainerProps) 
         </div>
       ) : isLoading ? (
         /* Loading Document Frame */
-        <div className="rounded-xl border border-border/80 bg-card/40 h-[600px] flex flex-col items-center justify-center animate-pulse">
-          <div className="size-10 rounded-full border-2 border-primary border-t-transparent animate-spin mb-4"></div>
-          <p className="font-mono text-xs text-muted-foreground">Loading verified curriculum vitae...</p>
+        <div className="flex h-[600px] animate-pulse flex-col items-center justify-center rounded-xl border border-border/80 bg-card/40">
+          <div className="mb-4 size-10 animate-spin rounded-full border-2 border-primary border-t-transparent"></div>
+          <p className="font-mono text-xs text-muted-foreground">
+            Loading verified curriculum vitae...
+          </p>
         </div>
       ) : (
         /* Fallback State if No Active Resume Uploaded */
@@ -223,13 +233,17 @@ export function ResumeContainer({ initialResume = null }: ResumeContainerProps) 
             </svg>
           </div>
 
-          <p className="mt-4 font-mono text-xs text-primary">// REPOSITORY_EMPTY</p>
+          <p className="mt-4 font-mono text-xs text-primary">
+            // REPOSITORY_EMPTY
+          </p>
           <h2 className="mt-1 text-xl font-bold text-foreground">
             Resume Being Prepared
           </h2>
 
-          <p className="mt-2 text-xs leading-relaxed text-muted-foreground max-w-md mx-auto">
-            The curriculum vitae document is currently being updated in the admin repository. In the meantime, you can explore my verified case studies or reach out directly.
+          <p className="mx-auto mt-2 max-w-md text-xs leading-relaxed text-muted-foreground">
+            The curriculum vitae document is currently being updated in the
+            admin repository. In the meantime, you can explore my verified case
+            studies or reach out directly.
           </p>
 
           <div className="mt-6 flex flex-wrap items-center justify-center gap-3">

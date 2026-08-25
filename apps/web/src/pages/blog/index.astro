@@ -121,23 +121,20 @@ const totalTopics = new Set(posts.flatMap((p) => p.tags)).size
           )
         }
 
-        <!-- Dedicated Archive & Pagination CTA -->
-        <div class="mt-6 mb-2 flex flex-col items-center justify-center gap-2 text-center">
+        <!-- Dedicated Archive CTA -->
+        <div class="mt-8 text-center">
           <a href="/blog/page/1" class="inline-block">
             <Button
               variant="outline"
               size="lg"
               className="border-primary/40 font-mono text-xs tracking-wider text-primary transition-all duration-200 hover:bg-primary/10 hover:shadow-[0_0_16px_oklch(var(--primary)/20%)]"
             >
-              Explore Complete Article Archive ({posts.length} Posts across {totalPages} Pages)
+              Explore All Articles
               <span class="ml-1.5 transition-transform duration-200 hover:translate-x-0.5">
                 →
               </span>
             </Button>
           </a>
-          <p class="font-mono text-[11px] text-muted-foreground">
-            Browse all technical writings with dedicated page routes and topic categories.
-          </p>
         </div>
       </div>
     </section>

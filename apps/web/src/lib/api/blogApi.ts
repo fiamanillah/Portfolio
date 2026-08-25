@@ -60,9 +60,7 @@ export function mapApiPostToBlogPost(dto: any): BlogPost {
   const author: BlogAuthor = {
     name: dto.author?.name || dto.authorName || "Fi Amanillah",
     role:
-      dto.author?.role ||
-      dto.authorRole ||
-      "Software Engineer & Tech Writer",
+      dto.author?.role || dto.authorRole || "Software Engineer & Tech Writer",
     avatar: dto.author?.avatar || dto.authorAvatar || "/fi-avatar.webp",
     twitter: dto.author?.twitter || dto.authorTwitter,
     linkedin: dto.author?.linkedin || dto.authorLinkedin,
@@ -222,7 +220,13 @@ export const BlogApi = {
    * Fetch categories with published post counts
    */
   async fetchPublicCategories(): Promise<
-    { id?: string; name: string; count: number; slug?: string; color?: string }[]
+    {
+      id?: string
+      name: string
+      count: number
+      slug?: string
+      color?: string
+    }[]
   > {
     try {
       const res = await fetch(`${API_BASE_URL}/blogs/v1/public/categories`, {
@@ -247,10 +251,19 @@ export const BlogApi = {
           const totalPublished =
             existingAll && typeof existingAll.count === "number"
               ? existingAll.count
-              : nonAllCategories.reduce((acc: number, c: any) => acc + c.count, 0)
+              : nonAllCategories.reduce(
+                  (acc: number, c: any) => acc + c.count,
+                  0
+                )
 
           return [
-            { id: "all", name: "All", count: totalPublished, slug: "all", color: "#3b82f6" },
+            {
+              id: "all",
+              name: "All",
+              count: totalPublished,
+              slug: "all",
+              color: "#3b82f6",
+            },
             ...nonAllCategories,
           ]
         }
@@ -335,7 +348,9 @@ export const BlogApi = {
         }
       } else {
         // If 404, check fallback redirect resolver
-        const directRedirect = await RedirectApi.resolveRedirect(`/blog/${slug}`)
+        const directRedirect = await RedirectApi.resolveRedirect(
+          `/blog/${slug}`
+        )
         if (directRedirect?.redirected && directRedirect.destination) {
           return {
             post: undefined,

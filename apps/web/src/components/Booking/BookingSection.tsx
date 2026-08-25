@@ -7,11 +7,7 @@ import React, { useState, useEffect, useMemo, useCallback } from "react"
 import { bookingApi } from "@/lib/api/bookingApi"
 import { useAuthSession } from "@/lib/authStore"
 import type { TimeSlot, Booking } from "@workspace/shared"
-import {
-  TOPIC_OPTIONS,
-  OTHER_TOPIC_VALUE,
-  detectEmailTypo,
-} from "./types"
+import { TOPIC_OPTIONS, OTHER_TOPIC_VALUE, detectEmailTypo } from "./types"
 import { BookingDateTimeStep } from "./BookingDateTimeStep"
 import { BookingDetailsForm } from "./BookingDetailsForm"
 import { BookingConfirmation } from "./BookingConfirmation"
@@ -19,7 +15,11 @@ import { BookingConfirmation } from "./BookingConfirmation"
 // ── Session Durations ─────────────────────────────────────────────────────────
 const DURATIONS = [15, 30, 45, 60] as const
 
-function formatSlotTimeRange(startTimeStr: string, durationMinutes: number, timezone: string): string {
+function formatSlotTimeRange(
+  startTimeStr: string,
+  durationMinutes: number,
+  timezone: string
+): string {
   const start = new Date(startTimeStr)
   const end = new Date(start.getTime() + durationMinutes * 60 * 1000)
 
@@ -70,8 +70,11 @@ export default function BookingSection() {
   const [selectedDate, setSelectedDate] = useState<string>("")
   const [selectedSlot, setSelectedSlot] = useState<TimeSlot | null>(null)
   const [selectedDuration, setSelectedDuration] = useState<number>(30)
-  const [selectedTimezone, setSelectedTimezone] = useState<string>(userDetectedTimezone)
-  const [selectedTopic, setSelectedTopic] = useState<string>(TOPIC_OPTIONS[0].id)
+  const [selectedTimezone, setSelectedTimezone] =
+    useState<string>(userDetectedTimezone)
+  const [selectedTopic, setSelectedTopic] = useState<string>(
+    TOPIC_OPTIONS[0].id
+  )
   const [customTopic, setCustomTopic] = useState<string>("")
 
   // ── Guest form fields ────────────────────────────────────────────────────
@@ -127,14 +130,26 @@ export default function BookingSection() {
     setIsCancelling(true)
     setCancelErrorMsg(null)
     try {
-      const res = await bookingApi.cancelBooking(cancelToken, cancelReason.trim() || undefined)
+      const res = await bookingApi.cancelBooking(
+        cancelToken,
+        cancelReason.trim() || undefined
+      )
       if (res.success) {
-        setCancelSuccessMsg(res.message || "Your scheduled meeting session has been cancelled successfully.")
+        setCancelSuccessMsg(
+          res.message ||
+            "Your scheduled meeting session has been cancelled successfully."
+        )
       } else {
-        setCancelErrorMsg(res.error || res.message || "Failed to cancel booking. It may have already been cancelled.")
+        setCancelErrorMsg(
+          res.error ||
+            res.message ||
+            "Failed to cancel booking. It may have already been cancelled."
+        )
       }
     } catch (err: any) {
-      setCancelErrorMsg(err?.message || "An unexpected error occurred while cancelling.")
+      setCancelErrorMsg(
+        err?.message || "An unexpected error occurred while cancelling."
+      )
     } finally {
       setIsCancelling(false)
     }
@@ -183,7 +198,9 @@ export default function BookingSection() {
         if (mounted) setIsLoadingSlots(false)
       })
 
-    return () => { mounted = false }
+    return () => {
+      mounted = false
+    }
   }, [selectedDate, selectedTimezone, selectedDuration])
 
   // ── Dispatch layout refresh when step or major visual states change ──────
@@ -195,7 +212,13 @@ export default function BookingSection() {
       }, 80)
       return () => clearTimeout(timer)
     }
-  }, [currentStep, confirmedBooking, cancelToken, availableSlots.length, selectedSlot])
+  }, [
+    currentStep,
+    confirmedBooking,
+    cancelToken,
+    availableSlots.length,
+    selectedSlot,
+  ])
 
   // ── Email typo handler ───────────────────────────────────────────────────
   const handleEmailChange = useCallback((val: string) => {
@@ -237,8 +260,10 @@ export default function BookingSection() {
       return
     }
 
-    const finalName = useProfileInfo && isAuthenticated && user ? user.name : guestName.trim()
-    const finalEmail = useProfileInfo && isAuthenticated && user ? user.email : guestEmail.trim()
+    const finalName =
+      useProfileInfo && isAuthenticated && user ? user.name : guestName.trim()
+    const finalEmail =
+      useProfileInfo && isAuthenticated && user ? user.email : guestEmail.trim()
 
     if (!finalName || !finalEmail) {
       setErrorMsg("Please provide your name and email address.")
@@ -269,9 +294,15 @@ export default function BookingSection() {
       if (res.success && res.data) {
         setConfirmedBooking(res.data)
       } else {
-        const sugEmail = (res as any)?.details?.suggestedEmail || (res as any)?.data?.suggestedEmail
+        const sugEmail =
+          (res as any)?.details?.suggestedEmail ||
+          (res as any)?.data?.suggestedEmail
         if (sugEmail) setSuggestedEmail(sugEmail)
-        setErrorMsg(res.message || res.error || "Failed to book meeting. Please try again.")
+        setErrorMsg(
+          res.message ||
+            res.error ||
+            "Failed to book meeting. Please try again."
+        )
 
         // Reset Turnstile on error
         if ((window as any).turnstile && (window as any).turnstile.reset) {
@@ -311,8 +342,18 @@ export default function BookingSection() {
       <div className="mx-auto max-w-xl rounded-xl border border-destructive/40 bg-card p-6 shadow-xl sm:p-8">
         <div className="flex items-center gap-3 border-b border-destructive/20 pb-4">
           <div className="flex size-10 items-center justify-center rounded-lg border border-destructive/40 bg-destructive/10 text-destructive">
-            <svg className="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            <svg
+              className="size-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </div>
           <div>
@@ -336,10 +377,14 @@ export default function BookingSection() {
                 setCancelToken(null)
                 setCancelSuccessMsg(null)
                 if (typeof window !== "undefined") {
-                  window.history.replaceState({}, document.title, window.location.pathname)
+                  window.history.replaceState(
+                    {},
+                    document.title,
+                    window.location.pathname
+                  )
                 }
               }}
-              className="flex w-full items-center justify-center rounded-lg border border-primary bg-primary py-3 font-mono text-xs font-bold uppercase tracking-wider text-primary-foreground transition-opacity hover:opacity-90"
+              className="flex w-full items-center justify-center rounded-lg border border-primary bg-primary py-3 font-mono text-xs font-bold tracking-wider text-primary-foreground uppercase transition-opacity hover:opacity-90"
             >
               Schedule a New Consultation
             </button>
@@ -347,11 +392,13 @@ export default function BookingSection() {
         ) : (
           <div className="mt-6 space-y-4">
             <p className="font-mono text-xs leading-relaxed text-muted-foreground">
-              Are you sure you want to cancel this booking? If you cancel, your time slot will be released back to the public calendar and the Google Calendar event will be removed.
+              Are you sure you want to cancel this booking? If you cancel, your
+              time slot will be released back to the public calendar and the
+              Google Calendar event will be removed.
             </p>
 
             <div>
-              <label className="mb-1.5 block font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+              <label className="mb-1.5 block font-mono text-[10px] font-bold tracking-wider text-muted-foreground uppercase">
                 Reason for cancellation (optional)
               </label>
               <textarea
@@ -374,16 +421,22 @@ export default function BookingSection() {
                 type="button"
                 onClick={handleCancelBooking}
                 disabled={isCancelling}
-                className="flex flex-1 items-center justify-center rounded-lg border border-destructive bg-destructive py-3 font-mono text-xs font-bold uppercase tracking-wider text-destructive-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
+                className="text-destructive-foreground flex flex-1 items-center justify-center rounded-lg border border-destructive bg-destructive py-3 font-mono text-xs font-bold tracking-wider uppercase transition-opacity hover:opacity-90 disabled:opacity-50"
               >
-                {isCancelling ? "Cancelling Booking..." : "Confirm Cancellation"}
+                {isCancelling
+                  ? "Cancelling Booking..."
+                  : "Confirm Cancellation"}
               </button>
               <button
                 type="button"
                 onClick={() => {
                   setCancelToken(null)
                   if (typeof window !== "undefined") {
-                    window.history.replaceState({}, document.title, window.location.pathname)
+                    window.history.replaceState(
+                      {},
+                      document.title,
+                      window.location.pathname
+                    )
                   }
                 }}
                 disabled={isCancelling}
@@ -411,7 +464,7 @@ export default function BookingSection() {
             type="button"
             onClick={() => setCurrentStep(1)}
             className={[
-              "flex items-center gap-2 rounded-lg border px-3.5 py-1.5 font-bold uppercase tracking-wider transition-all",
+              "flex items-center gap-2 rounded-lg border px-3.5 py-1.5 font-bold tracking-wider uppercase transition-all",
               currentStep === 1
                 ? "border-primary bg-primary text-primary-foreground shadow-xs"
                 : "border-border bg-background text-muted-foreground hover:border-primary/40 hover:text-foreground",
@@ -433,12 +486,12 @@ export default function BookingSection() {
             }}
             disabled={!selectedSlot}
             className={[
-              "flex items-center gap-2 rounded-lg border px-3.5 py-1.5 font-bold uppercase tracking-wider transition-all",
+              "flex items-center gap-2 rounded-lg border px-3.5 py-1.5 font-bold tracking-wider uppercase transition-all",
               currentStep === 2
                 ? "border-primary bg-primary text-primary-foreground shadow-xs"
                 : selectedSlot
-                ? "border-border bg-background text-muted-foreground hover:border-primary/40 hover:text-foreground cursor-pointer"
-                : "cursor-not-allowed border-border/30 bg-background/50 text-muted-foreground/30",
+                  ? "cursor-pointer border-border bg-background text-muted-foreground hover:border-primary/40 hover:text-foreground"
+                  : "cursor-not-allowed border-border/30 bg-background/50 text-muted-foreground/30",
             ].join(" ")}
           >
             <span className="flex size-4 items-center justify-center rounded border border-current text-[9px] font-black">
@@ -451,9 +504,8 @@ export default function BookingSection() {
 
       {/* ── Two-Column Body ──────────────────────────────────────────── */}
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.35fr]">
-
         {/* ── LEFT COLUMN: Host Identity, Call Length & Confirmed Slot Window ── */}
-        <div className="flex flex-col justify-between border-b border-border lg:border-b-0 lg:border-r">
+        <div className="flex flex-col justify-between border-b border-border lg:border-r lg:border-b-0">
           <div className="divide-y divide-border">
             {/* Host Identity */}
             <div className="px-6 py-6">
@@ -471,28 +523,34 @@ export default function BookingSection() {
                     }}
                   />
                   {/* Online status indicator */}
-                  <span className="absolute -bottom-0.5 -right-0.5 flex size-3.5 items-center justify-center rounded-full border border-card bg-card">
+                  <span className="absolute -right-0.5 -bottom-0.5 flex size-3.5 items-center justify-center rounded-full border border-card bg-card">
                     <span className="size-2 rounded-full bg-emerald-500" />
                   </span>
                 </div>
-                <div>
-                  <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                <div className="flex flex-col gap-0.5">
+                  <span className="font-mono text-[10px] font-bold tracking-widest text-muted-foreground uppercase leading-none">
                     Host & Consultant
                   </span>
-                  <h3 className="text-base font-black tracking-tight text-foreground">Fi Amanillah</h3>
-                  <p className="font-mono text-[11px] font-semibold text-primary">Author & Lead Architect</p>
+                  <h3 className="text-base font-black tracking-tight text-foreground leading-snug">
+                    Fi Amanillah
+                  </h3>
+                  <p className="font-mono text-[11px] font-semibold text-primary leading-tight">
+                    Full-Stack Architect & Software Engineer
+                  </p>
                 </div>
               </div>
 
               <p className="mt-3.5 font-mono text-[11px] leading-relaxed text-muted-foreground">
-                Schedule a focused 1-on-1 technical consultation. Review system architecture, distributed microservices, performance bottlenecks, or discuss strategic engineering roadmaps.
+                Schedule a focused 1-on-1 technical consultation. Review system
+                architecture, distributed microservices, performance
+                bottlenecks, or discuss strategic engineering roadmaps.
               </p>
             </div>
 
             {/* Select Call Length */}
             <div className="px-6 py-5">
               <div className="mb-2.5 flex items-center justify-between">
-                <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                <span className="font-mono text-[10px] font-bold tracking-widest text-muted-foreground uppercase">
                   Select Call Length
                 </span>
                 <span className="font-mono text-[10px] font-semibold text-primary">
@@ -506,7 +564,7 @@ export default function BookingSection() {
                     type="button"
                     onClick={() => handleDurationChange(dur)}
                     className={[
-                      "rounded-lg border py-2 font-mono text-xs font-bold uppercase tracking-wider transition-all",
+                      "rounded-lg border py-2 font-mono text-xs font-bold tracking-wider uppercase transition-all",
                       selectedDuration === dur
                         ? "border-primary bg-primary text-primary-foreground shadow-xs"
                         : "border-border bg-background text-muted-foreground hover:border-primary/40 hover:text-foreground",
@@ -521,12 +579,12 @@ export default function BookingSection() {
             {/* Confirmed / Selected Slot Window (Directly below Call Length) */}
             <div className="px-6 py-5">
               <div className="mb-2.5 flex items-center justify-between">
-                <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                <span className="font-mono text-[10px] font-bold tracking-widest text-muted-foreground uppercase">
                   Selected Slot Window
                 </span>
                 {selectedSlot ? (
                   <span className="inline-flex items-center gap-1 rounded bg-emerald-500/10 px-2 py-0.5 font-mono text-[10px] font-bold text-emerald-400">
-                    <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                    <span className="size-1.5 animate-pulse rounded-full bg-emerald-400" />
                     Slot Selected
                   </span>
                 ) : (
@@ -540,7 +598,11 @@ export default function BookingSection() {
                 <div className="relative overflow-hidden rounded-xl border border-primary/40 bg-primary/5 p-4 transition-all">
                   <div className="space-y-1.5 font-mono">
                     <p className="text-sm font-bold text-foreground">
-                      {formatSlotTimeRange(selectedSlot.startTime, selectedDuration, selectedTimezone)}
+                      {formatSlotTimeRange(
+                        selectedSlot.startTime,
+                        selectedDuration,
+                        selectedTimezone
+                      )}
                     </p>
                     <p className="text-xs font-semibold text-primary">
                       {formatDateLong(selectedDate)}
@@ -568,14 +630,34 @@ export default function BookingSection() {
           <div className="border-t border-border bg-muted/10 px-6 py-4">
             <div className="flex flex-wrap gap-2">
               <span className="flex items-center gap-1.5 rounded-md border border-border bg-background px-2.5 py-1 font-mono text-[10px] text-muted-foreground">
-                <svg className="size-3 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                <svg
+                  className="size-3 text-emerald-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+                  />
                 </svg>
                 Google Meet Video
               </span>
               <span className="flex items-center gap-1.5 rounded-md border border-border bg-background px-2.5 py-1 font-mono text-[10px] text-muted-foreground">
-                <svg className="size-3 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                <svg
+                  className="size-3 text-blue-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                  />
                 </svg>
                 Anti-Bot Protected
               </span>
@@ -584,8 +666,11 @@ export default function BookingSection() {
         </div>
 
         {/* ── RIGHT COLUMN: Step 1 or Step 2 ────────────────────────── */}
-        <div className="p-6 sm:p-8">
-
+        <div
+          className={
+            currentStep === 1 ? "flex flex-col justify-between" : "p-6 sm:p-8"
+          }
+        >
           {/* STEP 1: Date & Time Selector (Side-by-Side matching Screenshot) */}
           {currentStep === 1 && (
             <BookingDateTimeStep
@@ -610,14 +695,15 @@ export default function BookingSection() {
           {currentStep === 2 && selectedSlot && (
             <div className="space-y-5">
               <div>
-                <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-primary">
+                <span className="font-mono text-[10px] font-bold tracking-widest text-primary uppercase">
                   Step 2 of 2
                 </span>
                 <h3 className="font-mono text-base font-bold tracking-tight text-foreground">
                   Consultation Details & Verification
                 </h3>
                 <p className="mt-0.5 font-mono text-[11px] text-muted-foreground">
-                  Specify your discussion topic, notes, and attendee info to reserve your slot.
+                  Specify your discussion topic, notes, and attendee info to
+                  reserve your slot.
                 </p>
               </div>
 
@@ -625,7 +711,11 @@ export default function BookingSection() {
                 selectedTopic={selectedTopic}
                 customTopic={customTopic}
                 isAuthenticated={isAuthenticated}
-                user={user ? { name: user.name || "", email: user.email || "" } : null}
+                user={
+                  user
+                    ? { name: user.name || "", email: user.email || "" }
+                    : null
+                }
                 useProfileInfo={useProfileInfo}
                 onUseProfileInfoChange={setUseProfileInfo}
                 guestName={guestName}

@@ -29,7 +29,7 @@ const { layers } = Astro.props as Props
             []) as { title: string; subtitle?: string }[]
 
           return (
-            <article class="group relative flex flex-col justify-between overflow-hidden border border-border bg-card/50 p-5 sm:p-6 transition-all duration-300 hover:border-primary/50 hover:bg-card/80 hover:shadow-[0_0_0_1px_oklch(var(--primary)/15%)]">
+            <article class="group relative flex flex-col justify-between overflow-hidden border border-border bg-card/50 p-5 transition-all duration-300 hover:border-primary/50 hover:bg-card/80 hover:shadow-[0_0_0_1px_oklch(var(--primary)/15%)] sm:p-6">
               {/* Corner bracket accents */}
               <div class="pointer-events-none absolute top-2 left-2 z-10 h-3 w-3 border-t-[1.5px] border-l-[1.5px] border-border transition-colors group-hover:border-primary" />
               <div class="pointer-events-none absolute top-2 right-2 z-10 h-3 w-3 border-t-[1.5px] border-r-[1.5px] border-border transition-colors group-hover:border-primary" />
@@ -84,8 +84,18 @@ const { layers } = Astro.props as Props
 
               {/* Data Flow Direction Footnote */}
               <div class="mt-6 flex items-center justify-between border-t border-border/40 pt-3 font-mono text-[9px] text-muted-foreground/60 uppercase">
-                <span>FLOW: {index === 0 ? "INGRESS" : index === layers.length - 1 ? "STORAGE" : "TRANSIT"}</span>
-                <HugeiconsIcon icon={ArrowRight01Icon} className="size-3 text-primary/70" />
+                <span>
+                  FLOW:{" "}
+                  {index === 0
+                    ? "INGRESS"
+                    : index === layers.length - 1
+                      ? "STORAGE"
+                      : "TRANSIT"}
+                </span>
+                <HugeiconsIcon
+                  icon={ArrowRight01Icon}
+                  className="size-3 text-primary/70"
+                />
               </div>
             </article>
           )

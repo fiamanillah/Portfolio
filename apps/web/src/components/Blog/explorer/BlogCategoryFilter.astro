@@ -28,21 +28,34 @@ const {
   class: className = "",
 } = Astro.props
 
-const filteredCategories = categories.filter((c) => c.name.toLowerCase() !== "all")
-const totalPostCount = categories.reduce((sum, c) => (c.name.toLowerCase() !== "all" ? sum + (c.count || 0) : sum), 0)
+const filteredCategories = categories.filter(
+  (c) => c.name.toLowerCase() !== "all"
+)
+const totalPostCount = categories.reduce(
+  (sum, c) => (c.name.toLowerCase() !== "all" ? sum + (c.count || 0) : sum),
+  0
+)
 ---
 
 <div
   class={`border-b border-border/70 bg-card/30 backdrop-blur-md p-4 sm:p-5 transition-colors ${className}`}
 >
   <!-- Toolbar Header: Section Identifier & RSS Feed Action -->
-  <div class="flex flex-wrap items-center justify-between gap-3 border-b border-border/40 pb-3">
+  <div
+    class="flex flex-wrap items-center justify-between gap-3 border-b border-border/40 pb-3"
+  >
     <div class="flex items-center gap-2">
-      <span class="h-1.5 w-1.5 animate-pulse rounded-full bg-primary shadow-[0_0_6px_oklch(var(--primary))]"></span>
-      <span class="font-mono text-xs font-bold tracking-[0.18em] text-foreground uppercase">
+      <span
+        class="h-1.5 w-1.5 animate-pulse rounded-full bg-primary shadow-[0_0_6px_oklch(var(--primary))]"
+      ></span>
+      <span
+        class="font-mono text-xs font-bold tracking-[0.18em] text-foreground uppercase"
+      >
         Explore <span class="text-primary">/</span> Topics
       </span>
-      <span class="hidden font-mono text-[10px] text-muted-foreground/60 sm:inline">
+      <span
+        class="hidden font-mono text-[10px] text-muted-foreground/60 sm:inline"
+      >
         // {filteredCategories.length} CATEGORIES
       </span>
     </div>
@@ -55,7 +68,10 @@ const totalPostCount = categories.reduce((sum, c) => (c.name.toLowerCase() !== "
       class="group/rss inline-flex items-center gap-1.5 border border-orange-500/35 bg-orange-500/10 px-2.5 py-1 font-mono text-[11px] font-semibold text-orange-400 backdrop-blur-sm transition-all duration-200 hover:border-orange-500/70 hover:bg-orange-500/20 hover:shadow-[0_0_12px_rgba(249,115,22,0.25)]"
       title="Subscribe via RSS Feed (XML)"
     >
-      <Icon name="mdi:rss" class="size-3.5 text-orange-400 transition-transform duration-200 group-hover/rss:scale-110" />
+      <Icon
+        name="mdi:rss"
+        class="size-3.5 text-orange-400 transition-transform duration-200 group-hover/rss:scale-110"
+      />
       <span>RSS Feed // XML</span>
     </a>
   </div>
@@ -70,7 +86,7 @@ const totalPostCount = categories.reduce((sum, c) => (c.name.toLowerCase() !== "
             class={`group/btn flex cursor-pointer items-center gap-1.5 border px-3 py-1.5 font-mono text-xs transition-all duration-200 select-none ${
               activeCategory.toLowerCase() === "all" || !activeCategory
                 ? "border-primary bg-primary/15 font-bold text-primary shadow-[0_0_14px_oklch(var(--primary)/20%)] ring-1 ring-primary/40"
-                : "border-border/80 bg-background/80 text-muted-foreground hover:border-primary/50 hover:bg-card hover:text-foreground shadow-2xs"
+                : "border-border/80 bg-background/80 text-muted-foreground shadow-2xs hover:border-primary/50 hover:bg-card hover:text-foreground"
             }`}
           >
             <span>All Articles</span>
@@ -122,8 +138,8 @@ const totalPostCount = categories.reduce((sum, c) => (c.name.toLowerCase() !== "
                 isActive && !catColor
                   ? "border-primary bg-primary/15 font-bold text-primary shadow-[0_0_14px_oklch(var(--primary)/20%)] ring-1 ring-primary/40"
                   : !isActive && !catColor
-                    ? "border-border/80 bg-background/80 text-muted-foreground hover:border-primary/50 hover:bg-card hover:text-foreground shadow-2xs"
-                    : "bg-background/80 text-muted-foreground hover:text-foreground shadow-2xs"
+                    ? "border-border/80 bg-background/80 text-muted-foreground shadow-2xs hover:border-primary/50 hover:bg-card hover:text-foreground"
+                    : "bg-background/80 text-muted-foreground shadow-2xs hover:text-foreground"
               }`}
             >
               {catColor && (
@@ -162,4 +178,3 @@ const totalPostCount = categories.reduce((sum, c) => (c.name.toLowerCase() !== "
     }
   </div>
 </div>
-

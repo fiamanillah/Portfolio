@@ -27,7 +27,9 @@ export function ArticleReactionStation({
     usePostEngagement(postSlug, initialLikes)
 
   const [isLikingAnimation, setIsLikingAnimation] = useState(false)
-  const [animatingReactionKey, setAnimatingReactionKey] = useState<string | null>(null)
+  const [animatingReactionKey, setAnimatingReactionKey] = useState<
+    string | null
+  >(null)
   const [copied, setCopied] = useState(false)
 
   const handleLikeClick = (e: React.MouseEvent) => {
@@ -101,7 +103,8 @@ export function ArticleReactionStation({
       active: !!reactions.userReactions?.fire,
       activeClass:
         "border-amber-500/70 bg-amber-500/15 text-amber-400 ring-1 ring-amber-500/30 shadow-[0_0_14px_rgba(245,158,11,0.25)]",
-      hoverClass: "hover:border-amber-500/50 hover:bg-amber-500/10 hover:text-amber-400",
+      hoverClass:
+        "hover:border-amber-500/50 hover:bg-amber-500/10 hover:text-amber-400",
       iconColor: "text-amber-500",
       badgeActiveClass: "bg-amber-500/25 text-amber-300",
     },
@@ -114,7 +117,8 @@ export function ArticleReactionStation({
       active: !!reactions.userReactions?.insightful,
       activeClass:
         "border-yellow-500/70 bg-yellow-500/15 text-yellow-400 ring-1 ring-yellow-500/30 shadow-[0_0_14px_rgba(234,179,8,0.25)]",
-      hoverClass: "hover:border-yellow-500/50 hover:bg-yellow-500/10 hover:text-yellow-400",
+      hoverClass:
+        "hover:border-yellow-500/50 hover:bg-yellow-500/10 hover:text-yellow-400",
       iconColor: "text-yellow-400",
       badgeActiveClass: "bg-yellow-500/25 text-yellow-300",
     },
@@ -127,7 +131,8 @@ export function ArticleReactionStation({
       active: !!reactions.userReactions?.fast,
       activeClass:
         "border-cyan-500/70 bg-cyan-500/15 text-cyan-400 ring-1 ring-cyan-500/30 shadow-[0_0_14px_rgba(6,182,212,0.25)]",
-      hoverClass: "hover:border-cyan-500/50 hover:bg-cyan-500/10 hover:text-cyan-400",
+      hoverClass:
+        "hover:border-cyan-500/50 hover:bg-cyan-500/10 hover:text-cyan-400",
       iconColor: "text-cyan-400",
       badgeActiveClass: "bg-cyan-500/25 text-cyan-300",
     },
@@ -140,7 +145,8 @@ export function ArticleReactionStation({
       active: !!reactions.userReactions?.rocket,
       activeClass:
         "border-emerald-500/70 bg-emerald-500/15 text-emerald-400 ring-1 ring-emerald-500/30 shadow-[0_0_14px_rgba(16,185,129,0.25)]",
-      hoverClass: "hover:border-emerald-500/50 hover:bg-emerald-500/10 hover:text-emerald-400",
+      hoverClass:
+        "hover:border-emerald-500/50 hover:bg-emerald-500/10 hover:text-emerald-400",
       iconColor: "text-emerald-400",
       badgeActiveClass: "bg-emerald-500/25 text-emerald-300",
     },
@@ -276,7 +282,7 @@ export function ArticleReactionStation({
                   </span>
                   <span className="text-[11px]">{btn.label}</span>
                   <span
-                    className={`rounded-xs px-1.5 py-0.2 font-mono text-[10px] font-bold ${
+                    className={`py-0.2 rounded-xs px-1.5 font-mono text-[10px] font-bold ${
                       btn.active
                         ? btn.badgeActiveClass
                         : "bg-muted text-muted-foreground group-hover:text-foreground"

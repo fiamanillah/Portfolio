@@ -113,22 +113,25 @@ export function BookingDetailsForm({
         !turnstileWidgetIdRef.current
       ) {
         try {
-          const id = (window as any).turnstile.render(turnstileContainerRef.current, {
-            sitekey: siteKey,
-            theme: "auto",
-            callback: (token: string) => {
-              onCaptchaTokenChange(token)
-              window.dispatchEvent(new CustomEvent("grid-refresh"))
-            },
-            "expired-callback": () => {
-              onCaptchaTokenChange("")
-              window.dispatchEvent(new CustomEvent("grid-refresh"))
-            },
-            "error-callback": () => {
-              onCaptchaTokenChange("")
-              window.dispatchEvent(new CustomEvent("grid-refresh"))
-            },
-          })
+          const id = (window as any).turnstile.render(
+            turnstileContainerRef.current,
+            {
+              sitekey: siteKey,
+              theme: "auto",
+              callback: (token: string) => {
+                onCaptchaTokenChange(token)
+                window.dispatchEvent(new CustomEvent("grid-refresh"))
+              },
+              "expired-callback": () => {
+                onCaptchaTokenChange("")
+                window.dispatchEvent(new CustomEvent("grid-refresh"))
+              },
+              "error-callback": () => {
+                onCaptchaTokenChange("")
+                window.dispatchEvent(new CustomEvent("grid-refresh"))
+              },
+            }
+          )
           turnstileWidgetIdRef.current = id
           window.dispatchEvent(new CustomEvent("grid-refresh"))
         } catch (e) {
@@ -140,11 +143,14 @@ export function BookingDetailsForm({
     if ((window as any).turnstile) {
       renderWidget()
     } else {
-      let script = document.getElementById("cf-turnstile-script") as HTMLScriptElement | null
+      let script = document.getElementById(
+        "cf-turnstile-script"
+      ) as HTMLScriptElement | null
       if (!script) {
         script = document.createElement("script")
         script.id = "cf-turnstile-script"
-        script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
+        script.src =
+          "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
         script.async = true
         script.defer = true
         document.head.appendChild(script)
@@ -223,7 +229,7 @@ export function BookingDetailsForm({
       {isAuthenticated && user && (
         <div className="rounded-lg border border-border bg-card/60">
           <div className="flex items-center justify-between border-b border-border px-4 py-2.5">
-            <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+            <span className="font-mono text-[10px] font-bold tracking-widest text-muted-foreground uppercase">
               Booking Identity
             </span>
             <span className="rounded border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 font-mono text-[10px] font-semibold text-emerald-400">
@@ -241,7 +247,9 @@ export function BookingDetailsForm({
               />
               <span className="font-mono text-xs text-foreground">
                 <strong>{user.name}</strong>
-                <span className="ml-1.5 text-muted-foreground">({user.email})</span>
+                <span className="ml-1.5 text-muted-foreground">
+                  ({user.email})
+                </span>
               </span>
             </label>
             <label className="flex cursor-pointer items-center gap-3 px-4 py-3 transition-colors hover:bg-primary/5">
@@ -273,7 +281,8 @@ export function BookingDetailsForm({
               value={guestName}
               onChange={(e) => {
                 onGuestNameChange(e.target.value)
-                if (clientErrors.name) setClientErrors((prev) => ({ ...prev, name: "" }))
+                if (clientErrors.name)
+                  setClientErrors((prev) => ({ ...prev, name: "" }))
               }}
               className="font-mono text-xs"
               aria-invalid={!!clientErrors.name}
@@ -291,7 +300,8 @@ export function BookingDetailsForm({
               value={guestEmail}
               onChange={(e) => {
                 onGuestEmailChange(e.target.value)
-                if (clientErrors.email) setClientErrors((prev) => ({ ...prev, email: "" }))
+                if (clientErrors.email)
+                  setClientErrors((prev) => ({ ...prev, email: "" }))
               }}
               className="font-mono text-xs"
               aria-invalid={!!clientErrors.email}
@@ -321,7 +331,9 @@ export function BookingDetailsForm({
           <FieldLabel className="font-mono text-[11px] font-bold tracking-widest uppercase">
             Consultation Topic <span className="text-primary">*</span>
           </FieldLabel>
-          <span className="font-mono text-[10px] text-muted-foreground">Select session agenda</span>
+          <span className="font-mono text-[10px] text-muted-foreground">
+            Select session agenda
+          </span>
         </div>
 
         <Select
@@ -333,18 +345,29 @@ export function BookingDetailsForm({
             }
           }}
         >
-          <SelectTrigger className="w-full font-mono text-xs" aria-label="Choose consultation focus topic">
+          <SelectTrigger
+            className="w-full font-mono text-xs"
+            aria-label="Choose consultation focus topic"
+          >
             <SelectValue placeholder="Choose a consultation focus..." />
           </SelectTrigger>
           <SelectContent className="border border-border bg-card">
             <SelectGroup>
-              <SelectLabel className="font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+              <SelectLabel className="font-mono text-[10px] font-bold tracking-wider text-muted-foreground uppercase">
                 Primary Focus Areas
               </SelectLabel>
               {TOPIC_OPTIONS.map((opt) => (
-                <SelectItem key={opt.id} value={opt.id} className="font-mono text-xs">
-                  <span className="font-semibold text-foreground">{opt.title}</span>
-                  <span className="ml-2 text-[10px] text-muted-foreground">({opt.badge})</span>
+                <SelectItem
+                  key={opt.id}
+                  value={opt.id}
+                  className="font-mono text-xs"
+                >
+                  <span className="font-semibold text-foreground">
+                    {opt.title}
+                  </span>
+                  <span className="ml-2 text-[10px] text-muted-foreground">
+                    ({opt.badge})
+                  </span>
                 </SelectItem>
               ))}
             </SelectGroup>
@@ -366,7 +389,7 @@ export function BookingDetailsForm({
               className={[
                 "font-mono text-[10px]",
                 customTopic.length >= MAX_TOPIC_LENGTH
-                  ? "text-destructive font-bold"
+                  ? "font-bold text-destructive"
                   : "text-muted-foreground",
               ].join(" ")}
             >
@@ -387,9 +410,12 @@ export function BookingDetailsForm({
             className="font-mono text-xs"
             aria-invalid={!!clientErrors.customTopic}
           />
-          {clientErrors.customTopic && <FieldError errors={clientErrors.customTopic} />}
+          {clientErrors.customTopic && (
+            <FieldError errors={clientErrors.customTopic} />
+          )}
           <FieldDescription className="font-mono text-[10px] text-muted-foreground">
-            Provide a brief title for your custom consultation topic (max {MAX_TOPIC_LENGTH} chars).
+            Provide a brief title for your custom consultation topic (max{" "}
+            {MAX_TOPIC_LENGTH} chars).
           </FieldDescription>
         </Field>
       )}
@@ -407,7 +433,7 @@ export function BookingDetailsForm({
             className={[
               "font-mono text-[10px]",
               guestNotes.length >= MAX_NOTES_LENGTH
-                ? "text-destructive font-bold"
+                ? "font-bold text-destructive"
                 : "text-muted-foreground",
             ].join(" ")}
           >
@@ -430,7 +456,8 @@ export function BookingDetailsForm({
         />
         {clientErrors.notes && <FieldError errors={clientErrors.notes} />}
         <FieldDescription className="font-mono text-[10px] text-muted-foreground">
-          Include any background context or questions to ensure the session is as impactful as possible.
+          Include any background context or questions to ensure the session is
+          as impactful as possible.
         </FieldDescription>
       </Field>
 
@@ -473,17 +500,42 @@ export function BookingDetailsForm({
         >
           {isSubmitting ? (
             <>
-              <svg className="size-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+              <svg
+                className="size-3.5 animate-spin"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                />
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                />
               </svg>
               Scheduling Consultation...
             </>
           ) : (
             <>
               Confirm & Schedule Meeting
-              <svg className="size-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              <svg
+                className="size-3.5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth="2.5"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M14 5l7 7m0 0l-7 7m7-7H3"
+                />
               </svg>
             </>
           )}

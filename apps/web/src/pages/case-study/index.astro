@@ -32,7 +32,9 @@ const caseStudies = rawCaseStudies.map((study: any, idx) => {
       : study.title,
     subtitle:
       study.subtitle ||
-      (study.title.includes("—") ? study.title.split("—")[1]?.trim() : undefined),
+      (study.title.includes("—")
+        ? study.title.split("—")[1]?.trim()
+        : undefined),
     description: study.description,
     role: study.role || metaObj["Role"] || "Full-Stack Architect",
     impact:
@@ -79,7 +81,9 @@ const standardProjects = rawStandardProjects.map((study: any, idx) => {
       : study.title,
     subtitle:
       study.subtitle ||
-      (study.title.includes("—") ? study.title.split("—")[1]?.trim() : undefined),
+      (study.title.includes("—")
+        ? study.title.split("—")[1]?.trim()
+        : undefined),
     description: study.description,
     role: study.role || metaObj["Role"] || "Lead System Architect",
     impact: study.impact || study.description,
@@ -108,7 +112,12 @@ const totalTechCount = new Set(allProjects.flatMap((p) => p.tech)).size
       description="In-depth architectural breakdowns, database schema designs, event-driven pipelines, and production engineering post-mortems across full-stack applications."
       url="/case-study"
       image="/fi.png"
-      tags={["Software Architecture", "Case Studies", "System Design", "Microservices"]}
+      tags={[
+        "Software Architecture",
+        "Case Studies",
+        "System Design",
+        "Microservices",
+      ]}
     />
   </Fragment>
 
