@@ -2,6 +2,8 @@
 
 const API_BASE_URL =
   (typeof import.meta !== "undefined" && import.meta.env?.PUBLIC_API_URL) ||
+  (typeof process !== "undefined" && process.env?.PUBLIC_API_URL) ||
+  (typeof process !== "undefined" && process.env?.INTERNAL_API_URL) ||
   "http://localhost:3040"
 
 export interface ExperienceItem {
@@ -69,7 +71,7 @@ export const defaultExperiences: ExperienceItem[] = [
 
 export const ExperienceApi = {
   /**
-   * Fetch published experiences for the portfolio homepage
+   * Fetch published experiences from the backend API with robust fallback
    */
   async fetchPublicExperiences(): Promise<ExperienceItem[]> {
     try {
@@ -91,7 +93,7 @@ export const ExperienceApi = {
 
       const json = await res.json()
       if (json.success && Array.isArray(json.data) && json.data.length > 0) {
-        return json.data.map((item: any) => ({
+        const items = json.data.map((item: any) => ({
           id: item.id,
           year: item.year || "2025",
           period: item.period || "PRESENT",
@@ -114,6 +116,8 @@ export const ExperienceApi = {
           learned: item.learned || "",
           isCurrent: item.isCurrent ?? false,
         }))
+
+        return items.length > 0 ? items : defaultExperiences
       }
 
       return defaultExperiences
@@ -122,3 +126,4 @@ export const ExperienceApi = {
     }
   },
 }
+

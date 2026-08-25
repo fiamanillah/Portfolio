@@ -20,6 +20,7 @@ import type {
   ExperienceStatus,
 } from "@workspace/shared"
 import { ExperienceApi } from "@/lib/api"
+import { showApiError } from "@/lib/api/error-handler"
 import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"
 import { Badge } from "@workspace/ui/components/badge"
@@ -262,6 +263,14 @@ export default function ExperiencesPage() {
   }
 
   const handleSeedDefault = async () => {
+    if (
+      !confirm(
+        "This will seed default full-stack career experience records into your database. Continue?"
+      )
+    ) {
+      return
+    }
+
     setIsSeeding(true)
     try {
       const res = await ExperienceApi.seedDefault()
@@ -270,10 +279,10 @@ export default function ExperiencesPage() {
         loadExperiences()
         loadStats()
       } else {
-        toast.error(res.message || "Failed to seed default experiences")
+        showApiError(res, "Failed to seed default experiences")
       }
-    } catch {
-      toast.error("Error during seeding")
+    } catch (err: any) {
+      showApiError(err, "Error during experience seeding")
     } finally {
       setIsSeeding(false)
     }
@@ -310,16 +319,16 @@ export default function ExperiencesPage() {
             variant="outline"
             size="sm"
             onClick={handleSeedDefault}
-            disabled={isSeeding}
+            disabled={isSeeding || isLoading}
             className="font-mono text-xs"
-            title="Restore default portfolio experience"
+            title="Seed standard default portfolio experiences"
           >
             {isSeeding ? (
               <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />
             ) : (
-              <RotateCcw className="mr-1.5 h-3.5 w-3.5" />
+              <Sparkles className="mr-1.5 h-3.5 w-3.5 text-primary" />
             )}
-            Restore Default
+            Seed Defaults
           </Button>
 
           <Button
@@ -430,6 +439,8 @@ export default function ExperiencesPage() {
           onPageSizeChange={setPageSize}
           onBulkStatusChange={handleBulkStatusChange}
           onBulkDelete={handleBulkDelete}
+          onSeedDefaults={handleSeedDefault}
+          onAddExperience={handleOpenCreate}
         />
       ) : (
         <ExperienceTimelineView

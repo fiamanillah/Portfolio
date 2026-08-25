@@ -8,7 +8,7 @@ import {
   type RowSelectionState,
   type SortingState,
 } from "@tanstack/react-table"
-import { CheckCircle2, FileEdit, Archive, Trash2, X, Briefcase } from "lucide-react"
+import { CheckCircle2, FileEdit, Archive, Trash2, X, Briefcase, Sparkles, Plus } from "lucide-react"
 
 import type { ExperienceListItemDTO, ExperienceStatus } from "@workspace/shared"
 import { Button } from "@workspace/ui/components/button"
@@ -36,6 +36,8 @@ interface ExperiencesDataTableProps {
   onPageSizeChange?: (size: number) => void
   onBulkStatusChange?: (selectedIds: string[], status: ExperienceStatus) => void
   onBulkDelete?: (selectedIds: string[]) => void
+  onSeedDefaults?: () => void
+  onAddExperience?: () => void
 }
 
 export function ExperiencesDataTable({
@@ -49,6 +51,8 @@ export function ExperiencesDataTable({
   onPageSizeChange,
   onBulkStatusChange,
   onBulkDelete,
+  onSeedDefaults,
+  onAddExperience,
 }: ExperiencesDataTableProps) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -250,7 +254,7 @@ export function ExperiencesDataTable({
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-48 text-center"
+                  className="h-56 text-center"
                 >
                   <div className="flex flex-col items-center justify-center gap-3">
                     <div className="rounded-full bg-muted/60 p-3 text-muted-foreground">
@@ -260,9 +264,32 @@ export function ExperiencesDataTable({
                       <p className="font-semibold text-foreground">
                         No professional history found
                       </p>
-                      <p className="text-xs text-muted-foreground">
-                        Try modifying your filters or add your first career experience.
+                      <p className="text-xs text-muted-foreground max-w-sm mx-auto">
+                        Try modifying your filters, create a new career milestone, or restore standard defaults.
                       </p>
+                    </div>
+                    <div className="flex items-center gap-2 pt-2">
+                      {onSeedDefaults && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={onSeedDefaults}
+                          className="font-mono text-xs"
+                        >
+                          <Sparkles className="mr-1.5 h-3.5 w-3.5 text-primary" />
+                          Seed Defaults
+                        </Button>
+                      )}
+                      {onAddExperience && (
+                        <Button
+                          size="sm"
+                          onClick={onAddExperience}
+                          className="font-mono text-xs font-bold"
+                        >
+                          <Plus className="mr-1.5 h-4 w-4" />
+                          Add Experience
+                        </Button>
+                      )}
                     </div>
                   </div>
                 </TableCell>

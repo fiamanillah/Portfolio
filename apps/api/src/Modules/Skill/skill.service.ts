@@ -138,23 +138,25 @@ export class SkillService {
       },
     });
 
-    return categories.map((cat) => ({
-      code: cat.code,
-      ordinal: cat.ordinal || "01",
-      suffix: cat.suffix || "ST",
-      label: cat.title,
-      badge: cat.badge,
-      icon: cat.icon,
-      color: cat.color,
-      items: cat.skills.map((s) => ({
-        title: s.name,
-        left: s.leftLabel || "Stack",
-        right: s.rightLabel || "Proficient",
-        level: s.level,
-        tags: s.tags,
-        icon: s.icon,
-      })),
-    }));
+    return categories
+      .filter((cat) => cat.skills && cat.skills.length > 0)
+      .map((cat) => ({
+        code: cat.code,
+        ordinal: cat.ordinal || "01",
+        suffix: cat.suffix || "ST",
+        label: cat.title,
+        badge: cat.badge,
+        icon: cat.icon,
+        color: cat.color,
+        items: cat.skills.map((s) => ({
+          title: s.name,
+          left: s.leftLabel || "Stack",
+          right: s.rightLabel || "Proficient",
+          level: s.level,
+          tags: s.tags,
+          icon: s.icon,
+        })),
+      }));
   }
 
   // =========================================================================
@@ -364,7 +366,7 @@ export class SkillService {
         name: dto.name,
         leftLabel: dto.leftLabel || null,
         rightLabel: dto.rightLabel || null,
-        level: dto.level ?? 5,
+        level: typeof dto.level === "number" ? dto.level : 5,
         icon: dto.icon || null,
         tags: dto.tags || [],
         featured: dto.featured ?? false,
@@ -388,20 +390,21 @@ export class SkillService {
       throw new NotFoundError(`Skill with ID '${id}' not found`);
     }
 
+    const updateData: Prisma.SkillUncheckedUpdateInput = {};
+    if (dto.name !== undefined) updateData.name = dto.name;
+    if (dto.leftLabel !== undefined) updateData.leftLabel = dto.leftLabel || null;
+    if (dto.rightLabel !== undefined) updateData.rightLabel = dto.rightLabel || null;
+    if (dto.level !== undefined) updateData.level = typeof dto.level === "number" ? dto.level : Number(dto.level) || 5;
+    if (dto.icon !== undefined) updateData.icon = dto.icon || null;
+    if (dto.tags !== undefined) updateData.tags = dto.tags;
+    if (dto.featured !== undefined) updateData.featured = dto.featured;
+    if (dto.order !== undefined) updateData.order = typeof dto.order === "number" ? dto.order : Number(dto.order) || 0;
+    if (dto.status !== undefined) updateData.status = dto.status as SkillStatus;
+    if (dto.categoryId !== undefined) updateData.categoryId = dto.categoryId || null;
+
     const updated = await this.db.skill.update({
       where: { id },
-      data: {
-        ...(dto.name !== undefined ? { name: dto.name } : {}),
-        ...(dto.leftLabel !== undefined ? { leftLabel: dto.leftLabel || null } : {}),
-        ...(dto.rightLabel !== undefined ? { rightLabel: dto.rightLabel || null } : {}),
-        ...(dto.level !== undefined ? { level: dto.level } : {}),
-        ...(dto.icon !== undefined ? { icon: dto.icon || null } : {}),
-        ...(dto.tags !== undefined ? { tags: dto.tags } : {}),
-        ...(dto.featured !== undefined ? { featured: dto.featured } : {}),
-        ...(dto.order !== undefined ? { order: dto.order } : {}),
-        ...(dto.status !== undefined ? { status: dto.status as SkillStatus } : {}),
-        ...(dto.categoryId !== undefined ? { categoryId: dto.categoryId || null } : {}),
-      },
+      data: updateData,
       include: { category: true },
     });
 
