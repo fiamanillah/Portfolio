@@ -12,16 +12,29 @@ const {
 } = Astro.props
 ---
 
-<!-- Google tag (gtag.js) -->
-<script
-  is:inline
-  async
-  src={`https://www.googletagmanager.com/gtag/js?id=${id}`}
-></script>
+<!-- Google tag (gtag.js) - Queue initialized immediately, script deferred to idle -->
 <script is:inline define:vars={{ id }}>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-
   gtag('config', id);
+
+  function loadGtagScript() {
+    if (document.getElementById('ga-gtag-script')) return;
+    const script = document.createElement('script');
+    script.id = 'ga-gtag-script';
+    script.async = true;
+    script.src = 'https://www.googletagmanager.com/gtag/js?id=' + id;
+    document.head.appendChild(script);
+  }
+
+  if (typeof window !== 'undefined') {
+    if ('requestIdleCallback' in window) {
+      window.requestIdleCallback(loadGtagScript, { timeout: 3000 });
+    } else {
+      window.addEventListener('load', function() {
+        setTimeout(loadGtagScript, 1000);
+      }, { once: true });
+    }
+  }
 </script>

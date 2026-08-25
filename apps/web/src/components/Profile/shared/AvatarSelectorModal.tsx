@@ -33,7 +33,7 @@ interface AvatarSelectorModalProps {
 }
 
 const PRESET_AVATARS = [
-  "/fi.png",
+  "/fi-avatar.webp",
   ...AVATAR_OPTIONS,
   "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
   "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",

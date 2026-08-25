@@ -47,9 +47,9 @@ const { prevStudy, nextStudy } = Astro.props
               <HugeiconsIcon icon={ArrowLeft01Icon} className="size-3" />
               PREVIOUS DEEP DIVE
             </span>
-            <h4 class="truncate text-sm font-bold text-foreground transition-colors group-hover:text-primary">
+            <span class="block truncate text-sm font-bold text-foreground transition-colors group-hover:text-primary">
               {prevStudy.title}
-            </h4>
+            </span>
             {prevStudy.role && (
               <span class="font-mono text-[10px] text-muted-foreground">
                 {prevStudy.role}
@@ -75,9 +75,9 @@ const { prevStudy, nextStudy } = Astro.props
               NEXT DEEP DIVE
               <HugeiconsIcon icon={ArrowRight01Icon} className="size-3" />
             </span>
-            <h4 class="truncate text-sm font-bold text-foreground transition-colors group-hover:text-primary">
+            <span class="block truncate text-sm font-bold text-foreground transition-colors group-hover:text-primary">
               {nextStudy.title}
-            </h4>
+            </span>
             {nextStudy.role && (
               <span class="font-mono text-[10px] text-muted-foreground">
                 {nextStudy.role}

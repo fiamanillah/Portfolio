@@ -310,7 +310,7 @@ export function BookingDateTimeStep({
 
           <div className="w-full sm:w-72">
             <Select value={selectedTimezone} onValueChange={onTimezoneChange}>
-              <SelectTrigger className="w-full font-mono text-xs">
+              <SelectTrigger className="w-full font-mono text-xs" aria-label="Select timezone">
                 <SelectValue placeholder="Select your timezone..." />
               </SelectTrigger>
               <SelectContent className="max-h-72 border border-border bg-card">

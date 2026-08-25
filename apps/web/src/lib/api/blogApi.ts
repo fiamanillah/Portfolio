@@ -63,7 +63,7 @@ export function mapApiPostToBlogPost(dto: any): BlogPost {
       dto.author?.role ||
       dto.authorRole ||
       "Software Engineer & Tech Writer",
-    avatar: dto.author?.avatar || dto.authorAvatar || "/fi.png",
+    avatar: dto.author?.avatar || dto.authorAvatar || "/fi-avatar.webp",
     twitter: dto.author?.twitter || dto.authorTwitter,
     linkedin: dto.author?.linkedin || dto.authorLinkedin,
     github: dto.author?.github || dto.authorGithub,

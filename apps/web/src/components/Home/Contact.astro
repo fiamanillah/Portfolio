@@ -494,7 +494,7 @@ import { Icon } from "astro-icon/components"
     if (!script) {
       script = document.createElement("script")
       script.id = "cf-turnstile-script"
-      script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js"
+      script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
       script.async = true
       script.defer = true
       document.head.appendChild(script)

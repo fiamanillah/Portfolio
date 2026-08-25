@@ -181,10 +181,13 @@ const { lines = [-0.04, 0, 1, 1.04] } = Astro.props
     window.addEventListener("grid-refresh", () => scheduleUpdate(0), { passive: true })
 
     function init() {
-      scheduleUpdate(0)
+      requestAnimationFrame(() => scheduleUpdate(0))
       // Safety checks after images and fonts settle
-      setTimeout(() => scheduleUpdate(0), 150)
-      setTimeout(() => scheduleUpdate(0), 600)
+      if ("requestIdleCallback" in window) {
+        requestIdleCallback(() => scheduleUpdate(0), { timeout: 1000 })
+      } else {
+        setTimeout(() => scheduleUpdate(0), 400)
+      }
     }
 
     if (document.readyState === "complete" || document.readyState === "interactive") {
@@ -196,7 +199,7 @@ const { lines = [-0.04, 0, 1, 1.04] } = Astro.props
     document.addEventListener("astro:page-load", () => {
       const mainEl = document.querySelector("main")
       if (ro && mainEl) ro.observe(mainEl)
-      scheduleUpdate(50)
+      requestAnimationFrame(() => scheduleUpdate(50))
     })
   })()
 </script>

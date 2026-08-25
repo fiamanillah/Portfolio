@@ -53,16 +53,18 @@ const resumeUrl = resumeData.downloadUrl || "/resume"
           class="text-base leading-relaxed font-medium text-balance text-primary sm:text-lg"
         >
           <span class="text-foreground"> I'm a </span>
-          <TextScramble
-            client:load
-            texts={[
-              "Full Stack Developer",
-              "Backend Specialist",
-              "DevOps Engineer",
-            ]}
-            speed={5000}
-            scrambleSpeed={50}
-          />
+          <span class="inline-block min-w-[210px] text-primary">
+            <TextScramble
+              client:idle
+              texts={[
+                "Full Stack Developer",
+                "Backend Specialist",
+                "DevOps Engineer",
+              ]}
+              speed={5000}
+              scrambleSpeed={50}
+            />
+          </span>
         </div>
         <p
           class="max-w-lg text-sm! leading-relaxed font-medium text-balance text-muted-foreground sm:text-base"
@@ -262,6 +264,7 @@ const resumeUrl = resumeData.downloadUrl || "/resume"
         client:idle
         initialResumeUrl={resumeData.resumeUrl}
         initialDownloadUrl={resumeUrl}
+        initialVersion={resumeData.version}
       />
 
       <!-- Tech Stack (Floating Badges) -->
@@ -319,7 +322,7 @@ const resumeUrl = resumeData.downloadUrl || "/resume"
     >
       <source srcset="/fi.webp" type="image/webp" />
       <img
-        src="/fi.png"
+        src="/fi.webp"
         alt="Fi Amanillah - Full-Stack Architect"
         width="1080"
         height="1080"
@@ -339,35 +342,39 @@ const resumeUrl = resumeData.downloadUrl || "/resume"
 <script>
   function setupStickyObserver() {
     const cards = document.querySelectorAll(".sticky-card")
+    let isTicking = false
 
     const checkStickyStates = () => {
       cards.forEach((card) => {
-        // Parse the exact top property we assigned in the HTML
         const styleAttr = card.getAttribute("style") || ""
         const match = styleAttr.match(/top:\s*([0-9.]+)px/)
         const rect = card.getBoundingClientRect()
 
-        // If we couldn't parse a sticky top value, mark as not stuck and skip
         if (!match) {
           card.setAttribute("data-stuck", "false")
           return
         }
 
         const stickyTop = parseFloat(match[1])
-
-        // If the card is flush with its sticky top boundary (or past it), mark it as stuck
-        // We use <= stickyTop + 1 to account for sub-pixel rendering variations
         if (rect.top <= stickyTop + 1) {
           card.setAttribute("data-stuck", "true")
         } else {
           card.setAttribute("data-stuck", "false")
         }
       })
+      isTicking = false
     }
 
-    // Attach listeners
-    window.addEventListener("scroll", checkStickyStates, { passive: true })
-    window.addEventListener("resize", checkStickyStates, { passive: true })
+    const onScrollOrResize = () => {
+      if (!isTicking) {
+        requestAnimationFrame(checkStickyStates)
+        isTicking = true
+      }
+    }
+
+    // Attach passive throttled listeners
+    window.addEventListener("scroll", onScrollOrResize, { passive: true })
+    window.addEventListener("resize", onScrollOrResize, { passive: true })
 
     // Check states immediately on load
     checkStickyStates()
@@ -412,7 +419,7 @@ const resumeUrl = resumeData.downloadUrl || "/resume"
     if (!script) {
       script = document.createElement("script")
       script.id = "cf-turnstile-script"
-      script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js"
+      script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
       script.async = true
       script.defer = true
       document.head.appendChild(script)

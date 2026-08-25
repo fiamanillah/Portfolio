@@ -293,8 +293,10 @@ export function CommentComposer({
         {isAuthenticated && user ? (
           <div className="flex items-center gap-2.5">
             <img
-              src={user.avatar || "/fi.png"}
+              src={user.avatar || "/fi-avatar.webp"}
               alt={user.name}
+              width="28"
+              height="28"
               className="size-7 rounded-full border border-primary/40 object-cover"
             />
             <div className="flex items-center gap-2">

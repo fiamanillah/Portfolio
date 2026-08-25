@@ -8,17 +8,22 @@ import { ArrowUpRight03Icon } from "@hugeicons/core-free-icons"
 interface HeroResumeCardProps {
   initialResumeUrl?: string | null
   initialDownloadUrl?: string
+  initialVersion?: string
 }
 
 export function HeroResumeCard({
   initialResumeUrl = null,
   initialDownloadUrl = "/resume",
+  initialVersion,
 }: HeroResumeCardProps) {
   const [resumeUrl, setResumeUrl] = React.useState<string | null>(initialResumeUrl)
   const [downloadUrl, setDownloadUrl] = React.useState<string>(initialDownloadUrl)
-  const [version, setVersion] = React.useState<string | undefined>(undefined)
+  const [version, setVersion] = React.useState<string | undefined>(initialVersion)
 
   React.useEffect(() => {
+    // If SSR/build-time data was already supplied, do not refetch over network
+    if (initialResumeUrl || initialVersion) return
+
     let isMounted = true
 
     async function loadResume() {
@@ -39,7 +44,7 @@ export function HeroResumeCard({
     return () => {
       isMounted = false
     }
-  }, [])
+  }, [initialResumeUrl, initialVersion])
 
   return (
     <div className="w-full max-w-md space-y-3.5">

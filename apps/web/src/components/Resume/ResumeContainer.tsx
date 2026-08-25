@@ -32,8 +32,13 @@ export function ResumeContainer({ initialResume = null }: ResumeContainerProps) 
   const [resume, setResume] = React.useState<ResumeVersionData | null>(initialResume)
   const [isLoading, setIsLoading] = React.useState<boolean>(!initialResume)
 
-  // Fetch freshest active resume on client mount
+  // Fetch active resume on client mount only if not already supplied by SSR
   React.useEffect(() => {
+    if (initialResume) {
+      setIsLoading(false)
+      return
+    }
+
     let isMounted = true
 
     async function loadActiveResume() {
@@ -57,7 +62,7 @@ export function ResumeContainer({ initialResume = null }: ResumeContainerProps) 
     return () => {
       isMounted = false
     }
-  }, [])
+  }, [initialResume])
 
   return (
     <div className="w-full">

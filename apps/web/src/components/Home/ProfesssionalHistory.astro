@@ -186,9 +186,9 @@ const totalTech = [...new Set(experiences.flatMap((e) => e.technologies || []))]
                     <div class="flex flex-col gap-6">
                       {/* Tech Stack */}
                       <div class="flex flex-col gap-3">
-                        <h5 class="font-mono text-xs font-bold tracking-[0.12em] text-foreground uppercase">
+                        <h4 class="font-mono text-xs font-bold tracking-[0.12em] text-foreground uppercase">
                           // TECH_STACK
-                        </h5>
+                        </h4>
                         <div class="flex flex-wrap gap-2">
                           {exp.technologies.map((tech) => (
                             <span class="border border-border bg-muted/30 px-2.5 py-1 font-mono text-[10px] font-bold tracking-[0.1em] text-foreground uppercase transition-colors duration-300 hover:border-primary/50 hover:bg-primary/10 hover:text-primary">
@@ -200,9 +200,9 @@ const totalTech = [...new Set(experiences.flatMap((e) => e.technologies || []))]
 
                       {/* Key Takeaway */}
                       <div class="border-l-[1.5px] border-border pl-4 transition-colors duration-400 group-hover:border-primary/40">
-                        <h5 class="mb-2 font-mono text-xs font-bold tracking-[0.12em] text-primary uppercase">
+                        <h4 class="mb-2 font-mono text-xs font-bold tracking-[0.12em] text-primary uppercase">
                           [ KEY_TAKEAWAY ]
-                        </h5>
+                        </h4>
                         <p class="text-sm leading-relaxed text-muted-foreground italic">
                           "{exp.learned}"
                         </p>

@@ -185,7 +185,7 @@ export const CommentsApi = {
             .replace(/[^a-z0-9]/g, ""),
           email:
             (author as GuestCommentPayload).guestEmail || "guest@example.com",
-          avatar: "/fi.png",
+          avatar: "/fi-avatar.webp",
           badge: "Guest",
           role: "Reader",
         }
@@ -267,7 +267,7 @@ export const CommentsApi = {
             .replace(/[^a-z0-9]/g, ""),
           email:
             (author as GuestCommentPayload).guestEmail || "guest@example.com",
-          avatar: "/fi.png",
+          avatar: "/fi-avatar.webp",
           badge: "Guest",
           role: "Reader",
         }

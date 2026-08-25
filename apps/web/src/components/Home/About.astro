@@ -501,19 +501,10 @@ import { HugeiconsIcon } from "@hugeicons/react"
       }
     }
 
-    // Dynamic Cursor Tracking
+    // Zero-reflow Monospace Cursor Tracking (1ch per character in monospace font)
     function updateCursor() {
-      const text = input!.value
-      const measure = document.createElement("span")
-      measure.style.font = getComputedStyle(input!).font
-      measure.style.visibility = "hidden"
-      measure.style.position = "absolute"
-      measure.style.whiteSpace = "pre"
-      measure.textContent = text
-      document.body.appendChild(measure)
-      const width = measure.offsetWidth
-      document.body.removeChild(measure)
-      cursor!.style.left = `${width}px`
+      const len = input?.value.length || 0
+      cursor!.style.left = `${len}ch`
     }
 
     input.addEventListener("input", updateCursor)
@@ -571,26 +562,47 @@ import { HugeiconsIcon } from "@hugeicons/react"
       })
     })
 
-    // Typing Intro Simulation
+    // Viewport-aware Typing Intro Simulation (Only runs when section is visible)
+    let introRan = false
     const introSequence = async () => {
-      const typeCmd = async (cmd: string, delay = 50) => {
+      if (introRan) return
+      introRan = true
+
+      const typeCmd = async (cmd: string, delay = 45) => {
         for (const char of cmd) {
           input.value += char
           updateCursor()
-          await new Promise((r) => setTimeout(r, delay + Math.random() * 30))
+          await new Promise((r) => setTimeout(r, delay + Math.random() * 25))
         }
-        await new Promise((r) => setTimeout(r, 250))
+        await new Promise((r) => setTimeout(r, 200))
         processCommand(input.value)
         input.value = ""
         updateCursor()
       }
 
-      await new Promise((r) => setTimeout(r, 800))
+      await new Promise((r) => setTimeout(r, 400))
       await typeCmd("whoami")
     }
 
     if (output.children.length === 0) {
-      introSequence()
+      if ("IntersectionObserver" in window) {
+        const introObserver = new IntersectionObserver(
+          (entries, obs) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                introSequence()
+                obs.disconnect()
+              }
+            })
+          },
+          { threshold: 0.2 }
+        )
+        const aboutSec = document.getElementById("about")
+        if (aboutSec) introObserver.observe(aboutSec)
+        else introSequence()
+      } else {
+        introSequence()
+      }
     }
 
     updateCursor()

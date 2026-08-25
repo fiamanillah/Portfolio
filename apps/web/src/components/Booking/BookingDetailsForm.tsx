@@ -328,7 +328,7 @@ export function BookingDetailsForm({
             }
           }}
         >
-          <SelectTrigger className="w-full font-mono text-xs">
+          <SelectTrigger className="w-full font-mono text-xs" aria-label="Choose consultation focus topic">
             <SelectValue placeholder="Choose a consultation focus..." />
           </SelectTrigger>
           <SelectContent className="border border-border bg-card">

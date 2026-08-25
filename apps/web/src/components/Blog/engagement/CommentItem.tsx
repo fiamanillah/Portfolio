@@ -173,8 +173,10 @@ export function CommentItem({
         <div className="flex items-start justify-between gap-3">
           <div className="flex min-w-0 items-center gap-3">
             <img
-              src={comment.author.avatar || "/fi.png"}
+              src={comment.author.avatar || "/fi-avatar.webp"}
               alt={comment.author.name}
+              width="32"
+              height="32"
               className={`size-8 shrink-0 rounded-full border object-cover ${
                 isPostAuthor ? "border-primary" : "border-border"
               }`}

@@ -460,8 +460,10 @@ export default function BookingSection() {
               <div className="flex items-center gap-3.5">
                 <div className="relative">
                   <img
-                    src="/fi.png"
+                    src="/fi-avatar.webp"
                     alt="Fi Amanillah"
+                    width="52"
+                    height="52"
                     className="size-13 rounded-full border-2 border-primary/40 object-cover"
                     onError={(e) => {
                       e.currentTarget.src =
@@ -477,7 +479,7 @@ export default function BookingSection() {
                   <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
                     Host & Consultant
                   </span>
-                  <h4 className="text-base font-black tracking-tight text-foreground">Fi Amanillah</h4>
+                  <h3 className="text-base font-black tracking-tight text-foreground">Fi Amanillah</h3>
                   <p className="font-mono text-[11px] font-semibold text-primary">Author & Lead Architect</p>
                 </div>
               </div>
