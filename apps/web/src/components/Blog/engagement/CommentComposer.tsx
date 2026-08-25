@@ -57,10 +57,14 @@ export function CommentComposer({
 
   // Initialize Cloudflare Turnstile for Guest Comments
   const initTurnstile = useCallback(() => {
+    const isLocal =
+      typeof window !== "undefined" &&
+      (window.location.hostname === "localhost" ||
+        window.location.hostname === "127.0.0.1")
     const siteKey =
       (typeof import.meta !== "undefined" &&
         import.meta.env?.PUBLIC_TURNSTILE_SITE_KEY) ||
-      "1x00000000000000000000AA"
+      (isLocal ? "1x00000000000000000000AA" : "0x4AAAAAAEMAnAognjniSApt")
 
     if (typeof window === "undefined" || !turnstileContainerRef.current) return
 

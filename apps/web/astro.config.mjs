@@ -18,7 +18,7 @@ export default defineConfig({
     defaultStrategy: "hover",
   },
   build: {
-    inlineStylesheets: "auto",
+    inlineStylesheets: "always",
   },
   redirects: {
     "/terms-of-use": {

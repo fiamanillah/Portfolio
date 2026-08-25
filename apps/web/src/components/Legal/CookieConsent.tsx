@@ -56,15 +56,46 @@ export function CookieConsent() {
       if (saved) {
         const parsed = JSON.parse(saved)
         setPreferences(parsed)
-      } else {
-        // Slight delay for smooth initial page entrance
-        const timer = setTimeout(() => {
-          setShowBanner(true)
-        }, 700)
-        return () => clearTimeout(timer)
+        return
+      }
+
+      // Industry Standard: Display banner after user engagement or a 4.5-second dwell delay
+      let hasTriggered = false
+      let timer: ReturnType<typeof setTimeout> | null = null
+
+      const triggerBanner = () => {
+        if (hasTriggered) return
+        hasTriggered = true
+        if (timer) clearTimeout(timer)
+        window.removeEventListener("scroll", handleScroll)
+        setShowBanner(true)
+      }
+
+      const handleScroll = () => {
+        if (window.scrollY > 200) {
+          triggerBanner()
+        }
+      }
+
+      // Grace period: allow user at least 3 seconds to absorb hero before scroll triggers it
+      const graceTimer = setTimeout(() => {
+        window.addEventListener("scroll", handleScroll, { passive: true })
+      }, 3000)
+
+      // Fallback timer: 4.5 seconds of active page dwell time
+      timer = setTimeout(() => {
+        triggerBanner()
+      }, 4500)
+
+      return () => {
+        clearTimeout(graceTimer)
+        if (timer) clearTimeout(timer)
+        window.removeEventListener("scroll", handleScroll)
       }
     } catch {
-      setShowBanner(true)
+      // If localStorage is unavailable, safe 5s delay
+      const fallbackTimer = setTimeout(() => setShowBanner(true), 5000)
+      return () => clearTimeout(fallbackTimer)
     }
   }, [])
 

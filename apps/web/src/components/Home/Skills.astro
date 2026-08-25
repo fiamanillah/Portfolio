@@ -158,15 +158,11 @@ const skillSections = await SkillApi.fetchPublicSkills()
       >
       </div>
 
-      <!-- Subtle ambient glow in header -->
+      <!-- Subtle ambient glow in header (Zero-CLS Radial Gradient) -->
       <div
-        class="pointer-events-none absolute inset-0 -z-10"
+        class="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_50%_50%,rgba(0,220,200,0.1)_0%,transparent_70%)]"
         aria-hidden="true"
       >
-        <div
-          class="absolute top-1/2 left-1/2 h-40 w-72 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/10 blur-[80px]"
-        >
-        </div>
       </div>
 
       <div class="relative z-10 py-8">

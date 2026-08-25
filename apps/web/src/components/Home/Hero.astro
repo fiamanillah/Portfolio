@@ -25,13 +25,11 @@ const resumeUrl = resumeData.downloadUrl || "/resume"
   data-grid-cross
   class="relative flex min-h-[calc(100svh-5rem)] w-full items-center justify-center overflow-hidden py-24"
 >
-  <!-- Background Effects -->
-  <div class="pointer-events-none absolute inset-0 -z-10">
-    <!-- Ambient Glow -->
-    <div
-      class="absolute top-1/2 left-1/2 h-125 w-125 -translate-x-1/2 -translate-y-1/2 bg-primary/10 blur-[120px]"
-    >
-    </div>
+  <!-- Background Ambient Glow (Zero-CLS GPU Radial Gradient) -->
+  <div
+    class="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_50%_50%,rgba(0,220,200,0.12)_0%,transparent_65%)]"
+    aria-hidden="true"
+  >
   </div>
 
   <div
@@ -312,17 +310,37 @@ const resumeUrl = resumeData.downloadUrl || "/resume"
       class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.3)_1px,transparent_1px)] bg-size-[24px_24px] opacity-60"
     >
     </div>
-    <!-- Glow Effect -->
+    <!-- Glow Effect (Zero-CLS Radial Gradient) -->
     <div
-      class="absolute bottom-0 left-1/2 h-[80%] w-[80%] -translate-x-1/2 translate-y-10 bg-primary/15 blur-[100px] sm:w-[60%]"
+      class="absolute bottom-0 inset-x-0 h-3/4 bg-[radial-gradient(ellipse_80%_80%_at_50%_100%,rgba(0,220,200,0.15)_0%,transparent_75%)]"
+      aria-hidden="true"
     >
     </div>
     <picture
       class="pointer-events-none absolute bottom-0 left-1/2 h-[65%] w-auto max-w-none -translate-x-1/2 select-none sm:h-[75%] lg:left-[54%] lg:h-[82%] xl:left-[52%] xl:h-[88%] [mask-image:radial-gradient(ellipse_at_center,black_55%,transparent_95%)]"
     >
-      <source srcset="/fi.webp" type="image/webp" />
+      <source
+        media="(max-width: 640px)"
+        srcset="/fi-sm.webp"
+        type="image/webp"
+        width="360"
+        height="360"
+      />
+      <source
+        media="(max-width: 1024px)"
+        srcset="/fi-md.webp"
+        type="image/webp"
+        width="720"
+        height="720"
+      />
+      <source
+        srcset="/fi.webp"
+        type="image/webp"
+        width="1080"
+        height="1080"
+      />
       <img
-        src="/fi.webp"
+        src="/fi-sm.webp"
         alt="Fi Amanillah - Full-Stack Architect"
         width="1080"
         height="1080"
@@ -384,7 +402,10 @@ const resumeUrl = resumeData.downloadUrl || "/resume"
   let heroTurnstileWidgetId: string | null = null
 
   function initHeroTurnstileOnDemand() {
-    const turnstileKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY
+    const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+    const turnstileKey =
+      import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ||
+      (isLocal ? "1x00000000000000000000AA" : "0x4AAAAAAEMAnAognjniSApt")
     const container = document.getElementById("hero-turnstile-container")
     if (!turnstileKey || !container || heroTurnstileWidgetId !== null) return
 

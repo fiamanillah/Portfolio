@@ -306,7 +306,10 @@ const submitTextId = `${idPrefix}-submit-text`
     }
 
     function initNewsletterTurnstileOnDemand() {
-      const turnstileKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY
+      const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+      const turnstileKey =
+        import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ||
+        (isLocal ? "1x00000000000000000000AA" : "0x4AAAAAAEMAnAognjniSApt")
       if (!turnstileKey || !turnstileContainer || widgetId !== null) return
 
       const render = () => {

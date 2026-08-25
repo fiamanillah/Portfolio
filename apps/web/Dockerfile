@@ -13,7 +13,7 @@ WORKDIR /app
 # Accept build arguments for public environment variables
 ARG PUBLIC_WEB_URL=https://fi.amanillah.com
 ARG PUBLIC_API_URL=https://api-fi.amanillah.com
-ARG PUBLIC_TURNSTILE_SITE_KEY=
+ARG PUBLIC_TURNSTILE_SITE_KEY=0x4AAAAAAEMAnAognjniSApt
 ARG PUBLIC_GA_MEASUREMENT_ID=G-G8BDG57VX9
 
 ENV PUBLIC_WEB_URL=$PUBLIC_WEB_URL \

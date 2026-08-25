@@ -96,17 +96,16 @@ function isLinkActive(href: string) {
           })
         }
       </ul>
+    </div>
 
-      <div class="flex items-center gap-2 border-l border-border/60 pl-3">
+    <!-- Right-side Actions & Mobile Trigger -->
+    <div class="flex items-center gap-2">
+      <div class="flex items-center gap-2 lg:border-l lg:border-border/60 lg:pl-3">
         <ModeToggle client:idle />
         <NavUserButton client:idle />
       </div>
-    </div>
 
-    <!-- Mobile Navigation Toggle Bar (< lg) -->
-    <div class="flex items-center gap-2 lg:hidden">
-      <ModeToggle client:idle />
-      <NavUserButton client:idle />
+      <!-- Mobile Navigation Toggle Bar (< lg) -->
       <button
         id="mobile-menu-btn"
         type="button"
@@ -114,7 +113,7 @@ function isLinkActive(href: string) {
         aria-expanded="false"
         data-state="closed"
         aria-controls="mobile-nav-panel"
-        class="group relative flex size-9 cursor-pointer items-center justify-center border border-border bg-background/80 text-foreground transition-colors duration-150 hover:border-primary hover:bg-primary/10 hover:text-primary focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:outline-none"
+        class="group relative flex size-9 cursor-pointer items-center justify-center border border-border bg-background/80 text-foreground transition-colors duration-150 hover:border-primary hover:bg-primary/10 hover:text-primary focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:outline-none lg:hidden"
       >
         <span
           id="menu-open-icon"

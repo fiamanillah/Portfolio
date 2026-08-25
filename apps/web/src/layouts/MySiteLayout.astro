@@ -1,7 +1,6 @@
 ---
 import "@workspace/ui/globals.css"
 import GridLines from "@/components/GridLines.astro"
-import MouseGlow from "@/components/MouseGlow.astro"
 import SiteNav from "@/components/site-nav.astro"
 import ThemeScript from "@/components/ThemeScript.astro"
 import Footer from "@/components/footer.astro"
@@ -30,13 +29,24 @@ import GoogleAnalytics from "@/components/GoogleAnalytics.astro"
     <link rel="dns-prefetch" href="https://challenges.cloudflare.com" />
     {
       Astro.url.pathname === "/" && (
-        <link
-          rel="preload"
-          as="image"
-          href="/fi.webp"
-          type="image/webp"
-          fetchpriority="high"
-        />
+        <>
+          <link
+            rel="preload"
+            as="image"
+            href="/fi-sm.webp"
+            type="image/webp"
+            media="(max-width: 640px)"
+            fetchpriority="high"
+          />
+          <link
+            rel="preload"
+            as="image"
+            href="/fi.webp"
+            type="image/webp"
+            media="(min-width: 641px)"
+            fetchpriority="high"
+          />
+        </>
       )
     }
     <GoogleAnalytics />
@@ -46,9 +56,6 @@ import GoogleAnalytics from "@/components/GoogleAnalytics.astro"
     </slot>
   </head>
   <body class="min-h-svh overflow-x-hidden bg-background text-foreground">
-    <!-- Smooth hardware-accelerated viewport-tracked cursor glow -->
-    <MouseGlow />
-
     <GridLines lines={[-0.04, 0, 1, 1.04]} />
 
     <div class="relative mx-[4%]">

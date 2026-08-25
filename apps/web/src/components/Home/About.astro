@@ -63,17 +63,11 @@ import { HugeiconsIcon } from "@hugeicons/react"
 </style>
 
 <section id="about" class="relative z-10 overflow-hidden py-20 lg:py-28" data-grid-cross>
-  <!-- Ambient background glow -->
-  <div class="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
-    <div
-      class="absolute top-1/3 left-1/4 h-120 w-120 -translate-x-1/2 -translate-y-1/2 animate-[float-glow_8s_ease-in-out_infinite] rounded-full bg-primary/12 blur-[130px]"
-    >
-    </div>
-    <div
-      class="absolute top-2/3 right-1/4 h-96 w-96 -translate-x-1/2 -translate-y-1/2 animate-[float-glow_8s_ease-in-out_infinite] rounded-full bg-primary/8 blur-[110px]"
-      style="animation-delay: -4s;"
-    >
-    </div>
+  <!-- Ambient background glow (Zero-CLS Dual Radial Gradient) -->
+  <div
+    class="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_25%_35%,rgba(0,220,200,0.1)_0%,transparent_50%),radial-gradient(circle_at_75%_65%,rgba(0,220,200,0.08)_0%,transparent_50%)]"
+    aria-hidden="true"
+  >
   </div>
 
   <div class="container mx-auto px-4">
