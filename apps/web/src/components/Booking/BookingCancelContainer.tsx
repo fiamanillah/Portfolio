@@ -33,14 +33,28 @@ export default function BookingCancelContainer() {
     let parsedToken =
       searchParams.get("token") || searchParams.get("cancelToken")
 
-    if (!parsedToken && window.location.hash.includes("token=")) {
-      const hashQuery = window.location.hash.split("?")[1]
-      if (hashQuery) {
-        const hp = new URLSearchParams(hashQuery)
+    if (!parsedToken && window.location.hash) {
+      const hash = window.location.hash
+      if (hash.includes("?")) {
+        const hashQuery = hash.split("?")[1]
+        if (hashQuery) {
+          const hp = new URLSearchParams(hashQuery)
+          parsedToken = hp.get("token") || hp.get("cancelToken")
+        }
+      } else {
+        const hp = new URLSearchParams(hash.replace(/^#/, ""))
         parsedToken = hp.get("token") || hp.get("cancelToken")
+      }
+
+      if (!parsedToken) {
+        const match = hash.match(/(?:token|cancelToken)=([a-zA-Z0-9-]+)/i)
+        if (match && match[1]) {
+          parsedToken = match[1]
+        }
       }
     }
 
+    parsedToken = parsedToken?.trim() || null
     setToken(parsedToken)
 
     if (!parsedToken) {

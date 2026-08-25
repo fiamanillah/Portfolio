@@ -312,7 +312,7 @@ describe("Flat White-Themed Email Templates & Templating System", () => {
       expect(res.subject).toContain("Fi Amanillah")
       expect(res.html).toContain("Alex Rivera")
       expect(res.html).toContain("https://meet.google.com/abc-defg-hij")
-      expect(res.html).toContain("550e8400-e29b-41d4-a716-446655440000")
+      expect(res.html).toContain("https://fi.amanillah.com/booking/cancel?token=550e8400-e29b-41d4-a716-446655440000")
       expect(res.html).toContain("border-radius: 0")
       expect(res.html).not.toMatch(emojiRegex)
     })

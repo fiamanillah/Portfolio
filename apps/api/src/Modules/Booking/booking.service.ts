@@ -522,7 +522,7 @@ export class BookingService {
           timezone: booking.timezone,
           googleMeetLink: booking.googleMeetLink || "",
           cancellationToken: booking.cancellationToken,
-          cancelUrl: `${webUrl}/#book-call?cancelToken=${booking.cancellationToken}`,
+          cancelUrl: `${webUrl}/booking/cancel?token=${booking.cancellationToken}`,
           icsDownloadUrl: `${webUrl}/api/v1/booking/ics?token=${booking.cancellationToken}`,
           googleCalUrl: calendarLinks.googleCalendarUrl,
           outlookCalUrl: calendarLinks.outlookLiveUrl,

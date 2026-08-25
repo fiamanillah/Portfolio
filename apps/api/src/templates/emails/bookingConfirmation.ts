@@ -153,7 +153,7 @@ export function renderBookingConfirmationEmail(
   })
 
   const webUrl = options.webUrl || "https://fi.amanillah.com"
-  const cancelUrl = `${webUrl}/#book-call?cancelToken=${options.cancellationToken}`
+  const cancelUrl = `${webUrl}/booking/cancel?token=${options.cancellationToken}`
   const icsDownloadUrl = `${webUrl}/api/v1/booking/ics?token=${options.cancellationToken}`
   const emailSubject = `[Confirmed] ${options.meetingType} - Fi Amanillah (${formattedStartTime})`
 

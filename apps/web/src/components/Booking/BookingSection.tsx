@@ -107,20 +107,32 @@ export default function BookingSection() {
     return d
   })
 
-  // ── Parse cancelToken from query string or hash on mount ────────────────
+  // ── Redirect legacy cancellation links to dedicated cancellation screen ──
   useEffect(() => {
     if (typeof window === "undefined") return
     const searchParams = new URLSearchParams(window.location.search)
     let token = searchParams.get("cancelToken") || searchParams.get("token")
-    if (!token && window.location.hash.includes("token=")) {
-      const hashQuery = window.location.hash.split("?")[1]
-      if (hashQuery) {
-        const hp = new URLSearchParams(hashQuery)
+    if (!token && window.location.hash) {
+      const hash = window.location.hash
+      if (hash.includes("?")) {
+        const hashQuery = hash.split("?")[1]
+        if (hashQuery) {
+          const hp = new URLSearchParams(hashQuery)
+          token = hp.get("cancelToken") || hp.get("token")
+        }
+      } else {
+        const hp = new URLSearchParams(hash.replace(/^#/, ""))
         token = hp.get("cancelToken") || hp.get("token")
+      }
+      if (!token) {
+        const match = hash.match(/(?:token|cancelToken)=([a-zA-Z0-9-]+)/i)
+        if (match && match[1]) {
+          token = match[1]
+        }
       }
     }
     if (token) {
-      setCancelToken(token)
+      window.location.replace(`/booking/cancel?token=${encodeURIComponent(token.trim())}`)
     }
   }, [])
 

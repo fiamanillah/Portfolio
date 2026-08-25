@@ -19,14 +19,25 @@ export const createBookingSchema = z.object({
   hp_field: z.string().optional(),
 })
 
-export const cancelBookingSchema = z.object({
-  cancellationToken: z.string().uuid("Invalid cancellation token").optional(),
-  reason: z.string().max(500, "Reason cannot exceed 500 characters").optional(),
-})
+export const cancelBookingSchema = z
+  .object({
+    cancellationToken: z.string().uuid("Invalid cancellation token").optional(),
+    token: z.string().uuid("Invalid cancellation token").optional(),
+    cancelToken: z.string().uuid("Invalid cancellation token").optional(),
+    reason: z.string().max(500, "Reason cannot exceed 500 characters").optional(),
+  })
+  .refine((data) => data.cancellationToken || data.token || data.cancelToken, {
+    message: "Cancellation token is required",
+  })
 
-export const getBookingDetailsSchema = z.object({
-  token: z.string().uuid("Invalid booking cancellation token format"),
-})
+export const getBookingDetailsSchema = z
+  .object({
+    token: z.string().uuid("Invalid booking cancellation token format").optional(),
+    cancelToken: z.string().uuid("Invalid booking cancellation token format").optional(),
+  })
+  .refine((data) => data.token || data.cancelToken, {
+    message: "Booking cancellation token is required",
+  })
 
 export const adminQueryBookingsSchema = z.object({
   page: z.coerce.number().min(1).default(1).optional(),

@@ -50,7 +50,7 @@ export const SYSTEM_TEMPLATES: DefaultTemplateSeed[] = [
       googleCalUrl: "https://calendar.google.com/calendar/render?action=TEMPLATE",
       outlookCalUrl: "https://outlook.live.com/calendar/0/deeplink/compose?path=/calendar/action/compose",
       icsDownloadUrl: "https://fi.amanillah.com/api/v1/booking/ics?token=sample_uuid",
-      cancelUrl: "https://fi.amanillah.com/#book-call?cancelToken=sample_uuid",
+      cancelUrl: "https://fi.amanillah.com/booking/cancel?token=sample_uuid",
       guestNotes: "Looking forward to discussing database migration strategies.",
     },
   },

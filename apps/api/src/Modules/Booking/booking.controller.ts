@@ -85,8 +85,13 @@ export class BookingController extends BaseController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const input = (req.validatedBody || req.body) as CancelBookingInput
-      const token = input.cancellationToken || (req.query.token as string)
+      const input = (req.validatedBody || req.body) as (CancelBookingInput & { token?: string; cancelToken?: string })
+      const token =
+        input.cancellationToken ||
+        input.token ||
+        input.cancelToken ||
+        (req.query.token as string) ||
+        (req.query.cancelToken as string)
 
       if (!token) {
         res.status(HTTPStatusCode.BAD_REQUEST).json({
@@ -123,7 +128,8 @@ export class BookingController extends BaseController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const token = (req.validatedQuery?.token || req.query.token) as string
+      const query = (req.validatedQuery || req.query) as { token?: string; cancelToken?: string }
+      const token = (query.token || query.cancelToken || req.query.token || req.query.cancelToken) as string
 
       if (!token) {
         res.status(HTTPStatusCode.BAD_REQUEST).json({
