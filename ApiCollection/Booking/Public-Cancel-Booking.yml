@@ -1,0 +1,22 @@
+info:
+  name: Public - Cancel Booking By Token
+  type: http
+  seq: 5
+
+http:
+  method: POST
+  url: "{{baseUrl}}/booking/v1/cancel"
+  body:
+    type: json
+    data: |-
+      {
+        "token": "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d",
+        "reason": "Unexpected conflict in schedule, will rebook next week."
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

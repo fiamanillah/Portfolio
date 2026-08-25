@@ -1,0 +1,26 @@
+info:
+  name: Admin - Update Redirect Rule
+  type: http
+  seq: 5
+
+http:
+  method: PATCH
+  url: "{{baseUrl}}/redirects/v1/admin/{{redirectId}}"
+  headers:
+    - name: Authorization
+      value: "Bearer {{authToken}}"
+  body:
+    type: json
+    data: |-
+      {
+        "toPath": "/blogs/v1/public/slug/revised-blog-post",
+        "statusCode": 301,
+        "isActive": true
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

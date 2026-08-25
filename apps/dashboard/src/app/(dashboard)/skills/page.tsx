@@ -518,6 +518,9 @@ export default function SkillsPage() {
           onPageSizeChange={setPageSize}
           onBulkStatusChange={handleBulkStatusChange}
           onBulkDelete={handleBulkDeletePrompt}
+          onSeedDefaults={handleSeedDefault}
+          onAddSkill={() => handleCreateSkill()}
+          isSeeding={isSeeding}
         />
       ) : (
         <SkillGridView

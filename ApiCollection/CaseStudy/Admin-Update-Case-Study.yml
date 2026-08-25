@@ -1,0 +1,26 @@
+info:
+  name: Admin - Update Case Study
+  type: http
+  seq: 9
+
+http:
+  method: PATCH
+  url: "{{baseUrl}}/case-studies/v1/admin/{{caseStudyId}}"
+  headers:
+    - name: Authorization
+      value: "Bearer {{authToken}}"
+  body:
+    type: json
+    data: |-
+      {
+        "title": "Mickanic - Distributed Automotive Diagnostics (Updated)",
+        "featured": true,
+        "impact": "Reduced mean time to diagnosis by 80% with updated ML fault classifier."
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

@@ -1,0 +1,18 @@
+info:
+  name: Admin - Duplicate Case Study
+  type: http
+  seq: 11
+
+http:
+  method: POST
+  url: "{{baseUrl}}/case-studies/v1/admin/{{caseStudyId}}/duplicate"
+  headers:
+    - name: Authorization
+      value: "Bearer {{authToken}}"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

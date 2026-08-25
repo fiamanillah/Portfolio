@@ -1,13 +1,18 @@
-name: Admin List Case Studies
-type: http
-seq: 5
+info:
+  name: Admin - List Case Studies
+  type: http
+  seq: 6
 
-get {
-  url: {{baseUrl}}/case-studies/v1/admin/list?page=1&limit=10
-  body: none
-  auth: bearer
-}
+http:
+  method: GET
+  url: "{{baseUrl}}/case-studies/v1/admin/list?page=1&limit=10&sortBy=order&sortOrder=asc"
+  headers:
+    - name: Authorization
+      value: "Bearer {{authToken}}"
+  auth: inherit
 
-auth:bearer {
-  token: {{accessToken}}
-}
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

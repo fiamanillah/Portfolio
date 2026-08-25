@@ -1,0 +1,26 @@
+info:
+  name: Admin - Update Resume Version Metadata
+  type: http
+  seq: 7
+
+http:
+  method: PATCH
+  url: "{{baseUrl}}/resume/v1/admin/{{resumeId}}"
+  headers:
+    - name: Authorization
+      value: "Bearer {{authToken}}"
+  body:
+    type: json
+    data: |-
+      {
+        "versionLabel": "v2026.3-Updated",
+        "title": "Lead Software Engineer Resume",
+        "notes": "Reviewed and polished formatting"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

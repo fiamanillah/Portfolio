@@ -1,0 +1,18 @@
+info:
+  name: Admin - Sync Campaign With Plunk
+  type: http
+  seq: 14
+
+http:
+  method: POST
+  url: "{{baseUrl}}/newsletter/v1/{{campaignId}}/sync"
+  headers:
+    - name: Authorization
+      value: "Bearer {{authToken}}"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

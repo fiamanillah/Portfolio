@@ -1,0 +1,27 @@
+info:
+  name: Admin - Bulk Update Comment Status
+  type: http
+  seq: 11
+
+http:
+  method: POST
+  url: "{{baseUrl}}/comments/v1/admin/comments/bulk-status"
+  headers:
+    - name: Authorization
+      value: "Bearer {{authToken}}"
+  body:
+    type: json
+    data: |-
+      {
+        "ids": [
+          "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d"
+        ],
+        "status": "APPROVED"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

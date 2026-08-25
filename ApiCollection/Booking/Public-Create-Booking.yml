@@ -1,0 +1,29 @@
+info:
+  name: Public - Create Booking (Book Meeting)
+  type: http
+  seq: 4
+
+http:
+  method: POST
+  url: "{{baseUrl}}/booking/v1/book"
+  body:
+    type: json
+    data: |-
+      {
+        "name": "Sarah Connor",
+        "email": "sarah.connor@example.com",
+        "date": "2026-09-01",
+        "timeSlot": "14:00",
+        "timezone": "America/New_York",
+        "notes": "Discussion regarding cloud infrastructure migration and backend system scaling.",
+        "location": "Google Meet",
+        "phone": "+1 (555) 019-2834",
+        "company": "Cyberdyne Systems"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

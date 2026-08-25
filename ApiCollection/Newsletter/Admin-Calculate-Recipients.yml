@@ -1,0 +1,24 @@
+info:
+  name: Admin - Calculate Campaign Recipients
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: "{{baseUrl}}/newsletter/v1/calculate-recipients"
+  headers:
+    - name: Authorization
+      value: "Bearer {{authToken}}"
+  body:
+    type: json
+    data: |-
+      {
+        "segment": "ALL"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

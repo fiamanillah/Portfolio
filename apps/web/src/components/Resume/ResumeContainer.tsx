@@ -3,27 +3,6 @@
 import * as React from "react"
 import { ResumeApi, type ResumeVersionData } from "@/lib/api/resumeApi"
 
-function formatBytes(bytes: number) {
-  if (!bytes || bytes === 0) return "PDF Document"
-  const k = 1024
-  const sizes = ["Bytes", "KB", "MB"]
-  const i = Math.floor(Math.log(bytes) / Math.log(k))
-  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(1))} ${sizes[i]}`
-}
-
-function formatDate(dateStr: string | null) {
-  if (!dateStr) return "Recently Released"
-  try {
-    return new Date(dateStr).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    })
-  } catch {
-    return "Recently Released"
-  }
-}
-
 interface ResumeContainerProps {
   initialResume?: ResumeVersionData | null
 }
@@ -66,50 +45,11 @@ export function ResumeContainer({ initialResume = null }: ResumeContainerProps) 
 
   return (
     <div className="w-full">
-      {/* Dynamic Stats Grid & Action Buttons (Hero Bottom) */}
+      {/* Dynamic Action Buttons */}
       {resume ? (
-        <div className="mb-12">
-          {/* Stats Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 border border-border/70 bg-card/60 backdrop-blur-sm">
-            <div className="group relative flex flex-col items-center justify-center border-r border-b sm:border-b-0 border-border/70 p-5 sm:p-7 transition-colors duration-200 hover:bg-primary/5">
-              <span className="font-mono text-2xl font-black text-primary sm:text-3xl">
-                {resume.version}
-              </span>
-              <span className="mt-1.5 font-mono text-[10px] font-semibold tracking-[0.15em] text-muted-foreground uppercase sm:text-xs">
-                Active Version
-              </span>
-            </div>
-
-            <div className="group relative flex flex-col items-center justify-center sm:border-r border-b sm:border-b-0 border-border/70 p-5 sm:p-7 transition-colors duration-200 hover:bg-primary/5">
-              <span className="font-mono text-2xl font-black text-primary sm:text-3xl">
-                {formatBytes(resume.fileSize)}
-              </span>
-              <span className="mt-1.5 font-mono text-[10px] font-semibold tracking-[0.15em] text-muted-foreground uppercase sm:text-xs">
-                Document Size
-              </span>
-            </div>
-
-            <div className="group relative flex flex-col items-center justify-center border-r border-border/70 p-5 sm:p-7 transition-colors duration-200 hover:bg-primary/5">
-              <span className="font-mono text-2xl font-black text-primary sm:text-3xl">
-                {formatDate(resume.updatedAt)}
-              </span>
-              <span className="mt-1.5 font-mono text-[10px] font-semibold tracking-[0.15em] text-muted-foreground uppercase sm:text-xs">
-                Last Updated
-              </span>
-            </div>
-
-            <div className="group relative flex flex-col items-center justify-center p-5 sm:p-7 transition-colors duration-200 hover:bg-primary/5">
-              <span className="font-mono text-2xl font-black text-primary sm:text-3xl">
-                {resume.downloadCount}
-              </span>
-              <span className="mt-1.5 font-mono text-[10px] font-semibold tracking-[0.15em] text-muted-foreground uppercase sm:text-xs">
-                Downloads
-              </span>
-            </div>
-          </div>
-
+        <div className="mb-10">
           {/* Action Buttons */}
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+          <div className="flex flex-wrap items-center justify-center gap-3">
             <a
               href={resume.downloadEndpoint}
               target="_blank"

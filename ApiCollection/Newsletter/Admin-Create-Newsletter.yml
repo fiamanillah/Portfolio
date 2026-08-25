@@ -1,0 +1,30 @@
+info:
+  name: Admin - Create Newsletter Campaign
+  type: http
+  seq: 6
+
+http:
+  method: POST
+  url: "{{baseUrl}}/newsletter/v1"
+  headers:
+    - name: Authorization
+      value: "Bearer {{authToken}}"
+  body:
+    type: json
+    data: |-
+      {
+        "title": "September 2026 Developer Digest",
+        "subject": "Deep Dive: Distributed Rate Limiting & High-Scale Caching",
+        "previewText": "Explore how we achieved sub-5ms latency across multi-region services.",
+        "segment": "ALL",
+        "htmlContent": "<h1>September 2026 Developer Digest</h1><p>Welcome to this edition covering distributed architecture design patterns.</p>",
+        "textContent": "Welcome to this edition covering distributed architecture design patterns.",
+        "templateId": null
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

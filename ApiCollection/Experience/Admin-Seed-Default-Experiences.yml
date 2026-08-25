@@ -1,0 +1,18 @@
+info:
+  name: Admin - Seed Default Experiences
+  type: http
+  seq: 12
+
+http:
+  method: POST
+  url: "{{baseUrl}}/experiences/v1/admin/seed-default"
+  headers:
+    - name: Authorization
+      value: "Bearer {{authToken}}"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

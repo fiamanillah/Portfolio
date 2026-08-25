@@ -1,9 +1,15 @@
-name: Public Get Featured Case Studies
-type: http
-seq: 2
+info:
+  name: Public - Get Featured Case Studies
+  type: http
+  seq: 2
 
-get {
-  url: {{baseUrl}}/case-studies/v1/public/featured
-  body: none
-  auth: none
-}
+http:
+  method: GET
+  url: "{{baseUrl}}/case-studies/v1/public/featured"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

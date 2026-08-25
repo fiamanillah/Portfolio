@@ -1,0 +1,18 @@
+info:
+  name: Public - Get Post Reactions
+  type: http
+  seq: 7
+
+http:
+  method: GET
+  url: "{{baseUrl}}/blogs/v1/public/slug/building-distributed-systems-websockets-redis/reactions"
+  headers:
+    - name: Authorization
+      value: "Bearer {{authToken}}"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

@@ -1,0 +1,18 @@
+info:
+  name: Admin - Disconnect Google Calendar
+  type: http
+  seq: 14
+
+http:
+  method: POST
+  url: "{{baseUrl}}/booking/v1/admin/google/disconnect"
+  headers:
+    - name: Authorization
+      value: "Bearer {{authToken}}"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

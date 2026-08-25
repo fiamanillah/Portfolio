@@ -1,13 +1,18 @@
-name: Admin Get Case Study Stats
-type: http
-seq: 4
+info:
+  name: Admin - Get Case Study Stats
+  type: http
+  seq: 5
 
-get {
-  url: {{baseUrl}}/case-studies/v1/admin/stats
-  body: none
-  auth: bearer
-}
+http:
+  method: GET
+  url: "{{baseUrl}}/case-studies/v1/admin/stats"
+  headers:
+    - name: Authorization
+      value: "Bearer {{authToken}}"
+  auth: inherit
 
-auth:bearer {
-  token: {{accessToken}}
-}
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

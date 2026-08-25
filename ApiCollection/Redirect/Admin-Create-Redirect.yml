@@ -1,0 +1,29 @@
+info:
+  name: Admin - Create Redirect Rule
+  type: http
+  seq: 4
+
+http:
+  method: POST
+  url: "{{baseUrl}}/redirects/v1/admin"
+  headers:
+    - name: Authorization
+      value: "Bearer {{authToken}}"
+  body:
+    type: json
+    data: |-
+      {
+        "fromPath": "/old-blog-post",
+        "toPath": "/blogs/v1/public/slug/new-blog-post",
+        "statusCode": 301,
+        "entityType": "MANUAL",
+        "description": "Legacy URL 301 permanent redirect rule",
+        "isActive": true
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

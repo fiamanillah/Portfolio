@@ -1,0 +1,36 @@
+info:
+  name: Admin - Upload & Create New Resume Version
+  type: http
+  seq: 5
+
+http:
+  method: POST
+  url: "{{baseUrl}}/resume/v1/admin"
+  headers:
+    - name: Authorization
+      value: "Bearer {{authToken}}"
+  body:
+    type: multipartForm
+    data:
+      - name: file
+        type: file
+        value: []
+      - name: versionLabel
+        type: text
+        value: "v2026.3-Principal"
+      - name: title
+        type: text
+        value: "Principal Full Stack Engineer Resume"
+      - name: notes
+        type: text
+        value: "Updated architecture achievements and leadership metrics"
+      - name: isActive
+        type: text
+        value: "true"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

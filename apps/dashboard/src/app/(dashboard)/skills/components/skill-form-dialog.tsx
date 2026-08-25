@@ -68,6 +68,44 @@ export function SkillFormDialog({
   const [isSubmitting, setIsSubmitting] = React.useState(false)
   const [fieldErrors, setFieldErrors] = React.useState<Record<string, string>>({})
 
+  // Quick Category creation
+  const [isAddingCategory, setIsAddingCategory] = React.useState(false)
+  const [newCategoryCode, setNewCategoryCode] = React.useState("")
+  const [newCategoryTitle, setNewCategoryTitle] = React.useState("")
+  const [isCreatingCategory, setIsCreatingCategory] = React.useState(false)
+
+  const handleQuickCreateCategory = async () => {
+    if (!newCategoryCode.trim() || !newCategoryTitle.trim()) return
+    setIsCreatingCategory(true)
+    try {
+      const slug =
+        newCategoryCode
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/^-|-$/g, "") || "category"
+      const res = await SkillApi.createCategory({
+        code: newCategoryCode.trim(),
+        title: newCategoryTitle.trim(),
+        badge: newCategoryTitle.trim(),
+        slug,
+      })
+      if (res.success && res.data) {
+        toast.success(`Category "${res.data.code}" created!`)
+        setCategoryId(res.data.id)
+        setIsAddingCategory(false)
+        setNewCategoryCode("")
+        setNewCategoryTitle("")
+        onSuccess()
+      } else {
+        showApiError(res, "Failed to create category")
+      }
+    } catch (err: any) {
+      showApiError(err, "Failed to create category")
+    } finally {
+      setIsCreatingCategory(false)
+    }
+  }
+
   const clearFieldError = (key: string) => {
     setFieldErrors((prev) => {
       if (!prev[key]) return prev
@@ -226,25 +264,68 @@ export function SkillFormDialog({
             {fieldErrors.name && <FieldError errors={fieldErrors.name} />}
           </div>
 
-          {/* Category Allocation */}
+          {/* Category Allocation & Status */}
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="space-y-1.5">
-              <Label htmlFor="skill-category" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                Stack Category
-              </Label>
-              <Select value={categoryId} onValueChange={setCategoryId}>
-                <SelectTrigger id="skill-category" className="w-full">
-                  <SelectValue placeholder="Select Category" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="none">No Category (Standalone)</SelectItem>
-                  {categories.map((cat) => (
-                    <SelectItem key={cat.id} value={cat.id}>
-                      {cat.code} — {cat.title}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="skill-category" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  Stack Category
+                </Label>
+                <button
+                  type="button"
+                  onClick={() => setIsAddingCategory((prev) => !prev)}
+                  className="font-mono text-[11px] text-primary hover:underline"
+                >
+                  {isAddingCategory ? "Cancel" : "+ New Category"}
+                </button>
+              </div>
+
+              {!isAddingCategory ? (
+                <Select value={categoryId} onValueChange={setCategoryId}>
+                  <SelectTrigger id="skill-category" className="w-full">
+                    <SelectValue placeholder="Select Category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">No Category (Standalone)</SelectItem>
+                    {categories.map((cat) => (
+                      <SelectItem key={cat.id} value={cat.id}>
+                        {cat.code} — {cat.title}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              ) : (
+                <div className="rounded-lg border border-primary/30 bg-primary/5 p-2.5 space-y-2">
+                  <div className="grid grid-cols-2 gap-2">
+                    <Input
+                      placeholder="Code (e.g. AI/ML)"
+                      value={newCategoryCode}
+                      onChange={(e) => setNewCategoryCode(e.target.value)}
+                      className="h-8 text-xs bg-background"
+                    />
+                    <Input
+                      placeholder="Title (e.g. AI & ML)"
+                      value={newCategoryTitle}
+                      onChange={(e) => setNewCategoryTitle(e.target.value)}
+                      className="h-8 text-xs bg-background"
+                    />
+                  </div>
+                  <Button
+                    type="button"
+                    size="sm"
+                    onClick={handleQuickCreateCategory}
+                    disabled={isCreatingCategory || !newCategoryCode.trim() || !newCategoryTitle.trim()}
+                    className="w-full h-7 text-xs font-bold"
+                  >
+                    {isCreatingCategory ? (
+                      <Loader2 className="h-3.5 w-3.5 animate-spin mr-1" />
+                    ) : (
+                      <Plus className="h-3.5 w-3.5 mr-1" />
+                    )}
+                    Save &amp; Select Category
+                  </Button>
+                </div>
+              )}
             </div>
 
             <div className="space-y-1.5">
@@ -256,15 +337,15 @@ export function SkillFormDialog({
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="PUBLISHED">Published (Live)</SelectItem>
-                  <SelectItem value="DRAFT">Draft</SelectItem>
+                  <SelectItem value="PUBLISHED">Published (Live on Website)</SelectItem>
+                  <SelectItem value="DRAFT">Draft (Hidden)</SelectItem>
                   <SelectItem value="ARCHIVED">Archived</SelectItem>
                 </SelectContent>
               </Select>
             </div>
           </div>
 
-          {/* Left & Right Labels */}
+          {/* Left & Right Labels with Quick Chips */}
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="space-y-1.5">
               <Label htmlFor="skill-left" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
@@ -276,6 +357,18 @@ export function SkillFormDialog({
                 value={leftLabel}
                 onChange={(e) => setLeftLabel(e.target.value)}
               />
+              <div className="flex flex-wrap gap-1 pt-1">
+                {["Core Stack", "Languages", "Runtime", "Architecture", "Containers", "Cloud", "Databases"].map((preset) => (
+                  <button
+                    key={preset}
+                    type="button"
+                    onClick={() => setLeftLabel(preset)}
+                    className="rounded bg-muted/60 px-1.5 py-0.5 text-[10px] text-muted-foreground transition-colors hover:bg-primary/10 hover:text-primary"
+                  >
+                    {preset}
+                  </button>
+                ))}
+              </div>
             </div>
 
             <div className="space-y-1.5">
@@ -288,6 +381,18 @@ export function SkillFormDialog({
                 value={rightLabel}
                 onChange={(e) => setRightLabel(e.target.value)}
               />
+              <div className="flex flex-wrap gap-1 pt-1">
+                {["DOM Styling", "SSR Ready", "API Design", "Scalable API", "Data Integrity", "CI/CD", "Reverse Proxy"].map((preset) => (
+                  <button
+                    key={preset}
+                    type="button"
+                    onClick={() => setRightLabel(preset)}
+                    className="rounded bg-muted/60 px-1.5 py-0.5 text-[10px] text-muted-foreground transition-colors hover:bg-primary/10 hover:text-primary"
+                  >
+                    {preset}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 

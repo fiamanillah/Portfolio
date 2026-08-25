@@ -1,0 +1,15 @@
+info:
+  name: Public - Get Available Slots
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: "{{baseUrl}}/booking/v1/slots?date=2026-09-01&timezone=UTC"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

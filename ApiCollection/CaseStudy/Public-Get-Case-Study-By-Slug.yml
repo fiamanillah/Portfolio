@@ -1,9 +1,15 @@
-name: Public Get Case Study By Slug
-type: http
-seq: 3
+info:
+  name: Public - Get Case Study By Slug
+  type: http
+  seq: 3
 
-get {
-  url: {{baseUrl}}/case-studies/v1/public/slug/mickanic
-  body: none
-  auth: none
-}
+http:
+  method: GET
+  url: "{{baseUrl}}/case-studies/v1/public/slug/mickanic"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

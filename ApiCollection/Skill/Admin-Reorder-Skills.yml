@@ -1,0 +1,29 @@
+info:
+  name: Admin - Reorder Skills
+  type: http
+  seq: 7
+
+http:
+  method: POST
+  url: "{{baseUrl}}/skills/v1/admin/reorder"
+  headers:
+    - name: Authorization
+      value: "Bearer {{authToken}}"
+  body:
+    type: json
+    data: |-
+      {
+        "items": [
+          {
+            "id": "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d",
+            "order": 1
+          }
+        ]
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

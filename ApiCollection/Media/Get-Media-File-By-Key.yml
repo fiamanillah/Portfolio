@@ -1,0 +1,18 @@
+info:
+  name: Get Media File By Key Query
+  type: http
+  seq: 12
+
+http:
+  method: GET
+  url: "{{baseUrl}}/media/v1/by-key?key=blogs/2026/architecture.png"
+  headers:
+    - name: Authorization
+      value: "Bearer {{authToken}}"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

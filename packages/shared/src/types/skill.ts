@@ -16,12 +16,12 @@ import type {
 
 export type SkillStatus = z.infer<typeof skillStatusEnumSchema>;
 
-export type CreateSkillCategoryDTO = z.infer<typeof createSkillCategorySchema>;
-export type UpdateSkillCategoryDTO = z.infer<typeof updateSkillCategorySchema>;
-export type ReorderSkillCategoriesDTO = z.infer<typeof reorderSkillCategoriesSchema>;
+export type CreateSkillCategoryDTO = z.input<typeof createSkillCategorySchema>;
+export type UpdateSkillCategoryDTO = z.input<typeof updateSkillCategorySchema>;
+export type ReorderSkillCategoriesDTO = z.input<typeof reorderSkillCategoriesSchema>;
 
-export type CreateSkillDTO = z.infer<typeof createSkillSchema>;
-export type UpdateSkillDTO = z.infer<typeof updateSkillSchema>;
+export type CreateSkillDTO = z.input<typeof createSkillSchema>;
+export type UpdateSkillDTO = z.input<typeof updateSkillSchema>;
 export type ListSkillsQueryDTO = z.infer<typeof listSkillsQuerySchema>;
 export type PublicSkillQueryDTO = z.infer<typeof publicSkillQuerySchema>;
 export type BulkSkillStatusDTO = z.infer<typeof bulkSkillStatusSchema>;

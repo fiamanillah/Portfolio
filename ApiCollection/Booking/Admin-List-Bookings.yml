@@ -1,0 +1,18 @@
+info:
+  name: Admin - List Bookings
+  type: http
+  seq: 7
+
+http:
+  method: GET
+  url: "{{baseUrl}}/booking/v1/admin/list?page=1&limit=20&status=CONFIRMED&sortBy=startTime&sortOrder=asc"
+  headers:
+    - name: Authorization
+      value: "Bearer {{authToken}}"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

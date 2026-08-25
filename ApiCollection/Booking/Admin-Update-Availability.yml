@@ -1,0 +1,70 @@
+info:
+  name: Admin - Update Availability Schedule
+  type: http
+  seq: 10
+
+http:
+  method: PUT
+  url: "{{baseUrl}}/booking/v1/admin/availability"
+  headers:
+    - name: Authorization
+      value: "Bearer {{authToken}}"
+  body:
+    type: json
+    data: |-
+      {
+        "timezone": "UTC",
+        "bufferMinutes": 15,
+        "slotDurationMinutes": 30,
+        "maxDaysInAdvance": 60,
+        "minNoticeHours": 12,
+        "schedules": [
+          {
+            "dayOfWeek": 1,
+            "isEnabled": true,
+            "timeRanges": [
+              { "start": "09:00", "end": "12:00" },
+              { "start": "13:00", "end": "17:00" }
+            ]
+          },
+          {
+            "dayOfWeek": 2,
+            "isEnabled": true,
+            "timeRanges": [
+              { "start": "09:00", "end": "17:00" }
+            ]
+          },
+          {
+            "dayOfWeek": 3,
+            "isEnabled": true,
+            "timeRanges": [
+              { "start": "09:00", "end": "17:00" }
+            ]
+          },
+          {
+            "dayOfWeek": 4,
+            "isEnabled": true,
+            "timeRanges": [
+              { "start": "09:00", "end": "17:00" }
+            ]
+          },
+          {
+            "dayOfWeek": 5,
+            "isEnabled": true,
+            "timeRanges": [
+              { "start": "09:00", "end": "15:00" }
+            ]
+          }
+        ],
+        "blockedDates": [
+          "2026-12-25",
+          "2026-12-31"
+        ]
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

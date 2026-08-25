@@ -1,0 +1,89 @@
+info:
+  name: Admin - Create Case Study
+  type: http
+  seq: 7
+
+http:
+  method: POST
+  url: "{{baseUrl}}/case-studies/v1/admin/create"
+  headers:
+    - name: Authorization
+      value: "Bearer {{authToken}}"
+  body:
+    type: json
+    data: |-
+      {
+        "title": "Mickanic - Distributed Automotive Diagnostics",
+        "slug": "mickanic",
+        "subtitle": "High-throughput telemetry and real-time fault code analysis platform",
+        "description": "Architected and engineered an end-to-end telemetry system capturing real-time CAN bus telemetry across 50,000+ connected vehicles.",
+        "projectType": "CASE_STUDY",
+        "status": "PUBLISHED",
+        "projectStatus": "Production Ready",
+        "order": 1,
+        "featured": true,
+        "pinned": true,
+        "techStack": ["Node.js", "TypeScript", "Redis", "TimescaleDB", "Next.js", "Tailwind CSS"],
+        "liveUrl": "https://mickanic.com",
+        "githubUrl": "https://github.com/fiamanillah/mickanic",
+        "image": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31",
+        "imageLabel": "Mickanic Telemetry Dashboard",
+        "role": "Lead Architect & Full Stack Engineer",
+        "timeline": "6 Months (2025)",
+        "client": "Mickanic Technologies",
+        "impact": "Reduced mean time to diagnosis by 74% and scaled to 2M daily telemetry events.",
+        "highlights": [
+          "Sub-50ms query latency on 2B+ time-series records",
+          "Automated PDF diagnostics report generation with Puppeteer"
+        ],
+        "metadata": [
+          { "label": "Architecture", "value": "Microservices + CQRS", "icon": "Layers" }
+        ],
+        "contextBlocks": [
+          { "label": "The Challenge", "body": "Vehicle diagnostics required manual OBD2 scans with proprietary hardware and zero historical analytics." }
+        ],
+        "architectureLayers": [
+          {
+            "name": "Ingestion Layer",
+            "description": "MQTT Broker handling 10,000 req/sec telemetry streams",
+            "items": [
+              { "title": "VernemMQ Broker", "subtitle": "Clustered MQTT 5.0" }
+            ]
+          }
+        ],
+        "features": [
+          {
+            "title": "Live Diagnostics Stream",
+            "description": "Real-time SSE dashboard rendering live engine RPM and coolant temperatures.",
+            "mediaType": "Image",
+            "mediaLabel": "Live Stream View",
+            "media": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31",
+            "tags": ["Telemetry", "WebSocket"]
+          }
+        ],
+        "metrics": [
+          { "value": "74%", "label": "Reduction in Diagnostic Time" },
+          { "value": "2M+", "label": "Daily Events Processed" }
+        ],
+        "postMortem": [
+          {
+            "title": "Key Learnings & Takeaways",
+            "body": "Decoupling ingest from persistence prevented data loss during downstream database maintenance windows.",
+            "entries": [
+              { "heading": "Redis Streams Buffer", "detail": "Buffering raw telemetry allowed zero dropped packets during failovers." }
+            ]
+          }
+        ],
+        "seo": {
+          "metaTitle": "Mickanic Telemetry System Architecture Case Study",
+          "metaDescription": "In-depth case study of high-throughput automotive telemetry processing system.",
+          "metaKeywords": ["telemetry", "timescaledb", "real-time", "iot", "architecture"]
+        }
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

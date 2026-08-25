@@ -1,0 +1,27 @@
+info:
+  name: Admin - Create Skill Category
+  type: http
+  seq: 10
+
+http:
+  method: POST
+  url: "{{baseUrl}}/skills/v1/admin/categories"
+  headers:
+    - name: Authorization
+      value: "Bearer {{authToken}}"
+  body:
+    type: json
+    data: |-
+      {
+        "name": "Backend & Cloud Architecture",
+        "slug": "backend-cloud-architecture",
+        "description": "Core distributed backend frameworks, databases, and container orchestration",
+        "order": 1
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

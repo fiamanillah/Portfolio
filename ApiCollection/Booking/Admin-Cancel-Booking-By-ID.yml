@@ -1,0 +1,24 @@
+info:
+  name: Admin - Cancel Booking By ID
+  type: http
+  seq: 11
+
+http:
+  method: POST
+  url: "{{baseUrl}}/booking/v1/admin/{{bookingId}}/cancel"
+  headers:
+    - name: Authorization
+      value: "Bearer {{authToken}}"
+  body:
+    type: json
+    data: |-
+      {
+        "reason": "Host emergency cancellation due to schedule conflict."
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

@@ -1,0 +1,15 @@
+info:
+  name: Public - Get Booking Details By Token
+  type: http
+  seq: 2
+
+http:
+  method: GET
+  url: "{{baseUrl}}/booking/v1/details?token=9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

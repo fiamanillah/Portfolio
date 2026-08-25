@@ -1,0 +1,18 @@
+info:
+  name: Admin - Duplicate Skill
+  type: http
+  seq: 18
+
+http:
+  method: POST
+  url: "{{baseUrl}}/skills/v1/admin/{{skillId}}/duplicate"
+  headers:
+    - name: Authorization
+      value: "Bearer {{authToken}}"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

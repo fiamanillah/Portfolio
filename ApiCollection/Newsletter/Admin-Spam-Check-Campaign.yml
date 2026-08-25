@@ -1,0 +1,25 @@
+info:
+  name: Admin - Spam Check Campaign Content
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: "{{baseUrl}}/newsletter/v1/spam-check"
+  headers:
+    - name: Authorization
+      value: "Bearer {{authToken}}"
+  body:
+    type: json
+    data: |-
+      {
+        "subject": "Monthly Engineering & Architecture Highlights - Issue #42",
+        "htmlContent": "<h1>Engineering Highlights</h1><p>Here are the latest updates on building distributed WebSocket services and Redis caching architectures.</p>"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

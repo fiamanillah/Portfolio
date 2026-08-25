@@ -8,7 +8,7 @@ import {
   type RowSelectionState,
   type SortingState,
 } from "@tanstack/react-table"
-import { CheckCircle2, FileEdit, Archive, Trash2, X, Cpu } from "lucide-react"
+import { CheckCircle2, FileEdit, Archive, Trash2, X, Cpu, Sparkles, Plus, Loader2 } from "lucide-react"
 
 import type { SkillListItemDTO, SkillStatus } from "@workspace/shared"
 import { Button } from "@workspace/ui/components/button"
@@ -36,6 +36,9 @@ interface SkillsDataTableProps {
   onPageSizeChange?: (size: number) => void
   onBulkStatusChange?: (selectedIds: string[], status: SkillStatus) => void
   onBulkDelete?: (selectedIds: string[]) => void
+  onSeedDefaults?: () => void
+  onAddSkill?: () => void
+  isSeeding?: boolean
 }
 
 export function SkillsDataTable({
@@ -49,6 +52,9 @@ export function SkillsDataTable({
   onPageSizeChange,
   onBulkStatusChange,
   onBulkDelete,
+  onSeedDefaults,
+  onAddSkill,
+  isSeeding = false,
 }: SkillsDataTableProps) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -226,15 +232,47 @@ export function SkillsDataTable({
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length} className="h-40 text-center">
-                  <div className="flex flex-col items-center justify-center space-y-2">
-                    <Cpu className="h-8 w-8 text-muted-foreground/40" />
-                    <p className="font-semibold text-sm text-foreground">
-                      No skills found
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      Try adjusting your search criteria or adding a new skill.
-                    </p>
+                <TableCell colSpan={columns.length} className="h-60 text-center">
+                  <div className="flex flex-col items-center justify-center space-y-3 max-w-md mx-auto py-6">
+                    <div className="flex size-12 items-center justify-center rounded-full bg-primary/10 border border-primary/20">
+                      <Cpu className="h-6 w-6 text-primary" />
+                    </div>
+                    <div className="space-y-1">
+                      <p className="font-bold text-base text-foreground font-mono">
+                        No Skills In Database
+                      </p>
+                      <p className="text-xs text-muted-foreground leading-relaxed">
+                        Your skills database is currently empty. You can quickly seed standard full-stack defaults or create your own custom skills.
+                      </p>
+                    </div>
+                    <div className="flex flex-wrap items-center justify-center gap-2 pt-2">
+                      {onSeedDefaults && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={onSeedDefaults}
+                          disabled={isSeeding || isLoading}
+                          className="font-mono text-xs font-semibold gap-1.5"
+                        >
+                          {isSeeding ? (
+                            <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                          ) : (
+                            <Sparkles className="h-3.5 w-3.5 text-primary" />
+                          )}
+                          ✨ Seed Default 15+ Skills
+                        </Button>
+                      )}
+                      {onAddSkill && (
+                        <Button
+                          size="sm"
+                          onClick={onAddSkill}
+                          className="font-mono text-xs font-bold gap-1.5"
+                        >
+                          <Plus className="h-3.5 w-3.5" />
+                          Add First Skill
+                        </Button>
+                      )}
+                    </div>
                   </div>
                 </TableCell>
               </TableRow>

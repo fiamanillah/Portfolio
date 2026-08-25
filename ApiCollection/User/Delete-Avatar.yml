@@ -1,10 +1,18 @@
 info:
   name: Delete Profile Avatar (S3/R2)
   type: http
-  seq: 10
+  seq: 5
 
-delete:
+http:
+  method: DELETE
   url: "{{baseUrl}}/users/v1/profile/avatar"
   headers:
     - name: Authorization
-      value: "Bearer {{token}}"
+      value: "Bearer {{authToken}}"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

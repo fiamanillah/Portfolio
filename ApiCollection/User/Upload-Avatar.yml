@@ -1,16 +1,24 @@
 info:
   name: Upload Profile Avatar (S3/R2)
   type: http
-  seq: 9
+  seq: 4
 
-post:
+http:
+  method: POST
   url: "{{baseUrl}}/users/v1/profile/avatar"
   headers:
     - name: Authorization
-      value: "Bearer {{token}}"
+      value: "Bearer {{authToken}}"
   body:
-    type: multipart-form
+    type: multipartForm
     data:
       - name: file
         type: file
-        value: ""
+        value: []
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
