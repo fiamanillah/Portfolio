@@ -59,10 +59,26 @@ export function loadEnv(forceReload = false): Record<string, string | undefined>
     dotenv.config({ path: rootEnvPath, override: !isProd })
   }
 
+  // 1b. Root .env.production (loaded in production builds)
+  if (isProd) {
+    const rootEnvProdPath = path.join(rootDir, ".env.production")
+    if (fs.existsSync(rootEnvProdPath)) {
+      dotenv.config({ path: rootEnvProdPath, override: true })
+    }
+  }
+
   // 2. Root .env.local (developer overrides in non-production)
   const rootEnvLocalPath = path.join(rootDir, ".env.local")
   if (fs.existsSync(rootEnvLocalPath)) {
     dotenv.config({ path: rootEnvLocalPath, override: !isProd })
+  }
+
+  // 2b. Root .env.production.local (machine overrides in production)
+  if (isProd) {
+    const rootEnvProdLocalPath = path.join(rootDir, ".env.production.local")
+    if (fs.existsSync(rootEnvProdLocalPath)) {
+      dotenv.config({ path: rootEnvProdLocalPath, override: true })
+    }
   }
 
   // 3. Workspace-specific .env (if different from root)
@@ -72,9 +88,23 @@ export function loadEnv(forceReload = false): Record<string, string | undefined>
       dotenv.config({ path: localEnvPath, override: !isProd })
     }
 
+    if (isProd) {
+      const localEnvProdPath = path.join(cwd, ".env.production")
+      if (fs.existsSync(localEnvProdPath)) {
+        dotenv.config({ path: localEnvProdPath, override: true })
+      }
+    }
+
     const localEnvLocalPath = path.join(cwd, ".env.local")
     if (fs.existsSync(localEnvLocalPath)) {
       dotenv.config({ path: localEnvLocalPath, override: !isProd })
+    }
+
+    if (isProd) {
+      const localEnvProdLocalPath = path.join(cwd, ".env.production.local")
+      if (fs.existsSync(localEnvProdLocalPath)) {
+        dotenv.config({ path: localEnvProdLocalPath, override: true })
+      }
     }
   }
 

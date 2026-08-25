@@ -98,15 +98,15 @@ function isLinkActive(href: string) {
       </ul>
 
       <div class="flex items-center gap-2 border-l border-border/60 pl-3">
-        <ModeToggle client:load />
-        <NavUserButton client:load />
+        <ModeToggle client:idle />
+        <NavUserButton client:idle />
       </div>
     </div>
 
     <!-- Mobile Navigation Toggle Bar (< lg) -->
     <div class="flex items-center gap-2 lg:hidden">
-      <ModeToggle client:load />
-      <NavUserButton client:load />
+      <ModeToggle client:idle />
+      <NavUserButton client:idle />
       <button
         id="mobile-menu-btn"
         type="button"

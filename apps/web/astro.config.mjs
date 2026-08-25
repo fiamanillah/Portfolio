@@ -12,6 +12,14 @@ const siteUrl = (
 
 export default defineConfig({
   site: siteUrl,
+  compressHTML: true,
+  prefetch: {
+    prefetchAll: true,
+    defaultStrategy: "hover",
+  },
+  build: {
+    inlineStylesheets: "auto",
+  },
   redirects: {
     "/terms-of-use": {
       status: 301,
@@ -34,6 +42,10 @@ export default defineConfig({
     },
     optimizeDeps: {
       include: ["react", "react-dom", "react/jsx-runtime"],
+    },
+    build: {
+      cssMinify: true,
+      minify: "esbuild",
     },
     ssr: {
       noExternal: ["@workspace/ui", "@workspace/shared", "@workspace/env"],

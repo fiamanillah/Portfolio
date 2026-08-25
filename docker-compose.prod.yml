@@ -56,9 +56,11 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.api
+    image: fiamanillah/portfolio-api:latest
     container_name: portfolio_api_prod
     restart: always
     env_file:
+      - .env.production
       - .env
     environment:
       NODE_ENV: production
@@ -95,6 +97,7 @@ services:
         PUBLIC_API_URL: ${PUBLIC_API_URL:-https://api-fi.amanillah.com}
         PUBLIC_TURNSTILE_SITE_KEY: ${PUBLIC_TURNSTILE_SITE_KEY:-}
         PUBLIC_GA_MEASUREMENT_ID: ${PUBLIC_GA_MEASUREMENT_ID:-G-G8BDG57VX9}
+    image: fiamanillah/portfolio-web:latest
     container_name: portfolio_web_prod
     restart: always
     ports:
@@ -121,9 +124,11 @@ services:
       args:
         NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-https://api-fi.amanillah.com}
         NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-https://fi.amanillah.com}
+    image: fiamanillah/portfolio-dashboard:latest
     container_name: portfolio_dashboard_prod
     restart: always
     env_file:
+      - .env.production
       - .env
     environment:
       NODE_ENV: production

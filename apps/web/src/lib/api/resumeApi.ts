@@ -1,8 +1,18 @@
 // apps/web/src/lib/api/resumeApi.ts
 
-const API_BASE_URL =
-  (typeof import.meta !== "undefined" && import.meta.env?.PUBLIC_API_URL) ||
-  "http://localhost:3040"
+function getApiBaseUrl(): string {
+  if (typeof window !== "undefined") {
+    return (
+      (import.meta as any).env?.PUBLIC_API_URL ||
+      "https://api-fi.amanillah.com"
+    ).replace(/\/$/, "")
+  }
+  return (
+    (typeof import.meta !== "undefined" && import.meta.env?.PUBLIC_API_URL) ||
+    (typeof process !== "undefined" && process.env?.PUBLIC_API_URL) ||
+    "https://api-fi.amanillah.com"
+  ).replace(/\/$/, "")
+}
 
 export interface ResumeVersionData {
   id: string | null
@@ -22,9 +32,10 @@ export interface ResumeVersionData {
 
 export const ResumeApi = {
   getDownloadUrl(id?: string) {
+    const baseUrl = getApiBaseUrl()
     return id
-      ? `${API_BASE_URL}/resume/v1/public/${id}/download`
-      : `${API_BASE_URL}/resume/v1/public/download`
+      ? `${baseUrl}/resume/v1/public/${id}/download`
+      : `${baseUrl}/resume/v1/public/download`
   },
 
   /**
@@ -32,14 +43,21 @@ export const ResumeApi = {
    */
   async fetchActiveResume(): Promise<ResumeVersionData | null> {
     try {
+      const baseUrl = getApiBaseUrl()
       const controller = new AbortController()
-      const timeoutId = setTimeout(() => controller.abort(), 4000)
+      const timeoutId = setTimeout(() => controller.abort(), 5000)
 
-      const res = await fetch(`${API_BASE_URL}/resume/v1/public/active`, {
+      const isBrowser = typeof window !== "undefined"
+      const url = isBrowser
+        ? `${baseUrl}/resume/v1/public/active?_t=${Date.now()}`
+        : `${baseUrl}/resume/v1/public/active`
+
+      const res = await fetch(url, {
         method: "GET",
         headers: {
           Accept: "application/json",
         },
+        cache: isBrowser ? "no-store" : "default",
         signal: controller.signal,
       })
       clearTimeout(timeoutId)
@@ -64,7 +82,7 @@ export const ResumeApi = {
           downloadCount: Number(item.downloadCount) || 0,
           updatedAt: item.updatedAt || null,
           createdAt: item.createdAt || null,
-          downloadEndpoint: `${API_BASE_URL}/resume/v1/public/download`,
+          downloadEndpoint: `${baseUrl}/resume/v1/public/download`,
         }
       }
 
@@ -83,14 +101,14 @@ export const ResumeApi = {
     version?: string
     downloadUrl: string
   }> {
+    const baseUrl = getApiBaseUrl()
     const active = await this.fetchActiveResume()
     return {
       resumeUrl: active?.fileUrl || null,
       name: "Fi Amanillah",
       version: active?.version,
-      downloadUrl: active?.fileUrl
-        ? `${API_BASE_URL}/resume/v1/public/download`
-        : "/resume",
+      downloadUrl: `${baseUrl}/resume/v1/public/download`,
     }
   },
 }
+

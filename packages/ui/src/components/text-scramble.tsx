@@ -98,7 +98,9 @@ export function TextScramble({
     <span
       ref={textRef}
       className={`inline-block font-mono select-none ${className}`}
-    />
+    >
+      {texts[0] || ""}
+    </span>
   )
 }
 

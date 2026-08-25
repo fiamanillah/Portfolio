@@ -24,6 +24,21 @@ import GoogleAnalytics from "@/components/GoogleAnalytics.astro"
       title="Fi Amanillah | Tech, AI & Engineering Journal"
       href="/rss.xml"
     />
+    <!-- DNS Prefetch and Resource Preconnects -->
+    <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin />
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+    <link rel="dns-prefetch" href="https://challenges.cloudflare.com" />
+    {
+      Astro.url.pathname === "/" && (
+        <link
+          rel="preload"
+          as="image"
+          href="/fi.webp"
+          type="image/webp"
+          fetchpriority="high"
+        />
+      )
+    }
     <GoogleAnalytics />
     <ThemeScript />
     <slot name="head">
@@ -47,9 +62,9 @@ import GoogleAnalytics from "@/components/GoogleAnalytics.astro"
       </main>
     </div>
 
-    <Toaster client:load />
-    <AuthModal client:load />
-    <CookieConsent client:load />
+    <Toaster client:idle />
+    <AuthModal client:idle />
+    <CookieConsent client:idle />
     <Footer />
   </body>
 </html>

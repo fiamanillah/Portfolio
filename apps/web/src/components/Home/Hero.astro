@@ -15,6 +15,7 @@ import {
 import { Badge } from "@workspace/ui/components/badge"
 import { TextScramble } from "@workspace/ui/components/text-scramble"
 import { ResumeApi } from "@/lib/api/resumeApi"
+import { HeroResumeCard } from "./HeroResumeCard"
 
 const resumeData = await ResumeApi.fetchPublicResume()
 const resumeUrl = resumeData.downloadUrl || "/resume"
@@ -256,86 +257,12 @@ const resumeUrl = resumeData.downloadUrl || "/resume"
         </div>
       </div>
 
-      <!-- Curriculum Vitae / Resume Download -->
-      <div class="w-full max-w-md space-y-3.5">
-        <div class="flex items-center justify-start gap-3 lg:justify-end">
-          <div class="h-px w-12 bg-border"></div>
-          <span
-            class="font-mono text-xs tracking-[0.1em] whitespace-nowrap text-muted-foreground uppercase"
-            >Curriculum Vitae</span
-          >
-        </div>
-
-        <p
-          class="text-left text-xs leading-relaxed text-muted-foreground lg:text-right"
-        >
-          Download my official resume and verified engineering track record:
-        </p>
-
-        <!-- Resume Download Card -->
-        <a
-          href={resumeUrl}
-          target={resumeData.resumeUrl ? "_blank" : undefined}
-          download={resumeData.resumeUrl ? true : undefined}
-          class="group relative flex items-center justify-between border border-border bg-background/40 p-3.5 px-4 font-mono text-sm backdrop-blur-md transition-all duration-300 hover:border-primary/50 hover:bg-background/60 focus:ring-2 focus:ring-primary/30 focus:outline-none"
-        >
-          <div class="flex items-center gap-3">
-            <div
-              class="flex size-9 shrink-0 items-center justify-center border border-border bg-background/80 text-primary transition-all duration-300 group-hover:border-primary/40 group-hover:bg-primary group-hover:text-primary-foreground group-hover:scale-105"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="size-4.5 transition-transform duration-300 group-hover:translate-y-0.5"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                <polyline points="7 10 12 15 17 10"></polyline>
-                <line x1="12" y1="15" x2="12" y2="3"></line>
-              </svg>
-            </div>
-            <div class="flex flex-col">
-              <span
-                class="text-xs font-bold tracking-wider text-foreground uppercase transition-colors group-hover:text-primary"
-              >
-                Download Resume (PDF)
-              </span>
-              <span class="font-mono text-[10px] text-muted-foreground">
-                {
-                  resumeData.resumeUrl
-                    ? "Direct Download · Verified Build"
-                    : "Interactive View & Download"
-                }
-              </span>
-            </div>
-          </div>
-
-          <div
-            class="flex h-8 w-8 shrink-0 items-center justify-center border border-border bg-background/80 text-muted-foreground transition-all duration-200 group-hover:border-primary/40 group-hover:text-primary group-hover:translate-x-0.5"
-          >
-            <HugeiconsIcon
-              icon={ArrowUpRight03Icon}
-              className="size-4 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-            />
-          </div>
-        </a>
-
-        <div
-          class="flex items-center justify-between font-mono text-[10px] text-muted-foreground/50 uppercase"
-        >
-          <span>📄 Updated for 2026</span>
-          <a
-            href="/resume"
-            class="transition-colors hover:text-primary hover:underline"
-          >
-            Interactive CV Page →
-          </a>
-        </div>
-      </div>
+      <!-- Curriculum Vitae / Resume Download (Dynamic Client-Hydrated) -->
+      <HeroResumeCard
+        client:idle
+        initialResumeUrl={resumeData.resumeUrl}
+        initialDownloadUrl={resumeUrl}
+      />
 
       <!-- Tech Stack (Floating Badges) -->
       <div class="w-full max-w-md space-y-4">
@@ -387,11 +314,21 @@ const resumeUrl = resumeData.downloadUrl || "/resume"
       class="absolute bottom-0 left-1/2 h-[80%] w-[80%] -translate-x-1/2 translate-y-10 bg-primary/15 blur-[100px] sm:w-[60%]"
     >
     </div>
-    <img
-      src="/fi.png"
-      alt="Hero Image"
-      class="pointer-events-none absolute bottom-0 left-1/2 h-[65%] w-auto max-w-none -translate-x-1/2 object-contain opacity-25 grayscale contrast-125 transition-opacity duration-700 select-none sm:h-[75%] sm:opacity-30 lg:left-[54%] lg:h-[82%] lg:opacity-35 xl:left-[52%] xl:h-[88%] [mask-image:radial-gradient(ellipse_at_center,black_55%,transparent_95%)]"
-    />
+    <picture
+      class="pointer-events-none absolute bottom-0 left-1/2 h-[65%] w-auto max-w-none -translate-x-1/2 select-none sm:h-[75%] lg:left-[54%] lg:h-[82%] xl:left-[52%] xl:h-[88%] [mask-image:radial-gradient(ellipse_at_center,black_55%,transparent_95%)]"
+    >
+      <source srcset="/fi.webp" type="image/webp" />
+      <img
+        src="/fi.png"
+        alt="Fi Amanillah - Full-Stack Architect"
+        width="1080"
+        height="1080"
+        fetchpriority="high"
+        loading="eager"
+        decoding="async"
+        class="h-full w-auto object-contain opacity-25 grayscale contrast-125 transition-opacity duration-700 sm:opacity-30 lg:opacity-35"
+      />
+    </picture>
     <div
       class="absolute inset-0 bg-linear-to-t from-background via-background/20 to-transparent"
     >
