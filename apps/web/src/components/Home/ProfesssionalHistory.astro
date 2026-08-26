@@ -280,24 +280,19 @@ const totalTech = [...new Set(experiences.flatMap((e) => e.technologies || []))]
   function setupTimelineScrollEngine() {
     const root = document.getElementById("history-timeline-root")
     const content = document.getElementById("history-timeline-content")
-    const rail = document.getElementById("history-timeline-rail")
     const beam = document.getElementById("history-timeline-beam")
 
-    if (!root || !content || !rail || !beam) return
+    if (!root || !content || !beam) return
 
     let isVisible = false
     let animationFrameId: number | null = null
 
-    function updateTrackHeight() {
-      if (!content || !rail) return
-      const contentHeight = content.offsetHeight
-      rail.style.height = `${contentHeight}px`
-    }
-
     function calculateScrollProgress() {
       if (!root || !beam || !content) return
 
+      // Read phase
       const rect = root.getBoundingClientRect()
+      const totalHeight = content.offsetHeight
       const windowHeight = window.innerHeight
 
       const startOffset = windowHeight * 0.8
@@ -307,9 +302,9 @@ const totalTech = [...new Set(experiences.flatMap((e) => e.technologies || []))]
       let progress = currentScroll / totalDistance
       progress = Math.max(0, Math.min(1, progress))
 
-      const totalHeight = content.offsetHeight
       const beamHeight = progress * totalHeight
 
+      // Write phase
       beam.style.height = `${beamHeight}px`
       beam.style.opacity = progress > 0.01 ? "1" : "0"
     }
@@ -331,7 +326,6 @@ const totalTech = [...new Set(experiences.flatMap((e) => e.technologies || []))]
         entries.forEach((entry) => {
           isVisible = entry.isIntersecting
           if (isVisible) {
-            updateTrackHeight()
             calculateScrollProgress()
           }
         })
@@ -341,18 +335,12 @@ const totalTech = [...new Set(experiences.flatMap((e) => e.technologies || []))]
 
     observer.observe(root)
 
-    const resizeObserver = new ResizeObserver(() => {
-      updateTrackHeight()
-      calculateScrollProgress()
-    })
-
-    resizeObserver.observe(content)
-
     window.addEventListener("scroll", onScroll, { passive: true })
-    window.addEventListener("resize", updateTrackHeight, { passive: true })
+    window.addEventListener("resize", () => {
+      if (isVisible) calculateScrollProgress()
+    }, { passive: true })
 
     // Initial pass
-    updateTrackHeight()
     calculateScrollProgress()
   }
 

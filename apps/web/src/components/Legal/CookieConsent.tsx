@@ -162,7 +162,7 @@ export function CookieConsent() {
     saveConsent(preferences)
   }
 
-  if (!mounted) return null
+  if (!mounted || (!showBanner && !showModal)) return null
 
   return (
     <>

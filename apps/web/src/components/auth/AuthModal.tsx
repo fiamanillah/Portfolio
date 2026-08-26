@@ -546,6 +546,10 @@ export function AuthModal({
     }
   }
 
+  if (!isOpen) {
+    return null
+  }
+
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogContent className="w-[calc(100vw-2rem)] gap-4 rounded-none border border-border bg-card/95 p-5 shadow-2xl backdrop-blur-xl sm:max-w-[480px] sm:p-7">

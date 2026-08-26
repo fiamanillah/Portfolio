@@ -13,9 +13,8 @@ import {
   Linkedin02Icon,
 } from "@hugeicons/core-free-icons"
 import { Badge } from "@workspace/ui/components/badge"
-import { TextScramble } from "@workspace/ui/components/text-scramble"
 import { ResumeApi } from "@/lib/api/resumeApi"
-import { HeroResumeCard } from "./HeroResumeCard"
+import HeroResumeCard from "./HeroResumeCard.astro"
 
 const resumeData = await ResumeApi.fetchPublicResume()
 const resumeUrl = resumeData.downloadUrl || "/resume"
@@ -51,17 +50,16 @@ const resumeUrl = resumeData.downloadUrl || "/resume"
           class="text-base leading-relaxed font-medium text-balance text-primary sm:text-lg"
         >
           <span class="text-foreground"> I'm a </span>
-          <span class="inline-block min-w-[210px] text-primary">
-            <TextScramble
-              client:idle
-              texts={[
-                "Full Stack Developer",
-                "Backend Specialist",
-                "DevOps Engineer",
-              ]}
-              speed={5000}
-              scrambleSpeed={50}
-            />
+          <span
+            id="hero-text-scramble"
+            class="inline-block min-w-[210px] font-mono text-primary select-none"
+            data-texts={JSON.stringify([
+              "Full Stack Developer",
+              "Backend Specialist",
+              "DevOps Engineer",
+            ])}
+          >
+            Full Stack Developer
           </span>
         </div>
         <p
@@ -254,12 +252,11 @@ const resumeUrl = resumeData.downloadUrl || "/resume"
         </div>
       </div>
 
-      <!-- Curriculum Vitae / Resume Download (Dynamic Client-Hydrated) -->
+      <!-- Curriculum Vitae / Resume Download (Zero-JS Astro Component) -->
       <HeroResumeCard
-        client:idle
-        initialResumeUrl={resumeData.resumeUrl}
-        initialDownloadUrl={resumeUrl}
-        initialVersion={resumeData.version}
+        resumeUrl={resumeData.resumeUrl}
+        downloadUrl={resumeUrl}
+        version={resumeData.version}
       />
 
       <!-- Tech Stack (Floating Badges) -->
@@ -330,12 +327,12 @@ const resumeUrl = resumeData.downloadUrl || "/resume"
         width="720"
         height="720"
       />
-      <source srcset="/fi.webp" type="image/webp" width="1080" height="1080" />
+      <source srcset="/fi.webp" type="image/webp" width="640" height="640" />
       <img
-        src="/fi-sm.webp"
+        src="/fi.webp"
         alt="Fi Amanillah - Full-Stack Architect"
-        width="1080"
-        height="1080"
+        width="640"
+        height="640"
         fetchpriority="high"
         loading="eager"
         decoding="async"
@@ -350,44 +347,60 @@ const resumeUrl = resumeData.downloadUrl || "/resume"
 </section>
 
 <script>
-  function setupStickyObserver() {
-    const cards = document.querySelectorAll(".sticky-card")
-    let isTicking = false
+  function setupTextScramble() {
+    const el = document.getElementById("hero-text-scramble")
+    if (!el || el.dataset.scrambleInit === "true") return
+    el.dataset.scrambleInit = "true"
 
-    const checkStickyStates = () => {
-      cards.forEach((card) => {
-        const styleAttr = card.getAttribute("style") || ""
-        const match = styleAttr.match(/top:\s*([0-9.]+)px/)
-        const rect = card.getBoundingClientRect()
+    let texts = []
+    try {
+      texts = JSON.parse(el.dataset.texts || "[]")
+    } catch {}
+    if (!texts.length) return
 
-        if (!match) {
-          card.setAttribute("data-stuck", "false")
-          return
+    const chars = "!<>-_\\/[]{}—=+*^?#________"
+    let textIndex = 0
+    let intervalId: ReturnType<typeof setInterval> | null = null
+    let timeoutId: ReturnType<typeof setTimeout> | null = null
+
+    const scramble = (targetText: string) => {
+      if (intervalId) clearInterval(intervalId)
+      let iteration = 0
+      const maxIteration = targetText.length
+
+      intervalId = setInterval(() => {
+        el.textContent = targetText
+          .split("")
+          .map((char, index) => {
+            if (index < iteration) return targetText[index]
+            return chars[Math.floor(Math.random() * chars.length)]
+          })
+          .join("")
+
+        if (iteration >= maxIteration) {
+          if (intervalId) clearInterval(intervalId)
+          intervalId = null
         }
-
-        const stickyTop = parseFloat(match[1])
-        if (rect.top <= stickyTop + 1) {
-          card.setAttribute("data-stuck", "true")
-        } else {
-          card.setAttribute("data-stuck", "false")
-        }
-      })
-      isTicking = false
+        iteration += 1 / 3
+      }, 50)
     }
 
-    const onScrollOrResize = () => {
-      if (!isTicking) {
-        requestAnimationFrame(checkStickyStates)
-        isTicking = true
+    const cycle = () => {
+      textIndex = (textIndex + 1) % texts.length
+      scramble(texts[textIndex])
+      timeoutId = setTimeout(cycle, 5000)
+    }
+
+    timeoutId = setTimeout(cycle, 5000)
+
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) {
+        if (intervalId) clearInterval(intervalId)
+        if (timeoutId) clearTimeout(timeoutId)
+      } else {
+        timeoutId = setTimeout(cycle, 5000)
       }
-    }
-
-    // Attach passive throttled listeners
-    window.addEventListener("scroll", onScrollOrResize, { passive: true })
-    window.addEventListener("resize", onScrollOrResize, { passive: true })
-
-    // Check states immediately on load
-    checkStickyStates()
+    })
   }
 
   let heroTurnstileWidgetId: string | null = null
@@ -456,7 +469,7 @@ const resumeUrl = resumeData.downloadUrl || "/resume"
     if (form.dataset.bound === "true") return
     form.dataset.bound = "true"
 
-    // Lazy load Turnstile on interaction / view
+    // Lazy load Turnstile on interaction
     emailInput?.addEventListener("focus", initHeroTurnstileOnDemand, {
       once: true,
     })
@@ -469,19 +482,6 @@ const resumeUrl = resumeData.downloadUrl || "/resume"
     form.addEventListener("mouseenter", initHeroTurnstileOnDemand, {
       once: true,
     })
-
-    if ("IntersectionObserver" in window) {
-      const observer = new IntersectionObserver(
-        (entries) => {
-          if (entries[0]?.isIntersecting) {
-            initHeroTurnstileOnDemand()
-            observer.disconnect()
-          }
-        },
-        { rootMargin: "300px" }
-      )
-      observer.observe(form)
-    }
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault()
@@ -630,16 +630,16 @@ const resumeUrl = resumeData.downloadUrl || "/resume"
 
   // Ensure compatibility with Astro's View Transitions if enabled
   document.addEventListener("astro:page-load", () => {
-    setupStickyObserver()
+    setupTextScramble()
     setupHeroSubscription()
   })
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", () => {
-      setupStickyObserver()
+      setupTextScramble()
       setupHeroSubscription()
     })
   } else {
-    setupStickyObserver()
+    setupTextScramble()
     setupHeroSubscription()
   }
 </script>

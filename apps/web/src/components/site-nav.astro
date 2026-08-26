@@ -9,7 +9,7 @@ import {
   Cancel01Icon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { ModeToggle } from "@workspace/ui/components/ModeToggle"
+import ModeToggle from "@/components/ModeToggle.astro"
 import { NavUserButton } from "@/components/auth/NavUserButton"
 
 const navLinks = [
@@ -105,7 +105,7 @@ function isLinkActive(href: string) {
         <div
           class="flex items-center gap-2 lg:border-l lg:border-border/60 lg:pl-3"
         >
-          <ModeToggle client:idle />
+          <ModeToggle />
           <NavUserButton client:idle />
         </div>
 

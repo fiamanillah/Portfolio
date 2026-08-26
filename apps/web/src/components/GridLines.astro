@@ -39,73 +39,6 @@ const { lines = [-0.04, 0, 1, 1.04] } = Astro.props
     let lineXs = []
     let absYs = []
     let lastW = 0
-    let lastH = 0
-
-    function updateCanvasDimensions() {
-      // Use 1x pixel ratio for background decorative grid lines:
-      // avoids allocating 140MB+ monolithic GPU canvas textures on mobile DPR 2/3
-      const W = Math.round(
-        document.documentElement.clientWidth || window.innerWidth || 0
-      )
-      const H = Math.round(
-        Math.max(
-          document.body.scrollHeight || 0,
-          document.documentElement.scrollHeight || 0,
-          document.body.offsetHeight || 0,
-          document.documentElement.offsetHeight || 0
-        )
-      )
-
-      if (
-        W !== lastW ||
-        H !== lastH ||
-        canvas.width !== W ||
-        canvas.height !== H
-      ) {
-        lastW = W
-        lastH = H
-        canvas.width = W
-        canvas.height = H
-        canvas.style.width = W + "px"
-        canvas.style.height = H + "px"
-      }
-
-      return { W, H }
-    }
-
-    function cacheCoordinates() {
-      // 1. Calculate vertical X lines based on reference container
-      const el =
-        document.querySelector("main.container") ||
-        document.querySelector("main") ||
-        document.querySelector(".container")
-
-      const { left, width } = el
-        ? el.getBoundingClientRect()
-        : { left: 0, width: document.documentElement.clientWidth }
-
-      lineXs = lineOffsets.map((f) => Math.round(left + f * width))
-
-      // 2. Calculate horizontal Y positions for all marked sections
-      absYs = []
-      const crossElements = document.querySelectorAll("[data-grid-cross]")
-      const scrollY = window.scrollY || window.pageYOffset || 0
-
-      for (let i = 0; i < crossElements.length; i++) {
-        const element = crossElements[i]
-        const rect = element.getBoundingClientRect()
-        if (rect.height === 0 && rect.width === 0) continue
-
-        const topY = Math.round(rect.top + scrollY)
-        const bottomY = Math.round(rect.bottom + scrollY)
-
-        if (!absYs.includes(topY)) absYs.push(topY)
-        if (!absYs.includes(bottomY)) absYs.push(bottomY)
-      }
-
-      absYs.sort((a, b) => a - b)
-    }
-
     function renderGrid(W, H) {
       if (W === 0 || H === 0) return
       ctx.clearRect(0, 0, W, H)
@@ -151,9 +84,59 @@ const { lines = [-0.04, 0, 1, 1.04] } = Astro.props
     }
 
     function updateGrid() {
-      const { W, H } = updateCanvasDimensions()
+      // PHASE 1: BATCH ALL DOM READS FIRST (Avoid forced layout thrashing)
+      const W = Math.round(
+        document.documentElement.clientWidth || window.innerWidth || 0
+      )
+      const H = Math.round(
+        Math.max(
+          document.body.scrollHeight || 0,
+          document.documentElement.scrollHeight || 0,
+          document.body.offsetHeight || 0,
+          document.documentElement.offsetHeight || 0
+        )
+      )
       if (W === 0 || H === 0) return
-      cacheCoordinates()
+
+      // 1. Calculate vertical X lines based on reference container
+      const el =
+        document.querySelector("main.container") ||
+        document.querySelector("main") ||
+        document.querySelector(".container")
+
+      const { left, width } = el
+        ? el.getBoundingClientRect()
+        : { left: 0, width: W }
+
+      lineXs = lineOffsets.map((f) => Math.round(left + f * width))
+
+      // 2. Calculate horizontal Y positions for all marked sections
+      absYs = []
+      const crossElements = document.querySelectorAll("[data-grid-cross]")
+      const scrollY = window.scrollY || window.pageYOffset || 0
+
+      for (let i = 0; i < crossElements.length; i++) {
+        const element = crossElements[i]
+        const rect = element.getBoundingClientRect()
+        if (rect.height === 0 && rect.width === 0) continue
+
+        const topY = Math.round(rect.top + scrollY)
+        const bottomY = Math.round(rect.bottom + scrollY)
+
+        if (!absYs.includes(topY)) absYs.push(topY)
+        if (!absYs.includes(bottomY)) absYs.push(bottomY)
+      }
+
+      absYs.sort((a, b) => a - b)
+
+      // PHASE 2: BATCH ALL DOM WRITES & CANVAS RENDERING
+      if (canvas.width !== W || canvas.height !== H) {
+        lastW = W
+        lastH = H
+        canvas.width = W
+        canvas.height = H
+      }
+
       renderGrid(W, H)
     }
 

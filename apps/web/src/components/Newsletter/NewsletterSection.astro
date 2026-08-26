@@ -388,19 +388,6 @@ const submitTextId = `${idPrefix}-submit-text`
       { once: true }
     )
 
-    if ("IntersectionObserver" in window) {
-      const observer = new IntersectionObserver(
-        (entries) => {
-          if (entries[0]?.isIntersecting) {
-            initNewsletterTurnstileOnDemand()
-            observer.disconnect()
-          }
-        },
-        { rootMargin: "300px" }
-      )
-      observer.observe(formElement)
-    }
-
     formElement.addEventListener("submit", async (e) => {
       e.preventDefault()
       initNewsletterTurnstileOnDemand()

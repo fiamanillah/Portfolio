@@ -1,0 +1,44 @@
+---
+import { HugeiconsIcon } from "@hugeicons/react"
+import { Moon, Sun } from "@hugeicons/core-free-icons"
+---
+
+<button
+  id="theme-toggle-btn"
+  type="button"
+  aria-label="Toggle theme"
+  class="relative inline-flex size-9 cursor-pointer items-center justify-center border border-border bg-background/80 text-foreground transition-colors duration-150 hover:border-primary hover:bg-primary/10 hover:text-primary focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:outline-none"
+>
+  <HugeiconsIcon
+    icon={Sun}
+    className="h-[1.2rem] w-[1.2rem] scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90"
+  />
+  <HugeiconsIcon
+    icon={Moon}
+    className="absolute h-[1.2rem] w-[1.2rem] scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0"
+  />
+</button>
+
+<script>
+  function setupThemeToggle() {
+    const btn = document.getElementById("theme-toggle-btn")
+    if (!btn || btn.dataset.initialized === "true") return
+    btn.dataset.initialized = "true"
+
+    btn.addEventListener("click", () => {
+      const isDark = document.documentElement.classList.toggle("dark")
+      document.documentElement.style.colorScheme = isDark ? "dark" : "light"
+      try {
+        localStorage.setItem("ui-theme", isDark ? "dark" : "theme-light")
+      } catch {}
+      window.dispatchEvent(new CustomEvent("grid-refresh"))
+    })
+  }
+
+  document.addEventListener("astro:page-load", setupThemeToggle)
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", setupThemeToggle)
+  } else {
+    setupThemeToggle()
+  }
+</script>
