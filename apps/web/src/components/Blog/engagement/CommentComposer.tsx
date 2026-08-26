@@ -125,16 +125,17 @@ export function CommentComposer({
   useEffect(() => {
     if (!isAuthenticated && guestMode) {
       const timer = setTimeout(initTurnstile, 60)
-      return () => clearTimeout(timer)
-    } else {
-      if (turnstileWidgetIdRef.current !== null && window.turnstile) {
-        try {
-          window.turnstile.remove(turnstileWidgetIdRef.current)
-        } catch {}
-        turnstileWidgetIdRef.current = null
+      return () => {
+        clearTimeout(timer)
+        if (turnstileWidgetIdRef.current !== null && window.turnstile) {
+          try {
+            window.turnstile.remove(turnstileWidgetIdRef.current)
+          } catch {
+            // ignore Turnstile removal errors during cleanup
+          }
+          turnstileWidgetIdRef.current = null
+        }
       }
-      setCaptchaToken("")
-      setTurnstileError(null)
     }
   }, [isAuthenticated, guestMode, initTurnstile])
 
@@ -193,7 +194,9 @@ export function CommentComposer({
       if (turnstileWidgetIdRef.current !== null && window.turnstile) {
         try {
           window.turnstile.reset(turnstileWidgetIdRef.current)
-        } catch {}
+        } catch {
+          // ignore Turnstile reset error
+        }
       }
       setCaptchaToken("")
       toast.success(isReply ? "Reply posted!" : "Comment published!", {
@@ -204,7 +207,9 @@ export function CommentComposer({
       if (turnstileWidgetIdRef.current !== null && window.turnstile) {
         try {
           window.turnstile.reset(turnstileWidgetIdRef.current)
-        } catch {}
+        } catch {
+          // ignore Turnstile reset error
+        }
       }
       setCaptchaToken("")
     } finally {
@@ -359,7 +364,11 @@ export function CommentComposer({
           ) : (
             <button
               type="button"
-              onClick={() => setGuestMode(false)}
+              onClick={() => {
+                setGuestMode(false)
+                setCaptchaToken("")
+                setTurnstileError(null)
+              }}
               className="cursor-pointer font-mono text-[10px] text-muted-foreground transition-colors hover:text-foreground"
             >
               [Close Guest Mode]
