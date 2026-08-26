@@ -5,8 +5,8 @@ import SiteNav from "@/components/site-nav.astro"
 import ThemeScript from "@/components/ThemeScript.astro"
 import Footer from "@/components/footer.astro"
 import { Toaster } from "@workspace/ui/components/sonner"
-import { AuthModal } from "@/components/auth/AuthModal"
-import { CookieConsent } from "@/components/Legal/CookieConsent"
+import { LazyAuthModal } from "@/components/auth/LazyAuthModal"
+import { LazyCookieConsent } from "@/components/Legal/LazyCookieConsent"
 import SEO from "@/components/SEO/SEO.astro"
 import GoogleAnalytics from "@/components/GoogleAnalytics.astro"
 ---
@@ -99,8 +99,8 @@ import GoogleAnalytics from "@/components/GoogleAnalytics.astro"
     </div>
 
     <Toaster client:idle />
-    <AuthModal client:idle />
-    <CookieConsent client:idle />
+    <LazyAuthModal client:idle />
+    <LazyCookieConsent client:idle />
     <Footer />
   </body>
 </html>

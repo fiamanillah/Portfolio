@@ -170,12 +170,10 @@ const { lines = [-0.04, 0, 1, 1.04] } = Astro.props
     })
 
     function init() {
-      requestAnimationFrame(() => scheduleUpdate(0))
-      // Safety checks after images and fonts settle
       if ("requestIdleCallback" in window) {
-        requestIdleCallback(() => scheduleUpdate(0), { timeout: 1000 })
+        requestIdleCallback(() => scheduleUpdate(0), { timeout: 2000 })
       } else {
-        setTimeout(() => scheduleUpdate(0), 400)
+        setTimeout(() => scheduleUpdate(0), 100)
       }
     }
 
@@ -191,7 +189,11 @@ const { lines = [-0.04, 0, 1, 1.04] } = Astro.props
     document.addEventListener("astro:page-load", () => {
       const mainEl = document.querySelector("main")
       if (ro && mainEl) ro.observe(mainEl)
-      requestAnimationFrame(() => scheduleUpdate(50))
+      if ("requestIdleCallback" in window) {
+        requestIdleCallback(() => scheduleUpdate(50), { timeout: 2000 })
+      } else {
+        setTimeout(() => scheduleUpdate(50), 50)
+      }
     })
   })()
 </script>
