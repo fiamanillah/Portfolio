@@ -64,7 +64,13 @@ export class PlunkTemplateService {
   }
 
   private static isPlaceholder(): boolean {
-    return PlunkVerifyService.isPlaceholderKey(config.plunk.secretKey)
+    return (
+      process.env.NODE_ENV === "test" ||
+      process.env.BUN_ENV === "test" ||
+      process.env.DISABLE_EMAIL_DELIVERY === "true" ||
+      process.env.MOCK_EMAILS === "true" ||
+      PlunkVerifyService.isPlaceholderKey(config.plunk.secretKey)
+    )
   }
 
   /**
@@ -90,10 +96,7 @@ export class PlunkTemplateService {
           config.email.transactionalFrom ||
           "hello@mail.amanillah.com",
         fromName: payload.fromName || "Fi Amanillah",
-        replyTo:
-          payload.replyTo ||
-          config.email.replyTo ||
-          "fi@amanillah.com",
+        replyTo: payload.replyTo || config.email.replyTo || "fi@amanillah.com",
         type: payload.type || "MARKETING",
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),

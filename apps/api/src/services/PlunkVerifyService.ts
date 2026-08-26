@@ -23,9 +23,26 @@ export class PlunkVerifyService {
   private static logger = new AppLogger("PlunkVerifyService")
 
   /**
-   * Helper to check if an API secret key is missing or is a placeholder key
+   * Helper to check if an API secret key is missing, is a placeholder key, or if the environment is in test/mock mode
    */
   public static isPlaceholderKey(key?: string): boolean {
+    if (
+      process.env.NODE_ENV === "test" ||
+      process.env.BUN_ENV === "test" ||
+      process.env.DISABLE_EMAIL_DELIVERY === "true" ||
+      process.env.MOCK_EMAILS === "true" ||
+      (typeof process !== "undefined" &&
+        Array.isArray(process.argv) &&
+        process.argv.some(
+          (arg) =>
+            arg === "test" ||
+            arg.endsWith("test") ||
+            arg.includes("test.ts") ||
+            arg.includes("spec.ts")
+        ))
+    ) {
+      return true
+    }
     if (!key) return true
     const trimmed = key.trim().toLowerCase()
     return (

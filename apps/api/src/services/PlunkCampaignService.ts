@@ -1,94 +1,100 @@
 // apps/api/src/services/PlunkCampaignService.ts
-import axios from "axios";
-import { config } from "@/core/config";
-import { AppLogger } from "@workspace/logger";
-import { PlunkVerifyService } from "./PlunkVerifyService";
+import axios from "axios"
+import { config } from "@/core/config"
+import { AppLogger } from "@workspace/logger"
+import { PlunkVerifyService } from "./PlunkVerifyService"
 import {
   BadRequestError,
   ExternalServiceError,
   NotFoundError,
-} from "@/core/errors/AppError";
+} from "@/core/errors/AppError"
 
 export interface PlunkCampaignCreatePayload {
-  name: string;
-  description?: string;
-  subject: string;
-  body: string;
-  from: string;
-  fromName?: string;
-  replyTo?: string;
-  type?: "TRANSACTIONAL" | "MARKETING" | "HEADLESS";
-  audienceType: "ALL" | "SEGMENT" | "FILTERED";
-  segmentId?: string;
-  audienceCondition?: Record<string, unknown>;
+  name: string
+  description?: string
+  subject: string
+  body: string
+  from: string
+  fromName?: string
+  replyTo?: string
+  type?: "TRANSACTIONAL" | "MARKETING" | "HEADLESS"
+  audienceType: "ALL" | "SEGMENT" | "FILTERED"
+  segmentId?: string
+  audienceCondition?: Record<string, unknown>
 }
 
 export interface PlunkCampaignResponse {
-  id: string;
-  name: string;
-  description?: string;
-  subject: string;
-  body: string;
-  from: string;
-  fromName?: string;
-  replyTo?: string;
-  type: "TRANSACTIONAL" | "MARKETING" | "HEADLESS";
-  status: "DRAFT" | "SCHEDULED" | "SENDING" | "SENT" | "CANCELLED";
-  audienceType: "ALL" | "SEGMENT" | "FILTERED";
-  audienceCondition?: Record<string, unknown>;
-  segmentId?: string;
-  scheduledFor?: string | null;
-  totalRecipients: number;
-  sentCount: number;
-  deliveredCount: number;
-  openedCount: number;
-  clickedCount: number;
-  bouncedCount: number;
-  projectId?: string;
-  sentAt?: string | null;
-  createdAt: string;
-  updatedAt: string;
+  id: string
+  name: string
+  description?: string
+  subject: string
+  body: string
+  from: string
+  fromName?: string
+  replyTo?: string
+  type: "TRANSACTIONAL" | "MARKETING" | "HEADLESS"
+  status: "DRAFT" | "SCHEDULED" | "SENDING" | "SENT" | "CANCELLED"
+  audienceType: "ALL" | "SEGMENT" | "FILTERED"
+  audienceCondition?: Record<string, unknown>
+  segmentId?: string
+  scheduledFor?: string | null
+  totalRecipients: number
+  sentCount: number
+  deliveredCount: number
+  openedCount: number
+  clickedCount: number
+  bouncedCount: number
+  projectId?: string
+  sentAt?: string | null
+  createdAt: string
+  updatedAt: string
 }
 
 export interface PlunkCampaignStatsResponse {
-  totalRecipients: number;
-  sentCount: number;
-  deliveredCount: number;
-  openedCount: number;
-  clickedCount: number;
-  bouncedCount: number;
+  totalRecipients: number
+  sentCount: number
+  deliveredCount: number
+  openedCount: number
+  clickedCount: number
+  bouncedCount: number
 }
 
 export interface PlunkListCampaignsQuery {
-  page?: number;
-  pageSize?: number;
-  status?: "DRAFT" | "SCHEDULED" | "SENDING" | "SENT" | "CANCELLED";
-  search?: string;
-  sort?: "name" | "createdAt" | "updatedAt";
-  dir?: "asc" | "desc";
+  page?: number
+  pageSize?: number
+  status?: "DRAFT" | "SCHEDULED" | "SENDING" | "SENT" | "CANCELLED"
+  search?: string
+  sort?: "name" | "createdAt" | "updatedAt"
+  dir?: "asc" | "desc"
 }
 
 export interface PlunkListCampaignsResponse {
-  data: PlunkCampaignResponse[];
-  page: number;
-  pageSize: number;
-  total: number;
-  totalPages: number;
+  data: PlunkCampaignResponse[]
+  page: number
+  pageSize: number
+  total: number
+  totalPages: number
 }
 
 export class PlunkCampaignService {
-  private static logger = new AppLogger("PlunkCampaignService");
+  private static logger = new AppLogger("PlunkCampaignService")
 
   private static getHeaders() {
-    const secretKey = config.plunk.secretKey;
+    const secretKey = config.plunk.secretKey
     return {
       Authorization: `Bearer ${secretKey}`,
       "Content-Type": "application/json",
-    };
+    }
   }
 
   private static isPlaceholder(): boolean {
-    return PlunkVerifyService.isPlaceholderKey(config.plunk.secretKey);
+    return (
+      process.env.NODE_ENV === "test" ||
+      process.env.BUN_ENV === "test" ||
+      process.env.DISABLE_EMAIL_DELIVERY === "true" ||
+      process.env.MOCK_EMAILS === "true" ||
+      PlunkVerifyService.isPlaceholderKey(config.plunk.secretKey)
+    )
   }
 
   /**
@@ -101,8 +107,8 @@ export class PlunkCampaignService {
     if (this.isPlaceholder()) {
       this.logger.info(
         `ℹ️ [SIMULATED PLUNK CAMPAIGN CREATE] Created campaign: "${payload.name}"`
-      );
-      const mockId = `sim_plunk_camp_${Date.now()}`;
+      )
+      const mockId = `sim_plunk_camp_${Date.now()}`
       return {
         id: mockId,
         name: payload.name,
@@ -114,10 +120,7 @@ export class PlunkCampaignService {
           config.email.newsletterFrom ||
           "newsletter@newsletter.amanillah.com",
         fromName: payload.fromName || "Fi Amanillah",
-        replyTo:
-          payload.replyTo ||
-          config.email.replyTo ||
-          "fi@amanillah.com",
+        replyTo: payload.replyTo || config.email.replyTo || "fi@amanillah.com",
         type: payload.type || "MARKETING",
         status: "DRAFT",
         audienceType: payload.audienceType || "ALL",
@@ -133,7 +136,7 @@ export class PlunkCampaignService {
         sentAt: null,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-      };
+      }
     }
 
     try {
@@ -144,15 +147,15 @@ export class PlunkCampaignService {
           headers: this.getHeaders(),
           timeout: 12000,
         }
-      );
+      )
 
-      const campaignData = response.data?.data || response.data;
+      const campaignData = response.data?.data || response.data
       this.logger.info(
         `✔ Plunk campaign created: ${campaignData.id} ("${payload.name}")`
-      );
-      return campaignData;
+      )
+      return campaignData
     } catch (error) {
-      this.handleAxiosError(error, "Failed to create campaign in Plunk");
+      this.handleAxiosError(error, "Failed to create campaign in Plunk")
     }
   }
 
@@ -166,14 +169,14 @@ export class PlunkCampaignService {
     if (this.isPlaceholder()) {
       this.logger.info(
         "ℹ️ [SIMULATED PLUNK CAMPAIGNS LIST] Returning simulated empty list"
-      );
+      )
       return {
         data: [],
         page: query.page || 1,
         pageSize: query.pageSize || 20,
         total: 0,
         totalPages: 0,
-      };
+      }
     }
 
     try {
@@ -181,11 +184,11 @@ export class PlunkCampaignService {
         headers: this.getHeaders(),
         params: query,
         timeout: 10000,
-      });
+      })
 
-      return response.data;
+      return response.data
     } catch (error) {
-      this.handleAxiosError(error, "Failed to list campaigns from Plunk");
+      this.handleAxiosError(error, "Failed to list campaigns from Plunk")
     }
   }
 
@@ -195,13 +198,14 @@ export class PlunkCampaignService {
    */
   public static async getCampaign(id: string): Promise<PlunkCampaignResponse> {
     if (this.isPlaceholder()) {
-      this.logger.info(`ℹ️ [SIMULATED PLUNK CAMPAIGN GET] Fetching ${id}`);
+      this.logger.info(`ℹ️ [SIMULATED PLUNK CAMPAIGN GET] Fetching ${id}`)
       return {
         id,
         name: "Simulated Campaign",
         subject: "Simulated Campaign Subject",
         body: "<p>Simulated Campaign Content</p>",
-        from: config.email.newsletterFrom || "newsletter@newsletter.amanillah.com",
+        from:
+          config.email.newsletterFrom || "newsletter@newsletter.amanillah.com",
         type: "MARKETING",
         status: "DRAFT",
         audienceType: "ALL",
@@ -213,7 +217,7 @@ export class PlunkCampaignService {
         bouncedCount: 0,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-      };
+      }
     }
 
     try {
@@ -223,14 +227,14 @@ export class PlunkCampaignService {
           headers: this.getHeaders(),
           timeout: 10000,
         }
-      );
+      )
 
-      return response.data?.data || response.data;
+      return response.data?.data || response.data
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.status === 404) {
-        throw new NotFoundError(`Plunk campaign ${id} not found`);
+        throw new NotFoundError(`Plunk campaign ${id} not found`)
       }
-      this.handleAxiosError(error, `Failed to retrieve Plunk campaign ${id}`);
+      this.handleAxiosError(error, `Failed to retrieve Plunk campaign ${id}`)
     }
   }
 
@@ -249,7 +253,7 @@ export class PlunkCampaignService {
         openedCount: 0,
         clickedCount: 0,
         bouncedCount: 0,
-      };
+      }
     }
 
     try {
@@ -259,13 +263,13 @@ export class PlunkCampaignService {
           headers: this.getHeaders(),
           timeout: 10000,
         }
-      );
+      )
 
-      return response.data?.data || response.data;
+      return response.data?.data || response.data
     } catch (error) {
       this.logger.warn(`Could not fetch stats for Plunk campaign ${id}`, {
         error,
-      });
+      })
       return {
         totalRecipients: 0,
         sentCount: 0,
@@ -273,7 +277,7 @@ export class PlunkCampaignService {
         openedCount: 0,
         clickedCount: 0,
         bouncedCount: 0,
-      };
+      }
     }
   }
 
@@ -288,7 +292,7 @@ export class PlunkCampaignService {
     if (this.isPlaceholder()) {
       this.logger.info(
         `ℹ️ [SIMULATED PLUNK CAMPAIGN UPDATE] Updated campaign ${id}`
-      );
+      )
       return {
         id,
         name: payload.name || "Updated Campaign",
@@ -300,10 +304,7 @@ export class PlunkCampaignService {
           config.email.newsletterFrom ||
           "newsletter@newsletter.amanillah.com",
         fromName: payload.fromName || "Fi Amanillah",
-        replyTo:
-          payload.replyTo ||
-          config.email.replyTo ||
-          "fi@amanillah.com",
+        replyTo: payload.replyTo || config.email.replyTo || "fi@amanillah.com",
         type: payload.type || "MARKETING",
         status: "DRAFT",
         audienceType: payload.audienceType || "ALL",
@@ -315,17 +316,17 @@ export class PlunkCampaignService {
         bouncedCount: 0,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-      };
+      }
     }
 
     try {
-      let response;
+      let response
       try {
         response = await axios.patch(
           `${config.plunk.apiUrl}/campaigns/${id}`,
           payload,
           { headers: this.getHeaders(), timeout: 12000 }
-        );
+        )
       } catch (patchErr) {
         if (
           axios.isAxiosError(patchErr) &&
@@ -336,17 +337,17 @@ export class PlunkCampaignService {
             `${config.plunk.apiUrl}/campaigns/${id}`,
             payload,
             { headers: this.getHeaders(), timeout: 12000 }
-          );
+          )
         } else {
-          throw patchErr;
+          throw patchErr
         }
       }
 
-      const campaignData = response.data?.data || response.data;
-      this.logger.info(`✔ Plunk campaign updated successfully: ${id}`);
-      return campaignData;
+      const campaignData = response.data?.data || response.data
+      this.logger.info(`✔ Plunk campaign updated successfully: ${id}`)
+      return campaignData
     } catch (error) {
-      this.handleAxiosError(error, `Failed to update Plunk campaign ${id}`);
+      this.handleAxiosError(error, `Failed to update Plunk campaign ${id}`)
     }
   }
 
@@ -359,20 +360,21 @@ export class PlunkCampaignService {
     payload?: { scheduledFor?: string | null }
   ): Promise<PlunkCampaignResponse> {
     if (this.isPlaceholder()) {
-      const isScheduled = !!payload?.scheduledFor;
+      const isScheduled = !!payload?.scheduledFor
       this.logger.info(
         `ℹ️ [SIMULATED PLUNK CAMPAIGN SEND] ${
           isScheduled
             ? `Scheduled campaign ${id} for ${payload?.scheduledFor}`
             : `Broadcasting campaign ${id} immediately`
         }`
-      );
+      )
       return {
         id,
         name: "Simulated Sent Campaign",
         subject: "Simulated Subject",
         body: "<p>Simulated Body</p>",
-        from: config.email.newsletterFrom || "newsletter@newsletter.amanillah.com",
+        from:
+          config.email.newsletterFrom || "newsletter@newsletter.amanillah.com",
         type: "MARKETING",
         status: isScheduled ? "SCHEDULED" : "SENDING",
         audienceType: "ALL",
@@ -386,13 +388,13 @@ export class PlunkCampaignService {
         sentAt: isScheduled ? null : new Date().toISOString(),
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-      };
+      }
     }
 
     try {
       const bodyPayload = payload?.scheduledFor
         ? { scheduledFor: payload.scheduledFor }
-        : {};
+        : {}
 
       const response = await axios.post(
         `${config.plunk.apiUrl}/campaigns/${id}/send`,
@@ -401,15 +403,18 @@ export class PlunkCampaignService {
           headers: this.getHeaders(),
           timeout: 15000,
         }
-      );
+      )
 
-      const campaignData = response.data?.data || response.data;
+      const campaignData = response.data?.data || response.data
       this.logger.info(
         `✔ Plunk campaign send triggered: ${id} (Status: ${campaignData.status})`
-      );
-      return campaignData;
+      )
+      return campaignData
     } catch (error) {
-      this.handleAxiosError(error, `Failed to send/schedule Plunk campaign ${id}`);
+      this.handleAxiosError(
+        error,
+        `Failed to send/schedule Plunk campaign ${id}`
+      )
     }
   }
 
@@ -417,17 +422,20 @@ export class PlunkCampaignService {
    * 7. CANCEL: Cancel SCHEDULED or SENDING campaign in Plunk
    * POST https://next-api.useplunk.com/campaigns/:id/cancel
    */
-  public static async cancelCampaign(id: string): Promise<PlunkCampaignResponse> {
+  public static async cancelCampaign(
+    id: string
+  ): Promise<PlunkCampaignResponse> {
     if (this.isPlaceholder()) {
       this.logger.info(
         `ℹ️ [SIMULATED PLUNK CAMPAIGN CANCEL] Cancelled campaign ${id}`
-      );
+      )
       return {
         id,
         name: "Cancelled Campaign",
         subject: "Cancelled Subject",
         body: "<p>Cancelled</p>",
-        from: config.email.newsletterFrom || "newsletter@newsletter.amanillah.com",
+        from:
+          config.email.newsletterFrom || "newsletter@newsletter.amanillah.com",
         type: "MARKETING",
         status: "CANCELLED",
         audienceType: "ALL",
@@ -439,7 +447,7 @@ export class PlunkCampaignService {
         bouncedCount: 0,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-      };
+      }
     }
 
     try {
@@ -450,13 +458,13 @@ export class PlunkCampaignService {
           headers: this.getHeaders(),
           timeout: 10000,
         }
-      );
+      )
 
-      const campaignData = response.data?.data || response.data;
-      this.logger.info(`✔ Plunk campaign cancelled: ${id}`);
-      return campaignData;
+      const campaignData = response.data?.data || response.data
+      this.logger.info(`✔ Plunk campaign cancelled: ${id}`)
+      return campaignData
     } catch (error) {
-      this.handleAxiosError(error, `Failed to cancel Plunk campaign ${id}`);
+      this.handleAxiosError(error, `Failed to cancel Plunk campaign ${id}`)
     }
   }
 
@@ -470,13 +478,14 @@ export class PlunkCampaignService {
     if (this.isPlaceholder()) {
       this.logger.info(
         `ℹ️ [SIMULATED PLUNK CAMPAIGN DUPLICATE] Duplicated ${id}`
-      );
+      )
       return {
         id: `sim_plunk_camp_copy_${Date.now()}`,
         name: "Copy of Campaign",
         subject: "Copy of Campaign Subject",
         body: "<p>Copy of Body</p>",
-        from: config.email.newsletterFrom || "newsletter@newsletter.amanillah.com",
+        from:
+          config.email.newsletterFrom || "newsletter@newsletter.amanillah.com",
         type: "MARKETING",
         status: "DRAFT",
         audienceType: "ALL",
@@ -488,7 +497,7 @@ export class PlunkCampaignService {
         bouncedCount: 0,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-      };
+      }
     }
 
     try {
@@ -499,13 +508,15 @@ export class PlunkCampaignService {
           headers: this.getHeaders(),
           timeout: 10000,
         }
-      );
+      )
 
-      const campaignData = response.data?.data || response.data;
-      this.logger.info(`✔ Plunk campaign duplicated: ${id} -> ${campaignData.id}`);
-      return campaignData;
+      const campaignData = response.data?.data || response.data
+      this.logger.info(
+        `✔ Plunk campaign duplicated: ${id} -> ${campaignData.id}`
+      )
+      return campaignData
     } catch (error) {
-      this.handleAxiosError(error, `Failed to duplicate Plunk campaign ${id}`);
+      this.handleAxiosError(error, `Failed to duplicate Plunk campaign ${id}`)
     }
   }
 
@@ -520,8 +531,8 @@ export class PlunkCampaignService {
     if (this.isPlaceholder()) {
       this.logger.info(
         `ℹ️ [SIMULATED PLUNK CAMPAIGN TEST] Dispatched test to ${email} for campaign ${id}`
-      );
-      return { success: true, message: `Test dispatched to ${email}` };
+      )
+      return { success: true, message: `Test dispatched to ${email}` }
     }
 
     try {
@@ -532,12 +543,12 @@ export class PlunkCampaignService {
           headers: this.getHeaders(),
           timeout: 10000,
         }
-      );
+      )
 
       this.logger.info(
         `✔ Plunk campaign test email dispatched to ${email} (Campaign: ${id})`
-      );
-      return { success: true, message: `Test broadcast sent to ${email}` };
+      )
+      return { success: true, message: `Test broadcast sent to ${email}` }
     } catch (error: unknown) {
       let errMsg = ""
       if (axios.isAxiosError(error)) {
@@ -563,7 +574,7 @@ export class PlunkCampaignService {
       this.handleAxiosError(
         error,
         `Failed to send test email to ${email} via Plunk campaign ${id}`
-      );
+      )
     }
   }
 
@@ -575,24 +586,24 @@ export class PlunkCampaignService {
     if (this.isPlaceholder()) {
       this.logger.info(
         `ℹ️ [SIMULATED PLUNK CAMPAIGN DELETE] Deleted campaign ${id}`
-      );
-      return;
+      )
+      return
     }
 
     try {
       await axios.delete(`${config.plunk.apiUrl}/campaigns/${id}`, {
         headers: this.getHeaders(),
         timeout: 6000,
-      });
-      this.logger.info(`✔ Plunk campaign deleted: ${id}`);
+      })
+      this.logger.info(`✔ Plunk campaign deleted: ${id}`)
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.status === 404) {
-        this.logger.warn(`Plunk campaign ${id} already deleted or not found.`);
-        return;
+        this.logger.warn(`Plunk campaign ${id} already deleted or not found.`)
+        return
       }
       this.logger.warn(`Non-blocking issue deleting Plunk campaign ${id}`, {
         error,
-      });
+      })
     }
   }
 
@@ -604,8 +615,8 @@ export class PlunkCampaignService {
     defaultMessage: string
   ): never {
     if (axios.isAxiosError(error)) {
-      const status = error.response?.status;
-      const data = error.response?.data;
+      const status = error.response?.status
+      const data = error.response?.data
       const errorMsg =
         typeof data === "string"
           ? data
@@ -613,36 +624,36 @@ export class PlunkCampaignService {
             data?.error?.message ||
             data?.error ||
             JSON.stringify(data) ||
-            error.message;
+            error.message
 
       this.logger.error(`Plunk Campaigns API Error [${status}]: ${errorMsg}`, {
         status,
         data,
-      });
+      })
 
       if (status === 400) {
-        throw new BadRequestError(`Plunk Validation Error: ${errorMsg}`);
+        throw new BadRequestError(`Plunk Validation Error: ${errorMsg}`)
       }
       if (status === 401) {
         throw new ExternalServiceError(
           "Plunk Authentication Error: Invalid or expired API Key."
-        );
+        )
       }
       if (status === 403) {
         throw new BadRequestError(
           `Plunk Domain Error: Sender address must belong to a verified domain in Plunk (${errorMsg}).`
-        );
+        )
       }
       if (status === 404) {
-        throw new NotFoundError(`Plunk Resource Not Found: ${errorMsg}`);
+        throw new NotFoundError(`Plunk Resource Not Found: ${errorMsg}`)
       }
       if (status === 422) {
-        throw new BadRequestError(`Plunk Schema Error: ${errorMsg}`);
+        throw new BadRequestError(`Plunk Schema Error: ${errorMsg}`)
       }
 
-      throw new ExternalServiceError(`${defaultMessage}: ${errorMsg}`);
+      throw new ExternalServiceError(`${defaultMessage}: ${errorMsg}`)
     }
 
-    throw new ExternalServiceError(`${defaultMessage}: ${String(error)}`);
+    throw new ExternalServiceError(`${defaultMessage}: ${String(error)}`)
   }
 }

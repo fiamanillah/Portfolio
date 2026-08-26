@@ -41,14 +41,28 @@ export function findMonorepoRoot(startDir: string = process.cwd()): string {
 /**
  * Loads environment variables from monorepo root and workspace-local .env files
  */
-export function loadEnv(forceReload = false): Record<string, string | undefined> {
+export function loadEnv(
+  forceReload = false
+): Record<string, string | undefined> {
   if (envLoaded && !forceReload) {
     return process.env
   }
 
-  // Preserve explicit process.env variables passed in via Docker ARG/ENV, CI, or deployment container
+  // Preserve explicit process.env variables passed in via Docker ARG/ENV, CI, test runners, or deployment container
   const explicitEnv = { ...process.env }
-  const isProd = process.env.NODE_ENV === "production"
+  const isTest =
+    process.env.NODE_ENV === "test" ||
+    process.env.BUN_ENV === "test" ||
+    (typeof process !== "undefined" &&
+      Array.isArray(process.argv) &&
+      process.argv.some(
+        (arg) =>
+          arg === "test" ||
+          arg.endsWith("test") ||
+          arg.includes("test.ts") ||
+          arg.includes("spec.ts")
+      ))
+  const isProd = process.env.NODE_ENV === "production" && !isTest
 
   const rootDir = findMonorepoRoot()
   const cwd = process.cwd()
@@ -56,7 +70,7 @@ export function loadEnv(forceReload = false): Record<string, string | undefined>
   // 1. Root .env (base defaults for monorepo)
   const rootEnvPath = path.join(rootDir, ".env")
   if (fs.existsSync(rootEnvPath)) {
-    dotenv.config({ path: rootEnvPath, override: !isProd })
+    dotenv.config({ path: rootEnvPath, override: !isProd && !isTest })
   }
 
   // 1b. Root .env.production (loaded in production builds)
@@ -70,7 +84,7 @@ export function loadEnv(forceReload = false): Record<string, string | undefined>
   // 2. Root .env.local (developer overrides in non-production)
   const rootEnvLocalPath = path.join(rootDir, ".env.local")
   if (fs.existsSync(rootEnvLocalPath)) {
-    dotenv.config({ path: rootEnvLocalPath, override: !isProd })
+    dotenv.config({ path: rootEnvLocalPath, override: !isProd && !isTest })
   }
 
   // 2b. Root .env.production.local (machine overrides in production)
@@ -85,7 +99,7 @@ export function loadEnv(forceReload = false): Record<string, string | undefined>
   if (cwd !== rootDir) {
     const localEnvPath = path.join(cwd, ".env")
     if (fs.existsSync(localEnvPath)) {
-      dotenv.config({ path: localEnvPath, override: !isProd })
+      dotenv.config({ path: localEnvPath, override: !isProd && !isTest })
     }
 
     if (isProd) {
@@ -97,7 +111,7 @@ export function loadEnv(forceReload = false): Record<string, string | undefined>
 
     const localEnvLocalPath = path.join(cwd, ".env.local")
     if (fs.existsSync(localEnvLocalPath)) {
-      dotenv.config({ path: localEnvLocalPath, override: !isProd })
+      dotenv.config({ path: localEnvLocalPath, override: !isProd && !isTest })
     }
 
     if (isProd) {
@@ -106,6 +120,12 @@ export function loadEnv(forceReload = false): Record<string, string | undefined>
         dotenv.config({ path: localEnvProdLocalPath, override: true })
       }
     }
+  }
+
+  // In test mode, enforce NODE_ENV=test and prevent external service calls
+  if (isTest) {
+    process.env.NODE_ENV = "test"
+    process.env.BUN_ENV = "test"
   }
 
   // In production, ensure explicitly injected environment variables take absolute precedence
