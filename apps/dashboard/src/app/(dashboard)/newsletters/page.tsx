@@ -19,6 +19,8 @@ import {
 import type {
   NewsletterItem,
   NewsletterStats,
+  AudienceType,
+  NewsletterStatus,
 } from "@workspace/shared";
 import { NewsletterApi } from "@/lib/api";
 import { Badge } from "@workspace/ui/components/badge";
@@ -97,9 +99,9 @@ export default function NewslettersPage() {
         page: currentPage,
         limit: pageSize,
         search: debouncedSearch || undefined,
-        status: statusFilter !== "ALL" ? (statusFilter as any) : undefined,
+        status: statusFilter !== "ALL" ? (statusFilter as NewsletterStatus) : undefined,
         targetAudience:
-          audienceFilter !== "ALL" ? (audienceFilter as any) : undefined,
+          audienceFilter !== "ALL" ? (audienceFilter as AudienceType) : undefined,
       });
 
       if (res.success && res.data) {
@@ -108,9 +110,9 @@ export default function NewslettersPage() {
       } else {
         toast.error("Failed to load campaigns", { description: res.error });
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast.error("Network error fetching campaigns", {
-        description: err?.message,
+        description: err instanceof Error ? err.message : undefined,
       });
     } finally {
       setIsLoading(false);
@@ -156,9 +158,9 @@ export default function NewslettersPage() {
       } else {
         toast.error("Failed to start broadcast", { description: res.error });
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast.error("Error broadcasting campaign", {
-        description: err?.message,
+        description: err instanceof Error ? err.message : undefined,
       });
     } finally {
       setIsSendingImmediate(false);
@@ -177,8 +179,8 @@ export default function NewslettersPage() {
       } else {
         toast.error("Failed to cancel", { description: res.error });
       }
-    } catch (err: any) {
-      toast.error("Error cancelling broadcast", { description: err?.message });
+    } catch (err: unknown) {
+      toast.error("Error cancelling broadcast", { description: err instanceof Error ? err.message : undefined });
     }
   };
 
@@ -227,8 +229,8 @@ export default function NewslettersPage() {
       } else {
         toast.error("Failed to delete campaign", { description: res.error });
       }
-    } catch (err: any) {
-      toast.error("Error deleting campaign", { description: err?.message });
+    } catch (err: unknown) {
+      toast.error("Error deleting campaign", { description: err instanceof Error ? err.message : undefined });
     }
   };
 

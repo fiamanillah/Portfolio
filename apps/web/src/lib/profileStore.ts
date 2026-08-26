@@ -127,10 +127,10 @@ export async function updateProfileInfo(updates: UpdateProfileInput): Promise<{
       success: false,
       error: res.error || res.message || "Failed to update profile.",
     }
-  } catch (err: any) {
+  } catch (err: unknown) {
     return {
       success: false,
-      error: err?.message || "Failed to update profile.",
+      error: err instanceof Error ? err.message : "Failed to update profile.",
     }
   }
 }
@@ -166,10 +166,11 @@ export async function updateSubscriptionStatus(subscribed: boolean): Promise<{
       success: false,
       error: res.error || res.message || "Failed to update subscription.",
     }
-  } catch (err: any) {
+  } catch (err: unknown) {
     return {
       success: false,
-      error: err?.message || "Failed to update subscription.",
+      error:
+        err instanceof Error ? err.message : "Failed to update subscription.",
     }
   }
 }
@@ -201,8 +202,11 @@ export async function uploadProfileAvatar(file: File): Promise<{
       success: false,
       error: res.error || res.message || "Failed to upload avatar.",
     }
-  } catch (err: any) {
-    return { success: false, error: err?.message || "Failed to upload avatar." }
+  } catch (err: unknown) {
+    return {
+      success: false,
+      error: err instanceof Error ? err.message : "Failed to upload avatar.",
+    }
   }
 }
 
@@ -233,8 +237,11 @@ export async function removeProfileAvatar(): Promise<{
       success: false,
       error: res.error || res.message || "Failed to remove avatar.",
     }
-  } catch (err: any) {
-    return { success: false, error: err?.message || "Failed to remove avatar." }
+  } catch (err: unknown) {
+    return {
+      success: false,
+      error: err instanceof Error ? err.message : "Failed to remove avatar.",
+    }
   }
 }
 
@@ -254,9 +261,12 @@ export async function deleteUserProfile(): Promise<{
     }
     setStoredUser(null)
     return { success: res.success, error: res.error }
-  } catch (err: any) {
+  } catch (err: unknown) {
     setStoredUser(null)
-    return { success: false, error: err?.message }
+    return {
+      success: false,
+      error: err instanceof Error ? err.message : undefined,
+    }
   }
 }
 

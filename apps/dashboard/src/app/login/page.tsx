@@ -88,9 +88,9 @@ function AdminLoginForm() {
         // If login succeeded, redirect to requested path
         router.replace(redirectPath)
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       setErrorMessage(
-        err?.message || "An error occurred while communicating with the server."
+        err instanceof Error ? err.message : "An error occurred while communicating with the server."
       )
     } finally {
       setIsSubmitting(false)

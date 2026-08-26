@@ -271,7 +271,7 @@ export class ContactService {
     }
 
     try {
-      const plunkPayload: Record<string, any> = {
+      const plunkPayload: Record<string, unknown> = {
         to: recipientEmail,
         from: config.email.systemFrom,
         name: "Portfolio Notification",
@@ -382,7 +382,7 @@ export class ContactService {
     }
 
     try {
-      const plunkPayload: Record<string, any> = {
+      const plunkPayload: Record<string, unknown> = {
         to: payload.email,
         from: config.email.transactionalFrom,
         name: "Fi Amanillah",

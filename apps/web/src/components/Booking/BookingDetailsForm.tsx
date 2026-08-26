@@ -108,30 +108,27 @@ export function BookingDetailsForm({
 
     const renderWidget = () => {
       if (
-        (window as any).turnstile &&
+        window.turnstile &&
         turnstileContainerRef.current &&
         !turnstileWidgetIdRef.current
       ) {
         try {
-          const id = (window as any).turnstile.render(
-            turnstileContainerRef.current,
-            {
-              sitekey: siteKey,
-              theme: "auto",
-              callback: (token: string) => {
-                onCaptchaTokenChange(token)
-                window.dispatchEvent(new CustomEvent("grid-refresh"))
-              },
-              "expired-callback": () => {
-                onCaptchaTokenChange("")
-                window.dispatchEvent(new CustomEvent("grid-refresh"))
-              },
-              "error-callback": () => {
-                onCaptchaTokenChange("")
-                window.dispatchEvent(new CustomEvent("grid-refresh"))
-              },
-            }
-          )
+          const id = window.turnstile.render(turnstileContainerRef.current, {
+            sitekey: siteKey,
+            theme: "auto",
+            callback: (token: string) => {
+              onCaptchaTokenChange(token)
+              window.dispatchEvent(new CustomEvent("grid-refresh"))
+            },
+            "expired-callback": () => {
+              onCaptchaTokenChange("")
+              window.dispatchEvent(new CustomEvent("grid-refresh"))
+            },
+            "error-callback": () => {
+              onCaptchaTokenChange("")
+              window.dispatchEvent(new CustomEvent("grid-refresh"))
+            },
+          })
           turnstileWidgetIdRef.current = id
           window.dispatchEvent(new CustomEvent("grid-refresh"))
         } catch (e) {
@@ -140,7 +137,7 @@ export function BookingDetailsForm({
       }
     }
 
-    if ((window as any).turnstile) {
+    if (window.turnstile) {
       renderWidget()
     } else {
       let script = document.getElementById(

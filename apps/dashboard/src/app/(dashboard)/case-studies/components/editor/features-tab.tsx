@@ -28,14 +28,17 @@ export function FeaturesTab({ features, setFeatures }: FeaturesTabProps) {
     ])
   }
 
-  const handleUpdateFeature = (
+  const handleUpdateFeature = <K extends keyof FeatureItem>(
     index: number,
-    field: keyof FeatureItem,
-    value: any
+    field: K,
+    value: FeatureItem[K]
   ) => {
     const updated = [...features]
-    updated[index] = { ...updated[index], [field]: value }
-    setFeatures(updated)
+    const item = updated[index]
+    if (item) {
+      updated[index] = { ...item, [field]: value }
+      setFeatures(updated)
+    }
   }
 
   const handleRemoveFeature = (index: number) => {

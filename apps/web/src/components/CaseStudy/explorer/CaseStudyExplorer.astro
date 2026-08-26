@@ -4,10 +4,11 @@ import CaseStudyEmptyState from "./CaseStudyEmptyState.astro"
 import CaseStudyCard from "../cards/CaseStudyCard.astro"
 import ProjectCard from "../cards/ProjectCard.astro"
 import CaseStudySectionTitle from "../CaseStudySectionTitle.astro"
+import type { Project } from "@/data/projects"
 
 interface Props {
-  caseStudies: any[]
-  standardProjects: any[]
+  caseStudies: Project[]
+  standardProjects: Project[]
 }
 
 const { caseStudies, standardProjects } = Astro.props

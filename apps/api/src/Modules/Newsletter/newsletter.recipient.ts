@@ -1,5 +1,5 @@
 // src/Modules/Newsletter/newsletter.recipient.ts
-import { prisma } from "@workspace/db";
+import { prisma, Prisma } from "@workspace/db";
 import { AppLogger } from "@workspace/logger";
 import type { AudienceType, RecipientCalculationResult } from "@workspace/shared";
 
@@ -53,7 +53,7 @@ export class NewsletterRecipientResolver {
 
     // 1. Fetch active subscribers if targetAudience is not strictly custom
     if (targetAudience !== "CUSTOM") {
-      const whereClause: Record<string, any> = {
+      const whereClause: Prisma.SubscriberWhereInput = {
         status: "subscribed",
       };
 

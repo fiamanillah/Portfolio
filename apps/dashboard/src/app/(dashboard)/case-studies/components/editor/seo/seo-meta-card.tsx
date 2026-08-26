@@ -16,7 +16,7 @@ interface SeoMetaCardProps {
   slug: string
   description: string
   seo: CaseStudySeo
-  onUpdate: (field: keyof CaseStudySeo, value: any) => void
+  onUpdate: <K extends keyof CaseStudySeo>(field: K, value: CaseStudySeo[K]) => void
   errors?: Record<string, string>
 }
 

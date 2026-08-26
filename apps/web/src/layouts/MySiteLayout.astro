@@ -55,6 +55,36 @@ import GoogleAnalytics from "@/components/GoogleAnalytics.astro"
     }
     <GoogleAnalytics />
     <ThemeScript />
+    <script is:inline>
+      ;(function () {
+        try {
+          if (
+            typeof window === "undefined" ||
+            window.location.pathname.startsWith("/booking/cancel")
+          )
+            return
+          var sp = new URLSearchParams(window.location.search)
+          var token = sp.get("cancelToken") || sp.get("token")
+          if (!token && window.location.hash) {
+            var hash = window.location.hash
+            var q = hash.includes("?")
+              ? hash.split("?")[1]
+              : hash.replace(/^#/, "")
+            var hp = new URLSearchParams(q)
+            token = hp.get("cancelToken") || hp.get("token")
+            if (!token) {
+              var match = hash.match(/(?:token|cancelToken)=([a-zA-Z0-9-]+)/i)
+              if (match && match[1]) token = match[1]
+            }
+          }
+          if (token) {
+            window.location.replace(
+              "/booking/cancel?token=" + encodeURIComponent(token.trim())
+            )
+          }
+        } catch (e) {}
+      })()
+    </script>
     <slot name="head">
       <SEO />
     </slot>

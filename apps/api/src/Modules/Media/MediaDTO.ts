@@ -90,7 +90,7 @@ export interface UploadMediaOptions {
   caption?: string
   isPublic?: boolean
   allowDuplicate?: boolean
-  metadata?: Record<string, any>
+  metadata?: Record<string, unknown>
 }
 
 export type UploadMediaBody = z.infer<typeof uploadMediaBodySchema>

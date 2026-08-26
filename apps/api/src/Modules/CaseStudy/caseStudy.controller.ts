@@ -53,9 +53,9 @@ export class CaseStudyController extends BaseController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const query = (req as any).validatedQuery || req.query;
+      const query = (req.validatedQuery || req.query) as ListCaseStudiesQueryDTO;
       const result = await this.caseStudyService.getAllAdmin(
-        query as ListCaseStudiesQueryDTO
+        query
       );
       this.sendPaginatedResponse(
         req,
@@ -287,9 +287,9 @@ export class CaseStudyController extends BaseController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const query = (req as any).validatedQuery || req.query;
+      const query = (req.validatedQuery || req.query) as PublicCaseStudyQueryDTO;
       const result = await this.caseStudyService.getPublicCaseStudies(
-        query as PublicCaseStudyQueryDTO
+        query
       );
       this.sendPaginatedResponse(
         req,

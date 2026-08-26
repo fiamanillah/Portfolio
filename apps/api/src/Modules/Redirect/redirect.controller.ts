@@ -78,9 +78,9 @@ export class RedirectController extends BaseController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const query = (req as any).validatedQuery || req.query
+      const query = (req.validatedQuery || req.query) as QueryRedirectsDTO
       const result = await this.redirectService.getAllAdmin(
-        query as QueryRedirectsDTO
+        query
       )
       this.sendPaginatedResponse(
         req,

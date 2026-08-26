@@ -137,7 +137,7 @@ export default function SubscribersPage() {
         page: currentPage,
         limit: pageSize,
         search: debouncedSearch || undefined,
-        status: statusFilter !== "ALL" ? (statusFilter as any) : undefined,
+        status: statusFilter !== "ALL" ? (statusFilter as "subscribed" | "unsubscribed" | "pending") : undefined,
         source: sourceFilter !== "ALL" ? sourceFilter : undefined,
         sortBy: "subscribedAt",
         sortOrder: "desc",
@@ -155,9 +155,9 @@ export default function SubscribersPage() {
             res.error || "Please ensure the backend API is connected.",
         })
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast.error("Error fetching audience data", {
-        description: err?.message || "Network issue occurred.",
+        description: err instanceof Error ? err.message : "Network issue occurred.",
       })
     } finally {
       setIsLoading(false)
@@ -178,7 +178,7 @@ export default function SubscribersPage() {
     setSelectedSubscriber(sub)
     setEditForm({
       name: sub.name || "",
-      status: (sub.status?.toLowerCase() as any) || "subscribed",
+      status: (sub.status?.toLowerCase() as "subscribed" | "unsubscribed" | "pending") || "subscribed",
       source: sub.source || "admin_portal",
     })
     setIsEditOpen(true)
@@ -205,9 +205,9 @@ export default function SubscribersPage() {
           description: res.error,
         })
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast.error("Error updating subscriber", {
-        description: err?.message,
+        description: err instanceof Error ? err.message : undefined,
       })
     }
   }
@@ -224,9 +224,9 @@ export default function SubscribersPage() {
           description: res.error,
         })
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast.error("Error resending email", {
-        description: err?.message,
+        description: err instanceof Error ? err.message : undefined,
       })
     }
   }
@@ -262,9 +262,9 @@ export default function SubscribersPage() {
           description: res.error || "Email might already exist.",
         })
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast.error("Error creating subscriber", {
-        description: err?.message,
+        description: err instanceof Error ? err.message : undefined,
       })
     } finally {
       setIsProcessing(false)
@@ -290,9 +290,9 @@ export default function SubscribersPage() {
           description: res.error,
         })
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast.error("Error saving changes", {
-        description: err?.message,
+        description: err instanceof Error ? err.message : undefined,
       })
     } finally {
       setIsProcessing(false)
@@ -317,9 +317,9 @@ export default function SubscribersPage() {
           description: res.error,
         })
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast.error("Error deleting subscriber", {
-        description: err?.message,
+        description: err instanceof Error ? err.message : undefined,
       })
     } finally {
       setIsProcessing(false)
@@ -346,9 +346,9 @@ export default function SubscribersPage() {
           description: res.error,
         })
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast.error("Error during bulk update", {
-        description: err?.message,
+        description: err instanceof Error ? err.message : undefined,
       })
     }
   }
@@ -378,9 +378,9 @@ export default function SubscribersPage() {
           description: res.error,
         })
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast.error("Error deleting subscribers", {
-        description: err?.message,
+        description: err instanceof Error ? err.message : undefined,
       })
     } finally {
       setIsProcessing(false)
@@ -394,7 +394,7 @@ export default function SubscribersPage() {
       toast.info("Preparing CSV export...")
       const res = await SubscriberApi.export({
         search: debouncedSearch || undefined,
-        status: statusFilter !== "ALL" ? (statusFilter as any) : undefined,
+        status: statusFilter !== "ALL" ? (statusFilter as "subscribed" | "unsubscribed" | "pending") : undefined,
         source: sourceFilter !== "ALL" ? sourceFilter : undefined,
       })
 
@@ -446,8 +446,8 @@ export default function SubscribersPage() {
       } else {
         toast.error("Failed to generate CSV export", { description: res.error })
       }
-    } catch (err: any) {
-      toast.error("Export error", { description: err?.message })
+    } catch (err: unknown) {
+      toast.error("Export error", { description: err instanceof Error ? err.message : undefined })
     } finally {
       setIsExporting(false)
     }
@@ -691,8 +691,8 @@ export default function SubscribersPage() {
                   <Label className="text-xs">Subscription Status</Label>
                   <Select
                     value={addForm.status}
-                    onValueChange={(val: any) =>
-                      setAddForm({ ...addForm, status: val })
+                    onValueChange={(val) =>
+                      setAddForm({ ...addForm, status: val as "subscribed" | "unsubscribed" | "pending" })
                     }
                   >
                     <SelectTrigger className="h-9 w-full text-xs">
@@ -813,8 +813,8 @@ export default function SubscribersPage() {
                   <Label className="text-xs">Status</Label>
                   <Select
                     value={editForm.status || "subscribed"}
-                    onValueChange={(val: any) =>
-                      setEditForm({ ...editForm, status: val })
+                    onValueChange={(val) =>
+                      setEditForm({ ...editForm, status: val as "subscribed" | "unsubscribed" | "pending" })
                     }
                   >
                     <SelectTrigger className="h-9 w-full text-xs">

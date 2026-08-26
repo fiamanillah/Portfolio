@@ -1,7 +1,12 @@
 "use client"
 
 import * as React from "react"
-import { type RowData, type Table } from "@tanstack/react-table"
+import {
+  type Column,
+  type RowData,
+  type TableFeatures,
+  type Table,
+} from "@tanstack/react-table"
 import { SlidersHorizontal } from "lucide-react"
 
 import { Button } from "@workspace/ui/components/button"
@@ -14,15 +19,24 @@ import {
   DropdownMenuTrigger,
 } from "@workspace/ui/components/dropdown-menu"
 
-interface DataTableViewOptionsProps<TData extends RowData> {
-  table: Table<any, TData> | any
+export interface DataTableViewOptionsColumn {
+  id: string
+  getCanHide?: () => boolean
+  getIsVisible?: () => boolean
+  toggleVisibility?: (value: boolean) => void
 }
 
-export function DataTableViewOptions<TData extends RowData>({
-  table,
-}: DataTableViewOptionsProps<TData>) {
+export interface DataTableViewOptionsTable {
+  getAllColumns?: () => DataTableViewOptionsColumn[]
+}
+
+export interface DataTableViewOptionsProps {
+  table: DataTableViewOptionsTable
+}
+
+export function DataTableViewOptions({ table }: DataTableViewOptionsProps) {
   const allColumns =
-    typeof table.getAllColumns === "function" ? table.getAllColumns() : []
+    typeof table?.getAllColumns === "function" ? table.getAllColumns() : []
 
   return (
     <DropdownMenu>
@@ -42,10 +56,10 @@ export function DataTableViewOptions<TData extends RowData>({
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         {allColumns
-          .filter((column: any) =>
+          .filter((column) =>
             typeof column.getCanHide === "function" ? column.getCanHide() : true
           )
-          .map((column: any) => {
+          .map((column) => {
             const isVisible =
               typeof column.getIsVisible === "function"
                 ? column.getIsVisible()

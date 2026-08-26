@@ -1,7 +1,22 @@
 // src/utils/pagination.ts
+export interface PaginateFindManyArgs {
+  where?: unknown
+  include?: unknown
+  select?: unknown
+  orderBy?: unknown
+  skip?: number
+  take?: number
+  [key: string]: unknown
+}
+
+export interface PrismaPaginationDelegate<T> {
+  findMany: (args: PaginateFindManyArgs) => Promise<T[]>
+  count: (args?: { where?: unknown }) => Promise<number>
+}
+
 export async function paginate<T>(
-  model: any,
-  args: any,
+  model: PrismaPaginationDelegate<T>,
+  args: Omit<PaginateFindManyArgs, "skip" | "take"> = {},
   page: number = 1,
   limit: number = 10
 ) {

@@ -22,7 +22,8 @@ export interface DefaultTemplateSeed {
   replyTo: string
   type: "TRANSACTIONAL" | "HEADLESS" | "MARKETING"
   isSystem: boolean
-  sampleData: Record<string, any>
+  sampleData: Record<string, unknown>
+  variables?: string[]
 }
 
 export const SYSTEM_TEMPLATES: DefaultTemplateSeed[] = [

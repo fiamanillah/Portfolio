@@ -3,7 +3,7 @@
 function getApiBaseUrl(): string {
   if (typeof window !== "undefined") {
     return (
-      (import.meta as any).env?.PUBLIC_API_URL || "https://api-fi.amanillah.com"
+      import.meta.env?.PUBLIC_API_URL || "https://api-fi.amanillah.com"
     ).replace(/\/$/, "")
   }
   return (

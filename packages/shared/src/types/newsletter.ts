@@ -80,7 +80,7 @@ export interface NewsletterDetail extends NewsletterItem {
   excludedEmails: string[];
   excludedSources: string[];
   spamReport?: NewsletterSpamReport | null;
-  metadata?: Record<string, any> | null;
+  metadata?: Record<string, unknown> | null;
 }
 
 export interface NewsletterSendLogItem {

@@ -49,9 +49,14 @@ export interface CaseStudyMetadata {
 export interface CaseStudyDetail {
   slug: string
   title: string
+  subtitle?: string
   description: string
-  projectType?: "CASE_STUDY" | "PROJECT"
+  projectType?: string
   status: string
+  projectStatus?: string
+  order?: number
+  featured?: boolean
+  pinned?: boolean
   techStack: string[]
   liveUrl?: string
   githubUrl?: string
@@ -62,6 +67,9 @@ export interface CaseStudyDetail {
   client?: string
   impact?: string
   highlights?: string[]
+  views?: number
+  likesCount?: number
+  publishedAt?: string
   metadata?: CaseStudyMetadata[]
   contextBlocks: ContextBlock[]
   architectureLayers: ArchitectureLayer[]

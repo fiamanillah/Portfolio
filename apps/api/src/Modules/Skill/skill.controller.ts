@@ -34,9 +34,9 @@ export class SkillController extends BaseController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const query = (req as any).validatedQuery || req.query;
+      const query = (req.validatedQuery || req.query) as PublicSkillQueryDTO;
       const sections = await this.skillService.getPublicSkills(
-        query as PublicSkillQueryDTO
+        query
       );
       this.sendResponse(
         req,
@@ -85,9 +85,9 @@ export class SkillController extends BaseController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const query = (req as any).validatedQuery || req.query;
+      const query = (req.validatedQuery || req.query) as ListSkillsQueryDTO;
       const result = await this.skillService.getAllAdmin(
-        query as ListSkillsQueryDTO
+        query
       );
       this.sendPaginatedResponse(
         req,

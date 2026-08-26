@@ -26,7 +26,7 @@ export function SeoTab({
   setSeo,
   errors = {},
 }: SeoTabProps) {
-  const handleUpdate = (field: keyof CaseStudySeo, value: any) => {
+  const handleUpdate = <K extends keyof CaseStudySeo>(field: K, value: CaseStudySeo[K]) => {
     setSeo({ ...seo, [field]: value })
   }
 

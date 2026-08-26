@@ -69,10 +69,8 @@ export class TemplateController extends BaseController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const query = (req as any).validatedQuery || req.query
-      const result = await this.templateService.getAllTemplates(
-        query as ListTemplatesQueryDTO
-      )
+      const query = (req.validatedQuery || req.query) as ListTemplatesQueryDTO
+      const result = await this.templateService.getAllTemplates(query)
       this.sendPaginatedResponse(
         req,
         res,
@@ -191,7 +189,7 @@ export class TemplateController extends BaseController {
   ): Promise<void> {
     try {
       const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id
-      const result = await this.templateService.syncSingleTemplate(id)
+      const result = await this.templateService.syncTemplateToPlunk(id!)
       this.sendResponse(
         req,
         res,

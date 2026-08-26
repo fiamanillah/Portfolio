@@ -568,7 +568,7 @@ export function PostEditorForm({
           if (firstKey) setActiveTab(getTabForErrorKey(firstKey))
         }
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       showApiError(err, "An unexpected error occurred")
     } finally {
       setIsSubmitting(false)

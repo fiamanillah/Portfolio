@@ -35,7 +35,7 @@ export class TemplateRenderer {
    */
   public static async renderString(
     templateStr: string,
-    context: Record<string, any> = {}
+    context: Record<string, unknown> = {}
   ): Promise<string> {
     if (!templateStr) return ""
     try {
@@ -60,7 +60,7 @@ export class TemplateRenderer {
   public static async renderTemplate(
     subjectTemplate: string,
     bodyTemplate: string,
-    context: Record<string, any> = {}
+    context: Record<string, unknown> = {}
   ): Promise<RenderResult> {
     try {
       const renderedSubject = await this.renderString(subjectTemplate, context)

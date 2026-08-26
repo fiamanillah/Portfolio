@@ -306,8 +306,8 @@ function isLinkActive(href: string) {
   }
 
   // Register global document & window handlers once
-  if (typeof window !== "undefined" && !(window as any).__mobileNavGlobalInit) {
-    ;(window as any).__mobileNavGlobalInit = true
+  if (typeof window !== "undefined" && !window.__mobileNavGlobalInit) {
+    window.__mobileNavGlobalInit = true
 
     // Close on click outside
     document.addEventListener("click", (e) => {

@@ -158,7 +158,7 @@ export default function NewNewsletterPage() {
       } else {
         showApiError(res, "Failed to create campaign");
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       showApiError(err, "Error creating campaign");
     } finally {
       setIsSaving(false);

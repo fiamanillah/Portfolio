@@ -62,8 +62,8 @@ export function AuthorProfileSection({
       } else {
         toast.error(res.error || "Avatar upload failed")
       }
-    } catch (err: any) {
-      toast.error(err?.message || "Avatar upload failed")
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : "Avatar upload failed")
     } finally {
       setIsUploading(false)
       if (fileInputRef.current) fileInputRef.current.value = ""

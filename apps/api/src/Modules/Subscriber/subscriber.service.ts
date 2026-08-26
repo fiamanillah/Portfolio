@@ -9,7 +9,7 @@ import {
   ExternalServiceError,
   NotFoundError,
 } from "@/core/errors/AppError"
-import { prisma } from "@workspace/db"
+import { prisma, Subscriber, Prisma } from "@workspace/db"
 import { renderSubscriptionConfirmationEmail } from "@/templates/emails/subscriptionConfirmation"
 import { PlunkVerifyService } from "@/services/PlunkVerifyService"
 
@@ -199,7 +199,11 @@ export class SubscriberService {
     email: string
     name?: string
     source?: string
-  }): Promise<any> {
+  }): Promise<{
+    subscriber: Subscriber
+    alreadySubscribed: boolean
+    message: string
+  }> {
     const cleanEmail = payload.email.trim().toLowerCase()
     const cleanName = this.sanitizeInput(payload.name)
     const cleanSource = this.sanitizeInput(payload.source || "hero_section")
@@ -262,7 +266,11 @@ export class SubscriberService {
   /**
    * UNSUBSCRIBE: Update status to unsubscribed in DB & sync with Plunk
    */
-  public async unsubscribe(email: string): Promise<any> {
+  public async unsubscribe(email: string): Promise<{
+    subscriber: Subscriber
+    alreadyUnsubscribed: boolean
+    message: string
+  }> {
     const cleanEmail = email.trim().toLowerCase()
 
     const existing = await prisma.subscriber.findUnique({
@@ -375,12 +383,23 @@ export class SubscriberService {
     source?: string
     sortBy?: string
     sortOrder?: "asc" | "desc"
-  }): Promise<{ data: any[]; pagination: any; stats?: any }> {
+  }): Promise<{
+    data: Subscriber[]
+    pagination: {
+      page: number
+      limit: number
+      total: number
+      totalPages: number
+      hasNext: boolean
+      hasPrevious: boolean
+    }
+    stats?: unknown
+  }> {
     const page = Math.max(1, Number(query?.page) || 1)
     const limit = Math.min(200, Math.max(1, Number(query?.limit) || 20))
     const skip = (page - 1) * limit
 
-    const where: any = {}
+    const where: Prisma.SubscriberWhereInput = {}
 
     if (query?.search && query.search.trim()) {
       const search = query.search.trim()
@@ -423,13 +442,17 @@ export class SubscriberService {
       this.getSubscriberStats(),
     ])
 
+    const totalPages = Math.ceil(total / limit) || 1
+
     return {
       data,
       pagination: {
         total,
         page,
         limit,
-        totalPages: Math.ceil(total / limit) || 1,
+        totalPages,
+        hasNext: page < totalPages,
+        hasPrevious: page > 1,
       },
       stats,
     }
@@ -484,7 +507,7 @@ export class SubscriberService {
     status?: string
     source?: string
     sendWelcomeEmail?: boolean
-  }): Promise<any> {
+  }): Promise<Subscriber> {
     const cleanEmail = payload.email.trim().toLowerCase()
     const cleanName = this.sanitizeInput(payload.name)
     const status = payload.status || "subscribed"
@@ -533,7 +556,7 @@ export class SubscriberService {
   /**
    * READ ONE: Get single subscriber by ID
    */
-  public async getSubscriberById(id: string): Promise<any> {
+  public async getSubscriberById(id: string): Promise<Subscriber> {
     const subscriber = await prisma.subscriber.findUnique({ where: { id } })
     if (!subscriber) {
       throw new NotFoundError(`Subscriber with ID ${id} not found`)
@@ -547,7 +570,7 @@ export class SubscriberService {
   public async updateSubscriber(
     id: string,
     data: { name?: string; status?: string; source?: string }
-  ): Promise<any> {
+  ): Promise<Subscriber> {
     const existing = await this.getSubscriberById(id)
 
     const updated = await prisma.subscriber.update({
@@ -573,56 +596,54 @@ export class SubscriberService {
       updated.email,
       updated.name || "",
       updated.status === "subscribed",
-      updated.source
+      updated.source || "admin_portal"
     )
 
     return updated
   }
 
   /**
-   * DELETE: Delete subscriber from DB & sync deletion/unsubscribe to Plunk
+   * DELETE: Remove subscriber from PostgreSQL & delete from Plunk
    */
-  public async deleteSubscriber(id: string): Promise<void> {
+  public async deleteSubscriber(id: string): Promise<{ success: true }> {
     const existing = await this.getSubscriberById(id)
 
-    await prisma.subscriber.delete({ where: { id } })
-    this.logger.info(`✔ Subscriber ${existing.email} deleted from DB`)
-
-    // Sync unsubscribe/delete to Plunk
+    // Sync unsubscribe / removal to Plunk
     await this.syncSubscriberToPlunk(existing.email, existing.name || "", false)
+
+    // Delete record from DB
+    await prisma.subscriber.delete({ where: { id } })
+    this.logger.info(
+      `✔ Subscriber ${existing.email} permanently removed from database`
+    )
+
+    return { success: true }
   }
 
   /**
-   * BULK UPDATE STATUS: Update status for multiple subscribers
+   * BULK UPDATE STATUS: Bulk activate / unsubscribe
    */
   public async bulkUpdateStatus(
-    subscriberIds: string[],
+    ids: string[],
     status: string
   ): Promise<{ count: number }> {
-    const validSubscribers = await prisma.subscriber.findMany({
-      where: { id: { in: subscriberIds } },
+    const subscribers = await prisma.subscriber.findMany({
+      where: { id: { in: ids } },
       select: { id: true, email: true, name: true, source: true },
     })
 
-    if (validSubscribers.length === 0) {
-      return { count: 0 }
-    }
-
     await prisma.subscriber.updateMany({
-      where: { id: { in: subscriberIds } },
-      data: {
-        status,
-        updatedAt: new Date(),
-      },
+      where: { id: { in: ids } },
+      data: { status },
     })
 
     this.logger.info(
-      `✔ Bulk updated ${validSubscribers.length} subscribers to status '${status}'`
+      `✔ Bulk updated ${subscribers.length} subscribers to status '${status}'`
     )
 
     // Sync with Plunk in background
     Promise.all(
-      validSubscribers.map((sub) =>
+      subscribers.map((sub) =>
         this.syncSubscriberToPlunk(
           sub.email,
           sub.name || "",
@@ -630,11 +651,12 @@ export class SubscriberService {
           sub.source
         )
       )
-    ).catch((err) => {
-      this.logger.warn("Plunk bulk sync error:", { err })
+    ).catch((err: unknown) => {
+      const msg = err instanceof Error ? err.message : String(err)
+      this.logger.warn("Plunk bulk sync error:", { error: msg })
     })
 
-    return { count: validSubscribers.length }
+    return { count: subscribers.length }
   }
 
   /**
@@ -675,7 +697,9 @@ export class SubscriberService {
   /**
    * RESEND WELCOME EMAIL: Re-trigger welcome email to subscriber
    */
-  public async resendWelcomeEmail(id: string): Promise<any> {
+  public async resendWelcomeEmail(
+    id: string
+  ): Promise<{ email: string; message: string }> {
     const subscriber = await this.getSubscriberById(id)
     await this.sendWelcomeEmail(subscriber.email, subscriber.name || undefined)
     return {
@@ -693,8 +717,8 @@ export class SubscriberService {
     source?: string
     sortBy?: string
     sortOrder?: "asc" | "desc"
-  }): Promise<any[]> {
-    const where: any = {}
+  }): Promise<Subscriber[]> {
+    const where: Prisma.SubscriberWhereInput = {}
 
     if (query?.search && query.search.trim()) {
       const search = query.search.trim()
@@ -864,7 +888,7 @@ export class SubscriberService {
     }
 
     try {
-      const plunkPayload: Record<string, any> = {
+      const plunkPayload: Record<string, unknown> = {
         to: email,
         from: config.email.newsletterFrom,
         name: "Fi Amanillah",

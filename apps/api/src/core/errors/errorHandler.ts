@@ -79,8 +79,11 @@ function normalizeError(err: unknown): AppError {
   }
 
   // 5. Handle multer errors
+  if (err instanceof MulterError) {
+    return handleMulterError(err)
+  }
   if (err instanceof Error && err.name === "MulterError") {
-    return handleMulterError(err as any)
+    return handleMulterError(err as unknown as MulterError)
   }
 
   // 6. Handle JWT errors

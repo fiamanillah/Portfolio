@@ -81,8 +81,8 @@ export function MediaCleanupDialog({
       } else {
         toast.error(res.error || "Cleanup operation failed")
       }
-    } catch (err: any) {
-      toast.error(err.message || "Failed to execute cleanup")
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : "Failed to execute cleanup")
     } finally {
       setIsProcessing(false)
     }
@@ -109,7 +109,7 @@ export function MediaCleanupDialog({
               <Label className="text-xs font-semibold">Scope</Label>
               <Select
                 value={cleanType}
-                onValueChange={(val) => setCleanType(val as any)}
+                onValueChange={(val) => setCleanType(val as "all" | "blog" | "avatars" | "temp")}
               >
                 <SelectTrigger className="h-8 bg-card text-xs">
                   <SelectValue placeholder="Scope" />

@@ -2,6 +2,7 @@
 import axios from "axios"
 import {
   PrismaClient,
+  Prisma,
   CommentStatus,
   CommentReportReason,
   CommentReportStatus,
@@ -35,6 +36,36 @@ import type {
   PaginatedAdminCommentsResponse,
   PaginatedAdminReportsResponse,
 } from "./CommentDTO"
+
+interface CommentAuthorSource {
+  id?: string
+  name?: string | null
+  username?: string | null
+  email?: string | null
+  avatar?: string | null
+  role?: Role | string | null
+  badge?: string | null
+}
+
+interface CommentSourceItem {
+  id: string
+  postId: string
+  content: string
+  status: CommentStatus
+  createdAt: Date
+  updatedAt: Date
+  likesCount: number
+  parentId: string | null
+  isPinned: boolean
+  guestName?: string | null
+  guestEmail?: string | null
+  guestAvatar?: string | null
+  author?: CommentAuthorSource | null
+  post?: { slug?: string | null; title?: string | null } | null
+  replies?: CommentSourceItem[]
+  reports?: { id: string }[]
+  _count?: { reports?: number; replies?: number }
+}
 
 export class CommentService {
   private logger = new AppLogger("CommentService")
@@ -157,7 +188,7 @@ export class CommentService {
    * Helper to format author details from User relation or guest fields
    */
   private formatAuthor(
-    author: any,
+    author?: CommentAuthorSource | null,
     guestName?: string | null,
     guestEmail?: string | null,
     guestAvatar?: string | null
@@ -165,11 +196,11 @@ export class CommentService {
     if (author) {
       return {
         id: author.id,
-        name: author.name,
-        username: author.username,
-        email: author.email,
+        name: author.name || "Anonymous",
+        username: author.username || undefined,
+        email: author.email || undefined,
         avatar: author.avatar || null,
-        role: author.role || null,
+        role: (author.role as string) || null,
         badge:
           author.badge ||
           (author.role === Role.ADMIN
@@ -193,7 +224,7 @@ export class CommentService {
    * Helper to format a single comment entity to BlogComment DTO
    */
   private formatComment(
-    comment: any,
+    comment: CommentSourceItem,
     currentUserId?: string,
     userReactionsSet?: Set<string>,
     postSlug?: string,
@@ -205,7 +236,7 @@ export class CommentService {
         : false
 
     const formattedReplies: BlogComment[] = (comment.replies || []).map(
-      (reply: any) => {
+      (reply) => {
         const isReplyLiked =
           currentUserId && userReactionsSet
             ? userReactionsSet.has(reply.id)
@@ -291,7 +322,7 @@ export class CommentService {
     const skip: number = (page - 1) * limit
 
     // Build sort order
-    let orderBy: any = [{ isPinned: "desc" }]
+    const orderBy: Prisma.CommentOrderByWithRelationInput[] = [{ isPinned: "desc" }]
     if (query.sortBy === "newest") {
       orderBy.push({ createdAt: "desc" })
     } else if (query.sortBy === "oldest") {
@@ -365,9 +396,9 @@ export class CommentService {
     // Check which comments the current user has liked
     let userReactionsSet = new Set<string>()
     if (currentUserId) {
-      const allCommentIds = (comments as any[]).flatMap((c) => [
+      const allCommentIds = comments.flatMap((c) => [
         c.id,
-        ...(c.replies ? c.replies.map((r: any) => r.id) : []),
+        ...(c.replies ? c.replies.map((r) => r.id) : []),
       ])
 
       if (allCommentIds.length > 0) {
@@ -769,7 +800,7 @@ export class CommentService {
     const limit: number = Number(query.limit) > 0 ? Number(query.limit) : 20
     const skip: number = (page - 1) * limit
 
-    const where: any = {}
+    const where: Prisma.CommentWhereInput = {}
 
     if (query.status) {
       where.status = query.status as CommentStatus
@@ -813,7 +844,7 @@ export class CommentService {
       ]
     }
 
-    const orderBy: any = {}
+    const orderBy: Prisma.CommentOrderByWithRelationInput = {}
     if (query.sortBy === "likesCount") {
       orderBy.likesCount = query.sortOrder || "desc"
     } else if (query.sortBy === "updatedAt") {
@@ -861,7 +892,7 @@ export class CommentService {
       }),
     ])
 
-    const formatted: CommentAdminListItemDTO[] = (comments as any[]).map(
+    const formatted: CommentAdminListItemDTO[] = comments.map(
       (c) => ({
         id: c.id,
         postId: c.postId,
@@ -875,32 +906,32 @@ export class CommentService {
         ),
         content: c.content,
         status: c.status,
-        isPinned: c.isPinned,
-        likesCount: c.likesCount,
-        parentId: c.parentId,
-        parentAuthorName: c.parent?.author?.name || c.parent?.guestName || null,
-        repliesCount: c._count.replies,
-        reportsCount: c._count.reports,
         createdAt: c.createdAt.toISOString(),
         updatedAt: c.updatedAt.toISOString(),
+        likesCount: c.likesCount,
+        isPinned: c.isPinned,
+        parentId: c.parentId,
+        parentAuthorName: c.parent
+          ? c.parent.author?.name || c.parent.guestName || "Anonymous"
+          : null,
+        repliesCount: c._count.replies,
+        reportsCount: c._count.reports,
       })
     )
 
-    const totalPages = Math.ceil(total / limit) || 1
-
     return {
       comments: formatted,
-      total,
       page,
       limit,
-      totalPages,
+      total,
+      totalPages: Math.ceil(total / limit),
     }
   }
 
   /**
-   * Get single comment by ID with thread context and all submitted reports
+   * Get single comment detail with all relations for admin moderation
    */
-  public async getAdminCommentById(id: string) {
+  public async getCommentByIdAdmin(id: string) {
     const comment = await this.prisma.comment.findUnique({
       where: { id },
       include: {
@@ -921,31 +952,30 @@ export class CommentService {
         parent: {
           include: {
             author: {
-              select: { id: true, name: true, username: true },
+              select: { name: true, username: true },
             },
           },
-        },
-        replies: {
-          include: {
-            author: {
-              select: { id: true, name: true, username: true, avatar: true },
-            },
-          },
-          orderBy: { createdAt: "asc" },
         },
         reports: {
           include: {
             reporter: {
+              select: { id: true, name: true, email: true },
+            },
+          },
+          orderBy: { createdAt: "desc" },
+        },
+        replies: {
+          include: {
+            author: {
               select: {
                 id: true,
                 name: true,
-                email: true,
                 username: true,
+                email: true,
                 avatar: true,
+                role: true,
+                badge: true,
               },
-            },
-            reviewedBy: {
-              select: { id: true, name: true },
             },
           },
           orderBy: { createdAt: "desc" },
@@ -965,12 +995,12 @@ export class CommentService {
         comment.guestEmail,
         comment.guestAvatar
       ),
-      reports: (comment.reports as any[]).map((r) => ({
+      reports: comment.reports.map((r) => ({
         ...r,
         createdAt: r.createdAt.toISOString(),
         updatedAt: r.updatedAt.toISOString(),
       })),
-      replies: (comment.replies as any[]).map((r) => ({
+      replies: comment.replies.map((r) => ({
         ...r,
         author: this.formatAuthor(
           r.author,
@@ -1122,7 +1152,7 @@ export class CommentService {
     const limit: number = Number(query.limit) > 0 ? Number(query.limit) : 20
     const skip: number = (page - 1) * limit
 
-    const where: any = {}
+    const where: Prisma.CommentReportWhereInput = {}
 
     if (query.status) {
       where.status = query.status as CommentReportStatus
@@ -1153,7 +1183,7 @@ export class CommentService {
       ]
     }
 
-    const orderBy: any = {}
+    const orderBy: Prisma.CommentReportOrderByWithRelationInput = {}
     if (query.sortBy === "status") {
       orderBy.status = query.sortOrder || "desc"
     } else if (query.sortBy === "reason") {
@@ -1202,7 +1232,7 @@ export class CommentService {
       }),
     ])
 
-    const formatted: CommentReportDTO[] = (reports as any[]).map((r) => ({
+    const formatted: CommentReportDTO[] = reports.map((r) => ({
       id: r.id,
       commentId: r.commentId,
       comment: r.comment

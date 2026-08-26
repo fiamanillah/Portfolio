@@ -10,11 +10,14 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Badge } from "@workspace/ui/components/badge"
 import { Button } from "@workspace/ui/components/button"
+import type { ComponentProps } from "astro/types"
+
+type HugeIconType = ComponentProps<typeof HugeiconsIcon>["icon"]
 
 interface MetadataItem {
   label: string
   value: string
-  icon?: any
+  icon?: HugeIconType
 }
 
 interface Props {

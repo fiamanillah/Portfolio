@@ -16,6 +16,7 @@ import {
   BulkExperienceStatusDTO,
   BulkExperienceDeleteDTO,
   ReorderExperiencesDTO,
+  ExperienceStatItem,
 } from "./ExperienceDTO";
 
 export class ExperienceService {
@@ -27,7 +28,7 @@ export class ExperienceService {
    * Helper to format raw database Experience record into full ExperienceDTO
    */
   private formatExperience(exp: Experience): ExperienceDTO {
-    let parsedStats: any[] = [];
+    let parsedStats: ExperienceStatItem[] = [];
     if (typeof exp.stats === "string") {
       try {
         parsedStats = JSON.parse(exp.stats);
@@ -35,7 +36,7 @@ export class ExperienceService {
         parsedStats = [];
       }
     } else if (Array.isArray(exp.stats)) {
-      parsedStats = exp.stats;
+      parsedStats = exp.stats as unknown as ExperienceStatItem[];
     }
 
     return {
@@ -276,7 +277,7 @@ export class ExperienceService {
         description: dto.description.trim(),
         highlights: dto.highlights || [],
         technologies: dto.technologies || [],
-        stats: (dto.stats as any) || [],
+        stats: (dto.stats as unknown as Prisma.InputJsonValue) || [],
         learned: dto.learned || null,
         status: (dto.status as ExperienceStatus) || ExperienceStatus.PUBLISHED,
         featured: dto.featured ?? true,
@@ -317,7 +318,7 @@ export class ExperienceService {
     if (dto.description !== undefined) data.description = dto.description.trim();
     if (dto.highlights !== undefined) data.highlights = dto.highlights;
     if (dto.technologies !== undefined) data.technologies = dto.technologies;
-    if (dto.stats !== undefined) data.stats = dto.stats as any;
+    if (dto.stats !== undefined) data.stats = dto.stats as unknown as Prisma.InputJsonValue;
     if (dto.learned !== undefined) data.learned = dto.learned || null;
     if (dto.status !== undefined) data.status = dto.status as ExperienceStatus;
     if (dto.featured !== undefined) data.featured = dto.featured;

@@ -132,7 +132,9 @@ export default function BookingSection() {
       }
     }
     if (token) {
-      window.location.replace(`/booking/cancel?token=${encodeURIComponent(token.trim())}`)
+      window.location.replace(
+        `/booking/cancel?token=${encodeURIComponent(token.trim())}`
+      )
     }
   }, [])
 
@@ -158,9 +160,11 @@ export default function BookingSection() {
             "Failed to cancel booking. It may have already been cancelled."
         )
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       setCancelErrorMsg(
-        err?.message || "An unexpected error occurred while cancelling."
+        err instanceof Error
+          ? err.message
+          : "An unexpected error occurred while cancelling."
       )
     } finally {
       setIsCancelling(false)
@@ -306,9 +310,12 @@ export default function BookingSection() {
       if (res.success && res.data) {
         setConfirmedBooking(res.data)
       } else {
+        const resObj = res as {
+          details?: { suggestedEmail?: string }
+          data?: { suggestedEmail?: string }
+        }
         const sugEmail =
-          (res as any)?.details?.suggestedEmail ||
-          (res as any)?.data?.suggestedEmail
+          resObj?.details?.suggestedEmail || resObj?.data?.suggestedEmail
         if (sugEmail) setSuggestedEmail(sugEmail)
         setErrorMsg(
           res.message ||
@@ -317,13 +324,17 @@ export default function BookingSection() {
         )
 
         // Reset Turnstile on error
-        if ((window as any).turnstile && (window as any).turnstile.reset) {
-          ;(window as any).turnstile.reset()
+        if (typeof window !== "undefined" && window.turnstile?.reset) {
+          window.turnstile.reset()
           setCaptchaToken("")
         }
       }
-    } catch (err: any) {
-      setErrorMsg(err?.message || "An unexpected error occurred while booking.")
+    } catch (err: unknown) {
+      setErrorMsg(
+        err instanceof Error
+          ? err.message
+          : "An unexpected error occurred while booking."
+      )
     } finally {
       setIsSubmitting(false)
     }
@@ -540,13 +551,13 @@ export default function BookingSection() {
                   </span>
                 </div>
                 <div className="flex flex-col gap-0.5">
-                  <span className="font-mono text-[10px] font-bold tracking-widest text-muted-foreground uppercase leading-none">
+                  <span className="font-mono text-[10px] leading-none font-bold tracking-widest text-muted-foreground uppercase">
                     Host & Consultant
                   </span>
-                  <h3 className="text-base font-black tracking-tight text-foreground leading-snug">
+                  <h3 className="text-base leading-snug font-black tracking-tight text-foreground">
                     Fi Amanillah
                   </h3>
-                  <p className="font-mono text-[11px] font-semibold text-primary leading-tight">
+                  <p className="font-mono text-[11px] leading-tight font-semibold text-primary">
                     Full-Stack Architect & Software Engineer
                   </p>
                 </div>

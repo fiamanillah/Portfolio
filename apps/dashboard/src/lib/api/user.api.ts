@@ -55,7 +55,16 @@ export const UserApi = {
     const queryStr = searchParams.toString()
       ? `?${searchParams.toString()}`
       : ""
-    return await request<AuthUser[]>(`/users/v1/admin/users${queryStr}`, {
+    return await request<
+      AuthUser[],
+      {
+        total: number
+        admins: number
+        moderators: number
+        authors: number
+        users: number
+      }
+    >(`/users/v1/admin/users${queryStr}`, {
       method: "GET",
     })
   },

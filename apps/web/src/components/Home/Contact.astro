@@ -129,7 +129,7 @@ import { Icon } from "astro-icon/components"
                 Email
               </span>
               <span
-                class="text-sm font-semibold leading-tight text-foreground transition-colors group-hover:text-primary"
+                class="text-sm leading-tight font-semibold text-foreground transition-colors group-hover:text-primary"
               >
                 fi@amanillah.com
               </span>
@@ -149,10 +149,9 @@ import { Icon } from "astro-icon/components"
               >
                 Location & Timezone
               </span>
-              <span class="text-sm font-medium leading-tight text-foreground">
+              <span class="text-sm leading-tight font-medium text-foreground">
                 Dhaka, Bangladesh <span
-                  class="font-normal text-muted-foreground/80"
-                  >· UTC+06:00</span
+                  class="font-normal text-muted-foreground/80">· UTC+06:00</span
                 >
               </span>
             </div>
@@ -171,7 +170,7 @@ import { Icon } from "astro-icon/components"
               >
                 Response Time
               </span>
-              <span class="text-sm font-medium leading-tight text-foreground">
+              <span class="text-sm leading-tight font-medium text-foreground">
                 Typically within 24 hours
               </span>
             </div>
@@ -534,18 +533,15 @@ import { Icon } from "astro-icon/components"
     if (!turnstileKey || !container || turnstileWidgetId !== null) return
 
     const render = () => {
-      if ((window as any).turnstile && turnstileWidgetId === null) {
+      if (window.turnstile && turnstileWidgetId === null) {
         try {
-          turnstileWidgetId = (window as any).turnstile.render(
-            "#turnstile-container",
-            {
-              sitekey: turnstileKey,
-              theme: "dark",
-              callback: () => {
-                window.dispatchEvent(new CustomEvent("grid-refresh"))
-              },
-            }
-          )
+          turnstileWidgetId = window.turnstile.render("#turnstile-container", {
+            sitekey: turnstileKey,
+            theme: "dark",
+            callback: () => {
+              window.dispatchEvent(new CustomEvent("grid-refresh"))
+            },
+          })
           window.dispatchEvent(new CustomEvent("grid-refresh"))
         } catch (err) {
           console.warn("Turnstile render error:", err)
@@ -553,7 +549,7 @@ import { Icon } from "astro-icon/components"
       }
     }
 
-    if ((window as any).turnstile) {
+    if (window.turnstile) {
       render()
       return
     }
@@ -620,9 +616,8 @@ import { Icon } from "astro-icon/components"
         : Boolean(formData.get("subscribe"))
 
       let captchaToken = ""
-      if ((window as any).turnstile && turnstileWidgetId) {
-        captchaToken =
-          (window as any).turnstile.getResponse(turnstileWidgetId) || ""
+      if (window.turnstile && turnstileWidgetId) {
+        captchaToken = window.turnstile.getResponse(turnstileWidgetId) || ""
       }
 
       const originalHTML = submitText.innerHTML
@@ -666,8 +661,8 @@ import { Icon } from "astro-icon/components"
           )
           form.reset()
 
-          if ((window as any).turnstile && turnstileWidgetId) {
-            ;(window as any).turnstile.reset(turnstileWidgetId)
+          if (window.turnstile && turnstileWidgetId) {
+            window.turnstile.reset(turnstileWidgetId)
           }
 
           setTimeout(() => {
@@ -691,8 +686,8 @@ import { Icon } from "astro-icon/components"
           submitText.innerHTML = originalHTML
           submitBtn.disabled = false
 
-          if ((window as any).turnstile && turnstileWidgetId) {
-            ;(window as any).turnstile.reset(turnstileWidgetId)
+          if (window.turnstile && turnstileWidgetId) {
+            window.turnstile.reset(turnstileWidgetId)
           }
         }
       } catch (error) {

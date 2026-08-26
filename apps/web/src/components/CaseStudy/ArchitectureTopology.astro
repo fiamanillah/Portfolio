@@ -25,7 +25,7 @@ const { layers } = Astro.props as Props
       {
         layers.map((layer, index) => {
           const items = ((layer.items ??
-            layer.tech?.map((t: any) => ({ title: t }))) ||
+            layer.tech?.map((t) => ({ title: t }))) ||
             []) as { title: string; subtitle?: string }[]
 
           return (

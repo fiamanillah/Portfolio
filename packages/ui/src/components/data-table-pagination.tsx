@@ -1,7 +1,11 @@
 "use client"
 
 import * as React from "react"
-import { type RowData, type Table } from "@tanstack/react-table"
+import {
+  type RowData,
+  type TableFeatures,
+  type Table,
+} from "@tanstack/react-table"
 import {
   ChevronLeft,
   ChevronRight,
@@ -18,8 +22,17 @@ import {
   SelectValue,
 } from "@workspace/ui/components/select"
 
-interface DataTablePaginationProps<TData extends RowData> {
-  table: Table<any, TData> | any
+export interface DataTablePaginationTable {
+  getFilteredSelectedRowModel?: () => { rows: unknown[] }
+  getFilteredRowModel?: () => { rows: unknown[] }
+  getState?: () => { pagination?: { pageIndex?: number; pageSize?: number } }
+  state?: { pagination?: { pageIndex?: number; pageSize?: number } }
+  setPageIndex?: (index: number) => void
+  setPageSize?: (size: number) => void
+}
+
+export interface DataTablePaginationProps {
+  table?: DataTablePaginationTable
   pageSizeOptions?: number[]
   totalItemsCount?: number
   pageCount?: number
@@ -29,7 +42,7 @@ interface DataTablePaginationProps<TData extends RowData> {
   onPageSizeChange?: (size: number) => void
 }
 
-export function DataTablePagination<TData extends RowData>({
+export function DataTablePagination({
   table,
   pageSizeOptions = [10, 20, 50, 100],
   totalItemsCount,
@@ -38,13 +51,13 @@ export function DataTablePagination<TData extends RowData>({
   pageSize: explicitPageSize,
   onPageChange,
   onPageSizeChange,
-}: DataTablePaginationProps<TData>) {
-  const selectedRowsCount = table.getFilteredSelectedRowModel
-    ? table.getFilteredSelectedRowModel().rows.length
+}: DataTablePaginationProps) {
+  const selectedRowsCount = table?.getFilteredSelectedRowModel
+    ? (table.getFilteredSelectedRowModel()?.rows?.length ?? 0)
     : 0
 
   const state =
-    (typeof table.getState === "function" ? table.getState() : table.state) ||
+    (typeof table?.getState === "function" ? table.getState() : table?.state) ||
     {}
 
   // 1-indexed current page
@@ -61,8 +74,8 @@ export function DataTablePagination<TData extends RowData>({
   const totalRows =
     totalItemsCount !== undefined
       ? totalItemsCount
-      : table.getFilteredRowModel
-        ? table.getFilteredRowModel().rows.length
+      : table?.getFilteredRowModel
+        ? (table.getFilteredRowModel()?.rows?.length ?? 0)
         : 0
 
   const totalPages =
@@ -81,14 +94,14 @@ export function DataTablePagination<TData extends RowData>({
     if (targetPage < 1 || targetPage > totalPages || targetPage === activePage)
       return
 
-    if (typeof table.setPageIndex === "function") {
+    if (typeof table?.setPageIndex === "function") {
       table.setPageIndex(targetPage - 1)
     }
     onPageChange?.(targetPage)
   }
 
   const handlePageSizeChange = (newSize: number) => {
-    if (typeof table.setPageSize === "function") {
+    if (typeof table?.setPageSize === "function") {
       table.setPageSize(newSize)
     }
     onPageSizeChange?.(newSize)

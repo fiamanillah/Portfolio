@@ -1,6 +1,6 @@
 // apps/api/src/Modules/Media/media.service.ts
 import crypto from "crypto"
-import { prisma, Role, MediaFile } from "@workspace/db"
+import { prisma, Role, MediaFile, Prisma } from "@workspace/db"
 import { AppLogger } from "@workspace/logger"
 import {
   BadRequestError,
@@ -28,20 +28,21 @@ import path from "path"
 
 export class MediaService {
   private logger = new AppLogger("MediaService")
+  private storage: StorageService
+  private db = prisma
 
-  constructor(
-    private readonly storage: StorageService = new StorageService(),
-    private readonly db: typeof prisma = prisma
-  ) {}
+  constructor(storageService?: StorageService) {
+    this.storage = storageService || new StorageService()
+  }
 
   public getStorageService(): StorageService {
     return this.storage
   }
 
   /**
-   * Serializes a Prisma MediaFile model into MediaFileDTO
+   * Translates Prisma MediaFile database model into API DTO
    */
-  public serializeMedia(
+  public mapToDTO(
     file: MediaFile & {
       uploader?: {
         id: string
@@ -52,7 +53,8 @@ export class MediaService {
       } | null
     }
   ): MediaFileDTO {
-    const sizeNumber = Number(file.size)
+    const sizeNumber =
+      typeof file.size === "bigint" ? Number(file.size) : file.size
 
     return {
       id: file.id,
@@ -62,7 +64,7 @@ export class MediaService {
       fileExtension: file.fileExtension,
       mimeType: file.mimeType,
       size: sizeNumber,
-      sizeFormatted: this.storage.formatBytes(file.size),
+      sizeFormatted: this.storage.formatBytes(sizeNumber),
       url: file.url,
       etag: file.etag,
       source: file.source,
@@ -72,7 +74,7 @@ export class MediaService {
       tags: file.tags,
       altText: file.altText,
       caption: file.caption,
-      metadata: (file.metadata as Record<string, any>) || null,
+      metadata: (file.metadata as Record<string, unknown>) || null,
       isPublic: file.isPublic,
       uploaderId: file.uploaderId,
       uploader: file.uploader
@@ -169,7 +171,7 @@ export class MediaService {
           `✔ [Deduplication] Reusing identical existing media asset "${existingFile.key}" to save R2 storage & API Class A write costs.`,
           { key: existingFile.key, size: bufferLength }
         )
-        return this.serializeMedia(existingFile)
+        return this.mapToDTO(existingFile)
       }
     }
 
@@ -209,9 +211,9 @@ export class MediaService {
         altText: options.altText || null,
         caption: options.caption || null,
         metadata: {
-          ...((options.metadata as any) || {}),
+          ...((options.metadata as Record<string, unknown>) || {}),
           contentHash: md5Hash,
-        },
+        } as Prisma.InputJsonValue,
         isPublic,
         uploaderId: uploaderId || null,
       },
@@ -232,7 +234,7 @@ export class MediaService {
       id: mediaRecord.id,
       key: mediaRecord.key,
     })
-    return this.serializeMedia(mediaRecord)
+    return this.mapToDTO(mediaRecord)
   }
 
   /**
@@ -308,7 +310,7 @@ export class MediaService {
         tags: dto.tags || [],
         altText: dto.altText || null,
         caption: dto.caption || null,
-        metadata: (dto.metadata as any) || {},
+        metadata: ((dto.metadata || {}) as Prisma.InputJsonValue),
         isPublic,
         uploaderId: uploaderId || null,
       },
@@ -370,7 +372,7 @@ export class MediaService {
           ...(dto.caption !== undefined ? { caption: dto.caption } : {}),
           ...(dto.tags !== undefined ? { tags: dto.tags } : {}),
           ...(dto.metadata !== undefined
-            ? { metadata: dto.metadata as any }
+            ? { metadata: dto.metadata as Prisma.InputJsonValue }
             : {}),
           ...(uploaderId && !existing.uploaderId ? { uploaderId } : {}),
         },
@@ -408,7 +410,7 @@ export class MediaService {
           tags: dto.tags || [],
           altText: dto.altText || null,
           caption: dto.caption || null,
-          metadata: (dto.metadata as any) || {},
+          metadata: ((dto.metadata || {}) as Prisma.InputJsonValue),
           isPublic: true,
           uploaderId: uploaderId || null,
         },
@@ -429,7 +431,7 @@ export class MediaService {
     this.logger.info("✔ Presigned upload confirmed and verified", {
       id: updatedRecord.id,
     })
-    return this.serializeMedia(updatedRecord)
+    return this.mapToDTO(updatedRecord)
   }
 
   /**
@@ -440,7 +442,7 @@ export class MediaService {
     const limit = Math.min(100, Math.max(1, query.limit || 20))
     const skip = (page - 1) * limit
 
-    const where: any = {}
+    const where: Prisma.MediaFileWhereInput = {}
 
     if (query.search && query.search.trim()) {
       const search = query.search.trim()
@@ -525,7 +527,7 @@ export class MediaService {
     const totalPages = Math.ceil(total / limit) || 1
 
     return {
-      data: files.map((f) => this.serializeMedia(f)),
+      data: files.map((f) => this.mapToDTO(f)),
       pagination: {
         total,
         page,
@@ -560,7 +562,7 @@ export class MediaService {
       throw new NotFoundError("Media file not found.")
     }
 
-    return this.serializeMedia(file)
+    return this.mapToDTO(file)
   }
 
   /**
@@ -586,7 +588,7 @@ export class MediaService {
       throw new NotFoundError(`Media file with key "${key}" not found.`)
     }
 
-    return this.serializeMedia(file)
+    return this.mapToDTO(file)
   }
 
   /**
@@ -626,7 +628,7 @@ export class MediaService {
         ...(dto.folder !== undefined ? { folder: dto.folder } : {}),
         ...(dto.tags !== undefined ? { tags: dto.tags } : {}),
         ...(dto.metadata !== undefined
-          ? { metadata: dto.metadata as any }
+          ? { metadata: dto.metadata as Prisma.InputJsonValue }
           : {}),
         ...(dto.isPublic !== undefined ? { isPublic: dto.isPublic } : {}),
       },
@@ -644,7 +646,7 @@ export class MediaService {
     })
 
     this.logger.info("✔ Media file updated", { id })
-    return this.serializeMedia(updated)
+    return this.mapToDTO(updated)
   }
 
   /**
@@ -677,11 +679,12 @@ export class MediaService {
     // 1. Delete object from R2 / S3
     try {
       await this.storage.deleteObject(existing.key)
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const errMsg = err instanceof Error ? err.message : String(err)
       this.logger.warn(
         `Failed to delete object from S3/R2 (${existing.key}), proceeding with DB deletion`,
         {
-          error: err.message,
+          error: errMsg,
         }
       )
     }
@@ -709,7 +712,7 @@ export class MediaService {
     currentUserId?: string,
     userRole?: Role
   ): Promise<{ success: true; count: number; deletedIds: string[] }> {
-    const where: any = {}
+    const where: Prisma.MediaFileWhereInput = {}
 
     if (dto.ids && dto.ids.length > 0) {
       where.id = { in: dto.ids }
@@ -741,10 +744,11 @@ export class MediaService {
     // 1. Bulk delete from S3/R2
     try {
       await this.storage.deleteObjects(keys)
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const errMsg = err instanceof Error ? err.message : String(err)
       this.logger.warn(
         "Bulk S3 deletion encountered errors, continuing DB cleanup",
-        { error: err.message }
+        { error: errMsg }
       )
     }
 
@@ -765,7 +769,7 @@ export class MediaService {
     currentUserId?: string,
     userRole?: Role
   ): Promise<{ success: true; count: number; updatedIds: string[] }> {
-    const where: any = { id: { in: dto.ids } }
+    const where: Prisma.MediaFileWhereInput = { id: { in: dto.ids } }
 
     // RBAC: Non-admin can only update their own uploaded media
     if (
@@ -776,7 +780,7 @@ export class MediaService {
       where.uploaderId = currentUserId
     }
 
-    const data: any = {}
+    const data: Prisma.MediaFileUpdateManyMutationInput = {}
     if (dto.folder !== undefined) {
       data.folder = dto.folder
     }
@@ -1090,9 +1094,10 @@ export class MediaService {
         const chunk = uniqueKeys.slice(i, i + batchSize)
         try {
           await this.storage.deleteObjects(chunk)
-        } catch (err: any) {
+        } catch (err: unknown) {
+          const errMsg = err instanceof Error ? err.message : String(err)
           this.logger.warn(
-            `Failed to delete batch from S3/R2 storage: ${err.message}`
+            `Failed to delete batch from S3/R2 storage: ${errMsg}`
           )
         }
       }

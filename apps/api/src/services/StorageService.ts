@@ -1,11 +1,13 @@
 import {
   S3Client,
   PutObjectCommand,
+  PutObjectCommandOutput,
   GetObjectCommand,
   DeleteObjectCommand,
   DeleteObjectsCommand,
   HeadObjectCommand,
   CreateBucketCommand,
+  S3ServiceException,
 } from "@aws-sdk/client-s3"
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner"
 import { config } from "@/core/config"
@@ -314,14 +316,18 @@ export class StorageService {
       },
     })
 
-    let response: any
+    let response: PutObjectCommandOutput | undefined
     try {
       response = await this.s3.send(command)
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const isS3Error = err instanceof S3ServiceException
+      const errorName = err instanceof Error ? err.name : ""
+      const statusCode = isS3Error ? err.$metadata?.httpStatusCode : undefined
+
       if (
-        err.name === "NoSuchBucket" ||
-        err.name === "NotFound" ||
-        err.$metadata?.httpStatusCode === 404
+        errorName === "NoSuchBucket" ||
+        errorName === "NotFound" ||
+        statusCode === 404
       ) {
         this.logger.warn(
           `⚠️ Bucket "${this.bucket}" does not exist in R2/S3. Attempting to create bucket automatically...`
@@ -332,9 +338,13 @@ export class StorageService {
             `✔ Auto-created R2/S3 bucket "${this.bucket}". Retrying upload...`
           )
           response = await this.s3.send(command)
-        } catch (createErr: any) {
+        } catch (createErr: unknown) {
+          const createMsg =
+            createErr instanceof Error
+              ? createErr.message || createErr.name
+              : String(createErr)
           this.logger.warn(
-            `⚠️ Could not auto-create R2 bucket "${this.bucket}" (${createErr.message || createErr.name}).`
+            `⚠️ Could not auto-create R2 bucket "${this.bucket}" (${createMsg}).`
           )
 
           // If in development mode and bucket creation failed due to token scope,
@@ -509,8 +519,12 @@ export class StorageService {
         })
       )
       return true
-    } catch (err: any) {
-      if (err.name === "NotFound" || err.$metadata?.httpStatusCode === 404) {
+    } catch (err: unknown) {
+      const isS3Error = err instanceof S3ServiceException
+      const errorName = err instanceof Error ? err.name : ""
+      const statusCode = isS3Error ? err.$metadata?.httpStatusCode : undefined
+
+      if (errorName === "NotFound" || statusCode === 404) {
         return false
       }
       throw err

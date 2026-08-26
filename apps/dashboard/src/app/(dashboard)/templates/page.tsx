@@ -137,8 +137,8 @@ export default function TemplatesPage() {
       } else {
         toast.error(res.error || "Failed to load email templates")
       }
-    } catch (err: any) {
-      toast.error(err?.message || "Failed to fetch templates")
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : "Failed to fetch templates")
     } finally {
       setIsLoading(false)
     }
@@ -194,7 +194,7 @@ export default function TemplatesPage() {
         showApiError(res, "Failed to create template")
         return false
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       showApiError(err, "An unexpected error occurred")
       return false
     } finally {
@@ -215,7 +215,7 @@ export default function TemplatesPage() {
         showApiError(res, "Failed to update template")
         return false
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       showApiError(err, "An unexpected error occurred")
       return false
     } finally {
@@ -289,8 +289,8 @@ export default function TemplatesPage() {
       } else {
         toast.error(res.error || "Failed to sync all templates with Plunk")
       }
-    } catch (err: any) {
-      toast.error(err?.message || "Plunk sync failed")
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : "Plunk sync failed")
     } finally {
       setIsSyncingAll(false)
     }
@@ -326,8 +326,8 @@ export default function TemplatesPage() {
         toast.error(res.error || "Failed to delete template")
         return false
       }
-    } catch (err: any) {
-      toast.error(err?.message || "Failed to delete template")
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : "Failed to delete template")
       return false
     } finally {
       setIsProcessing(false)
@@ -345,8 +345,8 @@ export default function TemplatesPage() {
         toast.error(res.error || "Failed to dispatch test email")
         return false
       }
-    } catch (err: any) {
-      toast.error(err?.message || "Error sending test email")
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : "Error sending test email")
       return false
     } finally {
       setIsProcessing(false)

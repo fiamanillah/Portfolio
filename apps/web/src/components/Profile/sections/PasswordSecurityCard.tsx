@@ -74,8 +74,8 @@ export function PasswordSecurityCard({ user }: PasswordSecurityCardProps) {
           description: res.error || res.message,
         })
       }
-    } catch (err: any) {
-      setError(err?.message || "Password update failed.")
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Password update failed.")
     } finally {
       setIsUpdating(false)
     }

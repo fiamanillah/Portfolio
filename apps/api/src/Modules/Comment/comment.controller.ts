@@ -242,7 +242,7 @@ export class CommentController extends BaseController {
   ): Promise<void> {
     try {
       const id = this.getParam(req.params.id)
-      const comment = await this.commentService.getAdminCommentById(id)
+      const comment = await this.commentService.getCommentByIdAdmin(id)
       this.sendResponse(
         req,
         res,

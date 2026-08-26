@@ -39,7 +39,7 @@ const postData = await getBlogPostBySlugAsync(slug)
 if (postData?.redirected && postData.destination) {
   return Astro.redirect(
     postData.destination,
-    (postData.statusCode as any) || 301
+    (postData.statusCode as 301 | 302 | 307 | 308) || 301
   )
 }
 
@@ -320,11 +320,12 @@ const relatedPosts =
     }
 
     // Update on custom engagement event and storage event
-    window.addEventListener("portfolio:engagement-change", (e: any) => {
-      if (!e.detail || e.detail.slug === slug) {
+    window.addEventListener("portfolio:engagement-change", ((e: Event) => {
+      const customEvent = e as CustomEvent<{ slug?: string }>
+      if (!customEvent.detail || customEvent.detail.slug === slug) {
         updateLikesDisplay()
       }
-    })
+    }) as EventListener)
     window.addEventListener("storage", (e) => {
       if (e.key === `portfolio_reactions_${slug}`) {
         updateLikesDisplay()

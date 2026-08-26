@@ -92,8 +92,8 @@ export function BulkMoveFolderDialog({
       } else {
         toast.error(res.error || "Failed to move assets")
       }
-    } catch (err: any) {
-      toast.error(err.message || "Failed to move assets")
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : "Failed to move assets")
     } finally {
       setIsSubmitting(false)
     }
@@ -245,8 +245,8 @@ export function DeleteMediaDialog({
           toast.error(res.error || "Failed to delete assets")
         }
       }
-    } catch (err: any) {
-      toast.error(err.message || "Deletion failed")
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : "Deletion failed")
     } finally {
       setIsDeleting(false)
     }

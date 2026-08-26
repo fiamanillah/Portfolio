@@ -80,7 +80,14 @@ export default function BlogsPage() {
         status:
           statusFilter !== "all" ? (statusFilter as BlogStatus) : undefined,
         featured: featuredFilter === "featured" ? true : undefined,
-        sortBy: sortBy as any,
+        sortBy:
+          (sortBy as
+            | "createdAt"
+            | "title"
+            | "views"
+            | "likesCount"
+            | "publishedAt"
+            | "updatedAt") || undefined,
         sortOrder,
       })
 

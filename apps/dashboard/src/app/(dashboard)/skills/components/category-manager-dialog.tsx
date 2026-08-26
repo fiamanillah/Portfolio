@@ -185,7 +185,7 @@ export function CategoryManagerDialog({
           setFieldErrors(extractFieldErrors(res))
         }
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       showApiError(err, "An unexpected error occurred while saving category")
     } finally {
       setIsSubmitting(false)
@@ -205,7 +205,7 @@ export function CategoryManagerDialog({
       } else {
         showApiError(res, "Failed to delete category")
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       showApiError(err, "Failed to delete category")
     }
   }

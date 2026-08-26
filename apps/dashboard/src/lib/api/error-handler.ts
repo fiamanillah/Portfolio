@@ -85,7 +85,7 @@ export function humanizeFieldPath(path: string): string {
 }
 
 export function formatApiError(
-  resOrError: ApiResponse<any> | Error | string | unknown,
+  resOrError: ApiResponse<unknown> | Error | string | unknown,
   defaultTitle?: string
 ): FormattedError {
   let title = defaultTitle || "Operation Failed"
@@ -114,10 +114,10 @@ export function formatApiError(
 
   // 3. If it's an ApiResponse or API error object
   if (typeof resOrError === "object") {
-    const apiRes = resOrError as ApiResponse<any> & {
-      error?: any
+    const apiRes = resOrError as ApiResponse<unknown> & {
+      error?: string | { message?: string }
       message?: string
-      details?: any
+      details?: { issues?: ApiValidationIssue[] }
     }
 
     code = apiRes.errorCode || apiRes.errorObj?.code
@@ -129,7 +129,7 @@ export function formatApiError(
       apiRes.errorIssues ||
       apiRes.errorDetails?.issues ||
       apiRes.errorObj?.details?.issues ||
-      (Array.isArray(apiRes.details?.issues) ? apiRes.details.issues : [])
+      (Array.isArray(apiRes.details?.issues) ? apiRes.details?.issues : [])
 
     if (Array.isArray(candidateIssues) && candidateIssues.length > 0) {
       issues = candidateIssues
@@ -148,7 +148,11 @@ export function formatApiError(
     })
 
     // Determine Title based on status/code
-    if (statusCode === 400 || code === "VALIDATION_ERROR" || issues.length > 0) {
+    if (
+      statusCode === 400 ||
+      code === "VALIDATION_ERROR" ||
+      issues.length > 0
+    ) {
       const issueCount = issues.length
       title =
         issueCount > 0
@@ -162,14 +166,20 @@ export function formatApiError(
       description = "You do not have permission to perform this action."
     } else if (statusCode === 404 || code === "NOT_FOUND") {
       title = "Item Not Found"
-    } else if (statusCode === 409 || code === "CONFLICT" || code === "ALREADY_EXISTS") {
+    } else if (
+      statusCode === 409 ||
+      code === "CONFLICT" ||
+      code === "ALREADY_EXISTS"
+    ) {
       title = "Conflict / Already Exists"
     } else if (statusCode === 413 || code === "PAYLOAD_TOO_LARGE") {
       title = "Payload Too Large"
-      description = "The uploaded file or payload exceeds the maximum allowed size."
+      description =
+        "The uploaded file or payload exceeds the maximum allowed size."
     } else if (statusCode === 429 || code === "RATE_LIMIT_EXCEEDED") {
       title = "Rate Limit Exceeded"
-      description = "Too many requests. Please wait a few moments before trying again."
+      description =
+        "Too many requests. Please wait a few moments before trying again."
     } else if (statusCode && statusCode >= 500) {
       title = "Server Error"
       description = "The server encountered an error processing your request."
@@ -182,7 +192,10 @@ export function formatApiError(
         return `• ${label}: ${iss.message}`
       })
       description = issueDescriptions.join("\n")
-    } else if (apiRes.message && apiRes.message !== "Request validation failed") {
+    } else if (
+      apiRes.message &&
+      apiRes.message !== "Request validation failed"
+    ) {
       description = apiRes.message
     } else if (apiRes.error && apiRes.error !== "Request validation failed") {
       description = apiRes.error
@@ -204,7 +217,7 @@ export function formatApiError(
  * Display a user-friendly, rich Sonner toast for any error response
  */
 export function showApiError(
-  resOrError: ApiResponse<any> | Error | string | unknown,
+  resOrError: ApiResponse<unknown> | Error | string | unknown,
   fallbackTitle?: string
 ): FormattedError {
   const formatted = formatApiError(resOrError, fallbackTitle)
@@ -221,7 +234,7 @@ export function showApiError(
  * Extract field-level errors as a Record<string, string>
  */
 export function extractFieldErrors(
-  res: ApiResponse<any> | unknown
+  res: ApiResponse<unknown> | unknown
 ): Record<string, string> {
   const formatted = formatApiError(res)
   return formatted.fieldErrors

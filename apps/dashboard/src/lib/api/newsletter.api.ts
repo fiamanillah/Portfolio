@@ -14,31 +14,31 @@ import type {
   NewsletterSpamReport,
   ListNewsletterLogsQueryDTO,
   NewsletterSendLogItem,
-} from "@workspace/shared";
-import { request } from "./client";
+} from "@workspace/shared"
+import { request, type ApiPagination } from "./client"
 
 export const NewsletterApi = {
   /**
    * 1. List campaigns with search, status/audience filters & pagination
    */
   async list(params?: Partial<ListNewslettersQueryDTO>) {
-    const searchParams = new URLSearchParams();
-    if (params?.page) searchParams.set("page", String(params.page));
-    if (params?.limit) searchParams.set("limit", String(params.limit));
-    if (params?.search) searchParams.set("search", params.search);
+    const searchParams = new URLSearchParams()
+    if (params?.page) searchParams.set("page", String(params.page))
+    if (params?.limit) searchParams.set("limit", String(params.limit))
+    if (params?.search) searchParams.set("search", params.search)
     if (params?.status && params.status !== "ALL")
-      searchParams.set("status", params.status);
+      searchParams.set("status", params.status)
     if (params?.targetAudience && params.targetAudience !== "ALL")
-      searchParams.set("targetAudience", params.targetAudience);
-    if (params?.sortBy) searchParams.set("sortBy", params.sortBy);
-    if (params?.sortOrder) searchParams.set("sortOrder", params.sortOrder);
+      searchParams.set("targetAudience", params.targetAudience)
+    if (params?.sortBy) searchParams.set("sortBy", params.sortBy)
+    if (params?.sortOrder) searchParams.set("sortOrder", params.sortOrder)
 
     const queryStr = searchParams.toString()
       ? `?${searchParams.toString()}`
-      : "";
+      : ""
     return await request<NewsletterItem[]>(`/newsletter/v1${queryStr}`, {
       method: "GET",
-    });
+    })
   },
 
   /**
@@ -47,7 +47,7 @@ export const NewsletterApi = {
   async getStats() {
     return await request<NewsletterStats>("/newsletter/v1/stats", {
       method: "GET",
-    });
+    })
   },
 
   /**
@@ -56,7 +56,7 @@ export const NewsletterApi = {
   async getById(id: string) {
     return await request<NewsletterDetail>(`/newsletter/v1/${id}`, {
       method: "GET",
-    });
+    })
   },
 
   /**
@@ -66,7 +66,7 @@ export const NewsletterApi = {
     return await request<NewsletterDetail>("/newsletter/v1", {
       method: "POST",
       body: JSON.stringify(payload),
-    });
+    })
   },
 
   /**
@@ -76,7 +76,7 @@ export const NewsletterApi = {
     return await request<NewsletterDetail>(`/newsletter/v1/${id}`, {
       method: "PATCH",
       body: JSON.stringify(payload),
-    });
+    })
   },
 
   /**
@@ -85,7 +85,7 @@ export const NewsletterApi = {
   async delete(id: string) {
     return await request<{ message: string }>(`/newsletter/v1/${id}`, {
       method: "DELETE",
-    });
+    })
   },
 
   /**
@@ -94,7 +94,7 @@ export const NewsletterApi = {
   async duplicate(id: string) {
     return await request<NewsletterDetail>(`/newsletter/v1/${id}/duplicate`, {
       method: "POST",
-    });
+    })
   },
 
   /**
@@ -107,7 +107,7 @@ export const NewsletterApi = {
         method: "POST",
         body: JSON.stringify(payload),
       }
-    );
+    )
   },
 
   /**
@@ -117,7 +117,7 @@ export const NewsletterApi = {
     return await request<NewsletterSpamReport>("/newsletter/v1/spam-check", {
       method: "POST",
       body: JSON.stringify(payload),
-    });
+    })
   },
 
   /**
@@ -125,13 +125,13 @@ export const NewsletterApi = {
    */
   async sendTest(payload: SendTestNewsletterDTO) {
     return await request<{
-      successful: number;
-      failed: number;
-      recipients: string[];
+      successful: number
+      failed: number
+      recipients: string[]
     }>("/newsletter/v1/send-test", {
       method: "POST",
       body: JSON.stringify(payload),
-    });
+    })
   },
 
   /**
@@ -139,12 +139,12 @@ export const NewsletterApi = {
    */
   async sendNow(id: string) {
     return await request<{
-      success: boolean;
-      message: string;
-      newsletterId: string;
+      success: boolean
+      message: string
+      newsletterId: string
     }>(`/newsletter/v1/${id}/send`, {
       method: "POST",
-    });
+    })
   },
 
   /**
@@ -154,7 +154,7 @@ export const NewsletterApi = {
     return await request<NewsletterDetail>(`/newsletter/v1/${id}/schedule`, {
       method: "POST",
       body: JSON.stringify(payload),
-    });
+    })
   },
 
   /**
@@ -163,7 +163,7 @@ export const NewsletterApi = {
   async cancel(id: string) {
     return await request<NewsletterDetail>(`/newsletter/v1/${id}/cancel`, {
       method: "POST",
-    });
+    })
   },
 
   /**
@@ -172,30 +172,39 @@ export const NewsletterApi = {
   async sync(id: string) {
     return await request<NewsletterDetail>(`/newsletter/v1/${id}/sync`, {
       method: "POST",
-    });
+    })
   },
 
   /**
    * 15. Get per-recipient delivery logs
    */
   async getLogs(id: string, params?: Partial<ListNewsletterLogsQueryDTO>) {
-    const searchParams = new URLSearchParams();
-    if (params?.page) searchParams.set("page", String(params.page));
-    if (params?.limit) searchParams.set("limit", String(params.limit));
-    if (params?.search) searchParams.set("search", params.search);
+    const searchParams = new URLSearchParams()
+    if (params?.page) searchParams.set("page", String(params.page))
+    if (params?.limit) searchParams.set("limit", String(params.limit))
+    if (params?.search) searchParams.set("search", params.search)
     if (params?.status && params.status !== "ALL")
-      searchParams.set("status", params.status);
-    if (params?.sortBy) searchParams.set("sortBy", params.sortBy);
-    if (params?.sortOrder) searchParams.set("sortOrder", params.sortOrder);
+      searchParams.set("status", params.status)
+    if (params?.sortBy) searchParams.set("sortBy", params.sortBy)
+    if (params?.sortOrder) searchParams.set("sortOrder", params.sortOrder)
 
     const queryStr = searchParams.toString()
       ? `?${searchParams.toString()}`
-      : "";
-    return await request<NewsletterSendLogItem[]>(
-      `/newsletter/v1/${id}/logs${queryStr}`,
+      : ""
+    return await request<
+      NewsletterSendLogItem[],
+      unknown,
       {
-        method: "GET",
+        pagination?: ApiPagination
+        counts?: {
+          total: number
+          sent: number
+          failed: number
+          pending: number
+        }
       }
-    );
+    >(`/newsletter/v1/${id}/logs${queryStr}`, {
+      method: "GET",
+    })
   },
-};
+}

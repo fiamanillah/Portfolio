@@ -1,13 +1,13 @@
 // packages/shared/src/types/api.ts
 
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   success: boolean;
   message?: string;
   data?: T;
   error?: string | {
     code?: string;
     message: string;
-    details?: any;
+    details?: unknown;
   };
   timestamp?: string;
 }

@@ -241,7 +241,7 @@ const sameAsList = [
 const articleSchemaType = post?.seo?.articleType || "TechArticle"
 
 // Construct Schema.org JSON-LD graph
-const schemaGraph: any[] = [
+const schemaGraph: Array<Record<string, unknown>> = [
   {
     "@type": "WebSite",
     "@id": `${siteUrl}/#website`,

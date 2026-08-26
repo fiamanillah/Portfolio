@@ -281,7 +281,7 @@ export default function ExperiencesPage() {
       } else {
         showApiError(res, "Failed to seed default experiences")
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       showApiError(err, "Error during experience seeding")
     } finally {
       setIsSeeding(false)

@@ -20,7 +20,7 @@ export interface PlunkCampaignCreatePayload {
   type?: "TRANSACTIONAL" | "MARKETING" | "HEADLESS";
   audienceType: "ALL" | "SEGMENT" | "FILTERED";
   segmentId?: string;
-  audienceCondition?: Record<string, any>;
+  audienceCondition?: Record<string, unknown>;
 }
 
 export interface PlunkCampaignResponse {
@@ -35,7 +35,7 @@ export interface PlunkCampaignResponse {
   type: "TRANSACTIONAL" | "MARKETING" | "HEADLESS";
   status: "DRAFT" | "SCHEDULED" | "SENDING" | "SENT" | "CANCELLED";
   audienceType: "ALL" | "SEGMENT" | "FILTERED";
-  audienceCondition?: Record<string, any>;
+  audienceCondition?: Record<string, unknown>;
   segmentId?: string;
   scheduledFor?: string | null;
   totalRecipients: number;
@@ -538,23 +538,26 @@ export class PlunkCampaignService {
         `✔ Plunk campaign test email dispatched to ${email} (Campaign: ${id})`
       );
       return { success: true, message: `Test broadcast sent to ${email}` };
-    } catch (error: any) {
-      const errMsg =
-        error.response?.data?.message ||
-        error.response?.data?.error?.message ||
-        error.message ||
-        "";
-      if (
-        error.response?.status === 403 ||
-        errMsg.toLowerCase().includes("project member")
-      ) {
-        this.logger.info(
-          `ℹ️ Plunk test restricted to project members; dispatching direct test to ${email}`
-        );
-        return {
-          success: true,
-          message: `Test email dispatched to ${email} (Direct mode)`,
-        };
+    } catch (error: unknown) {
+      let errMsg = ""
+      if (axios.isAxiosError(error)) {
+        errMsg =
+          error.response?.data?.message ||
+          error.response?.data?.error?.message ||
+          error.message ||
+          ""
+        if (
+          error.response?.status === 403 ||
+          errMsg.toLowerCase().includes("project member")
+        ) {
+          this.logger.info(
+            `ℹ️ Plunk test restricted to project members; dispatching direct test to ${email}`
+          )
+          return {
+            success: true,
+            message: `Test email dispatched to ${email} (Direct mode)`,
+          }
+        }
       }
 
       this.handleAxiosError(

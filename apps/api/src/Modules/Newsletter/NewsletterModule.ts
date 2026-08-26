@@ -163,7 +163,7 @@ export class NewsletterModule extends BaseModule {
     this.router.post(
       "/:id/sync",
       ...adminAuth,
-      controller.sync.bind(controller)
+      controller.syncWithPlunk.bind(controller)
     );
 
     // GET /newsletter/v1/:id/logs - Get recipient delivery logs

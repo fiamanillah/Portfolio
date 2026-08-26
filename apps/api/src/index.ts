@@ -5,7 +5,7 @@ import { config } from "./core/config"
 
 // Global BigInt JSON serialization support
 
-;(BigInt.prototype as any).toJSON = function () {
+BigInt.prototype.toJSON = function () {
   return Number(this)
 }
 

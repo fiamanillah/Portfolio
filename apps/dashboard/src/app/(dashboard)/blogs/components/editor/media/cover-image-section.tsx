@@ -68,8 +68,8 @@ export function CoverImageSection({
       } else {
         toast.error(res.error || "Cover upload failed")
       }
-    } catch (err: any) {
-      toast.error(err?.message || "Cover upload failed")
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : "Cover upload failed")
     } finally {
       setIsUploading(false)
       if (fileInputRef.current) fileInputRef.current.value = ""

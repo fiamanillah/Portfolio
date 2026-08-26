@@ -109,7 +109,7 @@ export function CaseStudiesDataTable({
   const selectedRows = table.getSelectedRowModel?.()?.rows || []
   const selectedCount = selectedRows.length
   const selectedIds = selectedRows
-    .map((r: any) => r.original?.id)
+    .map((r) => (r.original as { id?: string })?.id)
     .filter(Boolean) as string[]
 
   const clearSelection = () => {

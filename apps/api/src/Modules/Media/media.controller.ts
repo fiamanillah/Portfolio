@@ -151,8 +151,8 @@ export class MediaController extends BaseController {
    * Get single media file by S3 Key
    */
   public async getByKey(req: Request, res: Response): Promise<void> {
-    const rawKey =
-      (req.params as any).key ?? (req.params as any)[0] ?? req.query.key
+    const params = req.params as Record<string, string | string[] | undefined>
+    const rawKey = params.key ?? params[0] ?? (req.query.key as string | undefined)
     const key = Array.isArray(rawKey) ? rawKey.join("/") : String(rawKey || "")
 
     if (!key) {
@@ -303,8 +303,8 @@ export class MediaController extends BaseController {
    * Stream object directly (Cloudflare R2 or local storage fallback)
    */
   public async streamByKey(req: Request, res: Response): Promise<void> {
-    const rawKey =
-      (req.params as any).key ?? (req.params as any)[0] ?? req.query.key
+    const params = req.params as Record<string, string | string[] | undefined>
+    const rawKey = params.key ?? params[0] ?? (req.query.key as string | undefined)
     const key = Array.isArray(rawKey) ? rawKey.join("/") : String(rawKey || "")
 
     if (!key) {
@@ -349,18 +349,25 @@ export class MediaController extends BaseController {
       res.setHeader("Cache-Control", "public, max-age=31536000, immutable")
       if (etag) res.setHeader("ETag", etag)
 
-      const streamAny = stream as any
-      if (typeof streamAny.pipe === "function") {
-        streamAny.pipe(res)
-      } else if (typeof streamAny.transformToByteArray === "function") {
-        const bytes = await streamAny.transformToByteArray()
+      const streamObj = stream as unknown as {
+        pipe?: (destination: Response) => void
+        transformToByteArray?: () => Promise<Uint8Array>
+        [Symbol.asyncIterator]?: () => AsyncIterator<Uint8Array | Buffer>
+      }
+
+      if (typeof streamObj.pipe === "function") {
+        streamObj.pipe(res)
+      } else if (typeof streamObj.transformToByteArray === "function") {
+        const bytes = await streamObj.transformToByteArray()
         res.end(Buffer.from(bytes))
-      } else {
+      } else if (streamObj[Symbol.asyncIterator]) {
         const chunks: Buffer[] = []
-        for await (const chunk of streamAny) {
-          chunks.push(typeof chunk === "string" ? Buffer.from(chunk) : chunk)
+        for await (const chunk of streamObj as AsyncIterable<Uint8Array>) {
+          chunks.push(Buffer.from(chunk))
         }
         res.end(Buffer.concat(chunks))
+      } else {
+        throw new Error("Unable to stream object: incompatible stream body")
       }
     } catch {
       res.status(404).json({ success: false, message: "Media asset not found" })

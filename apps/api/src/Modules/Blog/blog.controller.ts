@@ -57,9 +57,9 @@ export class BlogController extends BaseController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const query = (req as any).validatedQuery || req.query
+      const query = (req.validatedQuery || req.query) as ListBlogPostsQueryDTO
       const result = await this.blogService.getAllAdmin(
-        query as ListBlogPostsQueryDTO
+        query
       )
       this.sendPaginatedResponse(
         req,
@@ -442,9 +442,9 @@ export class BlogController extends BaseController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const query = (req as any).validatedQuery || req.query
+      const query = (req.validatedQuery || req.query) as PublicBlogQueryDTO
       const result = await this.blogService.getPublicPosts(
-        query as PublicBlogQueryDTO
+        query
       )
       this.sendPaginatedResponse(
         req,

@@ -41,7 +41,7 @@ export function SocialSharePreview({
 
         <Tabs
           value={platform}
-          onValueChange={(v) => setPlatform(v as any)}
+          onValueChange={(v) => setPlatform(v as "twitter" | "og")}
           className="w-auto"
         >
           <TabsList className="h-7 border border-border bg-muted/60 p-0.5">

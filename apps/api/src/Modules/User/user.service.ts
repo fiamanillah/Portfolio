@@ -1,6 +1,6 @@
 // src/Modules/User/user.service.ts
 import path from "path"
-import { prisma, Role, User } from "@workspace/db"
+import { prisma, Role, User, Prisma } from "@workspace/db"
 import { AppLogger } from "@workspace/logger"
 import {
   BadRequestError,
@@ -199,9 +199,10 @@ export class UserService {
       )
       try {
         await this.storage.deleteObjects(oldKeys)
-      } catch (err: any) {
+      } catch (err: unknown) {
+        const errMsg = err instanceof Error ? err.message : String(err)
         this.logger.warn(
-          `Failed to delete old avatar files from storage: ${err.message}`
+          `Failed to delete old avatar files from storage: ${errMsg}`
         )
       }
       await this.db.mediaFile.deleteMany({
@@ -311,9 +312,10 @@ export class UserService {
       )
       try {
         await this.storage.deleteObjects(keysToDelete)
-      } catch (err: any) {
+      } catch (err: unknown) {
+        const errMsg = err instanceof Error ? err.message : String(err)
         this.logger.warn(
-          `Failed to delete avatar files from storage: ${err.message}`
+          `Failed to delete avatar files from storage: ${errMsg}`
         )
       }
       await this.db.mediaFile.deleteMany({
@@ -412,9 +414,10 @@ export class UserService {
       )
       try {
         await this.storage.deleteObjects(oldKeys)
-      } catch (err: any) {
+      } catch (err: unknown) {
+        const errMsg = err instanceof Error ? err.message : String(err)
         this.logger.warn(
-          `Failed to delete old resume files from storage: ${err.message}`
+          `Failed to delete old resume files from storage: ${errMsg}`
         )
       }
       await this.db.mediaFile.deleteMany({
@@ -517,9 +520,10 @@ export class UserService {
       )
       try {
         await this.storage.deleteObjects(keysToDelete)
-      } catch (err: any) {
+      } catch (err: unknown) {
+        const errMsg = err instanceof Error ? err.message : String(err)
         this.logger.warn(
-          `Failed to delete resume files from storage: ${err.message}`
+          `Failed to delete resume files from storage: ${errMsg}`
         )
       }
       await this.db.mediaFile.deleteMany({
@@ -694,9 +698,9 @@ export class UserService {
       )
       try {
         await this.storage.deleteObjects(keysToDelete)
-      } catch (err: any) {
+      } catch (err: unknown) {
         this.logger.warn(
-          `Failed to delete user media assets from storage: ${err.message}`
+          `Failed to delete user media assets from storage: ${(err as Error).message}`
         )
       }
       await this.db.mediaFile.deleteMany({
@@ -729,7 +733,7 @@ export class UserService {
     const { page, limit, search, role, sortBy, sortOrder } = query
     const skip = (page - 1) * limit
 
-    const where: any = {}
+    const where: Prisma.UserWhereInput = {}
 
     if (search && search.trim()) {
       const s = search.trim()
@@ -741,7 +745,7 @@ export class UserService {
       ]
     }
 
-    if (role && role !== ("ALL" as any)) {
+    if (role && (role as string) !== "ALL") {
       where.role = role as Role
     }
 
@@ -884,9 +888,9 @@ export class UserService {
       )
       try {
         await this.storage.deleteObjects(keysToDelete)
-      } catch (err: any) {
+      } catch (err: unknown) {
         this.logger.warn(
-          `Failed to delete target user media assets: ${err.message}`
+          `Failed to delete target user media assets: ${(err as Error).message}`
         )
       }
       await this.db.mediaFile.deleteMany({

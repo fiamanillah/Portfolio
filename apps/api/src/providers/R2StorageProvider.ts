@@ -76,11 +76,16 @@ export class R2StorageProvider implements InfrastructureProvider<S3Client> {
         this.logger.info(
           `✔ Connected and verified R2/S3 Bucket: "${this.bucket}"`
         )
-      } catch (err: any) {
+      } catch (err: unknown) {
+        const isS3Error = err instanceof S3ServiceException
+        const errorName = err instanceof Error ? err.name : ""
+        const statusCode = isS3Error ? err.$metadata?.httpStatusCode : undefined
+        const errorMessage = err instanceof Error ? err.message : String(err)
+
         if (
-          err.name === "NotFound" ||
-          err.$metadata?.httpStatusCode === 404 ||
-          err.name === "NoSuchBucket"
+          errorName === "NotFound" ||
+          statusCode === 404 ||
+          errorName === "NoSuchBucket"
         ) {
           this.logger.warn(
             `⚠️ Cloudflare R2 bucket "${this.bucket}" does not exist yet. Attempting auto-creation...`
@@ -92,15 +97,19 @@ export class R2StorageProvider implements InfrastructureProvider<S3Client> {
             this.logger.info(
               `✔ Successfully auto-created Cloudflare R2 bucket: "${this.bucket}"`
             )
-          } catch (createErr: any) {
+          } catch (createErr: unknown) {
+            const createMsg =
+              createErr instanceof Error
+                ? createErr.message || createErr.name
+                : String(createErr)
             this.logger.warn(
-              `⚠️ Could not auto-create bucket "${this.bucket}" (${createErr.message || createErr.name}). ` +
+              `⚠️ Could not auto-create bucket "${this.bucket}" (${createMsg}). ` +
                 `Please create bucket "${this.bucket}" in your Cloudflare R2 Dashboard (or set R2_BUCKET_NAME in .env).`
             )
           }
         } else {
           this.logger.warn(
-            `⚠️ R2/S3 bucket "${this.bucket}" check returned ${err.name || "error"}: ${err.message}`
+            `⚠️ R2/S3 bucket "${this.bucket}" check returned ${errorName || "error"}: ${errorMessage}`
           )
         }
       }
@@ -132,7 +141,7 @@ export class R2StorageProvider implements InfrastructureProvider<S3Client> {
             "Requested object was not found in storage",
             {
               code: "OBJECT_NOT_FOUND",
-              key: (err as any).Key,
+              key: (err as unknown as { Key?: string }).Key,
             }
           )
 

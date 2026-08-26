@@ -6,6 +6,7 @@ import { AppLogger } from "@workspace/logger";
 import { PlunkTemplateService } from "@/services/PlunkTemplateService";
 import { TemplateRenderer } from "@/services/TemplateRenderer";
 import { renderEmailLayout } from "@/templates/emails/baseLayout";
+import type { AudienceType } from "@workspace/shared";
 import {
   type ResolvedRecipient,
   NewsletterRecipientResolver,
@@ -77,7 +78,7 @@ export class NewsletterDispatcher {
 
     // 1. Resolve eligible audience
     const { recipients } = await NewsletterRecipientResolver.resolveRecipients({
-      targetAudience: newsletter.targetAudience as any,
+      targetAudience: newsletter.targetAudience as AudienceType,
       includedSources: newsletter.includedSources,
       includedTags: newsletter.includedTags,
       includedEmails: newsletter.includedEmails,
@@ -221,9 +222,9 @@ export class NewsletterDispatcher {
                 error: null,
               },
             });
-          } catch (err: any) {
+          } catch (err: unknown) {
             failed++;
-            const errorMsg = err?.message || String(err);
+            const errorMsg = err instanceof Error ? err.message : String(err);
             this.logger.error(`Failed to send newsletter to ${recipient.email}: ${errorMsg}`);
 
             await prisma.newsletterSendLog.updateMany({
@@ -355,10 +356,10 @@ export class NewsletterDispatcher {
         });
 
         successful++;
-      } catch (err: any) {
+      } catch (err: unknown) {
         failed++;
         this.logger.error(`Error sending test newsletter to ${email}:`, {
-          error: err?.message || err,
+          error: err instanceof Error ? err.message : String(err),
         });
       }
     }

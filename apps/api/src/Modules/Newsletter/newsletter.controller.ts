@@ -3,6 +3,10 @@ import { Request, Response, NextFunction } from "express";
 import { BaseController } from "@/core/BaseController";
 import { HTTPStatusCode } from "@/types/HTTPStatusCode";
 import { NewsletterService } from "./newsletter.service";
+import type {
+  ListNewslettersQueryDTO,
+  ListNewsletterLogsQueryDTO,
+} from "@workspace/shared";
 
 export class NewsletterController extends BaseController {
   constructor(private newsletterService: NewsletterService) {
@@ -44,8 +48,8 @@ export class NewsletterController extends BaseController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const query = (req as any).validatedQuery || req.query;
-      const result = await this.newsletterService.list(query as any);
+      const query = (req.validatedQuery || req.query) as ListNewslettersQueryDTO;
+      const result = await this.newsletterService.list(query);
       this.sendPaginatedResponse(
         req,
         res,
@@ -133,12 +137,14 @@ export class NewsletterController extends BaseController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const data = await this.newsletterService.create(req.body);
-      this.sendCreatedResponse(
+      const payload = req.body;
+      const data = await this.newsletterService.create(payload);
+      this.sendResponse(
         req,
         res,
-        data,
-        "Newsletter created successfully."
+        "Newsletter created successfully",
+        HTTPStatusCode.CREATED,
+        data
       );
     } catch (error) {
       next(error);
@@ -159,7 +165,7 @@ export class NewsletterController extends BaseController {
       this.sendResponse(
         req,
         res,
-        "Newsletter details retrieved successfully",
+        "Newsletter retrieved successfully",
         HTTPStatusCode.OK,
         data
       );
@@ -169,7 +175,7 @@ export class NewsletterController extends BaseController {
   }
 
   /**
-   * PATCH /newsletter/v1/:id
+   * PUT /newsletter/v1/:id
    */
   public async update(
     req: Request,
@@ -178,11 +184,12 @@ export class NewsletterController extends BaseController {
   ): Promise<void> {
     try {
       const id = this.getId(req);
-      const data = await this.newsletterService.update(id, req.body);
+      const payload = req.body;
+      const data = await this.newsletterService.update(id, payload);
       this.sendResponse(
         req,
         res,
-        "Newsletter updated successfully.",
+        "Newsletter updated successfully",
         HTTPStatusCode.OK,
         data
       );
@@ -201,12 +208,13 @@ export class NewsletterController extends BaseController {
   ): Promise<void> {
     try {
       const id = this.getId(req);
-      await this.newsletterService.delete(id);
+      const data = await this.newsletterService.delete(id);
       this.sendResponse(
         req,
         res,
-        "Newsletter deleted successfully.",
-        HTTPStatusCode.OK
+        "Newsletter deleted successfully",
+        HTTPStatusCode.OK,
+        data
       );
     } catch (error) {
       next(error);
@@ -214,21 +222,23 @@ export class NewsletterController extends BaseController {
   }
 
   /**
-   * POST /newsletter/v1/:id/duplicate
+   * POST /newsletter/v1/:id/schedule
    */
-  public async duplicate(
+  public async schedule(
     req: Request,
     res: Response,
     next: NextFunction
   ): Promise<void> {
     try {
       const id = this.getId(req);
-      const data = await this.newsletterService.duplicate(id);
-      this.sendCreatedResponse(
+      const payload = req.body;
+      const data = await this.newsletterService.schedule(id, payload);
+      this.sendResponse(
         req,
         res,
-        data,
-        "Newsletter duplicated successfully."
+        "Newsletter scheduled successfully",
+        HTTPStatusCode.OK,
+        data
       );
     } catch (error) {
       next(error);
@@ -246,27 +256,10 @@ export class NewsletterController extends BaseController {
     try {
       const id = this.getId(req);
       const data = await this.newsletterService.sendNow(id);
-      this.sendResponse(req, res, data.message, HTTPStatusCode.OK, data);
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  /**
-   * POST /newsletter/v1/:id/schedule
-   */
-  public async schedule(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
-    try {
-      const id = this.getId(req);
-      const data = await this.newsletterService.schedule(id, req.body);
       this.sendResponse(
         req,
         res,
-        "Newsletter scheduled successfully.",
+        "Newsletter dispatch initiated",
         HTTPStatusCode.OK,
         data
       );
@@ -289,7 +282,7 @@ export class NewsletterController extends BaseController {
       this.sendResponse(
         req,
         res,
-        "Newsletter schedule / dispatch cancelled.",
+        "Newsletter schedule cancelled",
         HTTPStatusCode.OK,
         data
       );
@@ -299,9 +292,32 @@ export class NewsletterController extends BaseController {
   }
 
   /**
-   * POST /newsletter/v1/:id/sync
+   * POST /newsletter/v1/:id/duplicate
    */
-  public async sync(
+  public async duplicate(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const id = this.getId(req);
+      const data = await this.newsletterService.duplicate(id);
+      this.sendResponse(
+        req,
+        res,
+        "Newsletter duplicated successfully",
+        HTTPStatusCode.CREATED,
+        data
+      );
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * POST /newsletter/v1/:id/sync-plunk
+   */
+  public async syncWithPlunk(
     req: Request,
     res: Response,
     next: NextFunction
@@ -312,7 +328,7 @@ export class NewsletterController extends BaseController {
       this.sendResponse(
         req,
         res,
-        "Campaign synced with Plunk successfully.",
+        "Newsletter synced with Plunk",
         HTTPStatusCode.OK,
         data
       );
@@ -331,10 +347,10 @@ export class NewsletterController extends BaseController {
   ): Promise<void> {
     try {
       const id = this.getId(req);
-      const query = (req as any).validatedQuery || req.query;
+      const query = (req.validatedQuery || req.query) as ListNewsletterLogsQueryDTO;
       const result = await this.newsletterService.getLogs(
         id,
-        query as any
+        query
       );
       this.sendPaginatedResponse(
         req,

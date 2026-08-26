@@ -26,7 +26,7 @@ export const ResumeApi = {
     isActive?: boolean | string
     sortBy?: string
     sortOrder?: "asc" | "desc"
-  }): Promise<ApiResponse<ResumeDTO[]>> {
+  }): Promise<ApiResponse<ResumeDTO[], ResumeStatsDTO>> {
     const searchParams = new URLSearchParams()
     if (params?.page) searchParams.set("page", String(params.page))
     if (params?.limit) searchParams.set("limit", String(params.limit))
@@ -37,10 +37,15 @@ export const ResumeApi = {
     if (params?.sortBy) searchParams.set("sortBy", params.sortBy)
     if (params?.sortOrder) searchParams.set("sortOrder", params.sortOrder)
 
-    const queryStr = searchParams.toString() ? `?${searchParams.toString()}` : ""
-    return await request<ResumeDTO[]>(`/resume/v1/admin${queryStr}`, {
-      method: "GET",
-    })
+    const queryStr = searchParams.toString()
+      ? `?${searchParams.toString()}`
+      : ""
+    return await request<ResumeDTO[], ResumeStatsDTO>(
+      `/resume/v1/admin${queryStr}`,
+      {
+        method: "GET",
+      }
+    )
   },
 
   /**

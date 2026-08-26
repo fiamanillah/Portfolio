@@ -54,7 +54,7 @@ export const CommentApi = {
    * 3. Get single comment details by ID with parent, replies, and reports
    */
   async getById(id: string) {
-    return await request<any>(`/comments/v1/admin/comments/${id}`, {
+    return await request<CommentAdminListItemDTO>(`/comments/v1/admin/comments/${id}`, {
       method: "GET",
     })
   },
@@ -63,7 +63,7 @@ export const CommentApi = {
    * 4. Update comment status (APPROVE, SPAM, REJECT), pin status, or content
    */
   async updateStatus(id: string, payload: UpdateCommentStatusDTO) {
-    return await request<any>(`/comments/v1/admin/comments/${id}/status`, {
+    return await request<CommentAdminListItemDTO>(`/comments/v1/admin/comments/${id}/status`, {
       method: "PATCH",
       body: JSON.stringify(payload),
     })
@@ -134,7 +134,7 @@ export const CommentApi = {
    * 9. Resolve a comment report with optional moderation action
    */
   async resolveReport(id: string, payload: ResolveCommentReportDTO) {
-    return await request<any>(`/comments/v1/admin/reports/${id}`, {
+    return await request<CommentReportDTO>(`/comments/v1/admin/reports/${id}`, {
       method: "PATCH",
       body: JSON.stringify(payload),
     })

@@ -1,7 +1,7 @@
 // apps/dashboard/src/app/(dashboard)/newsletters/components/campaign-logs-table.tsx
-"use client";
+"use client"
 
-import * as React from "react";
+import * as React from "react"
 import {
   CheckCircle2,
   XCircle,
@@ -11,12 +11,9 @@ import {
   RefreshCw,
   AlertTriangle,
   Mail,
-} from "lucide-react";
-import type {
-  NewsletterSendLogItem,
-  SendLogStatus,
-} from "@workspace/shared";
-import { NewsletterApi } from "@/lib/api";
+} from "lucide-react"
+import type { NewsletterSendLogItem, SendLogStatus } from "@workspace/shared"
+import { NewsletterApi } from "@/lib/api"
 import {
   Table,
   TableBody,
@@ -24,68 +21,80 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@workspace/ui/components/table";
-import { Badge } from "@workspace/ui/components/badge";
-import { Input } from "@workspace/ui/components/input";
-import { Button } from "@workspace/ui/components/button";
+} from "@workspace/ui/components/table"
+import { Badge } from "@workspace/ui/components/badge"
+import { Input } from "@workspace/ui/components/input"
+import { Button } from "@workspace/ui/components/button"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@workspace/ui/components/select";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@workspace/ui/components/card";
+} from "@workspace/ui/components/select"
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@workspace/ui/components/card"
 
 interface CampaignLogsTableProps {
-  newsletterId: string;
+  newsletterId: string
 }
 
 export function CampaignLogsTable({ newsletterId }: CampaignLogsTableProps) {
-  const [logs, setLogs] = React.useState<NewsletterSendLogItem[]>([]);
+  const [logs, setLogs] = React.useState<NewsletterSendLogItem[]>([])
   const [counts, setCounts] = React.useState({
     total: 0,
     sent: 0,
     failed: 0,
     pending: 0,
-  });
-  const [isLoading, setIsLoading] = React.useState(true);
+  })
+  const [isLoading, setIsLoading] = React.useState(true)
 
-  const [search, setSearch] = React.useState("");
-  const [statusFilter, setStatusFilter] = React.useState<string>("ALL");
-  const [page, setPage] = React.useState(1);
-  const [pageSize, setPageSize] = React.useState(50);
-  const [totalPages, setTotalPages] = React.useState(1);
+  const [search, setSearch] = React.useState("")
+  const [statusFilter, setStatusFilter] = React.useState<string>("ALL")
+  const [page, setPage] = React.useState(1)
+  const [pageSize, setPageSize] = React.useState(50)
+  const [totalPages, setTotalPages] = React.useState(1)
 
   const fetchLogs = React.useCallback(async () => {
     try {
-      setIsLoading(true);
+      setIsLoading(true)
       const res = await NewsletterApi.getLogs(newsletterId, {
         page,
         limit: pageSize,
         search: search.trim() || undefined,
-        status: statusFilter !== "ALL" ? (statusFilter as SendLogStatus) : undefined,
-      });
+        status:
+          statusFilter !== "ALL" ? (statusFilter as SendLogStatus) : undefined,
+      })
 
       if (res.success && res.data) {
-        setLogs(res.data);
+        setLogs(res.data)
         if (res.pagination?.totalPages) {
-          setTotalPages(res.pagination.totalPages);
+          setTotalPages(res.pagination.totalPages)
         }
         if (res.meta?.counts) {
-          setCounts(res.meta.counts);
+          setCounts({
+            total: res.meta.counts.total ?? 0,
+            sent: res.meta.counts.sent ?? 0,
+            failed: res.meta.counts.failed ?? 0,
+            pending: res.meta.counts.pending ?? 0,
+          })
         }
       }
     } catch {
       // ignore
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  }, [newsletterId, page, pageSize, search, statusFilter]);
+  }, [newsletterId, page, pageSize, search, statusFilter])
 
   React.useEffect(() => {
-    fetchLogs();
-  }, [fetchLogs]);
+    fetchLogs()
+  }, [fetchLogs])
 
   return (
     <div className="space-y-4">
@@ -101,7 +110,7 @@ export function CampaignLogsTable({ newsletterId }: CampaignLogsTableProps) {
         </Card>
 
         <Card className="border-emerald-500/20 bg-emerald-500/5 p-3">
-          <div className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 uppercase">
+          <div className="text-[11px] font-semibold text-emerald-600 uppercase dark:text-emerald-400">
             Delivered (Sent)
           </div>
           <div className="text-xl font-bold text-emerald-600 dark:text-emerald-400">
@@ -110,7 +119,7 @@ export function CampaignLogsTable({ newsletterId }: CampaignLogsTableProps) {
         </Card>
 
         <Card className="border-rose-500/20 bg-rose-500/5 p-3">
-          <div className="text-[11px] font-semibold text-rose-600 dark:text-rose-400 uppercase">
+          <div className="text-[11px] font-semibold text-rose-600 uppercase dark:text-rose-400">
             Failed Sends
           </div>
           <div className="text-xl font-bold text-rose-600 dark:text-rose-400">
@@ -119,7 +128,7 @@ export function CampaignLogsTable({ newsletterId }: CampaignLogsTableProps) {
         </Card>
 
         <Card className="border-amber-500/20 bg-amber-500/5 p-3">
-          <div className="text-[11px] font-semibold text-amber-600 dark:text-amber-400 uppercase">
+          <div className="text-[11px] font-semibold text-amber-600 uppercase dark:text-amber-400">
             Pending in Queue
           </div>
           <div className="text-xl font-bold text-amber-600 dark:text-amber-400">
@@ -136,8 +145,8 @@ export function CampaignLogsTable({ newsletterId }: CampaignLogsTableProps) {
             placeholder="Search logs by email address or error..."
             value={search}
             onChange={(e) => {
-              setSearch(e.target.value);
-              setPage(1);
+              setSearch(e.target.value)
+              setPage(1)
             }}
             className="h-8 pl-8 text-xs"
           />
@@ -147,8 +156,8 @@ export function CampaignLogsTable({ newsletterId }: CampaignLogsTableProps) {
           <Select
             value={statusFilter}
             onValueChange={(val) => {
-              setStatusFilter(val);
-              setPage(1);
+              setStatusFilter(val)
+              setPage(1)
             }}
           >
             <SelectTrigger className="h-8 w-[130px] text-xs">
@@ -209,15 +218,15 @@ export function CampaignLogsTable({ newsletterId }: CampaignLogsTableProps) {
                   log.status === "SENT"
                     ? CheckCircle2
                     : log.status === "FAILED"
-                    ? XCircle
-                    : Clock;
+                      ? XCircle
+                      : Clock
 
                 const statusColor =
                   log.status === "SENT"
                     ? "text-emerald-500 border-emerald-500/30 bg-emerald-500/10"
                     : log.status === "FAILED"
-                    ? "text-rose-500 border-rose-500/30 bg-rose-500/10"
-                    : "text-amber-500 border-amber-500/30 bg-amber-500/10";
+                      ? "text-rose-500 border-rose-500/30 bg-rose-500/10"
+                      : "text-amber-500 border-amber-500/30 bg-amber-500/10"
 
                 return (
                   <TableRow key={log.id}>
@@ -241,15 +250,15 @@ export function CampaignLogsTable({ newsletterId }: CampaignLogsTableProps) {
                       </Badge>
                     </TableCell>
                     <TableCell className="text-xs text-muted-foreground">
-                      {log.sentAt
-                        ? new Date(log.sentAt).toLocaleString()
-                        : "—"}
+                      {log.sentAt ? new Date(log.sentAt).toLocaleString() : "—"}
                     </TableCell>
                     <TableCell className="max-w-[300px] truncate text-xs text-rose-500">
-                      {log.error || <span className="text-muted-foreground/60">—</span>}
+                      {log.error || (
+                        <span className="text-muted-foreground/60">—</span>
+                      )}
                     </TableCell>
                   </TableRow>
-                );
+                )
               })
             ) : (
               <TableRow>
@@ -294,5 +303,5 @@ export function CampaignLogsTable({ newsletterId }: CampaignLogsTableProps) {
         </div>
       )}
     </div>
-  );
+  )
 }

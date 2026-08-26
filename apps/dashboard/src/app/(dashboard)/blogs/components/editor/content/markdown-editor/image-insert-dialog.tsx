@@ -88,8 +88,8 @@ export function ImageInsertDialog({
       } else {
         toast.error(res.error || "Upload failed")
       }
-    } catch (err: any) {
-      toast.error(err?.message || "Upload failed")
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : "Upload failed")
     } finally {
       setIsUploading(false)
     }
@@ -129,7 +129,7 @@ export function ImageInsertDialog({
 
           <Tabs
             value={activeTab}
-            onValueChange={(v) => setActiveTab(v as any)}
+            onValueChange={(v) => setActiveTab(v as "media" | "upload" | "url")}
             className="flex w-full flex-col"
           >
             <div className="border-b border-border/80 bg-muted/10 px-6">

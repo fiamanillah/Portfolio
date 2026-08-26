@@ -1,5 +1,5 @@
 // src/Modules/Blog/blog.service.ts
-import { prisma, BlogStatus, BlogPost, BlogCategory, Role } from "@workspace/db"
+import { prisma, Prisma, BlogStatus, BlogPost, BlogCategory, Role } from "@workspace/db"
 import { AppLogger } from "@workspace/logger"
 import {
   NotFoundError,
@@ -28,6 +28,30 @@ import {
 } from "./BlogDTO"
 import { StorageService } from "@/services/StorageService"
 import { RedirectService } from "../Redirect/redirect.service"
+import type { BlogArticleType } from "@workspace/shared"
+
+type BlogPostWithRelations = BlogPost & {
+  category?: {
+    id: string
+    slug: string
+    name: string
+    color?: string | null
+    description?: string | null
+    icon?: string | null
+    order?: number
+    createdAt?: Date
+    updatedAt?: Date
+  } | null
+  author?: {
+    id: string
+    name: string
+    avatar?: string | null
+    headline?: string | null
+    twitterUrl?: string | null
+    linkedinUrl?: string | null
+    githubUrl?: string | null
+  } | null
+}
 import { config } from "@/core/config"
 import fs from "fs/promises"
 import path from "path"
@@ -70,8 +94,10 @@ export class BlogService {
             headers: { "User-Agent": "Portfolio-API-RSS-Ping/1.0" },
           }),
         ])
-      } catch (err) {
-        this.logger.warn(`Failed to auto-ping sitemap/rss for '${slug}':`, err)
+      } catch (err: unknown) {
+        this.logger.warn(`Failed to auto-ping sitemap/rss for '${slug}':`, {
+          error: err instanceof Error ? err.message : String(err),
+        })
       }
     }, 100)
   }
@@ -175,7 +201,7 @@ export class BlogService {
   /**
    * Format raw DB record into BlogPostDTO
    */
-  private mapToBlogPostDTO(post: any): BlogPostDTO {
+  private mapToBlogPostDTO(post: BlogPostWithRelations): BlogPostDTO {
     return {
       id: post.id,
       slug: post.slug,
@@ -208,30 +234,21 @@ export class BlogService {
             description: post.category.description,
             color: post.category.color,
             icon: post.category.icon,
-            order: post.category.order,
+            order: post.category.order ?? 0,
           }
         : null,
       authorId: post.authorId,
       author: post.author
         ? {
             id: post.author.id,
-            name: post.authorName || post.author.name,
-            role: post.authorRole || post.author.headline,
-            avatar: post.authorAvatar || post.author.avatar,
-            twitter: post.authorTwitter || post.author.twitterUrl,
-            linkedin: post.authorLinkedin || post.author.linkedinUrl,
-            github: post.authorGithub || post.author.githubUrl,
+            name: post.author.name,
+            role: post.author.headline || "",
+            avatar: post.author.avatar || "",
+            twitter: post.author.twitterUrl || "",
+            linkedin: post.author.linkedinUrl || "",
+            github: post.author.githubUrl || "",
           }
-        : post.authorName
-          ? {
-              name: post.authorName,
-              role: post.authorRole,
-              avatar: post.authorAvatar,
-              twitter: post.authorTwitter,
-              linkedin: post.authorLinkedin,
-              github: post.authorGithub,
-            }
-          : null,
+        : null,
       seo: {
         metaTitle: post.metaTitle,
         metaDescription: post.metaDescription,
@@ -239,16 +256,16 @@ export class BlogService {
         ogTitle: post.ogTitle,
         ogDescription: post.ogDescription,
         ogImage: post.ogImage,
-        ogType: post.ogType as any,
-        twitterCard: post.twitterCard as any,
+        ogType: (post.ogType as "article" | "website") || undefined,
+        twitterCard: (post.twitterCard as "summary" | "summary_large_image") || undefined,
         twitterTitle: post.twitterTitle,
         twitterDescription: post.twitterDescription,
         twitterImage: post.twitterImage,
         canonicalUrl: post.canonicalUrl,
-        articleType: post.articleType as any,
+        articleType: (post.articleType as BlogArticleType) || undefined,
         noIndex: post.noIndex,
         noFollow: post.noFollow,
-        structuredData: post.structuredData as any,
+        structuredData: (post.structuredData as Record<string, unknown>) || null,
       },
       createdAt: post.createdAt.toISOString(),
       updatedAt: post.updatedAt.toISOString(),
@@ -258,7 +275,7 @@ export class BlogService {
   /**
    * Format DB record into lightweight list item
    */
-  private mapToListItemDTO(post: any): BlogPostListItemDTO {
+  private mapToListItemDTO(post: BlogPostWithRelations): BlogPostListItemDTO {
     return {
       id: post.id,
       slug: post.slug,
@@ -423,7 +440,7 @@ export class BlogService {
     const pageNum = Number(page) || 1
     const limitNum = Number(limit) || 10
     const offset = (pageNum - 1) * limitNum
-    const where: any = {}
+    const where: Prisma.BlogPostWhereInput = {}
 
     // Status filter
     if (status) {
@@ -621,7 +638,7 @@ export class BlogService {
         noIndex: Boolean(data.seo?.noIndex),
         noFollow: Boolean(data.seo?.noFollow),
         structuredData: data.seo?.structuredData
-          ? (data.seo.structuredData as any)
+          ? (data.seo.structuredData as unknown as Prisma.InputJsonValue)
           : undefined,
       },
       include: {
@@ -736,7 +753,7 @@ export class BlogService {
           : null
         : undefined
 
-    const updatePayload: any = {
+    const updatePayload: Prisma.BlogPostUpdateInput = {
       ...(finalSlug ? { slug: finalSlug } : {}),
       ...(data.title !== undefined ? { title: data.title } : {}),
       ...(data.subtitle !== undefined ? { subtitle: data.subtitle } : {}),
@@ -819,7 +836,7 @@ export class BlogService {
         ? { noFollow: data.seo.noFollow }
         : {}),
       ...(data.seo?.structuredData !== undefined
-        ? { structuredData: data.seo.structuredData as any }
+        ? { structuredData: data.seo.structuredData as unknown as Prisma.InputJsonValue }
         : {}),
     }
 
@@ -901,9 +918,10 @@ export class BlogService {
             this.logger.info(
               `✔ Deleted orphaned post thumbnail from R2: ${thumbnailKey}`
             )
-          } catch (err: any) {
+          } catch (err: unknown) {
+            const msg = err instanceof Error ? err.message : String(err)
             this.logger.warn(
-              `Could not delete post thumbnail from storage: ${err.message}`
+              `Could not delete post thumbnail from storage: ${msg}`
             )
           }
         }
@@ -919,9 +937,10 @@ export class BlogService {
       try {
         await this.storage.deleteObjects(keys)
         await this.db.mediaFile.deleteMany({ where: { key: { in: keys } } })
-      } catch (err: any) {
+      } catch (err: unknown) {
+        const msg = err instanceof Error ? err.message : String(err)
         this.logger.warn(
-          `Could not delete post media assets from storage: ${err.message}`
+          `Could not delete post media assets from storage: ${msg}`
         )
       }
     }
@@ -1017,7 +1036,7 @@ export class BlogService {
     ids: string[],
     status: BlogStatus
   ): Promise<{ count: number }> {
-    const updateData: any = { status }
+    const updateData: Prisma.BlogPostUpdateManyMutationInput = { status }
     if (status === "PUBLISHED") {
       updateData.publishedAt = new Date()
     }
@@ -1073,8 +1092,9 @@ export class BlogService {
         await this.db.mediaFile.deleteMany({
           where: { key: { in: keysToDelete } },
         })
-      } catch (err: any) {
-        this.logger.warn(`Could not bulk delete media assets: ${err.message}`)
+      } catch (err: unknown) {
+        const msg = err instanceof Error ? err.message : String(err)
+        this.logger.warn(`Could not bulk delete media assets: ${msg}`)
       }
     }
 
@@ -1627,7 +1647,7 @@ export class BlogService {
     const offset = (pageNum - 1) * limitNum
     const now = new Date()
 
-    const where: any = {
+    const where: Prisma.BlogPostWhereInput = {
       status: "PUBLISHED",
       OR: [{ publishedAt: { lte: now } }, { publishedAt: null }],
     }
@@ -1653,9 +1673,9 @@ export class BlogService {
       const q = search.trim()
       where.OR = [
         { title: { contains: q, mode: "insensitive" } },
+        { subtitle: { contains: q, mode: "insensitive" } },
         { summary: { contains: q, mode: "insensitive" } },
         { content: { contains: q, mode: "insensitive" } },
-        { tags: { has: q } },
       ]
     }
 
@@ -1663,33 +1683,37 @@ export class BlogService {
       prisma.blogPost.count({ where }),
       prisma.blogPost.findMany({
         where,
-        skip: offset,
-        take: limitNum,
-        orderBy: { [sortBy]: sortOrder },
         include: {
-          category: {
-            select: { id: true, slug: true, name: true, color: true },
-          },
+          category: true,
           author: {
-            select: { id: true, name: true, avatar: true, headline: true },
+            select: {
+              id: true,
+              name: true,
+              avatar: true,
+              headline: true,
+              twitterUrl: true,
+              linkedinUrl: true,
+              githubUrl: true,
+            },
           },
         },
+        orderBy: { [sortBy]: sortOrder },
+        skip: offset,
+        take: limitNum,
       }),
     ])
 
-    const totalPages = Math.ceil(total / limitNum) || 1
+    const formatted = posts.map((p) => this.mapToListItemDTO(p))
 
     return {
-      data: posts.map((p) => this.mapToListItemDTO(p)),
+      data: formatted,
       pagination: {
+        total,
         page: pageNum,
         limit: limitNum,
-        total,
-        totalPages,
-        hasNext: pageNum < totalPages,
+        totalPages: Math.ceil(total / limitNum) || 1,
+        hasNext: pageNum < Math.ceil(total / limitNum),
         hasPrevious: pageNum > 1,
-        hasNextPage: pageNum < totalPages,
-        hasPreviousPage: pageNum > 1,
       },
     }
   }
@@ -1721,20 +1745,15 @@ export class BlogService {
   }
 
   /**
-   * Get single published blog post by slug with adjacent navigation, related articles, and SEO schema
+   * Get single blog post by slug for public web view
    */
   public async getPublicPostBySlug(
     slug: string,
     incrementView: boolean = true
   ): Promise<PublicBlogPostDetail> {
     const now = new Date()
-
-    const post = await prisma.blogPost.findFirst({
-      where: {
-        slug,
-        status: "PUBLISHED",
-        OR: [{ publishedAt: { lte: now } }, { publishedAt: null }],
-      },
+    const post = await prisma.blogPost.findUnique({
+      where: { slug },
       include: {
         category: true,
         author: {
@@ -1756,7 +1775,7 @@ export class BlogService {
       const redirect = await this.redirectService.resolve(`/blog/${slug}`)
       if (redirect.redirected && redirect.destination) {
         return {
-          post: null as any,
+          post: null as unknown as PublicBlogPostDetail["post"],
           prevPost: null,
           nextPost: null,
           relatedPosts: [],
@@ -2328,13 +2347,48 @@ export class BlogService {
 
     let count = 0
     try {
-      let postsToImport: any[] = []
+      interface SeedBlogPost {
+        slug: string
+        title: string
+        subtitle?: string
+        summary: string
+        content: string
+        thumbnail?: string
+        category?: string
+        tags?: string[]
+        readTime?: string
+        featured?: boolean
+        date?: string
+        publishedAt?: string
+        modifiedAt?: string
+        views?: string | number
+        keyTakeaways?: string[]
+        author?: {
+          name?: string
+          role?: string
+          avatar?: string
+          twitter?: string
+          linkedin?: string
+          github?: string
+        }
+        seo?: {
+          metaTitle?: string
+          metaDescription?: string
+          keywords?: string[]
+          ogImage?: string
+          ogType?: string
+          canonicalUrl?: string
+          articleType?: string
+          noIndex?: boolean
+        }
+      }
+      let postsToImport: SeedBlogPost[] = []
       try {
         const files = await fs.readdir(blogPostsDir)
         for (const file of files) {
           if (!file.endsWith(".json")) continue
           const raw = await fs.readFile(path.join(blogPostsDir, file), "utf-8")
-          postsToImport.push(JSON.parse(raw))
+          postsToImport.push(JSON.parse(raw) as SeedBlogPost)
         }
       } catch {
         // Fallback default starter blog posts for Docker/production environments
@@ -2362,14 +2416,14 @@ export class BlogService {
       }
 
       for (const post of postsToImport) {
-        const categoryId = categoryMap.get(post.category?.toLowerCase()) || null
+        const categoryId = categoryMap.get(post.category?.toLowerCase() || "") || null
         const wordCount = post.content
           ? post.content.split(/\s+/).filter(Boolean).length
           : 0
         const readTimeMinutes = Math.max(1, Math.ceil(wordCount / 200))
         const publishedAt = post.publishedAt
           ? new Date(post.publishedAt)
-          : new Date("2026-01-01T00:00:00.000Z")
+          : new Date()
 
         await prisma.blogPost.upsert({
           where: { slug: post.slug },
@@ -2378,38 +2432,6 @@ export class BlogService {
             subtitle: post.subtitle || null,
             summary: post.summary,
             content: post.content,
-            thumbnail: post.thumbnail,
-            status: "PUBLISHED",
-            featured: Boolean(post.featured),
-            readTime: post.readTime || `${readTimeMinutes} MIN READ`,
-            readTimeMinutes,
-            wordCount,
-            date: post.date || "JAN 2026",
-            publishedAt,
-            modifiedAt: post.modifiedAt ? new Date(post.modifiedAt) : publishedAt,
-            views: post.views
-              ? (parseInt(String(post.views).replace(/[^0-9]/g, "")) || 0) *
-                (String(post.views).includes("k") ? 1000 : 1)
-              : 1250,
-            likesCount: 42,
-            commentsCount: 3,
-            keyTakeaways: post.keyTakeaways || [],
-            tags: post.tags || [],
-            categoryId,
-            authorId: admin?.id || null,
-            authorName: post.author?.name || admin?.name || "Fi Amanillah",
-            authorRole:
-              post.author?.role ||
-              admin?.headline ||
-              "Full Stack Developer",
-            authorAvatar: post.author?.avatar || admin?.avatar || "/fi.png",
-            authorTwitter: post.author?.twitter || admin?.twitterUrl,
-            authorLinkedin: post.author?.linkedin || admin?.linkedinUrl,
-            authorGithub: post.author?.github || admin?.githubUrl,
-            metaTitle: post.seo?.metaTitle || `${post.title} | Fi Amanillah`,
-            metaDescription: post.seo?.metaDescription || post.summary,
-            metaKeywords: post.seo?.keywords || post.tags || [],
-            ogTitle: post.seo?.metaTitle || post.title,
             ogDescription: post.seo?.metaDescription || post.summary,
             ogImage: post.seo?.ogImage || post.thumbnail,
             ogType: post.seo?.ogType || "article",
@@ -2465,8 +2487,9 @@ export class BlogService {
         })
         count++
       }
-    } catch (err: any) {
-      this.logger.warn("Could not read local blog directory:", err)
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err)
+      this.logger.warn("Could not read local blog directory:", { error: msg })
     }
 
     this.triggerSitemapAutoUpdate("local-seed", "SEEDED")

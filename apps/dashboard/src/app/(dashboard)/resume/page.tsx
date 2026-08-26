@@ -137,9 +137,9 @@ export default function ResumeManagementPage() {
           setStats(res.stats)
         }
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast.error("Failed to load resume versions", {
-        description: err?.message,
+        description: err instanceof Error ? err.message : undefined,
       })
     } finally {
       setIsLoading(false)
@@ -191,8 +191,8 @@ export default function ResumeManagementPage() {
           description: res.error || "Could not publish resume version.",
         })
       }
-    } catch (err: any) {
-      toast.error("Upload Error", { description: err?.message })
+    } catch (err: unknown) {
+      toast.error("Upload Error", { description: err instanceof Error ? err.message : undefined })
     } finally {
       setIsUploading(false)
     }
@@ -231,8 +231,8 @@ export default function ResumeManagementPage() {
       } else {
         toast.error("Update Failed", { description: res.error })
       }
-    } catch (err: any) {
-      toast.error("Update Error", { description: err?.message })
+    } catch (err: unknown) {
+      toast.error("Update Error", { description: err instanceof Error ? err.message : undefined })
     } finally {
       setIsSavingEdit(false)
     }
@@ -250,8 +250,8 @@ export default function ResumeManagementPage() {
       } else {
         toast.error("Activation Failed", { description: res.error })
       }
-    } catch (err: any) {
-      toast.error("Error", { description: err?.message })
+    } catch (err: unknown) {
+      toast.error("Error", { description: err instanceof Error ? err.message : undefined })
     } finally {
       setActivatingId(null)
     }
@@ -272,8 +272,8 @@ export default function ResumeManagementPage() {
       } else {
         toast.error("Delete Failed", { description: res.error })
       }
-    } catch (err: any) {
-      toast.error("Error", { description: err?.message })
+    } catch (err: unknown) {
+      toast.error("Error", { description: err instanceof Error ? err.message : undefined })
     } finally {
       setIsDeleting(false)
     }

@@ -37,7 +37,7 @@ export interface MediaFileDTO {
   tags: string[];
   altText: string | null;
   caption: string | null;
-  metadata: Record<string, any> | null;
+  metadata: Record<string, unknown> | null;
   isPublic: boolean;
   uploaderId: string | null;
   uploader?: {
@@ -62,7 +62,7 @@ export interface PresignedUploadRequestDTO {
   tags?: string[];
   altText?: string;
   caption?: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
   isPublic?: boolean;
   expiresInSeconds?: number;
 }
@@ -88,7 +88,7 @@ export interface ConfirmPresignedUploadDTO {
   altText?: string;
   caption?: string;
   tags?: string[];
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface UpdateMediaFileDTO {
@@ -97,7 +97,7 @@ export interface UpdateMediaFileDTO {
   caption?: string | null;
   folder?: string;
   tags?: string[];
-  metadata?: Record<string, any> | null;
+  metadata?: Record<string, unknown> | null;
   isPublic?: boolean;
 }
 

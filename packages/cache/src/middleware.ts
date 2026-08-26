@@ -55,7 +55,7 @@ export function createCacheResponseMiddleware(
         const cachedPayload = await cache.get<{
           statusCode: number
           headers: Record<string, string | string[] | undefined>
-          body: any
+          body: unknown
         }>(cacheKey)
 
         if (cachedPayload) {
@@ -75,7 +75,7 @@ export function createCacheResponseMiddleware(
 
         // Intercept response .send / .json to cache the output before sending
         const originalSend = res.send.bind(res)
-        res.send = function (body: any): Response {
+        res.send = function (body: unknown): Response {
           if (res.statusCode >= 200 && res.statusCode < 300) {
             const payload = {
               statusCode: res.statusCode,

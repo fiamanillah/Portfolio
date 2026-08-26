@@ -7,6 +7,8 @@ import SectionDivider from "@/components/SectionDivider.astro"
 import { CaseStudyApi } from "@/lib/api/caseStudyApi"
 import SEO from "@/components/SEO/SEO.astro"
 
+import type { Project } from "@/data/projects"
+
 // Fetch all published systems directly from PostgreSQL API
 const allFetched = await CaseStudyApi.fetchAllCaseStudies()
 
@@ -18,15 +20,27 @@ const apiQuickProjects = allFetched.filter((s) => s.projectType === "PROJECT")
 const rawCaseStudies = apiDeepDives
 const rawStandardProjects = apiQuickProjects
 
-const caseStudies = rawCaseStudies.map((study: any, idx) => {
-  const metaObj = (study.metadata || []).reduce((acc: any, item: any) => {
-    acc[item.label] = item.value
-    return acc
-  }, {})
+const normalizeStatus = (
+  status?: string
+): "Completed" | "Live" | "In Progress" | "Archived" => {
+  const cleaned = (status || "Completed").replace(/^Status:\s*/i, "")
+  if (cleaned === "Live" || cleaned === "In Progress" || cleaned === "Archived")
+    return cleaned
+  return "Completed"
+}
+
+const caseStudies: Project[] = rawCaseStudies.map((study, idx) => {
+  const metaObj = (study.metadata || []).reduce<Record<string, string>>(
+    (acc, item) => {
+      acc[item.label] = item.value
+      return acc
+    },
+    {}
+  )
 
   return {
-    id: study.slug || study.id,
-    slug: study.slug || study.id,
+    id: study.slug,
+    slug: study.slug,
     title: study.title.includes("—")
       ? study.title.split("—")[0]?.trim()
       : study.title,
@@ -42,40 +56,41 @@ const caseStudies = rawCaseStudies.map((study: any, idx) => {
       (study.description.length > 130
         ? study.description.slice(0, 130) + "..."
         : study.description),
-    tech: study.techStack || study.tech || [],
+    tech: study.techStack || [],
     links: {
-      live: study.liveUrl || study.links?.live || undefined,
-      github: study.githubUrl || study.links?.github || undefined,
-      caseStudy: `/case-study/${study.slug || study.id}`,
+      live: study.liveUrl || undefined,
+      github: study.githubUrl || undefined,
+      caseStudy: `/case-study/${study.slug}`,
     },
-    img: study.image || study.img,
+    img: study.image,
     index: String(idx + 1).padStart(2, "0"),
-    status: (study.status || "Completed").replace(/^Status:\s*/i, ""),
-    year: study.timeline || metaObj["Timeline"] || study.year || "2026",
+    status: normalizeStatus(study.status),
+    year: study.timeline || metaObj["Timeline"] || "2026",
     hasCaseStudy: true,
     featured: Boolean(study.featured ?? true),
-    metrics: (study.metrics || []).slice(0, 3).map((m: any) => ({
+    metrics: (study.metrics || []).slice(0, 3).map((m) => ({
       value: m.value,
       label: m.label,
     })),
     highlights:
       study.highlights && study.highlights.length > 0
         ? study.highlights
-        : (study.features || [])
-            .flatMap((f: any) => f.highlights || [])
-            .slice(0, 3),
+        : (study.features || []).flatMap((f) => f.highlights || []).slice(0, 3),
   }
 })
 
-const standardProjects = rawStandardProjects.map((study: any, idx) => {
-  const metaObj = (study.metadata || []).reduce((acc: any, item: any) => {
-    acc[item.label] = item.value
-    return acc
-  }, {})
+const standardProjects: Project[] = rawStandardProjects.map((study, idx) => {
+  const metaObj = (study.metadata || []).reduce<Record<string, string>>(
+    (acc, item) => {
+      acc[item.label] = item.value
+      return acc
+    },
+    {}
+  )
 
   return {
-    id: study.slug || study.id,
-    slug: study.slug || study.id,
+    id: study.slug,
+    slug: study.slug,
     title: study.title.includes("—")
       ? study.title.split("—")[0]?.trim()
       : study.title,
@@ -87,15 +102,16 @@ const standardProjects = rawStandardProjects.map((study: any, idx) => {
     description: study.description,
     role: study.role || metaObj["Role"] || "Lead System Architect",
     impact: study.impact || study.description,
-    tech: study.techStack || study.tech || [],
+    tech: study.techStack || [],
     links: {
-      live: study.liveUrl || study.links?.live || undefined,
-      github: study.githubUrl || study.links?.github || undefined,
+      live: study.liveUrl || undefined,
+      github: study.githubUrl || undefined,
     },
-    img: study.image || study.img,
+    img: study.image,
     index: String(idx + 1).padStart(2, "0"),
-    status: (study.status || "Completed").replace(/^Status:\s*/i, ""),
-    year: study.timeline || metaObj["Timeline"] || study.year || "2026",
+    status: normalizeStatus(study.status),
+    year: study.timeline || metaObj["Timeline"] || "2026",
+    hasCaseStudy: false,
     highlights: study.highlights || [],
   }
 })

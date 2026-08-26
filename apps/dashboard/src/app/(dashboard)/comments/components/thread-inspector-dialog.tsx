@@ -17,9 +17,38 @@ import {
   AvatarImage,
 } from "@workspace/ui/components/avatar"
 import { renderStatusBadge, renderReasonBadge } from "./comment-badge-utils"
+import type {
+  CommentAdminListItemDTO,
+  CommentReportDTO,
+} from "@workspace/shared"
+
+export interface ThreadCommentDetail extends CommentAdminListItemDTO {
+  post?: {
+    id?: string
+    title?: string
+    slug?: string
+  } | null
+  parent?: {
+    id?: string
+    content?: string
+    author?: {
+      name?: string | null
+    } | null
+  } | null
+  ipAddress?: string | null
+  replies?: Array<{
+    id: string
+    content: string
+    createdAt: string
+    author?: {
+      name?: string | null
+    } | null
+  }>
+  reports?: CommentReportDTO[]
+}
 
 interface ThreadInspectorDialogProps {
-  comment: any | null
+  comment: ThreadCommentDetail | null
   onClose: () => void
   onDeleteConfirm: (id: string) => void
 }
@@ -74,7 +103,7 @@ export function ThreadInspectorDialog({
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2.5">
                 <Avatar className="size-8">
-                  <AvatarImage src={comment.author?.avatar} />
+                  <AvatarImage src={comment.author?.avatar || undefined} />
                   <AvatarFallback className="text-xs">
                     {comment.author?.name?.slice(0, 2).toUpperCase()}
                   </AvatarFallback>
@@ -109,7 +138,7 @@ export function ThreadInspectorDialog({
                 Threaded Replies ({comment.replies.length})
               </h4>
               <div className="space-y-2 border-l-2 border-border pl-4">
-                {comment.replies.map((reply: any) => (
+                {comment.replies.map((reply) => (
                   <div
                     key={reply.id}
                     className="space-y-1.5 rounded border bg-muted/20 p-3 text-xs"
@@ -136,7 +165,7 @@ export function ThreadInspectorDialog({
                 Flagged Reports on this Comment ({comment.reports.length})
               </h4>
               <div className="space-y-2">
-                {comment.reports.map((rep: any) => (
+                {comment.reports.map((rep) => (
                   <div
                     key={rep.id}
                     className="space-y-1 rounded border border-rose-500/30 bg-rose-500/5 p-3 text-xs"

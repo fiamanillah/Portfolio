@@ -50,7 +50,10 @@ let nextCaseStudy = Astro.props.nextCaseStudy
 if ((!caseStudy || !caseStudy.contextBlocks?.length) && slug) {
   const result = await CaseStudyApi.fetchCaseStudyBySlug(slug)
   if (result?.redirected && result.destination) {
-    return Astro.redirect(result.destination, (result.statusCode as any) || 301)
+    return Astro.redirect(
+      result.destination,
+      (result.statusCode as 301 | 302 | 307 | 308) || 301
+    )
   }
   if (result) {
     caseStudy = result.caseStudy

@@ -115,8 +115,10 @@ export default function NewsletterDetailPage() {
       } else {
         toast.error("Failed to load campaign", { description: res.error });
       }
-    } catch (err: any) {
-      toast.error("Error loading campaign", { description: err?.message });
+    } catch (err: unknown) {
+      toast.error("Error loading campaign", {
+        description: err instanceof Error ? err.message : undefined,
+      });
     } finally {
       setIsLoading(false);
     }
@@ -141,7 +143,7 @@ export default function NewsletterDetailPage() {
         setSpamReport(res.data);
       }
     } catch {
-      // ignore
+      // Background audit error ignored intentionally
     } finally {
       setIsAuditingSpam(false);
     }
@@ -212,7 +214,7 @@ export default function NewsletterDetailPage() {
       } else {
         showApiError(res, "Failed to update campaign");
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       showApiError(err, "Error saving campaign");
     } finally {
       setIsSaving(false);
@@ -260,7 +262,7 @@ export default function NewsletterDetailPage() {
       } else {
         showApiError(res, "Failed to start broadcast");
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       showApiError(err, "Error broadcasting campaign");
     } finally {
       setIsSendingImmediate(false);
@@ -277,7 +279,7 @@ export default function NewsletterDetailPage() {
       } else {
         showApiError(res, "Cancellation failed");
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       showApiError(err, "Error cancelling campaign schedule");
     }
   };

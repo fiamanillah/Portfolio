@@ -98,11 +98,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       })
 
       return { success: true }
-    } catch (err: any) {
+    } catch (err: unknown) {
       setIsLoading(false)
       return {
         success: false,
-        error: err?.message || "An unexpected error occurred during sign in.",
+        error: err instanceof Error ? err.message : "An unexpected error occurred during sign in.",
       }
     }
   }
@@ -138,11 +138,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       })
 
       return { success: true }
-    } catch (err: any) {
+    } catch (err: unknown) {
       setIsLoading(false)
       return {
         success: false,
-        error: err?.message || "Error logging into demo account.",
+        error: err instanceof Error ? err.message : "Error logging into demo account.",
       }
     }
   }

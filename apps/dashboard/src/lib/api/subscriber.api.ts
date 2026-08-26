@@ -29,9 +29,12 @@ export const SubscriberApi = {
     const queryStr = searchParams.toString()
       ? `?${searchParams.toString()}`
       : ""
-    return await request<SubscriberItem[]>(`/subscriber/v1/list${queryStr}`, {
-      method: "GET",
-    })
+    return await request<SubscriberItem[], SubscriberStats>(
+      `/subscriber/v1/list${queryStr}`,
+      {
+        method: "GET",
+      }
+    )
   },
 
   /**

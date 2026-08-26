@@ -72,16 +72,18 @@ export class NewsletterScheduler {
             );
             // Execute campaign dispatch
             await NewsletterDispatcher.dispatchCampaign(campaign.id);
-          } catch (err: any) {
+          } catch (err: unknown) {
             this.logger.error(
               `Failed to dispatch scheduled campaign ${campaign.id}:`,
-              { error: err?.message || err }
+              { error: err instanceof Error ? err.message : String(err) }
             );
           }
         }
       }
-    } catch (err: any) {
-      this.logger.error("Scheduler database error:", { error: err?.message || err });
+    } catch (err: unknown) {
+      this.logger.error("Scheduler database error:", {
+        error: err instanceof Error ? err.message : String(err),
+      });
     } finally {
       this.isRunning = false;
     }

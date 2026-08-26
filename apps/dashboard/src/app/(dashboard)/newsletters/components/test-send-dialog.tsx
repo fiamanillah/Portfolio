@@ -78,9 +78,9 @@ export function TestSendDialog({
           description: res.error || "Please check Plunk credentials.",
         });
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast.error("Error sending test email", {
-        description: err?.message || "An unexpected error occurred.",
+        description: err instanceof Error ? err.message : "An unexpected error occurred.",
       });
     } finally {
       setIsSending(false);

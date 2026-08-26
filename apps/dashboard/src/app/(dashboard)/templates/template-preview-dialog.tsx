@@ -89,7 +89,7 @@ export function TemplatePreviewDialog({
 
   const triggerRender = async (
     tpl: EmailTemplate,
-    sampleData: Record<string, any>
+    sampleData: Record<string, unknown>
   ) => {
     setIsRendering(true)
     setRenderError(null)
@@ -114,10 +114,11 @@ export function TemplatePreviewDialog({
         setRenderedBody(tpl.body)
         setRenderError(res.error || "Failed to render liquid template")
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       setRenderedSubject(tpl.subject)
       setRenderedBody(tpl.body)
-      setRenderError(err?.message || "Failed to render preview")
+      const msg = err instanceof Error ? err.message : "Failed to render preview"
+      setRenderError(msg)
     } finally {
       setIsRendering(false)
     }
@@ -171,8 +172,9 @@ export function TemplatePreviewDialog({
       } else {
         toast.error(res.error || "Failed to dispatch test email")
       }
-    } catch (err: any) {
-      toast.error(err?.message || "Error sending test email")
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Error sending test email"
+      toast.error(msg)
     } finally {
       setIsSendingTest(false)
     }

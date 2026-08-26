@@ -1,6 +1,6 @@
 // apps/api/src/Modules/Resume/resume.service.ts
 import path from "path"
-import { prisma, Resume } from "@workspace/db"
+import { prisma, Resume, Prisma } from "@workspace/db"
 import { AppLogger } from "@workspace/logger"
 import {
   BadRequestError,
@@ -85,7 +85,7 @@ export class ResumeService {
     const limit = query.limit || 20
     const skip = (page - 1) * limit
 
-    const where: any = {}
+    const where: Prisma.ResumeWhereInput = {}
 
     if (query.search && query.search.trim()) {
       const s = query.search.trim()
@@ -343,8 +343,9 @@ export class ResumeService {
     if (existing.fileKey) {
       try {
         await this.storage.deleteObject(existing.fileKey)
-      } catch (err: any) {
-        this.logger.warn(`Failed to delete resume object from storage: ${err.message}`)
+      } catch (err: unknown) {
+        const errMsg = err instanceof Error ? err.message : String(err)
+        this.logger.warn(`Failed to delete resume object from storage: ${errMsg}`)
       }
       await this.db.mediaFile.deleteMany({
         where: { key: existing.fileKey },

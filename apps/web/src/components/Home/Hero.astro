@@ -68,10 +68,10 @@ const resumeUrl = resumeData.downloadUrl || "/resume"
           class="max-w-lg text-sm! leading-relaxed font-medium text-balance text-muted-foreground sm:text-base"
         >
           Full Stack Developer with 3+ years of professional experience building
-          scalable full-stack applications with Nest.js and Next.js. Specializing
-          in <span class="text-foreground">robust backend systems</span> and <span
-            class="text-foreground">DevOps automation</span
-          >.
+          scalable full-stack applications with Nest.js and Next.js.
+          Specializing in <span class="text-foreground"
+            >robust backend systems</span
+          > and <span class="text-foreground">DevOps automation</span>.
         </p>
       </div>
 
@@ -406,9 +406,9 @@ const resumeUrl = resumeData.downloadUrl || "/resume"
     if (!turnstileKey || !container || heroTurnstileWidgetId !== null) return
 
     const render = () => {
-      if ((window as any).turnstile && heroTurnstileWidgetId === null) {
+      if (window.turnstile && heroTurnstileWidgetId === null) {
         try {
-          heroTurnstileWidgetId = (window as any).turnstile.render(
+          heroTurnstileWidgetId = window.turnstile.render(
             "#hero-turnstile-container",
             {
               sitekey: turnstileKey,
@@ -425,7 +425,7 @@ const resumeUrl = resumeData.downloadUrl || "/resume"
       }
     }
 
-    if ((window as any).turnstile) {
+    if (window.turnstile) {
       render()
       return
     }
@@ -506,9 +506,8 @@ const resumeUrl = resumeData.downloadUrl || "/resume"
       if (!email) return
 
       let captchaToken = ""
-      if ((window as any).turnstile && heroTurnstileWidgetId !== null) {
-        captchaToken =
-          (window as any).turnstile.getResponse(heroTurnstileWidgetId) || ""
+      if (window.turnstile && heroTurnstileWidgetId !== null) {
+        captchaToken = window.turnstile.getResponse(heroTurnstileWidgetId) || ""
       }
 
       const originalText = submitText.textContent
@@ -554,8 +553,8 @@ const resumeUrl = resumeData.downloadUrl || "/resume"
           }
           form.reset()
 
-          if ((window as any).turnstile && heroTurnstileWidgetId !== null) {
-            ;(window as any).turnstile.reset(heroTurnstileWidgetId)
+          if (window.turnstile && heroTurnstileWidgetId !== null) {
+            window.turnstile.reset(heroTurnstileWidgetId)
           }
 
           setTimeout(() => {
@@ -607,8 +606,8 @@ const resumeUrl = resumeData.downloadUrl || "/resume"
             }
           }
 
-          if ((window as any).turnstile && heroTurnstileWidgetId !== null) {
-            ;(window as any).turnstile.reset(heroTurnstileWidgetId)
+          if (window.turnstile && heroTurnstileWidgetId !== null) {
+            window.turnstile.reset(heroTurnstileWidgetId)
           }
 
           submitText.textContent = originalText

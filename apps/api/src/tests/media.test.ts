@@ -1,9 +1,10 @@
 // apps/api/src/tests/media.test.ts
 import { describe, it, expect, beforeAll, afterAll } from "bun:test"
-import { prisma, Role } from "@workspace/db"
+import { prisma, Role, User } from "@workspace/db"
 import { StorageService } from "../services/StorageService"
 import { MediaService } from "../Modules/Media/media.service"
 import { S3Client } from "@aws-sdk/client-s3"
+import { Readable } from "stream"
 
 describe("Cloudflare R2 / S3 Storage Engine & Media Management Integration Tests", () => {
   // Use a real S3Client instance configured for test/mock credentials
@@ -18,7 +19,7 @@ describe("Cloudflare R2 / S3 Storage Engine & Media Management Integration Tests
   })
 
   // Mock only network send calls so tests don't require external network connectivity
-  realS3Client.send = (async (command: any) => {
+  realS3Client.send = (async (command: { constructor?: { name?: string }; name?: string; input?: { Delete?: { Objects?: { Key?: string }[] } } }) => {
     const commandName = command.constructor?.name || command.name
     if (commandName === "PutObjectCommand") {
       return { ETag: '"test-etag-12345"', $metadata: { httpStatusCode: 200 } }
@@ -38,7 +39,7 @@ describe("Cloudflare R2 / S3 Storage Engine & Media Management Integration Tests
     }
     if (commandName === "DeleteObjectsCommand") {
       return {
-        Deleted: (command.input?.Delete?.Objects || []).map((o: any) => ({
+        Deleted: (command.input?.Delete?.Objects || []).map((o) => ({
           Key: o.Key,
         })),
         Errors: [],
@@ -46,17 +47,17 @@ describe("Cloudflare R2 / S3 Storage Engine & Media Management Integration Tests
       }
     }
     return { $metadata: { httpStatusCode: 200 } }
-  }) as any
+  }) as unknown as typeof realS3Client.send
 
   const storageService = new StorageService(
     realS3Client,
     "portfolio-test-bucket",
     "https://assets.fi.amanillah.com"
   )
-  const mediaService = new MediaService(storageService, prisma)
+  const mediaService = new MediaService(storageService)
 
-  let testUser: any
-  let otherUser: any
+  let testUser: User
+  let otherUser: User
   let testMediaId: string
   let testKey: string
 
@@ -167,7 +168,7 @@ describe("Cloudflare R2 / S3 Storage Engine & Media Management Integration Tests
       destination: "",
       filename: "",
       path: "",
-      stream: null as any,
+      stream: Readable.from([]),
     }
 
     const media = await mediaService.uploadSingle(
@@ -309,7 +310,7 @@ describe("Cloudflare R2 / S3 Storage Engine & Media Management Integration Tests
         destination: "",
         filename: "",
         path: "",
-        stream: null as any,
+        stream: Readable.from([]),
       },
       { folder: "test-storage-bulk" }
     )
@@ -325,7 +326,7 @@ describe("Cloudflare R2 / S3 Storage Engine & Media Management Integration Tests
         destination: "",
         filename: "",
         path: "",
-        stream: null as any,
+        stream: Readable.from([]),
       },
       { folder: "test-storage-bulk" }
     )
@@ -354,7 +355,7 @@ describe("Cloudflare R2 / S3 Storage Engine & Media Management Integration Tests
       destination: "",
       filename: "",
       path: "",
-      stream: null as any,
+      stream: Readable.from([]),
     }
 
     // First upload

@@ -1,10 +1,11 @@
 // src/Modules/Template/template.service.ts
-import { prisma } from "@workspace/db"
+import { prisma, Prisma } from "@workspace/db"
 import { AppLogger } from "@workspace/logger"
 import { BadRequestError, NotFoundError } from "@/core/errors/AppError"
 import { SYSTEM_TEMPLATES } from "@/templates/emails/defaultTemplates"
-import { PlunkTemplateService } from "@/services/PlunkTemplateService"
+import { PlunkTemplateService, PlunkListTemplatesQuery } from "@/services/PlunkTemplateService"
 import { TemplateRenderer, RenderResult } from "@/services/TemplateRenderer"
+import type { EmailTemplateType } from "@workspace/shared"
 import {
   CreateTemplateDTO,
   UpdateTemplateDTO,
@@ -188,7 +189,7 @@ export class TemplateService {
     } = query
     const skip = (page - 1) * limit
 
-    const where: any = {}
+    const where: Prisma.EmailTemplateWhereInput = {}
 
     if (search) {
       where.OR = [
@@ -200,7 +201,7 @@ export class TemplateService {
     }
 
     if (type && type !== "ALL") {
-      where.type = type
+      where.type = type as EmailTemplateType
     }
 
     if (source === "CODEBASE") {
@@ -218,7 +219,7 @@ export class TemplateService {
     }
 
     // Build sort order
-    const orderBy: any[] = []
+    const orderBy: Prisma.EmailTemplateOrderByWithRelationInput[] = []
     if (
       sortBy === "name" ||
       sortBy === "slug" ||
@@ -338,7 +339,7 @@ export class TemplateService {
               dto.replyTo !== undefined
                 ? (dto.replyTo ?? undefined)
                 : (existing.replyTo ?? undefined),
-            type: (dto.type || existing.type) as any,
+            type: (dto.type || existing.type) as EmailTemplateType,
           })
           syncedAt = new Date()
         } else {
@@ -363,7 +364,7 @@ export class TemplateService {
               dto.replyTo !== undefined
                 ? (dto.replyTo ?? undefined)
                 : (existing.replyTo ?? undefined),
-            type: (dto.type || existing.type) as any,
+            type: (dto.type || existing.type) as EmailTemplateType,
           })
           plunkId = plunkRes.id
           syncedAt = new Date()
@@ -378,22 +379,27 @@ export class TemplateService {
     const updated = await prisma.emailTemplate.update({
       where: { id },
       data: {
-        name: dto.name,
-        description: dto.description,
-        subject: dto.subject,
-        body: dto.body,
-        from: dto.from,
-        fromName: dto.fromName,
-        replyTo: dto.replyTo,
-        type: dto.type,
-        plunkId,
-        syncedAt,
+        ...(dto.slug !== undefined ? { slug: dto.slug } : {}),
+        ...(dto.name !== undefined ? { name: dto.name } : {}),
+        ...(dto.description !== undefined
+          ? { description: dto.description }
+          : {}),
+        ...(dto.subject !== undefined ? { subject: dto.subject } : {}),
+        ...(dto.body !== undefined ? { body: dto.body } : {}),
+        ...(dto.type !== undefined ? { type: dto.type } : {}),
+        ...(dto.from !== undefined ? { from: dto.from } : {}),
+        ...(dto.fromName !== undefined ? { fromName: dto.fromName } : {}),
+        ...(dto.replyTo !== undefined ? { replyTo: dto.replyTo } : {}),
+        ...(dto.isActive !== undefined ? { isActive: dto.isActive } : {}),
+        ...(dto.sampleData !== undefined
+          ? { sampleData: dto.sampleData as Prisma.InputJsonValue }
+          : {}),
+        ...(plunkId !== undefined ? { plunkId } : {}),
+        ...(syncedAt !== undefined ? { syncedAt } : {}),
       },
     })
 
-    this.logger.info(
-      `✔ Updated email template "${updated.name}" (${updated.id})`
-    )
+    this.logger.info(`✔ Updated email template "${updated.name}" (${id})`)
     return updated
   }
 
@@ -428,15 +434,12 @@ export class TemplateService {
   }
 
   /**
-   * SYNC SINGLE: Push sync a single template to Plunk API
+   * SYNC SINGLE: Pushes a single template to Plunk manually.
    */
-  public async syncSingleTemplate(id: string) {
-    const template = await prisma.emailTemplate.findUnique({ where: { id } })
-    if (!template) {
-      throw new NotFoundError(`Template with ID ${id} not found.`)
-    }
-
+  public async syncTemplateToPlunk(id: string) {
+    const template = await this.getTemplateByIdOrSlug(id)
     let plunkId = template.plunkId
+
     if (plunkId) {
       await PlunkTemplateService.updateTemplate(plunkId, {
         name: template.name,
@@ -446,7 +449,7 @@ export class TemplateService {
         from: template.from ?? undefined,
         fromName: template.fromName ?? undefined,
         replyTo: template.replyTo ?? undefined,
-        type: template.type as any,
+        type: template.type as EmailTemplateType,
       })
     } else {
       const plunkRes = await PlunkTemplateService.createTemplate({
@@ -457,7 +460,7 @@ export class TemplateService {
         from: template.from ?? undefined,
         fromName: template.fromName ?? undefined,
         replyTo: template.replyTo ?? undefined,
-        type: template.type as any,
+        type: template.type as EmailTemplateType,
       })
       plunkId = plunkRes.id
     }
@@ -535,7 +538,7 @@ export class TemplateService {
       from: original.from || undefined,
       fromName: original.fromName || undefined,
       replyTo: original.replyTo || undefined,
-      type: original.type as any,
+      type: original.type as EmailTemplateType,
       syncToPlunk: true,
     })
   }
@@ -574,7 +577,7 @@ export class TemplateService {
             from: template.from ?? undefined,
             fromName: template.fromName ?? undefined,
             replyTo: template.replyTo ?? undefined,
-            type: template.type as any,
+            type: template.type as EmailTemplateType,
           })
 
           await prisma.emailTemplate.update({
@@ -599,7 +602,7 @@ export class TemplateService {
             from: template.from ?? undefined,
             fromName: template.fromName ?? undefined,
             replyTo: template.replyTo ?? undefined,
-            type: template.type as any,
+            type: template.type as EmailTemplateType,
           })
 
           await prisma.emailTemplate.update({
@@ -615,13 +618,14 @@ export class TemplateService {
             status: "created",
           })
         }
-      } catch (err: any) {
+      } catch (err: unknown) {
+        const errMsg = err instanceof Error ? err.message : String(err)
         results.failed++
         results.details.push({
           id: template.id,
           name: template.name,
           status: "error",
-          error: err?.message || String(err),
+          error: errMsg,
         })
         this.logger.error(`Sync failed for template "${template.name}"`, {
           error: err,
@@ -638,7 +642,7 @@ export class TemplateService {
   /**
    * REMOTE LIST: Fetches list of templates directly from Plunk API.
    */
-  public async getRemotePlunkTemplates(query: any) {
+  public async getRemotePlunkTemplates(query: PlunkListTemplatesQuery) {
     return await PlunkTemplateService.listTemplates(query)
   }
 

@@ -219,7 +219,7 @@ export function MediaUploadDialog({
             )
           )
         }
-      } catch (err: any) {
+      } catch (err: unknown) {
         hasError = true
         setUploadQueue((prev) =>
           prev.map((it) =>
@@ -227,7 +227,7 @@ export function MediaUploadDialog({
               ? {
                   ...it,
                   status: "error",
-                  error: err.message || "Upload failed",
+                  error: err instanceof Error ? err.message : "Upload failed",
                 }
               : it
           )

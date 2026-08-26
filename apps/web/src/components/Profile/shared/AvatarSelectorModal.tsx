@@ -82,8 +82,8 @@ export function AvatarSelectorModal({
             "Failed to upload avatar to cloud storage."
         )
       }
-    } catch (err: any) {
-      setError(err?.message || "Failed to upload avatar.")
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Failed to upload avatar.")
     } finally {
       setIsUploading(false)
       if (fileInputRef.current) {

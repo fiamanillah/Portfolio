@@ -197,7 +197,7 @@ export default function BookingsPage() {
           page: currentPage,
           limit: 10,
           search: searchQuery || undefined,
-          status: statusFilter !== "ALL" ? (statusFilter as any) : undefined,
+          status: statusFilter !== "ALL" ? (statusFilter as "PENDING" | "CONFIRMED" | "CANCELLED" | "COMPLETED") : undefined,
         }),
         bookingApi.getStats(),
         bookingApi.getGoogleStatus(),
@@ -224,8 +224,8 @@ export default function BookingsPage() {
         setAvailability(availRes.data)
         setEditableSchedule(buildFullSchedule(availRes.data))
       }
-    } catch (err: any) {
-      toast.error(err?.message || "Failed to load bookings data")
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : "Failed to load bookings data")
     } finally {
       setIsLoading(false)
     }
@@ -353,8 +353,8 @@ export default function BookingsPage() {
       } else {
         toast.error(res.message || "Failed to generate Google OAuth URL.")
       }
-    } catch (err: any) {
-      toast.error(err?.message || "Error starting Google connection")
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : "Error starting Google connection")
     } finally {
       setIsProcessing(false)
     }
@@ -371,8 +371,8 @@ export default function BookingsPage() {
       } else {
         toast.error(res.message || "Failed to disconnect.")
       }
-    } catch (err: any) {
-      toast.error(err?.message || "Error disconnecting Google Calendar")
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : "Error disconnecting Google Calendar")
     } finally {
       setIsProcessing(false)
     }
@@ -392,8 +392,8 @@ export default function BookingsPage() {
       } else {
         toast.error(res.message || "Failed to cancel meeting")
       }
-    } catch (err: any) {
-      toast.error(err?.message || "Error cancelling meeting")
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : "Error cancelling meeting")
     } finally {
       setIsProcessing(false)
     }
@@ -425,8 +425,8 @@ export default function BookingsPage() {
       } else {
         toast.error(res.message || "Failed to update availability")
       }
-    } catch (err: any) {
-      toast.error(err?.message || "Error saving availability")
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : "Error saving availability")
     } finally {
       setIsProcessing(false)
     }

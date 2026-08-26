@@ -25,7 +25,15 @@ interface EditorTabsNavProps {
   postMortemCount: number
 }
 
-const CASE_STUDY_STEPS = [
+interface StepItem {
+  id: string
+  number: string
+  label: string
+  icon: React.ComponentType<{ className?: string }>
+  countKey?: "metadataCount" | "contextCount" | "architectureCount" | "featuresCount" | "metricsCount" | "postMortemCount"
+}
+
+const CASE_STUDY_STEPS: StepItem[] = [
   { id: "hero", number: "01", label: "Overview", icon: Info },
   { id: "metadata", number: "02", label: "Metadata", icon: Layers, countKey: "metadataCount" },
   { id: "context", number: "03", label: "Context", icon: AlertCircle, countKey: "contextCount" },
@@ -37,7 +45,7 @@ const CASE_STUDY_STEPS = [
   { id: "preview", number: "09", label: "Live Preview", icon: Eye },
 ]
 
-const PROJECT_STEPS = [
+const PROJECT_STEPS: StepItem[] = [
   { id: "hero", number: "01", label: "Project Details", icon: Info },
   { id: "seo", number: "02", label: "SEO & Social", icon: Share2 },
   { id: "preview", number: "03", label: "Live Preview", icon: Eye },
@@ -112,7 +120,7 @@ export function EditorTabsNav({
           {STEPS.map((step) => {
             const Icon = step.icon
             const isCurrent = activeTab === step.id
-            const count = (step as any).countKey ? counts[(step as any).countKey] : undefined
+            const count = step.countKey ? counts[step.countKey] : undefined
 
             return (
               <TabsPrimitive.Trigger

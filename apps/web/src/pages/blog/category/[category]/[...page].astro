@@ -14,13 +14,27 @@ import {
 } from "@/data/blogPosts"
 import { RedirectApi } from "@/lib/api/redirectApi"
 
+export interface Props {
+  categoryName?: string
+  categoryColor?: string
+  categorySlug?: string
+  categoryPosts?: BlogPost[]
+  currentPage?: number
+  totalPages?: number
+  totalCategoryPosts?: number
+  postsPerPage?: number
+}
+
 export async function getStaticPaths() {
   const posts = await getAllBlogPostsAsync()
   const categories = await getBlogCategoriesAsync()
   const postsPerPage = 9
 
   const knownSlugs = new Set<string>()
-  const paths: any[] = []
+  const paths: Array<{
+    params: { category: string; page?: string }
+    props: Props
+  }> = []
 
   // Collect unique category definitions
   const allCategoryDefs: Array<{
@@ -90,17 +104,6 @@ export async function getStaticPaths() {
   return paths
 }
 
-interface Props {
-  categoryName?: string
-  categoryColor?: string
-  categorySlug?: string
-  categoryPosts?: BlogPost[]
-  currentPage?: number
-  totalPages?: number
-  totalCategoryPosts?: number
-  postsPerPage?: number
-}
-
 const { category: paramCategory, page: paramPage } = Astro.params
 const pageNum = parseInt(paramPage || "1", 10) || 1
 const postsPerPage = Astro.props.postsPerPage || 9
@@ -108,22 +111,22 @@ const postsPerPage = Astro.props.postsPerPage || 9
 const categories = await getBlogCategoriesAsync()
 const allPosts = await getAllBlogPostsAsync()
 
-const categorySlug = Astro.props.categorySlug || paramCategory || ""
+const categorySlug: string = Astro.props.categorySlug || paramCategory || ""
 const foundCategory = categories.find(
   (c) =>
     getCategorySlug(c) === categorySlug ||
     c.name.toLowerCase() === categorySlug.toLowerCase()
 )
 
-const categoryName =
+const categoryName: string =
   Astro.props.categoryName ||
   foundCategory?.name ||
   categorySlug
     .split("-")
-    .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ")
 
-const categoryColor =
+const categoryColor: string =
   Astro.props.categoryColor || foundCategory?.color || "#3b82f6"
 
 const allMatchingPosts = allPosts.filter(
@@ -139,17 +142,17 @@ if (!foundCategory && allMatchingPosts.length === 0 && categorySlug) {
   if (redirect?.redirected && redirect.destination) {
     return Astro.redirect(
       redirect.destination,
-      (redirect.statusCode as any) || 301
+      (redirect.statusCode as 301 | 302 | 307 | 308) || 301
     )
   }
 }
 
-const totalCategoryPosts =
+const totalCategoryPosts: number =
   Astro.props.totalCategoryPosts ?? allMatchingPosts.length
-const totalPages =
+const totalPages: number =
   Astro.props.totalPages ??
   Math.max(1, Math.ceil(totalCategoryPosts / postsPerPage))
-const currentPage = Astro.props.currentPage ?? pageNum
+const currentPage: number = Astro.props.currentPage ?? pageNum
 
 const start = (currentPage - 1) * postsPerPage
 const posts: BlogPost[] =

@@ -71,8 +71,9 @@ export function MediaImagePicker({
       } else {
         toast.error(res.error || "Image upload failed")
       }
-    } catch (err: any) {
-      toast.error(err?.message || "Image upload failed")
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Image upload failed"
+      toast.error(msg)
     } finally {
       setIsUploading(false)
       if (fileInputRef.current) fileInputRef.current.value = ""

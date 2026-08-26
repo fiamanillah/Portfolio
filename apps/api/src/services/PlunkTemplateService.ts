@@ -332,7 +332,7 @@ export class PlunkTemplateService {
     templateId?: string
     subject?: string
     body?: string
-    data?: Record<string, any>
+    data?: Record<string, unknown>
     reply?: string
     from?: string
     fromName?: string
@@ -363,7 +363,7 @@ export class PlunkTemplateService {
       const senderName = fromName || "Fi Amanillah"
       const replyToAddress = reply || config.email.replyTo || "fi@amanillah.com"
 
-      const payload: Record<string, any> = {
+      const payload: Record<string, unknown> = {
         to,
         from: senderFrom,
         name: senderName,

@@ -184,7 +184,7 @@ export default function SkillsPage() {
       } else {
         showApiError(res, "Failed to duplicate skill")
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       showApiError(err, "Error duplicating skill")
     }
   }
@@ -202,7 +202,7 @@ export default function SkillsPage() {
       } else {
         showApiError(res, "Failed to update status")
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       showApiError(err, "Error updating skill status")
     }
   }
@@ -247,7 +247,7 @@ export default function SkillsPage() {
           showApiError(res, "Failed to delete skill")
         }
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       showApiError(err, "Error deleting skill(s)")
     } finally {
       setIsDeleting(false)
@@ -270,7 +270,7 @@ export default function SkillsPage() {
       } else {
         showApiError(res, "Failed to bulk update status")
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       showApiError(err, "Error updating skills")
     }
   }
@@ -291,7 +291,7 @@ export default function SkillsPage() {
       } else {
         showApiError(res, "Failed to seed default skills")
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       showApiError(err, "Error seeding default skills")
     } finally {
       setIsSeeding(false)

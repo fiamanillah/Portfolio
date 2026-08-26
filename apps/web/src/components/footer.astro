@@ -159,8 +159,8 @@ const footerLinks = [
     document.querySelectorAll('[data-cookie-trigger="true"]').forEach((btn) => {
       btn.addEventListener("click", (e) => {
         e.preventDefault()
-        if (typeof (window as any).openCookiePreferences === "function") {
-          ;(window as any).openCookiePreferences()
+        if (typeof window.openCookiePreferences === "function") {
+          window.openCookiePreferences()
         } else {
           window.dispatchEvent(new CustomEvent("open-cookie-preferences"))
         }

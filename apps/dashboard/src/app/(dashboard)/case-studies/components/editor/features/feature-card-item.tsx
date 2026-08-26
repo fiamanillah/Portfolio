@@ -13,7 +13,7 @@ import { MediaImagePicker } from "../common/media-image-picker"
 interface FeatureCardItemProps {
   feature: FeatureItem
   index: number
-  onUpdate: (field: keyof FeatureItem, value: any) => void
+  onUpdate: <K extends keyof FeatureItem>(field: K, value: FeatureItem[K]) => void
   onRemove: () => void
 }
 

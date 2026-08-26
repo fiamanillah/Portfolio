@@ -1,9 +1,7 @@
-// apps/web/src/lib/api/bookingApi.ts
 import type { TimeSlot, Booking, CreateBookingInput } from "@workspace/shared"
+import { getApiBaseUrl } from "./baseUrl"
 
-const API_BASE_URL =
-  (typeof import.meta !== "undefined" && import.meta.env?.PUBLIC_API_URL) ||
-  "http://localhost:3040"
+const API_BASE_URL = getApiBaseUrl()
 
 export interface ApiResponse<T> {
   success: boolean
@@ -26,10 +24,13 @@ export const bookingApi = {
       const res = await fetch(url)
       const data = await res.json()
       return data
-    } catch (err: any) {
+    } catch (err: unknown) {
       return {
         success: false,
-        error: err?.message || "Failed to fetch available slots.",
+        error:
+          err instanceof Error
+            ? err.message
+            : "Failed to fetch available slots.",
       }
     }
   },
@@ -49,10 +50,10 @@ export const bookingApi = {
       })
       const data = await res.json()
       return data
-    } catch (err: any) {
+    } catch (err: unknown) {
       return {
         success: false,
-        error: err?.message || "Failed to submit booking.",
+        error: err instanceof Error ? err.message : "Failed to submit booking.",
       }
     }
   },
@@ -66,10 +67,13 @@ export const bookingApi = {
       const res = await fetch(url)
       const data = await res.json()
       return data
-    } catch (err: any) {
+    } catch (err: unknown) {
       return {
         success: false,
-        error: err?.message || "Failed to retrieve booking details.",
+        error:
+          err instanceof Error
+            ? err.message
+            : "Failed to retrieve booking details.",
       }
     }
   },
@@ -90,10 +94,10 @@ export const bookingApi = {
       })
       const data = await res.json()
       return data
-    } catch (err: any) {
+    } catch (err: unknown) {
       return {
         success: false,
-        error: err?.message || "Failed to cancel booking.",
+        error: err instanceof Error ? err.message : "Failed to cancel booking.",
       }
     }
   },

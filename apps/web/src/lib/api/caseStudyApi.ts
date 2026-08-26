@@ -1,17 +1,17 @@
 import type {
   CaseStudyDetail,
-  ContextBlock,
-  ArchitectureLayer,
-  FeatureItem,
-  PerformanceMetric,
-  PostMortemSection,
+  ContextBlock as WebContextBlock,
+  ArchitectureLayer as WebArchitectureLayer,
+  FeatureItem as WebFeatureItem,
+  PerformanceMetric as WebPerformanceMetric,
+  PostMortemSection as WebPostMortemSection,
   CaseStudyMetadata,
 } from "@/data/caseStudies"
+import type { CaseStudyDTO } from "@workspace/shared"
 import { RedirectApi } from "./redirectApi"
+import { getApiBaseUrl } from "./baseUrl"
 
-const API_BASE_URL =
-  (typeof import.meta !== "undefined" && import.meta.env?.PUBLIC_API_URL) ||
-  "http://localhost:3040"
+const API_BASE_URL = getApiBaseUrl()
 
 export interface PublicCaseStudyQuery {
   page?: number
@@ -44,16 +44,24 @@ export interface SingleCaseStudyResponse {
 /**
  * Format raw API Case Study DTO into frontend CaseStudyDetail interface
  */
-export function mapApiCaseStudyToDetail(dto: any): CaseStudyDetail {
+export function mapApiCaseStudyToDetail(
+  dto: CaseStudyDTO | Record<string, unknown>
+): CaseStudyDetail {
   const metadata: CaseStudyMetadata[] = Array.isArray(dto.metadata)
-    ? dto.metadata.map((m: any) => ({
+    ? dto.metadata.map((m: { label: string; value: string }) => ({
         label: m.label,
         value: m.value,
       }))
     : [
-        { label: "Role", value: dto.role || "Full Stack Developer" },
-        { label: "Timeline", value: dto.timeline || "2026" },
-        { label: "Client / Company", value: dto.client || dto.title },
+        {
+          label: "Role",
+          value: (dto.role as string) || "Full Stack Developer",
+        },
+        { label: "Timeline", value: (dto.timeline as string) || "2026" },
+        {
+          label: "Client / Company",
+          value: (dto.client as string) || (dto.title as string),
+        },
         {
           label: "Tech Stack",
           value: Array.isArray(dto.techStack)
@@ -62,53 +70,79 @@ export function mapApiCaseStudyToDetail(dto: any): CaseStudyDetail {
         },
       ]
 
-  const contextBlocks: ContextBlock[] = Array.isArray(dto.contextBlocks)
-    ? dto.contextBlocks.map((b: any) => ({
+  const contextBlocks: WebContextBlock[] = Array.isArray(dto.contextBlocks)
+    ? dto.contextBlocks.map((b: { label: string; body: string }) => ({
         label: b.label,
         body: b.body,
       }))
     : []
 
-  const architectureLayers: ArchitectureLayer[] = Array.isArray(
+  const architectureLayers: WebArchitectureLayer[] = Array.isArray(
     dto.architectureLayers
   )
-    ? dto.architectureLayers.map((l: any) => ({
+    ? (
+        dto.architectureLayers as Array<{
+          name: string
+          description?: string
+          items?: Array<{ title: string; subtitle?: string | null }>
+        }>
+      ).map((l) => ({
         name: l.name,
-        description: l.description,
+        description: l.description || "",
         items: Array.isArray(l.items)
-          ? l.items.map((it: any) => ({
+          ? l.items.map((it) => ({
               title: it.title,
-              subtitle: it.subtitle || undefined,
+              subtitle: it.subtitle || "",
             }))
           : [],
       }))
     : []
 
-  const features: FeatureItem[] = Array.isArray(dto.features)
-    ? dto.features.map((f: any) => ({
+  const features: WebFeatureItem[] = Array.isArray(dto.features)
+    ? (
+        dto.features as Array<{
+          title: string
+          description: string
+          mediaType?: string
+          mediaLabel?: string
+          media?: string
+          tags?: string[]
+          highlights?: string[]
+          codeLang?: string
+        }>
+      ).map((f) => ({
         title: f.title,
         description: f.description,
         mediaType: f.mediaType || "Image / Video",
         mediaLabel: f.mediaLabel || "Feature Screenshot",
-        media: f.media,
+        media: f.media || "/placeholder.png",
         tags: Array.isArray(f.tags) ? f.tags : [],
         highlights: Array.isArray(f.highlights) ? f.highlights : [],
         codeLang: f.codeLang || undefined,
       }))
     : []
 
-  const metrics: PerformanceMetric[] = Array.isArray(dto.metrics)
-    ? dto.metrics.map((m: any) => ({
+  const metrics: WebPerformanceMetric[] = Array.isArray(dto.metrics)
+    ? (dto.metrics as Array<{ value: string; label: string }>).map((m) => ({
         value: m.value,
         label: m.label,
       }))
     : []
 
-  const postMortem: PostMortemSection[] = Array.isArray(dto.postMortem)
-    ? dto.postMortem.map((pm: any) => ({
+  const postMortem: WebPostMortemSection[] = Array.isArray(dto.postMortem)
+    ? (
+        dto.postMortem as Array<{
+          title: string
+          entries?: Array<{
+            heading: string
+            detail: string
+            code?: string | null
+          }>
+        }>
+      ).map((pm) => ({
         title: pm.title,
         entries: Array.isArray(pm.entries)
-          ? pm.entries.map((e: any) => ({
+          ? pm.entries.map((e) => ({
               heading: e.heading,
               detail: e.detail,
               code: e.code || undefined,
@@ -118,29 +152,51 @@ export function mapApiCaseStudyToDetail(dto: any): CaseStudyDetail {
     : []
 
   return {
-    slug: dto.slug,
-    title: dto.title,
-    description: dto.description,
-    projectType: dto.projectType || "CASE_STUDY",
-    status: dto.projectStatus || dto.status || "Status: Completed",
-    techStack: Array.isArray(dto.techStack) ? dto.techStack : [],
-    liveUrl: dto.liveUrl || undefined,
-    githubUrl: dto.githubUrl || undefined,
-    image: dto.image,
-    imageLabel: dto.imageLabel || undefined,
-    role: dto.role || undefined,
-    timeline: dto.timeline || undefined,
-    client: dto.client || undefined,
-    impact: dto.impact || undefined,
-    highlights: Array.isArray(dto.highlights) ? dto.highlights : [],
+    slug: (dto.slug as string) || "",
+    title: (dto.title as string) || "",
+    subtitle: (dto.subtitle as string) || undefined,
+    description: (dto.description as string) || "",
+    projectType:
+      (dto.projectType as
+        | "Full-Stack"
+        | "Frontend"
+        | "Backend"
+        | "Mobile"
+        | "DevOps"
+        | "AI/ML"
+        | "System Architecture") || "Full-Stack",
+    status:
+      (dto.status as
+        | "Published"
+        | "In Development"
+        | "Case Study Coming Soon"
+        | "Archived"
+        | "Draft") || "Published",
+    projectStatus: (dto.projectStatus as string) || "Active Production",
+    order: typeof dto.order === "number" ? dto.order : 0,
+    featured: Boolean(dto.featured),
+    pinned: Boolean(dto.pinned),
+    techStack: Array.isArray(dto.techStack) ? (dto.techStack as string[]) : [],
+    liveUrl: (dto.liveUrl as string) || undefined,
+    githubUrl: (dto.githubUrl as string) || undefined,
+    image: (dto.image as string) || "/placeholder.png",
+    imageLabel: (dto.imageLabel as string) || undefined,
+    role: (dto.role as string) || undefined,
+    timeline: (dto.timeline as string) || undefined,
+    client: (dto.client as string) || undefined,
+    impact: (dto.impact as string) || undefined,
+    highlights: Array.isArray(dto.highlights)
+      ? (dto.highlights as string[])
+      : [],
+    views: typeof dto.views === "number" ? dto.views : 0,
+    likesCount: typeof dto.likesCount === "number" ? dto.likesCount : 0,
+    publishedAt: (dto.publishedAt as string) || undefined,
     metadata,
     contextBlocks,
     architectureLayers,
     features,
     metrics,
     postMortem,
-    createdAt: dto.createdAt,
-    updatedAt: dto.updatedAt,
   }
 }
 

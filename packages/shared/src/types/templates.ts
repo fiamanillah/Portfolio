@@ -31,13 +31,13 @@ export interface EmailTemplate {
   fromName?: string | null;
   replyTo?: string | null;
   plunkId?: string | null;
-  variables?: Record<string, any> | string[];
+  variables?: Record<string, unknown> | string[];
   isActive?: boolean;
   isSystem?: boolean;
   syncedAt?: string | null;
   createdAt: string;
   updatedAt: string;
-  sampleData?: Record<string, any>;
+  sampleData?: Record<string, unknown>;
 }
 
 export interface TemplateStats {
@@ -71,5 +71,5 @@ export interface SystemTemplateDefinition {
   fromName?: string;
   replyTo?: string;
   isSystem: boolean;
-  sampleData: Record<string, any>;
+  sampleData: Record<string, unknown>;
 }

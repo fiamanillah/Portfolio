@@ -51,7 +51,10 @@ import { CommentStatsCards } from "./components/comment-stats-cards"
 import { CommentsFeedView } from "./components/comments-feed-view"
 import { CommentsTableView } from "./components/comments-table-view"
 import { ReportedQueueTab } from "./components/reported-queue-tab"
-import { ThreadInspectorDialog } from "./components/thread-inspector-dialog"
+import {
+  ThreadInspectorDialog,
+  type ThreadCommentDetail,
+} from "./components/thread-inspector-dialog"
 import { ReportResolverDialog } from "./components/report-resolver-dialog"
 import { DeleteConfirmDialog } from "./components/delete-confirm-dialog"
 
@@ -103,7 +106,8 @@ export default function CommentsModerationPage() {
     React.useState("")
 
   // Dialog states
-  const [inspectComment, setInspectComment] = React.useState<any | null>(null)
+  const [inspectComment, setInspectComment] =
+    React.useState<ThreadCommentDetail | null>(null)
   const [activeReportToResolve, setActiveReportToResolve] =
     React.useState<CommentReportDTO | null>(null)
   const [reportAction, setReportAction] =
@@ -262,8 +266,8 @@ export default function CommentsModerationPage() {
       } else {
         toast.error(res.error || "Failed to update status")
       }
-    } catch (e: any) {
-      toast.error(e.message || "Failed to update status")
+    } catch (e: unknown) {
+      toast.error(e instanceof Error ? e.message : "Failed to update status")
     } finally {
       setActionLoading(false)
     }
@@ -283,8 +287,8 @@ export default function CommentsModerationPage() {
       } else {
         toast.error(res.error || "Failed to delete comment")
       }
-    } catch (e: any) {
-      toast.error(e.message || "Failed to delete comment")
+    } catch (e: unknown) {
+      toast.error(e instanceof Error ? e.message : "Failed to delete comment")
     } finally {
       setActionLoading(false)
     }
@@ -309,8 +313,8 @@ export default function CommentsModerationPage() {
       } else {
         toast.error(res.error || "Bulk action failed")
       }
-    } catch (e: any) {
-      toast.error(e.message || "Bulk action failed")
+    } catch (e: unknown) {
+      toast.error(e instanceof Error ? e.message : "Bulk action failed")
     } finally {
       setActionLoading(false)
     }
@@ -334,8 +338,8 @@ export default function CommentsModerationPage() {
       } else {
         toast.error(res.error || "Bulk delete failed")
       }
-    } catch (e: any) {
-      toast.error(e.message || "Bulk delete failed")
+    } catch (e: unknown) {
+      toast.error(e instanceof Error ? e.message : "Bulk delete failed")
     } finally {
       setActionLoading(false)
     }
@@ -350,8 +354,10 @@ export default function CommentsModerationPage() {
       } else {
         toast.error("Failed to load comment details")
       }
-    } catch (e: any) {
-      toast.error(e.message || "Error loading comment details")
+    } catch (e: unknown) {
+      toast.error(
+        e instanceof Error ? e.message : "Error loading comment details"
+      )
     }
   }
 
@@ -362,7 +368,13 @@ export default function CommentsModerationPage() {
     try {
       const res = await CommentApi.resolveReport(activeReportToResolve.id, {
         status: "ACTION_TAKEN" as CommentReportStatus,
-        action: reportAction as any,
+        action: reportAction as
+          | "NO_ACTION"
+          | "DISMISS"
+          | "APPROVE_COMMENT"
+          | "DELETE_COMMENT"
+          | "MARK_SPAM"
+          | "REJECT_COMMENT",
         resolutionNotes: reportResolutionNotes || undefined,
       })
 
@@ -376,8 +388,8 @@ export default function CommentsModerationPage() {
       } else {
         toast.error(res.error || "Failed to resolve report")
       }
-    } catch (e: any) {
-      toast.error(e.message || "Failed to resolve report")
+    } catch (e: unknown) {
+      toast.error(e instanceof Error ? e.message : "Failed to resolve report")
     } finally {
       setActionLoading(false)
     }
@@ -400,8 +412,8 @@ export default function CommentsModerationPage() {
       } else {
         toast.error(res.error || "Failed to dismiss report")
       }
-    } catch (e: any) {
-      toast.error(e.message || "Failed to dismiss report")
+    } catch (e: unknown) {
+      toast.error(e instanceof Error ? e.message : "Failed to dismiss report")
     } finally {
       setActionLoading(false)
     }
@@ -496,7 +508,7 @@ export default function CommentsModerationPage() {
       {/* Main Tabs */}
       <Tabs
         value={activeTab}
-        onValueChange={(val) => setActiveTab(val as any)}
+        onValueChange={(val) => setActiveTab(val as "comments" | "reports")}
         className="space-y-4"
       >
         <div className="flex flex-col gap-3 border-b pb-3 sm:flex-row sm:items-center sm:justify-between">

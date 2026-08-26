@@ -174,7 +174,7 @@ export const TemplateApi = {
    * 13. Fetch remote templates directly from Plunk API
    */
   async getRemotePlunkTemplates() {
-    return await request<any>("/templates/v1/remote", {
+    return await request<EmailTemplate[]>("/templates/v1/remote", {
       method: "GET",
     })
   },

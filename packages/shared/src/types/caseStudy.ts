@@ -94,7 +94,7 @@ export interface CaseStudyDTO {
   twitterDescription?: string | null;
   twitterImage?: string | null;
   canonicalUrl?: string | null;
-  structuredData?: Record<string, any> | null;
+  structuredData?: Record<string, unknown> | null;
   createdAt: string;
   updatedAt: string;
 }

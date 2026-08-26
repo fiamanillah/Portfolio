@@ -150,8 +150,8 @@ export function MediaPickerModal({
       } else {
         toast.error(res.error || "Upload failed")
       }
-    } catch (err: any) {
-      toast.error(err.message || "Upload failed")
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : "Upload failed")
     } finally {
       setUploading(false)
       if (fileInputRef.current) fileInputRef.current.value = ""
@@ -176,7 +176,7 @@ export function MediaPickerModal({
 
         <Tabs
           value={activeTab}
-          onValueChange={(val) => setActiveTab(val as any)}
+          onValueChange={(val) => setActiveTab(val as "library" | "upload")}
           className="flex flex-1 flex-col overflow-hidden"
         >
           <div className="border-b border-border bg-card px-6">

@@ -1,5 +1,8 @@
 ---
 import { Code } from "astro:components"
+import type { ComponentProps } from "astro/types"
+
+type CodeLang = ComponentProps<typeof Code>["lang"]
 
 interface Props {
   code: string
@@ -372,7 +375,7 @@ const displayBadge =
   >
     <Code
       code={code.trim()}
-      lang={normalizedLang as any}
+      lang={normalizedLang as CodeLang}
       themes={{
         light: "github-light",
         dark: "tokyo-night",

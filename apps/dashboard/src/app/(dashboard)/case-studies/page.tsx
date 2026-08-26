@@ -70,7 +70,15 @@ export default function CaseStudiesPage() {
             ? (statusFilter as CaseStudyStatus)
             : undefined,
         featured: featuredFilter === "featured" ? true : undefined,
-        sortBy: sortBy as any,
+        sortBy:
+          (sortBy as
+            | "order"
+            | "createdAt"
+            | "title"
+            | "views"
+            | "likesCount"
+            | "updatedAt"
+            | "publishedAt") || undefined,
         sortOrder,
       })
 
@@ -259,12 +267,13 @@ export default function CaseStudiesPage() {
             </span>
           </div>
           <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
-            Architectural deep-dives, topology maps, feature breakdowns, and system post-mortems.
+            Architectural deep-dives, topology maps, feature breakdowns, and
+            system post-mortems.
           </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-2.5">
-          <Button asChild size="sm" className="h-9 gap-1.5 text-xs bg-primary">
+          <Button asChild size="sm" className="h-9 gap-1.5 bg-primary text-xs">
             <Link href="/case-studies/create">
               <Plus className="size-4" />
               <span>Create Case Study</span>

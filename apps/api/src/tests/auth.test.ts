@@ -4,6 +4,7 @@ import { AuthServices } from "../Modules/Auth/auth.service"
 import { UserService } from "../Modules/User/user.service"
 import { StorageService } from "../services/StorageService"
 import { S3Client } from "@aws-sdk/client-s3"
+import { Readable } from "stream"
 
 describe("Authentication & RBAC System Integration Tests", () => {
   const mockS3 = new S3Client({
@@ -14,7 +15,7 @@ describe("Authentication & RBAC System Integration Tests", () => {
   mockS3.send = (async () => ({
     ETag: '"test-avatar-etag"',
     $metadata: { httpStatusCode: 200 },
-  })) as any
+  })) as unknown as typeof mockS3.send
   const mockStorage = new StorageService(
     mockS3,
     "portfolio-assets",
@@ -249,7 +250,7 @@ describe("Authentication & RBAC System Integration Tests", () => {
       destination: "",
       filename: "",
       path: "",
-      stream: null as any,
+      stream: Readable.from([]),
     }
 
     const updatedUser = await userService.uploadAvatar(testUserId, mockFile)
@@ -278,7 +279,7 @@ describe("Authentication & RBAC System Integration Tests", () => {
       destination: "",
       filename: "",
       path: "",
-      stream: null as any,
+      stream: Readable.from([]),
     }
 
     const replacedUser = await userService.uploadAvatar(

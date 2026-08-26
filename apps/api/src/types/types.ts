@@ -1,15 +1,15 @@
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   success: boolean
   message?: string
   meta?: {
     requestId: string
     timestamp: string
-    [key: string]: any
+    [key: string]: unknown
   }
   data?: T
 }
 
-export interface PaginatedResponse<T = any> extends ApiResponse<T[]> {
+export interface PaginatedResponse<T = unknown> extends ApiResponse<T[]> {
   meta: ApiResponse["meta"] & {
     pagination: {
       page: number
@@ -22,7 +22,7 @@ export interface PaginatedResponse<T = any> extends ApiResponse<T[]> {
   }
 }
 
-export type FilterHandler = (value: any) => Record<string, any>
+export type FilterHandler = (value: unknown) => Record<string, unknown>
 
 // Type for pagination options
 export interface PaginationOptions {

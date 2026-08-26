@@ -169,7 +169,7 @@ export function CategoryTagDialog({
           showApiError(res, "Failed to create category")
         }
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       showApiError(err, "Failed to save category")
     } finally {
       setIsSubmittingCat(false)
@@ -193,7 +193,7 @@ export function CategoryTagDialog({
       } else {
         showApiError(res, "Failed to delete category")
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       showApiError(err, "Failed to delete category")
     }
   }
@@ -241,7 +241,7 @@ export function CategoryTagDialog({
           showApiError(res, "Failed to create tag")
         }
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       showApiError(err, "Failed to save tag")
     } finally {
       setIsSubmittingTag(false)
@@ -258,7 +258,7 @@ export function CategoryTagDialog({
       } else {
         showApiError(res, "Failed to delete tag")
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       showApiError(err, "Failed to delete tag")
     }
   }

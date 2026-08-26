@@ -29,7 +29,7 @@ export interface OtpRecord {
   email: string
   code: string
   type: string
-  payload?: any
+  payload?: unknown
   userId?: string
   attempts: number
   createdAt: number
@@ -158,7 +158,7 @@ export class AuthServices {
       },
       secret,
       {
-        expiresIn: expiresIn as any,
+        expiresIn: expiresIn as jwt.SignOptions["expiresIn"],
         issuer: config.security.jwt.issuer,
       }
     )
@@ -810,7 +810,7 @@ export class AuthServices {
     const rendered = renderOtpEmail({
       email,
       code: newOtp,
-      purpose: type as any,
+      purpose: type as Parameters<typeof renderOtpEmail>[0]["purpose"],
       expiresInMinutes: 10,
     })
 
@@ -870,7 +870,7 @@ export class AuthServices {
       },
       secret,
       {
-        expiresIn: expiresIn as any,
+        expiresIn: expiresIn as jwt.SignOptions["expiresIn"],
         issuer: config.security.jwt.issuer,
       }
     )

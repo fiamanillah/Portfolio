@@ -195,7 +195,7 @@ export function AudienceSelector({
         <CardContent className="space-y-4">
           <RadioGroup
             value={targetAudience}
-            onValueChange={(val: any) => onChangeTargetAudience(val)}
+            onValueChange={(val) => onChangeTargetAudience(val as AudienceType)}
             className="grid gap-3 sm:grid-cols-3"
           >
             <Label

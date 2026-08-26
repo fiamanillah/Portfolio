@@ -14,9 +14,9 @@ export type LoginPayload = LoginInput
 export type ResetPasswordPayload = ResetPasswordInput
 export type UpdateProfilePayload = UpdateProfileInput
 
-const API_BASE_URL =
-  (typeof import.meta !== "undefined" && import.meta.env?.PUBLIC_API_URL) ||
-  "http://localhost:3040"
+import { getApiBaseUrl } from "./baseUrl"
+
+const API_BASE_URL = getApiBaseUrl()
 
 const ACCESS_TOKEN_KEY = "portfolio_access_token"
 
@@ -131,11 +131,13 @@ async function request<T>(
       data: (body?.data !== undefined ? body.data : body) as T,
       message: body?.message,
     }
-  } catch (err: any) {
+  } catch (err: unknown) {
     return {
       success: false,
       error:
-        err?.message || "Network error. Please check your server connection.",
+        err instanceof Error
+          ? err.message
+          : "Network error. Please check your server connection.",
     }
   }
 }

@@ -43,7 +43,7 @@ export interface BlogSEOData {
   articleType?: BlogArticleType;
   noIndex?: boolean;
   noFollow?: boolean;
-  structuredData?: Record<string, any> | null;
+  structuredData?: Record<string, unknown> | null;
 }
 
 export interface BlogCategoryDTO {
@@ -204,7 +204,7 @@ export interface SeoAnalysisResult {
       image: string;
       site: string;
     };
-    jsonLd: Record<string, any>;
+    jsonLd: Record<string, unknown>;
   };
 }
 
@@ -236,7 +236,7 @@ export interface PublicBlogPostDetail {
     name: string;
     url: string;
   }>;
-  jsonLd: Record<string, any>;
+  jsonLd: Record<string, unknown>;
   redirected?: boolean;
   destination?: string;
   statusCode?: number;

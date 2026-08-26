@@ -221,10 +221,12 @@ export function AuthModal({
       toast.error("Sign-in Failed", {
         description: res.error || res.message || "Invalid credentials.",
       })
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast.error("Sign-in Error", {
         description:
-          err?.message || "Could not connect to authentication server.",
+          err instanceof Error
+            ? err.message
+            : "Could not connect to authentication server.",
       })
     } finally {
       setIsSigningIn(false)
@@ -284,10 +286,12 @@ export function AuthModal({
             res.error || res.message || "Failed to initiate registration.",
         })
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast.error("Registration Error", {
         description:
-          err?.message || "Could not connect to authentication server.",
+          err instanceof Error
+            ? err.message
+            : "Could not connect to authentication server.",
       })
     } finally {
       setIsSendingRegisterOtp(false)
@@ -309,8 +313,10 @@ export function AuthModal({
       } else {
         toast.error("Resend Failed", { description: res.error || res.message })
       }
-    } catch (err: any) {
-      toast.error("Resend Error", { description: err?.message })
+    } catch (err: unknown) {
+      toast.error("Resend Error", {
+        description: err instanceof Error ? err.message : undefined,
+      })
     } finally {
       setIsSendingRegisterOtp(false)
     }
@@ -340,13 +346,14 @@ export function AuthModal({
 
       if (res.success && res.data?.user) {
         setStoredUser(res.data.user)
+        toast.success("Account Created & Verified!", {
+          description: `Welcome to the platform, ${res.data.user.name}!`,
+        })
+
         if (subscribeNewsletter) {
-          toast.success(`Account Verified & Activated!`, {
-            description: `Welcome, ${res.data.user.name}! You're also subscribed to tech stories, AI updates, and engineering insights.`,
-          })
-        } else {
-          toast.success(`Account Verified & Activated!`, {
-            description: `Welcome, ${res.data.user.name}! Your account is now active.`,
+          toast.info("Newsletter Active", {
+            description:
+              "You have been subscribed to developer case studies and updates.",
           })
         }
 
@@ -358,9 +365,13 @@ export function AuthModal({
           description: res.error || res.message || "Invalid verification code.",
         })
       }
-    } catch (err: any) {
-      setRegisterOtpError(err?.message || "Verification failed.")
-      toast.error("Verification Error", { description: err?.message })
+    } catch (err: unknown) {
+      setRegisterOtpError(
+        err instanceof Error ? err.message : "Verification failed."
+      )
+      toast.error("Verification Error", {
+        description: err instanceof Error ? err.message : undefined,
+      })
     } finally {
       setIsActivatingAccount(false)
     }
@@ -397,8 +408,10 @@ export function AuthModal({
       } else {
         toast.error("Request Failed", { description: res.error || res.message })
       }
-    } catch (err: any) {
-      toast.error("Request Error", { description: err?.message })
+    } catch (err: unknown) {
+      toast.error("Request Error", {
+        description: err instanceof Error ? err.message : undefined,
+      })
     } finally {
       setIsSendingResetOtp(false)
     }
@@ -419,8 +432,10 @@ export function AuthModal({
       } else {
         toast.error("Resend Failed", { description: res.error || res.message })
       }
-    } catch (err: any) {
-      toast.error("Resend Error", { description: err?.message })
+    } catch (err: unknown) {
+      toast.error("Resend Error", {
+        description: err instanceof Error ? err.message : undefined,
+      })
     } finally {
       setIsSendingResetOtp(false)
     }
@@ -461,9 +476,13 @@ export function AuthModal({
           description: res.error || res.message,
         })
       }
-    } catch (err: any) {
-      setResetOtpError(err?.message || "Verification failed.")
-      toast.error("Verification Error", { description: err?.message })
+    } catch (err: unknown) {
+      setResetOtpError(
+        err instanceof Error ? err.message : "Verification failed."
+      )
+      toast.error("Verification Error", {
+        description: err instanceof Error ? err.message : undefined,
+      })
     } finally {
       setIsVerifyingResetOtp(false)
     }
@@ -520,8 +539,10 @@ export function AuthModal({
       } else {
         toast.error("Reset Failed", { description: res.error || res.message })
       }
-    } catch (err: any) {
-      toast.error("Reset Error", { description: err?.message })
+    } catch (err: unknown) {
+      toast.error("Reset Error", {
+        description: err instanceof Error ? err.message : undefined,
+      })
     } finally {
       setIsResettingPassword(false)
     }

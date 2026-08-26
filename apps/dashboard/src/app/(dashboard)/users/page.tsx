@@ -129,9 +129,9 @@ export default function UsersManagementPage() {
             res.error || "Please ensure the backend API is connected.",
         })
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast.error("Error loading users", {
-        description: err?.message || "Network issue.",
+        description: err instanceof Error ? err.message : "Network issue.",
       })
     } finally {
       setIsLoading(false)
@@ -186,9 +186,9 @@ export default function UsersManagementPage() {
           description: res.error || "Unable to modify user permissions.",
         })
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast.error("Error updating role", {
-        description: err?.message,
+        description: err instanceof Error ? err.message : undefined,
       })
     } finally {
       setIsProcessing(false)
@@ -222,9 +222,9 @@ export default function UsersManagementPage() {
           description: res.error || "Failed to remove user record.",
         })
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast.error("Error deleting user", {
-        description: err?.message,
+        description: err instanceof Error ? err.message : undefined,
       })
     } finally {
       setIsProcessing(false)

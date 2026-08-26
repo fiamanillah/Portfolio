@@ -6,8 +6,8 @@ import { AppLogger } from "@workspace/logger"
 
 // Registry interface for localized Dependency Injection
 export interface ModuleDependencies {
-  services: Map<string, any>
-  controllers: Map<string, any>
+  services: Map<string, unknown>
+  controllers: Map<string, unknown>
 }
 
 export abstract class BaseModule implements IgnitorModule {
@@ -83,7 +83,7 @@ export abstract class BaseModule implements IgnitorModule {
   // Dependency Injection Helpers
   // ==========================================
 
-  protected registerService(key: string, instance: any): void {
+  protected registerService<T>(key: string, instance: T): void {
     this.container.services.set(key, instance)
   }
 
@@ -91,7 +91,7 @@ export abstract class BaseModule implements IgnitorModule {
     return this.container.services.get(key) as T
   }
 
-  protected registerController(key: string, instance: any): void {
+  protected registerController<T>(key: string, instance: T): void {
     this.container.controllers.set(key, instance)
   }
 
@@ -131,7 +131,7 @@ export abstract class BaseModule implements IgnitorModule {
 
   public async healthCheck(): Promise<{
     status: "healthy" | "unhealthy"
-    details?: any
+    details?: unknown
   }> {
     return { status: "healthy" }
   }

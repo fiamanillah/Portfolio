@@ -186,7 +186,7 @@ import SEO from "@/components/SEO/SEO.astro"
       if (!currentPath || currentPath === "/" || currentPath === "/404") return
 
       const apiUrl =
-        (typeof window !== "undefined" && (window as any).__PUBLIC_API_URL__) ||
+        (typeof window !== "undefined" && window.__PUBLIC_API_URL__) ||
         "http://localhost:3040"
 
       const res = await fetch(

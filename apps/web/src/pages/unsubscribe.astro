@@ -476,7 +476,7 @@ import SEO from "@/components/SEO/SEO.astro"
     const turnstileKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY
     if (!turnstileKey) return
 
-    if ((window as any).turnstile) {
+    if (window.turnstile) {
       callback()
       return
     }
@@ -509,9 +509,9 @@ import SEO from "@/components/SEO/SEO.astro"
     if (!turnstileKey || !container || manualTurnstileWidgetId !== null) return
 
     loadTurnstileScriptLazy(() => {
-      if ((window as any).turnstile && manualTurnstileWidgetId === null) {
+      if (window.turnstile && manualTurnstileWidgetId === null) {
         try {
-          manualTurnstileWidgetId = (window as any).turnstile.render(
+          manualTurnstileWidgetId = window.turnstile.render(
             "#unsub-manual-turnstile-container",
             {
               sitekey: turnstileKey,
@@ -538,9 +538,9 @@ import SEO from "@/components/SEO/SEO.astro"
       return
 
     loadTurnstileScriptLazy(() => {
-      if ((window as any).turnstile && changeEmailTurnstileWidgetId === null) {
+      if (window.turnstile && changeEmailTurnstileWidgetId === null) {
         try {
-          changeEmailTurnstileWidgetId = (window as any).turnstile.render(
+          changeEmailTurnstileWidgetId = window.turnstile.render(
             "#change-email-turnstile-container",
             {
               sitekey: turnstileKey,
@@ -805,10 +805,9 @@ import SEO from "@/components/SEO/SEO.astro"
     const hp_field =
       (new FormData(changeEmailForm).get("hp_field") as string) || ""
     let captchaToken = ""
-    if ((window as any).turnstile && changeEmailTurnstileWidgetId !== null) {
+    if (window.turnstile && changeEmailTurnstileWidgetId !== null) {
       captchaToken =
-        (window as any).turnstile.getResponse(changeEmailTurnstileWidgetId) ||
-        ""
+        window.turnstile.getResponse(changeEmailTurnstileWidgetId) || ""
     }
 
     const originalSubmitText = submitChangeEmailText.textContent
@@ -846,11 +845,8 @@ import SEO from "@/components/SEO/SEO.astro"
         changeEmailPanel.classList.add("hidden")
         changeEmailForm.reset()
 
-        if (
-          (window as any).turnstile &&
-          changeEmailTurnstileWidgetId !== null
-        ) {
-          ;(window as any).turnstile.reset(changeEmailTurnstileWidgetId)
+        if (window.turnstile && changeEmailTurnstileWidgetId !== null) {
+          window.turnstile.reset(changeEmailTurnstileWidgetId)
         }
 
         submitChangeEmailText.textContent = originalSubmitText
@@ -866,11 +862,8 @@ import SEO from "@/components/SEO/SEO.astro"
           data.error?.details?.suggestedEmail
         showActionStatus(msg, true, suggestedEmail)
 
-        if (
-          (window as any).turnstile &&
-          changeEmailTurnstileWidgetId !== null
-        ) {
-          ;(window as any).turnstile.reset(changeEmailTurnstileWidgetId)
+        if (window.turnstile && changeEmailTurnstileWidgetId !== null) {
+          window.turnstile.reset(changeEmailTurnstileWidgetId)
         }
 
         submitChangeEmailText.textContent = originalSubmitText
@@ -894,9 +887,8 @@ import SEO from "@/components/SEO/SEO.astro"
 
     const hp_field = (new FormData(manualForm).get("hp_field") as string) || ""
     let captchaToken = ""
-    if ((window as any).turnstile && manualTurnstileWidgetId !== null) {
-      captchaToken =
-        (window as any).turnstile.getResponse(manualTurnstileWidgetId) || ""
+    if (window.turnstile && manualTurnstileWidgetId !== null) {
+      captchaToken = window.turnstile.getResponse(manualTurnstileWidgetId) || ""
     }
 
     const originalText = manualBtnText.textContent
@@ -944,8 +936,8 @@ import SEO from "@/components/SEO/SEO.astro"
           data.error?.details?.suggestedEmail
         showManualStatus(msg, true, suggestedEmail)
 
-        if ((window as any).turnstile && manualTurnstileWidgetId !== null) {
-          ;(window as any).turnstile.reset(manualTurnstileWidgetId)
+        if (window.turnstile && manualTurnstileWidgetId !== null) {
+          window.turnstile.reset(manualTurnstileWidgetId)
         }
 
         manualBtnText.textContent = originalText ?? "Unsubscribe Now"

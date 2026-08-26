@@ -93,8 +93,8 @@ export default function MediaPage() {
         if (statsRes.success && statsRes.data) {
           setStats(statsRes.data)
         }
-      } catch (err: any) {
-        toast.error(err.message || "Failed to load media")
+      } catch (err: unknown) {
+        toast.error(err instanceof Error ? err.message : "Failed to load media")
       } finally {
         setIsLoading(false)
         setIsRefreshing(false)

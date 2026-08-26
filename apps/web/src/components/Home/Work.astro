@@ -10,8 +10,14 @@ import { ArrowUpRight01Icon, BookOpen01Icon } from "@hugeicons/core-free-icons"
 // Fetch published case studies & projects dynamically from PostgreSQL API
 const fetchedStudies = await CaseStudyApi.fetchAllCaseStudies()
 
+const normalizeStatus = (status?: string): "Completed" | "Live" | "In Progress" | "Archived" => {
+  const cleaned = (status || "Completed").replace(/^Status:\s*/i, "")
+  if (cleaned === "Live" || cleaned === "In Progress" || cleaned === "Archived") return cleaned
+  return "Completed"
+}
+
 const apiProjects: Project[] = fetchedStudies.map((study, idx) => {
-  const metaObj = (study.metadata || []).reduce((acc: any, item: any) => {
+  const metaObj = (study.metadata || []).reduce<Record<string, string>>((acc, item) => {
     acc[item.label] = item.value
     return acc
   }, {})
@@ -25,7 +31,7 @@ const apiProjects: Project[] = fetchedStudies.map((study, idx) => {
       ? study.title.split("—")[0]?.trim()
       : study.title,
     subtitle:
-      (study as any).subtitle ||
+      study.subtitle ||
       (study.title.includes("—") ? study.title.split("—")[1]?.trim() : undefined),
     description: study.description,
     role: study.role || metaObj["Role"] || (isDeepDive ? "Full-Stack Architect" : "Open Source / Creator"),
@@ -42,16 +48,16 @@ const apiProjects: Project[] = fetchedStudies.map((study, idx) => {
     },
     img: study.image || "/fi.png",
     index: String(idx + 1).padStart(2, "0"),
-    status: ((study.status || "Completed").replace(/^Status:\s*/i, "") as any) || "Completed",
+    status: normalizeStatus(study.status),
     year: study.timeline || metaObj["Timeline"] || "2026",
     hasCaseStudy: isDeepDive,
     highlights:
       study.highlights && study.highlights.length > 0
         ? study.highlights
         : (study.features || [])
-            .flatMap((f: any) => f.highlights || [])
+            .flatMap((f) => f.highlights || [])
             .slice(0, 3),
-    metrics: (study.metrics || []).slice(0, 3).map((m: any) => ({
+    metrics: (study.metrics || []).slice(0, 3).map((m) => ({
       value: m.value,
       label: m.label,
     })),

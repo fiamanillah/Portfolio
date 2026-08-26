@@ -318,9 +318,9 @@ const submitTextId = `${idPrefix}-submit-text`
       if (!turnstileKey || !turnstileContainer || widgetId !== null) return
 
       const render = () => {
-        if ((window as any).turnstile && widgetId === null) {
+        if (window.turnstile && widgetId === null) {
           try {
-            widgetId = (window as any).turnstile.render(
+            widgetId = window.turnstile.render(
               `#${prefix}-turnstile-container`,
               {
                 sitekey: turnstileKey,
@@ -337,7 +337,7 @@ const submitTextId = `${idPrefix}-submit-text`
         }
       }
 
-      if ((window as any).turnstile) {
+      if (window.turnstile) {
         render()
         return
       }
@@ -412,8 +412,8 @@ const submitTextId = `${idPrefix}-submit-text`
       const hp_field = (formData.get("hp_field") as string) || ""
 
       let captchaToken = ""
-      if ((window as any).turnstile && widgetId !== null) {
-        captchaToken = (window as any).turnstile.getResponse(widgetId) || ""
+      if (window.turnstile && widgetId !== null) {
+        captchaToken = window.turnstile.getResponse(widgetId) || ""
       }
 
       const originalHTML = submitText.innerHTML
@@ -465,8 +465,8 @@ const submitTextId = `${idPrefix}-submit-text`
           submitBtn.classList.add("bg-emerald-600", "border-emerald-600")
           formElement.reset()
 
-          if ((window as any).turnstile && widgetId !== null) {
-            ;(window as any).turnstile.reset(widgetId)
+          if (window.turnstile && widgetId !== null) {
+            window.turnstile.reset(widgetId)
           }
 
           setTimeout(() => {
@@ -488,8 +488,8 @@ const submitTextId = `${idPrefix}-submit-text`
           submitText.innerHTML = originalHTML
           submitBtn.disabled = false
 
-          if ((window as any).turnstile && widgetId !== null) {
-            ;(window as any).turnstile.reset(widgetId)
+          if (window.turnstile && widgetId !== null) {
+            window.turnstile.reset(widgetId)
           }
         }
       } catch (err) {

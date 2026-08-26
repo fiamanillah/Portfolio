@@ -1,5 +1,5 @@
 // src/Modules/Newsletter/newsletter.service.ts
-import { prisma } from "@workspace/db";
+import { prisma, Prisma } from "@workspace/db";
 import { AppLogger } from "@workspace/logger";
 import { config } from "@/core/config";
 import {
@@ -19,6 +19,10 @@ import type {
   NewsletterDetail,
   NewsletterStats,
   NewsletterSendLogItem,
+  NewsletterStatus,
+  AudienceType,
+  SendLogStatus,
+  NewsletterSpamReport,
 } from "@workspace/shared";
 import { NewsletterSpamAnalyzer } from "./newsletter.spam-analyzer";
 import { NewsletterRecipientResolver } from "./newsletter.recipient";
@@ -128,7 +132,7 @@ export class NewsletterService {
 
     const skip = (page - 1) * limit;
 
-    const where: Record<string, any> = {};
+    const where: Prisma.NewsletterWhereInput = {};
 
     if (search && search.trim()) {
       where.OR = [
@@ -184,12 +188,12 @@ export class NewsletterService {
       title: r.title,
       subject: r.subject,
       previewText: r.previewText,
-      status: r.status as any,
+      status: r.status as NewsletterStatus,
       templateId: r.templateId,
       plunkCampaignId: r.plunkCampaignId,
       senderName: r.senderName,
       senderEmail: r.senderEmail,
-      targetAudience: r.targetAudience as any,
+      targetAudience: r.targetAudience as AudienceType,
       totalRecipients: r.totalRecipients,
       successfulSends: r.successfulSends,
       failedSends: r.failedSends,
@@ -260,7 +264,7 @@ export class NewsletterService {
     }
 
     const spamReport = updatedRecord.spamReport
-      ? (updatedRecord.spamReport as any)
+      ? (updatedRecord.spamReport as unknown as NewsletterSpamReport)
       : NewsletterSpamAnalyzer.analyze({
           subject: updatedRecord.subject,
           previewText: updatedRecord.previewText,
@@ -274,13 +278,13 @@ export class NewsletterService {
       subject: updatedRecord.subject,
       previewText: updatedRecord.previewText,
       content: updatedRecord.content,
-      status: updatedRecord.status as any,
+      status: updatedRecord.status as NewsletterStatus,
       templateId: updatedRecord.templateId,
       plunkCampaignId: updatedRecord.plunkCampaignId,
       senderName: updatedRecord.senderName,
       senderEmail: updatedRecord.senderEmail,
       replyTo: updatedRecord.replyTo,
-      targetAudience: updatedRecord.targetAudience as any,
+      targetAudience: updatedRecord.targetAudience as AudienceType,
       includedSources: updatedRecord.includedSources,
       includedTags: updatedRecord.includedTags,
       includedEmails: updatedRecord.includedEmails,
@@ -296,7 +300,7 @@ export class NewsletterService {
       spamScore: updatedRecord.spamScore ?? spamReport.score,
       spamReport,
       metadata: updatedRecord.metadata
-        ? (updatedRecord.metadata as Record<string, any>)
+        ? (updatedRecord.metadata as Record<string, unknown>)
         : null,
       scheduledAt: updatedRecord.scheduledAt
         ? updatedRecord.scheduledAt.toISOString()
@@ -310,9 +314,16 @@ export class NewsletterService {
   }
 
   /**
-   * 4. Create a new Newsletter & Sync to Plunk Campaigns
+   * 4. Create a new Newsletter Campaign
    */
   public async create(payload: CreateNewsletterDTO): Promise<NewsletterDetail> {
+    const scheduledAt = payload.scheduledAt
+      ? new Date(payload.scheduledAt)
+      : null;
+
+    const initialStatus = scheduledAt ? "SCHEDULED" : "DRAFT";
+
+    // Run spam analysis
     const spamReport = NewsletterSpamAnalyzer.analyze({
       subject: payload.subject,
       previewText: payload.previewText,
@@ -320,13 +331,7 @@ export class NewsletterService {
       senderEmail: payload.senderEmail,
     });
 
-    const scheduledAt = payload.scheduledAt
-      ? new Date(payload.scheduledAt)
-      : null;
-
-    const initialStatus = scheduledAt ? "SCHEDULED" : "DRAFT";
-
-    // 1. Create Campaign in Plunk
+    // 1. Create upstream campaign in Plunk
     let plunkCampaignId: string | null = null;
     try {
       const plunkCamp = await PlunkCampaignService.createCampaign({
@@ -348,9 +353,10 @@ export class NewsletterService {
           payload.targetAudience === "SEGMENT" ? "SEGMENT" : "ALL",
       });
       plunkCampaignId = plunkCamp.id;
-    } catch (plunkErr: any) {
+    } catch (plunkErr: unknown) {
+      const msg = plunkErr instanceof Error ? plunkErr.message : String(plunkErr);
       this.logger.warn(
-        `Failed to create Plunk campaign upstream, saving locally: ${plunkErr?.message}`
+        `Failed to create Plunk campaign upstream, saving locally: ${msg}`
       );
     }
 
@@ -375,8 +381,8 @@ export class NewsletterService {
         excludedSources: payload.excludedSources || [],
         scheduledAt,
         spamScore: spamReport.score,
-        spamReport: spamReport as any,
-        metadata: (payload.metadata as any) || undefined,
+        spamReport: spamReport as unknown as Prisma.InputJsonValue,
+        metadata: (payload.metadata as Prisma.InputJsonValue) || undefined,
       },
     });
 
@@ -488,9 +494,10 @@ export class NewsletterService {
         });
         plunkCampaignId = plunkCamp.id;
       }
-    } catch (plunkErr: any) {
+    } catch (plunkErr: unknown) {
+      const msg = plunkErr instanceof Error ? plunkErr.message : String(plunkErr);
       this.logger.warn(
-        `Non-critical: Plunk campaign update failed: ${plunkErr?.message}`
+        `Non-critical: Plunk campaign update failed: ${msg}`
       );
     }
 
@@ -534,9 +541,9 @@ export class NewsletterService {
         scheduledAt,
         status: newStatus,
         spamScore: spamReport.score,
-        spamReport: spamReport as any,
+        spamReport: spamReport as unknown as Prisma.InputJsonValue,
         ...(payload.metadata !== undefined
-          ? { metadata: (payload.metadata as any) || undefined }
+          ? { metadata: (payload.metadata as Prisma.InputJsonValue) || undefined }
           : {}),
       },
     });
@@ -599,9 +606,10 @@ export class NewsletterService {
         const duplicatedPlunk =
           await PlunkCampaignService.duplicateCampaign(source.plunkCampaignId);
         newPlunkCampaignId = duplicatedPlunk.id;
-      } catch (err: any) {
+      } catch (err: unknown) {
+        const msg = err instanceof Error ? err.message : String(err);
         this.logger.warn(
-          `Could not duplicate in Plunk directly: ${err?.message}`
+          `Could not duplicate in Plunk directly: ${msg}`
         );
       }
     }
@@ -625,8 +633,8 @@ export class NewsletterService {
         excludedEmails: source.excludedEmails,
         excludedSources: source.excludedSources,
         spamScore: source.spamScore,
-        spamReport: source.spamReport as any,
-        metadata: (source.metadata as any) || undefined,
+        spamReport: (source.spamReport as Prisma.InputJsonValue) || undefined,
+        metadata: (source.metadata as Prisma.InputJsonValue) || undefined,
         totalRecipients: 0,
         successfulSends: 0,
         failedSends: 0,
@@ -706,9 +714,10 @@ export class NewsletterService {
       for (const email of payload.testEmails) {
         try {
           await PlunkCampaignService.testCampaign(plunkCampaignId, email);
-        } catch (err: any) {
+        } catch (err: unknown) {
+          const msg = err instanceof Error ? err.message : String(err);
           this.logger.warn(
-            `Plunk test send failed for ${email}: ${err?.message}, falling back to direct dispatcher`
+            `Plunk test send failed for ${email}: ${msg}, falling back to direct dispatcher`
           );
         }
       }
@@ -750,17 +759,19 @@ export class NewsletterService {
         this.logger.info(
           `✔ Triggered Plunk campaign send for ${existing.plunkCampaignId}`
         );
-      } catch (err: any) {
+      } catch (err: unknown) {
+        const msg = err instanceof Error ? err.message : String(err);
         this.logger.warn(
-          `Plunk campaign send failed: ${err?.message}. Continuing with local dispatcher.`
+          `Plunk campaign send failed: ${msg}. Continuing with local dispatcher.`
         );
       }
     }
 
     // 2. Trigger asynchronous rate-limited batch dispatch with RFC 8058 headers & DB logging
-    NewsletterDispatcher.dispatchCampaign(id).catch((err) => {
+    NewsletterDispatcher.dispatchCampaign(id).catch((err: unknown) => {
+      const msg = err instanceof Error ? err.message : String(err);
       this.logger.error(`Error in background dispatch for newsletter ${id}:`, {
-        error: err?.message || err,
+        error: msg,
       });
     });
 
@@ -794,8 +805,9 @@ export class NewsletterService {
         await PlunkCampaignService.sendCampaign(existing.plunkCampaignId, {
           scheduledFor: scheduledDate.toISOString(),
         });
-      } catch (err: any) {
-        this.logger.warn(`Plunk schedule upstream warning: ${err?.message}`);
+      } catch (err: unknown) {
+        const msg = err instanceof Error ? err.message : String(err);
+        this.logger.warn(`Plunk schedule upstream warning: ${msg}`);
       }
     }
 
@@ -829,8 +841,9 @@ export class NewsletterService {
     if (existing.plunkCampaignId) {
       try {
         await PlunkCampaignService.cancelCampaign(existing.plunkCampaignId);
-      } catch (err: any) {
-        this.logger.warn(`Plunk cancel upstream warning: ${err?.message}`);
+      } catch (err: unknown) {
+        const msg = err instanceof Error ? err.message : String(err);
+        this.logger.warn(`Plunk cancel upstream warning: ${msg}`);
       }
     }
 
@@ -897,7 +910,7 @@ export class NewsletterService {
           where: { id },
           data: {
             ...(plunkCamp?.status
-              ? { status: plunkCamp.status as any }
+              ? { status: plunkCamp.status as NewsletterStatus }
               : {}),
             totalRecipients:
               stats?.totalRecipients ||
@@ -979,7 +992,7 @@ export class NewsletterService {
 
     const skip = (page - 1) * limit;
 
-    const where: Record<string, any> = {
+    const where: Prisma.NewsletterSendLogWhereInput = {
       newsletterId,
     };
 
@@ -1029,7 +1042,7 @@ export class NewsletterService {
       subscriberId: l.subscriberId,
       email: l.email,
       name: l.name,
-      status: l.status as any,
+      status: l.status as SendLogStatus,
       error: l.error,
       sentAt: l.sentAt ? l.sentAt.toISOString() : null,
       createdAt: l.createdAt.toISOString(),

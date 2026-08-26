@@ -3,13 +3,48 @@
 
 import React, { useState, useEffect, useMemo } from "react"
 import { bookingApi } from "@/lib/api/bookingApi"
-import type { Booking } from "@workspace/shared"
+import type { Booking, BookingStatus } from "@workspace/shared"
+
+function getInitialToken(): string | null {
+  if (typeof window === "undefined") return null
+  const searchParams = new URLSearchParams(window.location.search)
+  let parsedToken = searchParams.get("token") || searchParams.get("cancelToken")
+
+  if (!parsedToken && window.location.hash) {
+    const hash = window.location.hash
+    if (hash.includes("?")) {
+      const hashQuery = hash.split("?")[1]
+      if (hashQuery) {
+        const hp = new URLSearchParams(hashQuery)
+        parsedToken = hp.get("token") || hp.get("cancelToken")
+      }
+    } else {
+      const hp = new URLSearchParams(hash.replace(/^#/, ""))
+      parsedToken = hp.get("token") || hp.get("cancelToken")
+    }
+
+    if (!parsedToken) {
+      const match = hash.match(/(?:token|cancelToken)=([a-zA-Z0-9-]+)/i)
+      if (match && match[1]) {
+        parsedToken = match[1]
+      }
+    }
+  }
+
+  return parsedToken?.trim() || null
+}
 
 export default function BookingCancelContainer() {
-  const [token, setToken] = useState<string | null>(null)
+  const [token] = useState<string | null>(getInitialToken)
   const [booking, setBooking] = useState<Booking | null>(null)
-  const [isLoading, setIsLoading] = useState<boolean>(true)
-  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState<boolean>(() =>
+    Boolean(getInitialToken())
+  )
+  const [errorMessage, setErrorMessage] = useState<string | null>(() =>
+    getInitialToken()
+      ? null
+      : "No cancellation token was provided. Please check the link from your confirmation email."
+  )
 
   // Form states
   const [cancelReason, setCancelReason] = useState<string>("")
@@ -26,49 +61,15 @@ export default function BookingCancelContainer() {
     }
   }, [])
 
-  // Parse token from query string or hash on mount
+  // Fetch booking details on mount
   useEffect(() => {
-    if (typeof window === "undefined") return
-    const searchParams = new URLSearchParams(window.location.search)
-    let parsedToken =
-      searchParams.get("token") || searchParams.get("cancelToken")
+    if (!token) return
 
-    if (!parsedToken && window.location.hash) {
-      const hash = window.location.hash
-      if (hash.includes("?")) {
-        const hashQuery = hash.split("?")[1]
-        if (hashQuery) {
-          const hp = new URLSearchParams(hashQuery)
-          parsedToken = hp.get("token") || hp.get("cancelToken")
-        }
-      } else {
-        const hp = new URLSearchParams(hash.replace(/^#/, ""))
-        parsedToken = hp.get("token") || hp.get("cancelToken")
-      }
-
-      if (!parsedToken) {
-        const match = hash.match(/(?:token|cancelToken)=([a-zA-Z0-9-]+)/i)
-        if (match && match[1]) {
-          parsedToken = match[1]
-        }
-      }
-    }
-
-    parsedToken = parsedToken?.trim() || null
-    setToken(parsedToken)
-
-    if (!parsedToken) {
-      setIsLoading(false)
-      setErrorMessage(
-        "No cancellation token was provided. Please check the link from your confirmation email."
-      )
-      return
-    }
-
-    // Fetch booking details
+    let isMounted = true
     bookingApi
-      .getBookingDetails(parsedToken)
+      .getBookingDetails(token)
       .then((res) => {
+        if (!isMounted) return
         if (res.success && res.data) {
           setBooking(res.data)
           if (res.data.status === "CANCELLED") {
@@ -85,13 +86,24 @@ export default function BookingCancelContainer() {
           )
         }
       })
-      .catch((err) => {
-        setErrorMessage(err?.message || "Unable to retrieve reservation data.")
+      .catch((err: unknown) => {
+        if (!isMounted) return
+        setErrorMessage(
+          err instanceof Error
+            ? err.message
+            : "Unable to retrieve reservation data."
+        )
       })
       .finally(() => {
-        setIsLoading(false)
+        if (isMounted) {
+          setIsLoading(false)
+        }
       })
-  }, [])
+
+    return () => {
+      isMounted = false
+    }
+  }, [token])
 
   // Handle cancellation submission
   const handleConfirmCancel = async () => {
@@ -111,7 +123,8 @@ export default function BookingCancelContainer() {
             "Your scheduled session has been cancelled successfully."
         )
         if (booking) {
-          setBooking({ ...booking, status: "CANCELLED" as any })
+          const updatedStatus: BookingStatus = "CANCELLED"
+          setBooking({ ...booking, status: updatedStatus })
         }
       } else {
         setErrorMessage(
@@ -120,10 +133,11 @@ export default function BookingCancelContainer() {
             "Failed to cancel booking. Please try again."
         )
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       setErrorMessage(
-        err?.message ||
-          "An unexpected error occurred while processing cancellation."
+        err instanceof Error
+          ? err.message
+          : "An unexpected error occurred while processing cancellation."
       )
     } finally {
       setIsSubmitting(false)
@@ -147,7 +161,7 @@ export default function BookingCancelContainer() {
     } catch {
       return new Date(booking.startTime).toUTCString()
     }
-  }, [booking?.startTime, userTimezone])
+  }, [booking, userTimezone])
 
   // ── 1. LOADING SKELETON STATE ──────────────────────────────────────────────
   if (isLoading) {
@@ -216,6 +230,25 @@ export default function BookingCancelContainer() {
           <p className="font-mono text-xs leading-relaxed text-muted-foreground">
             {errorMessage}
           </p>
+
+          {token && (
+            <div className="space-y-3 border-t border-destructive/20 pt-3">
+              <p className="font-mono text-[11px] text-muted-foreground">
+                You can still submit cancellation directly using your
+                verification token:
+              </p>
+              <button
+                type="button"
+                onClick={handleConfirmCancel}
+                disabled={isSubmitting}
+                className="text-destructive-foreground flex w-full items-center justify-center border border-destructive bg-destructive py-3 font-mono text-xs font-bold tracking-wider uppercase transition-opacity hover:opacity-90 disabled:opacity-50"
+              >
+                {isSubmitting
+                  ? "Cancelling Session..."
+                  : "Cancel Booking With Token"}
+              </button>
+            </div>
+          )}
 
           <div className="flex flex-col gap-2 pt-2 sm:flex-row">
             <a

@@ -1,5 +1,5 @@
 // src/Modules/CaseStudy/caseStudy.service.ts
-import { prisma, CaseStudyStatus, CaseStudy, Role } from "@workspace/db";
+import { prisma, Prisma, CaseStudyStatus, CaseStudy, Role } from "@workspace/db";
 import { AppLogger } from "@workspace/logger";
 import {
   NotFoundError,
@@ -20,10 +20,31 @@ import {
   BulkCaseStudyDeleteDTO,
   ReorderCaseStudiesDTO,
 } from "./CaseStudyDTO";
+import type {
+  CaseStudyType,
+  CaseStudyMetadataItem,
+  ContextBlock,
+  ArchitectureLayer,
+  FeatureItem,
+  PerformanceMetric,
+  PostMortemSection,
+} from "@workspace/shared";
 import fs from "fs/promises";
 import path from "path";
 import { config } from "@/core/config";
 import { RedirectService } from "../Redirect/redirect.service";
+
+type CaseStudyWithAuthor = CaseStudy & {
+  author?: {
+    id: string;
+    name: string;
+    headline?: string | null;
+    avatar?: string | null;
+    twitterUrl?: string | null;
+    linkedinUrl?: string | null;
+    githubUrl?: string | null;
+  } | null;
+};
 
 export class CaseStudyService {
   private logger = new AppLogger("CaseStudyService");
@@ -64,8 +85,9 @@ export class CaseStudyService {
         this.logger.info(
           `✔ [Sitemap / SEO Sync] Dynamic sitemap cache prewarmed: ${sitemapUrl}`
         );
-      } catch (err) {
-        this.logger.warn(`Failed to auto-ping sitemap for '${slug}':`, err);
+      } catch (err: unknown) {
+        const msg = err instanceof Error ? err.message : String(err);
+        this.logger.warn(`Failed to auto-ping sitemap for '${slug}':`, { error: msg });
       }
     }, 100);
   }
@@ -117,14 +139,14 @@ export class CaseStudyService {
   /**
    * Format raw DB record into CaseStudyDTO
    */
-  private mapToCaseStudyDTO(cs: any): CaseStudyDTO {
+  private mapToCaseStudyDTO(cs: CaseStudyWithAuthor): CaseStudyDTO {
     return {
       id: cs.id,
       slug: cs.slug,
       title: cs.title,
       subtitle: cs.subtitle || null,
       description: cs.description,
-      projectType: (cs.projectType as any) || "CASE_STUDY",
+      projectType: (cs.projectType as CaseStudyType) || "CASE_STUDY",
       status: cs.status as CaseStudyStatus,
       projectStatus: cs.projectStatus || "Status: Completed",
       order: cs.order,
@@ -161,14 +183,12 @@ export class CaseStudyService {
             github: cs.authorGithub || cs.author.githubUrl || null,
           }
         : undefined,
-      metadata: Array.isArray(cs.metadata) ? cs.metadata : [],
-      contextBlocks: Array.isArray(cs.contextBlocks) ? cs.contextBlocks : [],
-      architectureLayers: Array.isArray(cs.architectureLayers)
-        ? cs.architectureLayers
-        : [],
-      features: Array.isArray(cs.features) ? cs.features : [],
-      metrics: Array.isArray(cs.metrics) ? cs.metrics : [],
-      postMortem: Array.isArray(cs.postMortem) ? cs.postMortem : [],
+      metadata: (cs.metadata as unknown as CaseStudyMetadataItem[]) || [],
+      contextBlocks: (cs.contextBlocks as unknown as ContextBlock[]) || [],
+      architectureLayers: (cs.architectureLayers as unknown as ArchitectureLayer[]) || [],
+      features: (cs.features as unknown as FeatureItem[]) || [],
+      metrics: (cs.metrics as unknown as PerformanceMetric[]) || [],
+      postMortem: (cs.postMortem as unknown as PostMortemSection[]) || [],
       seo: {
         metaTitle: cs.metaTitle || null,
         metaDescription: cs.metaDescription || null,
@@ -176,12 +196,12 @@ export class CaseStudyService {
         ogTitle: cs.ogTitle || null,
         ogDescription: cs.ogDescription || null,
         ogImage: cs.ogImage || null,
-        twitterCard: (cs.twitterCard as any) || "summary_large_image",
+        twitterCard: (cs.twitterCard as "summary" | "summary_large_image") || "summary_large_image",
         twitterTitle: cs.twitterTitle || null,
         twitterDescription: cs.twitterDescription || null,
         twitterImage: cs.twitterImage || null,
         canonicalUrl: cs.canonicalUrl || null,
-        structuredData: cs.structuredData || null,
+        structuredData: (cs.structuredData as Record<string, unknown>) || null,
       },
       metaTitle: cs.metaTitle || null,
       metaDescription: cs.metaDescription || null,
@@ -189,12 +209,12 @@ export class CaseStudyService {
       ogTitle: cs.ogTitle || null,
       ogDescription: cs.ogDescription || null,
       ogImage: cs.ogImage || null,
-      twitterCard: cs.twitterCard || "summary_large_image",
+      twitterCard: (cs.twitterCard as "summary" | "summary_large_image") || "summary_large_image",
       twitterTitle: cs.twitterTitle || null,
       twitterDescription: cs.twitterDescription || null,
       twitterImage: cs.twitterImage || null,
       canonicalUrl: cs.canonicalUrl || null,
-      structuredData: cs.structuredData || null,
+      structuredData: (cs.structuredData as Record<string, unknown>) || null,
       createdAt: cs.createdAt.toISOString(),
       updatedAt: cs.updatedAt.toISOString(),
     };
@@ -203,14 +223,14 @@ export class CaseStudyService {
   /**
    * Format raw DB record into CaseStudyListItemDTO
    */
-  private mapToListItemDTO(cs: any): CaseStudyListItemDTO {
+  private mapToListItemDTO(cs: CaseStudyWithAuthor): CaseStudyListItemDTO {
     return {
       id: cs.id,
       slug: cs.slug,
       title: cs.title,
       subtitle: cs.subtitle || null,
       description: cs.description,
-      projectType: (cs.projectType as any) || "CASE_STUDY",
+      projectType: (cs.projectType as CaseStudyType) || "CASE_STUDY",
       status: cs.status as CaseStudyStatus,
       projectStatus: cs.projectStatus || "Status: Completed",
       order: cs.order,
@@ -226,14 +246,12 @@ export class CaseStudyService {
       client: cs.client || null,
       impact: cs.impact || null,
       highlights: Array.isArray(cs.highlights) ? cs.highlights : [],
-      metadata: Array.isArray(cs.metadata) ? cs.metadata : [],
-      contextBlocks: Array.isArray(cs.contextBlocks) ? cs.contextBlocks : [],
-      architectureLayers: Array.isArray(cs.architectureLayers)
-        ? cs.architectureLayers
-        : [],
-      features: Array.isArray(cs.features) ? cs.features : [],
-      metrics: Array.isArray(cs.metrics) ? cs.metrics : [],
-      postMortem: Array.isArray(cs.postMortem) ? cs.postMortem : [],
+      metadata: (cs.metadata as unknown as CaseStudyMetadataItem[]) || [],
+      contextBlocks: (cs.contextBlocks as unknown as ContextBlock[]) || [],
+      architectureLayers: (cs.architectureLayers as unknown as ArchitectureLayer[]) || [],
+      features: (cs.features as unknown as FeatureItem[]) || [],
+      metrics: (cs.metrics as unknown as PerformanceMetric[]) || [],
+      postMortem: (cs.postMortem as unknown as PostMortemSection[]) || [],
       views: cs.views ?? 0,
       likesCount: cs.likesCount ?? 0,
       publishedAt: cs.publishedAt ? cs.publishedAt.toISOString() : null,
@@ -319,7 +337,7 @@ export class CaseStudyService {
     const limit = Math.min(100, Math.max(1, query.limit || 10));
     const skip = (page - 1) * limit;
 
-    const where: any = {};
+    const where: Prisma.CaseStudyWhereInput = {};
 
     if (query.projectType) {
       where.projectType = query.projectType;
@@ -353,8 +371,9 @@ export class CaseStudyService {
 
     const sortField = query.sortBy || "order";
     const sortDirection = query.sortOrder || "asc";
-    const orderBy: any = {};
-    orderBy[sortField] = sortDirection;
+    const orderBy: Prisma.CaseStudyOrderByWithRelationInput = {
+      [sortField]: sortDirection,
+    };
 
     const [total, records] = await Promise.all([
       this.db.caseStudy.count({ where }),
@@ -476,7 +495,7 @@ export class CaseStudyService {
         title: payload.title.trim(),
         subtitle: payload.subtitle?.trim() || null,
         description: payload.description.trim(),
-        projectType: (payload.projectType as any) || "CASE_STUDY",
+        projectType: (payload.projectType as CaseStudyType) || "CASE_STUDY",
         status: (payload.status as CaseStudyStatus) || CaseStudyStatus.DRAFT,
         projectStatus: payload.projectStatus?.trim() || "Status: Completed",
         order,
@@ -500,12 +519,12 @@ export class CaseStudyService {
         authorTwitter,
         authorLinkedin,
         authorGithub,
-        metadata: (payload.metadata as any) || [],
-        contextBlocks: (payload.contextBlocks as any) || [],
-        architectureLayers: (payload.architectureLayers as any) || [],
-        features: (payload.features as any) || [],
-        metrics: (payload.metrics as any) || [],
-        postMortem: (payload.postMortem as any) || [],
+        metadata: (payload.metadata as unknown as Prisma.InputJsonValue) || [],
+        contextBlocks: (payload.contextBlocks as unknown as Prisma.InputJsonValue) || [],
+        architectureLayers: (payload.architectureLayers as unknown as Prisma.InputJsonValue) || [],
+        features: (payload.features as unknown as Prisma.InputJsonValue) || [],
+        metrics: (payload.metrics as unknown as Prisma.InputJsonValue) || [],
+        postMortem: (payload.postMortem as unknown as Prisma.InputJsonValue) || [],
         metaTitle: payload.seo?.metaTitle?.trim() || `${payload.title} | Case Study`,
         metaDescription: payload.seo?.metaDescription?.trim() || payload.description,
         metaKeywords: payload.seo?.metaKeywords || payload.techStack || [],
@@ -517,7 +536,9 @@ export class CaseStudyService {
         twitterDescription: payload.seo?.twitterDescription?.trim() || payload.description,
         twitterImage: payload.seo?.twitterImage?.trim() || payload.image,
         canonicalUrl: payload.seo?.canonicalUrl?.trim() || `https://fi.amanillah.com/case-study/${finalSlug}`,
-        structuredData: (payload.seo?.structuredData as any) || null,
+        structuredData: payload.seo?.structuredData
+          ? (payload.seo.structuredData as unknown as Prisma.InputJsonValue)
+          : Prisma.JsonNull,
       },
       include: {
         author: {
@@ -574,7 +595,7 @@ export class CaseStudyService {
         ...(payload.title !== undefined && { title: payload.title.trim() }),
         ...(payload.subtitle !== undefined && { subtitle: payload.subtitle?.trim() || null }),
         ...(payload.description !== undefined && { description: payload.description.trim() }),
-        ...(payload.projectType !== undefined && { projectType: payload.projectType as any }),
+        ...(payload.projectType !== undefined && { projectType: payload.projectType as CaseStudyType }),
         ...(payload.status !== undefined && { status: payload.status as CaseStudyStatus }),
         ...(payload.projectStatus !== undefined && { projectStatus: payload.projectStatus.trim() }),
         ...(payload.order !== undefined && { order: payload.order }),
@@ -601,12 +622,12 @@ export class CaseStudyService {
           authorLinkedin: payload.author.linkedin || null,
           authorGithub: payload.author.github || null,
         }),
-        ...(payload.metadata !== undefined && { metadata: payload.metadata as any }),
-        ...(payload.contextBlocks !== undefined && { contextBlocks: payload.contextBlocks as any }),
-        ...(payload.architectureLayers !== undefined && { architectureLayers: payload.architectureLayers as any }),
-        ...(payload.features !== undefined && { features: payload.features as any }),
-        ...(payload.metrics !== undefined && { metrics: payload.metrics as any }),
-        ...(payload.postMortem !== undefined && { postMortem: payload.postMortem as any }),
+        ...(payload.metadata !== undefined && { metadata: payload.metadata as unknown as Prisma.InputJsonValue }),
+        ...(payload.contextBlocks !== undefined && { contextBlocks: payload.contextBlocks as unknown as Prisma.InputJsonValue }),
+        ...(payload.architectureLayers !== undefined && { architectureLayers: payload.architectureLayers as unknown as Prisma.InputJsonValue }),
+        ...(payload.features !== undefined && { features: payload.features as unknown as Prisma.InputJsonValue }),
+        ...(payload.metrics !== undefined && { metrics: payload.metrics as unknown as Prisma.InputJsonValue }),
+        ...(payload.postMortem !== undefined && { postMortem: payload.postMortem as unknown as Prisma.InputJsonValue }),
         ...(payload.seo && {
           metaTitle: payload.seo.metaTitle?.trim() || null,
           metaDescription: payload.seo.metaDescription?.trim() || null,
@@ -619,7 +640,9 @@ export class CaseStudyService {
           twitterDescription: payload.seo.twitterDescription?.trim() || null,
           twitterImage: payload.seo.twitterImage?.trim() || null,
           canonicalUrl: payload.seo.canonicalUrl?.trim() || null,
-          structuredData: (payload.seo.structuredData as any) || null,
+          structuredData: payload.seo.structuredData
+            ? (payload.seo.structuredData as unknown as Prisma.InputJsonValue)
+            : Prisma.JsonNull,
         }),
       },
       include: {
@@ -721,12 +744,12 @@ export class CaseStudyService {
         authorTwitter: original.authorTwitter,
         authorLinkedin: original.authorLinkedin,
         authorGithub: original.authorGithub,
-        metadata: (original.metadata as any) || [],
-        contextBlocks: (original.contextBlocks as any) || [],
-        architectureLayers: (original.architectureLayers as any) || [],
-        features: (original.features as any) || [],
-        metrics: (original.metrics as any) || [],
-        postMortem: (original.postMortem as any) || [],
+        metadata: (original.metadata as unknown as Prisma.InputJsonValue) || [],
+        contextBlocks: (original.contextBlocks as unknown as Prisma.InputJsonValue) || [],
+        architectureLayers: (original.architectureLayers as unknown as Prisma.InputJsonValue) || [],
+        features: (original.features as unknown as Prisma.InputJsonValue) || [],
+        metrics: (original.metrics as unknown as Prisma.InputJsonValue) || [],
+        postMortem: (original.postMortem as unknown as Prisma.InputJsonValue) || [],
         metaTitle: original.metaTitle ? `${original.metaTitle} (Copy)` : null,
         metaDescription: original.metaDescription,
         metaKeywords: original.metaKeywords || [],
@@ -1074,8 +1097,10 @@ export class CaseStudyService {
         });
 
         imported++;
-      } catch (err) {
-        this.logger.warn(`Could not sync case study ${cs.slug}:`, err);
+      } catch (err: unknown) {
+        this.logger.warn(`Could not sync case study ${cs.slug}:`, {
+          error: err instanceof Error ? err.message : String(err),
+        });
       }
     }
 
@@ -1098,7 +1123,7 @@ export class CaseStudyService {
     const limit = Math.min(100, Math.max(1, query.limit || 10));
     const skip = (page - 1) * limit;
 
-    const where: any = {
+    const where: Prisma.CaseStudyWhereInput = {
       status: CaseStudyStatus.PUBLISHED,
     };
 
@@ -1129,8 +1154,9 @@ export class CaseStudyService {
 
     const sortField = query.sortBy || "order";
     const sortDirection = query.sortOrder || "asc";
-    const orderBy: any = {};
-    orderBy[sortField] = sortDirection;
+    const orderBy: Prisma.CaseStudyOrderByWithRelationInput = {
+      [sortField]: sortDirection,
+    };
 
     const [total, records] = await Promise.all([
       this.db.caseStudy.count({ where }),

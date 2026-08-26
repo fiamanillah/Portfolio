@@ -127,8 +127,8 @@ export default function SettingsPage() {
           description: res.error || "Could not upload profile picture.",
         })
       }
-    } catch (err: any) {
-      toast.error("Upload Error", { description: err?.message })
+    } catch (err: unknown) {
+      toast.error("Upload Error", { description: err instanceof Error ? err.message : undefined })
     } finally {
       setIsUploadingAvatar(false)
       if (avatarInputRef.current) {
@@ -151,8 +151,8 @@ export default function SettingsPage() {
           description: res.error || "Could not remove avatar.",
         })
       }
-    } catch (err: any) {
-      toast.error("Error", { description: err?.message })
+    } catch (err: unknown) {
+      toast.error("Error", { description: err instanceof Error ? err.message : undefined })
     } finally {
       setIsDeletingAvatar(false)
     }
@@ -202,8 +202,8 @@ export default function SettingsPage() {
           description: res.error || "Could not upload resume.",
         })
       }
-    } catch (err: any) {
-      toast.error("Upload Error", { description: err?.message })
+    } catch (err: unknown) {
+      toast.error("Upload Error", { description: err instanceof Error ? err.message : undefined })
     } finally {
       setIsUploadingResume(false)
       if (resumeInputRef.current) {
@@ -226,8 +226,8 @@ export default function SettingsPage() {
           description: res.error || "Could not remove resume.",
         })
       }
-    } catch (err: any) {
-      toast.error("Error", { description: err?.message })
+    } catch (err: unknown) {
+      toast.error("Error", { description: err instanceof Error ? err.message : undefined })
     } finally {
       setIsDeletingResume(false)
     }
@@ -256,8 +256,8 @@ export default function SettingsPage() {
           description: res.error || "Could not save profile changes.",
         })
       }
-    } catch (err: any) {
-      toast.error("Error", { description: err?.message })
+    } catch (err: unknown) {
+      toast.error("Error", { description: err instanceof Error ? err.message : undefined })
     } finally {
       setIsSavingProfile(false)
     }
@@ -303,8 +303,8 @@ export default function SettingsPage() {
           description: res.error || "Incorrect current password.",
         })
       }
-    } catch (err: any) {
-      toast.error("Error changing password", { description: err?.message })
+    } catch (err: unknown) {
+      toast.error("Error changing password", { description: err instanceof Error ? err.message : undefined })
     } finally {
       setIsChangingPassword(false)
     }

@@ -1,6 +1,6 @@
 // src/Modules/Booking/booking.service.ts
 import axios from "axios"
-import { prisma, BookingStatus } from "@workspace/db"
+import { prisma, Prisma, BookingStatus } from "@workspace/db"
 import { AppLogger } from "@workspace/logger"
 import { config } from "@/core/config"
 import { GoogleCalendarService } from "@/services/GoogleCalendarService"
@@ -464,34 +464,27 @@ export class BookingService {
       dashboardUrl: config.site.dashboardUrl,
     })
 
-    // 3. Generate RFC 5545 iCalendar (.ics) Payload for Native Mail RSVP Banners
-    const icsContent = generateIcsContent({
-      uid: booking.id,
-      sequence: 0,
-      method: "REQUEST",
-      status: "CONFIRMED",
-      startTime: booking.startTime,
-      endTime: booking.endTime,
-      summary: `${booking.meetingType} with Fi Amanillah`,
-      description: `1-on-1 Consultation Session.\n\nGoogle Meet: ${booking.googleMeetLink || "Online Room"}\nNotes: ${booking.guestNotes || "None"}`,
-      location: booking.googleMeetLink || "Google Meet Video Call",
-      organizerName: senderName,
-      organizerEmail: organizerEmail,
-      attendeeName: booking.guestName,
-      attendeeEmail: booking.guestEmail,
-    })
-    const base64Ics = Buffer.from(icsContent, "utf-8").toString("base64")
+    // Generate .ics calendar invite in base64
+    const base64Ics = Buffer.from(
+      generateIcsContent({
+        uid: booking.id,
+        sequence: 0,
+        method: "REQUEST",
+        status: "CONFIRMED",
+        startTime: booking.startTime,
+        endTime: booking.endTime,
+        summary: `${booking.meetingType} with Fi Amanillah`,
+        description: `Meeting with Fi Amanillah.\nNotes: ${booking.guestNotes || "None"}\nGoogle Meet: ${booking.googleMeetLink || "TBD"}`,
+        location: booking.googleMeetLink || "Google Meet",
+        organizerName: "Fi Amanillah",
+        organizerEmail: senderEmail,
+        attendeeName: booking.guestName,
+        attendeeEmail: booking.guestEmail,
+      })
+    ).toString("base64")
 
-    const calendarLinks = generateCalendarDeeplinks({
-      title: `${booking.meetingType} with Fi Amanillah`,
-      startTime: booking.startTime,
-      endTime: booking.endTime,
-      description: `1-on-1 Consultation Session.\n\nGoogle Meet: ${booking.googleMeetLink || "Online Room"}\nNotes: ${booking.guestNotes || "None"}`,
-      location: booking.googleMeetLink || "Google Meet Video Call",
-    })
-
-    if (this.isPlaceholderKey(secretKey)) {
-      this.logger.info("ℹ️ [SIMULATED BOOKING EMAIL DELIVERY]")
+    if (!secretKey || this.isPlaceholderKey(secretKey)) {
+      this.logger.warn("Plunk is not configured. Logging emails locally.")
       this.logger.info(`Guest To: ${booking.guestEmail}`)
       this.logger.info(`Guest Subject: ${guestEmailContent.subject}`)
       this.logger.info(`Host To: ${adminEmail}`)
@@ -499,9 +492,28 @@ export class BookingService {
       return
     }
 
+    const dateFormatted = booking.startTime.toLocaleDateString("en-US", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      timeZone: booking.timezone,
+    })
+    const timeFormatted = `${booking.startTime.toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+      timeZone: booking.timezone,
+    })} - ${booking.endTime.toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+      timeZone: booking.timezone,
+    })} (${booking.timezone})`
+
     // 1. Send Guest Confirmation Email with Attached invite.ics
     try {
-      const guestPayload: Record<string, any> = {
+      const guestPayload: Record<string, unknown> = {
         to: booking.guestEmail,
         from: senderEmail,
         name: senderName,
@@ -521,12 +533,9 @@ export class BookingService {
           durationMinutes: booking.durationMinutes,
           timezone: booking.timezone,
           googleMeetLink: booking.googleMeetLink || "",
-          cancellationToken: booking.cancellationToken,
-          cancelUrl: `${webUrl}/booking/cancel?token=${booking.cancellationToken}`,
-          icsDownloadUrl: `${webUrl}/api/v1/booking/ics?token=${booking.cancellationToken}`,
-          googleCalUrl: calendarLinks.googleCalendarUrl,
-          outlookCalUrl: calendarLinks.outlookLiveUrl,
           guestNotes: booking.guestNotes || "",
+          dateFormatted,
+          timeFormatted,
         },
       }
 
@@ -548,7 +557,7 @@ export class BookingService {
 
       if (guestRes.data?.success) {
         this.logger.info(
-          `✔ Booking confirmation email delivered to guest ${booking.guestEmail}`,
+          `✔ Booking confirmation email delivered to guest (${booking.guestEmail})`,
           {
             contact: guestRes.data?.data?.contact,
             event: guestRes.data?.data?.event,
@@ -561,7 +570,7 @@ export class BookingService {
           { response: guestRes.data }
         )
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       const errorDetails = axios.isAxiosError(error)
         ? {
             status: error.response?.status,
@@ -569,7 +578,7 @@ export class BookingService {
             responseData: error.response?.data,
             message: error.message,
           }
-        : { message: error?.message || String(error) }
+        : { message: error instanceof Error ? error.message : String(error) }
 
       this.logger.error(
         `❌ Failed to send booking confirmation email to guest (${booking.guestEmail})`,
@@ -579,7 +588,7 @@ export class BookingService {
 
     // 2. Send Host Admin Notification Email
     try {
-      const hostPayload: Record<string, any> = {
+      const hostPayload: Record<string, unknown> = {
         to: adminEmail,
         from: hostSenderEmail,
         name: hostSenderName,
@@ -602,7 +611,8 @@ export class BookingService {
           googleMeetLink: booking.googleMeetLink || "",
           guestNotes: booking.guestNotes || "",
           bookingId: booking.id,
-          dashboardUrl: config.site.dashboardUrl,
+          dateFormatted,
+          timeFormatted,
         },
       }
 
@@ -637,7 +647,7 @@ export class BookingService {
           { response: hostRes.data }
         )
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       const errorDetails = axios.isAxiosError(error)
         ? {
             status: error.response?.status,
@@ -645,7 +655,7 @@ export class BookingService {
             responseData: error.response?.data,
             message: error.message,
           }
-        : { message: error?.message || String(error) }
+        : { message: error instanceof Error ? error.message : String(error) }
 
       this.logger.error(
         `❌ Failed to send host booking notification email to ${adminEmail}`,
@@ -818,7 +828,7 @@ export class BookingService {
 
     // 1. Send Guest Cancellation Email with cancel.ics
     try {
-      const guestPayload: Record<string, any> = {
+      const guestPayload: Record<string, unknown> = {
         to: booking.guestEmail,
         from: senderEmail,
         name: senderName,
@@ -860,7 +870,7 @@ export class BookingService {
       this.logger.info(
         `✔ Booking cancellation email delivered to guest ${booking.guestEmail}`
       )
-    } catch (error: any) {
+    } catch (error: unknown) {
       const errorDetails = axios.isAxiosError(error)
         ? {
             status: error.response?.status,
@@ -868,7 +878,7 @@ export class BookingService {
             responseData: error.response?.data,
             message: error.message,
           }
-        : { message: error?.message || String(error) }
+        : { message: error instanceof Error ? error.message : String(error) }
 
       this.logger.error(
         `❌ Failed to send booking cancellation email to guest (${booking.guestEmail})`,
@@ -878,7 +888,7 @@ export class BookingService {
 
     // 2. Send Host Admin Cancellation Alert
     try {
-      const hostPayload: Record<string, any> = {
+      const hostPayload: Record<string, unknown> = {
         to: adminEmail,
         from: hostSenderEmail,
         name: hostSenderName,
@@ -922,7 +932,7 @@ export class BookingService {
       this.logger.info(
         `✔ Host booking cancellation notification delivered to ${adminEmail}`
       )
-    } catch (error: any) {
+    } catch (error: unknown) {
       const errorDetails = axios.isAxiosError(error)
         ? {
             status: error.response?.status,
@@ -930,7 +940,7 @@ export class BookingService {
             responseData: error.response?.data,
             message: error.message,
           }
-        : { message: error?.message || String(error) }
+        : { message: error instanceof Error ? error.message : String(error) }
 
       this.logger.error(
         `❌ Failed to send host booking cancellation notification to ${adminEmail}`,
@@ -1021,7 +1031,7 @@ export class BookingService {
     const limit = Number(query.limit) || 10
     const skip = (page - 1) * limit
 
-    const where: any = {}
+    const where: Prisma.BookingWhereInput = {}
 
     if (query.status) {
       where.status = query.status as BookingStatus

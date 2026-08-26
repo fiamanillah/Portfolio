@@ -1,4 +1,4 @@
-import Redis from "ioredis"
+import Redis, { type RedisOptions } from "ioredis"
 import { AppLogger } from "@workspace/logger"
 import type { CacheConfig, ICacheManager, SetCacheOptions } from "./types.js"
 import { safeParse, safeStringify } from "./utils.js"
@@ -31,7 +31,7 @@ export class CacheManager implements ICacheManager {
         (process.env.REDIS_DB ? Number(process.env.REDIS_DB) : 0)
       const redisUrl = this.config.url || process.env.REDIS_URL
 
-      const baseOptions: any = {
+      const baseOptions: RedisOptions = {
         keyPrefix: this.config.keyPrefix,
         lazyConnect: this.config.lazyConnect ?? false,
         maxRetriesPerRequest: this.config.maxRetriesPerRequest ?? 3,
@@ -168,27 +168,36 @@ export class CacheManager implements ICacheManager {
 
       const opts: SetCacheOptions =
         typeof options === "number" ? { ttlSeconds: options } : options || {}
-
       const ttlMs = opts.ttlMs
-      const ttlSec = opts.ttlSeconds ?? this.defaultTTLSeconds
+      const ttlSec = opts.ttlSeconds
 
-      const args: (string | number)[] = [key, stringifiedValue]
-
+      let result: string | null
       if (opts.keepTTL) {
-        args.push("KEEPTTL")
+        result = await client.set(key, stringifiedValue, "KEEPTTL")
       } else if (ttlMs && ttlMs > 0) {
-        args.push("PX", ttlMs)
+        if (opts.ifNotExists) {
+          result = await client.set(key, stringifiedValue, "PX", ttlMs, "NX")
+        } else if (opts.ifExists) {
+          result = await client.set(key, stringifiedValue, "PX", ttlMs, "XX")
+        } else {
+          result = await client.set(key, stringifiedValue, "PX", ttlMs)
+        }
       } else if (ttlSec && ttlSec > 0) {
-        args.push("EX", ttlSec)
-      }
-
-      if (opts.ifNotExists) {
-        args.push("NX")
+        if (opts.ifNotExists) {
+          result = await client.set(key, stringifiedValue, "EX", ttlSec, "NX")
+        } else if (opts.ifExists) {
+          result = await client.set(key, stringifiedValue, "EX", ttlSec, "XX")
+        } else {
+          result = await client.set(key, stringifiedValue, "EX", ttlSec)
+        }
+      } else if (opts.ifNotExists) {
+        result = await client.set(key, stringifiedValue, "NX")
       } else if (opts.ifExists) {
-        args.push("XX")
+        result = await client.set(key, stringifiedValue, "XX")
+      } else {
+        result = await client.set(key, stringifiedValue)
       }
 
-      const result = await (client as any).set(...args)
       return result === "OK"
     } catch (error) {
       this.logger.error(`Error setting key '${key}' in cache:`, { error })

@@ -13,7 +13,7 @@ interface SeoSocialCardProps {
   description: string
   image: string
   seo: CaseStudySeo
-  onUpdate: (field: keyof CaseStudySeo, value: any) => void
+  onUpdate: <K extends keyof CaseStudySeo>(field: K, value: CaseStudySeo[K]) => void
 }
 
 export function SeoSocialCard({

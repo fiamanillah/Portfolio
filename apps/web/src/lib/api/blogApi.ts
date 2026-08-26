@@ -1,10 +1,9 @@
 import type { BlogPost, BlogCategory, BlogAuthor } from "@/data/blogPosts"
 import { getStoredAccessToken } from "./authApi"
 import { RedirectApi } from "./redirectApi"
+import { getApiBaseUrl } from "./baseUrl"
 
-const API_BASE_URL =
-  (typeof import.meta !== "undefined" && import.meta.env?.PUBLIC_API_URL) ||
-  "http://localhost:3040"
+const API_BASE_URL = getApiBaseUrl()
 
 export interface PublicBlogQuery {
   page?: number
@@ -53,10 +52,57 @@ export interface SingleBlogPostResponse {
   statusCode?: number
 }
 
-/**
- * Format raw API post DTO into frontend BlogPost interface
- */
-export function mapApiPostToBlogPost(dto: any): BlogPost {
+export function mapApiPostToBlogPost(dto: {
+  id?: string
+  slug?: string
+  title?: string
+  subtitle?: string | null
+  summary?: string
+  content?: string
+  tags?: string[]
+  views?: number | string
+  likesCount?: number
+  commentsCount?: number
+  publishedAt?: string
+  createdAt?: string
+  updatedAt?: string
+  modifiedAt?: string
+  date?: string
+  readTime?: string
+  readTimeMinutes?: number
+  authorName?: string
+  authorRole?: string
+  authorAvatar?: string
+  authorTwitter?: string
+  authorLinkedin?: string
+  authorGithub?: string
+  categoryName?: string
+  categoryColor?: string
+  categorySlug?: string
+  featured?: boolean
+  pinned?: boolean
+  thumbnail?: string
+  keyTakeaways?: string[]
+  author?: {
+    name?: string
+    role?: string
+    avatar?: string
+    twitter?: string
+    linkedin?: string
+    github?: string
+  }
+  category?: { name?: string; color?: string; slug?: string }
+  seo?: {
+    metaTitle?: string
+    metaDescription?: string
+    ogImage?: string
+    ogType?: string
+    metaKeywords?: string[]
+    canonicalUrl?: string
+    articleType?: string
+    noIndex?: boolean
+  }
+}): BlogPost {
   const author: BlogAuthor = {
     name: dto.author?.name || dto.authorName || "Fi Amanillah",
     role:
@@ -86,11 +132,11 @@ export function mapApiPostToBlogPost(dto: any): BlogPost {
   const categorySlug = dto.category?.slug || dto.categorySlug || ""
 
   return {
-    id: dto.id || dto.slug,
-    slug: dto.slug,
-    title: dto.title,
+    id: dto.id || dto.slug || "post",
+    slug: dto.slug || "",
+    title: dto.title || "",
     subtitle: dto.subtitle || undefined,
-    summary: dto.summary,
+    summary: dto.summary || "",
     category: categoryName,
     categoryColor,
     categorySlug,
@@ -125,10 +171,15 @@ export function mapApiPostToBlogPost(dto: any): BlogPost {
           metaTitle: dto.seo.metaTitle,
           metaDescription: dto.seo.metaDescription,
           ogImage: dto.seo.ogImage,
-          ogType: dto.seo.ogType,
+          ogType: (dto.seo.ogType === "website" ? "website" : "article") as
+            | "article"
+            | "website",
           keywords: dto.seo.metaKeywords,
           canonicalUrl: dto.seo.canonicalUrl,
-          articleType: dto.seo.articleType,
+          articleType: (dto.seo.articleType === "BlogPosting" ||
+          dto.seo.articleType === "Article"
+            ? dto.seo.articleType
+            : "TechArticle") as "TechArticle" | "BlogPosting" | "Article",
           noIndex: dto.seo.noIndex,
         }
       : undefined,
@@ -236,25 +287,29 @@ export const BlogApi = {
       if (res.ok) {
         const body = await res.json()
         if (body.success && Array.isArray(body.data)) {
-          const nonAllCategories = body.data
-            .filter((c: any) => c.name && c.name.toLowerCase() !== "all")
-            .map((c: any) => ({
-              id: c.id,
-              name: c.name,
+          const rawCategories = body.data as Array<{
+            id?: string
+            name?: string
+            count?: number
+            slug?: string
+            color?: string
+          }>
+          const nonAllCategories = rawCategories
+            .filter((c) => c.name && c.name.toLowerCase() !== "all")
+            .map((c) => ({
+              id: c.id || c.slug || "cat",
+              name: c.name || "",
               count: typeof c.count === "number" ? c.count : 0,
-              slug: c.slug,
+              slug: c.slug || "",
               color: c.color || "#3b82f6",
             }))
-          const existingAll = body.data.find(
-            (c: any) => c.name && c.name.toLowerCase() === "all"
+          const existingAll = rawCategories.find(
+            (c) => c.name && c.name.toLowerCase() === "all"
           )
           const totalPublished =
             existingAll && typeof existingAll.count === "number"
               ? existingAll.count
-              : nonAllCategories.reduce(
-                  (acc: number, c: any) => acc + c.count,
-                  0
-                )
+              : nonAllCategories.reduce((acc: number, c) => acc + c.count, 0)
 
           return [
             {

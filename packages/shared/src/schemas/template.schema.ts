@@ -25,6 +25,12 @@ export const createTemplateSchema = z.object({
 });
 
 export const updateTemplateSchema = z.object({
+  slug: z
+    .string()
+    .min(2, "Slug must be at least 2 characters")
+    .max(80, "Slug must not exceed 80 characters")
+    .regex(/^[a-z0-9-]+$/, "Slug must contain only lowercase letters, numbers, and hyphens")
+    .optional(),
   name: z.string().min(2).max(120).optional(),
   description: z.string().max(500).optional().nullable(),
   subject: z.string().min(1).max(250).optional(),
@@ -33,6 +39,8 @@ export const updateTemplateSchema = z.object({
   fromName: z.string().max(100).optional().nullable(),
   replyTo: z.string().email().optional().nullable(),
   type: templateTypeEnumSchema.optional(),
+  isActive: z.boolean().optional(),
+  sampleData: z.record(z.string(), z.unknown()).optional(),
   syncToPlunk: z.boolean().default(true).optional(),
 });
 
@@ -41,7 +49,7 @@ export const previewTemplateSchema = z.object({
   slug: z.string().optional(),
   subject: z.string().optional(),
   body: z.string().optional(),
-  sampleData: z.record(z.string(), z.any()).optional().default({}),
+  sampleData: z.record(z.string(), z.unknown()).optional().default({}),
 });
 
 export const sendTestEmailSchema = z.object({
@@ -50,7 +58,7 @@ export const sendTestEmailSchema = z.object({
   slug: z.string().optional(),
   subject: z.string().optional(),
   body: z.string().optional(),
-  data: z.record(z.string(), z.any()).optional().default({}),
+  data: z.record(z.string(), z.unknown()).optional().default({}),
 });
 
 export const listTemplatesQuerySchema = z.object({

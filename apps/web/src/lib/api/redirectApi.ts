@@ -1,9 +1,9 @@
 // apps/web/src/lib/api/redirectApi.ts
 import type { ResolvedRedirectDTO } from "@workspace/shared"
 
-const API_BASE_URL =
-  (typeof import.meta !== "undefined" && import.meta.env?.PUBLIC_API_URL) ||
-  "http://localhost:3040"
+import { getApiBaseUrl } from "./baseUrl"
+
+const API_BASE_URL = getApiBaseUrl()
 
 export const RedirectApi = {
   /**

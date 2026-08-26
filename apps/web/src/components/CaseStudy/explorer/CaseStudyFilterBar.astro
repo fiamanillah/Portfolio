@@ -8,12 +8,15 @@ import {
   Layers01Icon,
   CpuIcon,
 } from "@hugeicons/core-free-icons"
+import type { ComponentProps } from "astro/types"
+
+type HugeIconType = ComponentProps<typeof HugeiconsIcon>["icon"]
 
 interface CategoryCount {
   id: string
   label: string
   count: number
-  icon?: any
+  icon?: HugeIconType
 }
 
 interface Props {

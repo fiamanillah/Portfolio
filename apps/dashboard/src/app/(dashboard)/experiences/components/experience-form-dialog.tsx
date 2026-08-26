@@ -364,7 +364,7 @@ export function ExperienceFormDialog({
           }
         }
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       showApiError(err, "An unexpected error occurred")
     } finally {
       setIsSubmitting(false)

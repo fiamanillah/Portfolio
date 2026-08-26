@@ -22,7 +22,7 @@ export function validateRequest(schema: {
         req.validatedQuery = parsedQuery
         try {
           // Create a new object with parsed values
-          req.query = parsedQuery as any
+          req.query = parsedQuery as unknown as typeof req.query
         } catch (error) {}
       }
 

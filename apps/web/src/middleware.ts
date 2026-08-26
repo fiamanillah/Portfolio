@@ -27,7 +27,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
       if (redirect?.redirected && redirect.destination) {
         return context.redirect(
           redirect.destination,
-          (redirect.statusCode as any) || 301
+          (redirect.statusCode as 301 | 302 | 307 | 308) || 301
         )
       }
     } catch {

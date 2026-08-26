@@ -53,9 +53,9 @@ export class ExperienceController extends BaseController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const query = (req as any).validatedQuery || req.query;
+      const query = (req.validatedQuery || req.query) as ListExperiencesQueryDTO;
       const result = await this.experienceService.getAllAdmin(
-        query as ListExperiencesQueryDTO
+        query
       );
       this.sendPaginatedResponse(
         req,
@@ -289,9 +289,9 @@ export class ExperienceController extends BaseController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const query = (req as any).validatedQuery || req.query;
+      const query = (req.validatedQuery || req.query) as PublicExperienceQueryDTO;
       const experiences = await this.experienceService.getPublicExperiences(
-        query as PublicExperienceQueryDTO
+        query
       );
       this.sendResponse(
         req,

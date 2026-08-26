@@ -42,7 +42,7 @@ export interface ApiValidationIssue {
 export interface ApiErrorDetails {
   issues?: ApiValidationIssue[]
   invalidFields?: number
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export interface ApiErrorBody {
@@ -55,7 +55,23 @@ export interface ApiErrorBody {
   stack?: string
 }
 
-export interface ApiResponse<T> {
+export interface ApiPagination {
+  total: number
+  page: number
+  limit: number
+  pages?: number
+  totalPages?: number
+}
+
+export interface ApiResponse<
+  T,
+  TStats = unknown,
+  TMeta = {
+    pagination?: ApiPagination
+    counts?: Record<string, number>
+    [key: string]: unknown
+  },
+> {
   success: boolean
   data?: T
   message?: string
@@ -66,15 +82,9 @@ export interface ApiResponse<T> {
   errorObj?: ApiErrorBody
   statusCode?: number
   requestId?: string
-  pagination?: {
-    total: number
-    page: number
-    limit: number
-    pages?: number
-    totalPages?: number
-  }
-  stats?: any
-  meta?: any
+  pagination?: ApiPagination
+  stats?: TStats
+  meta?: TMeta
 }
 
 let isRefreshing = false
@@ -111,10 +121,18 @@ async function attemptTokenRefresh(): Promise<string | null> {
   return refreshPromise
 }
 
-export async function request<T>(
+export async function request<
+  T,
+  TStats = unknown,
+  TMeta = {
+    pagination?: ApiPagination
+    counts?: Record<string, number>
+    [key: string]: unknown
+  },
+>(
   endpoint: string,
   options: RequestInit & { _isRetry?: boolean } = {}
-): Promise<ApiResponse<T>> {
+): Promise<ApiResponse<T, TStats, TMeta>> {
   const token = getStoredAccessToken()
   const headers: Record<string, string> = {
     ...(options.body instanceof FormData
@@ -144,7 +162,7 @@ export async function request<T>(
     ) {
       const newToken = await attemptTokenRefresh()
       if (newToken) {
-        return await request<T>(endpoint, {
+        return await request<T, TStats, TMeta>(endpoint, {
           ...options,
           _isRetry: true,
         })
@@ -172,7 +190,9 @@ export async function request<T>(
       let formattedErrorMsg = rawMsg
       if (errorIssues && errorIssues.length > 0) {
         const issuesSummary = errorIssues
-          .map((iss) => (iss.path ? `${iss.path}: ${iss.message}` : iss.message))
+          .map((iss) =>
+            iss.path ? `${iss.path}: ${iss.message}` : iss.message
+          )
           .join("; ")
         formattedErrorMsg = `${rawMsg} (${issuesSummary})`
       }
@@ -200,7 +220,9 @@ export async function request<T>(
         let formattedErrorMsg = rawMsg
         if (errorIssues && errorIssues.length > 0) {
           const issuesSummary = errorIssues
-            .map((iss) => (iss.path ? `${iss.path}: ${iss.message}` : iss.message))
+            .map((iss) =>
+              iss.path ? `${iss.path}: ${iss.message}` : iss.message
+            )
             .join("; ")
           formattedErrorMsg = `${rawMsg} (${issuesSummary})`
         }
@@ -222,15 +244,16 @@ export async function request<T>(
         success: true,
         data: (body.data !== undefined ? body.data : body) as T,
         pagination: body.pagination || body.meta?.pagination,
-        stats: body.stats,
-        meta: body.meta,
+        stats: body.stats as TStats,
+        meta: body.meta as TMeta,
         message: body.message,
       }
     }
 
     return { success: true, data: body as T }
-  } catch (err: any) {
-    const errMsg = err?.message || "Network error. Please try again."
+  } catch (err: unknown) {
+    const errMsg =
+      err instanceof Error ? err.message : "Network error. Please try again."
     return {
       success: false,
       error: errMsg,

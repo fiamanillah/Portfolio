@@ -69,9 +69,9 @@ export function ScheduleDialog({
       } else {
         toast.error("Scheduling failed", { description: res.error });
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast.error("Error scheduling campaign", {
-        description: err?.message || "An unexpected error occurred.",
+        description: err instanceof Error ? err.message : "An unexpected error occurred.",
       });
     } finally {
       setIsScheduling(false);

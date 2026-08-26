@@ -147,8 +147,8 @@ export function MediaDetailsDialog({
       } else {
         toast.error(res.error || "Failed to update media details")
       }
-    } catch (err: any) {
-      toast.error(err.message || "Failed to save changes")
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : "Failed to save changes")
     } finally {
       setIsSaving(false)
     }

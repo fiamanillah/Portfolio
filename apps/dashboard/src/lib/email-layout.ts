@@ -87,7 +87,7 @@ export function interpolateLiquidVariables(
     manageUrl?: string;
     siteUrl?: string;
     year?: number | string;
-    [key: string]: any;
+    [key: string]: unknown;
   }
 ): string {
   if (!text) return "";

@@ -1,10 +1,8 @@
 // apps/web/src/lib/api/skillApi.ts
 
-const API_BASE_URL =
-  (typeof import.meta !== "undefined" && import.meta.env?.PUBLIC_API_URL) ||
-  (typeof process !== "undefined" && process.env?.PUBLIC_API_URL) ||
-  (typeof process !== "undefined" && process.env?.INTERNAL_API_URL) ||
-  "http://localhost:3040"
+import { getApiBaseUrl } from "./baseUrl"
+
+const API_BASE_URL = getApiBaseUrl()
 
 export interface SkillItem {
   title: string
@@ -191,8 +189,29 @@ export const SkillApi = {
 
       const json = await res.json()
       if (json.success && Array.isArray(json.data) && json.data.length > 0) {
-        const sections = json.data
-          .map((sec: any) => ({
+        const rawSections = json.data as Array<{
+          code?: string
+          ordinal?: string
+          suffix?: string
+          label?: string
+          title?: string
+          badge?: string
+          icon?: string | null
+          color?: string
+          items?: Array<{
+            title?: string
+            name?: string
+            left?: string
+            leftLabel?: string
+            right?: string
+            rightLabel?: string
+            level?: number
+            tags?: string[]
+            icon?: string | null
+          }>
+        }>
+        const sections = rawSections
+          .map((sec) => ({
             code: sec.code || "Skill",
             ordinal: sec.ordinal || "01",
             suffix: sec.suffix || "ST",
@@ -201,8 +220,8 @@ export const SkillApi = {
             icon: sec.icon || null,
             color: sec.color || "blue",
             items: Array.isArray(sec.items)
-              ? sec.items.map((item: any) => ({
-                  title: item.title || item.name,
+              ? sec.items.map((item) => ({
+                  title: item.title || item.name || "Skill",
                   left: item.left || item.leftLabel || "Core Stack",
                   right: item.right || item.rightLabel || "Proficient",
                   level: item.level,

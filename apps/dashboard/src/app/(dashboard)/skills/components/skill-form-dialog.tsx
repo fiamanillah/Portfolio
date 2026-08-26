@@ -99,7 +99,7 @@ export function SkillFormDialog({
       } else {
         showApiError(res, "Failed to create category")
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       showApiError(err, "Failed to create category")
     } finally {
       setIsCreatingCategory(false)
@@ -225,7 +225,7 @@ export function SkillFormDialog({
           setFieldErrors(extractFieldErrors(res))
         }
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       showApiError(err, "An unexpected error occurred")
     } finally {
       setIsSubmitting(false)

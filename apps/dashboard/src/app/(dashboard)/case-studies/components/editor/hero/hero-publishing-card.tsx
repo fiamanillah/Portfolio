@@ -60,7 +60,7 @@ export function HeroPublishingCard({
           </Label>
           <Select
             value={projectType}
-            onValueChange={(val: any) => setProjectType(val as CaseStudyType)}
+            onValueChange={(val) => setProjectType(val as CaseStudyType)}
           >
             <SelectTrigger id="cs-project-type" className="text-xs font-medium">
               <SelectValue placeholder="Select type" />
@@ -91,7 +91,7 @@ export function HeroPublishingCard({
           <Label htmlFor="cs-status" className="text-xs">
             Publication Status
           </Label>
-          <Select value={status} onValueChange={(val: any) => setStatus(val)}>
+          <Select value={status} onValueChange={(val) => setStatus(val as CaseStudyStatus)}>
             <SelectTrigger id="cs-status" className="text-xs">
               <SelectValue placeholder="Select status" />
             </SelectTrigger>

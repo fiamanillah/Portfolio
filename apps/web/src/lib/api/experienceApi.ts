@@ -1,10 +1,8 @@
 // apps/web/src/lib/api/experienceApi.ts
 
-const API_BASE_URL =
-  (typeof import.meta !== "undefined" && import.meta.env?.PUBLIC_API_URL) ||
-  (typeof process !== "undefined" && process.env?.PUBLIC_API_URL) ||
-  (typeof process !== "undefined" && process.env?.INTERNAL_API_URL) ||
-  "http://localhost:3040"
+import { getApiBaseUrl } from "./baseUrl"
+
+const API_BASE_URL = getApiBaseUrl()
 
 export interface ExperienceItem {
   id?: string
@@ -93,7 +91,25 @@ export const ExperienceApi = {
 
       const json = await res.json()
       if (json.success && Array.isArray(json.data) && json.data.length > 0) {
-        const items = json.data.map((item: any) => ({
+        const rawItems = json.data as Array<{
+          id: string
+          year?: string
+          period?: string
+          company: string
+          companyUrl?: string | null
+          companyLogo?: string | null
+          role: string
+          title?: string[] | null
+          location?: string
+          employmentType?: string
+          description: string
+          highlights?: string[]
+          technologies?: string[]
+          stats?: Array<{ label: string; value: string }>
+          learned?: string | null
+          isCurrent?: boolean
+        }>
+        const items = rawItems.map((item) => ({
           id: item.id,
           year: item.year || "2025",
           period: item.period || "PRESENT",

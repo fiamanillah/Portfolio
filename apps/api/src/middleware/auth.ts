@@ -65,8 +65,8 @@ export async function authenticate(
       decoded = jwt.verify(token, secret, {
         issuer: config.security.jwt.issuer,
       }) as JwtTokenPayload
-    } catch (err: any) {
-      if (err?.name === "TokenExpiredError") {
+    } catch (err: unknown) {
+      if (err instanceof Error && err.name === "TokenExpiredError") {
         throw new AuthenticationError(
           "Authentication session expired. Please sign in again."
         )

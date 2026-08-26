@@ -73,31 +73,28 @@ export function CommentComposer({
 
     const renderWidget = () => {
       if (
-        (window as any).turnstile &&
+        window.turnstile &&
         turnstileContainerRef.current &&
         turnstileWidgetIdRef.current === null
       ) {
         try {
-          const id = (window as any).turnstile.render(
-            turnstileContainerRef.current,
-            {
-              sitekey: siteKey,
-              theme: "auto",
-              callback: (token: string) => {
-                setCaptchaToken(token)
-                setTurnstileError(null)
-                window.dispatchEvent(new CustomEvent("grid-refresh"))
-              },
-              "expired-callback": () => {
-                setCaptchaToken("")
-                window.dispatchEvent(new CustomEvent("grid-refresh"))
-              },
-              "error-callback": () => {
-                setCaptchaToken("")
-                window.dispatchEvent(new CustomEvent("grid-refresh"))
-              },
-            }
-          )
+          const id = window.turnstile.render(turnstileContainerRef.current, {
+            sitekey: siteKey,
+            theme: "auto",
+            callback: (token: string) => {
+              setCaptchaToken(token)
+              setTurnstileError(null)
+              window.dispatchEvent(new CustomEvent("grid-refresh"))
+            },
+            "expired-callback": () => {
+              setCaptchaToken("")
+              window.dispatchEvent(new CustomEvent("grid-refresh"))
+            },
+            "error-callback": () => {
+              setCaptchaToken("")
+              window.dispatchEvent(new CustomEvent("grid-refresh"))
+            },
+          })
           turnstileWidgetIdRef.current = id
           window.dispatchEvent(new CustomEvent("grid-refresh"))
         } catch (e) {
@@ -106,7 +103,7 @@ export function CommentComposer({
       }
     }
 
-    if ((window as any).turnstile) {
+    if (window.turnstile) {
       renderWidget()
     } else {
       let script = document.getElementById(
@@ -130,9 +127,9 @@ export function CommentComposer({
       const timer = setTimeout(initTurnstile, 60)
       return () => clearTimeout(timer)
     } else {
-      if (turnstileWidgetIdRef.current !== null && (window as any).turnstile) {
+      if (turnstileWidgetIdRef.current !== null && window.turnstile) {
         try {
-          ;(window as any).turnstile.remove(turnstileWidgetIdRef.current)
+          window.turnstile.remove(turnstileWidgetIdRef.current)
         } catch {}
         turnstileWidgetIdRef.current = null
       }
@@ -193,9 +190,9 @@ export function CommentComposer({
       }
       setContent("")
       setHpField("")
-      if (turnstileWidgetIdRef.current !== null && (window as any).turnstile) {
+      if (turnstileWidgetIdRef.current !== null && window.turnstile) {
         try {
-          ;(window as any).turnstile.reset(turnstileWidgetIdRef.current)
+          window.turnstile.reset(turnstileWidgetIdRef.current)
         } catch {}
       }
       setCaptchaToken("")
@@ -204,9 +201,9 @@ export function CommentComposer({
       })
     } catch {
       toast.error("Failed to post comment. Please try again.")
-      if (turnstileWidgetIdRef.current !== null && (window as any).turnstile) {
+      if (turnstileWidgetIdRef.current !== null && window.turnstile) {
         try {
-          ;(window as any).turnstile.reset(turnstileWidgetIdRef.current)
+          window.turnstile.reset(turnstileWidgetIdRef.current)
         } catch {}
       }
       setCaptchaToken("")

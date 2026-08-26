@@ -134,16 +134,16 @@ export class AppLogger {
   // ==========================================
   // INSTANCE METHODS (Contextual)
   // ==========================================
-  public info(msg: string, meta: any = {}) {
+  public info(msg: string, meta: Record<string, unknown> = {}) {
     AppLogger.init().info(msg, { ...meta, context: this.context });
   }
-  public warn(msg: string, meta: any = {}) {
+  public warn(msg: string, meta: Record<string, unknown> = {}) {
     AppLogger.init().warn(msg, { ...meta, context: this.context });
   }
-  public debug(msg: string, meta: any = {}) {
+  public debug(msg: string, meta: Record<string, unknown> = {}) {
     AppLogger.init().debug(msg, { ...meta, context: this.context });
   }
-  public error(msg: string | Error, meta: any = {}) {
+  public error(msg: string | Error, meta: Record<string, unknown> = {}) {
     if (msg instanceof Error) {
       AppLogger.init().error(msg.message, {
         ...meta,
@@ -158,16 +158,16 @@ export class AppLogger {
   // ==========================================
   // STATIC METHODS (Global)
   // ==========================================
-  static info(msg: string, meta?: any) {
+  static info(msg: string, meta?: Record<string, unknown>) {
     this.init().info(msg, meta);
   }
-  static warn(msg: string, meta?: any) {
+  static warn(msg: string, meta?: Record<string, unknown>) {
     this.init().warn(msg, meta);
   }
-  static debug(msg: string, meta?: any) {
+  static debug(msg: string, meta?: Record<string, unknown>) {
     this.init().debug(msg, meta);
   }
-  static error(msg: string | Error, meta?: any) {
+  static error(msg: string | Error, meta?: Record<string, unknown>) {
     if (msg instanceof Error) {
       this.init().error(msg.message, { ...meta, stack: msg.stack });
     } else {
