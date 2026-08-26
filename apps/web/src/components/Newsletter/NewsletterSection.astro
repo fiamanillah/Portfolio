@@ -382,11 +382,6 @@ const submitTextId = `${idPrefix}-submit-text`
     nameInput?.addEventListener("input", initNewsletterTurnstileOnDemand, {
       once: true,
     })
-    formElement.addEventListener(
-      "mouseenter",
-      initNewsletterTurnstileOnDemand,
-      { once: true }
-    )
 
     formElement.addEventListener("submit", async (e) => {
       e.preventDefault()

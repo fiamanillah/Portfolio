@@ -47,9 +47,9 @@ const resumeUrl = resumeData.downloadUrl || "/resume"
           </span>
         </h1>
         <div
-          class="text-base leading-relaxed font-medium text-balance text-primary sm:text-lg"
+          class="flex min-h-[1.75rem] flex-wrap items-center gap-x-1.5 text-base leading-relaxed font-medium text-primary sm:min-h-[2rem] sm:text-lg"
         >
-          <span class="text-foreground"> I'm a </span>
+          <span class="text-foreground">I'm a</span>
           <span
             id="hero-text-scramble"
             class="inline-block min-w-[210px] font-mono text-primary select-none"
@@ -112,8 +112,11 @@ const resumeUrl = resumeData.downloadUrl || "/resume"
             </InputGroupAddon>
           </InputGroup>
 
-          <!-- Cloudflare Turnstile Container (Zero-CLS Invisible Mode) -->
-          <div id="hero-turnstile-container" class="hidden" aria-hidden="true">
+          <!-- Cloudflare Turnstile Container -->
+          <div
+            id="hero-turnstile-container"
+            class="flex min-h-[65px] justify-center py-1 empty:hidden"
+          >
           </div>
 
           <!-- Interactive Status Alert Banner -->
@@ -411,8 +414,9 @@ const resumeUrl = resumeData.downloadUrl || "/resume"
       window.location.hostname === "127.0.0.1"
     const turnstileKey =
       import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ||
-      (isLocal ? "3x00000000000000000000AA" : "0x4AAAAAAEMAnAognjniSApt")
+      (isLocal ? "1x00000000000000000000AA" : "0x4AAAAAAEMAnAognjniSApt")
     const container = document.getElementById("hero-turnstile-container")
+    const statusDiv = document.getElementById("hero-status")
     if (!turnstileKey || !container || heroTurnstileWidgetId !== null) return
 
     const render = () => {
@@ -422,9 +426,49 @@ const resumeUrl = resumeData.downloadUrl || "/resume"
             "#hero-turnstile-container",
             {
               sitekey: turnstileKey,
-              size: "invisible",
+              theme: "dark",
+              callback: () => {
+                window.dispatchEvent(new CustomEvent("grid-refresh"))
+              },
+              "error-callback": () => {
+                if (statusDiv) {
+                  statusDiv.classList.remove(
+                    "hidden",
+                    "bg-emerald-500/10",
+                    "border-emerald-500/30",
+                    "text-emerald-400"
+                  )
+                  statusDiv.classList.add(
+                    "bg-destructive/10",
+                    "border-destructive/30",
+                    "text-destructive"
+                  )
+                  statusDiv.textContent =
+                    "Security verification check failed. Please refresh or retry."
+                  window.dispatchEvent(new CustomEvent("grid-refresh"))
+                }
+              },
+              "expired-callback": () => {
+                if (statusDiv) {
+                  statusDiv.classList.remove(
+                    "hidden",
+                    "bg-emerald-500/10",
+                    "border-emerald-500/30",
+                    "text-emerald-400"
+                  )
+                  statusDiv.classList.add(
+                    "bg-destructive/10",
+                    "border-destructive/30",
+                    "text-destructive"
+                  )
+                  statusDiv.textContent =
+                    "Security verification expired. Please check the box again."
+                  window.dispatchEvent(new CustomEvent("grid-refresh"))
+                }
+              },
             }
           )
+          window.dispatchEvent(new CustomEvent("grid-refresh"))
         } catch (err) {
           console.warn("Hero Turnstile render error:", err)
         }
@@ -469,7 +513,7 @@ const resumeUrl = resumeData.downloadUrl || "/resume"
     if (form.dataset.bound === "true") return
     form.dataset.bound = "true"
 
-    // Lazy load Turnstile on interaction
+    // Lazy load Turnstile on interaction (focus/input)
     emailInput?.addEventListener("focus", initHeroTurnstileOnDemand, {
       once: true,
     })
@@ -477,9 +521,6 @@ const resumeUrl = resumeData.downloadUrl || "/resume"
       once: true,
     })
     emailInput?.addEventListener("input", initHeroTurnstileOnDemand, {
-      once: true,
-    })
-    form.addEventListener("mouseenter", initHeroTurnstileOnDemand, {
       once: true,
     })
 

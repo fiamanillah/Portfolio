@@ -594,9 +594,9 @@ import { Icon } from "astro-icon/components"
       input.addEventListener("click", initContactTurnstileOnDemand, {
         once: true,
       })
-    })
-    form.addEventListener("mouseenter", initContactTurnstileOnDemand, {
-      once: true,
+      input.addEventListener("input", initContactTurnstileOnDemand, {
+        once: true,
+      })
     })
 
     form.addEventListener("submit", async (e) => {
