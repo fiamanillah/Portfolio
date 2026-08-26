@@ -255,12 +255,14 @@ const skillSections =
                         {/* Skill Level mini meter */}
                         {typeof item.level === "number" && (
                           <div
+                            role="img"
                             class="flex items-center gap-0.5"
                             title={`Proficiency: ${item.level}/5`}
                             aria-label={`Proficiency: ${item.level} of 5`}
                           >
                             {Array.from({ length: 5 }).map((_, i) => (
                               <span
+                                aria-hidden="true"
                                 class={`h-1 w-2.5 rounded-2xs transition-colors duration-200 ${
                                   i < (item.level || 5)
                                     ? "bg-primary/70 group-hover/row:bg-primary"

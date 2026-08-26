@@ -57,7 +57,7 @@ export function NavUserButton() {
         >
           <div className="relative shrink-0">
             <img
-              src={user.avatar}
+              src={user.avatar || "/fi-avatar.webp"}
               alt={user.name}
               className="size-6 rounded-full border border-primary/50 object-cover"
             />
@@ -77,7 +77,7 @@ export function NavUserButton() {
         <DropdownMenuLabel className="p-1.5 font-normal">
           <div className="flex items-center gap-2.5">
             <img
-              src={user.avatar}
+              src={user.avatar || "/fi-avatar.webp"}
               alt={user.name}
               className="size-8 shrink-0 rounded-full border border-primary/50 object-cover"
             />

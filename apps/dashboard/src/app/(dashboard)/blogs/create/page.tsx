@@ -37,7 +37,7 @@ export default function CreateBlogPostPage() {
   }
 
   return (
-    <div className="mx-auto max-w-5xl space-y-6">
+    <div className="mx-auto max-w-7xl space-y-6">
       <PostEditorForm
         categories={categories}
         tags={tags}

@@ -7,7 +7,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@workspace/ui/components/dialog"
-import { AVATAR_OPTIONS, type AuthUser } from "@/data/commentsData"
+import type { AuthUser } from "@/data/commentsData"
 import {
   setStoredUser,
   getAuthUrlParam,
@@ -79,7 +79,6 @@ export function AuthModal({
   const [signUpEmail, setSignUpEmail] = useState("")
   const [signUpPassword, setSignUpPassword] = useState("")
   const [signUpRole, setSignUpRole] = useState("")
-  const [selectedAvatar, setSelectedAvatar] = useState(AVATAR_OPTIONS[0])
   const [subscribeNewsletter, setSubscribeNewsletter] = useState(true)
   const [signUpErrors, setSignUpErrors] = useState<{
     name?: string
@@ -243,7 +242,6 @@ export function AuthModal({
       email: signUpEmail,
       password: signUpPassword,
       role: signUpRole.trim() || undefined,
-      avatar: selectedAvatar,
       subscribedToNewsletter: subscribeNewsletter,
     })
 
@@ -671,8 +669,6 @@ export function AuthModal({
             setPassword={setSignUpPassword}
             role={signUpRole}
             setRole={setSignUpRole}
-            selectedAvatar={selectedAvatar}
-            setSelectedAvatar={setSelectedAvatar}
             subscribeNewsletter={subscribeNewsletter}
             setSubscribeNewsletter={setSubscribeNewsletter}
             errors={signUpErrors}

@@ -28,7 +28,7 @@ import {
 interface AvatarSelectorModalProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  currentAvatar: string
+  currentAvatar?: string | null
   onSaveAvatar: (newAvatar: string) => void
 }
 
@@ -45,7 +45,9 @@ export function AvatarSelectorModal({
   currentAvatar,
   onSaveAvatar,
 }: AvatarSelectorModalProps) {
-  const [selected, setSelected] = useState<string>(currentAvatar)
+  const [selected, setSelected] = useState<string>(
+    currentAvatar || "/fi-avatar.webp"
+  )
   const [customUrl, setCustomUrl] = useState<string>("")
   const [error, setError] = useState<string | null>(null)
   const [isUploading, setIsUploading] = useState(false)
@@ -121,12 +123,16 @@ export function AvatarSelectorModal({
           <div className="flex items-center gap-3.5 rounded-lg border border-border bg-background/60 p-3">
             <div className="relative shrink-0">
               <img
-                src={customUrl.trim() || selected || currentAvatar}
+                src={
+                  customUrl.trim() ||
+                  selected ||
+                  currentAvatar ||
+                  "/fi-avatar.webp"
+                }
                 alt="Avatar preview"
                 className="size-14 rounded-full border-2 border-primary/30 object-cover"
                 onError={(e) => {
-                  ;(e.target as HTMLImageElement).src =
-                    "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80"
+                  ;(e.target as HTMLImageElement).src = "/fi-avatar.webp"
                 }}
               />
               <span className="absolute -right-0.5 -bottom-0.5 flex size-4 items-center justify-center rounded-full bg-primary text-primary-foreground">

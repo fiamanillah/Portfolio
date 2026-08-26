@@ -45,7 +45,7 @@ export function ProfileHeader({ user }: ProfileHeaderProps) {
               {/* Avatar with Quick-Edit Button */}
               <div className="group relative shrink-0 self-start sm:self-auto">
                 <img
-                  src={user.avatar || "/avatars/avatar-1.svg"}
+                  src={user.avatar || "/fi-avatar.webp"}
                   alt={user.name}
                   className="size-20 rounded-full border-4 border-background bg-card object-cover shadow-lg sm:size-24"
                 />

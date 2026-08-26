@@ -33,7 +33,6 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@workspace/ui/components/dropdown-menu"
 
@@ -76,40 +75,40 @@ export function EditorToolbar({
   onOpenTableDialog,
 }: EditorToolbarProps) {
   return (
-    <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border/80 pb-2.5">
-      {/* Left: View Mode Switches & Format Group */}
-      <div className="flex flex-wrap items-center gap-1.5">
-        {/* View Mode Toggle */}
-        <div className="mr-1 flex items-center rounded-lg border border-border bg-muted/60 p-0.5">
+    <div className="flex flex-wrap items-center justify-between gap-1.5 border-b border-border/80 bg-muted/40 px-3 py-1.5">
+      {/* Left: View Mode Switches & Format Controls */}
+      <div className="flex flex-wrap items-center gap-1">
+        {/* View Mode Switcher */}
+        <div className="flex items-center rounded-md border border-border/80 bg-background p-0.5 shadow-2xs mr-1">
           <Button
             type="button"
             variant={mode === "write" ? "secondary" : "ghost"}
             size="sm"
-            className="h-7 gap-1.5 px-2.5 text-xs"
+            className="h-6.5 gap-1 px-2 text-[11px] font-medium"
             onClick={() => onModeChange("write")}
             title="Write Mode"
           >
-            <Edit3 className="h-3.5 w-3.5" /> Write
+            <Edit3 className="h-3 w-3" /> Write
           </Button>
           <Button
             type="button"
             variant={mode === "split" ? "secondary" : "ghost"}
             size="sm"
-            className="hidden h-7 gap-1.5 px-2.5 text-xs md:inline-flex"
+            className="hidden h-6.5 gap-1 px-2 text-[11px] font-medium md:inline-flex"
             onClick={() => onModeChange("split")}
             title="Split Side-by-Side View"
           >
-            <Columns2 className="h-3.5 w-3.5" /> Split View
+            <Columns2 className="h-3 w-3" /> Split
           </Button>
           <Button
             type="button"
             variant={mode === "preview" ? "secondary" : "ghost"}
             size="sm"
-            className="h-7 gap-1.5 px-2.5 text-xs"
+            className="h-6.5 gap-1 px-2 text-[11px] font-medium"
             onClick={() => onModeChange("preview")}
             title="Rendered HTML Preview"
           >
-            <Eye className="h-3.5 w-3.5" /> Preview
+            <Eye className="h-3 w-3" /> Preview
           </Button>
         </div>
 
@@ -121,78 +120,78 @@ export function EditorToolbar({
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="h-7 gap-1 px-2 text-xs font-semibold"
+                  className="h-6.5 gap-1 px-1.5 text-[11px] font-medium"
                 >
-                  Heading <ChevronDown className="h-3 w-3 opacity-60" />
+                  Heading <ChevronDown className="h-2.5 w-2.5 opacity-60" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="w-40 text-xs">
+              <DropdownMenuContent align="start" className="w-38 text-xs">
                 <DropdownMenuItem
                   onClick={() => onInsertSnippet("## ")}
-                  className="gap-2"
+                  className="gap-2 text-xs"
                 >
-                  <Heading2 className="h-4 w-4" /> Heading 2 (Section)
+                  <Heading2 className="h-3.5 w-3.5" /> Heading 2 (H2)
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={() => onInsertSnippet("### ")}
-                  className="gap-2"
+                  className="gap-2 text-xs"
                 >
-                  <Heading3 className="h-4 w-4" /> Heading 3 (Subsection)
+                  <Heading3 className="h-3.5 w-3.5" /> Heading 3 (H3)
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={() => onInsertSnippet("#### ")}
-                  className="gap-2"
+                  className="gap-2 text-xs"
                 >
-                  <Heading4 className="h-4 w-4" /> Heading 4 (Small)
+                  <Heading4 className="h-3.5 w-3.5" /> Heading 4 (H4)
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
 
-            <div className="mx-0.5 h-4 w-px bg-border" />
+            <div className="mx-0.5 h-3.5 w-px bg-border/80" />
 
             {/* Inline Formatting */}
             <Button
               type="button"
               variant="ghost"
               size="icon"
-              className="h-7 w-7"
+              className="h-6.5 w-6.5"
               onClick={() => onInsertSnippet("**", "**")}
               title="Bold (**text**)"
             >
-              <Bold className="h-3.5 w-3.5" />
+              <Bold className="h-3 w-3" />
             </Button>
             <Button
               type="button"
               variant="ghost"
               size="icon"
-              className="h-7 w-7"
+              className="h-6.5 w-6.5"
               onClick={() => onInsertSnippet("*", "*")}
               title="Italic (*text*)"
             >
-              <Italic className="h-3.5 w-3.5" />
+              <Italic className="h-3 w-3" />
             </Button>
             <Button
               type="button"
               variant="ghost"
               size="icon"
-              className="h-7 w-7"
+              className="h-6.5 w-6.5"
               onClick={() => onInsertSnippet("~~", "~~")}
               title="Strikethrough (~~text~~)"
             >
-              <Strikethrough className="h-3.5 w-3.5" />
+              <Strikethrough className="h-3 w-3" />
             </Button>
             <Button
               type="button"
               variant="ghost"
               size="icon"
-              className="h-7 w-7"
+              className="h-6.5 w-6.5"
               onClick={() => onInsertSnippet("`", "`")}
               title="Inline Code (`code`)"
             >
-              <Code className="h-3.5 w-3.5" />
+              <Code className="h-3 w-3" />
             </Button>
 
-            <div className="mx-0.5 h-4 w-px bg-border" />
+            <div className="mx-0.5 h-3.5 w-px bg-border/80" />
 
             {/* Code Block Dropdown */}
             <DropdownMenu>
@@ -200,17 +199,17 @@ export function EditorToolbar({
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="h-7 gap-1 px-2 font-mono text-xs font-semibold"
+                  className="h-6.5 gap-1 px-1.5 font-mono text-[11px]"
                 >
-                  {"{ }"} Code <ChevronDown className="h-3 w-3 opacity-60" />
+                  {"{ }"} Code <ChevronDown className="h-2.5 w-2.5 opacity-60" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent
                 align="start"
-                className="max-h-64 w-48 overflow-y-auto text-xs"
+                className="max-h-60 w-44 overflow-y-auto text-xs"
               >
                 <DropdownMenuLabel className="font-mono text-[10px] text-muted-foreground uppercase">
-                  Select Language Block
+                  Code Block
                 </DropdownMenuLabel>
                 {CODE_LANGUAGES.map((item) => (
                   <DropdownMenuItem
@@ -232,142 +231,142 @@ export function EditorToolbar({
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="h-7 gap-1 px-2 text-xs font-medium text-primary"
+                  className="h-6.5 gap-1 px-1.5 text-[11px] font-medium text-primary"
                 >
                   <Sparkles className="h-3 w-3" /> Callout{" "}
-                  <ChevronDown className="h-3 w-3 opacity-60" />
+                  <ChevronDown className="h-2.5 w-2.5 opacity-60" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="w-48 text-xs">
+              <DropdownMenuContent align="start" className="w-44 text-xs">
                 <DropdownMenuLabel className="font-mono text-[10px] text-muted-foreground uppercase">
-                  GitHub Alert Callouts
+                  Alert Callouts
                 </DropdownMenuLabel>
                 <DropdownMenuItem
                   onClick={() => onInsertSnippet("> [!NOTE]\n> ")}
-                  className="gap-2 text-sky-400"
+                  className="gap-2 text-sky-400 text-xs"
                 >
-                  <Info className="h-3.5 w-3.5" /> [!NOTE] Informational
+                  <Info className="h-3.5 w-3.5" /> [!NOTE] Info
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={() => onInsertSnippet("> [!TIP]\n> ")}
-                  className="gap-2 text-emerald-400"
+                  className="gap-2 text-emerald-400 text-xs"
                 >
-                  <Lightbulb className="h-3.5 w-3.5" /> [!TIP] Pro Tip
+                  <Lightbulb className="h-3.5 w-3.5" /> [!TIP] Tip
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={() => onInsertSnippet("> [!IMPORTANT]\n> ")}
-                  className="gap-2 text-violet-400"
+                  className="gap-2 text-violet-400 text-xs"
                 >
-                  <ShieldAlert className="h-3.5 w-3.5" /> [!IMPORTANT] Essential
+                  <ShieldAlert className="h-3.5 w-3.5" /> [!IMPORTANT]
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={() => onInsertSnippet("> [!WARNING]\n> ")}
-                  className="gap-2 text-amber-400"
+                  className="gap-2 text-amber-400 text-xs"
                 >
-                  <AlertTriangle className="h-3.5 w-3.5" /> [!WARNING] Warning
+                  <AlertTriangle className="h-3.5 w-3.5" /> [!WARNING]
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={() => onInsertSnippet("> [!CAUTION]\n> ")}
-                  className="gap-2 text-rose-400"
+                  className="gap-2 text-rose-400 text-xs"
                 >
-                  <AlertTriangle className="h-3.5 w-3.5" /> [!CAUTION] Caution
+                  <AlertTriangle className="h-3.5 w-3.5" /> [!CAUTION]
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
 
-            <div className="mx-0.5 h-4 w-px bg-border" />
+            <div className="mx-0.5 h-3.5 w-px bg-border/80" />
 
             {/* Lists & Quotes */}
             <Button
               type="button"
               variant="ghost"
               size="icon"
-              className="h-7 w-7"
+              className="h-6.5 w-6.5"
               onClick={() => onInsertSnippet("- ")}
               title="Bullet List"
             >
-              <List className="h-3.5 w-3.5" />
+              <List className="h-3 w-3" />
             </Button>
             <Button
               type="button"
               variant="ghost"
               size="icon"
-              className="h-7 w-7"
+              className="h-6.5 w-6.5"
               onClick={() => onInsertSnippet("1. ")}
               title="Numbered List"
             >
-              <ListOrdered className="h-3.5 w-3.5" />
+              <ListOrdered className="h-3 w-3" />
             </Button>
             <Button
               type="button"
               variant="ghost"
               size="icon"
-              className="h-7 w-7"
+              className="h-6.5 w-6.5"
               onClick={() => onInsertSnippet("- [ ] ")}
               title="Task Checklist"
             >
-              <CheckSquare className="h-3.5 w-3.5" />
+              <CheckSquare className="h-3 w-3" />
             </Button>
             <Button
               type="button"
               variant="ghost"
               size="icon"
-              className="h-7 w-7"
+              className="h-6.5 w-6.5"
               onClick={() => onInsertSnippet("> ")}
               title="Blockquote"
             >
-              <Quote className="h-3.5 w-3.5" />
+              <Quote className="h-3 w-3" />
             </Button>
 
-            <div className="mx-0.5 h-4 w-px bg-border" />
+            <div className="mx-0.5 h-3.5 w-px bg-border/80" />
 
             {/* Media, Links & Tables */}
             <Button
               type="button"
               variant="ghost"
               size="sm"
-              className="h-7 gap-1.5 px-2 text-xs text-primary hover:bg-primary/10"
+              className="h-6.5 gap-1 px-1.5 text-[11px] text-primary hover:bg-primary/10"
               onClick={onOpenImageDialog}
-              title="Insert Photo / Diagram"
+              title="Insert Image"
             >
-              <ImageIcon className="h-3.5 w-3.5" /> Photo
+              <ImageIcon className="h-3 w-3" /> Photo
             </Button>
             <Button
               type="button"
               variant="ghost"
               size="icon"
-              className="h-7 w-7"
+              className="h-6.5 w-6.5"
               onClick={onOpenLinkDialog}
               title="Insert Link"
             >
-              <LinkIcon className="h-3.5 w-3.5" />
+              <LinkIcon className="h-3 w-3" />
             </Button>
             <Button
               type="button"
               variant="ghost"
               size="icon"
-              className="h-7 w-7"
+              className="h-6.5 w-6.5"
               onClick={onOpenTableDialog}
               title="Insert Table"
             >
-              <TableIcon className="h-3.5 w-3.5" />
+              <TableIcon className="h-3 w-3" />
             </Button>
             <Button
               type="button"
               variant="ghost"
               size="icon"
-              className="h-7 w-7"
+              className="h-6.5 w-6.5"
               onClick={() => onInsertSnippet("\n---\n\n")}
-              title="Horizontal Divider"
+              title="Divider"
             >
-              <Minus className="h-3.5 w-3.5" />
+              <Minus className="h-3 w-3" />
             </Button>
           </>
         )}
       </div>
 
       {/* Right: Live Word Count & Reading Time Meter */}
-      <div className="flex shrink-0 items-center gap-3 font-mono text-xs text-muted-foreground">
+      <div className="flex shrink-0 items-center gap-2 font-mono text-[11px] text-muted-foreground">
         <span className="font-semibold text-foreground">{wordCount} words</span>
         <span>•</span>
         <span className="font-medium text-primary">{readTime}</span>

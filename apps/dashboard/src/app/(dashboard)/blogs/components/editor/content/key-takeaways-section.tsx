@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Sparkles, Plus, Trash2, GripVertical } from "lucide-react"
+import { Sparkles, Plus, Trash2 } from "lucide-react"
 import { Input } from "@workspace/ui/components/input"
 import { Button } from "@workspace/ui/components/button"
 
@@ -33,18 +33,17 @@ export function KeyTakeawaysSection({
   }
 
   return (
-    <div className="space-y-3 border-t border-border/80 pt-4">
+    <div className="space-y-2.5 pt-1">
       <div className="flex items-center justify-between">
-        <label className="flex items-center gap-1.5 text-xs font-bold tracking-wider text-muted-foreground uppercase">
-          <Sparkles className="h-3.5 w-3.5 text-primary" /> Key Takeaways &
-          Architecture Highlights
+        <label className="flex items-center gap-1.5 text-[11px] font-bold tracking-wider text-muted-foreground uppercase">
+          <Sparkles className="h-3.5 w-3.5 text-primary" /> Key Takeaways & Architecture Highlights
         </label>
-        <span className="font-mono text-[11px] text-muted-foreground">
+        <span className="font-mono text-[10px] text-muted-foreground">
           {keyTakeaways.length} bullets
         </span>
       </div>
 
-      <div className="space-y-2">
+      <div className="space-y-1.5">
         {keyTakeaways.map((item, index) => (
           <div key={index} className="flex items-center gap-2">
             <span className="w-4 shrink-0 text-center font-mono text-xs font-bold text-primary">
@@ -53,7 +52,7 @@ export function KeyTakeawaysSection({
             <Input
               value={item}
               onChange={(e) => handleUpdate(index, e.target.value)}
-              className="h-9 border-border/90 bg-background text-xs shadow-xs hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary/20"
+              className="h-8 border-border/80 bg-background text-xs"
               placeholder="Key architectural takeaway..."
             />
             <Button
@@ -61,17 +60,17 @@ export function KeyTakeawaysSection({
               variant="ghost"
               size="icon"
               onClick={() => handleDelete(index)}
-              className="h-9 w-9 shrink-0 text-muted-foreground hover:text-destructive"
+              className="h-8 w-8 shrink-0 text-muted-foreground hover:text-destructive"
             >
-              <Trash2 className="h-4 w-4" />
+              <Trash2 className="h-3.5 w-3.5" />
             </Button>
           </div>
         ))}
 
         {/* Add new takeaway input */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5">
           <Input
-            placeholder="Add key takeaway (e.g. Redis pub/sub reduces gateway latency by 85%)..."
+            placeholder="Add key takeaway (e.g. Redis pub/sub reduces latency by 85%)..."
             value={newTakeaway}
             onChange={(e) => setNewTakeaway(e.target.value)}
             onKeyDown={(e) => {
@@ -80,7 +79,7 @@ export function KeyTakeawaysSection({
                 handleAdd()
               }
             }}
-            className="h-9 border-border/90 bg-background text-xs shadow-xs hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary/20"
+            className="h-8 border-border/80 bg-background text-xs"
           />
           <Button
             type="button"
@@ -88,9 +87,9 @@ export function KeyTakeawaysSection({
             size="sm"
             onClick={handleAdd}
             disabled={!newTakeaway.trim()}
-            className="h-9 shrink-0 gap-1 px-3 text-xs"
+            className="h-8 shrink-0 gap-1 px-2.5 text-xs"
           >
-            <Plus className="h-3.5 w-3.5" /> Add
+            <Plus className="h-3 w-3" /> Add
           </Button>
         </div>
       </div>

@@ -10,10 +10,8 @@ import {
   FieldError,
   FieldContent,
 } from "@workspace/ui/components/field"
-import { AVATAR_OPTIONS } from "@/data/commentsData"
 import { HugeiconsIcon } from "@hugeicons/react"
 import {
-  Tick02Icon,
   Loading03Icon,
   Notification01Icon,
   Mail02Icon,
@@ -30,8 +28,6 @@ interface SignUpStepProps {
   setPassword: (password: string) => void
   role: string
   setRole: (role: string) => void
-  selectedAvatar: string
-  setSelectedAvatar: (avatar: string) => void
   subscribeNewsletter: boolean
   setSubscribeNewsletter: (sub: boolean) => void
   errors: {
@@ -63,8 +59,6 @@ export function SignUpStep({
   setPassword,
   role,
   setRole,
-  selectedAvatar,
-  setSelectedAvatar,
   subscribeNewsletter,
   setSubscribeNewsletter,
   errors,
@@ -169,36 +163,6 @@ export function SignUpStep({
             />
           </Field>
         </div>
-
-        {/* Avatar Selection Grid */}
-        <Field>
-          <FieldLabel>Profile Avatar</FieldLabel>
-          <div className="flex items-center gap-2 overflow-x-auto py-1">
-            {AVATAR_OPTIONS.map((avatarUrl, idx) => (
-              <button
-                key={idx}
-                type="button"
-                onClick={() => setSelectedAvatar(avatarUrl)}
-                className={`relative shrink-0 cursor-pointer rounded-full border-2 p-0.5 transition-all ${
-                  selectedAvatar === avatarUrl
-                    ? "border-primary shadow-[0_0_10px_oklch(var(--primary)/40%)]"
-                    : "border-border hover:border-primary/50"
-                }`}
-              >
-                <img
-                  src={avatarUrl}
-                  alt={`Avatar option ${idx + 1}`}
-                  className="size-8 rounded-full object-cover"
-                />
-                {selectedAvatar === avatarUrl && (
-                  <span className="absolute -right-1 -bottom-1 flex size-3.5 items-center justify-center rounded-full bg-primary text-primary-foreground">
-                    <HugeiconsIcon icon={Tick02Icon} className="size-2.5" />
-                  </span>
-                )}
-              </button>
-            ))}
-          </div>
-        </Field>
 
         {/* Newsletter & Updates Subscription Checkbox with Field Component */}
         <Field

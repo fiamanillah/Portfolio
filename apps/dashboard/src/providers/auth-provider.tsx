@@ -102,7 +102,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setIsLoading(false)
       return {
         success: false,
-        error: err instanceof Error ? err.message : "An unexpected error occurred during sign in.",
+        error:
+          err instanceof Error
+            ? err.message
+            : "An unexpected error occurred during sign in.",
       }
     }
   }
@@ -142,7 +145,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setIsLoading(false)
       return {
         success: false,
-        error: err instanceof Error ? err.message : "Error logging into demo account.",
+        error:
+          err instanceof Error
+            ? err.message
+            : "Error logging into demo account.",
       }
     }
   }
@@ -183,10 +189,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   )
 }
 
-export function useAuth() {
+export function useAuth(): AuthContextType {
   const context = React.useContext(AuthContext)
   if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider")
+    return {
+      user: null,
+      token: null,
+      isLoading: false,
+      isAuthenticated: false,
+      isAdmin: false,
+      login: async () => ({ success: false }),
+      loginAsDemo: async () => ({ success: false }),
+      logout: async () => {},
+      refreshUser: async () => null,
+    }
   }
   return context
 }
