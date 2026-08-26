@@ -114,11 +114,8 @@ const resumeUrl = resumeData.downloadUrl || "/resume"
             </InputGroupAddon>
           </InputGroup>
 
-          <!-- Cloudflare Turnstile Container -->
-          <div
-            id="hero-turnstile-container"
-            class="flex min-h-[65px] justify-start py-1 empty:hidden"
-          >
+          <!-- Cloudflare Turnstile Container (Zero-CLS Invisible Mode) -->
+          <div id="hero-turnstile-container" class="hidden" aria-hidden="true">
           </div>
 
           <!-- Interactive Status Alert Banner -->
@@ -401,7 +398,7 @@ const resumeUrl = resumeData.downloadUrl || "/resume"
       window.location.hostname === "127.0.0.1"
     const turnstileKey =
       import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ||
-      (isLocal ? "1x00000000000000000000AA" : "0x4AAAAAAEMAnAognjniSApt")
+      (isLocal ? "3x00000000000000000000AA" : "0x4AAAAAAEMAnAognjniSApt")
     const container = document.getElementById("hero-turnstile-container")
     if (!turnstileKey || !container || heroTurnstileWidgetId !== null) return
 
@@ -412,13 +409,9 @@ const resumeUrl = resumeData.downloadUrl || "/resume"
             "#hero-turnstile-container",
             {
               sitekey: turnstileKey,
-              theme: "dark",
-              callback: () => {
-                window.dispatchEvent(new CustomEvent("grid-refresh"))
-              },
+              size: "invisible",
             }
           )
-          window.dispatchEvent(new CustomEvent("grid-refresh"))
         } catch (err) {
           console.warn("Hero Turnstile render error:", err)
         }
