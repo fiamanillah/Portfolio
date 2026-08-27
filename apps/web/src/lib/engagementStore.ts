@@ -54,7 +54,10 @@ export function getStoredReactions(
     }
 
     const parsed = JSON.parse(raw) as PostReactions
-    if (typeof parsed.likes !== "number" || (parsed.likes === 0 && initialLikes > 0)) {
+    if (
+      typeof parsed.likes !== "number" ||
+      (parsed.likes === 0 && initialLikes > 0)
+    ) {
       parsed.likes = Math.max(parsed.likes || 0, initialLikes)
     }
     reactionsSnapshotCache.set(slug, { raw, parsed })
