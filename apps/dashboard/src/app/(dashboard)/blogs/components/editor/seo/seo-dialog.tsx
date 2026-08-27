@@ -48,7 +48,6 @@ interface SeoDialogProps {
   noFollow: boolean
   setNoFollow: (val: boolean) => void
   onAutoGenerateSeo?: () => void
-  onAutoFillCanonical?: () => void
 }
 
 export function SeoDialog({
@@ -74,7 +73,6 @@ export function SeoDialog({
   noFollow,
   setNoFollow,
   onAutoGenerateSeo,
-  onAutoFillCanonical,
 }: SeoDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -87,7 +85,8 @@ export function SeoDialog({
                 SEO & Social Media Diagnostics Studio
               </DialogTitle>
               <DialogDescription className="text-xs text-muted-foreground">
-                Inspect Google SERP snippets, OpenGraph cards, robots directives, and live ranking health checks.
+                Inspect Google SERP snippets, OpenGraph cards, robots
+                directives, and live ranking health checks.
               </DialogDescription>
             </div>
             <div className="flex items-center gap-2">
@@ -97,9 +96,9 @@ export function SeoDialog({
                   variant="outline"
                   size="sm"
                   onClick={onAutoGenerateSeo}
-                  className="h-8 text-xs border-primary/40 bg-primary/10 hover:bg-primary/20 text-primary font-semibold"
+                  className="h-8 border-primary/40 bg-primary/10 text-xs font-semibold text-primary hover:bg-primary/20"
                 >
-                  <Wand2 className="h-3.5 w-3.5 mr-1" />
+                  <Wand2 className="mr-1 h-3.5 w-3.5" />
                   Auto-Fill All SEO
                 </Button>
               )}
@@ -192,7 +191,6 @@ export function SeoDialog({
                 setNoIndex={setNoIndex}
                 noFollow={noFollow}
                 setNoFollow={setNoFollow}
-                onAutoFillCanonical={onAutoFillCanonical}
               />
             </div>
           </TabsContent>

@@ -132,6 +132,23 @@ export class UserController extends BaseController {
   }
 
   /**
+   * GET /users/v1/public/authors/:username
+   */
+  public async getPublicAuthorProfile(req: Request, res: Response) {
+    const username = Array.isArray(req.params.username)
+      ? req.params.username[0]
+      : req.params.username
+    const profile = await this.userService.getPublicAuthorProfile(username)
+    return this.sendResponse(
+      req,
+      res,
+      "Public author profile retrieved",
+      200,
+      profile
+    )
+  }
+
+  /**
    * PATCH /users/v1/change-password
    */
   public async changePassword(req: Request, res: Response) {

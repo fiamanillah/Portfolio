@@ -7,7 +7,8 @@ import type {
 
 const SITE_URL = "https://fi.amanillah.com"
 
-const STOP_WORDS = new Set([
+// ponytail: merged former STOP_WORDS + FILLER_WORDS — they were 80% identical
+const SKIP_WORDS = new Set([
   "a",
   "about",
   "above",
@@ -31,6 +32,7 @@ const STOP_WORDS = new Set([
   "below",
   "between",
   "both",
+  "build",
   "but",
   "by",
   "can",
@@ -52,6 +54,7 @@ const STOP_WORDS = new Set([
   "for",
   "from",
   "further",
+  "guide",
   "had",
   "hadn't",
   "has",
@@ -119,6 +122,7 @@ const STOP_WORDS = new Set([
   "she's",
   "should",
   "shouldn't",
+  "simple",
   "so",
   "some",
   "such",
@@ -144,9 +148,11 @@ const STOP_WORDS = new Set([
   "through",
   "to",
   "too",
+  "tutorial",
   "under",
   "until",
   "up",
+  "using",
   "very",
   "was",
   "wasn't",
@@ -183,11 +189,6 @@ const STOP_WORDS = new Set([
   "yours",
   "yourself",
   "yourselves",
-  "using",
-  "guide",
-  "tutorial",
-  "build",
-  "simple",
 ])
 
 /**
@@ -208,50 +209,6 @@ export function stripMarkdown(markdown: string): string {
     .replace(/\n+/g, " ") // Newlines to spaces
     .trim()
 }
-
-const FILLER_WORDS = new Set([
-  "a",
-  "an",
-  "the",
-  "and",
-  "or",
-  "but",
-  "in",
-  "on",
-  "at",
-  "to",
-  "for",
-  "of",
-  "with",
-  "by",
-  "from",
-  "as",
-  "is",
-  "are",
-  "was",
-  "were",
-  "be",
-  "been",
-  "being",
-  "how",
-  "what",
-  "why",
-  "when",
-  "where",
-  "who",
-  "which",
-  "this",
-  "that",
-  "these",
-  "those",
-  "your",
-  "my",
-  "our",
-  "its",
-  "into",
-  "over",
-  "after",
-])
 
 /**
  * Generate a clean, keyword-dense, SEO-friendly URL slug from article title
@@ -282,7 +239,7 @@ export function generateSeoSlug(title: string): string {
   const words = text.split(/[\s-]+/).filter(Boolean)
 
   // Filter out filler/stop words if we have enough descriptive words remaining (>= 2 words)
-  const meaningfulWords = words.filter((w) => !FILLER_WORDS.has(w))
+  const meaningfulWords = words.filter((w) => !SKIP_WORDS.has(w))
   const selectedWords = meaningfulWords.length >= 2 ? meaningfulWords : words
 
   // Join with hyphen
@@ -332,14 +289,21 @@ export function autoGenerateSeoMetadata(params: {
   // 1. SEO-friendly slug
   const seoSlug = slug.trim() || generateSeoSlug(cleanTitle)
 
-  // 2. Meta Title (Ideal: 45-60 chars, adds branding if fits)
+  // 2. Meta Title (Ideal: 45-60 chars)
+  //    Add " | Fi Amanillah" only when combined result still fits ≤ 60 chars;
+  //    otherwise trim at word boundary so the result never exceeds 60.
   let metaTitle = cleanTitle
   if (cleanTitle) {
-    if (cleanTitle.length <= 44) {
-      metaTitle = `${cleanTitle} | Fi Amanillah`
+    const withBrand = `${cleanTitle} | Fi Amanillah`
+    if (withBrand.length <= 60) {
+      metaTitle = withBrand
     } else if (cleanTitle.length > 60) {
-      metaTitle = cleanTitle.slice(0, 57).trim() + "..."
+      const trimmed = cleanTitle.slice(0, 57)
+      const lastSpace = trimmed.lastIndexOf(" ")
+      metaTitle =
+        (lastSpace > 30 ? trimmed.slice(0, lastSpace) : trimmed).trim() + "..."
     }
+    // else: title alone is 45-60 chars — use as-is
   }
 
   // 3. Meta Description (Ideal: 130-155 chars, word-boundary clean trim)
@@ -349,7 +313,8 @@ export function autoGenerateSeoMetadata(params: {
     if (sourceText.length <= 155) {
       metaDescription = sourceText
     } else {
-      const truncated = sourceText.slice(0, 150)
+      // slice at 152 so that appended "..." lands at 155 chars max
+      const truncated = sourceText.slice(0, 152)
       const lastSpace = truncated.lastIndexOf(" ")
       metaDescription =
         (lastSpace > 100 ? truncated.slice(0, lastSpace) : truncated).trim() +
@@ -414,7 +379,7 @@ export function calculateClientSeoAnalysis(params: {
   const effDesc =
     metaDescription.trim() ||
     summary.trim() ||
-    stripMarkdown(content).slice(0, 150)
+    stripMarkdown(content).slice(0, 155)
   const cleanSlug =
     slug.trim() ||
     title

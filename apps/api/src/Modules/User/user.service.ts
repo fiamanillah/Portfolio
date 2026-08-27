@@ -1,6 +1,6 @@
 // src/Modules/User/user.service.ts
 import path from "path"
-import { prisma, Role, User, Prisma } from "@workspace/db"
+import { prisma, Role, User, Prisma, BlogStatus } from "@workspace/db"
 import { AppLogger } from "@workspace/logger"
 import {
   BadRequestError,
@@ -567,6 +567,216 @@ export class UserService {
       resumeUrl: user?.resumeUrl || null,
       name: user?.name || null,
       updatedAt: user?.updatedAt ? user.updatedAt.toISOString() : null,
+    }
+  }
+
+  /**
+   * 2g. GET PUBLIC AUTHOR PROFILE:
+   */
+  public async getPublicAuthorProfile(username: string) {
+    const cleanUsername = username?.trim()
+    if (!cleanUsername) {
+      throw new NotFoundError("Author profile not found.")
+    }
+
+    // Try finding user by username (case-insensitive) or id
+    const user = await this.db.user.findFirst({
+      where: {
+        OR: [
+          { username: { equals: cleanUsername, mode: "insensitive" } },
+          { id: cleanUsername },
+        ],
+      },
+    })
+
+    // Fetch published posts matching this author
+    const postConditions: Prisma.BlogPostWhereInput[] = [
+      {
+        status: BlogStatus.PUBLISHED,
+      },
+    ]
+
+    if (user) {
+      postConditions.push({
+        OR: [
+          { authorId: user.id },
+          {
+            author: {
+              username: { equals: user.username, mode: "insensitive" },
+            },
+          },
+          { authorName: { equals: user.name, mode: "insensitive" } },
+        ],
+      })
+    } else {
+      postConditions.push({
+        OR: [
+          { authorName: { equals: cleanUsername, mode: "insensitive" } },
+          {
+            authorName: {
+              contains: cleanUsername.replace(/-/g, " "),
+              mode: "insensitive",
+            },
+          },
+        ],
+      })
+    }
+
+    const posts = await this.db.blogPost.findMany({
+      where: { AND: postConditions },
+      include: {
+        category: true,
+        author: {
+          select: {
+            id: true,
+            name: true,
+            username: true,
+            avatar: true,
+            headline: true,
+            twitterUrl: true,
+            linkedinUrl: true,
+            githubUrl: true,
+          },
+        },
+      },
+      orderBy: {
+        publishedAt: "desc",
+      },
+    })
+
+    if (!user && posts.length === 0) {
+      throw new NotFoundError(`Author profile '${cleanUsername}' not found.`)
+    }
+
+    // Aggregate statistics
+    let totalViews = 0
+    let totalLikes = 0
+    let totalComments = 0
+
+    for (const p of posts) {
+      totalViews += typeof p.views === "number" ? p.views : 0
+      totalLikes += p.likesCount || 0
+      totalComments += p.commentsCount || 0
+    }
+
+    if (user) {
+      return {
+        id: user.id,
+        name: user.name,
+        username: user.username,
+        avatar: user.avatar || null,
+        headline: user.headline || "Author & Contributor",
+        bio: user.bio || null,
+        location: user.location || null,
+        website: user.website || null,
+        githubUrl: user.githubUrl || null,
+        twitterUrl: user.twitterUrl || null,
+        linkedinUrl: user.linkedinUrl || null,
+        badge: user.badge || "Author",
+        role: user.role,
+        createdAt: user.createdAt.toISOString(),
+        stats: {
+          totalPosts: posts.length,
+          totalViews,
+          totalLikes,
+          totalComments,
+        },
+        posts: posts.map((post: (typeof posts)[number]) => ({
+          id: post.id,
+          slug: post.slug,
+          title: post.title,
+          subtitle: post.subtitle,
+          summary: post.summary,
+          content: post.content,
+          category: post.category?.name || "General",
+          categoryColor: post.category?.color || "#3b82f6",
+          categorySlug: post.category?.slug || "general",
+          tags: post.tags || [],
+          publishedAt:
+            post.publishedAt?.toISOString() || post.createdAt.toISOString(),
+          date: post.publishedAt
+            ? post.publishedAt.toLocaleDateString("en-US", {
+                month: "short",
+                year: "numeric",
+              })
+            : "",
+          readTime: `${post.readTimeMinutes || 5} min read`,
+          featured: post.featured,
+          views: String(post.views || 0),
+          likesCount: post.likesCount || 0,
+          commentsCount: post.commentsCount || 0,
+          thumbnail: post.thumbnail,
+          author: {
+            id: user.id,
+            username: user.username,
+            name: user.name,
+            role: user.headline || "Author",
+            avatar: user.avatar || "/fi.png",
+            twitter: user.twitterUrl || undefined,
+            linkedin: user.linkedinUrl || undefined,
+            github: user.githubUrl || undefined,
+          },
+        })),
+      }
+    }
+
+    const firstPost = posts[0]
+    return {
+      id: cleanUsername,
+      name: firstPost?.authorName || cleanUsername,
+      username: cleanUsername,
+      avatar: firstPost?.authorAvatar || null,
+      headline: firstPost?.authorRole || "Author",
+      bio: null,
+      location: null,
+      website: null,
+      githubUrl: firstPost?.authorGithub || null,
+      twitterUrl: firstPost?.authorTwitter || null,
+      linkedinUrl: firstPost?.authorLinkedin || null,
+      badge: "Contributor",
+      role: Role.USER,
+      createdAt: new Date().toISOString(),
+      stats: {
+        totalPosts: posts.length,
+        totalViews,
+        totalLikes,
+        totalComments,
+      },
+      posts: posts.map((post: (typeof posts)[number]) => ({
+        id: post.id,
+        slug: post.slug,
+        title: post.title,
+        subtitle: post.subtitle,
+        summary: post.summary,
+        content: post.content,
+        category: post.category?.name || "General",
+        categoryColor: post.category?.color || "#3b82f6",
+        categorySlug: post.category?.slug || "general",
+        tags: post.tags || [],
+        publishedAt:
+          post.publishedAt?.toISOString() || post.createdAt.toISOString(),
+        date: post.publishedAt
+          ? post.publishedAt.toLocaleDateString("en-US", {
+              month: "short",
+              year: "numeric",
+            })
+          : "",
+        readTime: `${post.readTimeMinutes || 5} min read`,
+        featured: post.featured,
+        views: String(post.views || 0),
+        likesCount: post.likesCount || 0,
+        commentsCount: post.commentsCount || 0,
+        thumbnail: post.thumbnail,
+        author: {
+          id: post.authorId || undefined,
+          name: post.authorName || "Author",
+          role: post.authorRole || "Author",
+          avatar: post.authorAvatar || "/fi.png",
+          twitter: post.authorTwitter || undefined,
+          linkedin: post.authorLinkedin || undefined,
+          github: post.authorGithub || undefined,
+        },
+      })),
     }
   }
 

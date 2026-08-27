@@ -30,7 +30,6 @@ interface SeoSectionProps {
   setNoFollow: (val: boolean) => void
   seoAnalysis: SeoAnalysisResult | null
   onAutoGenerateSeo?: () => void
-  onAutoFillCanonical?: () => void
 }
 
 export function SeoSection({
@@ -54,7 +53,6 @@ export function SeoSection({
   setNoFollow,
   seoAnalysis,
   onAutoGenerateSeo,
-  onAutoFillCanonical,
 }: SeoSectionProps) {
   const [isDialogOpen, setIsDialogOpen] = React.useState(false)
 
@@ -63,7 +61,7 @@ export function SeoSection({
 
   return (
     <div className="space-y-3">
-      {/* Header with Live Score & Auto-Fill button */}
+      {/* Header with Live Score & Regenerate button */}
       <div className="flex items-center justify-between">
         <span className="flex items-center gap-1.5 text-xs font-bold tracking-wider text-muted-foreground uppercase">
           <Search className="h-3.5 w-3.5 text-primary" /> SEO & Directives
@@ -73,10 +71,10 @@ export function SeoSection({
             <button
               type="button"
               onClick={onAutoGenerateSeo}
-              className="flex items-center gap-1 text-[11px] font-semibold text-primary hover:underline cursor-pointer"
-              title="Auto-generate title, description, canonical link & tags"
+              className="flex cursor-pointer items-center gap-1 text-[11px] font-semibold text-primary hover:underline"
+              title="Regenerate SEO from content, overriding any manual edits"
             >
-              <Sparkles className="h-3 w-3" /> Auto-Fill
+              <Sparkles className="h-3 w-3" /> Regenerate SEO
             </button>
           )}
           {seoAnalysis && (
@@ -196,7 +194,6 @@ export function SeoSection({
         noFollow={noFollow}
         setNoFollow={setNoFollow}
         onAutoGenerateSeo={onAutoGenerateSeo}
-        onAutoFillCanonical={onAutoFillCanonical}
       />
     </div>
   )

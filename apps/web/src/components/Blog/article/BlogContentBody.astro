@@ -7,6 +7,12 @@ import {
 } from "@/components/Blog/engagement"
 import { renderMarkdown } from "@/lib/markdown"
 import type { BlogPost } from "@/data/blogPosts"
+import { HugeiconsIcon } from "@hugeicons/react"
+import {
+  NewTwitterIcon,
+  Linkedin02Icon,
+  GithubIcon,
+} from "@hugeicons/core-free-icons"
 
 interface Props {
   post: BlogPost
@@ -16,6 +22,34 @@ const { post } = Astro.props
 
 const { html: renderedMarkdownHtml, headings: tocHeadings } =
   await renderMarkdown(post.content || "")
+
+const authorUsername =
+  post.author?.username ||
+  (post.author?.name
+    ? post.author.name
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "")
+    : "admin")
+const authorProfileUrl = `/authors/${authorUsername}`
+
+const twitterUrl = post.author?.twitter
+  ? post.author.twitter.startsWith("http")
+    ? post.author.twitter
+    : `https://x.com/${post.author.twitter.replace(/^@/, "")}`
+  : "https://x.com/fiamanillah"
+
+const githubUrl = post.author?.github
+  ? post.author.github.startsWith("http")
+    ? post.author.github
+    : `https://github.com/${post.author.github.replace(/^@/, "")}`
+  : "https://github.com/fiamanillah"
+
+const linkedinUrl = post.author?.linkedin
+  ? post.author.linkedin.startsWith("http")
+    ? post.author.linkedin
+    : `https://linkedin.com/in/${post.author.linkedin.replace(/^@/, "")}`
+  : "https://linkedin.com/in/fiamanillah"
 ---
 
 <div
@@ -123,7 +157,7 @@ const { html: renderedMarkdownHtml, headings: tocHeadings } =
 
       {/* Author Bio Card — full article-column width */}
       <div
-        class="blog-animate-in relative mt-8 overflow-hidden border border-border/80 bg-background/80 p-6 backdrop-blur-md sm:p-7"
+        class="blog-animate-in relative mt-10 overflow-hidden border border-border/80 bg-card/60 p-6 backdrop-blur-md sm:p-7"
       >
         {/* Cyberpunk corner brackets */}
         <div
@@ -143,39 +177,118 @@ const { html: renderedMarkdownHtml, headings: tocHeadings } =
         >
         </div>
 
+        {/* Top Header Tag & Author Badge */}
         <div
-          class="flex flex-col items-center gap-5 sm:flex-row sm:items-start"
+          class="mb-5 flex flex-wrap items-center justify-between gap-3 border-b border-border/50 pb-3 font-mono text-xs"
         >
-          <div class="relative shrink-0">
-            <img
-              src={post.author.avatar}
-              alt={post.author.name}
-              class="h-16 w-16 rounded-full border-2 border-primary/50 object-cover shadow-md"
-            />
+          <div class="flex items-center gap-2">
+            <span class="font-bold text-primary">[ AUTHOR PROFILE ]</span>
+            <span class="text-muted-foreground/60">//</span>
+            <span class="text-muted-foreground">ENGINEERING & WRITING</span>
+          </div>
+          <a
+            href={authorProfileUrl}
+            class="group/btn inline-flex items-center gap-1.5 font-mono text-[11px] font-semibold text-primary transition-colors hover:text-primary/80"
+          >
+            <span>View All Articles</span>
             <span
-              class="absolute right-0 bottom-0 h-4 w-4 rounded-full border-2 border-background bg-emerald-500 shadow-sm"
-            ></span>
+              class="transition-transform duration-200 group-hover/btn:translate-x-1"
+              >→</span
+            >
+          </a>
+        </div>
+
+        {/* Main Body: Avatar, Bio, Details, and Actions */}
+        <div
+          class="flex flex-col gap-6 md:flex-row md:items-start md:justify-between"
+        >
+          {/* Left: Avatar + Identity + Bio */}
+          <div class="flex flex-1 flex-col gap-4 sm:flex-row sm:items-start">
+            <a
+              href={authorProfileUrl}
+              class="group/avatar relative shrink-0 focus:outline-none"
+              title={`View ${post.author.name}'s profile`}
+            >
+              <img
+                src={post.author.avatar}
+                alt={post.author.name}
+                class="h-16 w-16 rounded-full border-2 border-primary/50 object-cover shadow-md transition-transform duration-300 group-hover/avatar:scale-105 group-hover/avatar:border-primary"
+              />
+              <span
+                class="absolute right-0 bottom-0 h-4 w-4 rounded-full border-2 border-background bg-emerald-500 shadow-sm"
+                title="Author Verified & Active"></span>
+            </a>
+
+            <div class="min-w-0 flex-1 space-y-1.5 text-left">
+              <div class="flex flex-wrap items-center gap-2">
+                <a
+                  href={authorProfileUrl}
+                  class="font-mono text-base font-bold text-foreground transition-colors hover:text-primary focus:outline-none"
+                >
+                  {post.author.name}
+                </a>
+                <span
+                  class="border border-primary/30 bg-primary/10 px-1.5 py-0.5 font-mono text-[9px] font-bold text-primary uppercase"
+                >
+                  AUTHOR
+                </span>
+              </div>
+              <p class="font-mono text-xs text-muted-foreground">
+                {post.author.role}
+              </p>
+              <p
+                class="max-w-xl pt-1.5 text-xs leading-relaxed text-muted-foreground/90"
+              >
+                Software Engineer &amp; Technology Writer exploring distributed
+                systems, modern web architectures, and full-stack cloud
+                engineering.
+              </p>
+            </div>
           </div>
 
-          <div class="space-y-1 text-center sm:text-left">
-            <span
-              class="inline-block font-mono text-[10px] font-semibold tracking-wider text-primary uppercase"
+          {/* Right: Social Hub & Author Profile CTA */}
+          <div
+            class="flex shrink-0 flex-col items-start gap-3 border-t border-border/40 pt-4 sm:flex-row sm:items-center sm:justify-between md:flex-col md:items-end md:border-t-0 md:pt-0"
+          >
+            {/* Social Icons */}
+            <div class="flex items-center gap-2">
+              <a
+                href={twitterUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Follow on Twitter / X"
+                class="flex h-8 w-8 items-center justify-center border border-border/80 bg-background/80 text-muted-foreground transition-all hover:border-primary/60 hover:bg-primary/10 hover:text-primary"
+              >
+                <HugeiconsIcon icon={NewTwitterIcon} className="size-3.5" />
+              </a>
+              <a
+                href={githubUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                title="View GitHub profile"
+                class="flex h-8 w-8 items-center justify-center border border-border/80 bg-background/80 text-muted-foreground transition-all hover:border-primary/60 hover:bg-primary/10 hover:text-primary"
+              >
+                <HugeiconsIcon icon={GithubIcon} className="size-3.5" />
+              </a>
+              <a
+                href={linkedinUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Connect on LinkedIn"
+                class="flex h-8 w-8 items-center justify-center border border-border/80 bg-background/80 text-muted-foreground transition-all hover:border-primary/60 hover:bg-primary/10 hover:text-primary"
+              >
+                <HugeiconsIcon icon={Linkedin02Icon} className="size-3.5" />
+              </a>
+            </div>
+
+            {/* Profile CTA Button */}
+            <a
+              href={authorProfileUrl}
+              class="inline-flex h-8 items-center gap-1.5 border border-primary/40 bg-primary/10 px-3 font-mono text-[11px] font-semibold text-primary shadow-xs transition-all hover:border-primary hover:bg-primary hover:text-primary-foreground"
             >
-              [ AUTHOR // TECH_WRITER & ENGINEER ]
-            </span>
-            <h4
-              class="font-mono text-base leading-tight font-bold text-foreground"
-            >
-              {post.author.name}
-            </h4>
-            <p class="font-mono text-xs leading-none text-muted-foreground">
-              {post.author.role}
-            </p>
-            <p class="pt-2 text-xs leading-relaxed text-muted-foreground/90">
-              Software Engineer &amp; Technology Writer exploring AI
-              breakthroughs, semiconductor and hardware markets, distributed
-              systems, and modern software engineering.
-            </p>
+              <span>Explore Profile</span>
+              <span>→</span>
+            </a>
           </div>
         </div>
       </div>

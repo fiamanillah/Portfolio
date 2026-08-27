@@ -15,46 +15,73 @@ import {
 
 export async function getStaticPaths() {
   const posts = await getAllBlogPostsAsync()
-  return posts.map((post) => ({
-    params: { slug: post.slug },
-    props: { post },
-  }))
+  const fullDetails = await Promise.all(
+    posts.map(async (post) => {
+      const details = await getBlogPostBySlugAsync(post.slug)
+      return {
+        params: { slug: post.slug },
+        props: {
+          post: details?.post || post,
+          prevPost: details?.prevPost || null,
+          nextPost: details?.nextPost || null,
+          relatedPosts: details?.relatedPosts || [],
+        },
+      }
+    })
+  )
+  return fullDetails
 }
 
 interface Props {
   post?: BlogPost
+  prevPost?: BlogPost | null
+  nextPost?: BlogPost | null
+  relatedPosts?: BlogPost[]
 }
 
-const { post: propPost } = Astro.props
-const slug = Astro.params.slug || propPost?.slug
+const { slug: rawSlug } = Astro.params
+const propPost = Astro.props.post
+const slug = rawSlug || propPost?.slug
 
-if (!slug) {
+let currentPost: BlogPost | undefined = propPost
+let prevPost = Astro.props.prevPost || null
+let nextPost = Astro.props.nextPost || null
+let relatedPosts = Astro.props.relatedPosts || []
+
+if (!slug && !currentPost) {
   return Astro.redirect("/404")
 }
 
-// Fetch complete post details, adjacent navigation, and related articles from DB / API
-const postData = await getBlogPostBySlugAsync(slug)
+// On-demand fetch fallback for dynamic rendering or when props are not pre-populated
+if ((!currentPost || !currentPost.content) && slug) {
+  const postData = await getBlogPostBySlugAsync(slug)
 
-// If post has moved to a new URL, perform a 301 Permanent Redirect
-if (postData?.redirected && postData.destination) {
-  return Astro.redirect(
-    postData.destination,
-    (postData.statusCode as 301 | 302 | 307 | 308) || 301
-  )
+  // If post has moved to a new URL, perform a 301 Permanent Redirect
+  if (postData?.redirected && postData.destination) {
+    return Astro.redirect(
+      postData.destination,
+      (postData.statusCode as 301 | 302 | 307 | 308) || 301
+    )
+  }
+
+  if (postData?.post) {
+    currentPost = postData.post
+    prevPost = postData.prevPost || prevPost
+    nextPost = postData.nextPost || nextPost
+    if (postData.relatedPosts && postData.relatedPosts.length > 0) {
+      relatedPosts = postData.relatedPosts
+    }
+  }
 }
-
-const currentPost = postData?.post || propPost
 
 if (!currentPost) {
   return Astro.redirect("/404")
 }
 
-const prevPost = postData?.prevPost || null
-const nextPost = postData?.nextPost || null
-const relatedPosts =
-  postData?.relatedPosts && postData.relatedPosts.length > 0
-    ? postData.relatedPosts.slice(0, 3)
-    : (await getAllBlogPostsAsync()).filter((p) => p.slug !== slug).slice(0, 3)
+if (relatedPosts.length === 0 && slug) {
+  const all = await getAllBlogPostsAsync()
+  relatedPosts = all.filter((p) => p.slug !== slug).slice(0, 3)
+}
 ---
 
 <MySiteLayout>

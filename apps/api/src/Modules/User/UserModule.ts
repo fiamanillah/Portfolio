@@ -58,6 +58,12 @@ export class UserModule extends BaseModule {
       controller.getPublicResume.bind(controller)
     )
 
+    // GET /users/v1/public/authors/:username - Get public author profile & published posts
+    this.router.get(
+      "/public/authors/:username",
+      controller.getPublicAuthorProfile.bind(controller)
+    )
+
     // ── Self Profile & Security Endpoints ─────────────────────────────────────
 
     // GET /users/v1/profile

@@ -63,7 +63,6 @@ import {
   autoGenerateSeoMetadata,
   calculateClientSeoAnalysis,
   generateSeoSlug,
-  generateSeoCanonicalUrl,
 } from "@/lib/seo-utils"
 
 interface PostEditorFormProps {
@@ -154,25 +153,18 @@ export function PostEditorForm({
   const [noFollow, setNoFollow] = React.useState(
     Boolean(initialPost?.seo?.noFollow)
   )
-  const [ogTitle, setOgTitle] = React.useState(initialPost?.seo?.ogTitle || "")
-  const [ogDescription, setOgDescription] = React.useState(
-    initialPost?.seo?.ogDescription || ""
-  )
   const [ogImage, setOgImage] = React.useState(initialPost?.seo?.ogImage || "")
   const [twitterCard, setTwitterCard] = React.useState<
     "summary" | "summary_large_image"
   >(initialPost?.seo?.twitterCard || "summary_large_image")
-  const [twitterTitle, setTwitterTitle] = React.useState(
-    initialPost?.seo?.twitterTitle || ""
-  )
-  const [twitterDescription, setTwitterDescription] = React.useState(
-    initialPost?.seo?.twitterDescription || ""
-  )
   const [twitterImage, setTwitterImage] = React.useState(
     initialPost?.seo?.twitterImage || ""
   )
   const [seoAnalysis, setSeoAnalysis] =
     React.useState<SeoAnalysisResult | null>(null)
+
+  // Tracks SEO fields the user has manually edited — auto-gen skips these
+  const seoManualFields = React.useRef(new Set<string>())
 
   // 4. Publishing State
   const [status, setStatus] = React.useState<BlogStatus>(
@@ -389,20 +381,42 @@ export function PostEditorForm({
     return `${mins} MIN READ`
   }, [wordCount])
 
-  // Real-time client-side SEO analysis & health score
+  // Single debounced effect: auto-fills SEO from content + computes live score.
+  // Skips fields the user has manually edited (tracked in seoManualFields ref).
   React.useEffect(() => {
-    const analysis = calculateClientSeoAnalysis({
-      title,
-      summary,
-      content,
-      slug,
-      metaTitle,
-      metaDescription,
-      canonicalUrl,
-      coverImage: thumbnail,
-      tags: selectedTags,
-    })
-    setSeoAnalysis(analysis)
+    const timer = setTimeout(() => {
+      if (title || summary || content) {
+        const gen = autoGenerateSeoMetadata({ title, summary, content, slug })
+
+        // Auto-fill each field only if user hasn't manually touched it
+        if (!seoManualFields.current.has("slug") && !slug) setSlug(gen.slug)
+        if (!seoManualFields.current.has("metaTitle"))
+          setMetaTitle(gen.metaTitle)
+        if (!seoManualFields.current.has("metaDescription"))
+          setMetaDescription(gen.metaDescription)
+        if (!seoManualFields.current.has("canonicalUrl"))
+          setCanonicalUrl(gen.canonicalUrl)
+        if (!seoManualFields.current.has("articleType"))
+          setArticleType(gen.articleType)
+      }
+
+      // Always recompute the live SEO score
+      setSeoAnalysis(
+        calculateClientSeoAnalysis({
+          title,
+          summary,
+          content,
+          slug,
+          metaTitle,
+          metaDescription,
+          canonicalUrl,
+          coverImage: thumbnail,
+          tags: selectedTags,
+        })
+      )
+    }, 350)
+
+    return () => clearTimeout(timer)
   }, [
     title,
     summary,
@@ -415,41 +429,24 @@ export function PostEditorForm({
     selectedTags,
   ])
 
-  // One-click Auto-Generate SEO Metadata & Directives
+  // One-click "Regenerate SEO" — clears all dirty flags and forces a full re-derive
   const handleAutoGenerateSeo = React.useCallback(() => {
     if (!title.trim() && !summary.trim() && !content.trim()) {
       toast.error("Please enter a title, summary, or content first")
       return
     }
 
-    const generated = autoGenerateSeoMetadata({
-      title,
-      summary,
-      content,
-      slug,
-    })
+    seoManualFields.current.clear()
 
-    if (!slug) {
-      setSlug(generated.slug)
-    }
+    const generated = autoGenerateSeoMetadata({ title, summary, content, slug })
+    if (!slug) setSlug(generated.slug)
     setMetaTitle(generated.metaTitle)
     setMetaDescription(generated.metaDescription)
     setCanonicalUrl(generated.canonicalUrl)
     setArticleType(generated.articleType)
 
-    toast.success("✨ SEO slug, meta & canonical link auto-generated!")
+    toast.success("✨ SEO metadata regenerated from content")
   }, [title, summary, content, slug])
-
-  // One-click Auto-Fill Canonical Link
-  const handleAutoFillCanonical = React.useCallback(() => {
-    const canonical = generateSeoCanonicalUrl(slug || title)
-    if (!canonical) {
-      toast.error("Enter a title or slug first to generate canonical URL")
-      return
-    }
-    setCanonicalUrl(canonical)
-    toast.success("SEO canonical URL auto-generated")
-  }, [slug, title])
 
   // Draft Post Object for Live Website Simulation
   const previewPostData: BlogPostDTO = React.useMemo(() => {
@@ -503,12 +500,12 @@ export function PostEditorForm({
         articleType,
         noIndex,
         noFollow,
-        ogTitle: ogTitle || undefined,
-        ogDescription: ogDescription || undefined,
+        ogTitle: metaTitle || title || undefined,
+        ogDescription: metaDescription || summary || undefined,
         ogImage: ogImage || undefined,
         twitterCard,
-        twitterTitle: twitterTitle || undefined,
-        twitterDescription: twitterDescription || undefined,
+        twitterTitle: metaTitle || title || undefined,
+        twitterDescription: metaDescription || summary || undefined,
         twitterImage: twitterImage || undefined,
       },
       createdAt: initialPost?.createdAt || new Date().toISOString(),
@@ -546,83 +543,10 @@ export function PostEditorForm({
     articleType,
     noIndex,
     noFollow,
-    ogTitle,
-    ogDescription,
     ogImage,
     twitterCard,
-    twitterTitle,
-    twitterDescription,
     twitterImage,
     wordCount,
-  ])
-
-  // Real-time SEO Diagnostic Preview Generation (Debounced)
-  React.useEffect(() => {
-    if (!title.trim() && !summary.trim()) return
-
-    const timer = setTimeout(() => {
-      BlogApi.generateSeoPreview({
-        title: title || "Technical Guide",
-        slug: slug || "article-slug",
-        summary: summary || metaDescription,
-        content,
-        thumbnail: thumbnail || ogImage,
-        category: categoryName || undefined,
-        tags: selectedTags,
-        author: {
-          name: authorName,
-          role: authorRole,
-          avatar: authorAvatar,
-        },
-        seo: {
-          metaTitle: metaTitle || undefined,
-          metaDescription: metaDescription || undefined,
-          canonicalUrl: cleanUrl(canonicalUrl),
-          articleType,
-          noIndex,
-          noFollow,
-          ogTitle: ogTitle || undefined,
-          ogDescription: ogDescription || undefined,
-          ogImage: ogImage || undefined,
-          twitterCard,
-          twitterTitle: twitterTitle || undefined,
-          twitterDescription: twitterDescription || undefined,
-          twitterImage: twitterImage || undefined,
-        },
-      })
-        .then((res) => {
-          if (res.success && res.data) {
-            setSeoAnalysis(res.data)
-          }
-        })
-        .catch(() => {})
-    }, 400)
-
-    return () => clearTimeout(timer)
-  }, [
-    title,
-    slug,
-    summary,
-    content,
-    thumbnail,
-    categoryName,
-    selectedTags,
-    authorName,
-    authorRole,
-    authorAvatar,
-    metaTitle,
-    metaDescription,
-    canonicalUrl,
-    articleType,
-    noIndex,
-    noFollow,
-    ogTitle,
-    ogDescription,
-    ogImage,
-    twitterCard,
-    twitterTitle,
-    twitterDescription,
-    twitterImage,
   ])
 
   // Form Submission
@@ -726,12 +650,14 @@ export function PostEditorForm({
           articleType,
           noIndex,
           noFollow,
-          ogTitle: ogTitle.trim() || undefined,
-          ogDescription: ogDescription.trim() || undefined,
+          // OG and Twitter fields derive from meta equivalents — no separate state needed
+          ogTitle: metaTitle.trim() || title.trim() || undefined,
+          ogDescription: metaDescription.trim() || summary.trim() || undefined,
           ogImage: ogImage.trim() || thumbnail.trim() || undefined,
           twitterCard,
-          twitterTitle: twitterTitle.trim() || undefined,
-          twitterDescription: twitterDescription.trim() || undefined,
+          twitterTitle: metaTitle.trim() || title.trim() || undefined,
+          twitterDescription:
+            metaDescription.trim() || summary.trim() || undefined,
           twitterImage: twitterImage.trim() || thumbnail.trim() || undefined,
         },
       }
@@ -1183,6 +1109,7 @@ export function PostEditorForm({
                 slug={slug}
                 metaTitle={metaTitle}
                 setMetaTitle={(val) => {
+                  seoManualFields.current.add("metaTitle")
                   setMetaTitle(val)
                   clearFieldError("seo.metaTitle")
                 }}
@@ -1191,6 +1118,7 @@ export function PostEditorForm({
                 }
                 metaDescription={metaDescription}
                 setMetaDescription={(val) => {
+                  seoManualFields.current.add("metaDescription")
                   setMetaDescription(val)
                   clearFieldError("seo.metaDescription")
                 }}
@@ -1200,6 +1128,7 @@ export function PostEditorForm({
                 }
                 canonicalUrl={canonicalUrl}
                 setCanonicalUrl={(val) => {
+                  seoManualFields.current.add("canonicalUrl")
                   setCanonicalUrl(val)
                   clearFieldError("seo.canonicalUrl")
                 }}
@@ -1207,14 +1136,16 @@ export function PostEditorForm({
                   fieldErrors["seo.canonicalUrl"] || fieldErrors.canonicalUrl
                 }
                 articleType={articleType}
-                setArticleType={setArticleType}
+                setArticleType={(val) => {
+                  seoManualFields.current.add("articleType")
+                  setArticleType(val)
+                }}
                 noIndex={noIndex}
                 setNoIndex={setNoIndex}
                 noFollow={noFollow}
                 setNoFollow={setNoFollow}
                 seoAnalysis={seoAnalysis}
                 onAutoGenerateSeo={handleAutoGenerateSeo}
-                onAutoFillCanonical={handleAutoFillCanonical}
               />
             </div>
 

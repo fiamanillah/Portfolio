@@ -1,0 +1,482 @@
+---
+import MySiteLayout from "@/layouts/MySiteLayout.astro"
+import BlogCard from "@/components/Blog/cards/BlogCard.astro"
+import NewsletterSection from "@/components/Newsletter/NewsletterSection.astro"
+import SectionDivider from "@/components/SectionDivider.astro"
+import BlogSEO from "@/components/SEO/BlogSEO.astro"
+import { Icon } from "astro-icon/components"
+import {
+  getAllBlogPostsAsync,
+  formatViewsCount,
+  type BlogPost,
+  type BlogAuthor,
+} from "@/data/blogPosts"
+import { BlogApi } from "@/lib/api/blogApi"
+
+export async function getStaticPaths() {
+  const posts = await getAllBlogPostsAsync()
+  const authorMap = new Map<string, { author: BlogAuthor; posts: BlogPost[] }>()
+
+  // Always ensure primary author "fiamanillah" is registered
+  authorMap.set("fiamanillah", {
+    author: {
+      name: "Fi Amanillah",
+      username: "fiamanillah",
+      role: "Full-Stack Architect & Software Engineer",
+      avatar: "/fi.png",
+      twitter: "https://twitter.com/fiamanillah",
+      github: "https://github.com/fiamanillah",
+      linkedin: "https://linkedin.com/in/fiamanillah",
+    },
+    posts: [],
+  })
+
+  // Group posts by author username or generated slug
+  for (const post of posts) {
+    const rawUsername =
+      post.author?.username ||
+      (post.author?.name
+        ? post.author.name
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/^-+|-+$/g, "")
+        : "fiamanillah")
+
+    if (!authorMap.has(rawUsername)) {
+      authorMap.set(rawUsername, {
+        author: {
+          ...post.author,
+          username: rawUsername,
+        },
+        posts: [],
+      })
+    }
+
+    const entry = authorMap.get(rawUsername)!
+    if (!entry.posts.some((p) => p.id === post.id)) {
+      entry.posts.push(post)
+    }
+  }
+
+  // Populate default author posts if applicable
+  for (const post of posts) {
+    if (
+      !post.author?.username ||
+      post.author.username.toLowerCase() === "fiamanillah" ||
+      post.author.name?.toLowerCase().includes("fi amanillah")
+    ) {
+      const entry = authorMap.get("fiamanillah")
+      if (entry && !entry.posts.some((p) => p.id === post.id)) {
+        entry.posts.push(post)
+      }
+    }
+  }
+
+  return Array.from(authorMap.entries()).map(([username, data]) => ({
+    params: { username },
+    props: {
+      author: data.author,
+      posts: data.posts,
+    },
+  }))
+}
+
+interface Props {
+  author?: BlogAuthor
+  posts?: BlogPost[]
+}
+
+const { username } = Astro.params
+const propAuthor = Astro.props.author
+const propPosts = Astro.props.posts || []
+
+// Fetch live author profile telemetry if available
+let author: BlogAuthor | null = propAuthor || null
+let authorPosts: BlogPost[] = propPosts
+let authorProfile = null
+
+if (username) {
+  try {
+    authorProfile = await BlogApi.fetchPublicAuthorProfile(username)
+    if (authorProfile) {
+      author = {
+        id: authorProfile.id,
+        username: authorProfile.username,
+        name: authorProfile.name,
+        role: authorProfile.headline || authorProfile.role || "Author",
+        avatar: authorProfile.avatar || author?.avatar || "/fi.png",
+        twitter: authorProfile.twitterUrl || author?.twitter,
+        linkedin: authorProfile.linkedinUrl || author?.linkedin,
+        github: authorProfile.githubUrl || author?.github,
+      }
+      if (authorProfile.posts && authorProfile.posts.length > 0) {
+        authorPosts = authorProfile.posts
+      }
+    }
+  } catch {
+    // Use fallback props
+  }
+}
+
+if (!author) {
+  if (username === "fiamanillah") {
+    author = {
+      name: "Fi Amanillah",
+      username: "fiamanillah",
+      role: "Full-Stack Architect & Software Engineer",
+      avatar: "/fi.png",
+      twitter: "https://twitter.com/fiamanillah",
+      github: "https://github.com/fiamanillah",
+      linkedin: "https://linkedin.com/in/fiamanillah",
+    }
+  } else {
+    return Astro.redirect("/404")
+  }
+}
+
+const displayName = author.name || "Author"
+const displayRole = author.role || "Technical Writer & Software Engineer"
+const displayAvatar = author.avatar || "/fi.png"
+const displayUsername = author.username || username || "author"
+
+const totalPostsCount = authorProfile?.stats?.totalPosts ?? authorPosts.length
+const totalViewsCount =
+  authorProfile?.stats?.totalViews ??
+  authorPosts.reduce(
+    (acc, p) =>
+      acc +
+      (typeof p.views === "number"
+        ? p.views
+        : parseInt(p.views || "0", 10) || 0),
+    0
+  )
+const totalLikesCount =
+  authorProfile?.stats?.totalLikes ??
+  authorPosts.reduce((acc, p) => acc + (p.likesCount || 0), 0)
+const totalTopicsCount = new Set(authorPosts.flatMap((p) => p.tags || [])).size
+---
+
+<MySiteLayout>
+  <!-- SEO Profile Metadata -->
+  <Fragment slot="head">
+    <BlogSEO
+      title={`${displayName} (@${displayUsername}) - Author Profile & Publications`}
+      description={`Explore articles, technical deep dives, and system architecture guides authored by ${displayName}. ${displayRole}.`}
+      type="profile"
+      url={`/authors/${displayUsername}`}
+      image={displayAvatar}
+    />
+  </Fragment>
+
+  <main class="w-full pb-16">
+    <!-- Hero / Author Persona Section -->
+    <section class="relative z-10 mx-auto pt-8 pb-12">
+      <div class="container mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        <!-- Breadcrumbs Navigation -->
+        <nav
+          class="mb-8 flex flex-wrap items-center gap-2 font-mono text-xs text-muted-foreground"
+          aria-label="Breadcrumbs"
+        >
+          <a href="/" class="transition-colors hover:text-foreground">Home</a>
+          <span>/</span>
+          <a href="/blog" class="transition-colors hover:text-foreground"
+            >Blog</a
+          >
+          <span>/</span>
+          <span class="text-muted-foreground">Authors</span>
+          <span>/</span>
+          <span class="font-bold text-primary">@{displayUsername}</span>
+        </nav>
+
+        <!-- Author Profile Header Card -->
+        <div
+          class="relative overflow-hidden border border-border/80 bg-card/60 p-6 shadow-lg backdrop-blur-md sm:p-8 md:p-10"
+        >
+          <!-- Corner brackets & accent lines -->
+          <div
+            class="pointer-events-none absolute -top-1 -left-1 h-4 w-4 border-t-2 border-l-2 border-primary"
+          >
+          </div>
+          <div
+            class="pointer-events-none absolute -top-1 -right-1 h-4 w-4 border-t-2 border-r-2 border-primary"
+          >
+          </div>
+          <div
+            class="pointer-events-none absolute -bottom-1 -left-1 h-4 w-4 border-b-2 border-l-2 border-primary"
+          >
+          </div>
+          <div
+            class="pointer-events-none absolute -right-1 -bottom-1 h-4 w-4 border-r-2 border-b-2 border-primary"
+          >
+          </div>
+
+          <!-- Subtle Top Spec Bar -->
+          <div
+            class="mb-6 flex flex-wrap items-center justify-between gap-2 border-b border-border/50 pb-3 font-mono text-[11px] text-muted-foreground"
+          >
+            <div class="flex items-center gap-2">
+              <span
+                class="inline-block h-2 w-2 animate-pulse rounded-full bg-emerald-500"
+              ></span>
+              <span class="tracking-wider uppercase"
+                >AUTHOR SPEC // RECORD_ID: {
+                  author.id?.slice(0, 8) || displayUsername
+                }</span
+              >
+            </div>
+            <div class="flex items-center gap-2">
+              <span
+                class="rounded border border-primary/30 bg-primary/10 px-2 py-0.5 font-bold text-primary uppercase"
+              >
+                {authorProfile?.badge || "VERIFIED AUTHOR"}
+              </span>
+            </div>
+          </div>
+
+          <!-- Main Author Body: Avatar + Bio + Socials -->
+          <div
+            class="flex flex-col items-start gap-6 md:flex-row md:items-center md:gap-8"
+          >
+            <!-- Avatar -->
+            <div class="relative shrink-0">
+              <img
+                src={displayAvatar}
+                alt={displayName}
+                class="h-24 w-24 rounded-full border-2 border-primary/50 object-cover shadow-md sm:h-28 sm:w-28 md:h-32 md:w-32"
+              />
+              <span
+                class="absolute right-1 bottom-1 h-4 w-4 rounded-full border-2 border-background bg-emerald-500 shadow"
+                title="Active Contributor"></span>
+            </div>
+
+            <!-- Profile Info -->
+            <div class="min-w-0 flex-1">
+              <div class="flex flex-wrap items-center gap-3">
+                <h1
+                  class="font-mono text-2xl font-bold tracking-tight text-foreground sm:text-3xl md:text-4xl"
+                >
+                  {displayName}
+                </h1>
+                <span class="font-mono text-sm text-primary">
+                  @{displayUsername}
+                </span>
+              </div>
+
+              <p
+                class="mt-1 font-mono text-sm text-muted-foreground sm:text-base"
+              >
+                {displayRole}
+              </p>
+
+              {
+                authorProfile?.bio && (
+                  <p class="mt-3 max-w-2xl text-xs leading-relaxed text-foreground/80 sm:text-sm">
+                    {authorProfile.bio}
+                  </p>
+                )
+              }
+
+              <!-- Social Links -->
+              <div class="mt-5 flex flex-wrap items-center gap-3">
+                {
+                  author.github && (
+                    <a
+                      href={
+                        author.github.startsWith("http")
+                          ? author.github
+                          : `https://github.com/${author.github}`
+                      }
+                      target="_blank"
+                      rel="noreferrer"
+                      class="inline-flex items-center gap-1.5 rounded border border-border bg-muted/40 px-3 py-1 font-mono text-xs text-foreground transition-colors hover:border-primary hover:text-primary"
+                    >
+                      <Icon name="mdi:github" class="size-3.5" />
+                      <span>GitHub</span>
+                    </a>
+                  )
+                }
+                {
+                  author.twitter && (
+                    <a
+                      href={
+                        author.twitter.startsWith("http")
+                          ? author.twitter
+                          : `https://twitter.com/${author.twitter}`
+                      }
+                      target="_blank"
+                      rel="noreferrer"
+                      class="inline-flex items-center gap-1.5 rounded border border-border bg-muted/40 px-3 py-1 font-mono text-xs text-foreground transition-colors hover:border-primary hover:text-primary"
+                    >
+                      <Icon name="mdi:twitter" class="size-3.5" />
+                      <span>Twitter / X</span>
+                    </a>
+                  )
+                }
+                {
+                  author.linkedin && (
+                    <a
+                      href={
+                        author.linkedin.startsWith("http")
+                          ? author.linkedin
+                          : `https://linkedin.com/in/${author.linkedin}`
+                      }
+                      target="_blank"
+                      rel="noreferrer"
+                      class="inline-flex items-center gap-1.5 rounded border border-border bg-muted/40 px-3 py-1 font-mono text-xs text-foreground transition-colors hover:border-primary hover:text-primary"
+                    >
+                      <Icon name="mdi:linkedin" class="size-3.5" />
+                      <span>LinkedIn</span>
+                    </a>
+                  )
+                }
+                {
+                  authorProfile?.website && (
+                    <a
+                      href={authorProfile.website}
+                      target="_blank"
+                      rel="noreferrer"
+                      class="inline-flex items-center gap-1.5 rounded border border-border bg-muted/40 px-3 py-1 font-mono text-xs text-foreground transition-colors hover:border-primary hover:text-primary"
+                    >
+                      <Icon name="mdi:web" class="size-3.5" />
+                      <span>Website</span>
+                    </a>
+                  )
+                }
+                {
+                  authorProfile?.location && (
+                    <div class="inline-flex items-center gap-1 font-mono text-xs text-muted-foreground">
+                      <Icon name="mdi:map-marker-outline" class="size-3.5" />
+                      <span>{authorProfile.location}</span>
+                    </div>
+                  )
+                }
+              </div>
+            </div>
+          </div>
+
+          <!-- Telemetry Stats Cards -->
+          <div
+            class="mt-8 grid grid-cols-2 gap-3 border-t border-border/50 pt-6 sm:grid-cols-4"
+          >
+            <div
+              class="rounded border border-border/60 bg-muted/20 p-3 text-center"
+            >
+              <span
+                class="block font-mono text-xl font-bold text-foreground sm:text-2xl"
+              >
+                {totalPostsCount}
+              </span>
+              <span
+                class="block font-mono text-[10px] text-muted-foreground uppercase sm:text-xs"
+              >
+                Articles Published
+              </span>
+            </div>
+            <div
+              class="rounded border border-border/60 bg-muted/20 p-3 text-center"
+            >
+              <span
+                class="block font-mono text-xl font-bold text-foreground sm:text-2xl"
+              >
+                {formatViewsCount(totalViewsCount)}
+              </span>
+              <span
+                class="block font-mono text-[10px] text-muted-foreground uppercase sm:text-xs"
+              >
+                Total Reads
+              </span>
+            </div>
+            <div
+              class="rounded border border-border/60 bg-muted/20 p-3 text-center"
+            >
+              <span
+                class="block font-mono text-xl font-bold text-foreground sm:text-2xl"
+              >
+                {totalLikesCount}
+              </span>
+              <span
+                class="block font-mono text-[10px] text-muted-foreground uppercase sm:text-xs"
+              >
+                Reactions & Likes
+              </span>
+            </div>
+            <div
+              class="rounded border border-border/60 bg-muted/20 p-3 text-center"
+            >
+              <span
+                class="block font-mono text-xl font-bold text-foreground sm:text-2xl"
+              >
+                {totalTopicsCount}
+              </span>
+              <span
+                class="block font-mono text-[10px] text-muted-foreground uppercase sm:text-xs"
+              >
+                Topics Covered
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <SectionDivider />
+
+    <!-- Published Articles Grid Section -->
+    <section class="relative z-10 mx-auto pt-6 pb-12">
+      <div class="container mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        <!-- Section Header -->
+        <div
+          class="mb-8 flex flex-col gap-3 border-b border-border/60 pb-4 sm:flex-row sm:items-end sm:justify-between"
+        >
+          <div>
+            <p class="font-mono text-xs tracking-wider text-primary uppercase">
+              // PUBLICATIONS
+            </p>
+            <h2 class="font-mono text-xl font-bold text-foreground sm:text-2xl">
+              Articles by <span class="text-primary">{displayName}</span>
+            </h2>
+          </div>
+          <div class="font-mono text-xs text-muted-foreground">
+            Showing {authorPosts.length}
+            {authorPosts.length === 1 ? "publication" : "publications"}
+          </div>
+        </div>
+
+        {
+          authorPosts.length > 0 ? (
+            <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {authorPosts.map((post) => (
+                <BlogCard post={post} />
+              ))}
+            </div>
+          ) : (
+            <div class="flex flex-col items-center justify-center rounded-lg border border-dashed border-border/80 bg-card/30 p-12 text-center">
+              <Icon
+                name="mdi:file-document-outline"
+                class="mb-3 size-10 text-muted-foreground/60"
+              />
+              <h3 class="font-mono text-base font-semibold text-foreground">
+                No publications found
+              </h3>
+              <p class="mt-1 max-w-sm font-mono text-xs text-muted-foreground">
+                {displayName} hasn't published any articles yet. Check back soon
+                for new insights.
+              </p>
+              <a
+                href="/blog"
+                class="mt-4 inline-flex items-center gap-1.5 rounded border border-primary bg-primary/10 px-4 py-2 font-mono text-xs font-bold text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
+              >
+                <span>Browse All Articles</span>
+              </a>
+            </div>
+          )
+        }
+      </div>
+    </section>
+
+    <SectionDivider />
+
+    <!-- Newsletter Subscription Section -->
+    <NewsletterSection />
+  </main>
+</MySiteLayout>
