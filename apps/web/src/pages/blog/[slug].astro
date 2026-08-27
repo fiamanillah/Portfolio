@@ -278,7 +278,8 @@ if (relatedPosts.length === 0 && slug) {
       BlogApi.fetchPostBySlug(slug, false)
         .then((result) => {
           if (result?.post && result.post.views) {
-            const rawViews = parseInt(String(result.post.views).replace(/[^0-9]/g, "")) || 0
+            const rawViews =
+              parseInt(String(result.post.views).replace(/[^0-9]/g, "")) || 0
             if (rawViews > 0) {
               updateViewSpans(rawViews)
             }
