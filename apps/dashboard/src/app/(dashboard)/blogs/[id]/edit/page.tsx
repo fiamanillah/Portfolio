@@ -26,14 +26,29 @@ export default function EditBlogPostPage() {
   const [post, setPost] = React.useState<BlogPostDTO | null>(null)
   const [categories, setCategories] = React.useState<BlogCategoryDTO[]>([])
   const [tags, setTags] = React.useState<BlogTagDTO[]>([])
-  const [isLoading, setIsLoading] = React.useState(true)
+  const [isInitialLoading, setIsInitialLoading] = React.useState(true)
   const [error, setError] = React.useState<string | null>(null)
   const [isTaxonomyOpen, setIsTaxonomyOpen] = React.useState(false)
+  const [createdCategory, setCreatedCategory] =
+    React.useState<BlogCategoryDTO | null>(null)
 
-  const loadData = React.useCallback(() => {
+  const refreshTaxonomies = React.useCallback(async () => {
+    try {
+      const [catsRes, tagsRes] = await Promise.all([
+        BlogApi.getCategories(),
+        BlogApi.getTags(),
+      ])
+      if (catsRes.success && catsRes.data) setCategories(catsRes.data)
+      if (tagsRes.success && tagsRes.data) setTags(tagsRes.data)
+    } catch {
+      // Quiet background refresh failure
+    }
+  }, [])
+
+  const loadInitialData = React.useCallback(() => {
     if (!id) return
 
-    setIsLoading(true)
+    setIsInitialLoading(true)
     Promise.all([
       BlogApi.getById(id),
       BlogApi.getCategories(),
@@ -52,14 +67,14 @@ export default function EditBlogPostPage() {
       .catch((err) => {
         setError(err?.message || "Failed to load blog post data")
       })
-      .finally(() => setIsLoading(false))
+      .finally(() => setIsInitialLoading(false))
   }, [id])
 
   React.useEffect(() => {
-    loadData()
-  }, [loadData])
+    loadInitialData()
+  }, [loadInitialData])
 
-  if (isLoading) {
+  if (isInitialLoading) {
     return (
       <div className="flex min-h-[60vh] flex-col items-center justify-center gap-3 text-muted-foreground">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -97,6 +112,7 @@ export default function EditBlogPostPage() {
         initialPost={post}
         categories={categories}
         tags={tags}
+        latestCreatedCategory={createdCategory}
         isEdit={true}
         onSuccessRedirect="/blogs"
         onOpenTaxonomyManager={() => setIsTaxonomyOpen(true)}
@@ -105,7 +121,10 @@ export default function EditBlogPostPage() {
       <CategoryTagDialog
         open={isTaxonomyOpen}
         onOpenChange={setIsTaxonomyOpen}
-        onUpdated={loadData}
+        onUpdated={refreshTaxonomies}
+        onCategoryCreated={(newCat) => {
+          setCreatedCategory(newCat)
+        }}
       />
     </div>
   )

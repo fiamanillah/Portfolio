@@ -1,7 +1,10 @@
+"use client"
+
 import * as React from "react"
-import { Search } from "lucide-react"
+import { Search, Sparkles } from "lucide-react"
 import { Input } from "@workspace/ui/components/input"
 import { Textarea } from "@workspace/ui/components/textarea"
+import { Button } from "@workspace/ui/components/button"
 import { FieldError } from "@workspace/ui/components/field"
 
 interface MetaTagsSectionProps {
@@ -13,6 +16,7 @@ interface MetaTagsSectionProps {
   metaDescription: string
   setMetaDescription: (val: string) => void
   metaDescriptionError?: string
+  onAutoGenerateMeta?: () => void
 }
 
 export function MetaTagsSection({
@@ -24,18 +28,40 @@ export function MetaTagsSection({
   metaDescription,
   setMetaDescription,
   metaDescriptionError,
+  onAutoGenerateMeta,
 }: MetaTagsSectionProps) {
-  const effectiveTitle = metaTitle || title
+  const effectiveTitle = metaTitle || (title ? `${title} | Fi Amanillah` : "")
   const effectiveDesc = metaDescription || summary
 
   return (
     <div className="space-y-4">
+      {/* Quick Auto-Enhance Banner */}
+      {onAutoGenerateMeta && (
+        <div className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-primary/20 bg-primary/5 p-2.5 px-3 text-xs">
+          <div className="flex items-center gap-2">
+            <Sparkles className="h-4 w-4 text-primary shrink-0" />
+            <span className="text-[11px] text-muted-foreground">
+              Smart auto-fill computes optimal 50-60 char titles & 140-160 char descriptions.
+            </span>
+          </div>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={onAutoGenerateMeta}
+            className="h-7 text-xs border-primary/30 bg-primary/10 hover:bg-primary/20 text-primary font-semibold"
+          >
+            <Sparkles className="h-3 w-3 mr-1" />
+            Auto-Generate Meta
+          </Button>
+        </div>
+      )}
+
       {/* Meta Title */}
       <div className="space-y-1.5">
         <div className="flex items-center justify-between">
           <label className="flex items-center gap-1.5 text-xs font-bold tracking-wider text-muted-foreground uppercase">
-            <Search className="h-3.5 w-3.5 text-primary" /> SEO Meta Title (SERP
-            Heading)
+            <Search className="h-3.5 w-3.5 text-primary" /> SEO Meta Title (SERP Heading)
           </label>
           <span
             className={`font-mono text-[11px] ${

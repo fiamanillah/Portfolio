@@ -1,6 +1,8 @@
 import { BlogApi } from "@/lib/api/blogApi"
 
 export interface BlogAuthor {
+  id?: string
+  username?: string
   name: string
   role: string
   avatar: string
@@ -134,7 +136,7 @@ export async function getAllBlogPostsAsync(): Promise<BlogPost[]> {
   try {
     const res = await BlogApi.fetchPublicPosts({ limit: 100 })
     let allPosts = res.posts || []
-    let totalPages = res.totalPages || 1
+    const totalPages = res.totalPages || 1
     let currentPage = 1
 
     while (currentPage < totalPages && currentPage < 10) {

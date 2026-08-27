@@ -13,6 +13,7 @@ import {
   SelectValue,
 } from "@workspace/ui/components/select"
 import type { BlogCategoryDTO, BlogTagDTO } from "@workspace/shared"
+import { BlogApi } from "@/lib/api"
 
 interface CategoryTagSectionProps {
   categoryId: string
@@ -59,6 +60,13 @@ export function CategoryTagSection({
   onOpenTaxonomyManager,
 }: CategoryTagSectionProps) {
   const [tagInput, setTagInput] = React.useState("")
+  const [localTags, setLocalTags] = React.useState<BlogTagDTO[]>(
+    availableTags || []
+  )
+
+  React.useEffect(() => {
+    setLocalTags(availableTags || [])
+  }, [availableTags])
 
   const handleCategorySelect = (val: string) => {
     setCategoryId(val)
@@ -70,26 +78,94 @@ export function CategoryTagSection({
     }
   }
 
-  const handleAddTag = (tagToAdd: string) => {
-    const clean = tagToAdd
-      .trim()
-      .toLowerCase()
-      .replace(/[^a-z0-9-]/g, "")
-    if (!clean) return
-    if (!selectedTags.includes(clean)) {
-      setSelectedTags([...selectedTags, clean])
-    }
-    setTagInput("")
-  }
+  const handleAddTag = React.useCallback(
+    (inputVal: string) => {
+      if (!inputVal) return
+      const rawTags = inputVal.split(/[,;\n]+/)
+      const tagsToAdd: string[] = []
+
+      for (const raw of rawTags) {
+        const clean = raw
+          .trim()
+          .toLowerCase()
+          .replace(/^#+/, "")
+          .replace(/[^a-z0-9-_]/g, "")
+        if (
+          clean &&
+          !selectedTags.includes(clean) &&
+          !tagsToAdd.includes(clean)
+        ) {
+          tagsToAdd.push(clean)
+        }
+      }
+
+      if (tagsToAdd.length === 0) {
+        setTagInput("")
+        return
+      }
+
+      setSelectedTags([...selectedTags, ...tagsToAdd])
+      setTagInput("")
+
+      // Persist to DB in background
+      tagsToAdd.forEach((t) => {
+        BlogApi.createTag({ name: t })
+          .then((res) => {
+            if (res.success && res.data) {
+              const newTag = res.data
+              setLocalTags((prev) => {
+                if (
+                  prev.some(
+                    (existing) =>
+                      existing.id === newTag.id || existing.slug === newTag.slug
+                  )
+                ) {
+                  return prev
+                }
+                return [...prev, newTag]
+              })
+            }
+          })
+          .catch(() => {})
+      })
+    },
+    [selectedTags, setSelectedTags]
+  )
 
   const handleRemoveTag = (tagToRemove: string) => {
     setSelectedTags(selectedTags.filter((t) => t !== tagToRemove))
+  }
+
+  const handleTagInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value
+    if (val.includes(",") || val.includes(";")) {
+      const parts = val.split(/[,;]+/)
+      const toAdd = parts.slice(0, -1).join(",")
+      const remaining = parts[parts.length - 1] || ""
+      if (toAdd.trim()) {
+        handleAddTag(toAdd)
+      }
+      setTagInput(remaining)
+    } else {
+      setTagInput(val)
+    }
   }
 
   const handleTagInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" || e.key === ",") {
       e.preventDefault()
       handleAddTag(tagInput)
+    }
+  }
+
+  const handleTagInputPaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    const pasted = e.clipboardData.getData("text")
+    if (
+      pasted &&
+      (pasted.includes(",") || pasted.includes(";") || pasted.includes("\n"))
+    ) {
+      e.preventDefault()
+      handleAddTag(pasted)
     }
   }
 
@@ -147,10 +223,11 @@ export function CategoryTagSection({
         </label>
         <div className="flex items-center gap-1.5">
           <Input
-            placeholder="Type tag and press Enter (e.g. redis, rabbitmq)..."
+            placeholder="Add tags (comma-separated, e.g. redis, rabbitmq)..."
             value={tagInput}
-            onChange={(e) => setTagInput(e.target.value)}
+            onChange={handleTagInputChange}
             onKeyDown={handleTagInputKeyDown}
+            onPaste={handleTagInputPaste}
             className="h-9 border-border/90 bg-background font-mono text-xs shadow-xs hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary/20"
           />
           <Button
@@ -192,12 +269,12 @@ export function CategoryTagSection({
         </div>
 
         {/* Suggested Database Tags */}
-        {availableTags.length > 0 && (
+        {localTags.length > 0 && (
           <div className="flex flex-wrap items-center gap-1 pt-1">
             <span className="font-mono text-[10px] text-muted-foreground">
               Suggested:
             </span>
-            {availableTags.slice(0, 8).map((t) => (
+            {localTags.slice(0, 8).map((t) => (
               <button
                 key={t.id}
                 type="button"

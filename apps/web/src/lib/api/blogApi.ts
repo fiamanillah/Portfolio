@@ -52,6 +52,30 @@ export interface SingleBlogPostResponse {
   statusCode?: number
 }
 
+export interface PublicAuthorProfile {
+  id: string
+  name: string
+  username: string
+  avatar: string | null
+  headline: string | null
+  bio: string | null
+  location: string | null
+  website: string | null
+  githubUrl: string | null
+  twitterUrl: string | null
+  linkedinUrl: string | null
+  badge: string | null
+  role: string
+  createdAt: string
+  stats: {
+    totalPosts: number
+    totalViews: number
+    totalLikes: number
+    totalComments: number
+  }
+  posts: BlogPost[]
+}
+
 export function mapApiPostToBlogPost(dto: {
   id?: string
   slug?: string
@@ -83,7 +107,10 @@ export function mapApiPostToBlogPost(dto: {
   pinned?: boolean
   thumbnail?: string
   keyTakeaways?: string[]
+  authorId?: string
   author?: {
+    id?: string
+    username?: string
     name?: string
     role?: string
     avatar?: string
@@ -104,6 +131,8 @@ export function mapApiPostToBlogPost(dto: {
   }
 }): BlogPost {
   const author: BlogAuthor = {
+    id: dto.author?.id || dto.authorId,
+    username: dto.author?.username,
     name: dto.author?.name || dto.authorName || "Fi Amanillah",
     role:
       dto.author?.role || dto.authorRole || "Software Engineer & Tech Writer",
@@ -572,6 +601,59 @@ export const BlogApi = {
       }
     } catch (err) {
       console.error(`Failed to react to post '${slug}':`, err)
+    }
+    return null
+  },
+
+  /**
+   * Fetch public author profile, engagement telemetry, and their published posts
+   */
+  async fetchPublicAuthorProfile(
+    username: string
+  ): Promise<PublicAuthorProfile | null> {
+    try {
+      const res = await fetch(
+        `${API_BASE_URL}/users/v1/public/authors/${encodeURIComponent(username)}`,
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      )
+
+      if (res.ok) {
+        const body = await res.json()
+        if (body.success && body.data) {
+          const raw = body.data
+          const posts: BlogPost[] = Array.isArray(raw.posts)
+            ? raw.posts.map(mapApiPostToBlogPost)
+            : []
+
+          return {
+            id: raw.id,
+            name: raw.name,
+            username: raw.username,
+            avatar: raw.avatar || null,
+            headline: raw.headline || null,
+            bio: raw.bio || null,
+            location: raw.location || null,
+            website: raw.website || null,
+            githubUrl: raw.githubUrl || null,
+            twitterUrl: raw.twitterUrl || null,
+            linkedinUrl: raw.linkedinUrl || null,
+            badge: raw.badge || null,
+            role: raw.role || "USER",
+            createdAt: raw.createdAt,
+            stats: raw.stats || {
+              totalPosts: posts.length,
+              totalViews: 0,
+              totalLikes: 0,
+              totalComments: 0,
+            },
+            posts,
+          }
+        }
+      }
+    } catch (err) {
+      console.error(`Failed to fetch public author profile '${username}':`, err)
     }
     return null
   },

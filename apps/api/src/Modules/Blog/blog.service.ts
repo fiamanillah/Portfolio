@@ -1,5 +1,12 @@
 // src/Modules/Blog/blog.service.ts
-import { prisma, Prisma, BlogStatus, BlogPost, BlogCategory, Role } from "@workspace/db"
+import {
+  prisma,
+  Prisma,
+  BlogStatus,
+  BlogPost,
+  BlogCategory,
+  Role,
+} from "@workspace/db"
 import { AppLogger } from "@workspace/logger"
 import {
   NotFoundError,
@@ -44,6 +51,7 @@ type BlogPostWithRelations = BlogPost & {
   } | null
   author?: {
     id: string
+    username?: string | null
     name: string
     avatar?: string | null
     headline?: string | null
@@ -241,14 +249,28 @@ export class BlogService {
       author: post.author
         ? {
             id: post.author.id,
-            name: post.author.name,
-            role: post.author.headline || "",
-            avatar: post.author.avatar || "",
-            twitter: post.author.twitterUrl || "",
-            linkedin: post.author.linkedinUrl || "",
-            github: post.author.githubUrl || "",
+            username: post.author.username || undefined,
+            name: post.authorName || post.author.name || "Fi Amanillah",
+            role:
+              post.authorRole || post.author.headline || "Full Stack Developer",
+            avatar: post.authorAvatar || post.author.avatar || undefined,
+            twitter: post.authorTwitter || post.author.twitterUrl || undefined,
+            linkedin:
+              post.authorLinkedin || post.author.linkedinUrl || undefined,
+            github: post.authorGithub || post.author.githubUrl || undefined,
           }
-        : null,
+        : post.authorName
+          ? {
+              id: post.authorId || undefined,
+              username: undefined,
+              name: post.authorName,
+              role: post.authorRole || "Full Stack Developer",
+              avatar: post.authorAvatar || undefined,
+              twitter: post.authorTwitter || undefined,
+              linkedin: post.authorLinkedin || undefined,
+              github: post.authorGithub || undefined,
+            }
+          : null,
       seo: {
         metaTitle: post.metaTitle,
         metaDescription: post.metaDescription,
@@ -257,7 +279,8 @@ export class BlogService {
         ogDescription: post.ogDescription,
         ogImage: post.ogImage,
         ogType: (post.ogType as "article" | "website") || undefined,
-        twitterCard: (post.twitterCard as "summary" | "summary_large_image") || undefined,
+        twitterCard:
+          (post.twitterCard as "summary" | "summary_large_image") || undefined,
         twitterTitle: post.twitterTitle,
         twitterDescription: post.twitterDescription,
         twitterImage: post.twitterImage,
@@ -265,7 +288,8 @@ export class BlogService {
         articleType: (post.articleType as BlogArticleType) || undefined,
         noIndex: post.noIndex,
         noFollow: post.noFollow,
-        structuredData: (post.structuredData as Record<string, unknown>) || null,
+        structuredData:
+          (post.structuredData as Record<string, unknown>) || null,
       },
       createdAt: post.createdAt.toISOString(),
       updatedAt: post.updatedAt.toISOString(),
@@ -309,6 +333,7 @@ export class BlogService {
       author: post.author
         ? {
             id: post.author.id,
+            username: post.author.username || undefined,
             name: post.authorName || post.author.name,
             avatar: post.authorAvatar || post.author.avatar,
           }
@@ -499,7 +524,13 @@ export class BlogService {
             select: { id: true, slug: true, name: true, color: true },
           },
           author: {
-            select: { id: true, name: true, avatar: true, headline: true },
+            select: {
+              id: true,
+              username: true,
+              name: true,
+              avatar: true,
+              headline: true,
+            },
           },
         },
       }),
@@ -533,6 +564,7 @@ export class BlogService {
         author: {
           select: {
             id: true,
+            username: true,
             name: true,
             avatar: true,
             headline: true,
@@ -615,10 +647,10 @@ export class BlogService {
         keyTakeaways: data.keyTakeaways || [],
         tags: data.tags || [],
         categoryId: resolvedCategoryId,
-        authorId: user?.id || null,
+        authorId: data.author?.id || data.authorId || user?.id || null,
         authorName: data.author?.name || user?.name || "Fi Amanillah",
         authorRole: data.author?.role || "Full Stack Developer",
-        authorAvatar: data.author?.avatar || user?.avatar || "/fi.png",
+        authorAvatar: data.author?.avatar || null,
         authorTwitter: data.author?.twitter || null,
         authorLinkedin: data.author?.linkedin || null,
         authorGithub: data.author?.github || null,
@@ -646,6 +678,7 @@ export class BlogService {
         author: {
           select: {
             id: true,
+            username: true,
             name: true,
             avatar: true,
             headline: true,
@@ -784,6 +817,11 @@ export class BlogService {
         : {}),
       ...(data.tags !== undefined ? { tags: data.tags } : {}),
       ...(categoryIdToSet !== undefined ? { categoryId: categoryIdToSet } : {}),
+      ...(data.author?.id !== undefined
+        ? { authorId: data.author.id || null }
+        : data.authorId !== undefined
+          ? { authorId: data.authorId || null }
+          : {}),
       ...(data.author?.name !== undefined
         ? { authorName: data.author.name }
         : {}),
@@ -836,7 +874,10 @@ export class BlogService {
         ? { noFollow: data.seo.noFollow }
         : {}),
       ...(data.seo?.structuredData !== undefined
-        ? { structuredData: data.seo.structuredData as unknown as Prisma.InputJsonValue }
+        ? {
+            structuredData: data.seo
+              .structuredData as unknown as Prisma.InputJsonValue,
+          }
         : {}),
     }
 
@@ -848,6 +889,7 @@ export class BlogService {
         author: {
           select: {
             id: true,
+            username: true,
             name: true,
             avatar: true,
             headline: true,
@@ -1049,7 +1091,10 @@ export class BlogService {
     this.logger.info(
       `Bulk status update to ${status} for ${result.count} posts`
     )
-    this.triggerSitemapAutoUpdate(`${result.count} posts`, `BULK_STATUS_${status}`)
+    this.triggerSitemapAutoUpdate(
+      `${result.count} posts`,
+      `BULK_STATUS_${status}`
+    )
     return { count: result.count }
   }
 
@@ -1688,6 +1733,7 @@ export class BlogService {
           author: {
             select: {
               id: true,
+              username: true,
               name: true,
               avatar: true,
               headline: true,
@@ -1736,7 +1782,13 @@ export class BlogService {
           select: { id: true, slug: true, name: true, color: true },
         },
         author: {
-          select: { id: true, name: true, avatar: true, headline: true },
+          select: {
+            id: true,
+            username: true,
+            name: true,
+            avatar: true,
+            headline: true,
+          },
         },
       },
     })
@@ -1759,6 +1811,7 @@ export class BlogService {
         author: {
           select: {
             id: true,
+            username: true,
             name: true,
             avatar: true,
             headline: true,
@@ -1940,7 +1993,13 @@ export class BlogService {
    * Get public categories with active published counts
    */
   public async getPublicCategories(): Promise<
-    Array<{ id?: string; name: string; slug: string; color?: string | null; count: number }>
+    Array<{
+      id?: string
+      name: string
+      slug: string
+      color?: string | null
+      count: number
+    }>
   > {
     const now = new Date()
     const categories = await prisma.blogCategory.findMany({
@@ -1985,7 +2044,13 @@ export class BlogService {
       })
 
     return [
-      { id: "all", name: "All", slug: "all", color: "#3b82f6", count: totalPublished },
+      {
+        id: "all",
+        name: "All",
+        slug: "all",
+        color: "#3b82f6",
+        count: totalPublished,
+      },
       ...sortedCategories.map(({ id, name, slug, color, count }) => ({
         id,
         name,
@@ -2105,8 +2170,7 @@ export class BlogService {
 
     const baseLikes = Math.max(post.likesCount || 0, reactionCounts.like)
     const totalLikes = baseLikes + emojiReactionsSum
-    const totalReactionsCount =
-      reactionCounts.like + emojiReactionsSum
+    const totalReactionsCount = reactionCounts.like + emojiReactionsSum
 
     // Determine current user/guest active reactions
     const userReactions = await prisma.blogReaction.findMany({
@@ -2395,13 +2459,24 @@ export class BlogService {
         postsToImport = [
           {
             slug: "building-realtime-bidding-engine-socketio-redis",
-            title: "Architecting a Sub-50ms Real-Time Bidding & Dispatch Engine",
-            subtitle: "Distributed WebSockets, Redis Pub/Sub, and Event Streams",
-            summary: "A deep dive into engineering low-latency bidding architectures using Bun, Socket.IO, and Redis Streams with strict concurrency controls.",
-            content: "# Architecting a Sub-50ms Real-Time Bidding Engine\n\nReal-time bidding platforms demand microsecond precision and absolute consistency across distributed nodes...\n\n```typescript\nconst stream = redis.xread('BLOCK', 0, 'STREAMS', 'bids:stream', '$')\n```",
-            thumbnail: "https://assets.fi.amanillah.com/general/2026/08/bidding-architecture.png",
+            title:
+              "Architecting a Sub-50ms Real-Time Bidding & Dispatch Engine",
+            subtitle:
+              "Distributed WebSockets, Redis Pub/Sub, and Event Streams",
+            summary:
+              "A deep dive into engineering low-latency bidding architectures using Bun, Socket.IO, and Redis Streams with strict concurrency controls.",
+            content:
+              "# Architecting a Sub-50ms Real-Time Bidding Engine\n\nReal-time bidding platforms demand microsecond precision and absolute consistency across distributed nodes...\n\n```typescript\nconst stream = redis.xread('BLOCK', 0, 'STREAMS', 'bids:stream', '$')\n```",
+            thumbnail:
+              "https://assets.fi.amanillah.com/general/2026/08/bidding-architecture.png",
             category: "Architecture",
-            tags: ["Redis", "WebSockets", "Bun", "Distributed Systems", "PostgreSQL"],
+            tags: [
+              "Redis",
+              "WebSockets",
+              "Bun",
+              "Distributed Systems",
+              "PostgreSQL",
+            ],
             readTime: "7 MIN READ",
             featured: true,
             date: "JAN 2026",
@@ -2409,14 +2484,15 @@ export class BlogService {
             keyTakeaways: [
               "Sub-50ms broadcast latency achieved using Redis Streams and Socket.IO adapter",
               "Optimistic locking guarantees zero double-assignments across competing workers",
-              "Bun runtime cut baseline memory usage by 45% compared to Node.js"
-            ]
-          }
+              "Bun runtime cut baseline memory usage by 45% compared to Node.js",
+            ],
+          },
         ]
       }
 
       for (const post of postsToImport) {
-        const categoryId = categoryMap.get(post.category?.toLowerCase() || "") || null
+        const categoryId =
+          categoryMap.get(post.category?.toLowerCase() || "") || null
         const wordCount = post.content
           ? post.content.split(/\s+/).filter(Boolean).length
           : 0
@@ -2453,7 +2529,9 @@ export class BlogService {
             wordCount,
             date: post.date || "JAN 2026",
             publishedAt,
-            modifiedAt: post.modifiedAt ? new Date(post.modifiedAt) : publishedAt,
+            modifiedAt: post.modifiedAt
+              ? new Date(post.modifiedAt)
+              : publishedAt,
             views: post.views
               ? (parseInt(String(post.views).replace(/[^0-9]/g, "")) || 0) *
                 (String(post.views).includes("k") ? 1000 : 1)
@@ -2466,9 +2544,7 @@ export class BlogService {
             authorId: admin?.id || null,
             authorName: post.author?.name || admin?.name || "Fi Amanillah",
             authorRole:
-              post.author?.role ||
-              admin?.headline ||
-              "Full Stack Developer",
+              post.author?.role || admin?.headline || "Full Stack Developer",
             authorAvatar: post.author?.avatar || admin?.avatar || "/fi.png",
             authorTwitter: post.author?.twitter || admin?.twitterUrl,
             authorLinkedin: post.author?.linkedin || admin?.linkedinUrl,

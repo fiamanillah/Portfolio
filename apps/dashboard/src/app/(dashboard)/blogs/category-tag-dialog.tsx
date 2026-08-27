@@ -36,6 +36,8 @@ interface CategoryTagDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   onUpdated?: () => void
+  onCategoryCreated?: (category: BlogCategoryDTO) => void
+  onTagCreated?: (tag: BlogTagDTO) => void
 }
 
 const COLOR_PRESETS = [
@@ -69,6 +71,8 @@ export function CategoryTagDialog({
   open,
   onOpenChange,
   onUpdated,
+  onCategoryCreated,
+  onTagCreated,
 }: CategoryTagDialogProps) {
   const [categories, setCategories] = React.useState<BlogCategoryDTO[]>([])
   const [tags, setTags] = React.useState<BlogTagDTO[]>([])
@@ -165,6 +169,9 @@ export function CategoryTagDialog({
           handleCancelEditCategory()
           loadData()
           onUpdated?.()
+          if (res.data) {
+            onCategoryCreated?.(res.data)
+          }
         } else {
           showApiError(res, "Failed to create category")
         }
@@ -237,6 +244,9 @@ export function CategoryTagDialog({
           setTagDesc("")
           loadData()
           onUpdated?.()
+          if (res.data) {
+            onTagCreated?.(res.data)
+          }
         } else {
           showApiError(res, "Failed to create tag")
         }

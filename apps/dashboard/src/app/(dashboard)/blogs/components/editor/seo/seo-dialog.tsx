@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Search, Globe, Share2, Sparkles, Shield, Code2 } from "lucide-react"
+import { Search, Globe, Sparkles, Shield, Wand2 } from "lucide-react"
 import {
   Dialog,
   DialogContent,
@@ -9,6 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@workspace/ui/components/dialog"
+import { Button } from "@workspace/ui/components/button"
 import {
   Tabs,
   TabsContent,
@@ -46,6 +47,8 @@ interface SeoDialogProps {
   setNoIndex: (val: boolean) => void
   noFollow: boolean
   setNoFollow: (val: boolean) => void
+  onAutoGenerateSeo?: () => void
+  onAutoFillCanonical?: () => void
 }
 
 export function SeoDialog({
@@ -70,36 +73,51 @@ export function SeoDialog({
   setNoIndex,
   noFollow,
   setNoFollow,
+  onAutoGenerateSeo,
+  onAutoFillCanonical,
 }: SeoDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[90vh] w-[95vw] max-w-4xl overflow-y-auto border border-border/80 bg-card p-6 shadow-2xl sm:min-w-[700px] md:min-w-[800px]">
         <DialogHeader>
-          <div className="flex items-center justify-between pr-6">
+          <div className="flex flex-wrap items-center justify-between gap-3 pr-6">
             <div className="space-y-0.5">
               <DialogTitle className="flex items-center gap-2 text-lg font-bold">
                 <Search className="h-5 w-5 text-primary" />
                 SEO & Social Media Diagnostics Studio
               </DialogTitle>
               <DialogDescription className="text-xs text-muted-foreground">
-                Inspect Google SERP snippet simulation, OpenGraph cards, schema
-                structured graphs, and automated ranking health checks.
+                Inspect Google SERP snippets, OpenGraph cards, robots directives, and live ranking health checks.
               </DialogDescription>
             </div>
-            {seoAnalysis && (
-              <Badge
-                variant="outline"
-                className={`px-2.5 py-1 font-mono text-xs ${
-                  seoAnalysis.score >= 85
-                    ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-500"
-                    : seoAnalysis.score >= 70
-                      ? "border-amber-500/40 bg-amber-500/10 text-amber-500"
-                      : "border-rose-500/40 bg-rose-500/10 text-rose-500"
-                }`}
-              >
-                {seoAnalysis.score}/100 • {seoAnalysis.rating}
-              </Badge>
-            )}
+            <div className="flex items-center gap-2">
+              {onAutoGenerateSeo && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={onAutoGenerateSeo}
+                  className="h-8 text-xs border-primary/40 bg-primary/10 hover:bg-primary/20 text-primary font-semibold"
+                >
+                  <Wand2 className="h-3.5 w-3.5 mr-1" />
+                  Auto-Fill All SEO
+                </Button>
+              )}
+              {seoAnalysis && (
+                <Badge
+                  variant="outline"
+                  className={`px-2.5 py-1 font-mono text-xs ${
+                    seoAnalysis.score >= 85
+                      ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-500"
+                      : seoAnalysis.score >= 70
+                        ? "border-amber-500/40 bg-amber-500/10 text-amber-500"
+                        : "border-rose-500/40 bg-rose-500/10 text-rose-500"
+                  }`}
+                >
+                  {seoAnalysis.score}/100 • {seoAnalysis.rating}
+                </Badge>
+              )}
+            </div>
           </div>
         </DialogHeader>
 
@@ -160,6 +178,7 @@ export function SeoDialog({
                 metaDescription={metaDescription}
                 setMetaDescription={setMetaDescription}
                 metaDescriptionError={metaDescriptionError}
+                onAutoGenerateMeta={onAutoGenerateSeo}
               />
 
               <CrawlerDirectivesSection
@@ -173,6 +192,7 @@ export function SeoDialog({
                 setNoIndex={setNoIndex}
                 noFollow={noFollow}
                 setNoFollow={setNoFollow}
+                onAutoFillCanonical={onAutoFillCanonical}
               />
             </div>
           </TabsContent>

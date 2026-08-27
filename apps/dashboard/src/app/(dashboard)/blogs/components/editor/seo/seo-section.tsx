@@ -29,6 +29,8 @@ interface SeoSectionProps {
   noFollow: boolean
   setNoFollow: (val: boolean) => void
   seoAnalysis: SeoAnalysisResult | null
+  onAutoGenerateSeo?: () => void
+  onAutoFillCanonical?: () => void
 }
 
 export function SeoSection({
@@ -51,6 +53,8 @@ export function SeoSection({
   noFollow,
   setNoFollow,
   seoAnalysis,
+  onAutoGenerateSeo,
+  onAutoFillCanonical,
 }: SeoSectionProps) {
   const [isDialogOpen, setIsDialogOpen] = React.useState(false)
 
@@ -59,25 +63,37 @@ export function SeoSection({
 
   return (
     <div className="space-y-3">
-      {/* Header with Live Score */}
+      {/* Header with Live Score & Auto-Fill button */}
       <div className="flex items-center justify-between">
         <span className="flex items-center gap-1.5 text-xs font-bold tracking-wider text-muted-foreground uppercase">
-          <Search className="h-3.5 w-3.5 text-primary" /> SEO & Social Media
+          <Search className="h-3.5 w-3.5 text-primary" /> SEO & Directives
         </span>
-        {seoAnalysis && (
-          <Badge
-            variant="outline"
-            className={`px-1.5 py-0 font-mono text-[10px] ${
-              seoAnalysis.score >= 85
-                ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-500"
-                : seoAnalysis.score >= 70
-                  ? "border-amber-500/40 bg-amber-500/10 text-amber-500"
-                  : "border-rose-500/40 bg-rose-500/10 text-rose-500"
-            }`}
-          >
-            {seoAnalysis.score}/100 • {seoAnalysis.rating}
-          </Badge>
-        )}
+        <div className="flex items-center gap-2">
+          {onAutoGenerateSeo && (
+            <button
+              type="button"
+              onClick={onAutoGenerateSeo}
+              className="flex items-center gap-1 text-[11px] font-semibold text-primary hover:underline cursor-pointer"
+              title="Auto-generate title, description, canonical link & tags"
+            >
+              <Sparkles className="h-3 w-3" /> Auto-Fill
+            </button>
+          )}
+          {seoAnalysis && (
+            <Badge
+              variant="outline"
+              className={`px-1.5 py-0 font-mono text-[10px] ${
+                seoAnalysis.score >= 85
+                  ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-500"
+                  : seoAnalysis.score >= 70
+                    ? "border-amber-500/40 bg-amber-500/10 text-amber-500"
+                    : "border-rose-500/40 bg-rose-500/10 text-rose-500"
+              }`}
+            >
+              {seoAnalysis.score}/100 • {seoAnalysis.rating}
+            </Badge>
+          )}
+        </div>
       </div>
 
       {/* Compact Meta Title Input */}
@@ -152,7 +168,7 @@ export function SeoSection({
         className="h-8 w-full gap-1.5 bg-muted/30 text-xs text-foreground hover:bg-muted/60"
       >
         <Sparkles className="h-3.5 w-3.5 text-primary" />
-        <span>SERP & Social Previews Modal</span>
+        <span>SERP, Directives & Social Studio</span>
         <ExternalLink className="ml-auto h-3 w-3 text-muted-foreground" />
       </Button>
 
@@ -179,6 +195,8 @@ export function SeoSection({
         setNoIndex={setNoIndex}
         noFollow={noFollow}
         setNoFollow={setNoFollow}
+        onAutoGenerateSeo={onAutoGenerateSeo}
+        onAutoFillCanonical={onAutoFillCanonical}
       />
     </div>
   )

@@ -59,11 +59,18 @@ import { CoverImageSection } from "./editor/media/cover-image-section"
 import { AuthorSection } from "./editor/author/author-section"
 import { SeoSection } from "./editor/seo/seo-section"
 import { FrontendArticlePreview } from "./preview/frontend-article-preview"
+import {
+  autoGenerateSeoMetadata,
+  calculateClientSeoAnalysis,
+  generateSeoSlug,
+  generateSeoCanonicalUrl,
+} from "@/lib/seo-utils"
 
 interface PostEditorFormProps {
   initialPost?: BlogPostDTO | null
   categories: BlogCategoryDTO[]
   tags: BlogTagDTO[]
+  latestCreatedCategory?: BlogCategoryDTO | null
   isEdit?: boolean
   onSuccessRedirect?: string
   onOpenTaxonomyManager?: () => void
@@ -72,7 +79,8 @@ interface PostEditorFormProps {
 export function PostEditorForm({
   initialPost,
   categories,
-  tags: availableTags,
+  tags: availableTagsProp,
+  latestCreatedCategory,
   isEdit = false,
   onSuccessRedirect = "/blogs",
   onOpenTaxonomyManager,
@@ -107,11 +115,25 @@ export function PostEditorForm({
     initialPost?.tags || []
   )
   const [tagInput, setTagInput] = React.useState("")
+  const [localAvailableTags, setLocalAvailableTags] = React.useState<
+    BlogTagDTO[]
+  >(availableTagsProp || [])
 
-  // 2. Media & Hero
-  const [thumbnail, setThumbnail] = React.useState(
-    initialPost?.thumbnail || "/assets/images/mickanic-cover.png"
-  )
+  // Sync available tags with prop updates
+  React.useEffect(() => {
+    setLocalAvailableTags(availableTagsProp || [])
+  }, [availableTagsProp])
+
+  // Auto-select newly created category if added via taxonomy dialog
+  React.useEffect(() => {
+    if (latestCreatedCategory) {
+      setCategoryId(latestCreatedCategory.id)
+      setCategoryName(latestCreatedCategory.name)
+    }
+  }, [latestCreatedCategory])
+
+  // 2. Media & Hero (default empty, prompt user to upload/select)
+  const [thumbnail, setThumbnail] = React.useState(initialPost?.thumbnail || "")
 
   // 3. SEO State
   const [metaTitle, setMetaTitle] = React.useState(
@@ -174,6 +196,12 @@ export function PostEditorForm({
   )
 
   // 5. Author State (defaulted from user profile)
+  const [authorId, setAuthorId] = React.useState<string | null>(
+    initialPost?.authorId || initialPost?.author?.id || user?.id || null
+  )
+  const [authorUsername, setAuthorUsername] = React.useState<string | null>(
+    initialPost?.author?.username || user?.username || null
+  )
   const [authorName, setAuthorName] = React.useState(
     initialPost?.author?.name || user?.name || "Fi Amanillah"
   )
@@ -181,10 +209,10 @@ export function PostEditorForm({
     initialPost?.author?.role || user?.headline || "Full Stack Developer"
   )
   const [authorAvatar, setAuthorAvatar] = React.useState(
-    initialPost?.author?.avatar || user?.avatar || "/fi.png"
+    initialPost?.author?.avatar || user?.avatar || ""
   )
   const [authorTwitter, setAuthorTwitter] = React.useState(
-    initialPost?.author?.twitter || user?.twitterUrl || "@fiamanillah"
+    initialPost?.author?.twitter || user?.twitterUrl || ""
   )
   const [authorLinkedin, setAuthorLinkedin] = React.useState(
     initialPost?.author?.linkedin || user?.linkedinUrl || ""
@@ -198,15 +226,12 @@ export function PostEditorForm({
     {}
   )
 
-  // Auto-generate slug from title if not manually edited
+  // Auto-generate SEO-friendly slug from title if not manually edited
   const handleTitleChange = (newTitle: string) => {
     setTitle(newTitle)
     clearFieldError("title")
     if (!hasManuallyEditedSlug && !isEdit) {
-      const generated = newTitle
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/(^-|-$)+/g, "")
+      const generated = generateSeoSlug(newTitle)
       setSlug(generated)
     }
   }
@@ -216,13 +241,10 @@ export function PostEditorForm({
       toast.error("Please enter a title first")
       return
     }
-    const generated = title
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/(^-|-$)+/g, "")
+    const generated = generateSeoSlug(title)
     setSlug(generated)
     setHasManuallyEditedSlug(true)
-    toast.success("Slug auto-generated from title")
+    toast.success("SEO-friendly slug auto-generated")
   }
 
   const clearFieldError = (fieldKey: string) => {
@@ -236,21 +258,97 @@ export function PostEditorForm({
     })
   }
 
-  // Tag Handlers
-  const handleAddTag = (tagToAdd: string) => {
-    const clean = tagToAdd
-      .trim()
-      .toLowerCase()
-      .replace(/[^a-z0-9-]/g, "")
-    if (!clean) return
-    if (!selectedTags.includes(clean)) {
-      setSelectedTags([...selectedTags, clean])
-    }
-    setTagInput("")
-  }
+  // Tag Handlers with Comma-Separated Support & DB Persistence
+  const handleAddTag = React.useCallback(
+    (inputVal: string) => {
+      if (!inputVal) return
+      // Support comma, semicolon, newline separated multiple tags
+      const rawTags = inputVal.split(/[,;\n]+/)
+      const tagsToAdd: string[] = []
+
+      for (const raw of rawTags) {
+        const clean = raw
+          .trim()
+          .toLowerCase()
+          .replace(/^#+/, "")
+          .replace(/[^a-z0-9-_]/g, "")
+        if (
+          clean &&
+          !selectedTags.includes(clean) &&
+          !tagsToAdd.includes(clean)
+        ) {
+          tagsToAdd.push(clean)
+        }
+      }
+
+      if (tagsToAdd.length === 0) {
+        setTagInput("")
+        return
+      }
+
+      setSelectedTags((prev) => [...prev, ...tagsToAdd])
+      setTagInput("")
+
+      // Persist each new tag to the database in background
+      tagsToAdd.forEach((t) => {
+        BlogApi.createTag({ name: t })
+          .then((res) => {
+            if (res.success && res.data) {
+              const newTag = res.data
+              setLocalAvailableTags((prev) => {
+                if (
+                  prev.some(
+                    (existing) =>
+                      existing.id === newTag.id || existing.slug === newTag.slug
+                  )
+                ) {
+                  return prev
+                }
+                return [...prev, newTag]
+              })
+            }
+          })
+          .catch(() => {})
+      })
+    },
+    [selectedTags]
+  )
 
   const handleRemoveTag = (tagToRemove: string) => {
     setSelectedTags(selectedTags.filter((t) => t !== tagToRemove))
+  }
+
+  const handleTagInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value
+    if (val.includes(",") || val.includes(";")) {
+      const parts = val.split(/[,;]+/)
+      const toAdd = parts.slice(0, -1).join(",")
+      const remaining = parts[parts.length - 1] || ""
+      if (toAdd.trim()) {
+        handleAddTag(toAdd)
+      }
+      setTagInput(remaining)
+    } else {
+      setTagInput(val)
+    }
+  }
+
+  const handleTagInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" || e.key === ",") {
+      e.preventDefault()
+      handleAddTag(tagInput)
+    }
+  }
+
+  const handleTagInputPaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    const pasted = e.clipboardData.getData("text")
+    if (
+      pasted &&
+      (pasted.includes(",") || pasted.includes(";") || pasted.includes("\n"))
+    ) {
+      e.preventDefault()
+      handleAddTag(pasted)
+    }
   }
 
   const handleCategorySelect = (val: string) => {
@@ -265,13 +363,15 @@ export function PostEditorForm({
 
   const handleResetAuthorToUser = () => {
     if (user) {
+      setAuthorId(user.id)
+      setAuthorUsername(user.username)
       setAuthorName(user.name || "Fi Amanillah")
-      setAuthorRole(user.headline || "Full Stack Developer")
-      setAuthorAvatar(user.avatar || "/fi.png")
-      setAuthorTwitter(user.twitterUrl || "@fiamanillah")
+      setAuthorRole(user.headline || user.role || "Full Stack Developer")
+      setAuthorAvatar(user.avatar || "")
+      setAuthorTwitter(user.twitterUrl || "")
       setAuthorLinkedin(user.linkedinUrl || "")
       setAuthorGithub(user.githubUrl || "")
-      toast.success("Reset author info to your logged-in profile")
+      toast.success("Reset author persona to your active profile")
     }
   }
 
@@ -289,6 +389,68 @@ export function PostEditorForm({
     return `${mins} MIN READ`
   }, [wordCount])
 
+  // Real-time client-side SEO analysis & health score
+  React.useEffect(() => {
+    const analysis = calculateClientSeoAnalysis({
+      title,
+      summary,
+      content,
+      slug,
+      metaTitle,
+      metaDescription,
+      canonicalUrl,
+      coverImage: thumbnail,
+      tags: selectedTags,
+    })
+    setSeoAnalysis(analysis)
+  }, [
+    title,
+    summary,
+    content,
+    slug,
+    metaTitle,
+    metaDescription,
+    canonicalUrl,
+    thumbnail,
+    selectedTags,
+  ])
+
+  // One-click Auto-Generate SEO Metadata & Directives
+  const handleAutoGenerateSeo = React.useCallback(() => {
+    if (!title.trim() && !summary.trim() && !content.trim()) {
+      toast.error("Please enter a title, summary, or content first")
+      return
+    }
+
+    const generated = autoGenerateSeoMetadata({
+      title,
+      summary,
+      content,
+      slug,
+    })
+
+    if (!slug) {
+      setSlug(generated.slug)
+    }
+    setMetaTitle(generated.metaTitle)
+    setMetaDescription(generated.metaDescription)
+    setCanonicalUrl(generated.canonicalUrl)
+    setArticleType(generated.articleType)
+
+    toast.success("✨ SEO slug, meta & canonical link auto-generated!")
+  }, [title, summary, content, slug])
+
+  // One-click Auto-Fill Canonical Link
+  const handleAutoFillCanonical = React.useCallback(() => {
+    const canonical = generateSeoCanonicalUrl(slug || title)
+    if (!canonical) {
+      toast.error("Enter a title or slug first to generate canonical URL")
+      return
+    }
+    setCanonicalUrl(canonical)
+    toast.success("SEO canonical URL auto-generated")
+  }, [slug, title])
+
   // Draft Post Object for Live Website Simulation
   const previewPostData: BlogPostDTO = React.useMemo(() => {
     return {
@@ -298,7 +460,7 @@ export function PostEditorForm({
       slug: slug || "untitled-technical-guide",
       summary: summary || "Technical guide overview.",
       content: content || "",
-      thumbnail: thumbnail || "/assets/images/mickanic-cover.png",
+      thumbnail: thumbnail || "",
       category: categoryName
         ? {
             id: categoryId,
@@ -321,12 +483,14 @@ export function PostEditorForm({
       readTimeMinutes: Math.max(1, Math.ceil(wordCount / 200)),
       wordCount: wordCount,
       author: {
+        id: authorId || undefined,
+        username: authorUsername || undefined,
         name: authorName || "Fi Amanillah",
         role: authorRole || "Full Stack Developer",
-        avatar: authorAvatar || "/fi.png",
-        twitter: authorTwitter || "@fiamanillah",
-        linkedin: authorLinkedin || "",
-        github: authorGithub || "",
+        avatar: authorAvatar || "",
+        twitter: authorTwitter || undefined,
+        linkedin: authorLinkedin || undefined,
+        github: authorGithub || undefined,
       },
       views: initialPost?.views || 1420,
       likesCount: initialPost?.likesCount || 68,
@@ -543,7 +707,10 @@ export function PostEditorForm({
           : undefined,
         date: dateDisplay.trim() || undefined,
         readTime: readTimeOverride.trim() || calculatedReadTime,
+        authorId: authorId || undefined,
         author: {
+          id: authorId || undefined,
+          username: authorUsername || undefined,
           name: authorName.trim() || "Fi Amanillah",
           role: authorRole.trim() || undefined,
           avatar: authorAvatar.trim() || undefined,
@@ -899,15 +1066,11 @@ export function PostEditorForm({
                 </label>
                 <div className="flex items-center gap-1.5">
                   <Input
-                    placeholder="Add tag and press Enter..."
+                    placeholder="Add tags (comma-separated, e.g. redis, k8s)..."
                     value={tagInput}
-                    onChange={(e) => setTagInput(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" || e.key === ",") {
-                        e.preventDefault()
-                        handleAddTag(tagInput)
-                      }
-                    }}
+                    onChange={handleTagInputChange}
+                    onKeyDown={handleTagInputKeyDown}
+                    onPaste={handleTagInputPaste}
                     className="h-8 bg-background font-mono text-xs"
                   />
                   <Button
@@ -943,12 +1106,12 @@ export function PostEditorForm({
                 </div>
 
                 {/* Suggested database tags */}
-                {availableTags.length > 0 && (
+                {localAvailableTags.length > 0 && (
                   <div className="flex flex-wrap items-center gap-1 pt-0.5">
                     <span className="font-mono text-[9px] text-muted-foreground">
                       Suggested:
                     </span>
-                    {availableTags.slice(0, 6).map((t) => (
+                    {localAvailableTags.slice(0, 8).map((t) => (
                       <button
                         key={t.id}
                         type="button"
@@ -1050,6 +1213,8 @@ export function PostEditorForm({
                 noFollow={noFollow}
                 setNoFollow={setNoFollow}
                 seoAnalysis={seoAnalysis}
+                onAutoGenerateSeo={handleAutoGenerateSeo}
+                onAutoFillCanonical={handleAutoFillCanonical}
               />
             </div>
 
@@ -1059,6 +1224,10 @@ export function PostEditorForm({
                 <User className="h-3.5 w-3.5 text-primary" /> Author Persona
               </span>
               <AuthorSection
+                authorId={authorId}
+                setAuthorId={setAuthorId}
+                authorUsername={authorUsername}
+                setAuthorUsername={setAuthorUsername}
                 authorName={authorName}
                 setAuthorName={setAuthorName}
                 authorRole={authorRole}

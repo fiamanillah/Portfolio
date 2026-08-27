@@ -109,79 +109,79 @@ const categorySlug = getCategorySlug(post.categorySlug || post.category)
             class="absolute -right-0.5 -bottom-0.5 h-3 w-3 rounded-full border-2 border-background bg-emerald-500 shadow-xs"
             title="Author Active"></span>
         </div>
-        <div class="flex min-w-0 flex-col">
-          <div class="flex items-center gap-2">
-            <span
-              class="truncate font-mono text-sm font-bold text-foreground"
-              itemprop="name"
-            >
-              {post.author.name}
-            </span>
-            <span
-              class="py-0.2 border border-primary/30 bg-primary/10 px-1.5 font-mono text-[9px] font-bold text-primary uppercase"
-            >
-              AUTHOR
-            </span>
-          </div>
+      </div>
+      <div class="flex min-w-0 flex-col">
+        <div class="flex items-center gap-2">
           <span
-            class="truncate font-mono text-xs text-muted-foreground"
-            itemprop="jobTitle"
+            class="truncate font-mono text-sm font-bold text-foreground"
+            itemprop="name"
           >
-            {post.author.role}
+            {post.author.name}
+          </span>
+          <span
+            class="py-0.2 border border-primary/30 bg-primary/10 px-1.5 font-mono text-[9px] font-bold text-primary uppercase"
+          >
+            AUTHOR
           </span>
         </div>
+        <span
+          class="truncate font-mono text-xs text-muted-foreground"
+          itemprop="jobTitle"
+        >
+          {post.author.role}
+        </span>
       </div>
+    </div>
 
-      {/* Right: Reading Telemetry Specs */}
+    {/* Right: Reading Telemetry Specs */}
+    <div
+      class="flex flex-wrap items-center gap-2 font-mono text-xs text-muted-foreground"
+    >
+      {/* Publish Date */}
       <div
-        class="flex flex-wrap items-center gap-2 font-mono text-xs text-muted-foreground"
+        class="inline-flex items-center gap-1.5 border border-border/70 bg-background/80 px-2.5 py-1"
+        title="Publish Date"
       >
-        {/* Publish Date */}
-        <div
-          class="inline-flex items-center gap-1.5 border border-border/70 bg-background/80 px-2.5 py-1"
-          title="Publish Date"
+        <HugeiconsIcon
+          icon={Calendar03Icon}
+          className="size-3 text-primary/80"
+        />
+        <time datetime={publishedDateIso} class="text-[11px] font-medium"
+          >{post.date}</time
         >
-          <HugeiconsIcon
-            icon={Calendar03Icon}
-            className="size-3 text-primary/80"
-          />
-          <time datetime={publishedDateIso} class="text-[11px] font-medium"
-            >{post.date}</time
-          >
-        </div>
+      </div>
 
-        {/* Read Time */}
-        <div
-          class="inline-flex items-center gap-1.5 border border-border/70 bg-background/80 px-2.5 py-1"
-          title="Estimated Read Time"
-        >
-          <HugeiconsIcon icon={Time02Icon} className="size-3 text-primary/80" />
-          <span class="text-[11px] font-medium">{post.readTime}</span>
-        </div>
+      {/* Read Time */}
+      <div
+        class="inline-flex items-center gap-1.5 border border-border/70 bg-background/80 px-2.5 py-1"
+        title="Estimated Read Time"
+      >
+        <HugeiconsIcon icon={Time02Icon} className="size-3 text-primary/80" />
+        <span class="text-[11px] font-medium">{post.readTime}</span>
+      </div>
 
-        {/* Views */}
-        <div
-          class="inline-flex items-center gap-1.5 border border-border/70 bg-background/80 px-2.5 py-1"
-          title="Total Views"
+      {/* Views */}
+      <div
+        class="inline-flex items-center gap-1.5 border border-border/70 bg-background/80 px-2.5 py-1"
+        title="Total Views"
+      >
+        <HugeiconsIcon icon={ViewIcon} className="size-3 text-primary/80" />
+        <span data-post-views-count class="text-[11px] font-medium"
+          >{post.views || "1"} Views</span
         >
-          <HugeiconsIcon icon={ViewIcon} className="size-3 text-primary/80" />
-          <span data-post-views-count class="text-[11px] font-medium"
-            >{post.views || "1"} Views</span
-          >
-        </div>
       </div>
     </div>
+  </div>
 
-    {/* Lower Section: Action Station & Social Hub */}
-    <div class="bg-muted/15 px-4 py-3 sm:px-5">
-      <ArticleHeaderActions
-        client:load
-        postSlug={post.slug}
-        postTitle={post.title}
-        postSummary={post.summary}
-        initialLikes={post.likesCount || 0}
-        articleUrl={articleUrl}
-      />
-    </div>
+  {/* Lower Section: Action Station & Social Hub */}
+  <div class="bg-muted/15 px-4 py-3 sm:px-5">
+    <ArticleHeaderActions
+      client:load
+      postSlug={post.slug}
+      postTitle={post.title}
+      postSummary={post.summary}
+      initialLikes={post.likesCount || 0}
+      articleUrl={articleUrl}
+    />
   </div>
 </header>
