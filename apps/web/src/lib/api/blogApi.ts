@@ -3,7 +3,9 @@ import { getStoredAccessToken } from "./authApi"
 import { RedirectApi } from "./redirectApi"
 import { getApiBaseUrl } from "./baseUrl"
 
-const API_BASE_URL = getApiBaseUrl()
+function getApiUrl(): string {
+  return getApiBaseUrl()
+}
 
 export interface PublicBlogQuery {
   page?: number
@@ -235,12 +237,15 @@ export const BlogApi = {
       if (query.sortBy) params.set("sortBy", query.sortBy)
       if (query.sortOrder) params.set("sortOrder", query.sortOrder)
 
-      const res = await fetch(
-        `${API_BASE_URL}/blogs/v1/public?${params.toString()}`,
-        {
-          headers: { "Content-Type": "application/json" },
-        }
-      )
+      params.set("_t", String(Date.now()))
+      const fetchUrl = `${getApiUrl()}/blogs/v1/public?${params.toString()}`
+      const res = await fetch(fetchUrl, {
+        headers: {
+          "Content-Type": "application/json",
+          "Cache-Control": "no-cache",
+          Pragma: "no-cache",
+        },
+      })
 
       if (res.ok) {
         const body = await res.json()
@@ -279,9 +284,16 @@ export const BlogApi = {
    */
   async fetchFeaturedPosts(): Promise<BlogPost[]> {
     try {
-      const res = await fetch(`${API_BASE_URL}/blogs/v1/public/featured`, {
-        headers: { "Content-Type": "application/json" },
-      })
+      const res = await fetch(
+        `${getApiUrl()}/blogs/v1/public/featured?_t=${Date.now()}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "Cache-Control": "no-cache",
+            Pragma: "no-cache",
+          },
+        }
+      )
 
       if (res.ok) {
         const body = await res.json()
@@ -309,9 +321,16 @@ export const BlogApi = {
     }[]
   > {
     try {
-      const res = await fetch(`${API_BASE_URL}/blogs/v1/public/categories`, {
-        headers: { "Content-Type": "application/json" },
-      })
+      const res = await fetch(
+        `${getApiUrl()}/blogs/v1/public/categories?_t=${Date.now()}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "Cache-Control": "no-cache",
+            Pragma: "no-cache",
+          },
+        }
+      )
 
       if (res.ok) {
         const body = await res.json()
@@ -364,9 +383,16 @@ export const BlogApi = {
    */
   async fetchPublicTags(): Promise<PublicTagItem[]> {
     try {
-      const res = await fetch(`${API_BASE_URL}/blogs/v1/public/tags`, {
-        headers: { "Content-Type": "application/json" },
-      })
+      const res = await fetch(
+        `${getApiUrl()}/blogs/v1/public/tags?_t=${Date.now()}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "Cache-Control": "no-cache",
+            Pragma: "no-cache",
+          },
+        }
+      )
 
       if (res.ok) {
         const body = await res.json()
@@ -389,9 +415,13 @@ export const BlogApi = {
     incrementView: boolean = false
   ): Promise<SingleBlogPostResponse | null> {
     try {
-      const url = `${API_BASE_URL}/blogs/v1/public/slug/${encodeURIComponent(slug)}${incrementView ? "" : "?noView=true"}`
+      const url = `${getApiUrl()}/blogs/v1/public/slug/${encodeURIComponent(slug)}?_t=${Date.now()}${incrementView ? "" : "&noView=true"}`
       const res = await fetch(url, {
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Cache-Control": "no-cache",
+          Pragma: "no-cache",
+        },
       })
 
       if (res.ok) {
@@ -460,7 +490,7 @@ export const BlogApi = {
   async recordPostView(slug: string): Promise<{ views: number } | null> {
     try {
       const res = await fetch(
-        `${API_BASE_URL}/blogs/v1/public/slug/${encodeURIComponent(slug)}`,
+        `${getApiUrl()}/blogs/v1/public/slug/${encodeURIComponent(slug)}`,
         {
           headers: { "Content-Type": "application/json" },
         }
@@ -507,7 +537,7 @@ export const BlogApi = {
       if (token) headers["Authorization"] = `Bearer ${token}`
 
       const res = await fetch(
-        `${API_BASE_URL}/blogs/v1/public/slug/${encodeURIComponent(slug)}/reactions`,
+        `${getApiUrl()}/blogs/v1/public/slug/${encodeURIComponent(slug)}/reactions`,
         {
           headers,
           credentials: "include",
@@ -569,7 +599,7 @@ export const BlogApi = {
       if (token) headers["Authorization"] = `Bearer ${token}`
 
       const res = await fetch(
-        `${API_BASE_URL}/blogs/v1/public/slug/${encodeURIComponent(slug)}/react`,
+        `${getApiUrl()}/blogs/v1/public/slug/${encodeURIComponent(slug)}/react`,
         {
           method: "POST",
           headers,
@@ -613,7 +643,7 @@ export const BlogApi = {
   ): Promise<PublicAuthorProfile | null> {
     try {
       const res = await fetch(
-        `${API_BASE_URL}/users/v1/public/authors/${encodeURIComponent(username)}`,
+        `${getApiUrl()}/users/v1/public/authors/${encodeURIComponent(username)}`,
         {
           headers: { "Content-Type": "application/json" },
         }

@@ -38,6 +38,10 @@ export abstract class BaseController {
       data,
     }
 
+    res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate")
+    res.setHeader("Pragma", "no-cache")
+    res.setHeader("Expires", "0")
+
     return res.status(statusCode).json(response)
   }
 
@@ -69,6 +73,10 @@ export abstract class BaseController {
       data,
     }
 
+    res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate")
+    res.setHeader("Pragma", "no-cache")
+    res.setHeader("Expires", "0")
+
     return res.status(HTTPStatusCode.OK).json(response)
   }
 
@@ -81,7 +89,28 @@ export abstract class BaseController {
     data: T,
     message: string = "Resource created successfully"
   ): Response<ApiResponse<T>> | void {
-    return this.sendResponse(req, res, message, HTTPStatusCode.CREATED, data)
+    if (req.timedout || res.headersSent) {
+      this.logger.warn(
+        `[Blocked] Prevented sending created response for ${req.method} ${req.originalUrl} - Request timed out or was closed.`
+      )
+      return
+    }
+
+    const response: ApiResponse<T> = {
+      success: true,
+      message,
+      meta: {
+        requestId: req.id,
+        timestamp: new Date().toISOString(),
+      },
+      data,
+    }
+
+    res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate")
+    res.setHeader("Pragma", "no-cache")
+    res.setHeader("Expires", "0")
+
+    return res.status(HTTPStatusCode.CREATED).json(response)
   }
 
   /**

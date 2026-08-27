@@ -11,12 +11,14 @@ import { Button } from "@workspace/ui/components/button"
 import {
   getAllBlogPostsAsync,
   getBlogCategoriesAsync,
+  getBlogTagsAsync,
   getFeaturedBlogPostsAsync,
 } from "@/data/blogPosts"
 
-// Fetch published posts, categories, and featured stories directly from DB / API
+// Fetch published posts, categories, tags, and featured stories directly from DB / API
 const posts = await getAllBlogPostsAsync()
 const categories = await getBlogCategoriesAsync()
+const tags = await getBlogTagsAsync()
 let featuredPosts = await getFeaturedBlogPostsAsync()
 
 // Graceful fallback for featured section when database has no explicit featured items
@@ -30,7 +32,7 @@ if (featuredPosts.length === 0 && posts.length > 0) {
 const recentPosts = posts.slice(0, 9)
 const postsPerPage = 9
 const totalPages = Math.max(1, Math.ceil(posts.length / postsPerPage))
-const totalTopics = new Set(posts.flatMap((p) => p.tags)).size
+const totalTopics = tags.length > 0 ? tags.length : new Set(posts.flatMap((p) => p.tags)).size
 ---
 
 <MySiteLayout>

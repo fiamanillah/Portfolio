@@ -190,6 +190,23 @@ export async function getBlogCategoriesAsync(): Promise<
 }
 
 /**
+ * Fetch tags with published article counts directly from the backend API / Database
+ */
+export async function getBlogTagsAsync(): Promise<
+  { id?: string; name: string; count: number; slug?: string }[]
+> {
+  try {
+    const tags = await BlogApi.fetchPublicTags()
+    if (tags && tags.length > 0) {
+      return tags
+    }
+  } catch (err) {
+    console.error("Failed to fetch blog tags from API:", err)
+  }
+  return []
+}
+
+/**
  * Fetch single post by slug with adjacent and related posts directly from the backend API / Database
  */
 export async function getBlogPostBySlugAsync(
