@@ -2,10 +2,22 @@
 
 import * as React from "react"
 import { Marked } from "marked"
+import { Sparkles } from "lucide-react"
+import { Button } from "@workspace/ui/components/button"
 
 interface MarkdownPreviewProps {
   content: string
   className?: string
+  onInsertDummyContent?: () => void
+}
+
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;")
 }
 
 function processAlertCallouts(html: string): string {
@@ -106,11 +118,59 @@ function processMarkdownTables(html: string): string {
   )
 }
 
+function processIframes(html: string): string {
+  const iframeRegex = /<iframe([\s\S]*?)<\/iframe>/gi
+
+  return html.replace(iframeRegex, (_match, attrs) => {
+    const titleMatch = attrs.match(/title=["']([^"']*)["']/i)
+    const title = titleMatch ? titleMatch[1] : "LIVE EMBED / MEDIA"
+
+    let updatedAttrs = attrs
+    if (!/loading=/i.test(updatedAttrs)) {
+      updatedAttrs += ' loading="lazy"'
+    }
+    if (!/referrerpolicy=/i.test(updatedAttrs)) {
+      updatedAttrs += ' referrerpolicy="no-referrer-when-downgrade"'
+    }
+
+    return `
+      <div class="blog-iframe-container my-8 overflow-hidden rounded-md border border-border/80 bg-card shadow-lg">
+        <div class="flex items-center justify-between border-b border-border/60 bg-muted/40 px-4 py-2 text-xs font-mono select-none">
+          <div class="flex items-center gap-2">
+            <div class="flex items-center gap-1.5">
+              <span class="h-2.5 w-2.5 rounded-full bg-red-500/70 inline-block"></span>
+              <span class="h-2.5 w-2.5 rounded-full bg-amber-500/70 inline-block"></span>
+              <span class="h-2.5 w-2.5 rounded-full bg-emerald-500/70 inline-block"></span>
+            </div>
+            <span class="ml-2 font-medium text-foreground/80 flex items-center gap-1.5 truncate max-w-xs sm:max-w-md">
+              <svg class="h-3.5 w-3.5 text-primary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="5 3 19 12 5 21 5 3"/>
+              </svg>
+              <span class="truncate">${escapeHtml(title)}</span>
+            </span>
+          </div>
+          <span class="rounded bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary uppercase tracking-wider border border-primary/20 shrink-0">
+            EMBED
+          </span>
+        </div>
+        <div class="relative w-full aspect-video bg-black/40">
+          <iframe class="absolute inset-0 h-full w-full border-0" ${updatedAttrs}></iframe>
+        </div>
+      </div>
+    `
+  })
+}
+
 function processCodeBlocks(html: string): string {
   return html.replace(
     /<pre><code class="language-([^"]+)">([\s\S]*?)<\/code><\/pre>/gi,
     (_match, lang, code) => {
-      const displayLang = lang.toUpperCase()
+      const parts = lang.trim().split(/\s+/)
+      const langSpec = parts[0] || "PLAINTEXT"
+      const titleMatch = lang.match(/title=["']([^"']+)["']/)
+      const title = titleMatch ? titleMatch[1] : ""
+      const displayLang = langSpec.toUpperCase()
+
       return `
       <div class="code-block-container relative my-6 overflow-hidden rounded-md border border-border/80 shadow-lg bg-[#0d1117]">
         <div class="code-header flex items-center justify-between border-b border-border/40 bg-muted/20 px-4 py-2 text-xs font-mono select-none">
@@ -120,7 +180,11 @@ function processCodeBlocks(html: string): string {
               <span class="h-2.5 w-2.5 rounded-full bg-amber-500/70 inline-block"></span>
               <span class="h-2.5 w-2.5 rounded-full bg-emerald-500/70 inline-block"></span>
             </div>
-            <span class="ml-2 font-medium text-foreground/80 font-mono text-[11px]">// Snippet</span>
+            ${
+              title
+                ? `<span class="ml-2 font-medium text-foreground/80 font-mono text-[11px]">${escapeHtml(title)}</span>`
+                : `<span class="ml-2 font-medium text-foreground/80 font-mono text-[11px]">// Snippet</span>`
+            }
           </div>
           <span class="rounded bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary uppercase tracking-wider border border-primary/20">
             ${displayLang}
@@ -136,6 +200,7 @@ function processCodeBlocks(html: string): string {
 export function MarkdownPreview({
   content,
   className = "",
+  onInsertDummyContent,
 }: MarkdownPreviewProps) {
   const renderedHtml = React.useMemo(() => {
     if (!content.trim()) return ""
@@ -148,6 +213,7 @@ export function MarkdownPreview({
       html = processAlertCallouts(html)
       html = processMarkdownImages(html)
       html = processMarkdownTables(html)
+      html = processIframes(html)
       html = processCodeBlocks(html)
       return html
     } catch {
@@ -158,10 +224,29 @@ export function MarkdownPreview({
   if (!content.trim()) {
     return (
       <div
-        className={`rounded-xl border border-dashed border-border bg-muted/10 p-8 text-center text-xs text-muted-foreground italic ${className}`}
+        className={`flex flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-border bg-muted/10 p-8 text-center ${className}`}
       >
-        No article content written yet. Switch to Write mode or type in the
-        editor...
+        <Sparkles className="h-7 w-7 text-muted-foreground/50" />
+        <div className="space-y-1">
+          <p className="text-sm font-semibold text-foreground">
+            No article content written yet
+          </p>
+          <p className="text-xs text-muted-foreground max-w-sm">
+            Switch to Write mode to draft, or load the comprehensive dummy content to preview all supported blocks and formatting.
+          </p>
+        </div>
+        {onInsertDummyContent && (
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={onInsertDummyContent}
+            className="mt-1 h-7.5 gap-1.5 text-xs font-semibold border-primary/40 bg-primary/10 text-primary hover:bg-primary/20 hover:border-primary transition-all shadow-2xs"
+          >
+            <Sparkles className="h-3.5 w-3.5" />
+            <span>Load Dummy Content</span>
+          </Button>
+        )}
       </div>
     )
   }

@@ -64,6 +64,10 @@ import {
   calculateClientSeoAnalysis,
   generateSeoSlug,
 } from "@/lib/seo-utils"
+import {
+  DUMMY_MARKDOWN_CONTENT,
+  DUMMY_BLOG_POST_DATA,
+} from "./editor/content/markdown-editor/dummy-content"
 
 interface PostEditorFormProps {
   initialPost?: BlogPostDTO | null
@@ -97,10 +101,7 @@ export function PostEditorForm({
     Boolean(initialPost?.slug)
   )
   const [summary, setSummary] = React.useState(initialPost?.summary || "")
-  const [content, setContent] = React.useState(
-    initialPost?.content ||
-      "## Introduction\n\nWrite your technical article here with code snippets, diagrams, and explanations...\n\n```typescript\nconsole.log('Production ready architecture');\n```\n\n> [!NOTE]\n> Real-time streaming enables microsecond state sync.\n\n## Key Concepts\n\nDetails go here.\n\n## Conclusion\n\nSummary of takeaways."
-  )
+  const [content, setContent] = React.useState(initialPost?.content || "")
   const [categoryId, setCategoryId] = React.useState<string>(
     initialPost?.categoryId || "none"
   )
@@ -447,6 +448,38 @@ export function PostEditorForm({
 
     toast.success("✨ SEO metadata regenerated from content")
   }, [title, summary, content, slug])
+
+  // Handlers for inserting dummy content and full sample post
+  const handleInsertDummyContent = React.useCallback(() => {
+    setContent(DUMMY_MARKDOWN_CONTENT)
+    clearFieldError("content")
+    toast.success("Loaded sample markdown content with all blocks & styles!")
+  }, [])
+
+  const handleFillFullSamplePost = React.useCallback(() => {
+    setTitle(DUMMY_BLOG_POST_DATA.title)
+    setSubtitle(DUMMY_BLOG_POST_DATA.subtitle)
+    setSlug(DUMMY_BLOG_POST_DATA.slug)
+    setHasManuallyEditedSlug(true)
+    setSummary(DUMMY_BLOG_POST_DATA.summary)
+    setContent(DUMMY_BLOG_POST_DATA.content)
+    setKeyTakeaways(DUMMY_BLOG_POST_DATA.keyTakeaways)
+    setSelectedTags(DUMMY_BLOG_POST_DATA.tags)
+    setThumbnail(DUMMY_BLOG_POST_DATA.thumbnail)
+    setMetaTitle(DUMMY_BLOG_POST_DATA.seo.metaTitle)
+    setMetaDescription(DUMMY_BLOG_POST_DATA.seo.metaDescription)
+    setCanonicalUrl(DUMMY_BLOG_POST_DATA.seo.canonicalUrl)
+    setArticleType(DUMMY_BLOG_POST_DATA.seo.articleType)
+
+    // Select first category if available
+    if (categories.length > 0 && categoryId === "none") {
+      setCategoryId(categories[0].id)
+      setCategoryName(categories[0].name)
+    }
+
+    setFieldErrors({})
+    toast.success("✨ Populated full sample blog post with all fields!")
+  }, [categories, categoryId])
 
   // Draft Post Object for Live Website Simulation
   const previewPostData: BlogPostDTO = React.useMemo(() => {
@@ -813,6 +846,8 @@ export function PostEditorForm({
                   }}
                   wordCount={wordCount}
                   readTime={calculatedReadTime}
+                  onInsertDummyContent={handleInsertDummyContent}
+                  onFillFullSamplePost={handleFillFullSamplePost}
                 />
                 {fieldErrors.content && (
                   <p className="font-mono text-xs text-destructive">

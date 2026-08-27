@@ -1,6 +1,8 @@
 "use client"
 
 import * as React from "react"
+import { Sparkles } from "lucide-react"
+import { Button } from "@workspace/ui/components/button"
 import { EditorToolbar, type EditorViewMode } from "./editor-toolbar"
 import { MarkdownPreview } from "./markdown-preview"
 import { ImageInsertDialog } from "./image-insert-dialog"
@@ -12,6 +14,8 @@ interface MarkdownEditorProps {
   onChange: (val: string) => void
   wordCount: number
   readTime: string
+  onInsertDummyContent?: () => void
+  onFillFullSamplePost?: () => void
 }
 
 export function MarkdownEditor({
@@ -19,6 +23,8 @@ export function MarkdownEditor({
   onChange,
   wordCount,
   readTime,
+  onInsertDummyContent,
+  onFillFullSamplePost,
 }: MarkdownEditorProps) {
   const [viewMode, setViewMode] = React.useState<EditorViewMode>("write")
   const textareaRef = React.useRef<HTMLTextAreaElement>(null)
@@ -73,19 +79,41 @@ export function MarkdownEditor({
         onOpenImageDialog={() => setIsImageOpen(true)}
         onOpenLinkDialog={() => setIsLinkOpen(true)}
         onOpenTableDialog={() => setIsTableOpen(true)}
+        onInsertDummyContent={onInsertDummyContent}
+        onFillFullSamplePost={onFillFullSamplePost}
       />
 
-      {/* Editor Main Canvas (Clean, single surface, no nested boxes) */}
+      {/* Editor Main Canvas */}
       <div className="relative">
         {viewMode === "write" && (
-          <textarea
-            ref={textareaRef}
-            value={value}
-            onChange={(e) => onChange(e.target.value)}
-            rows={18}
-            placeholder="Write article in GitHub-flavored markdown with ```code, > [!NOTE], and ![images]..."
-            className="w-full resize-y bg-transparent p-4 sm:p-5 font-mono text-sm leading-relaxed text-foreground outline-none border-0 focus:ring-0 focus:outline-none placeholder:text-muted-foreground/50 min-h-[400px]"
-          />
+          <div>
+            <textarea
+              ref={textareaRef}
+              value={value}
+              onChange={(e) => onChange(e.target.value)}
+              rows={18}
+              placeholder="Write article in GitHub-flavored markdown with ```code, > [!NOTE], and ![images]... or click 'Dummy Content' above to load sample blocks."
+              className="w-full resize-y bg-transparent p-4 sm:p-5 font-mono text-sm leading-relaxed text-foreground outline-none border-0 focus:ring-0 focus:outline-none placeholder:text-muted-foreground/50 min-h-[400px]"
+            />
+            {!value.trim() && onInsertDummyContent && (
+              <div className="flex items-center justify-between border-t border-border/60 bg-muted/20 px-4 py-2 text-xs text-muted-foreground">
+                <span className="flex items-center gap-1.5 font-mono text-[11px]">
+                  <Sparkles className="h-3 w-3 text-primary" />
+                  Editor is blank. Want a preview of all styles and blocks?
+                </span>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={onInsertDummyContent}
+                  className="h-6 gap-1 px-2 text-[11px] font-semibold text-primary hover:bg-primary/10"
+                >
+                  <Sparkles className="h-3 w-3" />
+                  Load Sample Markdown
+                </Button>
+              </div>
+            )}
+          </div>
         )}
 
         {viewMode === "split" && (
@@ -99,14 +127,20 @@ export function MarkdownEditor({
               className="w-full resize-none bg-transparent p-4 sm:p-5 font-mono text-sm leading-relaxed text-foreground outline-none border-0 focus:ring-0 focus:outline-none placeholder:text-muted-foreground/50 min-h-[440px]"
             />
             <div className="p-4 sm:p-5 max-h-[550px] overflow-y-auto bg-muted/10">
-              <MarkdownPreview content={value} />
+              <MarkdownPreview
+                content={value}
+                onInsertDummyContent={onInsertDummyContent}
+              />
             </div>
           </div>
         )}
 
         {viewMode === "preview" && (
           <div className="p-5 sm:p-6 min-h-[400px]">
-            <MarkdownPreview content={value} />
+            <MarkdownPreview
+              content={value}
+              onInsertDummyContent={onInsertDummyContent}
+            />
           </div>
         )}
       </div>

@@ -26,6 +26,8 @@ import {
   AlertTriangle,
   Lightbulb,
   ShieldAlert,
+  FileText,
+  Layers,
 } from "lucide-react"
 import { Button } from "@workspace/ui/components/button"
 import {
@@ -33,6 +35,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@workspace/ui/components/dropdown-menu"
 
@@ -47,6 +50,8 @@ interface EditorToolbarProps {
   onOpenImageDialog: () => void
   onOpenLinkDialog: () => void
   onOpenTableDialog: () => void
+  onInsertDummyContent?: () => void
+  onFillFullSamplePost?: () => void
 }
 
 const CODE_LANGUAGES = [
@@ -73,6 +78,8 @@ export function EditorToolbar({
   onOpenImageDialog,
   onOpenLinkDialog,
   onOpenTableDialog,
+  onInsertDummyContent,
+  onFillFullSamplePost,
 }: EditorToolbarProps) {
   return (
     <div className="flex flex-wrap items-center justify-between gap-1.5 border-b border-border/80 bg-muted/40 px-3 py-1.5">
@@ -111,6 +118,61 @@ export function EditorToolbar({
             <Eye className="h-3 w-3" /> Preview
           </Button>
         </div>
+
+        {/* Dummy Content Quick Generator Dropdown */}
+        {(onInsertDummyContent || onFillFullSamplePost) && (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="h-6.5 gap-1 px-2 text-[11px] font-semibold border-primary/40 bg-primary/10 text-primary hover:bg-primary/20 hover:border-primary transition-all shadow-2xs mr-1"
+                title="Add sample dummy content showcasing all blocks and styles"
+              >
+                <Sparkles className="h-3 w-3 text-primary animate-pulse" />
+                <span>Dummy Content</span>
+                <ChevronDown className="h-2.5 w-2.5 opacity-70" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="w-64 text-xs">
+              <DropdownMenuLabel className="font-mono text-[10px] text-muted-foreground uppercase">
+                Sample Content Generators
+              </DropdownMenuLabel>
+              {onInsertDummyContent && (
+                <DropdownMenuItem
+                  onClick={onInsertDummyContent}
+                  className="flex flex-col items-start gap-0.5 cursor-pointer py-2"
+                >
+                  <div className="flex items-center gap-1.5 font-medium text-foreground">
+                    <FileText className="h-3.5 w-3.5 text-primary" />
+                    <span>Insert All Styles &amp; Blocks</span>
+                  </div>
+                  <span className="text-[10px] text-muted-foreground pl-5">
+                    Inserts headings, callouts, tables, code, embeds &amp; lists
+                  </span>
+                </DropdownMenuItem>
+              )}
+              {onFillFullSamplePost && (
+                <>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={onFillFullSamplePost}
+                    className="flex flex-col items-start gap-0.5 cursor-pointer py-2"
+                  >
+                    <div className="flex items-center gap-1.5 font-medium text-foreground">
+                      <Layers className="h-3.5 w-3.5 text-emerald-500" />
+                      <span>Fill Complete Sample Post</span>
+                    </div>
+                    <span className="text-[10px] text-muted-foreground pl-5">
+                      Sets title, excerpt, tags, takeaways, cover &amp; content
+                    </span>
+                  </DropdownMenuItem>
+                </>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
 
         {mode !== "preview" && (
           <>

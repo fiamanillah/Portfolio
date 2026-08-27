@@ -138,6 +138,49 @@ function processMarkdownTables(html: string): string {
   )
 }
 
+function processIframes(html: string): string {
+  const iframeRegex = /<iframe([\s\S]*?)<\/iframe>/gi
+
+  return html.replace(iframeRegex, (_match, attrs) => {
+    const titleMatch = attrs.match(/title=["']([^"']*)["']/i)
+    const title = titleMatch ? titleMatch[1] : "LIVE EMBED / MEDIA"
+
+    let updatedAttrs = attrs
+    if (!/loading=/i.test(updatedAttrs)) {
+      updatedAttrs += ' loading="lazy"'
+    }
+    if (!/referrerpolicy=/i.test(updatedAttrs)) {
+      updatedAttrs += ' referrerpolicy="no-referrer-when-downgrade"'
+    }
+
+    return `
+      <div class="blog-iframe-container my-8 overflow-hidden rounded-md border border-border/80 bg-card shadow-lg">
+        <div class="flex items-center justify-between border-b border-border/60 bg-muted/40 px-4 py-2 text-xs font-mono select-none">
+          <div class="flex items-center gap-2">
+            <div class="flex items-center gap-1.5">
+              <span class="h-2.5 w-2.5 rounded-full bg-red-500/70 inline-block"></span>
+              <span class="h-2.5 w-2.5 rounded-full bg-amber-500/70 inline-block"></span>
+              <span class="h-2.5 w-2.5 rounded-full bg-emerald-500/70 inline-block"></span>
+            </div>
+            <span class="ml-2 font-medium text-foreground/80 flex items-center gap-1.5 truncate max-w-xs sm:max-w-md">
+              <svg class="h-3.5 w-3.5 text-primary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="5 3 19 12 5 21 5 3"/>
+              </svg>
+              <span class="truncate">${title}</span>
+            </span>
+          </div>
+          <span class="rounded bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary uppercase tracking-wider border border-primary/20 shrink-0">
+            EMBED
+          </span>
+        </div>
+        <div class="relative w-full aspect-video bg-black/40">
+          <iframe class="absolute inset-0 h-full w-full border-0" ${updatedAttrs}></iframe>
+        </div>
+      </div>
+    `
+  })
+}
+
 function processCodeBlocks(html: string): string {
   // Add macOS terminal header dots to code blocks
   return html.replace(
@@ -236,6 +279,7 @@ export function FrontendArticlePreview({
       parsed = processAlertCallouts(parsed)
       parsed = processMarkdownImages(parsed)
       parsed = processMarkdownTables(parsed)
+      parsed = processIframes(parsed)
       parsed = processCodeBlocks(parsed)
 
       return { html: parsed, toc: extractedToc }
