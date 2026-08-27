@@ -490,9 +490,13 @@ export const BlogApi = {
   async recordPostView(slug: string): Promise<{ views: number } | null> {
     try {
       const res = await fetch(
-        `${getApiUrl()}/blogs/v1/public/slug/${encodeURIComponent(slug)}`,
+        `${getApiUrl()}/blogs/v1/public/slug/${encodeURIComponent(slug)}?_t=${Date.now()}`,
         {
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            "Cache-Control": "no-cache",
+            Pragma: "no-cache",
+          },
         }
       )
 

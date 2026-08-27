@@ -249,6 +249,19 @@ if (relatedPosts.length === 0 && slug) {
     const slug = mainEl.dataset.postSlug
     if (!slug) return
 
+    const updateViewSpans = (viewsCount: number) => {
+      const viewSpans = document.querySelectorAll<HTMLElement>(
+        "[data-post-views-count]"
+      )
+      const formatted =
+        viewsCount >= 1000
+          ? `${(viewsCount / 1000).toFixed(viewsCount % 1000 === 0 ? 0 : 1)}k`
+          : `${viewsCount}`
+      viewSpans.forEach((span) => {
+        span.textContent = `${formatted} Views`
+      })
+    }
+
     // Avoid duplicate increments in the same page view session
     const sessionKey = `view_recorded_${slug}`
     if (!sessionStorage.getItem(sessionKey)) {
@@ -256,16 +269,19 @@ if (relatedPosts.length === 0 && slug) {
       BlogApi.recordPostView(slug)
         .then((result) => {
           if (result && typeof result.views === "number") {
-            const viewSpans = document.querySelectorAll<HTMLElement>(
-              "[data-post-views-count]"
-            )
-            const formatted =
-              result.views >= 1000
-                ? `${(result.views / 1000).toFixed(result.views % 1000 === 0 ? 0 : 1)}k`
-                : `${result.views}`
-            viewSpans.forEach((span) => {
-              span.textContent = `${formatted} Views`
-            })
+            updateViewSpans(result.views)
+          }
+        })
+        .catch(() => {})
+    } else {
+      // If already recorded in this session, fetch the current live view count without incrementing
+      BlogApi.fetchPostBySlug(slug, false)
+        .then((result) => {
+          if (result?.post && result.post.views) {
+            const rawViews = parseInt(String(result.post.views).replace(/[^0-9]/g, "")) || 0
+            if (rawViews > 0) {
+              updateViewSpans(rawViews)
+            }
           }
         })
         .catch(() => {})
