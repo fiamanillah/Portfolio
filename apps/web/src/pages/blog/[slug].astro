@@ -313,6 +313,20 @@ if (relatedPosts.length === 0 && slug) {
       }
     }
 
+    // Always fetch live reactions from server on page load
+    BlogApi.fetchPostReactions(slug)
+      .then((res) => {
+        if (res && typeof res.likesCount === "number") {
+          const likeSpans = document.querySelectorAll<HTMLElement>(
+            "[data-post-likes-count]"
+          )
+          likeSpans.forEach((span) => {
+            span.textContent = String(res.likesCount)
+          })
+        }
+      })
+      .catch(() => {})
+
     // Update on custom engagement event and storage event
     window.addEventListener("portfolio:engagement-change", ((e: Event) => {
       const customEvent = e as CustomEvent<{ slug?: string }>

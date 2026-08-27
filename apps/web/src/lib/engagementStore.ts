@@ -54,6 +54,9 @@ export function getStoredReactions(
     }
 
     const parsed = JSON.parse(raw) as PostReactions
+    if (typeof parsed.likes !== "number" || (parsed.likes === 0 && initialLikes > 0)) {
+      parsed.likes = Math.max(parsed.likes || 0, initialLikes)
+    }
     reactionsSnapshotCache.set(slug, { raw, parsed })
     return parsed
   } catch (e) {
@@ -171,14 +174,21 @@ export async function syncPostReactions(
 ): Promise<PostReactions> {
   const res = await BlogApi.fetchPostReactions(slug)
   if (res && res.reactions) {
+    const liveLikes =
+      typeof res.likesCount === "number"
+        ? res.likesCount
+        : typeof res.reactions.likes === "number"
+          ? res.reactions.likes
+          : initialLikes
+
     const updated: PostReactions = {
-      likes: res.likesCount,
-      fire: res.reactions.fire,
-      insightful: res.reactions.insightful,
-      fast: res.reactions.fast,
-      rocket: res.reactions.rocket,
-      userLiked: res.userLiked,
-      userReactions: res.userReactions,
+      likes: liveLikes,
+      fire: res.reactions.fire ?? 0,
+      insightful: res.reactions.insightful ?? 0,
+      fast: res.reactions.fast ?? 0,
+      rocket: res.reactions.rocket ?? 0,
+      userLiked: Boolean(res.userLiked),
+      userReactions: res.userReactions || {},
     }
     saveStoredReactions(slug, updated)
     return updated

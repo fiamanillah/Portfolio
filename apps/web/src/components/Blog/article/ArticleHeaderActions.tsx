@@ -167,7 +167,7 @@ export function ArticleHeaderActions({
                 : "bg-muted text-muted-foreground group-hover:text-rose-400"
             }`}
           >
-            {reactions.likes ?? initialLikes}
+            {reactions.likes || initialLikes}
           </span>
         </button>
 

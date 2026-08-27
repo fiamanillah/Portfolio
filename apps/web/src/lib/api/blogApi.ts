@@ -537,11 +537,13 @@ export const BlogApi = {
       const token = getStoredAccessToken()
       const headers: Record<string, string> = {
         "Content-Type": "application/json",
+        "Cache-Control": "no-cache",
+        Pragma: "no-cache",
       }
       if (token) headers["Authorization"] = `Bearer ${token}`
 
       const res = await fetch(
-        `${getApiUrl()}/blogs/v1/public/slug/${encodeURIComponent(slug)}/reactions`,
+        `${getApiUrl()}/blogs/v1/public/slug/${encodeURIComponent(slug)}/reactions?_t=${Date.now()}`,
         {
           headers,
           credentials: "include",

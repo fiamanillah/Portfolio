@@ -241,7 +241,7 @@ export function ArticleReactionStation({
                   : "bg-muted text-muted-foreground group-hover:text-foreground"
               }`}
             >
-              {reactions.likes}
+              {reactions.likes || initialLikes}
             </span>
           </button>
 
