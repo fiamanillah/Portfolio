@@ -131,20 +131,20 @@ const linkedinUrl =
       </div>
 
       {/* Article Tags — full article-column width */}
-      <div
-        class="flex flex-wrap items-center gap-1.5 border-t border-border/60 pt-4 sm:gap-2 sm:pt-6"
-      >
-        <span class="font-mono text-[11px] text-muted-foreground sm:text-xs"
-          >TAGS:</span
-        >
-        {
-          post.tags.map((tag) => (
-            <span class="inline-flex items-center border border-border bg-muted/60 px-2 py-0.5 font-mono text-[11px] text-muted-foreground sm:px-2.5 sm:text-xs">
-              #{tag}
+      {
+        post.tags && post.tags.length > 0 && (
+          <div class="flex flex-wrap items-center gap-1.5 border-t border-border/60 pt-4 sm:gap-2 sm:pt-6">
+            <span class="font-mono text-[11px] text-muted-foreground sm:text-xs">
+              TAGS:
             </span>
-          ))
-        }
-      </div>
+            {post.tags.map((tag) => (
+              <span class="inline-flex items-center border border-border bg-muted/60 px-2 py-0.5 font-mono text-[11px] text-muted-foreground sm:px-2.5 sm:text-xs">
+                #{tag}
+              </span>
+            ))}
+          </div>
+        )
+      }
 
       {/* Article Reaction & Like Station */}
       <div>

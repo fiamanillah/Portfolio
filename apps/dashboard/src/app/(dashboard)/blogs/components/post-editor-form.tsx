@@ -637,6 +637,25 @@ export function PostEditorForm({
 
     setIsSubmitting(true)
     try {
+      let finalTags = [...selectedTags]
+      if (tagInput.trim()) {
+        const leftoverTags = tagInput
+          .split(/[,;\n]+/)
+          .map((t) =>
+            t
+              .trim()
+              .toLowerCase()
+              .replace(/^#+/, "")
+              .replace(/[^a-z0-9-_]/g, "")
+          )
+          .filter((t) => t && !finalTags.includes(t))
+        if (leftoverTags.length > 0) {
+          finalTags = [...finalTags, ...leftoverTags]
+          setSelectedTags(finalTags)
+          setTagInput("")
+        }
+      }
+
       const payload: CreateBlogPostDTO = {
         title: title.trim(),
         subtitle: subtitle.trim() || undefined,
@@ -646,7 +665,7 @@ export function PostEditorForm({
         thumbnail: thumbnail.trim() || undefined,
         categoryId: categoryId === "none" ? undefined : categoryId,
         categoryName: categoryName.trim() || undefined,
-        tags: selectedTags,
+        tags: finalTags,
         keyTakeaways: keyTakeaways.filter((k) => k.trim()),
         status: targetStatus,
         featured,
@@ -678,7 +697,7 @@ export function PostEditorForm({
         seo: {
           metaTitle: metaTitle.trim() || undefined,
           metaDescription: metaDescription.trim() || undefined,
-          metaKeywords: selectedTags,
+          metaKeywords: finalTags,
           canonicalUrl: cleanUrl(canonicalUrl),
           articleType,
           noIndex,
