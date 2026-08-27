@@ -84,12 +84,12 @@ import GoogleAnalytics from "@/components/GoogleAnalytics.astro"
       <SEO />
     </slot>
   </head>
-  <body class="min-h-svh overflow-x-hidden bg-background text-foreground">
+  <body class="min-h-svh overflow-x-clip bg-background text-foreground">
     <GridLines lines={[-0.04, 0, 1, 1.04]} />
 
     <div class="relative mx-[4%]">
       <header
-        class="sticky top-0 z-50 container mx-auto border-b border-border/40 bg-background/80 backdrop-blur-md transition-colors duration-200 supports-backdrop-filter:bg-background/60"
+        class="sticky top-0 z-50 container mx-auto border-b border-border/40 bg-background/80 backdrop-blur-md supports-backdrop-filter:bg-background/60"
       >
         <SiteNav />
       </header>

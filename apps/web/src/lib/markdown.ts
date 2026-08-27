@@ -323,7 +323,7 @@ function processIframes(html: string): string {
 function processTables(html: string): string {
   return html.replace(
     /<table>([\s\S]*?)<\/table>/gi,
-    '<div class="blog-table-wrapper my-6 overflow-x-auto rounded-md border border-border/80 bg-card/60 shadow-sm"><table class="w-full text-left text-sm">$1</table></div>'
+    '<div class="blog-table-wrapper my-6 overflow-x-auto rounded-md border border-border/80 bg-card/60 shadow-sm custom-scrollbar"><table class="w-full min-w-[520px] text-left text-xs sm:text-sm">$1</table></div>'
   )
 }
 
@@ -372,12 +372,12 @@ export async function renderMarkdown(
         }
 
         const headingClasses: Record<number, string> = {
-          1: "text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground mt-12 mb-6 border-b border-border/60 pb-3",
-          2: "text-2xl sm:text-3xl font-bold tracking-tight text-foreground mt-10 mb-4 border-b border-border/40 pb-2.5",
-          3: "text-xl sm:text-2xl font-semibold tracking-tight text-foreground mt-8 mb-3",
-          4: "text-lg sm:text-xl font-semibold text-foreground mt-6 mb-2",
-          5: "text-base font-semibold text-foreground mt-4 mb-2",
-          6: "text-sm font-semibold tracking-wider uppercase text-muted-foreground mt-4 mb-2",
+          1: "text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-foreground mt-8 sm:mt-12 mb-4 sm:mb-6 border-b border-border/60 pb-2.5 sm:pb-3",
+          2: "text-[21px] sm:text-2xl lg:text-3xl font-extrabold tracking-tight text-foreground mt-8 sm:mt-11 mb-3.5 sm:mb-4 border-b border-border/40 pb-2 sm:pb-2.5",
+          3: "text-lg sm:text-xl lg:text-2xl font-bold tracking-tight text-foreground mt-6 sm:mt-8 mb-2.5 sm:mb-3",
+          4: "text-base sm:text-lg font-bold text-foreground mt-5 sm:mt-6 mb-2",
+          5: "text-sm sm:text-base font-semibold text-foreground mt-4 mb-2",
+          6: "text-xs sm:text-sm font-semibold tracking-wider uppercase text-muted-foreground mt-4 mb-2",
         }
 
         const tag = `h${depth}`
@@ -385,11 +385,10 @@ export async function renderMarkdown(
         const isSection =
           depth === 2 || depth === 3 ? 'data-article-section=""' : ""
 
-        // Heading with anchor icon on hover
+        // Heading with anchor link
         return `
-          <${tag} id="${uniqueSlug}" ${isSection} class="group scroll-mt-28 flex items-center gap-2 ${cls}">
-            <a href="#${uniqueSlug}" class="heading-anchor text-muted-foreground/30 hover:text-primary transition-opacity duration-150 no-underline font-mono text-sm" aria-label="Link to section ${escapeHtml(rawText)}">#</a>
-            <span>${text}</span>
+          <${tag} id="${uniqueSlug}" ${isSection} class="group relative scroll-mt-28 ${cls}">
+            <a href="#${uniqueSlug}" class="heading-anchor mr-1.5 inline-block font-mono text-sm font-normal text-muted-foreground/30 hover:text-primary transition-opacity duration-150 no-underline select-none" aria-label="Link to section ${escapeHtml(rawText)}">#</a><span>${text}</span>
           </${tag}>
         `
       },
@@ -399,7 +398,7 @@ export async function renderMarkdown(
         const caption = title || (altText && altText !== href ? altText : "")
 
         return `
-          <figure class="blog-image-figure my-8 overflow-hidden rounded-md border border-border/80 bg-card/60 shadow-md">
+          <figure class="blog-image-figure my-6 sm:my-8 overflow-hidden rounded-md border border-border/80 bg-card/60 shadow-md">
             <div class="relative overflow-hidden">
               <img
                 src="${escapeHtml(href)}"
@@ -412,7 +411,7 @@ export async function renderMarkdown(
             </div>
             ${
               caption
-                ? `<figcaption class="border-t border-border/60 bg-muted/30 px-4 py-2.5 text-center font-mono text-xs text-muted-foreground">
+                ? `<figcaption class="border-t border-border/60 bg-muted/30 px-3 sm:px-4 py-2 sm:py-2.5 text-center font-mono text-[11px] sm:text-xs text-muted-foreground">
                     // ${escapeHtml(caption)}
                   </figcaption>`
                 : ""
@@ -451,18 +450,18 @@ export async function renderMarkdown(
         }
 
         return `
-          <div class="code-block-container relative my-6 overflow-hidden rounded-md border shadow-lg">
-            <div class="code-header flex items-center justify-between border-b px-4 py-2 text-xs font-mono select-none">
-              <div class="flex items-center gap-2">
-                <div class="flex items-center gap-1.5">
-                  <span class="h-2.5 w-2.5 rounded-full bg-red-500/70 inline-block"></span>
-                  <span class="h-2.5 w-2.5 rounded-full bg-amber-500/70 inline-block"></span>
-                  <span class="h-2.5 w-2.5 rounded-full bg-emerald-500/70 inline-block"></span>
+          <div class="code-block-container relative my-5 sm:my-6 overflow-hidden rounded-md border shadow-lg">
+            <div class="code-header flex items-center justify-between border-b px-3 sm:px-4 py-1.5 sm:py-2 text-xs font-mono select-none">
+              <div class="flex items-center gap-1.5 sm:gap-2 min-w-0">
+                <div class="flex items-center gap-1 sm:gap-1.5 shrink-0">
+                  <span class="h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full bg-red-500/70 inline-block"></span>
+                  <span class="h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full bg-amber-500/70 inline-block"></span>
+                  <span class="h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full bg-emerald-500/70 inline-block"></span>
                 </div>
                 ${
                   title
-                    ? `<span class="ml-2 font-medium text-foreground/80 flex items-center gap-1.5 truncate max-w-xs">
-                        <svg class="h-3.5 w-3.5 text-muted-foreground shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    ? `<span class="ml-1 sm:ml-2 font-medium text-foreground/80 flex items-center gap-1 sm:gap-1.5 truncate max-w-[140px] sm:max-w-xs text-[11px] sm:text-xs">
+                        <svg class="h-3 w-3 sm:h-3.5 sm:w-3.5 text-muted-foreground shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                           <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
                           <polyline points="14 2 14 8 20 8"/>
                         </svg>
@@ -472,21 +471,21 @@ export async function renderMarkdown(
                 }
               </div>
 
-              <div class="flex items-center gap-3">
-                <span class="rounded bg-primary/10 px-2 py-0.5 text-[11px] font-semibold text-primary uppercase tracking-wider border border-primary/20">
+              <div class="flex items-center gap-1.5 sm:gap-3 shrink-0">
+                <span class="rounded bg-primary/10 px-1.5 sm:px-2 py-0.5 text-[10px] sm:text-[11px] font-semibold text-primary uppercase tracking-wider border border-primary/20">
                   ${displayBadge}
                 </span>
                 <button
                   type="button"
-                  class="code-copy-btn inline-flex items-center gap-1.5 rounded px-2 py-1 text-[11px] font-medium text-muted-foreground hover:bg-primary/10 hover:text-primary transition-all duration-150 cursor-pointer"
+                  class="code-copy-btn inline-flex items-center gap-1 sm:gap-1.5 rounded px-1.5 sm:px-2 py-0.5 sm:py-1 text-[10px] sm:text-[11px] font-medium text-muted-foreground hover:bg-primary/10 hover:text-primary transition-all duration-150 cursor-pointer"
                   data-code="${escapeHtml(text)}"
                   aria-label="Copy code to clipboard"
                 >
-                  <svg class="copy-icon h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <svg class="copy-icon h-3 w-3 sm:h-3.5 sm:w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
                     <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
                   </svg>
-                  <svg class="check-icon hidden h-3.5 w-3.5 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <svg class="check-icon hidden h-3 w-3 sm:h-3.5 sm:w-3.5 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="20 6 9 17 4 12"/>
                   </svg>
                   <span class="btn-text">Copy</span>
@@ -494,7 +493,7 @@ export async function renderMarkdown(
               </div>
             </div>
 
-            <div class="code-body-wrapper max-h-[420px] min-h-[50px] overflow-auto text-[13px] leading-relaxed">
+            <div class="code-body-wrapper max-h-[420px] min-h-[50px] overflow-auto text-xs sm:text-[13px] leading-relaxed">
               ${highlightedCode}
             </div>
           </div>

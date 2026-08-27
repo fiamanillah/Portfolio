@@ -101,9 +101,16 @@ export function ArticleHeaderActions({
 
   const scrollToToc = (e: React.MouseEvent) => {
     e.preventDefault()
-    const el = document.getElementById("table-of-contents")
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth" })
+    const dialog = document.getElementById(
+      "mobile-toc-dialog"
+    ) as HTMLDialogElement | null
+    if (dialog) {
+      dialog.showModal()
+    } else {
+      const el = document.getElementById("table-of-contents")
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth" })
+      }
     }
   }
 
@@ -116,9 +123,9 @@ export function ArticleHeaderActions({
   )}`
 
   return (
-    <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <div className="flex w-full flex-col gap-2.5 sm:flex-row sm:items-center sm:justify-between">
       {/* Left: Engagement Controls (Like, Comments, Jump to Contents) */}
-      <div className="flex flex-wrap items-center gap-2">
+      <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
         {/* Like Button */}
         <button
           type="button"
@@ -127,7 +134,7 @@ export function ArticleHeaderActions({
           aria-label={
             reactions.userLiked ? "Unlike article" : "Like this article"
           }
-          className={`group relative inline-flex h-8 cursor-pointer items-center gap-2 border px-3 font-mono text-xs font-semibold transition-all duration-200 select-none ${
+          className={`group relative inline-flex h-7.5 cursor-pointer items-center gap-1.5 border px-2.5 font-mono text-[11px] font-semibold transition-all duration-200 select-none sm:h-8 sm:gap-2 sm:px-3 sm:text-xs ${
             reactions.userLiked
               ? "border-rose-500/60 bg-rose-500/15 text-rose-400 shadow-[0_0_14px_rgba(244,63,94,0.25)] ring-1 ring-rose-500/30"
               : "border-border/80 bg-background text-muted-foreground hover:border-rose-500/50 hover:bg-rose-500/10 hover:text-rose-400"
@@ -149,12 +156,12 @@ export function ArticleHeaderActions({
               }`}
             />
           </span>
-          <span className="text-[11px] font-bold">
+          <span className="text-[10px] font-bold sm:text-[11px]">
             {reactions.userLiked ? "Liked" : "Like"}
           </span>
           <span
             data-post-likes-count
-            className={`rounded-xs px-1.5 py-0.5 text-[10px] font-bold ${
+            className={`rounded-xs px-1.5 py-0.5 text-[9px] font-bold sm:text-[10px] ${
               reactions.userLiked
                 ? "bg-rose-500/25 text-rose-300"
                 : "bg-muted text-muted-foreground group-hover:text-rose-400"
@@ -170,31 +177,31 @@ export function ArticleHeaderActions({
           onClick={scrollToComments}
           title="Jump to Discussion & Comments"
           aria-label="Jump to discussion"
-          className="group inline-flex h-8 cursor-pointer items-center gap-2 border border-border/80 bg-background px-3 font-mono text-xs font-semibold text-muted-foreground transition-all duration-200 select-none hover:border-primary/60 hover:bg-primary/10 hover:text-primary hover:shadow-[0_0_12px_oklch(var(--primary)/15%)]"
+          className="group inline-flex h-7.5 cursor-pointer items-center gap-1.5 border border-border/80 bg-background px-2.5 font-mono text-[11px] font-semibold text-muted-foreground transition-all duration-200 select-none hover:border-primary/60 hover:bg-primary/10 hover:text-primary hover:shadow-[0_0_12px_oklch(var(--primary)/15%)] sm:h-8 sm:gap-2 sm:px-3 sm:text-xs"
         >
           <HugeiconsIcon
             icon={Comment01Icon}
             className="size-3.5 text-primary/80 transition-transform duration-200 group-hover:scale-110"
           />
-          <span className="text-[11px] font-bold">Comments</span>
-          <span className="rounded-xs bg-muted px-1.5 py-0.5 text-[10px] font-bold text-muted-foreground transition-colors group-hover:bg-primary/20 group-hover:text-primary">
+          <span className="text-[10px] font-bold sm:text-[11px]">Comments</span>
+          <span className="rounded-xs bg-muted px-1.5 py-0.5 text-[9px] font-bold text-muted-foreground transition-colors group-hover:bg-primary/20 group-hover:text-primary sm:text-[10px]">
             {totalCommentsCount}
           </span>
         </button>
 
-        {/* Jump to TOC Button (shows on small/medium screens) */}
+        {/* Jump to TOC Button (shows on mobile/tablet screens) */}
         <button
           type="button"
           onClick={scrollToToc}
-          title="Jump to Table of Contents"
-          aria-label="Jump to table of contents"
-          className="hidden h-8 cursor-pointer items-center gap-1.5 border border-border/80 bg-background px-2.5 font-mono text-xs font-semibold text-muted-foreground transition-all duration-200 select-none hover:border-border hover:text-foreground md:inline-flex lg:hidden"
+          title="Open Table of Contents"
+          aria-label="Open table of contents"
+          className="inline-flex h-7.5 cursor-pointer items-center gap-1.5 border border-border/80 bg-background px-2.5 font-mono text-[11px] font-semibold text-muted-foreground transition-all duration-200 select-none hover:border-primary/60 hover:text-primary sm:h-8 sm:text-xs lg:hidden"
         >
           <HugeiconsIcon
             icon={MenuSquareIcon}
-            className="size-3.5 text-muted-foreground"
+            className="size-3.5 text-primary/80"
           />
-          <span className="text-[11px]">Index</span>
+          <span className="text-[10px] sm:text-[11px]">TOC</span>
         </button>
       </div>
 
@@ -210,7 +217,7 @@ export function ArticleHeaderActions({
           onClick={handleShareClick}
           title="Copy article link"
           aria-label="Share or copy article link"
-          className={`inline-flex h-8 cursor-pointer items-center gap-1.5 border px-3 font-mono text-[11px] font-semibold transition-all duration-200 select-none ${
+          className={`inline-flex h-7.5 cursor-pointer items-center gap-1.5 border px-2.5 font-mono text-[10px] font-semibold transition-all duration-200 select-none sm:h-8 sm:px-3 sm:text-[11px] ${
             copied
               ? "border-emerald-500/60 bg-emerald-500/15 font-bold text-emerald-400 shadow-[0_0_12px_rgba(16,185,129,0.2)] ring-1 ring-emerald-500/30"
               : "border-border/80 bg-background text-muted-foreground hover:border-primary/60 hover:bg-background/90 hover:text-foreground"
@@ -230,7 +237,7 @@ export function ArticleHeaderActions({
           rel="noopener noreferrer"
           title="Share on Twitter / X"
           aria-label="Share on X (formerly Twitter)"
-          className="flex h-8 w-8 cursor-pointer items-center justify-center border border-border/80 bg-background text-muted-foreground transition-all duration-200 hover:border-primary/60 hover:bg-background/90 hover:text-foreground hover:shadow-xs"
+          className="flex h-7.5 w-7.5 cursor-pointer items-center justify-center border border-border/80 bg-background text-muted-foreground transition-all duration-200 hover:border-primary/60 hover:bg-background/90 hover:text-foreground hover:shadow-xs sm:h-8 sm:w-8"
         >
           <HugeiconsIcon icon={NewTwitterIcon} className="size-3.5" />
         </a>
@@ -242,7 +249,7 @@ export function ArticleHeaderActions({
           rel="noopener noreferrer"
           title="Share on LinkedIn"
           aria-label="Share on LinkedIn"
-          className="flex h-8 w-8 cursor-pointer items-center justify-center border border-border/80 bg-background text-muted-foreground transition-all duration-200 hover:border-primary/60 hover:bg-background/90 hover:text-foreground hover:shadow-xs"
+          className="flex h-7.5 w-7.5 cursor-pointer items-center justify-center border border-border/80 bg-background text-muted-foreground transition-all duration-200 hover:border-primary/60 hover:bg-background/90 hover:text-foreground hover:shadow-xs sm:h-8 sm:w-8"
         >
           <HugeiconsIcon icon={Linkedin02Icon} className="size-3.5" />
         </a>

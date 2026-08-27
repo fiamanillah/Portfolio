@@ -572,6 +572,15 @@ html.dark .shiki span {
 /* ─── Markdown Content Prose & Elements ─────────────────────────────── */
 .markdown-content {
   color: oklch(var(--foreground) / 90%);
+  font-size: 0.9375rem; /* 15px mobile */
+  line-height: 1.75;
+}
+
+@media (min-width: 640px) {
+  .markdown-content {
+    font-size: 1rem; /* 16px desktop */
+    line-height: 1.8;
+  }
 }
 
 .markdown-content > *:first-child {
@@ -579,9 +588,15 @@ html.dark .shiki span {
 }
 
 .markdown-content p {
-  margin-top: 1.25rem;
-  margin-bottom: 1.25rem;
-  line-height: 1.75;
+  margin-top: 1.125rem;
+  margin-bottom: 1.125rem;
+}
+
+@media (min-width: 640px) {
+  .markdown-content p {
+    margin-top: 1.25rem;
+    margin-bottom: 1.25rem;
+  }
 }
 
 .markdown-content strong,
@@ -592,16 +607,32 @@ html.dark .shiki span {
 
 .markdown-content ul {
   list-style-type: disc;
-  padding-left: 1.5rem;
-  margin-top: 1rem;
-  margin-bottom: 1rem;
+  padding-left: 1.25rem;
+  margin-top: 0.875rem;
+  margin-bottom: 0.875rem;
+}
+
+@media (min-width: 640px) {
+  .markdown-content ul {
+    padding-left: 1.5rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+  }
 }
 
 .markdown-content ol {
   list-style-type: decimal;
-  padding-left: 1.5rem;
-  margin-top: 1rem;
-  margin-bottom: 1rem;
+  padding-left: 1.25rem;
+  margin-top: 0.875rem;
+  margin-bottom: 0.875rem;
+}
+
+@media (min-width: 640px) {
+  .markdown-content ol {
+    padding-left: 1.5rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+  }
 }
 
 .markdown-content li {
@@ -629,12 +660,15 @@ html.dark .shiki span {
     ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
     monospace;
   font-size: 0.85em;
-  padding: 0.15em 0.4em;
+  padding: 0.125em 0.375em;
   border-radius: 0.25rem;
   background-color: oklch(var(--muted) / 80%);
   color: oklch(var(--primary));
   border: 1px solid oklch(var(--border) / 60%);
-  word-break: break-word;
+  overflow-wrap: break-word;
+  word-break: normal;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
 }
 
 /* Blockquotes */
@@ -654,30 +688,63 @@ html.dark .shiki span {
   margin: 0;
 }
 
-/* Table styling */
+/* Table styling & responsive scroll wrapper */
+.blog-table-wrapper {
+  position: relative;
+  width: 100%;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 0.5rem;
+  border: 1px solid oklch(var(--border) / 80%);
+  background: oklch(var(--card) / 60%);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
 .markdown-content table {
   width: 100%;
+  min-width: 520px;
   border-collapse: collapse;
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
+}
+
+@media (min-width: 640px) {
+  .markdown-content table {
+    min-width: 100%;
+    font-size: 0.875rem;
+  }
 }
 
 .markdown-content th {
-  background: oklch(var(--muted) / 50%);
+  background: oklch(var(--muted) / 60%);
   color: oklch(var(--foreground));
   font-family: ui-monospace, monospace;
-  font-size: 0.75rem;
+  font-size: 0.725rem;
   font-weight: 700;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  padding: 0.75rem 1rem;
+  padding: 0.625rem 0.875rem;
   border-bottom: 1px solid oklch(var(--border) / 80%);
   text-align: left;
+  white-space: nowrap;
 }
 
 .markdown-content td {
-  padding: 0.75rem 1rem;
+  padding: 0.625rem 0.875rem;
   border-bottom: 1px solid oklch(var(--border) / 40%);
-  line-height: 1.5;
+  line-height: 1.55;
+  vertical-align: top;
+}
+
+.markdown-content td:first-child,
+.markdown-content th:first-child {
+  padding-left: 1rem;
+}
+
+.markdown-content td:last-child,
+.markdown-content th:last-child {
+  padding-right: 1rem;
 }
 
 .markdown-content tr:nth-child(even) td {
@@ -686,6 +753,12 @@ html.dark .shiki span {
 
 .markdown-content tr:hover td {
   background-color: oklch(var(--primary) / 4%);
+}
+
+/* Ensure code inside tables doesn't wrap or break words */
+.markdown-content table :not(pre) > code {
+  white-space: nowrap;
+  font-size: 0.825em;
 }
 
 /* Alert Prose Content */

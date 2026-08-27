@@ -460,7 +460,7 @@ export function FrontendArticlePreview({
 
             {/* 5. Main Markdown Rendered Content */}
             <div
-              className="markdown-content max-w-3xl space-y-6 text-base leading-relaxed text-foreground/90"
+              className="markdown-content max-w-3xl text-foreground/90"
               dangerouslySetInnerHTML={{ __html: html }}
             />
 

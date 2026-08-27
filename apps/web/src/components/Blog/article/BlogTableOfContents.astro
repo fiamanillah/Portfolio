@@ -29,52 +29,89 @@ const tocItems: TocItem[] =
 {
   tocItems.length > 0 && (
     <div class="h-full w-full">
-      {/* Mobile Collapsible TOC */}
-      <details class="group mb-8 border border-border bg-background/80 p-4 lg:hidden">
-        <summary class="flex cursor-pointer items-center justify-between text-sm font-semibold text-foreground select-none">
-          <span>On this page</span>
-          <span class="text-muted-foreground transition-transform duration-200 group-open:rotate-180">
-            ↓
-          </span>
-        </summary>
-        <nav class="mt-3 border-t border-border/60 pt-3">
-          <ul class="space-y-1.5">
-            {tocItems.map((item, index) => {
-              const depth = item.depth ?? 2
-              const prevItem = index > 0 ? tocItems[index - 1] : null
-              const isFirstH2AfterH3 =
-                depth === 2 && prevItem && (prevItem.depth ?? 2) === 3
-              const isTopLevelAfterTopLevel =
-                depth === 2 && prevItem && (prevItem.depth ?? 2) === 2
+      {/* Mobile Floating Action Button (FAB) */}
+      <button
+        id="mobile-toc-toggle-btn"
+        type="button"
+        aria-label="Open Table of Contents"
+        aria-controls="mobile-toc-dialog"
+        class="fixed right-4 bottom-5 z-50 flex cursor-pointer items-center gap-2 rounded-full border border-primary/50 bg-background/95 px-3.5 py-2.5 font-mono text-xs font-semibold text-foreground shadow-[0_4px_20px_rgba(0,0,0,0.4)] ring-1 ring-primary/30 backdrop-blur-xl transition-all hover:border-primary hover:bg-primary/10 hover:text-primary active:scale-95 sm:right-6 sm:bottom-6 lg:hidden"
+      >
+        <svg
+          class="h-4 w-4 text-primary"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="3" y1="6" x2="21" y2="6" />
+          <line x1="3" y1="12" x2="15" y2="12" />
+          <line x1="3" y1="18" x2="18" y2="18" />
+        </svg>
+        <span>On this page</span>
+        <span class="flex h-4 min-w-4 items-center justify-center rounded-full bg-primary/20 px-1 text-[10px] font-bold text-primary">
+          {tocItems.length}
+        </span>
+      </button>
 
-              return (
-                <li
-                  class={
-                    index === 0
-                      ? ""
-                      : isFirstH2AfterH3
-                        ? "mt-3 border-t border-border/40 pt-2"
-                        : isTopLevelAfterTopLevel
-                          ? "mt-2"
-                          : "mt-1"
-                  }
-                >
-                  <a
-                    href={`#${item.id}`}
-                    class={`toc-mobile-link block py-1.5 text-xs leading-snug transition-colors hover:text-foreground ${
-                      depth === 3
-                        ? "pl-5 text-muted-foreground/80"
-                        : "pl-2 font-medium text-muted-foreground hover:text-foreground"
-                    }`}
-                  >
-                    {item.title}
-                  </a>
-                </li>
-              )
-            })}
-          </ul>
-        </nav>
-      </details>
+      {/* Mobile Table of Contents Modal Dialog / Bottom Sheet Drawer */}
+      <dialog
+        id="mobile-toc-dialog"
+        class="fixed inset-x-0 bottom-0 z-50 m-0 max-h-[75vh] w-full max-w-none rounded-t-2xl border-t border-border bg-background/95 p-0 text-foreground shadow-2xl backdrop-blur-xl lg:hidden"
+      >
+        <div class="flex max-h-[75vh] flex-col">
+          {/* Drawer Header */}
+          <div class="flex items-center justify-between border-b border-border/60 px-5 py-3.5">
+            <div class="flex items-center gap-2">
+              <span class="h-2 w-2 animate-pulse rounded-full bg-primary" />
+              <h3 class="font-mono text-xs font-bold tracking-wider text-foreground uppercase">
+                // Table of Contents
+              </h3>
+              <span class="rounded-xs border border-border bg-muted/40 px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">
+                {tocItems.length} sections
+              </span>
+            </div>
+            <button
+              id="mobile-toc-close-btn"
+              type="button"
+              class="flex h-7 w-7 items-center justify-center rounded-md border border-border/60 bg-muted/20 font-mono text-xs text-muted-foreground transition-colors hover:bg-muted hover:text-foreground active:scale-95"
+              aria-label="Close Table of Contents"
+            >
+              ✕
+            </button>
+          </div>
+
+          {/* Scrollable list of headings */}
+          <div class="overflow-y-auto overscroll-contain px-5 py-4">
+            <ul class="space-y-1">
+              {tocItems.map((item, index) => {
+                const depth = item.depth ?? 2
+                const isSubItem = depth === 3
+                return (
+                  <li>
+                    <a
+                      href={`#${item.id}`}
+                      data-mobile-toc-link={item.id}
+                      class={`mobile-toc-link flex items-center justify-between rounded-md px-3 py-2 text-xs transition-colors duration-150 ${
+                        isSubItem
+                          ? "pl-6 text-muted-foreground hover:bg-primary/5 hover:text-foreground"
+                          : "font-medium text-muted-foreground hover:bg-primary/10 hover:text-foreground"
+                      } ${index === 0 ? "mobile-toc-active bg-primary/10 font-semibold text-primary" : ""}`}
+                    >
+                      <span class="truncate">{item.title}</span>
+                      <span class="ml-2 font-mono text-[10px] text-muted-foreground/50">
+                        {isSubItem ? "H3" : "H2"}
+                      </span>
+                    </a>
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
+        </div>
+      </dialog>
 
       {/* Desktop Sticky Right Sidebar TOC */}
       <div class="toc-container sticky top-24 hidden lg:block">
@@ -143,24 +180,6 @@ const tocItems: TocItem[] =
 }
 
 <style>
-  /* Stagger fade-in animation for TOC items */
-  @keyframes toc-fade-in {
-    from {
-      opacity: 0;
-      transform: translateX(6px);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
-  }
-
-  .toc-item {
-    opacity: 0;
-    animation: toc-fade-in 0.3s ease-out forwards;
-    animation-delay: calc(var(--toc-index, 0) * 0.04s + 0.1s);
-  }
-
   /* SVG Base Rail Styling */
   .toc-bg-path {
     stroke: oklch(var(--border) / 0.55);
@@ -197,6 +216,19 @@ const tocItems: TocItem[] =
   .toc-nav-scrollable::-webkit-scrollbar {
     display: none;
   }
+
+  /* Mobile Dialog styling */
+  #mobile-toc-dialog {
+    margin-top: auto;
+    margin-bottom: 0;
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  #mobile-toc-dialog::backdrop {
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+  }
 </style>
 
 <script>
@@ -204,7 +236,12 @@ const tocItems: TocItem[] =
     const tocLinks = Array.from(
       document.querySelectorAll<HTMLAnchorElement>("[data-toc-link]")
     )
-    const sections = document.querySelectorAll("[data-article-section]")
+    const mobileLinks = Array.from(
+      document.querySelectorAll<HTMLAnchorElement>("[data-mobile-toc-link]")
+    )
+    const sections = Array.from(
+      document.querySelectorAll<HTMLElement>("[data-article-section]")
+    )
     const bgPath = document.getElementById(
       "toc-bg-path"
     ) as SVGPathElement | null
@@ -215,15 +252,55 @@ const tocItems: TocItem[] =
     const items = Array.from(
       document.querySelectorAll<HTMLElement>(".toc-item")
     )
+    const mobileDialog = document.getElementById(
+      "mobile-toc-dialog"
+    ) as HTMLDialogElement | null
+    const mobileToggleBtn = document.getElementById("mobile-toc-toggle-btn")
+    const mobileCloseBtn = document.getElementById("mobile-toc-close-btn")
 
-    if (
-      !tocLinks.length ||
-      !sections.length ||
-      !bgPath ||
-      !activePath ||
-      !wrapper ||
-      items.length === 0
-    ) {
+    // --- Mobile Dialog Setup ---
+    if (mobileDialog && mobileToggleBtn) {
+      mobileToggleBtn.addEventListener("click", () => {
+        mobileDialog.showModal()
+      })
+
+      mobileCloseBtn?.addEventListener("click", () => {
+        mobileDialog.close()
+      })
+
+      // Close on backdrop click
+      mobileDialog.addEventListener("click", (e) => {
+        const rect = mobileDialog.getBoundingClientRect()
+        if (
+          e.clientX < rect.left ||
+          e.clientX > rect.right ||
+          e.clientY < rect.top ||
+          e.clientY > rect.bottom
+        ) {
+          mobileDialog.close()
+        }
+      })
+    }
+
+    // Mobile TOC links smooth scroll & close drawer
+    mobileLinks.forEach((link) => {
+      link.addEventListener("click", (e) => {
+        const targetId = link.getAttribute("data-mobile-toc-link")
+        if (!targetId) return
+        e.preventDefault()
+        if (mobileDialog?.open) {
+          mobileDialog.close()
+        }
+        const target = document.getElementById(targetId)
+        if (target) {
+          target.scrollIntoView({ behavior: "smooth", block: "start" })
+          history.replaceState(null, "", `#${targetId}`)
+          setActiveSection(targetId)
+        }
+      })
+    })
+
+    if (!sections.length || !tocLinks.length) {
       return
     }
 
@@ -239,7 +316,7 @@ const tocItems: TocItem[] =
       if (totalLen <= 0) return 0
       let low = 0
       let high = totalLen
-      for (let i = 0; i < 24; i++) {
+      for (let i = 0; i < 20; i++) {
         const mid = (low + high) / 2
         const pt = pathEl.getPointAtLength(mid)
         if (pt.y < targetY) {
@@ -253,7 +330,7 @@ const tocItems: TocItem[] =
 
     // Build the SVG path that traces H2 and H3 items with smooth S-curves for bevel/tilt
     function buildSvgRail() {
-      if (!bgPath || !activePath || items.length === 0) return
+      if (!bgPath || !activePath || !wrapper || items.length === 0) return
 
       let d = ""
 
@@ -276,10 +353,8 @@ const tocItems: TocItem[] =
           const nextTop = next.offsetTop
 
           if (currX === nextX) {
-            // Same level — straight vertical line to the next item
             d += ` L ${currX} ${nextTop}`
           } else {
-            // Level change — smooth tilted S-curve transition between items
             const y1 = itemBottom - 2
             const y2 = nextTop + 2
             const midY = (y1 + y2) / 2
@@ -287,7 +362,6 @@ const tocItems: TocItem[] =
             d += ` C ${currX} ${midY}, ${nextX} ${midY}, ${nextX} ${y2}`
           }
         } else {
-          // Last item — straight line to bottom of item
           d += ` L ${currX} ${itemBottom - 2}`
         }
       }
@@ -328,18 +402,100 @@ const tocItems: TocItem[] =
       activePath.style.opacity = "1"
     }
 
-    // Initialize rail path after layout stabilizes
+    // Scroll active item in sidebar container without animating or fighting manual scroll
+    function scrollActiveTocItemIntoView(activeLink: HTMLElement | null) {
+      if (!activeLink) return
+      const activeItem = activeLink.closest<HTMLElement>(".toc-item")
+      const tocNav = activeLink.closest<HTMLElement>(".toc-nav-scrollable")
+      if (!activeItem || !tocNav) return
+
+      const navRect = tocNav.getBoundingClientRect()
+      const itemRect = activeItem.getBoundingClientRect()
+
+      const itemTopInNav = itemRect.top - navRect.top
+      const itemBottomInNav = itemRect.bottom - navRect.top
+      const navHeight = tocNav.clientHeight
+
+      if (itemTopInNav < 24 || itemBottomInNav > navHeight - 24) {
+        const targetScroll =
+          activeItem.offsetTop - navHeight / 2 + activeItem.offsetHeight / 2
+        tocNav.scrollTop = Math.max(0, targetScroll)
+      }
+    }
+
+    // Centralized active section updater
+    let currentActiveId: string | null = null
+
+    function setActiveSection(activeId: string) {
+      if (currentActiveId === activeId) return
+      currentActiveId = activeId
+
+      let matchedLink: HTMLAnchorElement | null = null
+
+      // Sync desktop links — maintain stable font weights to avoid layout shifts
+      tocLinks.forEach((link) => {
+        const targetId = link.getAttribute("data-toc-link")
+        if (targetId === activeId) {
+          matchedLink = link
+          link.classList.add("toc-active", "text-foreground")
+          link.classList.remove(
+            "text-muted-foreground",
+            "text-muted-foreground/75"
+          )
+        } else {
+          link.classList.remove("toc-active", "text-foreground")
+          const depth = link.closest<HTMLElement>(".toc-item")?.dataset.depth
+          if (depth === "3") {
+            link.classList.add("text-muted-foreground/75")
+          } else {
+            link.classList.add("text-muted-foreground")
+          }
+        }
+      })
+
+      // Sync mobile drawer links
+      mobileLinks.forEach((link) => {
+        const targetId = link.getAttribute("data-mobile-toc-link")
+        if (targetId === activeId) {
+          link.classList.add(
+            "mobile-toc-active",
+            "bg-primary/10",
+            "text-primary"
+          )
+          link.classList.remove("text-muted-foreground")
+        } else {
+          link.classList.remove(
+            "mobile-toc-active",
+            "bg-primary/10",
+            "text-primary"
+          )
+          link.classList.add("text-muted-foreground")
+        }
+      })
+
+      updateActiveIndicator()
+      scrollActiveTocItemIntoView(matchedLink)
+    }
+
+    // Initialize rail path after initial layout
     requestAnimationFrame(() => {
       buildSvgRail()
     })
 
-    // ResizeObserver to rebuild path if dimensions shift
-    const resizeObserver = new ResizeObserver(() => {
-      buildSvgRail()
-    })
-    resizeObserver.observe(wrapper)
+    // Debounced window resize handler instead of continuous ResizeObserver
+    let resizeTimer: number | undefined
+    window.addEventListener(
+      "resize",
+      () => {
+        clearTimeout(resizeTimer)
+        resizeTimer = window.setTimeout(() => {
+          buildSvgRail()
+        }, 100)
+      },
+      { passive: true }
+    )
 
-    // --- Smooth scroll on TOC link click ---
+    // --- Desktop TOC links smooth scroll ---
     tocLinks.forEach((link) => {
       link.addEventListener("click", (e) => {
         e.preventDefault()
@@ -349,89 +505,60 @@ const tocItems: TocItem[] =
         if (target) {
           target.scrollIntoView({ behavior: "smooth", block: "start" })
           history.replaceState(null, "", `#${targetId}`)
+          setActiveSection(targetId)
         }
       })
     })
 
-    // Mobile TOC links smooth scroll
-    document.querySelectorAll(".toc-mobile-link").forEach((link) => {
-      link.addEventListener("click", (e) => {
-        const href = link.getAttribute("href")
-        if (!href || !href.startsWith("#")) return
-        e.preventDefault()
-        const target = document.getElementById(href.slice(1))
-        if (target) {
-          target.scrollIntoView({ behavior: "smooth", block: "start" })
-          history.replaceState(null, "", href)
-        }
-      })
-    })
+    // --- High-Performance Scrollspy via requestAnimationFrame ---
+    let scrollSpyTicking = false
 
-    // --- Scrollspy with IntersectionObserver ---
-    const observerOptions = {
-      root: null,
-      rootMargin: "-15% 0px -50% 0px",
-      threshold: 0,
+    function computeActiveSection() {
+      if (!sections.length) return
+
+      const scrollPosition = window.scrollY + 130
+      let matchedSection: HTMLElement = sections[0]
+
+      // Find the last section whose offsetTop is <= current scroll position
+      for (let i = 0; i < sections.length; i++) {
+        const sec = sections[i]
+        if (sec.offsetTop <= scrollPosition) {
+          matchedSection = sec
+        } else {
+          break
+        }
+      }
+
+      // Special case: reached bottom of page
+      if (
+        window.innerHeight + window.scrollY >=
+        document.documentElement.scrollHeight - 70
+      ) {
+        matchedSection = sections[sections.length - 1]
+      }
+
+      const activeId = matchedSection.getAttribute("id")
+      if (activeId) {
+        setActiveSection(activeId)
+      }
     }
 
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const activeId = entry.target.getAttribute("id")
-
-          tocLinks.forEach((link) => {
-            const targetId = link.getAttribute("data-toc-link")
-            if (targetId === activeId) {
-              link.classList.add(
-                "toc-active",
-                "text-foreground",
-                "font-semibold"
-              )
-              link.classList.remove(
-                "text-muted-foreground",
-                "text-muted-foreground/75"
-              )
-            } else {
-              link.classList.remove(
-                "toc-active",
-                "text-foreground",
-                "font-semibold"
-              )
-              const depth =
-                link.closest<HTMLElement>(".toc-item")?.dataset.depth
-              if (depth === "3") {
-                link.classList.add("text-muted-foreground/75")
-                link.classList.remove("font-semibold")
-              } else {
-                link.classList.add("text-muted-foreground", "font-medium")
-                link.classList.remove("font-semibold")
-              }
-            }
+    window.addEventListener(
+      "scroll",
+      () => {
+        if (!scrollSpyTicking) {
+          requestAnimationFrame(() => {
+            computeActiveSection()
+            scrollSpyTicking = false
           })
-
-          updateActiveIndicator()
-
-          // Scroll TOC item into view inside the sticky container if needed
-          const activeLink = document.querySelector<HTMLAnchorElement>(
-            ".toc-link.toc-active"
-          )
-          const tocNav = activeLink?.closest<HTMLElement>(".toc-nav-scrollable")
-          if (activeLink && tocNav) {
-            const linkTop = activeLink.offsetTop - tocNav.offsetTop
-            const navScroll = tocNav.scrollTop
-            const navHeight = tocNav.clientHeight
-            if (linkTop < navScroll || linkTop > navScroll + navHeight - 40) {
-              tocNav.scrollTo({
-                top: linkTop - navHeight / 3,
-                behavior: "smooth",
-              })
-            }
-          }
+          scrollSpyTicking = true
         }
-      })
-    }, observerOptions)
+      },
+      { passive: true }
+    )
 
-    sections.forEach((section) => observer.observe(section))
+    // Initial check
+    computeActiveSection()
   }
 
   if (document.readyState === "loading") {

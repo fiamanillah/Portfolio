@@ -12,7 +12,7 @@ const { html } = await renderMarkdown(content)
 ---
 
 <div
-  class={`markdown-content max-w-3xl space-y-6 text-foreground/90 leading-relaxed text-base ${className}`}
+  class={`markdown-content max-w-3xl text-foreground/90 ${className}`}
   set:html={html}
 />
 

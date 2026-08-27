@@ -33,30 +33,29 @@ const authorUsername =
     : "admin")
 const authorProfileUrl = `/authors/${authorUsername}`
 
-const twitterUrl = post.author?.twitter
-  ? post.author.twitter.startsWith("http")
-    ? post.author.twitter
-    : `https://x.com/${post.author.twitter.replace(/^@/, "")}`
-  : "https://x.com/fiamanillah"
+const normalizeSocialUrl = (handle?: string, domain = "https://x.com/") =>
+  handle
+    ? handle.startsWith("http")
+      ? handle
+      : `${domain}${handle.replace(/^@/, "")}`
+    : undefined
 
-const githubUrl = post.author?.github
-  ? post.author.github.startsWith("http")
-    ? post.author.github
-    : `https://github.com/${post.author.github.replace(/^@/, "")}`
-  : "https://github.com/fiamanillah"
-
-const linkedinUrl = post.author?.linkedin
-  ? post.author.linkedin.startsWith("http")
-    ? post.author.linkedin
-    : `https://linkedin.com/in/${post.author.linkedin.replace(/^@/, "")}`
-  : "https://linkedin.com/in/fiamanillah"
+const twitterUrl =
+  normalizeSocialUrl(post.author?.twitter, "https://x.com/") ||
+  "https://x.com/fiamanillah"
+const githubUrl =
+  normalizeSocialUrl(post.author?.github, "https://github.com/") ||
+  "https://github.com/fiamanillah"
+const linkedinUrl =
+  normalizeSocialUrl(post.author?.linkedin, "https://linkedin.com/in/") ||
+  "https://linkedin.com/in/fiamanillah"
 ---
 
 <div
-  class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8"
+  class="mx-auto max-w-7xl px-3.5 py-6 sm:px-6 sm:py-8 lg:px-8"
   style="scroll-behavior: smooth;"
 >
-  <div class="grid grid-cols-1 gap-10 lg:grid-cols-12">
+  <div class="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-10">
     {/* Main Article Reading Column (8 cols lg) */}
     <article class="min-w-0 lg:col-span-8">
       {/* Article Header — full article-column width */}
@@ -64,7 +63,7 @@ const linkedinUrl = post.author?.linkedin
 
       {/* Main Cover Artwork — full article-column width */}
       <div
-        class="blog-animate-in relative my-8 aspect-[16/9] w-full overflow-hidden border border-border bg-muted/30"
+        class="relative my-6 aspect-[16/9] w-full overflow-hidden border border-border bg-muted/30 sm:my-8"
       >
         <img
           src={post.thumbnail}
@@ -79,7 +78,7 @@ const linkedinUrl = post.author?.linkedin
         >
         </div>
         <div
-          class="absolute bottom-3 left-4 font-mono text-xs text-muted-foreground"
+          class="absolute bottom-2.5 left-3 font-mono text-[10px] text-muted-foreground sm:bottom-3 sm:left-4 sm:text-xs"
         >
           // COVER IMAGE: {post.title}
         </div>
@@ -88,7 +87,7 @@ const linkedinUrl = post.author?.linkedin
       {/* Key Takeaways Callout Box — full article-column width */}
       {
         post.keyTakeaways && post.keyTakeaways.length > 0 && (
-          <div class="blog-animate-in relative my-8 overflow-hidden border border-primary/30 bg-primary/5 p-6 backdrop-blur-sm">
+          <div class="relative my-6 overflow-hidden border border-primary/30 bg-primary/5 p-4 backdrop-blur-sm sm:my-8 sm:p-6">
             <div class="pointer-events-none absolute top-2 left-2 z-10 h-3 w-3 border-t border-l border-primary" />
             <div class="pointer-events-none absolute top-2 right-2 z-10 h-3 w-3 border-t border-r border-primary" />
             <div class="pointer-events-none absolute bottom-2 left-2 z-10 h-3 w-3 border-b border-l border-primary" />
@@ -97,9 +96,9 @@ const linkedinUrl = post.author?.linkedin
             <h3 class="font-mono text-xs font-bold tracking-widest text-primary uppercase">
               // KEY TAKEAWAYS & ARCHITECTURE HIGHLIGHTS
             </h3>
-            <ul class="mt-3 space-y-2 text-sm leading-relaxed text-foreground/90">
+            <ul class="mt-2.5 space-y-1.5 text-xs leading-relaxed text-foreground/90 sm:mt-3 sm:space-y-2 sm:text-sm">
               {post.keyTakeaways.map((item) => (
-                <li class="flex items-start gap-2.5">
+                <li class="flex items-start gap-2 sm:gap-2.5">
                   <span class="mt-0.5 text-primary">⚡</span>
                   <span>{item}</span>
                 </li>
@@ -111,18 +110,18 @@ const linkedinUrl = post.author?.linkedin
 
       {/* Main Reading Content (Markdown Rendered) */}
       <div
-        class="markdown-content blog-animate-in max-w-3xl space-y-6 text-base leading-relaxed text-foreground/90"
+        class="markdown-content max-w-3xl text-foreground/90"
         set:html={renderedMarkdownHtml}
       />
 
       {/* Decorative divider between content and meta */}
-      <div class="my-12 flex items-center gap-4">
+      <div class="my-8 flex items-center gap-3 sm:my-12 sm:gap-4">
         <div
           class="h-px flex-1 bg-gradient-to-r from-transparent via-border to-transparent"
         >
         </div>
         <span
-          class="font-mono text-[10px] tracking-widest text-muted-foreground/50 uppercase"
+          class="font-mono text-[9px] tracking-widest text-muted-foreground/50 uppercase sm:text-[10px]"
           >END OF ARTICLE</span
         >
         <div
@@ -133,12 +132,14 @@ const linkedinUrl = post.author?.linkedin
 
       {/* Article Tags — full article-column width */}
       <div
-        class="blog-animate-in flex flex-wrap items-center gap-2 border-t border-border/60 pt-6"
+        class="flex flex-wrap items-center gap-1.5 border-t border-border/60 pt-4 sm:gap-2 sm:pt-6"
       >
-        <span class="font-mono text-xs text-muted-foreground">TAGS:</span>
+        <span class="font-mono text-[11px] text-muted-foreground sm:text-xs"
+          >TAGS:</span
+        >
         {
           post.tags.map((tag) => (
-            <span class="inline-flex items-center border border-border bg-muted/60 px-2.5 py-0.5 font-mono text-xs text-muted-foreground">
+            <span class="inline-flex items-center border border-border bg-muted/60 px-2 py-0.5 font-mono text-[11px] text-muted-foreground sm:px-2.5 sm:text-xs">
               #{tag}
             </span>
           ))
@@ -146,7 +147,7 @@ const linkedinUrl = post.author?.linkedin
       </div>
 
       {/* Article Reaction & Like Station */}
-      <div class="blog-animate-in">
+      <div>
         <ArticleReactionStation
           client:visible
           postSlug={post.slug}
@@ -157,7 +158,7 @@ const linkedinUrl = post.author?.linkedin
 
       {/* Author Bio Card — full article-column width */}
       <div
-        class="blog-animate-in relative mt-10 overflow-hidden border border-border/80 bg-card/60 p-6 backdrop-blur-md sm:p-7"
+        class="relative mt-8 overflow-hidden border border-border/80 bg-card/60 p-4 backdrop-blur-md sm:mt-10 sm:p-6 md:p-7"
       >
         {/* Cyberpunk corner brackets */}
         <div
@@ -179,16 +180,18 @@ const linkedinUrl = post.author?.linkedin
 
         {/* Top Header Tag & Author Badge */}
         <div
-          class="mb-5 flex flex-wrap items-center justify-between gap-3 border-b border-border/50 pb-3 font-mono text-xs"
+          class="mb-4 flex flex-wrap items-center justify-between gap-2.5 border-b border-border/50 pb-2.5 font-mono text-xs sm:mb-5 sm:gap-3 sm:pb-3"
         >
-          <div class="flex items-center gap-2">
+          <div
+            class="flex items-center gap-1.5 text-[11px] sm:gap-2 sm:text-xs"
+          >
             <span class="font-bold text-primary">[ AUTHOR PROFILE ]</span>
             <span class="text-muted-foreground/60">//</span>
             <span class="text-muted-foreground">ENGINEERING & WRITING</span>
           </div>
           <a
             href={authorProfileUrl}
-            class="group/btn inline-flex items-center gap-1.5 font-mono text-[11px] font-semibold text-primary transition-colors hover:text-primary/80"
+            class="group/btn inline-flex items-center gap-1 font-mono text-[10px] font-semibold text-primary transition-colors hover:text-primary/80 sm:gap-1.5 sm:text-[11px]"
           >
             <span>View All Articles</span>
             <span
@@ -200,10 +203,12 @@ const linkedinUrl = post.author?.linkedin
 
         {/* Main Body: Avatar, Bio, Details, and Actions */}
         <div
-          class="flex flex-col gap-6 md:flex-row md:items-start md:justify-between"
+          class="flex flex-col gap-5 sm:gap-6 md:flex-row md:items-start md:justify-between"
         >
           {/* Left: Avatar + Identity + Bio */}
-          <div class="flex flex-1 flex-col gap-4 sm:flex-row sm:items-start">
+          <div
+            class="flex flex-1 flex-col gap-3.5 sm:flex-row sm:items-start sm:gap-4"
+          >
             <a
               href={authorProfileUrl}
               class="group/avatar relative shrink-0 focus:outline-none"
@@ -212,32 +217,32 @@ const linkedinUrl = post.author?.linkedin
               <img
                 src={post.author.avatar}
                 alt={post.author.name}
-                class="h-16 w-16 rounded-full border-2 border-primary/50 object-cover shadow-md transition-transform duration-300 group-hover/avatar:scale-105 group-hover/avatar:border-primary"
+                class="h-14 w-14 rounded-full border-2 border-primary/50 object-cover shadow-md transition-transform duration-300 group-hover/avatar:scale-105 group-hover/avatar:border-primary sm:h-16 sm:w-16"
               />
               <span
-                class="absolute right-0 bottom-0 h-4 w-4 rounded-full border-2 border-background bg-emerald-500 shadow-sm"
+                class="absolute right-0 bottom-0 h-3.5 w-3.5 rounded-full border-2 border-background bg-emerald-500 shadow-sm sm:h-4 sm:w-4"
                 title="Author Verified & Active"></span>
             </a>
 
-            <div class="min-w-0 flex-1 space-y-1.5 text-left">
-              <div class="flex flex-wrap items-center gap-2">
+            <div class="min-w-0 flex-1 space-y-1 text-left sm:space-y-1.5">
+              <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
                 <a
                   href={authorProfileUrl}
-                  class="font-mono text-base font-bold text-foreground transition-colors hover:text-primary focus:outline-none"
+                  class="font-mono text-sm font-bold text-foreground transition-colors hover:text-primary focus:outline-none sm:text-base"
                 >
                   {post.author.name}
                 </a>
                 <span
-                  class="border border-primary/30 bg-primary/10 px-1.5 py-0.5 font-mono text-[9px] font-bold text-primary uppercase"
+                  class="border border-primary/30 bg-primary/10 px-1.5 py-0.5 font-mono text-[8px] font-bold text-primary uppercase sm:text-[9px]"
                 >
                   AUTHOR
                 </span>
               </div>
-              <p class="font-mono text-xs text-muted-foreground">
+              <p class="font-mono text-[11px] text-muted-foreground sm:text-xs">
                 {post.author.role}
               </p>
               <p
-                class="max-w-xl pt-1.5 text-xs leading-relaxed text-muted-foreground/90"
+                class="max-w-xl pt-1 text-[11px] leading-relaxed text-muted-foreground/90 sm:text-xs"
               >
                 Software Engineer &amp; Technology Writer exploring distributed
                 systems, modern web architectures, and full-stack cloud
@@ -248,16 +253,16 @@ const linkedinUrl = post.author?.linkedin
 
           {/* Right: Social Hub & Author Profile CTA */}
           <div
-            class="flex shrink-0 flex-col items-start gap-3 border-t border-border/40 pt-4 sm:flex-row sm:items-center sm:justify-between md:flex-col md:items-end md:border-t-0 md:pt-0"
+            class="flex shrink-0 flex-col items-start gap-2.5 border-t border-border/40 pt-3.5 sm:flex-row sm:items-center sm:justify-between sm:gap-3 md:flex-col md:items-end md:border-t-0 md:pt-0"
           >
             {/* Social Icons */}
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-1.5 sm:gap-2">
               <a
                 href={twitterUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 title="Follow on Twitter / X"
-                class="flex h-8 w-8 items-center justify-center border border-border/80 bg-background/80 text-muted-foreground transition-all hover:border-primary/60 hover:bg-primary/10 hover:text-primary"
+                class="flex h-7.5 w-7.5 items-center justify-center border border-border/80 bg-background/80 text-muted-foreground transition-all hover:border-primary/60 hover:bg-primary/10 hover:text-primary sm:h-8 sm:w-8"
               >
                 <HugeiconsIcon icon={NewTwitterIcon} className="size-3.5" />
               </a>
@@ -266,7 +271,7 @@ const linkedinUrl = post.author?.linkedin
                 target="_blank"
                 rel="noopener noreferrer"
                 title="View GitHub profile"
-                class="flex h-8 w-8 items-center justify-center border border-border/80 bg-background/80 text-muted-foreground transition-all hover:border-primary/60 hover:bg-primary/10 hover:text-primary"
+                class="flex h-7.5 w-7.5 items-center justify-center border border-border/80 bg-background/80 text-muted-foreground transition-all hover:border-primary/60 hover:bg-primary/10 hover:text-primary sm:h-8 sm:w-8"
               >
                 <HugeiconsIcon icon={GithubIcon} className="size-3.5" />
               </a>
@@ -275,7 +280,7 @@ const linkedinUrl = post.author?.linkedin
                 target="_blank"
                 rel="noopener noreferrer"
                 title="Connect on LinkedIn"
-                class="flex h-8 w-8 items-center justify-center border border-border/80 bg-background/80 text-muted-foreground transition-all hover:border-primary/60 hover:bg-primary/10 hover:text-primary"
+                class="flex h-7.5 w-7.5 items-center justify-center border border-border/80 bg-background/80 text-muted-foreground transition-all hover:border-primary/60 hover:bg-primary/10 hover:text-primary sm:h-8 sm:w-8"
               >
                 <HugeiconsIcon icon={Linkedin02Icon} className="size-3.5" />
               </a>
@@ -284,7 +289,7 @@ const linkedinUrl = post.author?.linkedin
             {/* Profile CTA Button */}
             <a
               href={authorProfileUrl}
-              class="inline-flex h-8 items-center gap-1.5 border border-primary/40 bg-primary/10 px-3 font-mono text-[11px] font-semibold text-primary shadow-xs transition-all hover:border-primary hover:bg-primary hover:text-primary-foreground"
+              class="inline-flex h-7.5 items-center gap-1.5 border border-primary/40 bg-primary/10 px-2.5 font-mono text-[10px] font-semibold text-primary shadow-xs transition-all hover:border-primary hover:bg-primary hover:text-primary-foreground sm:h-8 sm:px-3 sm:text-[11px]"
             >
               <span>Explore Profile</span>
               <span>→</span>
@@ -294,7 +299,7 @@ const linkedinUrl = post.author?.linkedin
       </div>
 
       {/* Discussion & Comments Hub */}
-      <div class="blog-animate-in">
+      <div>
         <BlogCommentsSection
           client:visible
           postSlug={post.slug}
@@ -310,53 +315,7 @@ const linkedinUrl = post.author?.linkedin
   </div>
 </div>
 
-<style>
-  /* Section entrance animation */
-  @keyframes blog-fade-in-up {
-    from {
-      opacity: 0;
-      transform: translateY(16px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  .blog-animate-in {
-    opacity: 0;
-    animation: blog-fade-in-up 0.5s ease-out forwards;
-  }
-</style>
-
 <script>
-  // Intersection Observer for section entrance animations
-  function initSectionAnimations() {
-    const animateElements = document.querySelectorAll(".blog-animate-in")
-    if (!animateElements.length) return
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry, index) => {
-          if (entry.isIntersecting) {
-            const el = entry.target as HTMLElement
-            // Stagger the animation slightly for each element
-            el.style.animationDelay = `${index * 0.05}s`
-            el.style.animationPlayState = "running"
-            observer.unobserve(el)
-          }
-        })
-      },
-      { rootMargin: "0px 0px -40px 0px", threshold: 0.1 }
-    )
-
-    animateElements.forEach((el) => {
-      const htmlEl = el as HTMLElement
-      htmlEl.style.animationPlayState = "paused"
-      observer.observe(el)
-    })
-  }
-
   // Initialize Code Block Copy Buttons for Markdown content
   function initMarkdownCodeCopy() {
     document.querySelectorAll(".code-copy-btn").forEach((btn) => {
@@ -394,7 +353,6 @@ const linkedinUrl = post.author?.linkedin
   }
 
   function initAll() {
-    initSectionAnimations()
     initMarkdownCodeCopy()
   }
 
