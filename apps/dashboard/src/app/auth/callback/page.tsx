@@ -4,7 +4,7 @@ import * as React from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { ACCESS_TOKEN_KEY, AUTH_COOKIE_NAME } from "@/lib/api/client"
 
-export default function AuthCallbackPage() {
+function AuthCallbackContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
 
@@ -93,14 +93,29 @@ export default function AuthCallbackPage() {
   }, [router, searchParams])
 
   return (
+    <div className="w-full max-w-sm rounded-none border border-border bg-card p-6 text-center shadow-lg">
+      <div className="mx-auto mb-4 size-8 animate-spin rounded-full border-2 border-border border-t-foreground" />
+      <h2 className="text-sm font-semibold">Completing Admin Sign-In...</h2>
+      <p className="mt-1 text-xs text-muted-foreground">
+        Synchronizing session and returning to dashboard...
+      </p>
+    </div>
+  )
+}
+
+export default function AuthCallbackPage() {
+  return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-background p-6 font-mono text-foreground">
-      <div className="w-full max-w-sm rounded-none border border-border bg-card p-6 text-center shadow-lg">
-        <div className="mx-auto mb-4 size-8 animate-spin rounded-full border-2 border-border border-t-foreground" />
-        <h2 className="text-sm font-semibold">Completing Admin Sign-In...</h2>
-        <p className="mt-1 text-xs text-muted-foreground">
-          Synchronizing session and returning to dashboard...
-        </p>
-      </div>
+      <React.Suspense
+        fallback={
+          <div className="w-full max-w-sm rounded-none border border-border bg-card p-6 text-center shadow-lg">
+            <div className="mx-auto mb-4 size-8 animate-spin rounded-full border-2 border-border border-t-foreground" />
+            <h2 className="text-sm font-semibold">Loading...</h2>
+          </div>
+        }
+      >
+        <AuthCallbackContent />
+      </React.Suspense>
     </div>
   )
 }
