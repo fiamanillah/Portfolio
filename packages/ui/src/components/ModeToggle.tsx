@@ -15,17 +15,17 @@ export function ModeToggle() {
   const STORAGE_KEY = "ui-theme"
 
   // 1. Use a lazy initializer function to read the DOM only once during initial setup.
-  const [theme, setThemeState] = useState<
-    "theme-light" | "dark" | "system"
-  >(() => {
-    // We check typeof document to ensure this doesn't crash during SSR (Next.js/Astro/etc)
-    if (typeof document !== "undefined") {
-      return document.documentElement.classList.contains("dark")
-        ? "dark"
-        : "theme-light"
+  const [theme, setThemeState] = useState<"theme-light" | "dark" | "system">(
+    () => {
+      // We check typeof document to ensure this doesn't crash during SSR (Next.js/Astro/etc)
+      if (typeof document !== "undefined") {
+        return document.documentElement.classList.contains("dark")
+          ? "dark"
+          : "theme-light"
+      }
+      return "theme-light" // Fallback for server-side rendering
     }
-    return "theme-light" // Fallback for server-side rendering
-  })
+  )
 
   // 2. This effect safely updates the DOM whenever the user changes the theme state.
   useEffect(() => {

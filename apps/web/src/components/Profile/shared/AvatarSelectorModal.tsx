@@ -1,3 +1,4 @@
+// src/components/Profile/shared/AvatarSelectorModal.tsx
 import { useState, useRef } from "react"
 import {
   Dialog,
@@ -8,21 +9,14 @@ import {
   DialogFooter,
 } from "@workspace/ui/components/dialog"
 import { Button } from "@workspace/ui/components/button"
-import { Input } from "@workspace/ui/components/input"
-import {
-  Field,
-  FieldLabel,
-  FieldDescription,
-} from "@workspace/ui/components/field"
-import { AVATAR_OPTIONS } from "@/data/commentsData"
 import { AuthApi } from "@/lib/api/authApi"
+import { toast } from "@workspace/ui/components/sonner"
 import { HugeiconsIcon } from "@hugeicons/react"
 import {
-  CheckmarkBadge01Icon,
-  Globe02Icon,
-  Tick02Icon,
   Upload02Icon,
   Loading03Icon,
+  Delete02Icon,
+  CheckmarkCircle02Icon,
 } from "@hugeicons/core-free-icons"
 
 interface AvatarSelectorModalProps {
@@ -30,40 +24,174 @@ interface AvatarSelectorModalProps {
   onOpenChange: (open: boolean) => void
   currentAvatar?: string | null
   onSaveAvatar: (newAvatar: string) => void
+  onRemoveAvatar?: () => void
 }
 
-const PRESET_AVATARS = [
-  "/fi-avatar.webp",
-  ...AVATAR_OPTIONS,
-  "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
-  "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
-]
+interface CompressedImageState {
+  file: File
+  previewUrl: string
+  originalSize: number
+  compressedSize: number
+  width: number
+  height: number
+}
+
+/**
+ * Compresses and crops an image file to a lightweight WebP/JPEG avatar (max 384x384, ~15-40KB).
+ */
+async function compressImageToAvatar(
+  file: File,
+  maxDimension = 384,
+  quality = 0.85
+): Promise<CompressedImageState> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      const img = new Image()
+      img.onload = () => {
+        const canvas = document.createElement("canvas")
+        const ctx = canvas.getContext("2d")
+        if (!ctx) {
+          return reject(new Error("Failed to initialize image canvas context"))
+        }
+
+        // Center crop to a perfect square
+        const minSide = Math.min(img.width, img.height)
+        const sx = (img.width - minSide) / 2
+        const sy = (img.height - minSide) / 2
+
+        const outputSize = Math.min(minSide, maxDimension)
+        canvas.width = outputSize
+        canvas.height = outputSize
+
+        ctx.imageSmoothingEnabled = true
+        ctx.imageSmoothingQuality = "high"
+
+        ctx.drawImage(
+          img,
+          sx,
+          sy,
+          minSide,
+          minSide,
+          0,
+          0,
+          outputSize,
+          outputSize
+        )
+
+        canvas.toBlob(
+          (blob) => {
+            if (!blob) {
+              return reject(new Error("Failed to compress avatar image."))
+            }
+
+            const cleanFileName = file.name.replace(/\.[^/.]+$/, "") + ".webp"
+            const compressedFile = new File([blob], cleanFileName, {
+              type: "image/webp",
+              lastModified: Date.now(),
+            })
+
+            const previewUrl = URL.createObjectURL(blob)
+            resolve({
+              file: compressedFile,
+              previewUrl,
+              originalSize: file.size,
+              compressedSize: blob.size,
+              width: outputSize,
+              height: outputSize,
+            })
+          },
+          "image/webp",
+          quality
+        )
+      }
+      img.onerror = () =>
+        reject(new Error("Invalid image format or corrupted file."))
+      img.src = e.target?.result as string
+    }
+    reader.onerror = () => reject(new Error("Could not read selected file."))
+    reader.readAsDataURL(file)
+  })
+}
+
+function formatBytes(bytes: number): string {
+  if (bytes < 1024) return `${bytes} B`
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
+  return `${(bytes / (1024 * 1024)).toFixed(2)} MB`
+}
 
 export function AvatarSelectorModal({
   open,
   onOpenChange,
   currentAvatar,
   onSaveAvatar,
+  onRemoveAvatar,
 }: AvatarSelectorModalProps) {
-  const [selected, setSelected] = useState<string>(
-    currentAvatar || "/fi-avatar.webp"
-  )
-  const [customUrl, setCustomUrl] = useState<string>("")
-  const [error, setError] = useState<string | null>(null)
+  const [isDragging, setIsDragging] = useState(false)
+  const [isProcessing, setIsProcessing] = useState(false)
   const [isUploading, setIsUploading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [compressed, setCompressed] = useState<CompressedImageState | null>(
+    null
+  )
+
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
-
+  const handleProcessFile = async (file: File) => {
     if (!file.type.startsWith("image/")) {
-      setError("Please select a valid image file.")
+      setError("Please select a valid image file (PNG, JPG, WebP, GIF).")
       return
     }
 
-    if (file.size > 10 * 1024 * 1024) {
-      setError("Image size exceeds maximum limit of 10MB.")
+    if (file.size > 15 * 1024 * 1024) {
+      setError("Image file exceeds the maximum 15MB limit.")
+      return
+    }
+
+    setIsProcessing(true)
+    setError(null)
+
+    try {
+      const result = await compressImageToAvatar(file)
+      setCompressed(result)
+    } catch (err: unknown) {
+      setError(
+        err instanceof Error ? err.message : "Failed to process image file."
+      )
+    } finally {
+      setIsProcessing(false)
+    }
+  }
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      handleProcessFile(file)
+    }
+  }
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault()
+    setIsDragging(true)
+  }
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault()
+    setIsDragging(false)
+  }
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault()
+    setIsDragging(false)
+    const file = e.dataTransfer.files?.[0]
+    if (file) {
+      handleProcessFile(file)
+    }
+  }
+
+  const handleUploadAndSave = async () => {
+    if (!compressed) {
+      setError("Please select an image file to upload.")
       return
     }
 
@@ -71,12 +199,11 @@ export function AvatarSelectorModal({
     setError(null)
 
     try {
-      const res = await AuthApi.uploadAvatar(file)
+      const res = await AuthApi.uploadAvatar(compressed.file)
       if (res.success && res.data?.avatar) {
-        setSelected(res.data.avatar)
-        setCustomUrl("")
         onSaveAvatar(res.data.avatar)
-        onOpenChange(false)
+        toast.success("Avatar uploaded and optimized successfully!")
+        handleClose()
       } else {
         setError(
           res.error ||
@@ -88,122 +215,190 @@ export function AvatarSelectorModal({
       setError(err instanceof Error ? err.message : "Failed to upload avatar.")
     } finally {
       setIsUploading(false)
-      if (fileInputRef.current) {
-        fileInputRef.current.value = ""
-      }
     }
   }
 
-  const handleApply = () => {
-    const target = customUrl.trim() || selected
-    if (!target) {
-      setError(
-        "Please select a preset avatar, upload a file, or enter an image URL."
-      )
-      return
+  const handleRemove = async () => {
+    setIsUploading(true)
+    setError(null)
+    try {
+      const res = await AuthApi.deleteAvatar()
+      if (res.success) {
+        onRemoveAvatar?.()
+        onSaveAvatar("/fi-avatar.webp")
+        toast.success("Profile avatar removed.")
+        handleClose()
+      } else {
+        setError(res.error || "Failed to remove avatar.")
+      }
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Failed to remove avatar.")
+    } finally {
+      setIsUploading(false)
     }
-    onSaveAvatar(target)
+  }
+
+  const handleClose = () => {
+    if (compressed?.previewUrl) {
+      URL.revokeObjectURL(compressed.previewUrl)
+    }
+    setCompressed(null)
+    setError(null)
     onOpenChange(false)
   }
 
+  const savingsPercent =
+    compressed && compressed.originalSize > 0
+      ? Math.max(
+          0,
+          Math.round(
+            ((compressed.originalSize - compressed.compressedSize) /
+              compressed.originalSize) *
+              100
+          )
+        )
+      : 0
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md rounded-lg border border-border bg-card/95 p-5 backdrop-blur-xl sm:p-6">
+    <Dialog open={open} onOpenChange={handleClose}>
+      <DialogContent className="max-w-md rounded-none border border-border bg-card p-5 font-mono sm:p-6">
         <DialogHeader>
-          <DialogTitle className="text-base font-semibold text-foreground">
-            Select Profile Avatar
+          <DialogTitle className="text-base font-bold text-foreground">
+            Upload Profile Avatar
           </DialogTitle>
           <DialogDescription className="text-xs text-muted-foreground">
-            Choose a preset avatar or paste a custom image URL.
+            Upload an image from your device. It will be automatically cropped
+            to a square and compressed to WebP format to minimize storage size.
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-4 py-3">
-          {/* Active Preview */}
-          <div className="flex items-center gap-3.5 rounded-lg border border-border bg-background/60 p-3">
-            <div className="relative shrink-0">
+        <div className="space-y-4 py-2">
+          {/* Avatar Preview & Dropzone */}
+          <div
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+            onClick={() => fileInputRef.current?.click()}
+            className={`group relative flex cursor-pointer flex-col items-center justify-center border-2 border-dashed p-6 transition-all ${
+              isDragging
+                ? "border-primary bg-primary/10"
+                : "border-border/80 bg-background/50 hover:border-primary/60 hover:bg-muted/30"
+            }`}
+          >
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/png,image/jpeg,image/webp,image/gif"
+              className="hidden"
+              onChange={handleFileChange}
+            />
+
+            {/* Circular Avatar Visualizer */}
+            <div className="relative mb-3 size-24 shrink-0 overflow-hidden rounded-full border-2 border-border bg-muted/40 shadow-inner sm:size-28">
               <img
                 src={
-                  customUrl.trim() ||
-                  selected ||
-                  currentAvatar ||
-                  "/fi-avatar.webp"
+                  compressed?.previewUrl || currentAvatar || "/fi-avatar.webp"
                 }
                 alt="Avatar preview"
-                className="size-14 rounded-full border-2 border-primary/30 object-cover"
+                referrerPolicy="no-referrer"
+                className="size-full object-cover"
                 onError={(e) => {
                   ;(e.target as HTMLImageElement).src = "/fi-avatar.webp"
                 }}
               />
-              <span className="absolute -right-0.5 -bottom-0.5 flex size-4 items-center justify-center rounded-full bg-primary text-primary-foreground">
-                <HugeiconsIcon icon={Tick02Icon} className="size-2.5" />
-              </span>
+              {(isProcessing || isUploading) && (
+                <div className="absolute inset-0 flex items-center justify-center bg-background/80 backdrop-blur-xs">
+                  <HugeiconsIcon
+                    icon={Loading03Icon}
+                    className="size-6 animate-spin text-primary"
+                  />
+                </div>
+              )}
             </div>
-            <div className="min-w-0">
-              <p className="text-sm font-medium text-foreground">Preview</p>
-              <p className="truncate text-xs text-muted-foreground">
-                Shown in comments, reviews & navbar
+
+            <div className="text-center">
+              <p className="text-xs font-semibold text-foreground group-hover:text-primary">
+                {compressed
+                  ? "Click or drop to replace image"
+                  : "Drop image here, or click to browse"}
+              </p>
+              <p className="mt-1 text-[10px] text-muted-foreground">
+                Supports PNG, JPG, WebP (Max 15MB)
               </p>
             </div>
           </div>
 
-          {/* Preset Grid */}
-          <div className="space-y-1.5">
-            <FieldLabel className="text-xs">Presets</FieldLabel>
-            <div className="grid grid-cols-4 gap-2.5">
-              {PRESET_AVATARS.map((avatar, idx) => {
-                const isSelected = !customUrl && selected === avatar
-                return (
-                  <button
-                    key={idx}
-                    type="button"
-                    onClick={() => {
-                      setSelected(avatar)
-                      setCustomUrl("")
-                      setError(null)
-                    }}
-                    className={`group relative flex aspect-square cursor-pointer items-center justify-center overflow-hidden rounded-lg border p-1 transition-all ${
-                      isSelected
-                        ? "border-primary ring-2 ring-primary/30"
-                        : "border-border hover:border-primary/50"
-                    }`}
-                  >
-                    <img
-                      src={avatar}
-                      alt={`Avatar option ${idx + 1}`}
-                      className="size-full rounded-full object-cover transition-transform group-hover:scale-105"
-                    />
-                    {isSelected && (
-                      <span className="absolute inset-0 flex items-center justify-center rounded-lg bg-primary/20 backdrop-blur-[1px]">
-                        <HugeiconsIcon
-                          icon={CheckmarkBadge01Icon}
-                          className="size-4 text-primary"
-                        />
-                      </span>
-                    )}
-                  </button>
-                )
-              })}
+          {/* Compression & Storage Optimization Stats */}
+          {compressed && (
+            <div className="rounded-none border border-emerald-500/30 bg-emerald-500/5 p-3 text-xs">
+              <div className="flex items-center justify-between text-emerald-500">
+                <span className="flex items-center gap-1.5 font-semibold">
+                  <HugeiconsIcon
+                    icon={CheckmarkCircle02Icon}
+                    className="size-3.5"
+                  />
+                  Optimized for Cloud Storage
+                </span>
+                <span className="font-bold">{savingsPercent}% smaller</span>
+              </div>
+              <div className="mt-2 grid grid-cols-2 gap-2 text-[11px] text-muted-foreground">
+                <div>
+                  Original:{" "}
+                  <span className="font-semibold text-foreground">
+                    {formatBytes(compressed.originalSize)}
+                  </span>
+                </div>
+                <div>
+                  Compressed:{" "}
+                  <span className="font-semibold text-emerald-500">
+                    {formatBytes(compressed.compressedSize)} (WebP)
+                  </span>
+                </div>
+              </div>
             </div>
+          )}
+
+          {error && (
+            <p className="rounded-none border border-destructive/30 bg-destructive/10 p-2 text-xs text-destructive">
+              {error}
+            </p>
+          )}
+        </div>
+
+        <DialogFooter className="flex flex-col gap-2 border-t border-border/60 pt-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            {currentAvatar && !currentAvatar.includes("fi-avatar.webp") && (
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                disabled={isUploading || isProcessing}
+                onClick={handleRemove}
+                className="h-8 cursor-pointer gap-1 px-2 text-xs text-destructive hover:bg-destructive/10 hover:text-destructive"
+              >
+                <HugeiconsIcon icon={Delete02Icon} className="size-3.5" />
+                <span>Remove Avatar</span>
+              </Button>
+            )}
           </div>
 
-          {/* Direct File Upload to Cloudflare R2 / S3 */}
-          <div className="space-y-1.5">
-            <FieldLabel className="text-xs">Upload from Device</FieldLabel>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/png,image/jpeg,image/webp,image/gif,image/svg+xml"
-              className="hidden"
-              onChange={handleFileUpload}
-            />
+          <div className="flex items-center gap-2">
             <Button
               type="button"
               variant="outline"
               size="sm"
-              disabled={isUploading}
-              onClick={() => fileInputRef.current?.click()}
-              className="h-10 w-full cursor-pointer justify-center gap-2 border-dashed border-border/80 bg-background/50 text-xs hover:bg-accent/40"
+              disabled={isUploading || isProcessing}
+              onClick={handleClose}
+              className="h-8 cursor-pointer rounded-none text-xs"
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              disabled={!compressed || isUploading || isProcessing}
+              onClick={handleUploadAndSave}
+              className="h-8 cursor-pointer gap-1.5 rounded-none bg-primary text-xs font-bold text-primary-foreground hover:bg-primary/90"
             >
               {isUploading ? (
                 <>
@@ -211,71 +406,16 @@ export function AvatarSelectorModal({
                     icon={Loading03Icon}
                     className="size-3.5 animate-spin"
                   />
-                  Uploading to Cloud Storage...
+                  <span>Uploading...</span>
                 </>
               ) : (
                 <>
-                  <HugeiconsIcon
-                    icon={Upload02Icon}
-                    className="size-3.5 text-primary"
-                  />
-                  Choose Image File (JPG, PNG, WebP)
+                  <HugeiconsIcon icon={Upload02Icon} className="size-3.5" />
+                  <span>Save Avatar</span>
                 </>
               )}
             </Button>
           </div>
-
-          {/* Custom URL */}
-          <Field className="space-y-1.5">
-            <FieldLabel htmlFor="avatar-custom-url" className="text-xs">
-              Or Custom URL
-            </FieldLabel>
-            <div className="relative">
-              <Input
-                id="avatar-custom-url"
-                type="url"
-                placeholder="https://github.com/username.png"
-                value={customUrl}
-                onChange={(e) => {
-                  setCustomUrl(e.target.value)
-                  setError(null)
-                }}
-                className="rounded-md pl-8 text-sm"
-              />
-              <HugeiconsIcon
-                icon={Globe02Icon}
-                className="pointer-events-none absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-muted-foreground"
-              />
-            </div>
-            {error && <p className="text-xs text-destructive">{error}</p>}
-            <FieldDescription className="text-[11px] text-muted-foreground">
-              Tip: Use{" "}
-              <code className="text-foreground">
-                https://github.com/[username].png
-              </code>
-            </FieldDescription>
-          </Field>
-        </div>
-
-        <DialogFooter className="flex flex-row justify-end gap-2 border-t border-border/50 pt-2">
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            onClick={() => onOpenChange(false)}
-            className="cursor-pointer rounded-md text-xs"
-          >
-            Cancel
-          </Button>
-          <Button
-            type="button"
-            size="sm"
-            onClick={handleApply}
-            className="cursor-pointer rounded-md text-xs"
-          >
-            <HugeiconsIcon icon={Tick02Icon} className="mr-1 size-3.5" />
-            Save Avatar
-          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

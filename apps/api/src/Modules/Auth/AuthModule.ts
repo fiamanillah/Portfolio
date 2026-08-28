@@ -16,6 +16,7 @@ import {
   resetPasswordSchema,
   resendOtpSchema,
   refreshTokenSchema,
+  googleLoginSchema,
 } from "./AuthDTO"
 
 export class AuthModule extends BaseModule {
@@ -31,7 +32,6 @@ export class AuthModule extends BaseModule {
     const cache = this.context.getService("cache")
     this.registerService("AuthService", new AuthServices(prisma, cache))
   }
-
 
   protected async setupControllers(): Promise<void> {
     const authService = this.getService<AuthServices>("AuthService")
@@ -61,8 +61,7 @@ export class AuthModule extends BaseModule {
       legacyHeaders: false,
       message: {
         success: false,
-        message:
-          "Too many registration attempts. Please try again in an hour.",
+        message: "Too many registration attempts. Please try again in an hour.",
         code: "RATE_LIMIT_EXCEEDED",
       },
     })
@@ -167,6 +166,23 @@ export class AuthModule extends BaseModule {
 
     // GET /auth/v1/me (Authenticated)
     this.router.get("/me", authenticate, controller.getMe.bind(controller))
+
+    // GET /auth/v1/google (Initiate Google OAuth Consent)
+    this.router.get("/google", controller.getGoogleAuthUrl.bind(controller))
+
+    // GET /auth/v1/google/callback (Google OAuth Redirect Callback)
+    this.router.get(
+      "/google/callback",
+      controller.googleCallback.bind(controller)
+    )
+
+    // POST /auth/v1/google (Direct Google ID Token / Code verification)
+    this.router.post(
+      "/google",
+      loginLimiter,
+      validateRequest(googleLoginSchema),
+      controller.googleLogin.bind(controller)
+    )
 
     this.logger.info("✔ Auth routes initialized under /auth/v1/*")
   }

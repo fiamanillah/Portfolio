@@ -18,7 +18,8 @@ export function setupGlobalMiddlewares(app: Express) {
   app.use(
     helmet({
       contentSecurityPolicy: config.server.isProduction,
-      crossOriginEmbedderPolicy: config.server.isProduction,
+      crossOriginEmbedderPolicy: false,
+      crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
     })
   )
 
@@ -28,17 +29,15 @@ export function setupGlobalMiddlewares(app: Express) {
     .map((url) => url.trim().toLowerCase().replace(/\/$/, ""))
     .filter(Boolean)
 
-  const dynamicOrigins = [
-    config.site.webUrl,
-    config.site.dashboardUrl,
-  ]
+  const dynamicOrigins = [config.site.webUrl, config.site.dashboardUrl]
     .filter(Boolean)
     .map((url) => url.trim().toLowerCase().replace(/\/$/, ""))
 
   const allowedOriginsSet = new Set([...configuredOrigins, ...dynamicOrigins])
 
   // Regex pattern for all authorized subdomains under amanillah.com (HTTPS)
-  const productionDomainRegex = /^https:\/\/(?:[a-zA-Z0-9-]+\.)*amanillah\.com$/i
+  const productionDomainRegex =
+    /^https:\/\/(?:[a-zA-Z0-9-]+\.)*amanillah\.com$/i
   // Regex pattern for localhost / 127.0.0.1 on any port in development
   const localDevRegex = /^http:\/\/(?:localhost|127\.0\.0\.1)(?::\d+)?$/i
 
@@ -56,7 +55,10 @@ export function setupGlobalMiddlewares(app: Express) {
         }
 
         // 2. Allow any local dev origin in development/test
-        if (!config.server.isProduction && localDevRegex.test(normalizedOrigin)) {
+        if (
+          !config.server.isProduction &&
+          localDevRegex.test(normalizedOrigin)
+        ) {
           return callback(null, true)
         }
 

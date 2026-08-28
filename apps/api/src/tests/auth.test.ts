@@ -67,7 +67,6 @@ describe("Authentication & RBAC System Integration Tests", () => {
     expect(otpRecord?.payload).not.toBeNull()
   })
 
-
   it("2. should fail registration verification with wrong OTP code", async () => {
     expect(
       authService.verifyRegisterOtp({
@@ -83,7 +82,6 @@ describe("Authentication & RBAC System Integration Tests", () => {
       testEmail
     )
     expect(otpRecord).not.toBeNull()
-
 
     const res = await authService.verifyRegisterOtp({
       email: testEmail,
@@ -192,7 +190,6 @@ describe("Authentication & RBAC System Integration Tests", () => {
       testEmail
     )
     expect(resetOtp).not.toBeNull()
-
 
     const verifyRes = await authService.verifyResetOtp({
       email: testEmail,
@@ -319,5 +316,82 @@ describe("Authentication & RBAC System Integration Tests", () => {
       where: { id: testUserId },
     })
     expect(deletedUser).toBeNull()
+  })
+
+  it("13. should create a new user via Google OAuth profile (passwordless)", async () => {
+    const googleProfile = {
+      googleId: `g_${Date.now()}`,
+      email: `google_user_${Date.now()}@example.com`,
+      name: "Google Dev User",
+      picture: "https://lh3.googleusercontent.com/a/mock-pic.jpg",
+      emailVerified: true,
+    }
+
+    const authRes = await authService.findOrCreateGoogleUser(googleProfile)
+    expect(authRes.user.email).toBe(googleProfile.email)
+    expect(authRes.user.name).toBe(googleProfile.name)
+    expect(authRes.user.avatar).toBe(googleProfile.picture)
+    expect(authRes.user.isEmailVerified).toBe(true)
+    expect(authRes.accessToken).toBeDefined()
+    expect(authRes.refreshToken).toBeDefined()
+
+    // Verify user in DB has null password and googleId
+    const dbUser = await prisma.user.findUnique({
+      where: { email: googleProfile.email },
+    })
+    expect(dbUser).not.toBeNull()
+    expect(dbUser?.googleId).toBe(googleProfile.googleId)
+    expect(dbUser?.password).toBeNull()
+
+    // Ensure password login is rejected for passwordless Google accounts
+    expect(
+      authService.login({
+        email: googleProfile.email,
+        password: "any_password",
+      })
+    ).rejects.toThrow(/Google/)
+
+    // Clean up
+    await prisma.user.delete({ where: { id: dbUser!.id } })
+  })
+
+  it("14. should link Google account to existing email user", async () => {
+    const existingEmail = `existing_dev_${Date.now()}@example.com`
+    const pwdHash = await Bun.password.hash("password123", {
+      algorithm: "bcrypt",
+      cost: 10,
+    })
+
+    const initialUser = await prisma.user.create({
+      data: {
+        email: existingEmail,
+        name: "Pre-existing Developer",
+        username: `dev_${Date.now()}`,
+        password: pwdHash,
+        isEmailVerified: false,
+      },
+    })
+
+    const googleId = `gid_${Date.now()}`
+    const linkRes = await authService.findOrCreateGoogleUser({
+      googleId,
+      email: existingEmail,
+      name: "Pre-existing Developer",
+      picture: "https://lh3.googleusercontent.com/avatar.jpg",
+      emailVerified: true,
+    })
+
+    expect(linkRes.user.id).toBe(initialUser.id)
+    expect(linkRes.user.isEmailVerified).toBe(true)
+
+    const updatedDb = await prisma.user.findUnique({
+      where: { id: initialUser.id },
+    })
+    expect(updatedDb?.googleId).toBe(googleId)
+    expect(updatedDb?.isEmailVerified).toBe(true)
+    expect(updatedDb?.password).not.toBeNull()
+
+    // Clean up
+    await prisma.user.delete({ where: { id: initialUser.id } })
   })
 })

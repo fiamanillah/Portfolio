@@ -6,6 +6,7 @@ import type {
   LoginInput,
   ResetPasswordInput,
   UpdateProfileInput,
+  GoogleLoginInput,
 } from "@workspace/shared"
 
 export type InitiateRegisterPayload = InitiateRegisterInput
@@ -13,6 +14,7 @@ export type VerifyRegisterOtpPayload = VerifyRegisterOtpInput
 export type LoginPayload = LoginInput
 export type ResetPasswordPayload = ResetPasswordInput
 export type UpdateProfilePayload = UpdateProfileInput
+export type GoogleLoginPayload = GoogleLoginInput
 
 import { getApiBaseUrl } from "./baseUrl"
 
@@ -352,5 +354,213 @@ export const AuthApi = {
       method: "POST",
     })
     setStoredAccessToken(null)
+  },
+
+  /**
+   * 17. Authenticate with Google (Direct ID token or auth code)
+   */
+  async loginWithGoogle(payload: GoogleLoginPayload) {
+    const res = await request<{
+      user: AuthUser
+      accessToken: string
+      refreshToken: string
+    }>("/auth/v1/google", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    })
+
+    if (res.success && res.data?.accessToken) {
+      setStoredAccessToken(res.data.accessToken)
+    }
+
+    return res
+  },
+
+  /**
+   * 18. Get Google OAuth Consent URL
+   */
+  async getGoogleAuthUrl(
+    returnTo?: string,
+    mode: "popup" | "redirect" = "popup"
+  ) {
+    const targetUrl =
+      returnTo || (typeof window !== "undefined" ? window.location.href : "")
+    return await request<{ url: string }>(
+      `/auth/v1/google?format=json&mode=${mode}&returnTo=${encodeURIComponent(targetUrl)}`,
+      { method: "GET" }
+    )
+  },
+
+  /**
+   * 19. Open Google OAuth Popup and wait for message callback
+   */
+  openGoogleAuthPopup(returnTo?: string): Promise<{
+    success: boolean
+    data?: { user: AuthUser; accessToken: string }
+    error?: string
+  }> {
+    return new Promise((resolve) => {
+      if (typeof window === "undefined") {
+        return resolve({ success: false, error: "Window is not available" })
+      }
+
+      const targetUrl = returnTo || `${window.location.origin}/auth/callback`
+      const width = 500
+      const height = 620
+      const left = window.screenX + (window.outerWidth - width) / 2
+      const top = window.screenY + (window.outerHeight - height) / 2
+
+      const popupUrl = `${API_BASE_URL}/auth/v1/google?mode=popup&returnTo=${encodeURIComponent(targetUrl)}`
+
+      const popup = window.open(
+        popupUrl,
+        "google_oauth_popup",
+        `width=${width},height=${height},left=${left},top=${top},status=no,resizable=yes`
+      )
+
+      if (!popup || popup.closed || typeof popup.closed === "undefined") {
+        // Popup blocked by browser -> fallback to direct redirect
+        window.location.href = `${API_BASE_URL}/auth/v1/google?mode=redirect&returnTo=${encodeURIComponent(targetUrl)}`
+        return resolve({
+          success: false,
+          error: "Popup blocked, redirecting...",
+        })
+      }
+
+      try {
+        popup.focus()
+      } catch {
+        // ignore
+      }
+
+      let isFinished = false
+      let pollTimer: ReturnType<typeof setInterval> | null = null
+      let bc: BroadcastChannel | null = null
+
+      const cleanup = () => {
+        if (pollTimer) clearInterval(pollTimer)
+        window.removeEventListener("message", handleMessage)
+        window.removeEventListener("storage", handleStorage)
+        if (bc) {
+          try {
+            bc.close()
+          } catch {
+            // ignore
+          }
+          bc = null
+        }
+      }
+
+      const handleSuccess = (user: AuthUser, accessToken: string) => {
+        if (isFinished) return
+        isFinished = true
+        cleanup()
+        setStoredAccessToken(accessToken)
+        try {
+          localStorage.setItem("portfolio_user_session", JSON.stringify(user))
+          window.dispatchEvent(
+            new CustomEvent("portfolio:auth-change", { detail: user })
+          )
+        } catch {
+          // ignore
+        }
+        try {
+          if (popup && !popup.closed) {
+            popup.close()
+          }
+        } catch {
+          // ignore
+        }
+        resolve({
+          success: true,
+          data: { user, accessToken },
+        })
+      }
+
+      const handleError = (errorMsg: string) => {
+        if (isFinished) return
+        isFinished = true
+        cleanup()
+        resolve({
+          success: false,
+          error: errorMsg,
+        })
+      }
+
+      const handleMessage = (event: MessageEvent) => {
+        if (!event.data || typeof event.data !== "object") return
+
+        if (
+          event.data.type === "GOOGLE_AUTH_SUCCESS" &&
+          event.data.accessToken
+        ) {
+          handleSuccess(event.data.user, event.data.accessToken)
+        } else if (event.data.type === "GOOGLE_AUTH_ERROR") {
+          handleError(event.data.error || "Google authentication failed")
+        }
+      }
+
+      const handleStorage = (event: StorageEvent) => {
+        if (
+          (event.key === "portfolio_user_session" ||
+            event.key === "portfolio_access_token") &&
+          event.newValue
+        ) {
+          try {
+            const token = getStoredAccessToken()
+            const userRaw = localStorage.getItem("portfolio_user_session")
+            if (token && userRaw) {
+              const user = JSON.parse(userRaw) as AuthUser
+              handleSuccess(user, token)
+            }
+          } catch {
+            // ignore
+          }
+        }
+      }
+
+      window.addEventListener("message", handleMessage)
+      window.addEventListener("storage", handleStorage)
+
+      if (typeof BroadcastChannel !== "undefined") {
+        try {
+          bc = new BroadcastChannel("portfolio_google_auth")
+          bc.onmessage = (event) => {
+            if (
+              event.data?.type === "GOOGLE_AUTH_SUCCESS" &&
+              event.data?.accessToken
+            ) {
+              handleSuccess(event.data.user, event.data.accessToken)
+            } else if (event.data?.type === "GOOGLE_AUTH_ERROR") {
+              handleError(event.data.error || "Google authentication failed")
+            }
+          }
+        } catch {
+          // ignore BroadcastChannel errors
+        }
+      }
+
+      // Poll in case the popup was closed manually or finished in another context
+      pollTimer = setInterval(() => {
+        if (!popup || popup.closed) {
+          setTimeout(() => {
+            if (!isFinished) {
+              const token = getStoredAccessToken()
+              const userRaw = localStorage.getItem("portfolio_user_session")
+              if (token && userRaw) {
+                try {
+                  const user = JSON.parse(userRaw) as AuthUser
+                  handleSuccess(user, token)
+                  return
+                } catch {
+                  // ignore
+                }
+              }
+              handleError("Sign-in cancelled")
+            }
+          }, 400)
+        }
+      }, 500)
+    })
   },
 }

@@ -175,6 +175,10 @@ export function CommentItem({
             <img
               src={comment.author.avatar || "/fi-avatar.webp"}
               alt={comment.author.name}
+              referrerPolicy="no-referrer"
+              onError={(e) => {
+                ;(e.target as HTMLImageElement).src = "/fi-avatar.webp"
+              }}
               width="32"
               height="32"
               className={`size-8 shrink-0 rounded-full border object-cover ${

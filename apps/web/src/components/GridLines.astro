@@ -25,14 +25,6 @@ const { lines = [-0.04, 0, 1, 1.04] } = Astro.props
         : [-0.04, 0, 1, 1.04]
 
     // --- CONFIG ---
-    const LINE_COLOR =
-      getComputedStyle(document.documentElement)
-        .getPropertyValue("--grid-line-color")
-        .trim() || "rgba(0,220,200,0.18)"
-    const CROSS_COLOR =
-      getComputedStyle(document.documentElement)
-        .getPropertyValue("--grid-cross-color")
-        .trim() || "rgba(0,220,200,0.55)"
     const LINE_WIDTH = 0.75
     const CROSS_ARM = 6
 
@@ -42,6 +34,15 @@ const { lines = [-0.04, 0, 1, 1.04] } = Astro.props
     function renderGrid(W, H) {
       if (W === 0 || H === 0) return
       ctx.clearRect(0, 0, W, H)
+
+      const LINE_COLOR =
+        getComputedStyle(document.documentElement)
+          .getPropertyValue("--grid-line-color")
+          .trim() || "rgba(0,220,200,0.18)"
+      const CROSS_COLOR =
+        getComputedStyle(document.documentElement)
+          .getPropertyValue("--grid-cross-color")
+          .trim() || "rgba(0,220,200,0.55)"
 
       // BATCH 1: Continuous Vertical & Horizontal Grid Lines
       ctx.strokeStyle = LINE_COLOR

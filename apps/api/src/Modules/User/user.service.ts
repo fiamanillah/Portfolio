@@ -794,6 +794,12 @@ export class UserService {
       throw new NotFoundError("User not found.")
     }
 
+    if (!user.password) {
+      throw new BadRequestError(
+        "This account does not have a password set (authenticated via Google). Please use the password reset flow to set a password."
+      )
+    }
+
     const isMatch = await Bun.password.verify(
       dto.currentPassword,
       user.password

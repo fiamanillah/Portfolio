@@ -53,6 +53,29 @@ export function setStoredUser(user: AuthUser | null): void {
   }
 }
 
+// Auto-detect and ingest auth_token from redirect callback in browser
+if (typeof window !== "undefined") {
+  try {
+    const urlParams = new URLSearchParams(window.location.search)
+    const tokenFromUrl = urlParams.get("auth_token")
+    if (tokenFromUrl) {
+      setStoredAccessToken(tokenFromUrl)
+      urlParams.delete("auth_token")
+      const newQuery = urlParams.toString() ? `?${urlParams.toString()}` : ""
+      window.history.replaceState(
+        {},
+        "",
+        window.location.pathname + newQuery + window.location.hash
+      )
+      setTimeout(() => {
+        syncAuthSession()
+      }, 0)
+    }
+  } catch {
+    // ignore
+  }
+}
+
 /**
  * Validates and synchronizes the active session with the backend API.
  */
@@ -160,13 +183,37 @@ function subscribeAuth(callback: () => void) {
   if (typeof window === "undefined") return () => {}
   const handleAuth = () => callback()
   const handleStorage = (e: StorageEvent) => {
-    if (e.key === AUTH_STORAGE_KEY) callback()
+    if (e.key === AUTH_STORAGE_KEY || e.key === "portfolio_access_token") {
+      callback()
+    }
   }
+
+  let bc: BroadcastChannel | null = null
+  if (typeof BroadcastChannel !== "undefined") {
+    try {
+      bc = new BroadcastChannel("portfolio_google_auth")
+      bc.onmessage = (event) => {
+        if (event.data?.type === "GOOGLE_AUTH_SUCCESS") {
+          callback()
+        }
+      }
+    } catch {
+      // ignore
+    }
+  }
+
   window.addEventListener(AUTH_EVENT_NAME, handleAuth)
   window.addEventListener("storage", handleStorage)
   return () => {
     window.removeEventListener(AUTH_EVENT_NAME, handleAuth)
     window.removeEventListener("storage", handleStorage)
+    if (bc) {
+      try {
+        bc.close()
+      } catch {
+        // ignore
+      }
+    }
   }
 }
 

@@ -9,6 +9,7 @@ import {
   resetPasswordSchema as sharedResetPasswordSchema,
   resendOtpSchema as sharedResendOtpSchema,
   refreshTokenSchema as sharedRefreshTokenSchema,
+  googleLoginSchema as sharedGoogleLoginSchema,
 } from "@workspace/shared"
 
 export * from "@workspace/shared"
@@ -49,6 +50,10 @@ export const refreshTokenSchema = {
   body: sharedRefreshTokenSchema,
 }
 
+export const googleLoginSchema = {
+  body: sharedGoogleLoginSchema,
+}
+
 export type InitiateRegisterDTO =
   import("@workspace/shared").InitiateRegisterInput
 export type VerifyRegisterOtpDTO =
@@ -60,3 +65,4 @@ export type VerifyResetOtpDTO = import("@workspace/shared").VerifyResetOtpInput
 export type ResetPasswordDTO = import("@workspace/shared").ResetPasswordInput
 export type ResendOtpDTO = import("@workspace/shared").ResendOtpInput
 export type RefreshTokenDTO = import("@workspace/shared").RefreshTokenInput
+export type GoogleLoginDTO = import("@workspace/shared").GoogleLoginInput

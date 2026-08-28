@@ -23,7 +23,9 @@ import {
   VerifyResetOtpDTO,
   ResetPasswordDTO,
   ResendOtpDTO,
+  GoogleLoginDTO,
 } from "./AuthDTO"
+import { GoogleAuthService, GoogleUserProfile } from "./googleAuth.service"
 
 export interface OtpRecord {
   email: string
@@ -71,7 +73,8 @@ export class AuthServices {
 
   constructor(
     private readonly db: typeof prisma = prisma,
-    private readonly cache: CacheManager = getCacheManager()
+    private readonly cache: CacheManager = getCacheManager(),
+    private readonly googleAuth: GoogleAuthService = new GoogleAuthService()
   ) {}
 
   /**
@@ -84,11 +87,13 @@ export class AuthServices {
   /**
    * Helper to retrieve a pending OTP record (used for testing and status checks).
    */
-  public async getPendingOtp(type: string, email: string): Promise<OtpRecord | null> {
+  public async getPendingOtp(
+    type: string,
+    email: string
+  ): Promise<OtpRecord | null> {
     const key = this.getOtpCacheKey(type, email)
     return this.cache.get<OtpRecord>(key)
   }
-
 
   /**
    * Generates a secure random 6-digit numeric string for OTP verification.
@@ -290,7 +295,6 @@ export class AuthServices {
       { ttlSeconds: 10 * 60 }
     )
 
-
     // Step 6: Dispatch Plunk Email
     const rendered = renderOtpEmail({
       email,
@@ -382,7 +386,6 @@ export class AuthServices {
         ? JSON.parse(record.payload)
         : record.payload
 
-
     // Upsert or create user record
     const user = await this.db.user.upsert({
       where: { email },
@@ -468,6 +471,16 @@ export class AuthServices {
       throw new AuthenticationError("Invalid email or password.")
     }
 
+    if (!user.password) {
+      this.logger.warn(
+        "Sign-in failed: User has no password set (Google account)",
+        { email }
+      )
+      throw new AuthenticationError(
+        "This account is registered with Google. Please use 'Continue with Google' to sign in, or set a password via Forgot Password."
+      )
+    }
+
     const isPasswordValid = await Bun.password.verify(password, user.password)
     if (!isPasswordValid) {
       this.logger.warn("Sign-in failed: Password mismatch", { email })
@@ -503,10 +516,13 @@ export class AuthServices {
     userAgent?: string
   ) {
     if (config.server.isProduction) {
-      this.logger.warn("⚡ Unauthorized demo login attempt in production mode", {
-        userId,
-        ipAddress,
-      })
+      this.logger.warn(
+        "⚡ Unauthorized demo login attempt in production mode",
+        {
+          userId,
+          ipAddress,
+        }
+      )
       throw new AuthorizationError(
         "Demo login is strictly disabled in production mode."
       )
@@ -632,7 +648,6 @@ export class AuthServices {
       { ttlSeconds: 10 * 60 }
     )
 
-
     const rendered = renderOtpEmail({
       email,
       name: user.name,
@@ -691,7 +706,6 @@ export class AuthServices {
       )
     }
 
-
     return {
       success: true,
       email,
@@ -731,7 +745,6 @@ export class AuthServices {
 
     // Invalidate OTP in Redis
     await this.cache.del(otpKey)
-
 
     // Hash new password
     const newPasswordHash = await Bun.password.hash(newPassword, {
@@ -806,7 +819,6 @@ export class AuthServices {
       { ttlSeconds: 10 * 60 }
     )
 
-
     const rendered = renderOtpEmail({
       email,
       code: newOtp,
@@ -855,9 +867,7 @@ export class AuthServices {
 
     const secret = config.security.jwt.secret
     if (!secret) {
-      throw new AuthenticationError(
-        "Authentication system is misconfigured."
-      )
+      throw new AuthenticationError("Authentication system is misconfigured.")
     }
     const expiresIn = config.security.jwt.expiresIn || "1d"
 
@@ -915,5 +925,158 @@ export class AuthServices {
     }
 
     return this.sanitizeUser(user)
+  }
+
+  /**
+   * 12. GET GOOGLE OAUTH URL:
+   */
+  public getGoogleAuthUrl(state?: string, redirectUri?: string): string {
+    return this.googleAuth.getAuthUrl(state, redirectUri)
+  }
+
+  /**
+   * 13. AUTHENTICATE WITH GOOGLE:
+   * Handles Google OAuth callback (code) or ID Token verification.
+   */
+  public async authenticateWithGoogle(
+    dto: GoogleLoginDTO,
+    ipAddress?: string,
+    userAgent?: string
+  ) {
+    let profile: GoogleUserProfile
+
+    if (dto.code) {
+      profile = await this.googleAuth.verifyCode(dto.code, dto.redirectUri)
+    } else if (dto.idToken) {
+      profile = await this.googleAuth.verifyIdToken(dto.idToken)
+    } else {
+      throw new BadRequestError(
+        "Missing Google authorization code or ID token."
+      )
+    }
+
+    return this.findOrCreateGoogleUser(profile, ipAddress, userAgent)
+  }
+
+  /**
+   * 14. FIND OR CREATE GOOGLE USER:
+   * Links to existing account by googleId or email, or creates a new verified user.
+   */
+  public async findOrCreateGoogleUser(
+    profile: GoogleUserProfile,
+    ipAddress?: string,
+    userAgent?: string
+  ) {
+    this.logger.info("Processing Google authenticated user profile", {
+      email: profile.email,
+      googleId: profile.googleId,
+    })
+
+    // Find user by googleId or email
+    let user = await this.db.user.findFirst({
+      where: {
+        OR: [{ googleId: profile.googleId }, { email: profile.email }],
+      },
+    })
+
+    if (user) {
+      // Existing user: Link googleId if not linked, mark verified, update avatar and name if needed
+      const shouldUpdateAvatar =
+        !user.avatar ||
+        user.avatar.includes("googleusercontent.com") ||
+        user.avatar.includes("fi-avatar.webp")
+      const updatedAvatar =
+        shouldUpdateAvatar && profile.picture
+          ? profile.picture
+          : user.avatar || profile.picture || null
+
+      const shouldUpdateName = !user.name || user.name.startsWith("user_")
+      const updatedName =
+        shouldUpdateName && profile.name ? profile.name : user.name
+
+      user = await this.db.user.update({
+        where: { id: user.id },
+        data: {
+          googleId: user.googleId || profile.googleId,
+          isEmailVerified: true,
+          avatar: updatedAvatar,
+          name: updatedName,
+          lastLoginAt: new Date(),
+        },
+      })
+      this.logger.info("✔ Existing user authenticated via Google", {
+        userId: user.id,
+        email: user.email,
+        avatar: user.avatar,
+      })
+    } else {
+      // New user: Compute unique username
+      const emailPrefix = profile.email
+        .split("@")[0]
+        .replace(/[^a-zA-Z0-9_]/g, "")
+        .toLowerCase()
+      let cleanUsername =
+        emailPrefix.length >= 3
+          ? emailPrefix
+          : `user_${crypto.randomInt(1000, 9999)}`
+
+      const existingUsername = await this.db.user.findUnique({
+        where: { username: cleanUsername },
+      })
+      if (existingUsername) {
+        cleanUsername = `${cleanUsername}_${crypto.randomInt(100, 999)}`
+      }
+
+      user = await this.db.user.create({
+        data: {
+          email: profile.email,
+          name: profile.name || cleanUsername,
+          username: cleanUsername,
+          googleId: profile.googleId,
+          avatar: profile.picture || null,
+          isEmailVerified: true,
+          role: Role.USER,
+          badge: "Member",
+          headline: null,
+          subscribedToNewsletter: true,
+          lastLoginAt: new Date(),
+        },
+      })
+
+      // Auto-sync to Subscriber table
+      try {
+        await this.db.subscriber.upsert({
+          where: { email: user.email },
+          update: {
+            name: user.name,
+            status: "subscribed",
+          },
+          create: {
+            email: user.email,
+            name: user.name,
+            status: "subscribed",
+            source: "google_oauth_signup",
+          },
+        })
+      } catch (subErr) {
+        this.logger.warn("Failed to auto-subscribe Google user to newsletter", {
+          subErr,
+          email: user.email,
+        })
+      }
+
+      this.logger.info("✔ New user created via Google OAuth", {
+        userId: user.id,
+        email: user.email,
+      })
+    }
+
+    const tokens = await this.generateAuthTokens(user, ipAddress, userAgent)
+
+    return {
+      user: this.sanitizeUser(user),
+      ...tokens,
+      message: `Signed in successfully with Google as ${user.name}`,
+    }
   }
 }

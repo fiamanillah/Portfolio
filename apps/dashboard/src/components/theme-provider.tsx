@@ -40,12 +40,14 @@ export function ThemeProvider({
   // 1. Initial read from localStorage on mount
   React.useEffect(() => {
     try {
-      const stored = localStorage.getItem(storageKey) as Theme | null
-      if (
-        stored &&
-        (stored === "dark" || stored === "light" || stored === "system")
-      ) {
+      const stored = localStorage.getItem(storageKey) as
+        | Theme
+        | "theme-light"
+        | null
+      if (stored === "dark" || stored === "light" || stored === "system") {
         setThemeState(stored)
+      } else if (stored === "theme-light") {
+        setThemeState("light")
       } else {
         setThemeState(defaultTheme)
       }

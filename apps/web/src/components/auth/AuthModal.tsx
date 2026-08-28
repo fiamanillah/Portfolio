@@ -13,6 +13,7 @@ import {
   getAuthUrlParam,
   setAuthUrlParam,
   AUTH_MODAL_EVENT,
+  useAuthSession,
   type AuthModalStep,
 } from "@/lib/authStore"
 import { toast } from "@workspace/ui/components/sonner"
@@ -60,6 +61,7 @@ export function AuthModal({
   const [internalOpen, setInternalOpen] = useState(false)
   const isControlled = controlledOpen !== undefined
   const isOpen = isControlled ? controlledOpen : internalOpen
+  const { isAuthenticated } = useAuthSession()
 
   // Current Step state
   const [currentStep, setCurrentStep] = useState<AuthModalStep>(initialStep)
@@ -107,6 +109,37 @@ export function AuthModal({
   const [isVerifyingResetOtp, setIsVerifyingResetOtp] = useState(false)
   const [isResettingPassword, setIsResettingPassword] = useState(false)
   const [resetResendCountdown, setResetResendCountdown] = useState(45)
+
+  // Google OAuth Authentication State
+  const [isGoogleSubmitting, setIsGoogleSubmitting] = useState(false)
+
+  const handleGoogleAuth = async () => {
+    setIsGoogleSubmitting(true)
+    try {
+      const res = await AuthApi.openGoogleAuthPopup()
+      if (res.success && res.data?.user) {
+        setStoredUser(res.data.user)
+        toast.success(`Welcome, ${res.data.user.name}!`, {
+          description: "Signed in successfully with your Google account.",
+        })
+        handleOpenChange(false)
+        onSuccess?.(res.data.user)
+      } else if (res.error && res.error !== "Sign-in cancelled") {
+        toast.error("Google Sign-In Failed", {
+          description: res.error,
+        })
+      }
+    } catch (err: unknown) {
+      toast.error("Google Sign-In Error", {
+        description:
+          err instanceof Error
+            ? err.message
+            : "Failed to authenticate with Google.",
+      })
+    } finally {
+      setIsGoogleSubmitting(false)
+    }
+  }
 
   // Sync with URL query on mount and URL popstate changes
   useEffect(() => {
@@ -166,6 +199,13 @@ export function AuthModal({
     },
     [controlledOnOpenChange]
   )
+
+  // Auto-close modal when user becomes authenticated
+  useEffect(() => {
+    if (isAuthenticated && isOpen) {
+      handleOpenChange(false)
+    }
+  }, [isAuthenticated, isOpen, handleOpenChange])
 
   const navigateToStep = (step: AuthModalStep) => {
     setCurrentStep(step)
@@ -651,7 +691,9 @@ export function AuthModal({
             errors={signInErrors}
             setErrors={setSignInErrors}
             isSubmitting={isSigningIn}
+            isGoogleSubmitting={isGoogleSubmitting}
             onSubmit={handleSignInSubmit}
+            onGoogleSignIn={handleGoogleAuth}
             onForgotPassword={() => {
               setResetEmail(signInEmail)
               navigateToStep("forgot-password")
@@ -678,7 +720,9 @@ export function AuthModal({
             errors={signUpErrors}
             setErrors={setSignUpErrors}
             isSubmitting={isSendingRegisterOtp}
+            isGoogleSubmitting={isGoogleSubmitting}
             onSubmit={handleInitiateRegistration}
+            onGoogleSignUp={handleGoogleAuth}
           />
         )}
 

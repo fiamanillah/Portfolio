@@ -41,10 +41,7 @@ export const apiEnvSchema = z
 
     // Email Delivery (Plunk)
     PLUNK_SECRET_KEY: z.string().default(""),
-    PLUNK_API_URL: z
-      .string()
-      .url()
-      .default("https://next-api.useplunk.com"),
+    PLUNK_API_URL: z.string().url().default("https://next-api.useplunk.com"),
     PLUNK_TEMPLATE_ID: z.string().optional(),
     PLUNK_CONFIRMATION_TEMPLATE_ID: z.string().optional(),
 
@@ -55,10 +52,7 @@ export const apiEnvSchema = z
       .string()
       .email()
       .default("hello@mail.amanillah.com"),
-    SYSTEM_FROM_EMAIL: z
-      .string()
-      .email()
-      .default("system@mail.amanillah.com"),
+    SYSTEM_FROM_EMAIL: z.string().email().default("system@mail.amanillah.com"),
     AUTH_FROM_EMAIL: z.string().email().default("auth@mail.amanillah.com"),
     BOOKING_FROM_EMAIL: z
       .string()
@@ -68,10 +62,7 @@ export const apiEnvSchema = z
       .string()
       .email()
       .default("newsletter@newsletter.amanillah.com"),
-    BOOKING_NOTIFICATION_EMAIL: z
-      .string()
-      .email()
-      .default("fi@amanillah.com"),
+    BOOKING_NOTIFICATION_EMAIL: z.string().email().default("fi@amanillah.com"),
 
     // Turnstile Anti-Bot
     TURNSTILE_SECRET_KEY: z.string().default(""),
@@ -106,6 +97,9 @@ export const apiEnvSchema = z
     GOOGLE_REDIRECT_URI: z
       .string()
       .default("http://localhost:3040/booking/v1/google/callback"),
+    GOOGLE_AUTH_CALLBACK_URL: z
+      .string()
+      .default("http://localhost:3040/auth/v1/google/callback"),
 
     // Booking Engine
     BOOKING_RATE_LIMIT_WINDOW_MS: z.coerce.number().default(3600000),
@@ -160,7 +154,9 @@ export function getApiEnv(overrides?: Record<string, unknown>): ApiEnv {
   if (!result.success) {
     const formatted = formatEnvErrors(result.error, "apps/api")
     console.error(formatted)
-    throw new Error(`API environment validation failed:\n${result.error.message}`)
+    throw new Error(
+      `API environment validation failed:\n${result.error.message}`
+    )
   }
 
   if (!overrides) {

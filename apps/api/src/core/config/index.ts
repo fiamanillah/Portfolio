@@ -77,15 +77,16 @@ export const config = {
     publicDomain: apiEnv.R2_PUBLIC_DOMAIN,
     maxFileSize: apiEnv.STORAGE_MAX_FILE_SIZE,
     defaultPresignedExpiresIn: apiEnv.STORAGE_PRESIGNED_EXPIRES_IN,
-    allowedMimeTypes: ((apiEnv.STORAGE_ALLOWED_MIME_TYPES || "")
+    allowedMimeTypes: (apiEnv.STORAGE_ALLOWED_MIME_TYPES || "")
       .split(",")
       .map((t: string) => t.trim())
-      .filter(Boolean)) as string[],
+      .filter(Boolean) as string[],
   },
   google: {
     clientId: apiEnv.GOOGLE_CLIENT_ID,
     clientSecret: apiEnv.GOOGLE_CLIENT_SECRET,
     redirectUri: apiEnv.GOOGLE_REDIRECT_URI,
+    authCallbackUrl: apiEnv.GOOGLE_AUTH_CALLBACK_URL,
   },
   booking: {
     adminEmail:
@@ -105,6 +106,5 @@ export const config = {
     defaultTTLSeconds: apiEnv.REDIS_DEFAULT_TTL,
   },
 }
-
 
 export default config

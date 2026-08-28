@@ -16,6 +16,7 @@ interface AuthContextType {
   login: (
     credentials: LoginInput
   ) => Promise<{ success: boolean; error?: string }>
+  loginWithGoogle: () => Promise<{ success: boolean; error?: string }>
   loginAsDemo: (userId: string) => Promise<{ success: boolean; error?: string }>
   logout: () => Promise<void>
   refreshUser: () => Promise<AuthUser | null>
@@ -61,6 +62,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [])
 
   React.useEffect(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const urlParams = new URLSearchParams(window.location.search)
+        const tokenFromUrl = urlParams.get("auth_token")
+        if (tokenFromUrl) {
+          setStoredAccessToken(tokenFromUrl)
+          urlParams.delete("auth_token")
+          const newQuery = urlParams.toString()
+            ? `?${urlParams.toString()}`
+            : ""
+          window.history.replaceState(
+            {},
+            "",
+            window.location.pathname + newQuery + window.location.hash
+          )
+        }
+      } catch {
+        // ignore
+      }
+    }
     refreshUser()
   }, [refreshUser])
 
@@ -153,6 +174,56 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
+  const loginWithGoogle = async (): Promise<{
+    success: boolean
+    error?: string
+  }> => {
+    try {
+      setIsLoading(true)
+      const res = await AuthApi.openGoogleAuthPopup()
+
+      if (!res.success || !res.data) {
+        setIsLoading(false)
+        return {
+          success: false,
+          error: res.error || "Google sign-in was cancelled.",
+        }
+      }
+
+      const loggedUser = res.data.user
+      setUser(loggedUser)
+      setToken(res.data.accessToken)
+      setIsLoading(false)
+
+      if (loggedUser.role !== "ADMIN") {
+        toast.error("Administrator Access Required", {
+          description:
+            "Your Google account does not have Super Admin privileges.",
+        })
+        return {
+          success: false,
+          error:
+            "Access Denied: Your Google account does not have Administrator privileges.",
+        }
+      }
+
+      toast.success("Welcome, Super Admin!", {
+        description: `Signed in as ${loggedUser.name} (${loggedUser.email})`,
+      })
+
+      return { success: true }
+    } catch (err: unknown) {
+      setIsLoading(false)
+      return {
+        success: false,
+        error:
+          err instanceof Error
+            ? err.message
+            : "An unexpected error occurred during Google sign in.",
+      }
+    }
+  }
+
   const logout = async () => {
     try {
       await AuthApi.logout()
@@ -179,6 +250,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         isAuthenticated,
         isAdmin,
         login,
+        loginWithGoogle,
         loginAsDemo,
         logout,
         refreshUser,
@@ -199,6 +271,7 @@ export function useAuth(): AuthContextType {
       isAuthenticated: false,
       isAdmin: false,
       login: async () => ({ success: false }),
+      loginWithGoogle: async () => ({ success: false }),
       loginAsDemo: async () => ({ success: false }),
       logout: async () => {},
       refreshUser: async () => null,

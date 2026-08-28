@@ -11,8 +11,9 @@ import SEO from "@/components/SEO/SEO.astro"
 import GoogleAnalytics from "@/components/GoogleAnalytics.astro"
 ---
 
-<html lang="en">
+<html lang="en" class="dark" style="color-scheme: dark">
   <head>
+    <ThemeScript />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -49,7 +50,6 @@ import GoogleAnalytics from "@/components/GoogleAnalytics.astro"
       )
     }
     <GoogleAnalytics />
-    <ThemeScript />
     <script is:inline>
       ;(function () {
         try {

@@ -1,6 +1,5 @@
 // src/components/Profile/ProfileHeader.tsx
 import { useState } from "react"
-import { toast } from "@workspace/ui/components/sonner"
 import type { AuthUser } from "@workspace/shared"
 import { AvatarSelectorModal } from "./shared/AvatarSelectorModal"
 import { useProfileState } from "@/lib/profileStore"
@@ -21,7 +20,8 @@ interface ProfileHeaderProps {
 }
 
 export function ProfileHeader({ user }: ProfileHeaderProps) {
-  const { updateProfile, subscribedToNewsletter } = useProfileState()
+  const { updateProfile, removeAvatar, subscribedToNewsletter } =
+    useProfileState()
   const [avatarModalOpen, setAvatarModalOpen] = useState(false)
 
   const isVerified = user.isEmailVerified !== false
@@ -47,6 +47,10 @@ export function ProfileHeader({ user }: ProfileHeaderProps) {
                 <img
                   src={user.avatar || "/fi-avatar.webp"}
                   alt={user.name}
+                  referrerPolicy="no-referrer"
+                  onError={(e) => {
+                    ;(e.target as HTMLImageElement).src = "/fi-avatar.webp"
+                  }}
                   className="size-20 rounded-full border-4 border-background bg-card object-cover shadow-lg sm:size-24"
                 />
                 <button
@@ -207,12 +211,10 @@ export function ProfileHeader({ user }: ProfileHeaderProps) {
         onOpenChange={setAvatarModalOpen}
         currentAvatar={user.avatar}
         onSaveAvatar={async (newAvatar) => {
-          const res = await updateProfile({ avatar: newAvatar })
-          if (res.success) {
-            toast.success("Avatar updated successfully!")
-          } else {
-            toast.error("Avatar Update Failed", { description: res.error })
-          }
+          await updateProfile({ avatar: newAvatar })
+        }}
+        onRemoveAvatar={async () => {
+          await removeAvatar()
         }}
       />
     </>

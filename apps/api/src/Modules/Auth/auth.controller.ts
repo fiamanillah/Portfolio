@@ -14,6 +14,7 @@ import {
   ResetPasswordDTO,
   ResendOtpDTO,
   RefreshTokenDTO,
+  GoogleLoginDTO,
 } from "./AuthDTO"
 
 export class AuthController extends BaseController {
@@ -170,5 +171,134 @@ export class AuthController extends BaseController {
     const userId = req.user!.id
     const user = await this.authService.getMe(userId)
     return this.sendResponse(req, res, "Authenticated user profile", 200, user)
+  }
+
+  /**
+   * GET /auth/v1/google
+   * Initiates Google OAuth consent flow or returns authorization URL.
+   */
+  public async getGoogleAuthUrl(req: Request, res: Response) {
+    const returnTo =
+      (req.query.returnTo as string) ||
+      (req.query.redirect as string) ||
+      config.site.webUrl
+    const mode = (req.query.mode as string) || "popup"
+    const format = req.query.format as string
+
+    const stateObj = {
+      returnTo,
+      mode,
+      time: Date.now(),
+    }
+    const state = Buffer.from(JSON.stringify(stateObj)).toString("base64url")
+    const url = this.authService.getGoogleAuthUrl(state)
+
+    if (format === "json" || req.headers.accept?.includes("application/json")) {
+      return this.sendResponse(req, res, "Google OAuth URL generated", 200, {
+        url,
+      })
+    }
+
+    return res.redirect(url)
+  }
+
+  /**
+   * GET /auth/v1/google/callback
+   * Google OAuth2 callback redirect handler.
+   */
+  public async googleCallback(req: Request, res: Response) {
+    const code = req.query.code as string
+    const error = req.query.error as string
+    const stateStr = req.query.state as string
+
+    let returnTo = config.site.webUrl
+    let mode = "popup"
+
+    if (stateStr) {
+      try {
+        const parsed = JSON.parse(
+          Buffer.from(stateStr, "base64url").toString("utf8")
+        )
+        if (parsed.returnTo) returnTo = parsed.returnTo
+        if (parsed.mode) mode = parsed.mode
+      } catch {
+        // use default returnTo
+      }
+    }
+
+    const ip = req.ip || req.socket.remoteAddress
+    const userAgent = req.headers["user-agent"]
+
+    // Construct frontend callback URL
+    let callbackTarget = returnTo
+    if (!callbackTarget.includes("/auth/callback")) {
+      callbackTarget = `${callbackTarget.replace(/\/+$/, "")}/auth/callback`
+    }
+    const separator = callbackTarget.includes("?") ? "&" : "?"
+
+    if (error || !code) {
+      this.logger.warn("Google OAuth callback error or user cancellation", {
+        error,
+      })
+      const errorMessage = error || "Google authentication was cancelled."
+
+      return res.redirect(
+        `${callbackTarget}${separator}auth_error=${encodeURIComponent(errorMessage)}&mode=${encodeURIComponent(mode)}`
+      )
+    }
+
+    try {
+      const result = await this.authService.authenticateWithGoogle(
+        { code, redirectUri: config.google.authCallbackUrl },
+        ip,
+        userAgent
+      )
+
+      this.setRefreshTokenCookie(res, result.refreshToken)
+      res.cookie("auth_token", result.accessToken, {
+        httpOnly: true,
+        secure: config.server.isProduction,
+        sameSite: "lax",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+        path: "/",
+      })
+
+      const redirectUrl = `${callbackTarget}${separator}auth_token=${encodeURIComponent(
+        result.accessToken
+      )}&user=${encodeURIComponent(JSON.stringify(result.user))}&mode=${encodeURIComponent(mode)}`
+
+      return res.redirect(redirectUrl)
+    } catch (authErr: unknown) {
+      const errMessage =
+        authErr instanceof Error
+          ? authErr.message
+          : "Google authentication failed."
+      this.logger.error("Error during Google OAuth code exchange", {
+        error: errMessage,
+      })
+
+      return res.redirect(
+        `${callbackTarget}${separator}auth_error=${encodeURIComponent(errMessage)}&mode=${encodeURIComponent(mode)}`
+      )
+    }
+  }
+
+  /**
+   * POST /auth/v1/google
+   * Authenticates with Google ID token or code directly (REST API).
+   */
+  public async googleLogin(req: Request, res: Response) {
+    const dto = req.validatedBody as GoogleLoginDTO
+    const ip = req.ip || req.socket.remoteAddress
+    const userAgent = req.headers["user-agent"]
+
+    const result = await this.authService.authenticateWithGoogle(
+      dto,
+      ip,
+      userAgent
+    )
+    this.setRefreshTokenCookie(res, result.refreshToken)
+
+    return this.sendResponse(req, res, result.message, 200, result)
   }
 }

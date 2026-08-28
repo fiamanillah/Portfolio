@@ -1,18 +1,37 @@
 <script is:inline>
   ;(function () {
-    const STORAGE_KEY = "ui-theme"
-
     try {
+      const STORAGE_KEY = "ui-theme"
       const savedTheme = localStorage.getItem(STORAGE_KEY)
       const prefersDark = window.matchMedia(
         "(prefers-color-scheme: dark)"
       ).matches
-      const isDark =
-        savedTheme === "dark" ||
-        (savedTheme === "system" || !savedTheme ? prefersDark : false)
 
-      document.documentElement.classList[isDark ? "add" : "remove"]("dark")
-      document.documentElement.style.colorScheme = isDark ? "dark" : "light"
+      // If explicitly light, resolve to light.
+      // If explicitly dark, resolve to dark.
+      // If system, resolve to prefersDark.
+      // If unset / default, resolve to dark (primary site aesthetic).
+      let isDark = true
+      if (savedTheme === "theme-light" || savedTheme === "light") {
+        isDark = false
+      } else if (savedTheme === "dark") {
+        isDark = true
+      } else if (savedTheme === "system") {
+        isDark = prefersDark
+      } else {
+        isDark = true
+      }
+
+      const root = document.documentElement
+      if (isDark) {
+        root.classList.add("dark")
+        root.classList.remove("theme-light", "light")
+        root.style.colorScheme = "dark"
+      } else {
+        root.classList.remove("dark")
+        root.classList.add("theme-light")
+        root.style.colorScheme = "light"
+      }
     } catch (error) {
       // Silently fail if localStorage is unavailable
     }

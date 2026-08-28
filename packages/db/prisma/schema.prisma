@@ -64,7 +64,8 @@ model User {
   email                  String            @unique
   username               String            @unique
   name                   String
-  password               String
+  password               String?
+  googleId               String?           @unique
   avatar                 String?
   resumeUrl              String?
   role                   Role              @default(USER)

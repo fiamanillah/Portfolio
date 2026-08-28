@@ -27,9 +27,14 @@ import { Moon, Sun } from "@hugeicons/core-free-icons"
 
     btn.addEventListener("click", () => {
       const isDark = document.documentElement.classList.toggle("dark")
+      if (isDark) {
+        document.documentElement.classList.remove("theme-light", "light")
+      } else {
+        document.documentElement.classList.add("theme-light")
+      }
       document.documentElement.style.colorScheme = isDark ? "dark" : "light"
       try {
-        localStorage.setItem("ui-theme", isDark ? "dark" : "theme-light")
+        localStorage.setItem("ui-theme", isDark ? "dark" : "light")
       } catch {}
       window.dispatchEvent(new CustomEvent("grid-refresh"))
     })

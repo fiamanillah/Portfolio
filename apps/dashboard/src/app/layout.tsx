@@ -46,12 +46,20 @@ export default function RootLayout({
       lang="en"
       suppressHydrationWarning
       className={cn(
-        "antialiased",
+        "dark antialiased",
         fontMono.variable,
         "font-sans",
         inter.variable
       )}
+      style={{ colorScheme: "dark" }}
     >
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var s=localStorage.getItem("ui-theme");var p=window.matchMedia("(prefers-color-scheme: dark)").matches;var d=true;if(s==="theme-light"||s==="light"){d=false;}else if(s==="dark"){d=true;}else if(s==="system"){d=p;}else{d=true;}var r=document.documentElement;if(d){r.classList.add("dark");r.classList.remove("theme-light","light");r.style.colorScheme="dark";}else{r.classList.remove("dark");r.classList.add("theme-light");r.style.colorScheme="light";}}catch(e){}})();`,
+          }}
+        />
+      </head>
       <body className="min-h-screen bg-background text-foreground">
         <ThemeProvider>
           <AuthProvider>

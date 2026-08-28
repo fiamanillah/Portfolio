@@ -43,6 +43,10 @@ export function UserMenuDropdown({ user, logout }: UserMenuDropdownProps) {
             <img
               src={user.avatar || "/fi-avatar.webp"}
               alt={user.name}
+              referrerPolicy="no-referrer"
+              onError={(e) => {
+                ;(e.target as HTMLImageElement).src = "/fi-avatar.webp"
+              }}
               className="size-6 rounded-full border border-primary/50 object-cover"
             />
             <span className="absolute -right-0.5 -bottom-0.5 size-2 rounded-full border border-background bg-emerald-500" />
@@ -63,6 +67,10 @@ export function UserMenuDropdown({ user, logout }: UserMenuDropdownProps) {
             <img
               src={user.avatar || "/fi-avatar.webp"}
               alt={user.name}
+              referrerPolicy="no-referrer"
+              onError={(e) => {
+                ;(e.target as HTMLImageElement).src = "/fi-avatar.webp"
+              }}
               className="size-8 shrink-0 rounded-full border border-primary/50 object-cover"
             />
             <div className="min-w-0">
@@ -83,9 +91,11 @@ export function UserMenuDropdown({ user, logout }: UserMenuDropdownProps) {
           </div>
 
           <div className="mt-2 space-y-1 border-t border-border/40 pt-2">
-            <p className="truncate text-[10px] text-muted-foreground">
-              {user.role || "Developer"}
-            </p>
+            {user.role && (
+              <p className="truncate text-[10px] text-muted-foreground">
+                {user.role}
+              </p>
+            )}
             {user.subscribedToNewsletter && (
               <span className="inline-flex items-center gap-1 text-[9px] text-primary">
                 <HugeiconsIcon icon={Notification01Icon} className="size-2.5" />

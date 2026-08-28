@@ -2,12 +2,15 @@
 import "@workspace/ui/globals.css"
 import SEO from "@/components/SEO/SEO.astro"
 import GoogleAnalytics from "@/components/GoogleAnalytics.astro"
+import ThemeScript from "@/components/ThemeScript.astro"
 ---
 
-<html lang="en">
+<html lang="en" class="dark" style="color-scheme: dark">
   <head>
+    <ThemeScript />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
+    <meta name="referrer" content="no-referrer-when-downgrade" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <link

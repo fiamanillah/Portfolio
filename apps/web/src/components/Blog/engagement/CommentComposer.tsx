@@ -306,6 +306,10 @@ export function CommentComposer({
             <img
               src={user.avatar || "/fi-avatar.webp"}
               alt={user.name}
+              referrerPolicy="no-referrer"
+              onError={(e) => {
+                ;(e.target as HTMLImageElement).src = "/fi-avatar.webp"
+              }}
               width="28"
               height="28"
               className="size-7 rounded-full border border-primary/40 object-cover"

@@ -1,0 +1,286 @@
+---
+// apps/web/src/pages/auth/callback.astro
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Authenticating...</title>
+    <style>
+      body {
+        background-color: #09090b;
+        color: #fafafa;
+        font-family:
+          ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+          "Liberation Mono", "Courier New", monospace;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        margin: 0;
+        padding: 1.5rem;
+        box-sizing: border-box;
+        text-align: center;
+      }
+      .card {
+        background: #18181b;
+        border: 1px solid #27272a;
+        border-radius: 4px;
+        padding: 2rem;
+        max-width: 380px;
+        width: 100%;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+      }
+      .spinner {
+        width: 32px;
+        height: 32px;
+        border: 3px solid #27272a;
+        border-top-color: #10b981;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+        margin: 0 auto 1.25rem;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      .icon-success {
+        width: 44px;
+        height: 44px;
+        margin: 0 auto 1.25rem;
+        background: rgba(16, 185, 129, 0.15);
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #10b981;
+      }
+      .icon-error {
+        width: 44px;
+        height: 44px;
+        margin: 0 auto 1.25rem;
+        background: rgba(239, 68, 68, 0.15);
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #ef4444;
+      }
+      h2 {
+        font-size: 1.125rem;
+        margin: 0 0 0.5rem;
+        font-weight: 600;
+      }
+      p {
+        font-size: 0.8125rem;
+        color: #a1a1aa;
+        margin: 0;
+        line-height: 1.5;
+      }
+      .btn {
+        margin-top: 1.25rem;
+        display: inline-block;
+        background: #27272a;
+        color: #fafafa;
+        border: 1px solid #3f3f46;
+        padding: 0.5rem 1rem;
+        font-size: 0.8125rem;
+        font-family: inherit;
+        border-radius: 2px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+      }
+      .btn:hover {
+        background: #3f3f46;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <div id="loader" class="spinner"></div>
+      <div id="iconSuccess" class="icon-success" style="display: none;">
+        <svg
+          width="22"
+          height="22"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M20 6L9 17l-5-5"></path>
+        </svg>
+      </div>
+      <div id="iconError" class="icon-error" style="display: none;">
+        <svg
+          width="22"
+          height="22"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+      </div>
+      <h2 id="title">Signing In...</h2>
+      <p id="msg">
+        Completing authentication and synchronizing your session...
+      </p>
+      <button
+        id="closeBtn"
+        class="btn"
+        style="display: none;"
+        onclick="window.close()"
+      >
+        Close Window
+      </button>
+    </div>
+
+    <script>
+      const AUTH_STORAGE_KEY = "portfolio_user_session"
+      const ACCESS_TOKEN_KEY = "portfolio_access_token"
+      const AUTH_EVENT_NAME = "portfolio:auth-change"
+
+      try {
+        const urlParams = new URLSearchParams(window.location.search)
+        const token = urlParams.get("auth_token")
+        const userRaw = urlParams.get("user")
+        const error = urlParams.get("auth_error")
+        const mode = urlParams.get("mode") || "popup"
+
+        const isPopup =
+          mode === "popup" ||
+          Boolean(window.opener) ||
+          window.name === "google_oauth_popup" ||
+          window.name === "google_admin_oauth_popup" ||
+          (window.innerWidth > 0 && window.innerWidth <= 750)
+
+        const loader = document.getElementById("loader")
+        const iconSuccess = document.getElementById("iconSuccess")
+        const iconError = document.getElementById("iconError")
+        const title = document.getElementById("title")
+        const msg = document.getElementById("msg")
+        const closeBtn = document.getElementById("closeBtn")
+
+        if (error) {
+          if (loader) loader.style.display = "none"
+          if (iconError) iconError.style.display = "flex"
+          if (title) title.textContent = "Authentication Failed"
+          if (msg) msg.textContent = error
+          if (closeBtn) closeBtn.style.display = "inline-block"
+
+          const errPayload = { type: "GOOGLE_AUTH_ERROR", error }
+
+          try {
+            if (window.opener && !window.opener.closed) {
+              window.opener.postMessage(errPayload, "*")
+            }
+          } catch (e) {}
+
+          try {
+            if ("BroadcastChannel" in window) {
+              const bc = new BroadcastChannel("portfolio_google_auth")
+              bc.postMessage(errPayload)
+              bc.close()
+            }
+          } catch (e) {}
+
+          if (isPopup) {
+            setTimeout(() => {
+              try {
+                window.close()
+              } catch (e) {}
+            }, 1800)
+          }
+        } else if (token) {
+          let user = null
+          if (userRaw) {
+            try {
+              user = JSON.parse(userRaw)
+            } catch (e) {}
+          }
+
+          // 1. Write session and token to same-origin localStorage
+          localStorage.setItem(ACCESS_TOKEN_KEY, token)
+          if (user) {
+            localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(user))
+          }
+
+          // 2. Dispatch custom event on this window
+          window.dispatchEvent(
+            new CustomEvent(AUTH_EVENT_NAME, { detail: user })
+          )
+
+          const successPayload = {
+            type: "GOOGLE_AUTH_SUCCESS",
+            accessToken: token,
+            user: user,
+          }
+
+          // 3. Broadcast to same-origin tabs and windows
+          try {
+            if ("BroadcastChannel" in window) {
+              const bc = new BroadcastChannel("portfolio_google_auth")
+              bc.postMessage(successPayload)
+              bc.close()
+            }
+          } catch (e) {}
+
+          // 4. Post message to window.opener if available
+          try {
+            if (window.opener && !window.opener.closed) {
+              window.opener.postMessage(successPayload, "*")
+            }
+          } catch (e) {}
+
+          if (loader) loader.style.display = "none"
+          if (iconSuccess) iconSuccess.style.display = "flex"
+          if (title) title.textContent = "Signed In Successfully!"
+          if (msg)
+            msg.textContent =
+              "Authentication complete. This window can now be closed."
+          if (closeBtn) closeBtn.style.display = "inline-block"
+
+          // 5. Handle window closure or navigation
+          if (isPopup) {
+            // Attempt instant close
+            try {
+              window.close()
+            } catch (e) {}
+
+            setTimeout(() => {
+              try {
+                window.close()
+              } catch (e) {}
+            }, 300)
+          } else {
+            // If user used full page redirect mode (not a popup)
+            setTimeout(() => {
+              window.location.href = "/"
+            }, 500)
+          }
+        } else {
+          if (loader) loader.style.display = "none"
+          if (iconError) iconError.style.display = "flex"
+          if (title) title.textContent = "No Session Found"
+          if (msg) msg.textContent = "No authentication payload was received."
+          if (closeBtn) closeBtn.style.display = "inline-block"
+        }
+      } catch (err) {
+        console.error("Auth callback execution error:", err)
+      }
+    </script>
+  </body>
+</html>
