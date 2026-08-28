@@ -68,24 +68,26 @@ function AuthCallbackContent() {
         }
       } catch (e) {}
 
-      const mode = searchParams.get("mode") || "popup"
       const isPopup =
-        mode === "popup" ||
-        Boolean(window.opener) ||
+        Boolean(window.opener && !window.opener.closed) ||
         window.name === "google_admin_oauth_popup" ||
-        window.name === "google_oauth_popup" ||
-        (window.innerWidth > 0 && window.innerWidth <= 750)
+        window.name === "google_oauth_popup"
 
       if (isPopup) {
         try {
           window.close()
         } catch (e) {}
 
+        // Fallback for mobile or environments where window.close is restricted
         setTimeout(() => {
           try {
-            window.close()
-          } catch (e) {}
-        }, 350)
+            if (!window.closed) {
+              router.replace("/")
+            }
+          } catch (e) {
+            router.replace("/")
+          }
+        }, 400)
       } else {
         router.replace("/")
       }

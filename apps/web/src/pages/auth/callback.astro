@@ -161,11 +161,9 @@
         const mode = urlParams.get("mode") || "popup"
 
         const isPopup =
-          mode === "popup" ||
-          Boolean(window.opener) ||
+          Boolean(window.opener && !window.opener.closed) ||
           window.name === "google_oauth_popup" ||
-          window.name === "google_admin_oauth_popup" ||
-          (window.innerWidth > 0 && window.innerWidth <= 750)
+          window.name === "google_admin_oauth_popup"
 
         const loader = document.getElementById("loader")
         const iconSuccess = document.getElementById("iconSuccess")
@@ -203,6 +201,10 @@
                 window.close()
               } catch (e) {}
             }, 1800)
+          } else {
+            setTimeout(() => {
+              window.location.href = "/"
+            }, 2000)
           }
         } else if (token) {
           let user = null
@@ -250,7 +252,7 @@
           if (title) title.textContent = "Signed In Successfully!"
           if (msg)
             msg.textContent =
-              "Authentication complete. This window can now be closed."
+              "Authentication complete. Returning to your page..."
           if (closeBtn) closeBtn.style.display = "inline-block"
 
           // 5. Handle window closure or navigation
@@ -260,16 +262,21 @@
               window.close()
             } catch (e) {}
 
+            // Fallback for mobile or popup-blocked tabs
             setTimeout(() => {
               try {
-                window.close()
-              } catch (e) {}
-            }, 300)
+                if (!window.closed) {
+                  window.location.href = "/"
+                }
+              } catch (e) {
+                window.location.href = "/"
+              }
+            }, 400)
           } else {
-            // If user used full page redirect mode (not a popup)
+            // Full page redirect mode
             setTimeout(() => {
               window.location.href = "/"
-            }, 500)
+            }, 300)
           }
         } else {
           if (loader) loader.style.display = "none"

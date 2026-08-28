@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from "react"
 import { usePostEngagement } from "@/lib/engagementStore"
-import { useAuthSession } from "@/lib/authStore"
+import { useAuthSession, setAuthUrlParam } from "@/lib/authStore"
 import { CommentsApi, type GuestCommentPayload } from "@/lib/api/commentsApi"
 import type { AuthUser } from "@/data/commentsData"
 import { CommentComposer } from "./CommentComposer"
@@ -143,6 +143,11 @@ export function BlogCommentsSection({ postSlug }: BlogCommentsSectionProps) {
     }
   }
 
+  const handleOpenAuth = () => {
+    setAuthUrlParam("signin")
+    setAuthModalOpen(true)
+  }
+
   const handleTopLevelCommentSubmit = async (
     content: string,
     guestInfo?: GuestCommentPayload
@@ -152,7 +157,7 @@ export function BlogCommentsSection({ postSlug }: BlogCommentsSectionProps) {
     } else if (guestInfo && guestInfo.guestName) {
       await addComment(guestInfo, content)
     } else {
-      setAuthModalOpen(true)
+      handleOpenAuth()
     }
   }
 
@@ -233,7 +238,7 @@ export function BlogCommentsSection({ postSlug }: BlogCommentsSectionProps) {
       <div className="mb-6">
         <CommentComposer
           onSubmit={handleTopLevelCommentSubmit}
-          onOpenAuth={() => setAuthModalOpen(true)}
+          onOpenAuth={handleOpenAuth}
         />
       </div>
 
@@ -287,7 +292,7 @@ export function BlogCommentsSection({ postSlug }: BlogCommentsSectionProps) {
                   onLike={toggleCommentLike}
                   onReply={handleReplySubmit}
                   onDelete={deleteComment}
-                  onOpenAuth={() => setAuthModalOpen(true)}
+                  onOpenAuth={handleOpenAuth}
                 />
               ))}
 

@@ -165,6 +165,8 @@ import SEO from "@/components/SEO/SEO.astro"
 </MySiteLayout>
 
 <script>
+  import { getApiBaseUrl } from "@/lib/api/baseUrl"
+
   function setupBackButton() {
     const backBtn = document.getElementById("go-back-btn")
     if (backBtn && backBtn.dataset.bound !== "true") {
@@ -185,9 +187,7 @@ import SEO from "@/components/SEO/SEO.astro"
       const currentPath = window.location.pathname
       if (!currentPath || currentPath === "/" || currentPath === "/404") return
 
-      const apiUrl =
-        (typeof window !== "undefined" && window.__PUBLIC_API_URL__) ||
-        "http://localhost:3040"
+      const apiUrl = getApiBaseUrl()
 
       const res = await fetch(
         `${apiUrl}/redirects/v1/resolve?path=${encodeURIComponent(currentPath)}`

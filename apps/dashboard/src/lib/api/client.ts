@@ -1,7 +1,31 @@
 // apps/dashboard/src/lib/api/client.ts
 
-export const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:3040"
+export function getApiBaseUrl(): string {
+  const envUrl = process.env.NEXT_PUBLIC_API_URL
+  if (typeof window !== "undefined") {
+    const isLocal =
+      window.location.hostname === "localhost" ||
+      window.location.hostname === "127.0.0.1"
+    if (!isLocal) {
+      if (envUrl && !envUrl.includes("localhost")) {
+        return envUrl.replace(/\/$/, "")
+      }
+      return "https://api-fi.amanillah.com"
+    }
+    return envUrl ? envUrl.replace(/\/$/, "") : "http://localhost:3040"
+  }
+  if (envUrl) {
+    if (process.env.NODE_ENV === "production" && envUrl.includes("localhost")) {
+      return "https://api-fi.amanillah.com"
+    }
+    return envUrl.replace(/\/$/, "")
+  }
+  return process.env.NODE_ENV === "production"
+    ? "https://api-fi.amanillah.com"
+    : "http://localhost:3040"
+}
+
+export const API_BASE_URL = getApiBaseUrl()
 
 export const ACCESS_TOKEN_KEY = "portfolio_access_token"
 export const AUTH_COOKIE_NAME = "auth_token"

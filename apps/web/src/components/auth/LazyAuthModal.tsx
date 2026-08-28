@@ -14,6 +14,12 @@ export function LazyAuthModal(props: AuthModalProps) {
   })
 
   useEffect(() => {
+    if (props.open) {
+      setShouldLoad(true)
+    }
+  }, [props.open])
+
+  useEffect(() => {
     if (shouldLoad) return
 
     const handleAuthTrigger = () => {

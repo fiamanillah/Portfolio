@@ -35,9 +35,30 @@ export const apiEnvSchema = z
     DEFAULT_ADMIN_PASSWORD: z.string().default("change-me-immediately"),
 
     // Public Domain & Service URLs
-    PUBLIC_WEB_URL: z.string().url().default("http://localhost:4321"),
-    PUBLIC_API_URL: z.string().url().default("http://localhost:3040"),
-    PUBLIC_DASHBOARD_URL: z.string().url().default("http://localhost:3001"),
+    PUBLIC_WEB_URL: z
+      .string()
+      .url()
+      .default(
+        process.env.NODE_ENV === "production"
+          ? "https://fi.amanillah.com"
+          : "http://localhost:4321"
+      ),
+    PUBLIC_API_URL: z
+      .string()
+      .url()
+      .default(
+        process.env.NODE_ENV === "production"
+          ? "https://api-fi.amanillah.com"
+          : "http://localhost:3040"
+      ),
+    PUBLIC_DASHBOARD_URL: z
+      .string()
+      .url()
+      .default(
+        process.env.NODE_ENV === "production"
+          ? "https://admin-fi.amanillah.com"
+          : "http://localhost:3001"
+      ),
 
     // Email Delivery (Plunk)
     PLUNK_SECRET_KEY: z.string().default(""),
@@ -96,10 +117,18 @@ export const apiEnvSchema = z
     GOOGLE_CLIENT_SECRET: z.string().default(""),
     GOOGLE_REDIRECT_URI: z
       .string()
-      .default("http://localhost:3040/booking/v1/google/callback"),
+      .default(
+        process.env.NODE_ENV === "production"
+          ? "https://api-fi.amanillah.com/booking/v1/google/callback"
+          : "http://localhost:3040/booking/v1/google/callback"
+      ),
     GOOGLE_AUTH_CALLBACK_URL: z
       .string()
-      .default("http://localhost:3040/auth/v1/google/callback"),
+      .default(
+        process.env.NODE_ENV === "production"
+          ? "https://api-fi.amanillah.com/auth/v1/google/callback"
+          : "http://localhost:3040/auth/v1/google/callback"
+      ),
 
     // Booking Engine
     BOOKING_RATE_LIMIT_WINDOW_MS: z.coerce.number().default(3600000),

@@ -7,7 +7,7 @@ import {
   FieldError,
   FieldDescription,
 } from "@workspace/ui/components/field"
-import { useAuthSession } from "@/lib/authStore"
+import { useAuthSession, setAuthUrlParam } from "@/lib/authStore"
 import { toast } from "@workspace/ui/components/sonner"
 import { HugeiconsIcon } from "@hugeicons/react"
 import {
@@ -284,7 +284,11 @@ export function CommentComposer({
             </button>
             <Button
               type="button"
-              onClick={onOpenAuth}
+              onClick={() => {
+                setAuthUrlParam("signin")
+                onOpenAuth()
+              }}
+              data-auth-trigger="signin"
               className="cursor-pointer rounded-none bg-primary font-mono text-xs font-bold tracking-wider text-primary-foreground uppercase shadow-md hover:bg-primary/90"
             >
               <HugeiconsIcon icon={Login01Icon} className="mr-1 size-3.5" />
@@ -335,7 +339,11 @@ export function CommentComposer({
             </span>
             <button
               type="button"
-              onClick={onOpenAuth}
+              onClick={() => {
+                setAuthUrlParam("signin")
+                onOpenAuth()
+              }}
+              data-auth-trigger="signin"
               className="cursor-pointer font-mono text-[11px] text-muted-foreground underline hover:text-primary"
             >
               (or Sign In)

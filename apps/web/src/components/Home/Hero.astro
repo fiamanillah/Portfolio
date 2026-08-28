@@ -350,6 +350,8 @@ const resumeUrl = resumeData.downloadUrl || "/resume"
 </section>
 
 <script>
+  import { getApiBaseUrl } from "@/lib/api/baseUrl"
+
   function setupTextScramble() {
     const el = document.getElementById("hero-text-scramble")
     if (!el || el.dataset.scrambleInit === "true") return
@@ -548,7 +550,7 @@ const resumeUrl = resumeData.downloadUrl || "/resume"
       submitBtn.disabled = true
       submitText.textContent = "Subscribing..."
 
-      const apiUrl = import.meta.env.PUBLIC_API_URL || "http://localhost:3040"
+      const apiUrl = getApiBaseUrl()
 
       try {
         const response = await fetch(`${apiUrl}/subscriber/v1/subscribe`, {
