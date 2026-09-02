@@ -18,7 +18,8 @@ ARG NEXT_PUBLIC_SITE_URL=https://fi.amanillah.com
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL \
     NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL \
     NODE_ENV=production \
-    NEXT_TELEMETRY_DISABLED=1
+    NEXT_TELEMETRY_DISABLED=1 \
+    DATABASE_URL="postgresql://postgres:postgres@localhost:5432/placeholder_db"
 
 # 1. Install workspace dependencies (layer caching)
 COPY package.json bun.lock turbo.json tsconfig.json ./

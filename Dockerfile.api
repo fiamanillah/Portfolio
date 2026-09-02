@@ -10,6 +10,9 @@ FROM oven/bun:1-alpine AS builder
 
 WORKDIR /app
 
+# Provide placeholder DATABASE_URL for offline Prisma client generation during build
+ENV DATABASE_URL="postgresql://postgres:postgres@localhost:5432/placeholder_db"
+
 # Install build/native dependencies (OpenSSL required for Prisma)
 RUN apk add --no-cache openssl libc6-compat
 
