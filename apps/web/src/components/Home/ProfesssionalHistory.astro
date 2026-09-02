@@ -1,6 +1,6 @@
 ---
 // src/components/Home/ProfesssionalHistory.astro
-import { ExperienceApi } from "@/lib/api/experienceApi"
+import { ExperienceApi, type ExperienceItem } from "@/lib/api/experienceApi"
 import { HugeiconsIcon } from "@hugeicons/react"
 import {
   Location01Icon,
@@ -18,6 +18,59 @@ const totalCompanies = new Set(
 ).size
 const totalTech = [...new Set(experiences.flatMap((e) => e.technologies || []))]
   .length
+
+interface TimelineMilestone {
+  month: string
+  year: string
+  periodClean: string
+}
+
+function parseExperienceDate(exp: ExperienceItem): TimelineMilestone {
+  let month = ""
+  let year = exp.year || ""
+
+  // 1. Try extracting month from startDate
+  if (exp.startDate) {
+    const d = new Date(exp.startDate)
+    if (!isNaN(d.getTime())) {
+      month = d.toLocaleDateString("en-US", { month: "short" }).toUpperCase()
+      if (!year) {
+        year = d.getFullYear().toString()
+      }
+    }
+  }
+
+  // 2. If no month yet, search inside period string
+  if (!month && exp.period) {
+    const monthRegex =
+      /\b(Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\b/i
+    const match = exp.period.match(monthRegex)
+    if (match) {
+      month = match[1].slice(0, 3).toUpperCase()
+    }
+  }
+
+  // 3. Fallback month if none detected
+  if (!month) {
+    month = "JAN"
+  }
+
+  // 4. Fallback year if not yet determined
+  if (!year) {
+    const yearMatch = exp.period?.match(/\b(20\d{2}|19\d{2})\b/)
+    year = yearMatch ? yearMatch[1] : "2025"
+  }
+
+  const periodClean = exp.period
+    ? exp.period.replace(/^\/\/\s*/, "")
+    : `${month} ${year} — ${exp.isCurrent ? "Present" : "Completed"}`
+
+  return {
+    month,
+    year,
+    periodClean,
+  }
+}
 ---
 
 <style>
@@ -33,7 +86,7 @@ const totalTech = [...new Set(experiences.flatMap((e) => e.technologies || []))]
     border-color: oklch(var(--primary) / 50%);
     background-color: oklch(var(--card) / 80%);
     transform: translateY(-2px);
-    box-shadow: 0 12px 32px -10px oklch(var(--primary) / 14%);
+    box-shadow: 0 14px 36px -10px oklch(var(--primary) / 16%);
   }
 
   .timeline-beam-glow {
@@ -123,82 +176,117 @@ const totalTech = [...new Set(experiences.flatMap((e) => e.technologies || []))]
                 ? exp.title.join(" ")
                 : exp.title || exp.role || "Full Stack Developer"
 
-              const cleanPeriod = exp.period
-                ? exp.period.replace(/^\/\/\s*/, "")
-                : `${exp.year} — Present`
+              const milestone = parseExperienceDate(exp)
 
               return (
-                <div class="timeline-row relative flex flex-col md:flex-row md:items-start md:gap-8 lg:gap-14 z-10">
+                <div class="timeline-row group/row relative flex flex-col md:flex-row md:items-start md:gap-8 lg:gap-14 z-10">
                   
-                  {/* Left Column: Sticky Milestone Year Anchor & Node (Width: 200px on md, 240px on lg) */}
+                  {/* Left Column: Sticky Milestone Month & Year Anchor & Node */}
                   <div class="sticky top-28 sm:top-36 z-20 flex self-start items-center md:w-52 lg:w-60 shrink-0">
                     
-                    {/* Node Circle on Timeline Rail (Size 10 = 40px, Left: 0px -> Center is 20px) */}
-                    <div class="absolute left-0 flex size-10 items-center justify-center rounded-full border border-border bg-background shadow-xs z-10">
+                    {/* Node Circle on Timeline Rail (Center aligned at 20px) */}
+                    <div class="absolute left-0 flex size-10 items-center justify-center rounded-full border border-border bg-background shadow-xs z-10 transition-all duration-300 group-hover/row:scale-105 group-hover/row:border-primary/60">
                       {exp.isCurrent ? (
-                        <div class="size-3.5 rounded-full bg-primary shadow-[0_0_14px_oklch(var(--primary))] animate-pulse" />
+                        <div class="relative flex items-center justify-center">
+                          <span class="absolute size-5 rounded-full bg-primary/20 animate-ping opacity-60" />
+                          <span class="size-3.5 rounded-full bg-primary shadow-[0_0_14px_oklch(var(--primary))] animate-pulse" />
+                        </div>
                       ) : (
-                        <div class="size-3.5 rounded-full border border-primary/50 bg-primary/20 shadow-[0_0_8px_oklch(var(--primary)/40%)]" />
+                        <div class="size-3.5 rounded-full border border-primary/50 bg-primary/20 shadow-[0_0_8px_oklch(var(--primary)/40%)] transition-colors duration-200 group-hover/row:bg-primary/50 group-hover/row:border-primary" />
                       )}
                     </div>
 
-                    {/* Desktop Sticky Year Display */}
-                    <div class="hidden md:block pl-16 space-y-1.5">
-                      <div class="font-mono text-3xl lg:text-4xl xl:text-5xl font-black tracking-tight text-foreground/90">
-                        {exp.year}
+                    {/* Desktop Sticky Month & Year Display */}
+                    <div class="hidden md:flex pl-16 flex-col items-start gap-1.5">
+                      {/* Month pill */}
+                      <div class="inline-flex items-center gap-1.5 border border-primary/30 bg-primary/10 px-2.5 py-0.5 font-mono text-[11px] font-bold tracking-wider text-primary shadow-[0_0_12px_oklch(var(--primary)/15%)] transition-colors group-hover/row:border-primary/60 group-hover/row:bg-primary/15">
+                        <span class="size-1 rounded-full bg-primary" />
+                        <span>{milestone.month}</span>
                       </div>
-                      {exp.isCurrent && (
+
+                      {/* Year */}
+                      <div class="font-mono text-3xl lg:text-4xl xl:text-5xl font-black tracking-tight text-foreground/90 tabular-nums transition-colors group-hover/row:text-primary">
+                        {milestone.year}
+                      </div>
+
+                      {/* Current / Status badge */}
+                      {exp.isCurrent ? (
                         <div class="inline-flex items-center gap-1.5 border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 font-mono text-[10px] font-semibold text-emerald-400">
                           <span class="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
                           Current Role
                         </div>
+                      ) : (
+                        <div class="font-mono text-[10px] font-semibold tracking-wider text-muted-foreground/60 uppercase">
+                          // MILESTONE
+                        </div>
                       )}
                     </div>
+
+                    {/* Desktop Subtle Connector Line towards card */}
+                    <div class="hidden lg:block absolute left-[12.5rem] top-5 w-6 border-t border-dashed border-border/80 transition-colors group-hover/row:border-primary/50 pointer-events-none" />
                   </div>
 
                   {/* Right Column: Full-Width Experience Content Card */}
                   <div class="relative w-full pl-14 md:pl-0 min-w-0 flex-1">
                     
-                    {/* Mobile Year Badge */}
-                    <div class="mb-3 flex items-center justify-between gap-2 md:hidden">
-                      <span class="font-mono text-2xl font-black tracking-tight text-foreground">
-                        {exp.year}
-                      </span>
-                      {exp.isCurrent && (
+                    {/* Mobile Year & Month Badge */}
+                    <div class="mb-3.5 flex flex-wrap items-center justify-between gap-2.5 md:hidden">
+                      <div class="flex items-center gap-2">
+                        <span class="inline-flex items-center gap-1 border border-primary/30 bg-primary/10 px-2 py-0.5 font-mono text-xs font-bold text-primary">
+                          <span class="size-1 rounded-full bg-primary" />
+                          {milestone.month}
+                        </span>
+                        <span class="font-mono text-2xl font-black tracking-tight text-foreground">
+                          {milestone.year}
+                        </span>
+                      </div>
+                      {exp.isCurrent ? (
                         <span class="inline-flex items-center gap-1.5 border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 font-mono text-[10px] font-semibold text-emerald-400">
                           <span class="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
                           Current
                         </span>
+                      ) : (
+                        <span class="font-mono text-[10px] font-medium text-muted-foreground uppercase">
+                          {milestone.periodClean}
+                        </span>
                       )}
                     </div>
 
-                    {/* Main Experience Card (Fills available container width) */}
+                    {/* Main Experience Card */}
                     <article class="timeline-experience-card relative w-full border border-border bg-card/40 p-5 sm:p-7 md:p-8 backdrop-blur-xs">
+                      {/* Corner crosshairs matching data-grid-cross motif */}
+                      <div class="pointer-events-none absolute -top-1 -left-1 font-mono text-xs font-bold text-primary/40 select-none transition-colors group-hover/row:text-primary">
+                        +
+                      </div>
+                      <div class="pointer-events-none absolute -bottom-1 -right-1 font-mono text-xs font-bold text-primary/40 select-none transition-colors group-hover/row:text-primary">
+                        +
+                      </div>
+
                       <div class="space-y-5">
                         
-                        {/* Header: Clean 2-Row Layout Immune to Overlap */}
-                        <div class="space-y-3 border-b border-border/60 pb-5">
+                        {/* Header: Clean Layout Immune to Overlap */}
+                        <div class="space-y-3.5 border-b border-border/60 pb-5">
                           {/* Row 1: Role Title + Period Badge */}
                           <div class="flex flex-wrap items-center justify-between gap-3">
-                            <h3 class="text-xl font-bold tracking-tight text-foreground sm:text-2xl lg:text-3xl break-words">
+                            <h3 class="text-xl font-bold tracking-tight text-foreground sm:text-2xl lg:text-3xl break-words transition-colors group-hover/row:text-foreground">
                               {displayTitle}
                             </h3>
-                            <div class="inline-flex items-center gap-1.5 border border-primary/30 bg-primary/10 px-3 py-1 font-mono text-xs font-semibold text-primary shrink-0">
+                            <div class="inline-flex items-center gap-1.5 border border-primary/30 bg-primary/10 px-3 py-1 font-mono text-xs font-semibold text-primary shrink-0 shadow-[0_0_12px_oklch(var(--primary)/10%)]">
                               <HugeiconsIcon icon={Calendar01Icon} className="size-3.5" />
-                              <span>{cleanPeriod}</span>
+                              <span>{milestone.periodClean}</span>
                             </div>
                           </div>
 
-                          {/* Row 2: Company Link, Employment Type, Location */}
-                          <div class="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-xs sm:text-sm text-muted-foreground">
+                          {/* Row 2: Company Link/Badge, Employment Type, Location */}
+                          <div class="flex flex-wrap items-center gap-x-3 gap-y-2 text-xs sm:text-sm text-muted-foreground">
                             {exp.companyUrl ? (
                               <a
                                 href={exp.companyUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                class="group/link inline-flex items-center gap-1 font-semibold text-primary hover:underline"
+                                class="group/link inline-flex items-center gap-1.5 font-semibold text-primary hover:underline"
                               >
-                                <span>{exp.company}</span>
+                                <span class="border-b border-primary/40 pb-0.5">{exp.company}</span>
                                 <HugeiconsIcon
                                   icon={ArrowUpRight01Icon}
                                   className="size-3.5 transition-transform duration-200 group-hover/link:-translate-y-0.5 group-hover/link:translate-x-0.5"
@@ -208,12 +296,17 @@ const totalTech = [...new Set(experiences.flatMap((e) => e.technologies || []))]
                               <span class="font-semibold text-primary">{exp.company}</span>
                             )}
                             <span class="text-border">•</span>
-                            <span class="font-medium text-foreground/80">{exp.type || "Full-Time"}</span>
+                            <span class="border border-border/70 bg-muted/20 px-2 py-0.5 font-mono text-[11px] font-medium text-foreground/80">
+                              {exp.type || "Full-Time"}
+                            </span>
                             {exp.location && (
                               <>
                                 <span class="text-border">•</span>
                                 <div class="flex items-center gap-1 font-mono text-xs text-muted-foreground">
-                                  <HugeiconsIcon icon={Location01Icon} className="size-3.5 text-muted-foreground/70" />
+                                  <HugeiconsIcon
+                                    icon={Location01Icon}
+                                    className="size-3.5 text-muted-foreground/70"
+                                  />
                                   <span>{exp.location}</span>
                                 </div>
                               </>
@@ -223,7 +316,7 @@ const totalTech = [...new Set(experiences.flatMap((e) => e.technologies || []))]
 
                         {/* Scope Narrative */}
                         {exp.description && (
-                          <p class="text-sm leading-relaxed text-muted-foreground sm:text-base">
+                          <p class="text-sm leading-relaxed text-muted-foreground/90 sm:text-base">
                             {exp.description}
                           </p>
                         )}
@@ -233,7 +326,7 @@ const totalTech = [...new Set(experiences.flatMap((e) => e.technologies || []))]
                           <div class="space-y-2 pt-1">
                             <div class="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
                               {exp.highlights.map((highlight) => (
-                                <div class="flex items-start gap-2.5 rounded-sm border border-border/40 bg-background/40 p-3 text-xs leading-relaxed text-muted-foreground transition-colors hover:border-primary/30 hover:text-foreground/90 sm:text-sm">
+                                <div class="flex items-start gap-2.5 rounded-xs border border-border/50 bg-background/50 p-3 text-xs leading-relaxed text-muted-foreground transition-all duration-200 hover:border-primary/40 hover:bg-background/80 hover:text-foreground/90 sm:text-sm">
                                   <HugeiconsIcon
                                     icon={CheckmarkCircle02Icon}
                                     className="mt-0.5 size-4 shrink-0 text-primary"
@@ -245,15 +338,50 @@ const totalTech = [...new Set(experiences.flatMap((e) => e.technologies || []))]
                           </div>
                         )}
 
+                        {/* Impact Metrics Bar (when stats present) */}
+                        {exp.stats && exp.stats.length > 0 && (
+                          <div class="border-t border-border/60 pt-4">
+                            <div class="mb-2.5 flex items-center gap-2">
+                              <span class="font-mono text-[10px] font-bold tracking-wider text-muted-foreground/80 uppercase">
+                                // IMPACT_METRICS
+                              </span>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                              {exp.stats.map((stat) => (
+                                <div class="flex flex-col gap-0.5 border border-border/60 bg-muted/20 p-2.5 transition-colors hover:border-primary/30">
+                                  <div class="font-mono text-sm font-bold text-foreground">
+                                    {stat.value}
+                                  </div>
+                                  <div class="font-mono text-[10px] text-muted-foreground uppercase">
+                                    {stat.label}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Architectural Key Takeaway (when learned present) */}
+                        {exp.learned && (
+                          <div class="border-l-2 border-primary/60 bg-primary/5 p-3.5 pl-4 transition-colors hover:border-primary">
+                            <div class="mb-1 font-mono text-[10px] font-bold tracking-wider text-primary uppercase">
+                              [ KEY_ARCHITECTURAL_TAKEAWAY ]
+                            </div>
+                            <p class="text-xs sm:text-sm italic text-muted-foreground leading-relaxed">
+                              "{exp.learned}"
+                            </p>
+                          </div>
+                        )}
+
                         {/* Technologies Tags Strip */}
                         {exp.technologies && exp.technologies.length > 0 && (
                           <div class="border-t border-border/60 pt-4">
                             <div class="flex flex-wrap items-center gap-1.5">
-                              <span class="mr-1 font-mono text-[10px] font-bold tracking-wider text-muted-foreground/70 uppercase">
+                              <span class="mr-1.5 font-mono text-[10px] font-bold tracking-widest text-muted-foreground/80 uppercase">
                                 Stack:
                               </span>
                               {exp.technologies.map((tech) => (
-                                <span class="border border-border/70 bg-muted/30 px-2.5 py-0.5 font-mono text-[11px] font-medium text-foreground/80 transition-colors duration-200 hover:border-primary/50 hover:bg-primary/5 hover:text-primary">
+                                <span class="border border-border/80 bg-muted/30 px-2.5 py-0.5 font-mono text-[11px] font-medium text-foreground/80 transition-colors duration-200 hover:border-primary/50 hover:bg-primary/10 hover:text-primary">
                                   {tech}
                                 </span>
                               ))}

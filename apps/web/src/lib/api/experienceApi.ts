@@ -8,6 +8,8 @@ export interface ExperienceItem {
   id?: string
   year: string
   period: string
+  startDate?: string | null
+  endDate?: string | null
   company: string
   companyUrl?: string | null
   companyLogo?: string | null
@@ -26,7 +28,9 @@ export interface ExperienceItem {
 export const defaultExperiences: ExperienceItem[] = [
   {
     year: "2025",
-    period: "PRESENT // 14 MO",
+    period: "JAN 2024 — PRESENT // 14 MO",
+    startDate: "2024-01-01T00:00:00.000Z",
+    endDate: null,
     company: "Softvence Agency",
     companyUrl: "https://softvence.agency",
     role: "FULL STACK DEVELOPER",
@@ -95,6 +99,8 @@ export const ExperienceApi = {
           id: string
           year?: string
           period?: string
+          startDate?: string | null
+          endDate?: string | null
           company: string
           companyUrl?: string | null
           companyLogo?: string | null
@@ -113,6 +119,8 @@ export const ExperienceApi = {
           id: item.id,
           year: item.year || "2025",
           period: item.period || "PRESENT",
+          startDate: item.startDate ?? null,
+          endDate: item.endDate ?? null,
           company: item.company,
           companyUrl: item.companyUrl,
           companyLogo: item.companyLogo,

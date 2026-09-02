@@ -477,8 +477,9 @@ async function main() {
       title: ["FULL STACK", "DEVELOPER"],
       location: "Dhaka, Bangladesh · Remote-Friendly",
       employmentType: "Full-Time",
-      period: "PRESENT // 14 MO",
+      period: "JAN 2024 — PRESENT // 14 MO",
       year: "2025",
+      startDate: new Date("2024-01-01T00:00:00.000Z"),
       isCurrent: true,
       description:
         "Architected type-safe backend systems with TypeScript, Express.js, and Prisma ORM, integrated with React.js frontends to deliver responsive, high-performance applications.",
