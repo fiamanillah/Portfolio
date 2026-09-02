@@ -560,42 +560,6 @@ model NewsletterSendLog {
   @@index([createdAt])
 }
 
-enum ExperienceStatus {
-  DRAFT
-  PUBLISHED
-  ARCHIVED
-}
-
-model Experience {
-  id             String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  company        String
-  companyUrl     String?
-  companyLogo    String?
-  role           String
-  title          String[]         @default([])
-  location       String
-  employmentType String           @default("Full-Time")
-  period         String
-  year           String
-  startDate      DateTime?
-  endDate        DateTime?
-  isCurrent      Boolean          @default(false)
-  description    String           @db.Text
-  highlights     String[]         @default([])
-  technologies   String[]         @default([])
-  stats          Json?            @default("[]")
-  learned        String?          @db.Text
-  status         ExperienceStatus @default(PUBLISHED)
-  featured       Boolean          @default(true)
-  order          Int              @default(0)
-
-  createdAt      DateTime         @default(now())
-  updatedAt      DateTime         @default(now()) @updatedAt
-
-  @@index([status, order])
-  @@index([order])
-  @@index([createdAt])
-}
 
 model Resume {
   id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid

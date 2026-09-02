@@ -414,7 +414,6 @@ export const ModelName = {
   CaseStudy: 'CaseStudy',
   Newsletter: 'Newsletter',
   NewsletterSendLog: 'NewsletterSendLog',
-  Experience: 'Experience',
   Resume: 'Resume',
   SkillCategory: 'SkillCategory',
   Skill: 'Skill',
@@ -437,7 +436,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "contactSubmission" | "subscriber" | "emailTemplate" | "user" | "otpVerification" | "refreshToken" | "blogCategory" | "blogTag" | "blogPost" | "blogReaction" | "comment" | "commentReaction" | "commentReport" | "mediaFile" | "caseStudy" | "newsletter" | "newsletterSendLog" | "experience" | "resume" | "skillCategory" | "skill" | "googleCalendarAccount" | "bookingAvailability" | "booking" | "redirect"
+    modelProps: "contactSubmission" | "subscriber" | "emailTemplate" | "user" | "otpVerification" | "refreshToken" | "blogCategory" | "blogTag" | "blogPost" | "blogReaction" | "comment" | "commentReaction" | "commentReport" | "mediaFile" | "caseStudy" | "newsletter" | "newsletterSendLog" | "resume" | "skillCategory" | "skill" | "googleCalendarAccount" | "bookingAvailability" | "booking" | "redirect"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1699,80 +1698,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
-    Experience: {
-      payload: Prisma.$ExperiencePayload<ExtArgs>
-      fields: Prisma.ExperienceFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.ExperienceFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExperiencePayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.ExperienceFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExperiencePayload>
-        }
-        findFirst: {
-          args: Prisma.ExperienceFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExperiencePayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.ExperienceFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExperiencePayload>
-        }
-        findMany: {
-          args: Prisma.ExperienceFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExperiencePayload>[]
-        }
-        create: {
-          args: Prisma.ExperienceCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExperiencePayload>
-        }
-        createMany: {
-          args: Prisma.ExperienceCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.ExperienceCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExperiencePayload>[]
-        }
-        delete: {
-          args: Prisma.ExperienceDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExperiencePayload>
-        }
-        update: {
-          args: Prisma.ExperienceUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExperiencePayload>
-        }
-        deleteMany: {
-          args: Prisma.ExperienceDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.ExperienceUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.ExperienceUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExperiencePayload>[]
-        }
-        upsert: {
-          args: Prisma.ExperienceUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExperiencePayload>
-        }
-        aggregate: {
-          args: Prisma.ExperienceAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateExperience>
-        }
-        groupBy: {
-          args: Prisma.ExperienceGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.ExperienceGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.ExperienceCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.ExperienceCountAggregateOutputType> | number
-        }
-      }
-    }
     Resume: {
       payload: Prisma.$ResumePayload<ExtArgs>
       fields: Prisma.ResumeFieldRefs
@@ -2719,35 +2644,6 @@ export const NewsletterSendLogScalarFieldEnum = {
 export type NewsletterSendLogScalarFieldEnum = (typeof NewsletterSendLogScalarFieldEnum)[keyof typeof NewsletterSendLogScalarFieldEnum]
 
 
-export const ExperienceScalarFieldEnum = {
-  id: 'id',
-  company: 'company',
-  companyUrl: 'companyUrl',
-  companyLogo: 'companyLogo',
-  role: 'role',
-  title: 'title',
-  location: 'location',
-  employmentType: 'employmentType',
-  period: 'period',
-  year: 'year',
-  startDate: 'startDate',
-  endDate: 'endDate',
-  isCurrent: 'isCurrent',
-  description: 'description',
-  highlights: 'highlights',
-  technologies: 'technologies',
-  stats: 'stats',
-  learned: 'learned',
-  status: 'status',
-  featured: 'featured',
-  order: 'order',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type ExperienceScalarFieldEnum = (typeof ExperienceScalarFieldEnum)[keyof typeof ExperienceScalarFieldEnum]
-
-
 export const ResumeScalarFieldEnum = {
   id: 'id',
   title: 'title',
@@ -3171,20 +3067,6 @@ export type ListEnumSendLogStatusFieldRefInput<$PrismaModel> = FieldRefInputType
 
 
 /**
- * Reference to a field of type 'ExperienceStatus'
- */
-export type EnumExperienceStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ExperienceStatus'>
-    
-
-
-/**
- * Reference to a field of type 'ExperienceStatus[]'
- */
-export type ListEnumExperienceStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ExperienceStatus[]'>
-    
-
-
-/**
  * Reference to a field of type 'SkillStatus'
  */
 export type EnumSkillStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SkillStatus'>
@@ -3393,7 +3275,6 @@ export type GlobalOmitConfig = {
   caseStudy?: Prisma.CaseStudyOmit
   newsletter?: Prisma.NewsletterOmit
   newsletterSendLog?: Prisma.NewsletterSendLogOmit
-  experience?: Prisma.ExperienceOmit
   resume?: Prisma.ResumeOmit
   skillCategory?: Prisma.SkillCategoryOmit
   skill?: Prisma.SkillOmit

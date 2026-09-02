@@ -68,7 +68,6 @@ export const ModelName = {
   CaseStudy: 'CaseStudy',
   Newsletter: 'Newsletter',
   NewsletterSendLog: 'NewsletterSendLog',
-  Experience: 'Experience',
   Resume: 'Resume',
   SkillCategory: 'SkillCategory',
   Skill: 'Skill',
@@ -481,35 +480,6 @@ export const NewsletterSendLogScalarFieldEnum = {
 } as const
 
 export type NewsletterSendLogScalarFieldEnum = (typeof NewsletterSendLogScalarFieldEnum)[keyof typeof NewsletterSendLogScalarFieldEnum]
-
-
-export const ExperienceScalarFieldEnum = {
-  id: 'id',
-  company: 'company',
-  companyUrl: 'companyUrl',
-  companyLogo: 'companyLogo',
-  role: 'role',
-  title: 'title',
-  location: 'location',
-  employmentType: 'employmentType',
-  period: 'period',
-  year: 'year',
-  startDate: 'startDate',
-  endDate: 'endDate',
-  isCurrent: 'isCurrent',
-  description: 'description',
-  highlights: 'highlights',
-  technologies: 'technologies',
-  stats: 'stats',
-  learned: 'learned',
-  status: 'status',
-  featured: 'featured',
-  order: 'order',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type ExperienceScalarFieldEnum = (typeof ExperienceScalarFieldEnum)[keyof typeof ExperienceScalarFieldEnum]
 
 
 export const ResumeScalarFieldEnum = {

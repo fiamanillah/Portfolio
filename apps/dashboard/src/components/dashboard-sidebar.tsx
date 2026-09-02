@@ -21,7 +21,6 @@ import {
   Shield,
   ExternalLink,
   Layers,
-  Briefcase,
   FileText,
   Cpu,
   CalendarCheck,
@@ -95,11 +94,6 @@ const navGroups: NavGroup[] = [
         title: "Skills & Stack",
         url: "/skills",
         icon: Cpu,
-      },
-      {
-        title: "Professional History",
-        url: "/experiences",
-        icon: Briefcase,
       },
       {
         title: "Resume / CV",
@@ -345,7 +339,10 @@ export function DashboardSidebar({
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <a
-                      href={process.env.NEXT_PUBLIC_SITE_URL || "https://fi.amanillah.com"}
+                      href={
+                        process.env.NEXT_PUBLIC_SITE_URL ||
+                        "https://fi.amanillah.com"
+                      }
                       target="_blank"
                       rel="noreferrer"
                       className="flex items-center gap-2 text-xs"

@@ -20,7 +20,6 @@ ApiCollection/
 ├── CaseStudy/                     # Architecture case studies, tech stack & reactions (15 endpoints)
 ├── Comment/                       # Blog comments, replies, reactions & moderation (15 endpoints)
 ├── Contact/                       # Rate-limited contact inquiry dispatches (1 endpoint)
-├── Experience/                    # Career milestones, achievements & skills mapping (12 endpoints)
 ├── Media/                         # S3 / Cloudflare R2 uploads, presigned URLs & asset streaming (15 endpoints)
 ├── Newsletter/                    # Campaign drafts, spam audit, recipients & scheduling (15 endpoints)
 ├── Redirect/                      # 301/302 edge vanity redirects & path resolution (7 endpoints)
@@ -195,24 +194,7 @@ Select your active environment in Bruno or your API client:
 | :----- | :----------------- | :------------------------------------------------ |
 | `POST` | `/contact/v1/send` | Submit contact form inquiry (rate limited per IP) |
 
-### 8. Experience Module (`/experiences/v1/*`) — 12 Endpoints
-
-| Category | Method   | Route                                 | Description                                    |
-| :------- | :------- | :------------------------------------ | :--------------------------------------------- |
-| Public   | `GET`    | `/experiences/v1/public`              | Published professional experiences list        |
-| Admin    | `GET`    | `/experiences/v1/admin/stats`         | Experience overview KPI counters               |
-| Admin    | `GET`    | `/experiences/v1/admin/list`          | Admin filterable experiences table             |
-| Admin    | `POST`   | `/experiences/v1/admin/create`        | Create new career experience entry             |
-| Admin    | `POST`   | `/experiences/v1/admin/bulk-status`   | Bulk update status (PUBLISHED, DRAFT)          |
-| Admin    | `POST`   | `/experiences/v1/admin/bulk-delete`   | Bulk delete experience entries                 |
-| Admin    | `POST`   | `/experiences/v1/admin/reorder`       | Update chronological sort orders               |
-| Admin    | `POST`   | `/experiences/v1/admin/seed-default`  | Re-seed default experiences from repository    |
-| Admin    | `GET`    | `/experiences/v1/admin/:id`           | Get single experience by ID                    |
-| Admin    | `PATCH`  | `/experiences/v1/admin/:id`           | Update company, role, dates, tech & highlights |
-| Admin    | `DELETE` | `/experiences/v1/admin/:id`           | Delete experience record                       |
-| Admin    | `POST`   | `/experiences/v1/admin/:id/duplicate` | Clone experience entry                         |
-
-### 9. Media Module (`/media/v1/*`) — 15 Endpoints
+### 8. Media Module (`/media/v1/*`) — 15 Endpoints
 
 | Category | Method   | Route                         | Description                                       |
 | :------- | :------- | :---------------------------- | :------------------------------------------------ |
@@ -232,7 +214,7 @@ Select your active environment in Bruno or your API client:
 | Stream   | `GET`    | `/media/v1/stream/*key`       | Stream public media asset from S3 storage         |
 | Purge    | `POST`   | `/media/v1/cleanup`           | Purge unreferenced orphan objects from storage    |
 
-### 10. Newsletter Module (`/newsletter/v1/*`) — 15 Endpoints
+### 9. Newsletter Module (`/newsletter/v1/*`) — 15 Endpoints
 
 | Action          | Method   | Route                                 | Description                                         |
 | :-------------- | :------- | :------------------------------------ | :-------------------------------------------------- |
@@ -252,7 +234,7 @@ Select your active environment in Bruno or your API client:
 | Sync Plunk      | `POST`   | `/newsletter/v1/:id/sync`             | Sync campaign delivery analytics with Plunk         |
 | Delivery Logs   | `GET`    | `/newsletter/v1/:id/logs`             | Inspect recipient delivery events & errors          |
 
-### 11. Redirect Module (`/redirects/v1/*`) — 7 Endpoints
+### 10. Redirect Module (`/redirects/v1/*`) — 7 Endpoints
 
 | Category | Method   | Route                             | Description                                        |
 | :------- | :------- | :-------------------------------- | :------------------------------------------------- |
@@ -264,7 +246,7 @@ Select your active environment in Bruno or your API client:
 | Admin    | `DELETE` | `/redirects/v1/admin/:id`         | Delete redirect rule                               |
 | Admin    | `POST`   | `/redirects/v1/admin/bulk-delete` | Bulk delete redirect rules                         |
 
-### 12. Resume Module (`/resume/v1/*`) — 9 Endpoints
+### 11. Resume Module (`/resume/v1/*`) — 9 Endpoints
 
 | Category | Method   | Route                            | Description                                        |
 | :------- | :------- | :------------------------------- | :------------------------------------------------- |
@@ -278,7 +260,7 @@ Select your active environment in Bruno or your API client:
 | Admin    | `PATCH`  | `/resume/v1/admin/:id/activate`  | Promote version to globally active resume          |
 | Admin    | `DELETE` | `/resume/v1/admin/:id`           | Delete version and purge document from storage     |
 
-### 13. Skill Module (`/skills/v1/*`) — 18 Endpoints
+### 12. Skill Module (`/skills/v1/*`) — 18 Endpoints
 
 | Category | Method   | Route                                 | Description                                             |
 | :------- | :------- | :------------------------------------ | :------------------------------------------------------ |
@@ -301,7 +283,7 @@ Select your active environment in Bruno or your API client:
 | Admin    | `DELETE` | `/skills/v1/admin/:id`                | Delete skill                                            |
 | Admin    | `POST`   | `/skills/v1/admin/:id/duplicate`      | Clone skill entry                                       |
 
-### 14. Subscriber Module (`/subscriber/v1/*`) — 14 Endpoints
+### 13. Subscriber Module (`/subscriber/v1/*`) — 14 Endpoints
 
 | Category | Method   | Route                              | Description                                      |
 | :------- | :------- | :--------------------------------- | :----------------------------------------------- |
@@ -320,7 +302,7 @@ Select your active environment in Bruno or your API client:
 | Admin    | `PATCH`  | `/subscriber/v1/:id`               | Update subscriber preferences or tags            |
 | Admin    | `DELETE` | `/subscriber/v1/:id`               | Permanently remove subscriber                    |
 
-### 15. Template Module (`/templates/v1/*`) — 13 Endpoints
+### 14. Template Module (`/templates/v1/*`) — 13 Endpoints
 
 | Category   | Method   | Route                         | Description                                   |
 | :--------- | :------- | :---------------------------- | :-------------------------------------------- |
@@ -338,7 +320,7 @@ Select your active environment in Bruno or your API client:
 | CRUD       | `PATCH`  | `/templates/v1/:id`           | Update subject, body, variables & description |
 | CRUD       | `DELETE` | `/templates/v1/:id`           | Delete email template                         |
 
-### 16. System Service — 1 Endpoint
+### 15. System Service — 1 Endpoint
 
 | Method | Route     | Description                                            |
 | :----- | :-------- | :----------------------------------------------------- |

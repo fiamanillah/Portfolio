@@ -24,7 +24,6 @@ import { CommentModule } from "./Modules/Comment/CommentModule"
 import { MediaModule } from "./Modules/Media/MediaModule"
 import { CaseStudyModule } from "./Modules/CaseStudy/CaseStudyModule"
 import { NewsletterModule } from "./Modules/Newsletter/NewsletterModule"
-import { ExperienceModule } from "./Modules/Experience/ExperienceModule"
 import { ResumeModule } from "./Modules/Resume/ResumeModule"
 import { SkillModule } from "./Modules/Skill/SkillModule"
 import { BookingModule } from "./Modules/Booking/BookingModule"
@@ -47,7 +46,6 @@ async function bootstrap() {
     app.getContext().registerProvider("storage", new R2StorageProvider())
     app.getContext().registerProvider("cache", new CacheProvider())
 
-
     // 3. Register Application Modules
     logger.info("⚙ Registering modules...")
     app.registerModule(new AuthModule())
@@ -60,7 +58,6 @@ async function bootstrap() {
     app.registerModule(new MediaModule())
     app.registerModule(new CaseStudyModule())
     app.registerModule(new NewsletterModule())
-    app.registerModule(new ExperienceModule())
     app.registerModule(new ResumeModule())
     app.registerModule(new SkillModule())
     app.registerModule(new BookingModule())
@@ -72,7 +69,6 @@ async function bootstrap() {
 
     logger.info("✷ Ignitor sparked successfully")
   } catch (error) {
-
     // Centralized Bootstrap Error Handling
     logger.error("⬤ Failed to initialize application:", {
       error: error instanceof Error ? error : new Error(String(error)),

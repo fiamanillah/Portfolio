@@ -521,23 +521,6 @@ export type EnumSendLogStatusWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumSendLogStatusFilter<$PrismaModel>
 }
 
-export type EnumExperienceStatusFilter<$PrismaModel = never> = {
-  equals?: $Enums.ExperienceStatus | Prisma.EnumExperienceStatusFieldRefInput<$PrismaModel>
-  in?: $Enums.ExperienceStatus[] | Prisma.ListEnumExperienceStatusFieldRefInput<$PrismaModel>
-  notIn?: $Enums.ExperienceStatus[] | Prisma.ListEnumExperienceStatusFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumExperienceStatusFilter<$PrismaModel> | $Enums.ExperienceStatus
-}
-
-export type EnumExperienceStatusWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.ExperienceStatus | Prisma.EnumExperienceStatusFieldRefInput<$PrismaModel>
-  in?: $Enums.ExperienceStatus[] | Prisma.ListEnumExperienceStatusFieldRefInput<$PrismaModel>
-  notIn?: $Enums.ExperienceStatus[] | Prisma.ListEnumExperienceStatusFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumExperienceStatusWithAggregatesFilter<$PrismaModel> | $Enums.ExperienceStatus
-  _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumExperienceStatusFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumExperienceStatusFilter<$PrismaModel>
-}
-
 export type EnumSkillStatusFilter<$PrismaModel = never> = {
   equals?: $Enums.SkillStatus | Prisma.EnumSkillStatusFieldRefInput<$PrismaModel>
   in?: $Enums.SkillStatus[] | Prisma.ListEnumSkillStatusFieldRefInput<$PrismaModel>
@@ -1076,23 +1059,6 @@ export type NestedEnumSendLogStatusWithAggregatesFilter<$PrismaModel = never> = 
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumSendLogStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumSendLogStatusFilter<$PrismaModel>
-}
-
-export type NestedEnumExperienceStatusFilter<$PrismaModel = never> = {
-  equals?: $Enums.ExperienceStatus | Prisma.EnumExperienceStatusFieldRefInput<$PrismaModel>
-  in?: $Enums.ExperienceStatus[] | Prisma.ListEnumExperienceStatusFieldRefInput<$PrismaModel>
-  notIn?: $Enums.ExperienceStatus[] | Prisma.ListEnumExperienceStatusFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumExperienceStatusFilter<$PrismaModel> | $Enums.ExperienceStatus
-}
-
-export type NestedEnumExperienceStatusWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.ExperienceStatus | Prisma.EnumExperienceStatusFieldRefInput<$PrismaModel>
-  in?: $Enums.ExperienceStatus[] | Prisma.ListEnumExperienceStatusFieldRefInput<$PrismaModel>
-  notIn?: $Enums.ExperienceStatus[] | Prisma.ListEnumExperienceStatusFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumExperienceStatusWithAggregatesFilter<$PrismaModel> | $Enums.ExperienceStatus
-  _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumExperienceStatusFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumExperienceStatusFilter<$PrismaModel>
 }
 
 export type NestedEnumSkillStatusFilter<$PrismaModel = never> = {

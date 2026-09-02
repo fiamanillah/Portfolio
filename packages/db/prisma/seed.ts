@@ -1,4 +1,4 @@
-import { prisma, Role, ExperienceStatus, SkillStatus } from "../src/index"
+import { prisma, Role, SkillStatus } from "../src/index"
 import { loadEnv } from "@workspace/env/loader"
 import fs from "node:fs/promises"
 import path from "node:path"
@@ -465,82 +465,6 @@ async function main() {
       })
     })
   )
-
-  // =========================================================================
-  // 6. Concurrently Seed Professional History / Experiences
-  // =========================================================================
-  const initialExperiences = [
-    {
-      company: "Softvence Agency",
-      companyUrl: "https://softvence.agency",
-      role: "FULL STACK DEVELOPER",
-      title: ["FULL STACK", "DEVELOPER"],
-      location: "Dhaka, Bangladesh · Remote-Friendly",
-      employmentType: "Full-Time",
-      period: "JAN 2024 — PRESENT // 14 MO",
-      year: "2025",
-      startDate: new Date("2024-01-01T00:00:00.000Z"),
-      isCurrent: true,
-      description:
-        "Architected type-safe backend systems with TypeScript, Express.js, and Prisma ORM, integrated with React.js frontends to deliver responsive, high-performance applications.",
-      highlights: [
-        "Decoupled intensive background tasks like email and AI processing using RabbitMQ message brokers",
-        "Improved database query latency and API response times by implementing Redis caching",
-        "Built granular role-based access control (RBAC), real-time WebSockets, and Stripe/Paystack tiered subscription billing",
-        "Containerized multi-service environments with Docker and managed VPS deployments with AWS S3/MinIO media storage",
-      ],
-      technologies: [
-        "TypeScript",
-        "Express.js",
-        "Prisma ORM",
-        "PostgreSQL",
-        "Redis",
-        "RabbitMQ",
-        "WebSockets",
-        "Stripe",
-        "Paystack",
-        "Docker",
-        "AWS S3",
-        "MinIO",
-        "Linux VPS",
-      ],
-      stats: [
-        { label: "Background Queues", value: "RabbitMQ" },
-        { label: "Billing Systems", value: "Stripe & Paystack" },
-        { label: "Storage Providers", value: "AWS S3 / MinIO" },
-      ],
-      learned:
-        "Mastered decoupling intensive background jobs and optimizing database access patterns to ensure seamless scalability and real-time reliability under load.",
-      status: ExperienceStatus.PUBLISHED,
-      featured: true,
-      order: 0,
-    },
-  ]
-
-  const experiencesPromise = (async () => {
-    const existing = await prisma.experience.findMany({
-      select: { id: true, company: true, role: true },
-    })
-    const existingMap = new Map(
-      existing.map((e) => [`${e.company}:${e.role}`, e.id])
-    )
-
-    return Promise.all(
-      initialExperiences.map((exp) => {
-        const key = `${exp.company}:${exp.role}`
-        const existingId = existingMap.get(key)
-        if (existingId) {
-          return prisma.experience.update({
-            where: { id: existingId },
-            data: exp,
-          })
-        }
-        return prisma.experience.create({
-          data: exp,
-        })
-      })
-    )
-  })()
 
   // =========================================================================
   // 7. Concurrently Seed Skill Categories and Skills
@@ -1294,14 +1218,12 @@ async function main() {
     subscribers,
     blogCategories,
     bookingAvailability,
-    experiences,
     skillsSummary,
   ] = await Promise.all([
     Promise.all(userPromises),
     subscribersPromise,
     categoriesPromise,
     bookingAvailabilityPromise,
-    experiencesPromise,
     skillsPromise,
   ])
 
@@ -1521,7 +1443,6 @@ async function main() {
   • Unique Blog Tags:  ${uniqueTags.size} tags
   • Blog Posts:        ${seededPosts.length} posts migrated
   • Case Studies:      ${seededCaseStudies.length} case studies migrated
-  • Experiences:       ${experiences.length} experiences
   • Skills:            ${skillsSummary.skillsCount} skills across ${skillsSummary.categoriesCount} categories
   • Availability:      ${bookingAvailability.length} days initialized
 ====================================================

@@ -1,6 +1,6 @@
 ---
 // src/components/Home/ProfesssionalHistory.astro
-import { ExperienceApi, type ExperienceItem } from "@/lib/api/experienceApi"
+import { experiences, type ExperienceItem } from "@/data/experiences"
 import { HugeiconsIcon } from "@hugeicons/react"
 import {
   Location01Icon,
@@ -9,10 +9,8 @@ import {
   ArrowUpRight01Icon,
 } from "@hugeicons/core-free-icons"
 
-const experiences = await ExperienceApi.fetchPublicExperiences()
-
 const distinctYears = new Set(experiences.map((e) => e.year)).size
-const totalYears = Math.max(3, distinctYears)
+const totalYears = Math.max(1, distinctYears)
 const totalCompanies = new Set(
   experiences.map((e) => e.company.toLowerCase().trim())
 ).size
@@ -338,40 +336,6 @@ function parseExperienceDate(exp: ExperienceItem): TimelineMilestone {
                           </div>
                         )}
 
-                        {/* Impact Metrics Bar (when stats present) */}
-                        {exp.stats && exp.stats.length > 0 && (
-                          <div class="border-t border-border/60 pt-4">
-                            <div class="mb-2.5 flex items-center gap-2">
-                              <span class="font-mono text-[10px] font-bold tracking-wider text-muted-foreground/80 uppercase">
-                                // IMPACT_METRICS
-                              </span>
-                            </div>
-                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-                              {exp.stats.map((stat) => (
-                                <div class="flex flex-col gap-0.5 border border-border/60 bg-muted/20 p-2.5 transition-colors hover:border-primary/30">
-                                  <div class="font-mono text-sm font-bold text-foreground">
-                                    {stat.value}
-                                  </div>
-                                  <div class="font-mono text-[10px] text-muted-foreground uppercase">
-                                    {stat.label}
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-
-                        {/* Architectural Key Takeaway (when learned present) */}
-                        {exp.learned && (
-                          <div class="border-l-2 border-primary/60 bg-primary/5 p-3.5 pl-4 transition-colors hover:border-primary">
-                            <div class="mb-1 font-mono text-[10px] font-bold tracking-wider text-primary uppercase">
-                              [ KEY_ARCHITECTURAL_TAKEAWAY ]
-                            </div>
-                            <p class="text-xs sm:text-sm italic text-muted-foreground leading-relaxed">
-                              "{exp.learned}"
-                            </p>
-                          </div>
-                        )}
 
                         {/* Technologies Tags Strip */}
                         {exp.technologies && exp.technologies.length > 0 && (
