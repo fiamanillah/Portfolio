@@ -1,0 +1,53 @@
+{
+  "id": "prisma-postgres-optimization",
+  "slug": "prisma-postgres-optimization",
+  "title": "Mastering Database Latency with Prisma & PostgreSQL",
+  "subtitle": "Eliminating query bottlenecks, N+1 issues, and connection pool exhaustion",
+  "summary": "Practical strategies for indexing relational databases, mitigating N+1 query bottlenecks, leveraging raw SQL when needed, and configuring PgBouncer connection pooling for production APIs.",
+  "category": "Database",
+  "tags": [
+    "PostgreSQL",
+    "Prisma",
+    "Performance",
+    "SQL",
+    "Database"
+  ],
+  "publishedAt": "2025-07-01T00:00:00.000Z",
+  "modifiedAt": "2025-07-01T00:00:00.000Z",
+  "date": "JUL 2025",
+  "readTime": "13 MIN READ",
+  "featured": false,
+  "views": "2.1k",
+  "author": {
+    "name": "Fi Amanillah",
+    "role": "Full Stack & DevOps Engineer",
+    "avatar": "/fi.png",
+    "twitter": "@fiamanillah",
+    "linkedin": "https://linkedin.com/in/fiamanillah",
+    "github": "https://github.com/fiamanillah"
+  },
+  "thumbnail": "/assets/images/moja-cares-cover.png",
+  "seo": {
+    "metaTitle": "Mastering Database Latency with Prisma & PostgreSQL | Fi Amanillah",
+    "metaDescription": "Practical strategies for indexing relational databases, mitigating N+1 query bottlenecks, leveraging raw SQL when needed, and configuring PgBouncer connection pooling for production APIs.",
+    "ogImage": "/assets/images/moja-cares-cover.png",
+    "ogType": "article",
+    "keywords": [
+      "PostgreSQL",
+      "Prisma",
+      "Performance",
+      "SQL",
+      "Database"
+    ],
+    "canonicalUrl": "https://fi.amanillah.com/blog/prisma-postgres-optimization",
+    "articleType": "TechArticle",
+    "noIndex": false
+  },
+  "keyTakeaways": [
+    "Use composite B-tree and GIN indexes on columns frequently present in WHERE clauses and joins.",
+    "Avoid N+1 queries by carefully structuring Prisma include clauses or batching with Promise.all.",
+    "Deploy PgBouncer in transaction mode to manage serverless / microservice connections safely.",
+    "Leverage raw SQL queries for complex aggregate reports to achieve 10x performance gains."
+  ],
+  "content": "## Analyzing Database Latency & Prisma ORM Overhead\n\nPrisma ORM brings unrivaled TypeScript type safety and developer productivity. However, abstraction layers can hide query generation inefficiency. Understanding how Prisma translates high-level Prisma Client queries into native SQL allows engineers to pinpoint query latency spikes before production database CPU limits are hit.\n\n---\n\n## Eliminating N+1 Query Antipatterns in Relational Models\n\nN+1 query issues occur when fetching a collection of N parent records followed by N individual queries to fetch child relationships inside iteration loops. Using explicit Prisma `include` blocks or batching requests reduces execution down to single JOIN operations.\n\n```typescript\n// BAD: N+1 query antipattern\nconst posts = await prisma.post.findMany();\nfor (const post of posts) {\n  post.author = await prisma.user.findUnique({ where: { id: post.authorId } });\n}\n\n// GOOD: Single optimized query with join relation\nconst postsWithAuthors = await prisma.post.findMany({\n  include: {\n    author: {\n      select: { id: true, name: true, avatar: true }\n    }\n  }\n});\n```\n\n---\n\n## Advanced PostgreSQL Indexing Strategies (B-Tree, GIN, & Partial Indexes)\n\nMissing database indexes force PostgreSQL engines to perform full sequential table scans (Seq Scans) across millions of rows. Adding targeted B-tree indexes for foreign keys and GIN indexes for JSONB or full-text search fields drops query execution times from seconds to sub-milliseconds.\n\n```prisma\nmodel Post {\n  id        String   @id @default(uuid())\n  slug      String   @unique\n  categoryId String\n  published Boolean  @default(false)\n  createdAt DateTime @default(now())\n\n  category  Category @relation(fields: [categoryId], references: [id])\n\n  // Composite index for common filtering & sorting queries\n  @@index([categoryId, published, createdAt(sort: Desc)])\n  @@index([slug])\n}\n```\n\n---\n\n## High-Performance Raw SQL Escapes & Complex CTE Aggregations\n\nWhile Prisma covers standard CRUD operations, complex analytical dashboards involving recursive Common Table Expressions (CTEs), window functions, or multi-table aggregations are best solved using Prisma's type-safe `$queryRaw` engine escape hatch.\n\n```typescript\nimport { prisma } from \"@workspace/db\";\nimport { Prisma } from \"@prisma/client\";\n\nexport async function getCategoryMetrics() {\n  const metrics = await prisma.$queryRaw<Array<{ category: string; post_count: bigint; avg_views: number }>>`\n    SELECT \n      c.name AS category,\n      COUNT(p.id) AS post_count,\n      COALESCE(AVG(p.views_count), 0) AS avg_views\n    FROM \"Category\" c\n    LEFT JOIN \"Post\" p ON p.\"categoryId\" = c.id\n    WHERE p.published = true\n    GROUP BY c.name\n    ORDER BY post_count DESC;\n  `;\n\n  return metrics;\n}\n```\n\n---\n\n## Production Connection Pooling with PgBouncer & Serverless Tuning\n\nIn serverless or highly concurrent container environments, each app instance opening its own connection pool quickly exhausts PostgreSQL connection limits (`max_connections`). Deploying PgBouncer in transaction pooling mode allows thousands of concurrent clients to multiplex over a lean pool of 20-50 physical database connections.\n\n---\n\n## Cursor-Based vs Offset-Based Pagination at Scale\n\nTraditional `OFFSET 10000` pagination causes PostgreSQL to scan and discard 10,000 rows prior to returning results. Cursor-based pagination uses indexed unique keys (e.g. `WHERE id > cursor`) to achieve consistent O(1) query performance regardless of page depth.\n\n```typescript\nexport async function getPaginatedPosts(cursor?: string, limit = 10) {\n  return prisma.post.findMany({\n    take: limit + 1, // Fetch extra item to check if next page exists\n    cursor: cursor ? { id: cursor } : undefined,\n    skip: cursor ? 1 : 0, // Skip current cursor item\n    orderBy: { createdAt: \"desc\" }\n  });\n}\n```\n\n---\n\n## Query Profiling with EXPLAIN ANALYZE & pg_stat_statements\n\nEnabling the `pg_stat_statements` extension records total execution time, call frequency, and memory usage per query. Running `EXPLAIN (ANALYZE, BUFFERS)` reveals exact scan costs, hash join allocations, and index hit ratios.\n\n---\n\n## Zero-Downtime Database Migrations in Continuous Delivery Pipelines\n\nApplying schema migrations safely in continuous delivery requires non-breaking evolutionary changes: adding nullable columns first, backfilling data asynchronously, and dropping deprecated columns in subsequent release deployments."
+}
