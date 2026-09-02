@@ -71,13 +71,13 @@ export function ProfileInfoCard({ user }: ProfileInfoCardProps) {
     const parseResult = updateProfileSchema.safeParse({
       name: name.trim() || undefined,
       username: username.toLowerCase().trim() || undefined,
-      headline: headline.trim() || undefined,
-      location: location.trim() || undefined,
-      bio: bio.trim() || undefined,
-      website: website.trim() || undefined,
-      githubUrl: githubUrl.trim() || undefined,
-      twitterUrl: twitterUrl.trim() || undefined,
-      linkedinUrl: linkedinUrl.trim() || undefined,
+      headline: headline.trim() || null,
+      location: location.trim() || null,
+      bio: bio.trim() || null,
+      website: website.trim() || null,
+      githubUrl: githubUrl.trim() || null,
+      twitterUrl: twitterUrl.trim() || null,
+      linkedinUrl: linkedinUrl.trim() || null,
     })
 
     if (!parseResult.success) {
@@ -106,13 +106,13 @@ export function ProfileInfoCard({ user }: ProfileInfoCardProps) {
       const res = await updateProfile({
         name: name.trim(),
         username: username.toLowerCase().trim(),
-        headline: headline.trim() || undefined,
-        location: location.trim() || undefined,
-        bio: bio.trim() || undefined,
-        website: website.trim() || undefined,
-        githubUrl: githubUrl.trim() || undefined,
-        twitterUrl: twitterUrl.trim() || undefined,
-        linkedinUrl: linkedinUrl.trim() || undefined,
+        headline: headline.trim() || null,
+        location: location.trim() || null,
+        bio: bio.trim() || null,
+        website: website.trim() || null,
+        githubUrl: githubUrl.trim() || null,
+        twitterUrl: twitterUrl.trim() || null,
+        linkedinUrl: linkedinUrl.trim() || null,
       })
 
       if (res.success) {

@@ -334,10 +334,10 @@ export function validateEmail(
 }
 
 /**
- * Clean URL string helper - returns undefined if empty or whitespace
+ * Clean URL string helper - returns null if empty or whitespace
  */
-export function cleanUrl(url?: string | null): string | undefined {
-  if (!url || typeof url !== "string") return undefined
+export function cleanUrl(url?: string | null): string | null {
+  if (!url || typeof url !== "string") return null
   const trimmed = url.trim()
-  return trimmed || undefined
+  return trimmed || null
 }

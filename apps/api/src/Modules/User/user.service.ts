@@ -109,19 +109,45 @@ export class UserService {
       data: {
         ...(dto.name ? { name: dto.name } : {}),
         ...(dto.username ? { username: dto.username } : {}),
-        ...(dto.bio !== undefined ? { bio: dto.bio } : {}),
-        ...(dto.avatar !== undefined ? { avatar: dto.avatar } : {}),
-        ...(dto.role !== undefined ? { headline: dto.role } : {}),
-        ...(dto.location !== undefined ? { location: dto.location } : {}),
-        ...(dto.website !== undefined ? { website: dto.website } : {}),
-        ...(dto.githubUrl !== undefined ? { githubUrl: dto.githubUrl } : {}),
-        ...(dto.twitterUrl !== undefined ? { twitterUrl: dto.twitterUrl } : {}),
-        ...(dto.linkedinUrl !== undefined
-          ? { linkedinUrl: dto.linkedinUrl }
+        ...(dto.bio !== undefined
+          ? { bio: dto.bio ? dto.bio.trim() || null : null }
           : {}),
-        ...(dto.pronouns !== undefined ? { pronouns: dto.pronouns } : {}),
+        ...(dto.avatar !== undefined
+          ? { avatar: dto.avatar ? dto.avatar.trim() || null : null }
+          : {}),
+        ...(dto.role !== undefined
+          ? { headline: dto.role ? dto.role.trim() || null : null }
+          : {}),
+        ...(dto.location !== undefined
+          ? { location: dto.location ? dto.location.trim() || null : null }
+          : {}),
+        ...(dto.website !== undefined
+          ? { website: dto.website ? dto.website.trim() || null : null }
+          : {}),
+        ...(dto.githubUrl !== undefined
+          ? { githubUrl: dto.githubUrl ? dto.githubUrl.trim() || null : null }
+          : {}),
+        ...(dto.twitterUrl !== undefined
+          ? {
+              twitterUrl: dto.twitterUrl ? dto.twitterUrl.trim() || null : null,
+            }
+          : {}),
+        ...(dto.linkedinUrl !== undefined
+          ? {
+              linkedinUrl: dto.linkedinUrl
+                ? dto.linkedinUrl.trim() || null
+                : null,
+            }
+          : {}),
+        ...(dto.pronouns !== undefined
+          ? { pronouns: dto.pronouns ? dto.pronouns.trim() || null : null }
+          : {}),
         ...(dto.customStatus !== undefined
-          ? { customStatus: dto.customStatus }
+          ? {
+              customStatus: dto.customStatus
+                ? dto.customStatus.trim() || null
+                : null,
+            }
           : {}),
       },
     })

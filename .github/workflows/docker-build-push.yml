@@ -5,42 +5,121 @@ on:
     branches:
       - main
   workflow_dispatch:
+    inputs:
+      service:
+        description: "Service to build (or 'all')"
+        required: false
+        default: "all"
+        type: choice
+        options:
+          - all
+          - api
+          - web
+          - dashboard
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
+  detect-changes:
+    name: Detect Changed Services
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+      has_targets: ${{ steps.set-matrix.outputs.has_targets }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Filter Changed Paths
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            api:
+              - 'apps/api/**'
+              - 'packages/db/**'
+              - 'packages/env/**'
+              - 'packages/logger/**'
+              - 'packages/shared/**'
+              - 'packages/cache/**'
+              - 'package.json'
+              - 'bun.lock'
+              - 'turbo.json'
+              - 'tsconfig.json'
+              - 'Dockerfile.api'
+              - '.dockerignore'
+              - '.github/workflows/docker-build-push.yml'
+            web:
+              - 'apps/web/**'
+              - 'packages/env/**'
+              - 'packages/shared/**'
+              - 'packages/ui/**'
+              - 'package.json'
+              - 'bun.lock'
+              - 'turbo.json'
+              - 'tsconfig.json'
+              - 'Dockerfile.web'
+              - '.dockerignore'
+              - '.github/workflows/docker-build-push.yml'
+            dashboard:
+              - 'apps/dashboard/**'
+              - 'packages/env/**'
+              - 'packages/shared/**'
+              - 'packages/ui/**'
+              - 'package.json'
+              - 'bun.lock'
+              - 'turbo.json'
+              - 'tsconfig.json'
+              - 'Dockerfile.dashboard'
+              - '.dockerignore'
+              - '.github/workflows/docker-build-push.yml'
+
+      - name: Compute Build Matrix
+        id: set-matrix
+        run: |
+          DISPATCH_SERVICE="${{ github.event.inputs.service }}"
+          API_CHANGED="${{ steps.filter.outputs.api }}"
+          WEB_CHANGED="${{ steps.filter.outputs.web }}"
+          DASHBOARD_CHANGED="${{ steps.filter.outputs.dashboard }}"
+
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            if [ "$DISPATCH_SERVICE" = "api" ]; then
+              API_CHANGED="true"; WEB_CHANGED="false"; DASHBOARD_CHANGED="false"
+            elif [ "$DISPATCH_SERVICE" = "web" ]; then
+              API_CHANGED="false"; WEB_CHANGED="true"; DASHBOARD_CHANGED="false"
+            elif [ "$DISPATCH_SERVICE" = "dashboard" ]; then
+              API_CHANGED="false"; WEB_CHANGED="false"; DASHBOARD_CHANGED="true"
+            else
+              API_CHANGED="true"; WEB_CHANGED="true"; DASHBOARD_CHANGED="true"
+            fi
+          fi
+
+          TARGETS="[]"
+          if [ "$API_CHANGED" = "true" ]; then
+            TARGETS=$(echo "$TARGETS" | jq -c '. + [{"app": "api", "name": "Backend API", "image_name": "portfolio-api", "dockerfile": "Dockerfile.api"}]')
+          fi
+          if [ "$WEB_CHANGED" = "true" ]; then
+            TARGETS=$(echo "$TARGETS" | jq -c '. + [{"app": "web", "name": "Web Frontend", "image_name": "portfolio-web", "dockerfile": "Dockerfile.web"}]')
+          fi
+          if [ "$DASHBOARD_CHANGED" = "true" ]; then
+            TARGETS=$(echo "$TARGETS" | jq -c '. + [{"app": "dashboard", "name": "Admin Dashboard", "image_name": "portfolio-dashboard", "dockerfile": "Dockerfile.dashboard"}]')
+          fi
+
+          COUNT=$(echo "$TARGETS" | jq 'length')
+          echo "Targets identified to build ($COUNT): $TARGETS"
+          echo "matrix={\"include\":$TARGETS}" >> "$GITHUB_OUTPUT"
+          echo "has_targets=$([ "$COUNT" -gt 0 ] && echo 'true' || echo 'false')" >> "$GITHUB_OUTPUT"
+
   build-and-push:
     name: Build & Push ${{ matrix.name }}
+    needs: detect-changes
+    if: needs.detect-changes.outputs.has_targets == 'true'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-      matrix:
-        include:
-          - app: api
-            name: Backend API
-            image_name: portfolio-api
-            dockerfile: Dockerfile.api
-            build_args: ""
-
-          - app: web
-            name: Web Frontend
-            image_name: portfolio-web
-            dockerfile: Dockerfile.web
-            build_args: |
-              PUBLIC_WEB_URL=${{ vars.PUBLIC_WEB_URL || 'https://fi.amanillah.com' }}
-              PUBLIC_API_URL=${{ vars.PUBLIC_API_URL || 'https://api-fi.amanillah.com' }}
-              PUBLIC_TURNSTILE_SITE_KEY=${{ vars.PUBLIC_TURNSTILE_SITE_KEY || '0x4AAAAAAEMAnAognjniSApt' }}
-              PUBLIC_GA_MEASUREMENT_ID=${{ vars.PUBLIC_GA_MEASUREMENT_ID || 'G-G8BDG57VX9' }}
-
-          - app: dashboard
-            name: Admin Dashboard
-            image_name: portfolio-dashboard
-            dockerfile: Dockerfile.dashboard
-            build_args: |
-              NEXT_PUBLIC_API_URL=${{ vars.NEXT_PUBLIC_API_URL || 'https://api-fi.amanillah.com' }}
-              NEXT_PUBLIC_SITE_URL=${{ vars.NEXT_PUBLIC_SITE_URL || 'https://fi.amanillah.com' }}
+      matrix: ${{ fromJson(needs.detect-changes.outputs.matrix) }}
 
     steps:
       - name: Checkout Repository
@@ -65,6 +144,25 @@ jobs:
             type=sha,format=short,prefix=
             type=sha,format=long,prefix=sha-
 
+      - name: Configure Build Arguments
+        id: args
+        run: |
+          if [ "${{ matrix.app }}" = "web" ]; then
+            echo "build_args<<EOF" >> "$GITHUB_OUTPUT"
+            echo "PUBLIC_WEB_URL=${{ vars.PUBLIC_WEB_URL || 'https://fi.amanillah.com' }}" >> "$GITHUB_OUTPUT"
+            echo "PUBLIC_API_URL=${{ vars.PUBLIC_API_URL || 'https://api-fi.amanillah.com' }}" >> "$GITHUB_OUTPUT"
+            echo "PUBLIC_TURNSTILE_SITE_KEY=${{ vars.PUBLIC_TURNSTILE_SITE_KEY || '0x4AAAAAAEMAnAognjniSApt' }}" >> "$GITHUB_OUTPUT"
+            echo "PUBLIC_GA_MEASUREMENT_ID=${{ vars.PUBLIC_GA_MEASUREMENT_ID || 'G-G8BDG57VX9' }}" >> "$GITHUB_OUTPUT"
+            echo "EOF" >> "$GITHUB_OUTPUT"
+          elif [ "${{ matrix.app }}" = "dashboard" ]; then
+            echo "build_args<<EOF" >> "$GITHUB_OUTPUT"
+            echo "NEXT_PUBLIC_API_URL=${{ vars.NEXT_PUBLIC_API_URL || 'https://api-fi.amanillah.com' }}" >> "$GITHUB_OUTPUT"
+            echo "NEXT_PUBLIC_SITE_URL=${{ vars.NEXT_PUBLIC_SITE_URL || 'https://fi.amanillah.com' }}" >> "$GITHUB_OUTPUT"
+            echo "EOF" >> "$GITHUB_OUTPUT"
+          else
+            echo "build_args=" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v6
         with:
@@ -73,7 +171,9 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          build-args: ${{ matrix.build_args }}
-          cache-from: type=gha,scope=${{ matrix.app }}
-          cache-to: type=gha,mode=max,scope=${{ matrix.app }}
-
+          build-args: ${{ steps.args.outputs.build_args }}
+          provenance: false
+          cache-from: |
+            type=registry,ref=${{ secrets.DOCKERHUB_USERNAME || 'fiamanillah' }}/${{ matrix.image_name }}:buildcache
+            type=gha,scope=${{ matrix.app }}
+          cache-to: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME || 'fiamanillah' }}/${{ matrix.image_name }}:buildcache,mode=max,image-manifest=true

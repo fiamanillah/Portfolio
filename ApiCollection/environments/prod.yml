@@ -2,7 +2,7 @@ name: prod
 variables:
   - name: baseUrl
     value: https://api-fi.amanillah.com
-    description: "Production API Base URL"
+    description: Production API Base URL
   - name: authToken
-    value: ""
-    description: "JWT Access Token for authenticated requests"
+    value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJlYThlY2YzYi1kN2ZjLTRhNWYtYTQ0Ni1lZjNiZjI2MDQ5YTYiLCJlbWFpbCI6ImZpQGFtYW5pbGxhaC5jb20iLCJ1c2VybmFtZSI6ImZpYW1hbmlsbGFoIiwicm9sZSI6IkFETUlOIiwiaWF0IjoxNzg4MzI5NDE1LCJleHAiOjE3ODg5MzQyMTUsImlzcyI6InBvcnRmb2xpby1hcGkifQ.9Os2v8ix6b9cwGsMWuHZqGLKOuKBRECoqWnr0tngo-A
+    description: JWT Access Token for authenticated requests

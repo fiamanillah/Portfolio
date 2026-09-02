@@ -67,10 +67,10 @@ interface Props {
   description?: string
   status?: string
   techStack?: string[]
-  githubUrl?: string
-  liveUrl?: string
+  githubUrl?: string | null
+  liveUrl?: string | null
   image?: string
-  imageLabel?: string
+  imageLabel?: string | null
   metadata?: MetadataItem[]
 }
 
@@ -90,9 +90,9 @@ const {
     "Tailwind CSS 4",
   ],
   githubUrl,
-  liveUrl = "https://mickanic.ca/",
+  liveUrl,
   image = "/assets/images/mickanic-cover.png",
-  imageLabel = "Mickanic_Architecture_Overview.png",
+  imageLabel = "Architecture_Overview.png",
   metadata = [
     { label: "Role", value: "Full Stack Developer", icon: UserIcon },
     { label: "Timeline", value: "2025 - 2026", icon: Clock01Icon },

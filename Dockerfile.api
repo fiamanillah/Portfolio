@@ -25,11 +25,18 @@ COPY packages/ui/package.json ./packages/ui/
 COPY packages/cache/package.json ./packages/cache/
 COPY packages/logger/package.json ./packages/logger/
 COPY apps/api/package.json ./apps/api/
+COPY apps/web/package.json ./apps/web/
+COPY apps/dashboard/package.json ./apps/dashboard/
 
-RUN bun install --frozen-lockfile
+RUN --mount=type=cache,id=bun-cache,target=/root/.bun/install/cache \
+    bun install --frozen-lockfile
 
-# 2. Copy source code
-COPY packages/ ./packages/
+# 2. Copy source code (only packages required by API to avoid cache invalidation from UI/web changes)
+COPY packages/db/ ./packages/db/
+COPY packages/env/ ./packages/env/
+COPY packages/shared/ ./packages/shared/
+COPY packages/cache/ ./packages/cache/
+COPY packages/logger/ ./packages/logger/
 COPY apps/api/ ./apps/api/
 
 # 3. Generate Prisma Client

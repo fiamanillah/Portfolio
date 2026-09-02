@@ -10,6 +10,9 @@ FROM oven/bun:1-alpine AS builder
 
 WORKDIR /app
 
+# Provide placeholder DATABASE_URL for offline Prisma client generation during build
+ENV DATABASE_URL="postgresql://postgres:postgres@localhost:5432/placeholder_db"
+
 # Install build/native dependencies (OpenSSL required for Prisma)
 RUN apk add --no-cache openssl libc6-compat
 
@@ -22,11 +25,18 @@ COPY packages/ui/package.json ./packages/ui/
 COPY packages/cache/package.json ./packages/cache/
 COPY packages/logger/package.json ./packages/logger/
 COPY apps/api/package.json ./apps/api/
+COPY apps/web/package.json ./apps/web/
+COPY apps/dashboard/package.json ./apps/dashboard/
 
-RUN bun install --frozen-lockfile
+RUN --mount=type=cache,id=bun-cache,target=/root/.bun/install/cache \
+    bun install --frozen-lockfile
 
-# 2. Copy source code
-COPY packages/ ./packages/
+# 2. Copy source code (only packages required by API to avoid cache invalidation from UI/web changes)
+COPY packages/db/ ./packages/db/
+COPY packages/env/ ./packages/env/
+COPY packages/shared/ ./packages/shared/
+COPY packages/cache/ ./packages/cache/
+COPY packages/logger/ ./packages/logger/
 COPY apps/api/ ./apps/api/
 
 # 3. Generate Prisma Client

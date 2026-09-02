@@ -28,6 +28,13 @@ dist
 .idea
 .DS_Store
 *.pem
+.github
+.agents
+
+# API Collections & Documentation
+ApiCollection
+*.md
+docs
 
 # Logs & temporary files
 logs

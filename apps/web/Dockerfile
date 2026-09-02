@@ -20,7 +20,8 @@ ENV PUBLIC_WEB_URL=$PUBLIC_WEB_URL \
     PUBLIC_API_URL=$PUBLIC_API_URL \
     PUBLIC_TURNSTILE_SITE_KEY=$PUBLIC_TURNSTILE_SITE_KEY \
     PUBLIC_GA_MEASUREMENT_ID=$PUBLIC_GA_MEASUREMENT_ID \
-    NODE_ENV=production
+    NODE_ENV=production \
+    DATABASE_URL="postgresql://postgres:postgres@localhost:5432/placeholder_db"
 
 # 1. Install workspace dependencies (layer caching)
 COPY package.json bun.lock turbo.json tsconfig.json ./
@@ -30,16 +31,20 @@ COPY packages/shared/package.json ./packages/shared/
 COPY packages/ui/package.json ./packages/ui/
 COPY packages/cache/package.json ./packages/cache/
 COPY packages/logger/package.json ./packages/logger/
+COPY apps/api/package.json ./apps/api/
 COPY apps/web/package.json ./apps/web/
+COPY apps/dashboard/package.json ./apps/dashboard/
 
-RUN bun install --frozen-lockfile
+RUN --mount=type=cache,id=bun-cache,target=/root/.bun/install/cache \
+    bun install --frozen-lockfile
 
-# 2. Copy source code
-COPY packages/ ./packages/
+# 2. Copy source code (only packages required by Web to avoid cache invalidation from backend changes)
+COPY packages/env/ ./packages/env/
+COPY packages/shared/ ./packages/shared/
+COPY packages/ui/ ./packages/ui/
 COPY apps/web/ ./apps/web/
 
-# 3. Generate Prisma client (if referenced by shared packages) & build web application
-RUN cd packages/db && bun run db:generate || true
+# 3. Build web application (Astro static build)
 RUN cd apps/web && bun run build
 
 # ------------------------------------------------------------------------------

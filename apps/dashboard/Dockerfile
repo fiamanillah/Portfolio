@@ -18,7 +18,8 @@ ARG NEXT_PUBLIC_SITE_URL=https://fi.amanillah.com
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL \
     NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL \
     NODE_ENV=production \
-    NEXT_TELEMETRY_DISABLED=1
+    NEXT_TELEMETRY_DISABLED=1 \
+    DATABASE_URL="postgresql://postgres:postgres@localhost:5432/placeholder_db"
 
 # 1. Install workspace dependencies (layer caching)
 COPY package.json bun.lock turbo.json tsconfig.json ./
@@ -28,17 +29,22 @@ COPY packages/shared/package.json ./packages/shared/
 COPY packages/ui/package.json ./packages/ui/
 COPY packages/cache/package.json ./packages/cache/
 COPY packages/logger/package.json ./packages/logger/
+COPY apps/api/package.json ./apps/api/
+COPY apps/web/package.json ./apps/web/
 COPY apps/dashboard/package.json ./apps/dashboard/
 
-RUN bun install --frozen-lockfile
+RUN --mount=type=cache,id=bun-cache,target=/root/.bun/install/cache \
+    bun install --frozen-lockfile
 
-# 2. Copy source code
-COPY packages/ ./packages/
+# 2. Copy source code (only packages required by Dashboard to avoid cache invalidation from backend/web changes)
+COPY packages/env/ ./packages/env/
+COPY packages/shared/ ./packages/shared/
+COPY packages/ui/ ./packages/ui/
 COPY apps/dashboard/ ./apps/dashboard/
 
-# 3. Generate Prisma client (if required by packages) & build standalone Next.js bundle
-RUN cd packages/db && bun run db:generate || true
-RUN cd apps/dashboard && bun run build
+# 3. Build standalone Next.js bundle (leveraging Next.js compiler cache mount)
+RUN --mount=type=cache,id=next-cache,target=/app/apps/dashboard/.next/cache \
+    cd apps/dashboard && bun run build
 
 # ------------------------------------------------------------------------------
 # Stage 2: Production Lean Node Runner Image (~120MB)

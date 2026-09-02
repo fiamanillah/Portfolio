@@ -105,7 +105,9 @@ export function ExperienceFormDialog({
 }: ExperienceFormDialogProps) {
   const [activeTab, setActiveTab] = React.useState("basics")
   const [isSubmitting, setIsSubmitting] = React.useState(false)
-  const [fieldErrors, setFieldErrors] = React.useState<Record<string, string>>({})
+  const [fieldErrors, setFieldErrors] = React.useState<Record<string, string>>(
+    {}
+  )
 
   const clearFieldError = (key: string) => {
     setFieldErrors((prev) => {
@@ -193,7 +195,10 @@ export function ExperienceFormDialog({
     if (!role.trim()) return
     const parts = role.trim().split(" ")
     if (parts.length >= 2) {
-      setTitleLines([parts.slice(0, -1).join(" "), parts[parts.length - 1] || ""])
+      setTitleLines([
+        parts.slice(0, -1).join(" "),
+        parts[parts.length - 1] || "",
+      ])
     } else {
       setTitleLines([role.trim()])
     }
@@ -266,7 +271,8 @@ export function ExperienceFormDialog({
       clientErrors.year = "Year and Period are required"
     }
     if (!description.trim()) {
-      clientErrors.description = "Description is required (minimum 5 characters)"
+      clientErrors.description =
+        "Description is required (minimum 5 characters)"
     } else if (description.trim().length < 5) {
       clientErrors.description = "Description must be at least 5 characters"
     }
@@ -323,7 +329,7 @@ export function ExperienceFormDialog({
         highlights,
         technologies,
         stats,
-        learned: learned.trim() || undefined,
+        learned: learned.trim() || null,
         status,
         featured,
         order: Number(order) || 0,
@@ -373,7 +379,7 @@ export function ExperienceFormDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-[95vw] sm:w-[92vw] sm:max-w-none md:min-w-[780px] lg:min-w-[920px] xl:min-w-[1040px] max-h-[90vh] overflow-y-auto p-6 sm:p-8 rounded-2xl border-border/80 bg-background/95 backdrop-blur-md shadow-2xl">
+      <DialogContent className="max-h-[90vh] w-[95vw] overflow-y-auto rounded-2xl border-border/80 bg-background/95 p-6 shadow-2xl backdrop-blur-md sm:w-[92vw] sm:max-w-none sm:p-8 md:min-w-[780px] lg:min-w-[920px] xl:min-w-[1040px]">
         <DialogHeader className="border-b border-border/60 pb-4">
           <DialogTitle className="flex items-center gap-2 font-mono text-xl font-bold uppercase">
             <Briefcase className="h-5 w-5 text-primary" />
@@ -387,17 +393,27 @@ export function ExperienceFormDialog({
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-6 pt-2">
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-4 font-mono text-xs h-10">
+          <Tabs
+            value={activeTab}
+            onValueChange={setActiveTab}
+            className="w-full"
+          >
+            <TabsList className="grid h-10 w-full grid-cols-4 font-mono text-xs">
               <TabsTrigger value="basics" className="flex items-center gap-1.5">
                 <Briefcase className="h-4 w-4" />
                 1. Basics
               </TabsTrigger>
-              <TabsTrigger value="description" className="flex items-center gap-1.5">
+              <TabsTrigger
+                value="description"
+                className="flex items-center gap-1.5"
+              >
                 <Layers className="h-4 w-4" />
                 2. Highlights
               </TabsTrigger>
-              <TabsTrigger value="technologies" className="flex items-center gap-1.5">
+              <TabsTrigger
+                value="technologies"
+                className="flex items-center gap-1.5"
+              >
                 <Cpu className="h-4 w-4" />
                 3. Tech Stack
               </TabsTrigger>
@@ -411,7 +427,10 @@ export function ExperienceFormDialog({
             <TabsContent value="basics" className="space-y-4 pt-4">
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
-                  <Label htmlFor="company" className="font-mono text-xs uppercase">
+                  <Label
+                    htmlFor="company"
+                    className="font-mono text-xs uppercase"
+                  >
                     Company Name *
                   </Label>
                   <Input
@@ -422,14 +441,23 @@ export function ExperienceFormDialog({
                       setCompany(e.target.value)
                       clearFieldError("company")
                     }}
-                    className={fieldErrors.company ? "border-destructive focus:border-destructive" : ""}
+                    className={
+                      fieldErrors.company
+                        ? "border-destructive focus:border-destructive"
+                        : ""
+                    }
                     required
                   />
-                  {fieldErrors.company && <FieldError errors={fieldErrors.company} />}
+                  {fieldErrors.company && (
+                    <FieldError errors={fieldErrors.company} />
+                  )}
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="companyUrl" className="font-mono text-xs uppercase">
+                  <Label
+                    htmlFor="companyUrl"
+                    className="font-mono text-xs uppercase"
+                  >
                     Company Website
                   </Label>
                   <Input
@@ -441,14 +469,23 @@ export function ExperienceFormDialog({
                       setCompanyUrl(e.target.value)
                       clearFieldError("companyUrl")
                     }}
-                    className={fieldErrors.companyUrl ? "border-destructive focus:border-destructive" : ""}
+                    className={
+                      fieldErrors.companyUrl
+                        ? "border-destructive focus:border-destructive"
+                        : ""
+                    }
                   />
-                  {fieldErrors.companyUrl && <FieldError errors={fieldErrors.companyUrl} />}
+                  {fieldErrors.companyUrl && (
+                    <FieldError errors={fieldErrors.companyUrl} />
+                  )}
                 </div>
 
                 <div className="space-y-2 sm:col-span-2">
                   <div className="flex items-center justify-between">
-                    <Label htmlFor="role" className="font-mono text-xs uppercase">
+                    <Label
+                      htmlFor="role"
+                      className="font-mono text-xs uppercase"
+                    >
                       Job Role / Position *
                     </Label>
                     <Button
@@ -456,7 +493,7 @@ export function ExperienceFormDialog({
                       variant="ghost"
                       size="sm"
                       onClick={handleAutoSplitRole}
-                      className="h-6 text-[10px] font-mono text-primary hover:text-primary"
+                      className="h-6 font-mono text-[10px] text-primary hover:text-primary"
                     >
                       ⚡ Auto-generate Split Title
                     </Button>
@@ -469,18 +506,22 @@ export function ExperienceFormDialog({
                       setRole(e.target.value)
                       clearFieldError("role")
                     }}
-                    className={fieldErrors.role ? "border-destructive focus:border-destructive" : ""}
+                    className={
+                      fieldErrors.role
+                        ? "border-destructive focus:border-destructive"
+                        : ""
+                    }
                     required
                   />
                   {fieldErrors.role && <FieldError errors={fieldErrors.role} />}
                 </div>
 
                 {/* Split title lines */}
-                <div className="space-y-2 sm:col-span-2 rounded-md border border-border/60 bg-muted/20 p-3">
+                <div className="space-y-2 rounded-md border border-border/60 bg-muted/20 p-3 sm:col-span-2">
                   <Label className="font-mono text-[11px] text-muted-foreground uppercase">
                     Title Display Lines (Shows stacked on website)
                   </Label>
-                  <div className="flex flex-wrap gap-2 mb-2">
+                  <div className="mb-2 flex flex-wrap gap-2">
                     {titleLines.map((line, idx) => (
                       <Badge
                         key={idx}
@@ -518,7 +559,7 @@ export function ExperienceFormDialog({
                       onClick={handleAddTitleLine}
                       className="h-8 font-mono text-xs"
                     >
-                      <Plus className="h-3 w-3 mr-1" /> Add Line
+                      <Plus className="mr-1 h-3 w-3" /> Add Line
                     </Button>
                   </div>
                 </div>
@@ -535,14 +576,21 @@ export function ExperienceFormDialog({
                       setYear(e.target.value)
                       clearFieldError("year")
                     }}
-                    className={fieldErrors.year ? "border-destructive focus:border-destructive" : ""}
+                    className={
+                      fieldErrors.year
+                        ? "border-destructive focus:border-destructive"
+                        : ""
+                    }
                     required
                   />
                   {fieldErrors.year && <FieldError errors={fieldErrors.year} />}
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="period" className="font-mono text-xs uppercase">
+                  <Label
+                    htmlFor="period"
+                    className="font-mono text-xs uppercase"
+                  >
                     Period String *
                   </Label>
                   <Input
@@ -553,17 +601,29 @@ export function ExperienceFormDialog({
                       setPeriod(e.target.value)
                       clearFieldError("period")
                     }}
-                    className={fieldErrors.period ? "border-destructive focus:border-destructive" : ""}
+                    className={
+                      fieldErrors.period
+                        ? "border-destructive focus:border-destructive"
+                        : ""
+                    }
                     required
                   />
-                  {fieldErrors.period && <FieldError errors={fieldErrors.period} />}
+                  {fieldErrors.period && (
+                    <FieldError errors={fieldErrors.period} />
+                  )}
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="employmentType" className="font-mono text-xs uppercase">
+                  <Label
+                    htmlFor="employmentType"
+                    className="font-mono text-xs uppercase"
+                  >
                     Employment Type
                   </Label>
-                  <Select value={employmentType} onValueChange={setEmploymentType}>
+                  <Select
+                    value={employmentType}
+                    onValueChange={setEmploymentType}
+                  >
                     <SelectTrigger id="employmentType">
                       <SelectValue placeholder="Select type" />
                     </SelectTrigger>
@@ -578,7 +638,10 @@ export function ExperienceFormDialog({
                 </div>
 
                 <div className="space-y-2 sm:col-span-2 md:col-span-1">
-                  <Label htmlFor="location" className="font-mono text-xs uppercase">
+                  <Label
+                    htmlFor="location"
+                    className="font-mono text-xs uppercase"
+                  >
                     Location *
                   </Label>
                   <Input
@@ -591,7 +654,10 @@ export function ExperienceFormDialog({
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="status" className="font-mono text-xs uppercase">
+                  <Label
+                    htmlFor="status"
+                    className="font-mono text-xs uppercase"
+                  >
                     Publish Status
                   </Label>
                   <Select
@@ -602,7 +668,9 @@ export function ExperienceFormDialog({
                       <SelectValue placeholder="Select status" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="PUBLISHED">Published (Visible on site)</SelectItem>
+                      <SelectItem value="PUBLISHED">
+                        Published (Visible on site)
+                      </SelectItem>
                       <SelectItem value="DRAFT">Draft</SelectItem>
                       <SelectItem value="ARCHIVED">Archived</SelectItem>
                     </SelectContent>
@@ -610,7 +678,10 @@ export function ExperienceFormDialog({
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="order" className="font-mono text-xs uppercase">
+                  <Label
+                    htmlFor="order"
+                    className="font-mono text-xs uppercase"
+                  >
                     Sort Order Priority
                   </Label>
                   <Input
@@ -624,7 +695,9 @@ export function ExperienceFormDialog({
                 {/* Toggles row */}
                 <div className="flex items-center justify-between rounded-lg border border-border p-3.5">
                   <div className="space-y-0.5">
-                    <Label className="font-mono text-xs uppercase">Current Position</Label>
+                    <Label className="font-mono text-xs uppercase">
+                      Current Position
+                    </Label>
                     <p className="text-[11px] text-muted-foreground">
                       Mark as active role in progress
                     </p>
@@ -634,7 +707,9 @@ export function ExperienceFormDialog({
 
                 <div className="flex items-center justify-between rounded-lg border border-border p-3.5">
                   <div className="space-y-0.5">
-                    <Label className="font-mono text-xs uppercase">Featured on Site</Label>
+                    <Label className="font-mono text-xs uppercase">
+                      Featured on Site
+                    </Label>
                     <p className="text-[11px] text-muted-foreground">
                       Highlight in prominent portfolio sections
                     </p>
@@ -647,7 +722,10 @@ export function ExperienceFormDialog({
             {/* TAB 2: DESCRIPTION & HIGHLIGHTS */}
             <TabsContent value="description" className="space-y-4 pt-4">
               <div className="space-y-2">
-                <Label htmlFor="description" className="font-mono text-xs uppercase">
+                <Label
+                  htmlFor="description"
+                  className="font-mono text-xs uppercase"
+                >
                   Role Summary / Overview Description *
                 </Label>
                 <Textarea
@@ -659,10 +737,16 @@ export function ExperienceFormDialog({
                     setDescription(e.target.value)
                     clearFieldError("description")
                   }}
-                  className={fieldErrors.description ? "border-destructive focus:border-destructive" : ""}
+                  className={
+                    fieldErrors.description
+                      ? "border-destructive focus:border-destructive"
+                      : ""
+                  }
                   required
                 />
-                {fieldErrors.description && <FieldError errors={fieldErrors.description} />}
+                {fieldErrors.description && (
+                  <FieldError errors={fieldErrors.description} />
+                )}
               </div>
 
               <div className="space-y-3">
@@ -679,7 +763,7 @@ export function ExperienceFormDialog({
                       <span className="mt-0.5 font-mono text-xs font-bold text-primary">
                         +
                       </span>
-                      <p className="flex-1 text-xs text-foreground leading-relaxed">
+                      <p className="flex-1 text-xs leading-relaxed text-foreground">
                         {h}
                       </p>
                       <Button
@@ -687,7 +771,7 @@ export function ExperienceFormDialog({
                         variant="ghost"
                         size="icon"
                         onClick={() => handleRemoveHighlight(idx)}
-                        className="h-6 w-6 text-muted-foreground hover:text-destructive shrink-0"
+                        className="h-6 w-6 shrink-0 text-muted-foreground hover:text-destructive"
                       >
                         <Trash2 className="h-3 w-3" />
                       </Button>
@@ -712,9 +796,9 @@ export function ExperienceFormDialog({
                     type="button"
                     variant="secondary"
                     onClick={handleAddHighlight}
-                    className="font-mono text-xs shrink-0"
+                    className="shrink-0 font-mono text-xs"
                   >
-                    <Plus className="h-3.5 w-3.5 mr-1" /> Add
+                    <Plus className="mr-1 h-3.5 w-3.5" /> Add
                   </Button>
                 </div>
               </div>
@@ -723,14 +807,16 @@ export function ExperienceFormDialog({
             {/* TAB 3: TECHNOLOGIES */}
             <TabsContent value="technologies" className="space-y-4 pt-4">
               <div className="space-y-2">
-                <Label className="font-mono text-xs uppercase">Selected Tech Stack</Label>
-                <div className="flex flex-wrap gap-2 min-h-[60px] rounded-lg border border-border/80 bg-muted/20 p-3">
+                <Label className="font-mono text-xs uppercase">
+                  Selected Tech Stack
+                </Label>
+                <div className="flex min-h-[60px] flex-wrap gap-2 rounded-lg border border-border/80 bg-muted/20 p-3">
                   {technologies.length > 0 ? (
                     technologies.map((tech) => (
                       <Badge
                         key={tech}
                         variant="default"
-                        className="flex items-center gap-1.5 font-mono text-xs py-1"
+                        className="flex items-center gap-1.5 py-1 font-mono text-xs"
                       >
                         {tech}
                         <button
@@ -744,7 +830,8 @@ export function ExperienceFormDialog({
                     ))
                   ) : (
                     <span className="text-xs text-muted-foreground italic">
-                      No technologies selected yet. Add custom tags or click recommendations below.
+                      No technologies selected yet. Add custom tags or click
+                      recommendations below.
                     </span>
                   )}
                 </div>
@@ -767,9 +854,9 @@ export function ExperienceFormDialog({
                   type="button"
                   variant="secondary"
                   onClick={() => handleAddTech(newTech)}
-                  className="font-mono text-xs shrink-0"
+                  className="shrink-0 font-mono text-xs"
                 >
-                  <Plus className="h-3.5 w-3.5 mr-1" /> Add Tag
+                  <Plus className="mr-1 h-3.5 w-3.5" /> Add Tag
                 </Button>
               </div>
 
@@ -785,11 +872,13 @@ export function ExperienceFormDialog({
                         key={sug}
                         type="button"
                         onClick={() =>
-                          isSelected ? handleRemoveTech(sug) : handleAddTech(sug)
+                          isSelected
+                            ? handleRemoveTech(sug)
+                            : handleAddTech(sug)
                         }
                         className={`rounded border px-2 py-1 font-mono text-[11px] transition-colors ${
                           isSelected
-                            ? "border-primary bg-primary/10 text-primary font-bold"
+                            ? "border-primary bg-primary/10 font-bold text-primary"
                             : "border-border bg-card text-muted-foreground hover:border-primary/50 hover:text-foreground"
                         }`}
                       >
@@ -859,7 +948,7 @@ export function ExperienceFormDialog({
                       type="button"
                       variant="secondary"
                       onClick={handleAddStat}
-                      className="font-mono text-xs shrink-0"
+                      className="shrink-0 font-mono text-xs"
                     >
                       <Plus className="h-3.5 w-3.5" />
                     </Button>
@@ -867,8 +956,11 @@ export function ExperienceFormDialog({
                 </div>
               </div>
 
-              <div className="space-y-2 pt-3 border-t border-border">
-                <Label htmlFor="learned" className="font-mono text-xs uppercase">
+              <div className="space-y-2 border-t border-border pt-3">
+                <Label
+                  htmlFor="learned"
+                  className="font-mono text-xs uppercase"
+                >
                   Key Takeaway / Learned Quote (Optional)
                 </Label>
                 <Textarea
@@ -882,7 +974,7 @@ export function ExperienceFormDialog({
             </TabsContent>
           </Tabs>
 
-          <DialogFooter className="flex items-center justify-between sm:justify-between pt-4 border-t border-border">
+          <DialogFooter className="flex items-center justify-between border-t border-border pt-4 sm:justify-between">
             <Button
               type="button"
               variant="outline"
@@ -891,7 +983,11 @@ export function ExperienceFormDialog({
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={isSubmitting} className="font-mono font-bold">
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="font-mono font-bold"
+            >
               {isSubmitting ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />

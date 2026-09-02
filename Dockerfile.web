@@ -31,16 +31,20 @@ COPY packages/shared/package.json ./packages/shared/
 COPY packages/ui/package.json ./packages/ui/
 COPY packages/cache/package.json ./packages/cache/
 COPY packages/logger/package.json ./packages/logger/
+COPY apps/api/package.json ./apps/api/
 COPY apps/web/package.json ./apps/web/
+COPY apps/dashboard/package.json ./apps/dashboard/
 
-RUN bun install --frozen-lockfile
+RUN --mount=type=cache,id=bun-cache,target=/root/.bun/install/cache \
+    bun install --frozen-lockfile
 
-# 2. Copy source code
-COPY packages/ ./packages/
+# 2. Copy source code (only packages required by Web to avoid cache invalidation from backend changes)
+COPY packages/env/ ./packages/env/
+COPY packages/shared/ ./packages/shared/
+COPY packages/ui/ ./packages/ui/
 COPY apps/web/ ./apps/web/
 
-# 3. Generate Prisma client (if referenced by shared packages) & build web application
-RUN cd packages/db && bun run db:generate || true
+# 3. Build web application (Astro static build)
 RUN cd apps/web && bun run build
 
 # ------------------------------------------------------------------------------

@@ -826,47 +826,99 @@ export class BlogService {
         ? { authorName: data.author.name }
         : {}),
       ...(data.author?.role !== undefined
-        ? { authorRole: data.author.role }
+        ? {
+            authorRole: data.author.role
+              ? data.author.role.trim() || null
+              : null,
+          }
         : {}),
       ...(data.author?.avatar !== undefined
-        ? { authorAvatar: data.author.avatar }
+        ? {
+            authorAvatar: data.author.avatar
+              ? data.author.avatar.trim() || null
+              : null,
+          }
         : {}),
       ...(data.author?.twitter !== undefined
-        ? { authorTwitter: data.author.twitter }
+        ? {
+            authorTwitter: data.author.twitter
+              ? data.author.twitter.trim() || null
+              : null,
+          }
         : {}),
       ...(data.author?.linkedin !== undefined
-        ? { authorLinkedin: data.author.linkedin }
+        ? {
+            authorLinkedin: data.author.linkedin
+              ? data.author.linkedin.trim() || null
+              : null,
+          }
         : {}),
       ...(data.author?.github !== undefined
-        ? { authorGithub: data.author.github }
+        ? {
+            authorGithub: data.author.github
+              ? data.author.github.trim() || null
+              : null,
+          }
         : {}),
       ...(data.seo?.metaTitle !== undefined
-        ? { metaTitle: data.seo.metaTitle }
+        ? {
+            metaTitle: data.seo.metaTitle
+              ? data.seo.metaTitle.trim() || null
+              : null,
+          }
         : {}),
       ...(data.seo?.metaDescription !== undefined
-        ? { metaDescription: data.seo.metaDescription }
+        ? {
+            metaDescription: data.seo.metaDescription
+              ? data.seo.metaDescription.trim() || null
+              : null,
+          }
         : {}),
       ...(data.seo?.metaKeywords !== undefined
         ? { metaKeywords: data.seo.metaKeywords }
         : {}),
-      ...(data.seo?.ogTitle !== undefined ? { ogTitle: data.seo.ogTitle } : {}),
-      ...(data.seo?.ogDescription !== undefined
-        ? { ogDescription: data.seo.ogDescription }
+      ...(data.seo?.ogTitle !== undefined
+        ? { ogTitle: data.seo.ogTitle ? data.seo.ogTitle.trim() || null : null }
         : {}),
-      ...(data.seo?.ogImage !== undefined ? { ogImage: data.seo.ogImage } : {}),
+      ...(data.seo?.ogDescription !== undefined
+        ? {
+            ogDescription: data.seo.ogDescription
+              ? data.seo.ogDescription.trim() || null
+              : null,
+          }
+        : {}),
+      ...(data.seo?.ogImage !== undefined
+        ? { ogImage: data.seo.ogImage ? data.seo.ogImage.trim() || null : null }
+        : {}),
       ...(data.seo?.ogType ? { ogType: data.seo.ogType } : {}),
       ...(data.seo?.twitterCard ? { twitterCard: data.seo.twitterCard } : {}),
       ...(data.seo?.twitterTitle !== undefined
-        ? { twitterTitle: data.seo.twitterTitle }
+        ? {
+            twitterTitle: data.seo.twitterTitle
+              ? data.seo.twitterTitle.trim() || null
+              : null,
+          }
         : {}),
       ...(data.seo?.twitterDescription !== undefined
-        ? { twitterDescription: data.seo.twitterDescription }
+        ? {
+            twitterDescription: data.seo.twitterDescription
+              ? data.seo.twitterDescription.trim() || null
+              : null,
+          }
         : {}),
       ...(data.seo?.twitterImage !== undefined
-        ? { twitterImage: data.seo.twitterImage }
+        ? {
+            twitterImage: data.seo.twitterImage
+              ? data.seo.twitterImage.trim() || null
+              : null,
+          }
         : {}),
       ...(data.seo?.canonicalUrl !== undefined
-        ? { canonicalUrl: data.seo.canonicalUrl }
+        ? {
+            canonicalUrl: data.seo.canonicalUrl
+              ? data.seo.canonicalUrl.trim() || null
+              : null,
+          }
         : {}),
       ...(data.seo?.articleType ? { articleType: data.seo.articleType } : {}),
       ...(data.seo?.noIndex !== undefined ? { noIndex: data.seo.noIndex } : {}),
