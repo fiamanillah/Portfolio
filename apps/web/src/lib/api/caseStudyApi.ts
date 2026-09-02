@@ -41,6 +41,21 @@ export interface SingleCaseStudyResponse {
   statusCode?: number
 }
 
+function normalizeMediaUrl(url?: string): string {
+  if (!url) return "/placeholder.png"
+  if (
+    url.startsWith("http://") ||
+    url.startsWith("https://") ||
+    url.startsWith("/")
+  ) {
+    return url
+  }
+  if (url.startsWith("CaptureX_")) {
+    return `/assets/images/onschedule/${url.replace(/\.jpg$/, ".png")}`
+  }
+  return `/assets/images/${url}`
+}
+
 /**
  * Format raw API Case Study DTO into frontend CaseStudyDetail interface
  */
@@ -48,10 +63,13 @@ export function mapApiCaseStudyToDetail(
   dto: CaseStudyDTO | Record<string, unknown>
 ): CaseStudyDetail {
   const metadata: CaseStudyMetadata[] = Array.isArray(dto.metadata)
-    ? dto.metadata.map((m: { label: string; value: string }) => ({
-        label: m.label,
-        value: m.value,
-      }))
+    ? dto.metadata.map(
+        (m: { label: string; value: string; icon?: string }) => ({
+          label: m.label,
+          value: m.value,
+          icon: m.icon,
+        })
+      )
     : [
         {
           label: "Role",
@@ -115,7 +133,7 @@ export function mapApiCaseStudyToDetail(
         description: f.description,
         mediaType: f.mediaType || "Image / Video",
         mediaLabel: f.mediaLabel || "Feature Screenshot",
-        media: f.media || "/placeholder.png",
+        media: normalizeMediaUrl(f.media),
         tags: Array.isArray(f.tags) ? f.tags : [],
         highlights: Array.isArray(f.highlights) ? f.highlights : [],
         codeLang: f.codeLang || undefined,
@@ -133,6 +151,7 @@ export function mapApiCaseStudyToDetail(
     ? (
         dto.postMortem as Array<{
           title: string
+          body?: string
           entries?: Array<{
             heading: string
             detail: string
@@ -141,6 +160,7 @@ export function mapApiCaseStudyToDetail(
         }>
       ).map((pm) => ({
         title: pm.title,
+        body: pm.body || undefined,
         entries: Array.isArray(pm.entries)
           ? pm.entries.map((e) => ({
               heading: e.heading,
@@ -179,7 +199,7 @@ export function mapApiCaseStudyToDetail(
     techStack: Array.isArray(dto.techStack) ? (dto.techStack as string[]) : [],
     liveUrl: (dto.liveUrl as string) || undefined,
     githubUrl: (dto.githubUrl as string) || undefined,
-    image: (dto.image as string) || "/placeholder.png",
+    image: normalizeMediaUrl(dto.image as string),
     imageLabel: (dto.imageLabel as string) || undefined,
     role: (dto.role as string) || undefined,
     timeline: (dto.timeline as string) || undefined,

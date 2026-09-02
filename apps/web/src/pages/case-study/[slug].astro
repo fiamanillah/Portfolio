@@ -46,19 +46,23 @@ let caseStudy: CaseStudyDetail | undefined = Astro.props.caseStudy
 let prevCaseStudy = Astro.props.prevCaseStudy
 let nextCaseStudy = Astro.props.nextCaseStudy
 
-// On-demand fetch fallback for dynamic rendering or newly created case studies
-if ((!caseStudy || !caseStudy.contextBlocks?.length) && slug) {
-  const result = await CaseStudyApi.fetchCaseStudyBySlug(slug)
+// In development mode, always fetch fresh data from API to instantly reflect admin edits.
+// In production, fallback fetch if caseStudy is missing or slug needs dynamic resolution.
+if (
+  (import.meta.env.DEV || !caseStudy || !caseStudy.contextBlocks?.length) &&
+  slug
+) {
+  const result = await CaseStudyApi.fetchCaseStudyBySlug(slug, false)
   if (result?.redirected && result.destination) {
     return Astro.redirect(
       result.destination,
       (result.statusCode as 301 | 302 | 307 | 308) || 301
     )
   }
-  if (result) {
+  if (result?.caseStudy) {
     caseStudy = result.caseStudy
-    prevCaseStudy = result.prevCaseStudy
-    nextCaseStudy = result.nextCaseStudy
+    if (result.prevCaseStudy) prevCaseStudy = result.prevCaseStudy
+    if (result.nextCaseStudy) nextCaseStudy = result.nextCaseStudy
   }
 }
 

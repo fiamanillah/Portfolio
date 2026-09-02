@@ -1,0 +1,23 @@
+info:
+  name: Google Login (Direct Token or Code)
+  type: http
+  seq: 14
+
+http:
+  method: POST
+  url: "{{baseUrl}}/auth/v1/google"
+  body:
+    type: json
+    data: |-
+      {
+        "idToken": "sample_google_id_token",
+        "code": "sample_auth_code",
+        "redirectUri": "http://localhost:3000/auth/callback"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

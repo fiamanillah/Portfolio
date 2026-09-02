@@ -394,4 +394,36 @@ describe("Authentication & RBAC System Integration Tests", () => {
     // Clean up
     await prisma.user.delete({ where: { id: initialUser.id } })
   })
+
+  it("15. should retrieve public author profile with aggregated stats and posts", async () => {
+    const authorEmail = `author_${Date.now()}@example.com`
+    const authorUsername = `author_${Date.now()}`
+    const author = await prisma.user.create({
+      data: {
+        email: authorEmail,
+        name: "Featured Technical Writer",
+        username: authorUsername,
+        headline: "Principal Systems Architect",
+        bio: "Specializing in distributed databases and event streaming.",
+        role: Role.AUTHOR,
+      },
+    })
+
+    const profile = await userService.getPublicAuthorProfile(authorUsername)
+    expect(profile.id).toBe(author.id)
+    expect(profile.name).toBe("Featured Technical Writer")
+    expect(profile.username).toBe(authorUsername)
+    expect(profile.headline).toBe("Principal Systems Architect")
+    expect(profile.stats.totalPosts).toBe(0)
+    expect(Array.isArray(profile.posts)).toBe(true)
+
+    // Clean up
+    await prisma.user.delete({ where: { id: author.id } })
+  })
+
+  it("16. should throw NotFoundError for non-existent author profile", async () => {
+    expect(
+      userService.getPublicAuthorProfile("non_existent_author_slug_xyz")
+    ).rejects.toThrow(/not found/)
+  })
 })

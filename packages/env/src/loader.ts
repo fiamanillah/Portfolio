@@ -128,12 +128,10 @@ export function loadEnv(
     process.env.BUN_ENV = "test"
   }
 
-  // In production, ensure explicitly injected environment variables take absolute precedence
-  if (isProd) {
-    for (const [key, val] of Object.entries(explicitEnv)) {
-      if (val !== undefined) {
-        process.env[key] = val
-      }
+  // Ensure explicitly injected environment variables from CLI, Docker, CI, or shell take absolute precedence over file defaults
+  for (const [key, val] of Object.entries(explicitEnv)) {
+    if (val !== undefined) {
+      process.env[key] = val
     }
   }
 

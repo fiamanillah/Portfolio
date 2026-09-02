@@ -2,7 +2,7 @@ name: dev
 variables:
   - name: baseUrl
     value: http://localhost:3040
-    description: "API Base URL"
+    description: API Base URL
   - name: authToken
-    value: ""
-    description: "JWT Access Token for authenticated requests"
+    value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjYWFmNTQzYS01YWI5LTRkYmMtOWQwYy0xZWUxMDdlYjI0ZTgiLCJlbWFpbCI6ImZpQGFtYW5pbGxhaC5kZXYiLCJ1c2VybmFtZSI6ImZpYW1hbmlsbGFoIiwicm9sZSI6IkFETUlOIiwiaWF0IjoxNzg4MzI1OTAyLCJleHAiOjE3ODg0MTIzMDIsImlzcyI6Imlnbml0b3ItYXBwIn0.vdSdWZqEdxHmfcUTTl97yova_gOzySiOsMwr9M8JaBM
+    description: JWT Access Token for authenticated requests

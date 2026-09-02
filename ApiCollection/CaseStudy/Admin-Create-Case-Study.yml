@@ -8,76 +8,130 @@ http:
   url: "{{baseUrl}}/case-studies/v1/admin/create"
   headers:
     - name: Authorization
-      value: "Bearer {{authToken}}"
+      value: Bearer {{authToken}}
   body:
     type: json
     data: |-
       {
-        "title": "Mickanic - Distributed Automotive Diagnostics",
-        "slug": "mickanic",
-        "subtitle": "High-throughput telemetry and real-time fault code analysis platform",
-        "description": "Architected and engineered an end-to-end telemetry system capturing real-time CAN bus telemetry across 50,000+ connected vehicles.",
+        "title": "On Schedule - Inspection & Certification Management",
+        "slug": "on-schedule",
+        "subtitle": "Comprehensive SaaS for inspections, fleet tracking, and automated work orders",
+        "description": "Architected and engineered an end-to-end B2B SaaS platform for managing physical asset inspections, employee safety certifications, and automated compliance reminders.",
         "projectType": "CASE_STUDY",
         "status": "PUBLISHED",
         "projectStatus": "Production Ready",
         "order": 1,
         "featured": true,
         "pinned": true,
-        "techStack": ["Node.js", "TypeScript", "Redis", "TimescaleDB", "Next.js", "Tailwind CSS"],
-        "liveUrl": "https://mickanic.com",
-        "githubUrl": "https://github.com/fiamanillah/mickanic",
-        "image": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31",
-        "imageLabel": "Mickanic Telemetry Dashboard",
+        "techStack": [
+          "Bun",
+          "Express.js",
+          "TypeScript",
+          "PostgreSQL",
+          "Prisma ORM",
+          "RabbitMQ",
+          "Stripe",
+          "Twilio",
+          "AWS S3 & SES",
+          "PDFKit"
+        ],
+        "liveUrl": "https://onschedule.ca",
+        "githubUrl": "https://github.com/fiamanillah/onschedule-backend",
+        "image": "CaptureX_2026-09-02_083744_onschedule.ca.jpg",
+        "imageLabel": "On Schedule Dashboard Overview",
         "role": "Lead Architect & Full Stack Engineer",
-        "timeline": "6 Months (2025)",
-        "client": "Mickanic Technologies",
-        "impact": "Reduced mean time to diagnosis by 74% and scaled to 2M daily telemetry events.",
+        "timeline": "2026",
+        "client": "On Schedule",
+        "impact": "Streamlined compliance and maintenance tracking with automated email and SMS reminders, unified under a tiered SaaS architecture[cite: 1].",
         "highlights": [
-          "Sub-50ms query latency on 2B+ time-series records",
-          "Automated PDF diagnostics report generation with Puppeteer"
+          "High-performance REST API developed using the Bun runtime and Express.js[cite: 1]",
+          "Automated compliance scheduling with Twilio SMS and AWS SES email reminders[cite: 1]",
+          "Multi-tier SaaS subscription ($99, $299, $599) and automated billing powered by Stripe[cite: 1]",
+          "Dynamic PDF inspection report generation and export capabilities built with PDFKit[cite: 1]"
         ],
         "metadata": [
-          { "label": "Architecture", "value": "Microservices + CQRS", "icon": "Layers" }
+          { "label": "Architecture", "value": "Microservices + AMQP Queue", "icon": "Layers" },
+          { "label": "Infrastructure", "value": "Docker + PostgreSQL", "icon": "Server" }
         ],
         "contextBlocks": [
-          { "label": "The Challenge", "body": "Vehicle diagnostics required manual OBD2 scans with proprietary hardware and zero historical analytics." }
+          { "label": "The Challenge", "body": "Managing physical asset inspections, fleet tracking, and employee safety certifications required a centralized, automated system to prevent missed renewals and compliance violations." }
         ],
         "architectureLayers": [
           {
-            "name": "Ingestion Layer",
-            "description": "MQTT Broker handling 10,000 req/sec telemetry streams",
+            "name": "Background Processing Layer",
+            "description": "Message broker and scheduling for automated SMS/Email reminders[cite: 1]",
             "items": [
-              { "title": "VernemMQ Broker", "subtitle": "Clustered MQTT 5.0" }
+              { "title": "RabbitMQ & Node-Cron", "subtitle": "AMQP Queue + Scheduled Jobs[cite: 1]" }
+            ]
+          },
+          {
+            "name": "Application Layer",
+            "description": "High-performance API built on modern runtimes[cite: 1]",
+            "items": [
+              { "title": "Bun & Express", "subtitle": "Fast TypeScript backend[cite: 1]" },
+              { "title": "Prisma ORM & PostgreSQL", "subtitle": "Type-safe database persistence[cite: 1]" }
             ]
           }
         ],
         "features": [
           {
-            "title": "Live Diagnostics Stream",
-            "description": "Real-time SSE dashboard rendering live engine RPM and coolant temperatures.",
+            "title": "Automated Email/SMS Reminders",
+            "description": "Scheduled notification templates to alert clients and managers of upcoming or overdue inspections via Twilio and SES[cite: 1].",
             "mediaType": "Image",
-            "mediaLabel": "Live Stream View",
-            "media": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31",
-            "tags": ["Telemetry", "WebSocket"]
+            "mediaLabel": "Reminders Dashboard",
+            "media": "CaptureX_2026-09-02_083851_onschedule.ca.png",
+            "tags": ["Automation", "Twilio", "Notifications"]
+          },
+          {
+            "title": "Fleet & Asset Tracking",
+            "description": "Comprehensive tracking for fleet vehicles, physical assets, and tools, including VIN logging, assignments, and maintenance statuses.",
+            "mediaType": "Image",
+            "mediaLabel": "Fleet Tracking UI",
+            "media": "CaptureX_2026-09-02_084859_onschedule.ca.png",
+            "tags": ["Fleet", "Asset Management"]
+          },
+          {
+            "title": "Employee Certification Management",
+            "description": "Dashboard for monitoring employee safety certifications to ensure valid, expiring, or expired documents are tracked proactively.",
+            "mediaType": "Image",
+            "mediaLabel": "Employee Certifications",
+            "media": "CaptureX_2026-09-02_085012_onschedule.ca.png",
+            "tags": ["Compliance", "HR"]
+          },
+          {
+            "title": "Tiered SaaS Billing",
+            "description": "Seamlessly integrated Stripe payment processing managing Basic, Pro, and Enterprise subscription tiers with feature-level access gating[cite: 1].",
+            "mediaType": "Image",
+            "mediaLabel": "Transaction History",
+            "media": "CaptureX_2026-09-02_084503_onschedule.ca.png",
+            "tags": ["Stripe", "SaaS Billing"]
+          },
+          {
+            "title": "PDF Inspection Reports",
+            "description": "Dynamic generation and export of scheduled, completed, and overdue inspection reports for offline sharing and compliance audits[cite: 1].",
+            "mediaType": "Image",
+            "mediaLabel": "Report Generation",
+            "media": "CaptureX_2026-09-02_085048_onschedule.ca.png",
+            "tags": ["PDFKit", "Reporting"]
           }
         ],
         "metrics": [
-          { "value": "74%", "label": "Reduction in Diagnostic Time" },
-          { "value": "2M+", "label": "Daily Events Processed" }
+          { "value": "3", "label": "Subscription Tiers Managed" },
+          { "value": "100%", "label": "Automated Compliance Alerts" }
         ],
         "postMortem": [
           {
             "title": "Key Learnings & Takeaways",
-            "body": "Decoupling ingest from persistence prevented data loss during downstream database maintenance windows.",
+            "body": "Integrating RabbitMQ with Twilio and AWS SES enabled reliable, asynchronous delivery of critical compliance reminders without blocking core API threads[cite: 1].",
             "entries": [
-              { "heading": "Redis Streams Buffer", "detail": "Buffering raw telemetry allowed zero dropped packets during failovers." }
+              { "heading": "Asynchronous Notifications", "detail": "Decoupled the notification engine using RabbitMQ to ensure timely dispatch of SMS and email alerts for due inspections[cite: 1]." }
             ]
           }
         ],
         "seo": {
-          "metaTitle": "Mickanic Telemetry System Architecture Case Study",
-          "metaDescription": "In-depth case study of high-throughput automotive telemetry processing system.",
-          "metaKeywords": ["telemetry", "timescaledb", "real-time", "iot", "architecture"]
+          "metaTitle": "On Schedule SaaS Architecture Case Study",
+          "metaDescription": "In-depth case study of On Schedule, a SaaS platform for asset inspections, fleet tracking, and automated reminders built with Bun, Prisma, PostgreSQL, and Stripe.",
+          "metaKeywords": ["saas", "inspections", "bun", "postgresql", "stripe", "twilio"]
         }
       }
   auth: inherit
@@ -87,3 +141,4 @@ settings:
   timeout: 0
   followRedirects: true
   maxRedirects: 5
+  forwardAuthorizationHeader: true

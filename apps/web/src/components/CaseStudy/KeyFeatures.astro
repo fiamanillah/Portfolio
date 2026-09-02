@@ -86,14 +86,53 @@ const { features } = Astro.props as Props
                 )}
               </div>
 
-              {/* Image Viewport Column */}
-              <div class="relative min-h-[260px] overflow-hidden border-t border-border bg-muted/20 before:pointer-events-none before:absolute before:inset-0 before:z-10 before:bg-[linear-gradient(105deg,transparent_40%,oklch(var(--primary)/10%)_50%,transparent_60%)] before:bg-[length:200%_100%] after:pointer-events-none after:absolute after:inset-0 after:bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(0,0,0,0.04)_2px,rgba(0,0,0,0.04)_4px)] lg:col-span-6 lg:border-t-0 lg:border-l">
-                <img
-                  src={feature.media}
-                  alt={feature.mediaLabel || feature.title}
-                  class="h-full w-full object-cover object-top grayscale-[10%] transition-transform duration-700 group-hover:scale-105 group-hover:grayscale-0"
-                  loading="lazy"
-                />
+              {/* Image Viewport Column (16:9 aspect ratio with vertical scrolling for tall captures) */}
+              <div class="relative flex flex-col justify-center overflow-hidden border-t border-border bg-muted/20 lg:col-span-6 lg:border-t-0 lg:border-l">
+                <div class="relative aspect-video w-full overflow-hidden bg-background/50">
+                  {/* Scrollable image container */}
+                  <div
+                    tabindex="0"
+                    role="region"
+                    aria-label={`Scrollable preview for ${feature.title}`}
+                    class="h-full w-full overflow-x-hidden overflow-y-auto [scrollbar-color:oklch(var(--primary)/40%)_transparent] [scrollbar-width:thin] focus:outline-none [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-primary/30 hover:[&::-webkit-scrollbar-thumb]:bg-primary/60 [&::-webkit-scrollbar-track]:bg-transparent"
+                  >
+                    <div class="flex min-h-full w-full flex-col justify-center">
+                      <img
+                        src={feature.media}
+                        alt={feature.mediaLabel || feature.title}
+                        class="block h-auto w-full grayscale-[10%] transition-[filter] duration-300 group-hover:grayscale-0"
+                        loading="lazy"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Corner accents & scanline overlay */}
+                  <div class="pointer-events-none absolute inset-0 z-10 before:absolute before:inset-0 before:bg-[linear-gradient(105deg,transparent_40%,oklch(var(--primary)/8%)_50%,transparent_60%)] before:bg-[length:200%_100%] after:absolute after:inset-0 after:bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(0,0,0,0.03)_2px,rgba(0,0,0,0.03)_4px)]" />
+
+                  {/* Full Resolution Link on Hover */}
+                  <a
+                    href={feature.media}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`Open ${feature.title} image in full resolution`}
+                    class="absolute top-2.5 right-2.5 z-20 flex size-7 items-center justify-center rounded-sm border border-border/80 bg-background/80 text-muted-foreground opacity-0 backdrop-blur-md transition-all group-hover:opacity-100 hover:border-primary hover:text-primary"
+                    title="Open full resolution in new tab"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
+                    </svg>
+                  </a>
+                </div>
               </div>
             </div>
           </article>

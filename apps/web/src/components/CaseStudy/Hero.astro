@@ -6,6 +6,12 @@ import {
   UserIcon,
   BuildingIcon,
   Globe02Icon,
+  GroupLayersIcon,
+  CloudServerIcon,
+  Briefcase01Icon,
+  AiCloud01Icon,
+  Database,
+  Cpu,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Badge } from "@workspace/ui/components/badge"
@@ -14,10 +20,46 @@ import type { ComponentProps } from "astro/types"
 
 type HugeIconType = ComponentProps<typeof HugeiconsIcon>["icon"]
 
+const ICON_MAP: Record<string, HugeIconType> = {
+  layers: GroupLayersIcon,
+  server: CloudServerIcon,
+  infrastructure: CloudServerIcon,
+  briefcase: Briefcase01Icon,
+  domain: Briefcase01Icon,
+  cloud: AiCloud01Icon,
+  deployment: AiCloud01Icon,
+  database: Database,
+  cpu: Cpu,
+  globe: Globe02Icon,
+  clock: Clock01Icon,
+  timeline: Clock01Icon,
+  user: UserIcon,
+  role: UserIcon,
+  building: BuildingIcon,
+  company: BuildingIcon,
+}
+
+function resolveIcon(
+  icon?: HugeIconType | string,
+  label?: string
+): HugeIconType {
+  if (icon && typeof icon !== "string") return icon
+  if (typeof icon === "string" && ICON_MAP[icon.toLowerCase()]) {
+    return ICON_MAP[icon.toLowerCase()]!
+  }
+  if (label) {
+    const l = label.toLowerCase()
+    for (const key of Object.keys(ICON_MAP)) {
+      if (l.includes(key)) return ICON_MAP[key]!
+    }
+  }
+  return Globe02Icon
+}
+
 interface MetadataItem {
   label: string
   value: string
-  icon?: HugeIconType
+  icon?: HugeIconType | string
 }
 
 interface Props {
@@ -205,28 +247,31 @@ const cleanSubtitle = title.includes("—")
   <!-- 4-Column Metadata Bento Grid -->
   <div class="grid grid-cols-2 border-t border-border sm:grid-cols-4">
     {
-      metadata.map(({ label, value, icon }, i) => (
-        <div
-          class={`group relative border-border p-4.5 transition-colors hover:bg-primary/5 sm:p-6 ${
-            i % 2 === 0 ? "border-r" : ""
-          } ${i < 2 ? "border-b" : ""} sm:border-r sm:border-b-0 sm:last:border-r-0`}
-        >
-          <dl class="flex flex-col gap-1.5">
-            <dt class="flex items-center gap-1.5 font-mono text-[10px] font-semibold tracking-[0.2em] text-muted-foreground uppercase">
-              {icon && (
-                <HugeiconsIcon
-                  icon={icon}
-                  className="size-3 text-primary/80 shrink-0"
-                />
-              )}
-              {label}
-            </dt>
-            <dd class="text-sm font-bold tracking-tight text-foreground sm:text-base">
-              {value}
-            </dd>
-          </dl>
-        </div>
-      ))
+      metadata.map(({ label, value, icon }, i) => {
+        const resolvedIcon = resolveIcon(icon, label)
+        return (
+          <div
+            class={`group relative border-border p-4.5 transition-colors hover:bg-primary/5 sm:p-6 ${
+              i % 2 === 0 ? "border-r" : ""
+            } ${i < 2 ? "border-b" : ""} sm:border-r sm:border-b-0 sm:last:border-r-0`}
+          >
+            <dl class="flex flex-col gap-1.5">
+              <dt class="flex items-center gap-1.5 font-mono text-[10px] font-semibold tracking-[0.2em] text-muted-foreground uppercase">
+                {resolvedIcon && (
+                  <HugeiconsIcon
+                    icon={resolvedIcon}
+                    className="size-3 text-primary/80 shrink-0"
+                  />
+                )}
+                {label}
+              </dt>
+              <dd class="text-sm font-bold tracking-tight text-foreground sm:text-base">
+                {value}
+              </dd>
+            </dl>
+          </div>
+        )
+      })
     }
   </div>
 </article>

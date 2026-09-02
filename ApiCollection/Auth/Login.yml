@@ -11,7 +11,7 @@ http:
     data: |-
       {
         "email": "fi@amanillah.dev",
-        "password": "Password123!"
+        "password": "change-me-immediately"
       }
   auth: inherit
 
@@ -20,3 +20,4 @@ settings:
   timeout: 0
   followRedirects: true
   maxRedirects: 5
+  forwardAuthorizationHeader: true

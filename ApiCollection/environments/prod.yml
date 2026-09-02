@@ -1,0 +1,8 @@
+name: prod
+variables:
+  - name: baseUrl
+    value: https://api-fi.amanillah.com
+    description: "Production API Base URL"
+  - name: authToken
+    value: ""
+    description: "JWT Access Token for authenticated requests"

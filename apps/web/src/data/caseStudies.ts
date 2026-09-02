@@ -38,12 +38,14 @@ export interface PostMortemEntry {
 
 export interface PostMortemSection {
   title: string
+  body?: string
   entries: PostMortemEntry[]
 }
 
 export interface CaseStudyMetadata {
   label: string
   value: string
+  icon?: string
 }
 
 export interface CaseStudyDetail {
