@@ -21,12 +21,6 @@ const { resumeUrl = null, downloadUrl = "/resume", version } = Astro.props
     </span>
   </div>
 
-  <p
-    class="text-left text-xs leading-relaxed text-muted-foreground lg:text-right"
-  >
-    Download my official resume and verified engineering track record:
-  </p>
-
   <!-- Resume Download Card -->
   <a
     href={downloadUrl}
@@ -87,16 +81,4 @@ const { resumeUrl = null, downloadUrl = "/resume", version } = Astro.props
       />
     </div>
   </a>
-
-  <div
-    class="flex items-center justify-between font-mono text-[10px] text-muted-foreground/50 uppercase"
-  >
-    <span>📄 Updated for 2026</span>
-    <a
-      href="/resume"
-      class="transition-colors hover:text-primary hover:underline"
-    >
-      Interactive CV Page →
-    </a>
-  </div>
 </div>

@@ -60,10 +60,6 @@ export function HeroResumeCard({
         </span>
       </div>
 
-      <p className="text-left text-xs leading-relaxed text-muted-foreground lg:text-right">
-        Download my official resume and verified engineering track record:
-      </p>
-
       {/* Resume Download Card */}
       <a
         href={downloadUrl}
@@ -114,16 +110,6 @@ export function HeroResumeCard({
           />
         </div>
       </a>
-
-      <div className="flex items-center justify-between font-mono text-[10px] text-muted-foreground/50 uppercase">
-        <span>📄 Updated for 2026</span>
-        <a
-          href="/resume"
-          className="transition-colors hover:text-primary hover:underline"
-        >
-          Interactive CV Page →
-        </a>
-      </div>
     </div>
   )
 }

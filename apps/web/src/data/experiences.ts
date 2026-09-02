@@ -93,7 +93,7 @@ export const experiences: ExperienceItem[] = [
     startDate: "2024-10-01T00:00:00.000Z",
     endDate: "2025-05-01T00:00:00.000Z",
     company: "Gold Sky Overseas",
-    companyUrl: null,
+    companyUrl: "https://goldsky.com.bd/",
     role: "Web Developer",
     title: ["Web", "Developer"],
     location: "Dhaka, Bangladesh",
