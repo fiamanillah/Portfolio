@@ -27,16 +27,16 @@ Each application is deployed as an independent container service managed by Dokp
 ```mermaid
 graph TD
     Client[Web Visitors & Admin] --> Traefik[Dokploy Reverse Proxy / Traefik (HTTPS / SSL)]
-    
+
     subgraph Dokploy Server (Internal Docker Network)
         Traefik -->|fi.amanillah.com| Web[Astro Frontend - Port 80]
         Traefik -->|admin-fi.amanillah.com| Dashboard[Next.js Dashboard - Port 3001]
         Traefik -->|api-fi.amanillah.com| API[Express + Bun API - Port 3040]
-        
+
         API --> Postgres[(Dokploy Managed PostgreSQL 17)]
         API --> Redis[(Dokploy Managed Redis 7)]
     end
-    
+
     API --> CloudflareR2[(Cloudflare R2 Storage)]
     API --> Plunk[Plunk Email Gateway]
     API --> CloudflareTurnstile[Cloudflare Turnstile Verification]
@@ -44,13 +44,13 @@ graph TD
 
 ### Services Summary
 
-| Service | Technology | Source Options | Internal Port | Public Domain |
-| :--- | :--- | :--- | :--- | :--- |
-| **PostgreSQL** | Postgres 17 Alpine | Dokploy Managed Database | `5432` | *(Internal only or exposed port)* |
-| **Redis** | Redis 7 Alpine | Dokploy Managed Database | `6379` | *(Internal only)* |
-| **API** | Bun + Express + Prisma | Docker Image or Git (`Dockerfile.api`) | `3040` | `https://api-fi.amanillah.com` |
-| **Web** | Astro 5 + Nginx | Docker Image or Git (`Dockerfile.web`) | `80` | `https://fi.amanillah.com` |
-| **Dashboard** | Next.js 16 Standalone | Docker Image or Git (`Dockerfile.dashboard`) | `3001` | `https://admin-fi.amanillah.com` |
+| Service        | Technology             | Source Options                               | Internal Port | Public Domain                     |
+| :------------- | :--------------------- | :------------------------------------------- | :------------ | :-------------------------------- |
+| **PostgreSQL** | Postgres 17 Alpine     | Dokploy Managed Database                     | `5432`        | _(Internal only or exposed port)_ |
+| **Redis**      | Redis 7 Alpine         | Dokploy Managed Database                     | `6379`        | _(Internal only)_                 |
+| **API**        | Bun + Express + Prisma | Docker Image or Git (`Dockerfile.api`)       | `3040`        | `https://api-fi.amanillah.com`    |
+| **Web**        | Astro 5 + Nginx        | Docker Image or Git (`Dockerfile.web`)       | `80`          | `https://fi.amanillah.com`        |
+| **Dashboard**  | Next.js 16 Standalone  | Docker Image or Git (`Dockerfile.dashboard`) | `3001`        | `https://admin-fi.amanillah.com`  |
 
 ---
 
@@ -59,6 +59,7 @@ graph TD
 Before deploying the applications, provision the persistent storage layers in Dokploy.
 
 ### 1. PostgreSQL 17 Database
+
 1. In the Dokploy sidebar, navigate to **Databases** -> Click **Create Database**.
 2. Select **PostgreSQL**.
 3. Fill in the database details:
@@ -74,11 +75,12 @@ Before deploying the applications, provision the persistent storage layers in Do
 > If you want to connect to PostgreSQL from your local machine to run migrations or inspect data with Prisma Studio, enable **External Access** on a designated host port (e.g. `5445`).
 
 ### 2. Redis 7 Database
+
 1. Go to **Databases** -> Click **Create Database**.
 2. Select **Redis**.
 3. Fill in the details:
    - **Name**: `portfolio-redis`
-   - **Password**: *(Optional or set a strong password)*
+   - **Password**: _(Optional or set a strong password)_
 4. Click **Deploy**.
 5. Note the **Internal Connection String**:
    - Format: `redis://portfolio-redis:6379` (or `redis://:password@portfolio-redis:6379`)
@@ -90,6 +92,7 @@ Before deploying the applications, provision the persistent storage layers in Do
 The API service runs Express 5 on Bun and interacts directly with PostgreSQL, Redis, Cloudflare R2, and Plunk.
 
 ### 1. Create the Application in Dokploy
+
 1. In Dokploy, go to **Projects** -> Select your Project (or click **Create Project**).
 2. Click **Add Service** -> Choose **Application**.
 3. Set **Name**: `portfolio-api`.
@@ -99,19 +102,23 @@ The API service runs Express 5 on Bun and interacts directly with PostgreSQL, Re
 Choose either **Option A (Docker Image)** or **Option B (Git Repository)**:
 
 #### Option A: Deploy Pre-built Docker Hub Image (Recommended for speed)
-*If you built and pushed your image using `docker build -t <username>/portfolio-api -f Dockerfile.api . && docker push <username>/portfolio-api`*:
+
+_If you built and pushed your image using `docker build -t <username>/portfolio-api -f Dockerfile.api . && docker push <username>/portfolio-api`_:
+
 - **Source Type**: `Docker`
 - **Image**: `fiamanillah/portfolio-api:latest` (replace with your image tag)
 
 #### Option B: Build from Git Repository in Dokploy
+
 - **Source Type**: `Git` (or `GitHub` / `GitLab`)
 - **Repository URL**: `https://github.com/<your-username>/Portfolio.git`
 - **Branch**: `main`
 - **Build Type**: `Dockerfile`
 - **Dockerfile Path**: `Dockerfile.api`
-- **Context Path**: `.` *(the root directory of the monorepo)*
+- **Context Path**: `.` _(the root directory of the monorepo)_
 
 ### 3. Configure Environment Variables
+
 In the **Environment** tab of `portfolio-api`, paste the following production configuration:
 
 ```dotenv
@@ -163,6 +170,7 @@ AUTH_FROM_EMAIL=auth@mail.amanillah.com
 ```
 
 ### 4. Configure Domains & Health Check
+
 1. Go to the **Domains** tab:
    - **Domain**: `api-fi.amanillah.com`
    - **Container Port**: `3040`
@@ -252,6 +260,7 @@ The web frontend is built with Astro 5 as a static build and served by a high-pe
 ### 1. Build and Push Docker Image (or configure Git build)
 
 **If using Docker Hub (Recommended):**
+
 ```bash
 # From local repository root:
 docker build \
@@ -266,10 +275,11 @@ docker push fiamanillah/portfolio-web:latest
 ```
 
 ### 2. Configure in Dokploy
+
 1. In Dokploy, click **Add Service** -> **Application** -> Name: `portfolio-web`.
 2. **Source**:
    - **Docker Image**: `fiamanillah/portfolio-web:latest`
-   - *OR* **Git**: Dockerfile `Dockerfile.web`, Context `.`, and provide Build Arguments under the Build tab:
+   - _OR_ **Git**: Dockerfile `Dockerfile.web`, Context `.`, and provide Build Arguments under the Build tab:
      - `PUBLIC_WEB_URL`: `https://fi.amanillah.com`
      - `PUBLIC_API_URL`: `https://api-fi.amanillah.com`
      - `PUBLIC_TURNSTILE_SITE_KEY`: `0x4AAAAAAAYourKey`
@@ -291,6 +301,7 @@ The dashboard is built with Next.js 16 in Standalone output mode and served by N
 ### 1. Build and Push Docker Image (or configure Git build)
 
 **If using Docker Hub (Recommended):**
+
 ```bash
 # From local repository root:
 docker build \
@@ -304,10 +315,11 @@ docker push fiamanillah/portfolio-dashboard:latest
 ```
 
 ### 2. Configure in Dokploy
+
 1. In Dokploy, click **Add Service** -> **Application** -> Name: `portfolio-dashboard`.
 2. **Source**:
    - **Docker Image**: `fiamanillah/portfolio-dashboard:latest`
-   - *OR* **Git**: Dockerfile `Dockerfile.dashboard`, Context `.`, with Build Arguments:
+   - _OR_ **Git**: Dockerfile `Dockerfile.dashboard`, Context `.`, with Build Arguments:
      - `NEXT_PUBLIC_API_URL`: `https://api-fi.amanillah.com`
      - `NEXT_PUBLIC_SITE_URL`: `https://fi.amanillah.com`
 3. **Environment Tab**:
@@ -330,6 +342,7 @@ docker push fiamanillah/portfolio-dashboard:latest
 Dokploy provides incoming webhook triggers for zero-downtime automated redeployments whenever you push new images or commits.
 
 ### Setting up Dokploy Webhooks:
+
 1. In Dokploy, go to each Application (`portfolio-api`, `portfolio-web`, `portfolio-dashboard`).
 2. Open the **Deployments** or **Webhooks** tab.
 3. Copy the **Webhook URL**.
@@ -364,14 +377,17 @@ curl -I https://admin-fi.amanillah.com
 ### 2. Common Production Issues & Solutions
 
 #### Issue: Database connection fails on API startup (`P1001: Can't reach database server`)
+
 - **Cause**: The API container cannot resolve the PostgreSQL hostname on the Docker network.
 - **Solution**: In Dokploy, ensure both `portfolio-api` and `portfolio-db` are on the same Docker network (Dokploy default network). Use the internal service name (e.g. `portfolio-db:5432`) in `DATABASE_URL`, not `localhost` or `127.0.0.1`.
 
 #### Issue: CORS errors when Admin Dashboard or Web calls API
+
 - **Cause**: Origin not listed in `ALLOWED_ORIGINS`.
 - **Solution**: Ensure `ALLOWED_ORIGINS=https://fi.amanillah.com,https://admin-fi.amanillah.com` in the `portfolio-api` environment variables, without trailing slashes.
 
 #### Issue: Pending migrations on new feature deployment
+
 - **Solution**: Whenever new Prisma migrations are added to the repository, trigger the migration via Dokploy Web Terminal:
   ```bash
   cd /app/packages/db && bun run db:migrate:prod
