@@ -270,32 +270,36 @@ const isInProgress = statusLower.includes("progress")
 
   {/* Right Column: Media Preview Showcase (5 Cols on Large Screens) */}
   <div
-    class="relative flex min-h-[240px] items-center justify-center overflow-hidden border-t border-border/60 bg-muted/10 sm:min-h-[280px] lg:col-span-5 lg:min-h-full lg:border-t-0 lg:border-l lg:border-border/60"
+    class="relative flex w-full aspect-video items-center justify-center overflow-hidden border-t border-border/60 bg-muted/10 lg:col-span-5 lg:aspect-auto lg:h-full lg:border-t-0 lg:border-l lg:border-border/60"
   >
     {
       caseStudyUrl ? (
         <a
           href={caseStudyUrl}
-          class="group/img relative block h-full w-full overflow-hidden"
+          class="group/img relative flex h-full w-full items-center justify-center overflow-hidden"
         >
-          <img
-            src={project.img}
-            alt={project.title}
-            loading="lazy"
-            class="h-full w-full object-cover object-top transition-transform duration-700 ease-out group-hover:scale-105"
-          />
-          {/* Subtle Vignette Overlay */}
-          <div class="pointer-events-none absolute inset-0 bg-linear-to-t from-background/70 via-transparent to-transparent opacity-60 transition-opacity duration-300 group-hover:opacity-40 lg:bg-linear-to-r lg:from-transparent lg:to-background/30" />
+          <div class="relative aspect-video w-full overflow-hidden">
+            <img
+              src={project.img}
+              alt={project.title}
+              loading="lazy"
+              class="h-full w-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
+            />
+            {/* Subtle Vignette Overlay */}
+            <div class="pointer-events-none absolute inset-0 bg-linear-to-t from-background/60 via-transparent to-transparent opacity-40 transition-opacity duration-300 group-hover:opacity-20 lg:bg-linear-to-r lg:from-transparent lg:to-background/20" />
+          </div>
         </a>
       ) : (
-        <div class="relative h-full w-full overflow-hidden">
-          <img
-            src={project.img}
-            alt={project.title}
-            loading="lazy"
-            class="h-full w-full object-cover object-top transition-transform duration-700 ease-out group-hover:scale-105"
-          />
-          <div class="pointer-events-none absolute inset-0 bg-linear-to-t from-background/70 via-transparent to-transparent opacity-60 transition-opacity duration-300 group-hover:opacity-40 lg:bg-linear-to-r lg:from-transparent lg:to-background/30" />
+        <div class="relative flex h-full w-full items-center justify-center overflow-hidden">
+          <div class="relative aspect-video w-full overflow-hidden">
+            <img
+              src={project.img}
+              alt={project.title}
+              loading="lazy"
+              class="h-full w-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
+            />
+            <div class="pointer-events-none absolute inset-0 bg-linear-to-t from-background/60 via-transparent to-transparent opacity-40 transition-opacity duration-300 group-hover:opacity-20 lg:bg-linear-to-r lg:from-transparent lg:to-background/20" />
+          </div>
         </div>
       )
     }

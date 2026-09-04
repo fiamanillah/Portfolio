@@ -33,7 +33,7 @@ const { prevStudy, nextStudy } = Astro.props
           <div class="pointer-events-none absolute right-1.5 bottom-1.5 h-2.5 w-2.5 border-r border-b border-border transition-colors group-hover:border-primary" />
 
           {prevStudy.image && (
-            <div class="relative h-14 w-20 shrink-0 overflow-hidden border border-border/60 bg-muted/30">
+            <div class="relative aspect-video w-24 shrink-0 overflow-hidden border border-border/60 bg-muted/30">
               <img
                 src={prevStudy.image}
                 alt={prevStudy.title}
@@ -86,7 +86,7 @@ const { prevStudy, nextStudy } = Astro.props
           </div>
 
           {nextStudy.image && (
-            <div class="relative h-14 w-20 shrink-0 overflow-hidden border border-border/60 bg-muted/30">
+            <div class="relative aspect-video w-24 shrink-0 overflow-hidden border border-border/60 bg-muted/30">
               <img
                 src={nextStudy.image}
                 alt={nextStudy.title}
